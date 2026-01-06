@@ -32,17 +32,17 @@ For full functionality including Active Inference, machine learning, and visuali
 
 ```bash
 # Install all optional packages
-python3 scripts/install_optional_packages.py --all --verbose
+python3 src/pipeline/install_optional_packages.py --all --verbose
 ```
 
 Or install specific groups:
 
 ```bash
 # Install just JAX and PyMDP for Active Inference
-python3 scripts/install_optional_packages.py --groups jax,pymdp --verbose
+python3 src/pipeline/install_optional_packages.py --groups jax,pymdp --verbose
 
 # Install visualization libraries
-python3 scripts/install_optional_packages.py --groups visualization --verbose
+python3 src/pipeline/install_optional_packages.py --groups visualization --verbose
 ```
 
 ## Optional Package Groups
@@ -55,7 +55,7 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~500MB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups jax
+  python3 src/pipeline/install_optional_packages.py --groups jax
   ```
 
 ### 2. **pymdp** - Active Inference Framework
@@ -64,7 +64,7 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~50MB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups pymdp
+  python3 src/pipeline/install_optional_packages.py --groups pymdp
   ```
 - **PyMDP Example**:
   ```python
@@ -91,7 +91,7 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~100MB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups visualization
+  python3 src/pipeline/install_optional_packages.py --groups visualization
   ```
 
 ### 4. **audio** - Audio Processing & Sonification
@@ -100,7 +100,7 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~150MB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups audio
+  python3 src/pipeline/install_optional_packages.py --groups audio
   ```
 
 ### 5. **llm** - LLM Integration
@@ -109,7 +109,7 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~50MB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups llm
+  python3 src/pipeline/install_optional_packages.py --groups llm
   ```
 
 ### 6. **ml** - Machine Learning
@@ -118,24 +118,24 @@ The GNN pipeline supports the following optional package groups:
 - **Size**: ~2GB
 - **Installation**:
   ```bash
-  python3 scripts/install_optional_packages.py --groups ml
+  python3 src/pipeline/install_optional_packages.py --groups ml
   ```
 
 ## Installation Methods
 
-**Note**: The optional package installation script has been moved to the `scripts/` directory for better organization. All commands now use `scripts/install_optional_packages.py`.
+**Note**: The optional package installation script is located in `src/pipeline/` for better organization with other pipeline utilities.
 
 ### Method 1: Using Standalone Script (Recommended)
 
 ```bash
 # List available groups
-python3 scripts/install_optional_packages.py --list
+python3 src/pipeline/install_optional_packages.py --list
 
 # Install all optional packages
-python3 scripts/install_optional_packages.py --all
+python3 src/pipeline/install_optional_packages.py --all
 
 # Install specific groups
-python3 scripts/install_optional_packages.py --groups jax,pymdp,visualization
+python3 src/pipeline/install_optional_packages.py --groups jax,pymdp,visualization
 ```
 
 ### Method 2: Using Setup Module Directly

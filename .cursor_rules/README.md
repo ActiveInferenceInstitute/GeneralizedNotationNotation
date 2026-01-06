@@ -1,6 +1,6 @@
 # .cursor_rules - Comprehensive AI Development Guidelines
 
-**Version**: 2.2.0  
+**Version**: 2.1.0  
 **Status**: ✅ Production Ready  
 **Last Updated**: December 2025  
 **Total Documentation**: 6100+ lines across 16 files
@@ -147,7 +147,7 @@ JAX renderer generates pure JAX code:
 ## Getting Started Workflows
 
 ### New Developer
-1. Read [AGENTS.md](AGENTS.md) - Understand 28 modules
+1. Read [AGENTS.md](AGENTS.md) - Understand 26 modules (24 pipeline + 2 infrastructure)
 2. Read [pipeline_architecture.md](pipeline_architecture.md) - Understand flow
 3. Read [gnn_standards.md](gnn_standards.md) - Understand domain
 4. Ready to fix bugs and write tests

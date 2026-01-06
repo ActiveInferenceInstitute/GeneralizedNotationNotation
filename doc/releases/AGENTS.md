@@ -21,7 +21,7 @@ The Release Management documentation system is part of the broader GNN (Generali
 - **Main Documentation**: [doc/README.md](../README.md)
 - **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
 - **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
-- **Setup Guide**: [SETUP.md](../../SETUP.md)
+- **Setup Guide**: [SETUP.md](../SETUP.md)
 
 ## Subsystems
 

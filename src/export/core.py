@@ -51,7 +51,7 @@ def export_gnn_files(
         return False
     
     # Use centralized output directory configuration
-    export_output_dir = get_output_dir_for_script("5_export.py", output_dir)
+    export_output_dir = get_output_dir_for_script("7_export.py", output_dir)
     export_output_dir.mkdir(parents=True, exist_ok=True)
     
     # Find GNN files

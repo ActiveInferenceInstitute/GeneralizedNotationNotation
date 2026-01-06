@@ -1,38 +1,116 @@
 STDOUT:
+.............s..........................ssssss.......................... [ 11%]
+........................sFFFs...............s........................... [ 22%]
+...s...................................................................s [ 33%]
+.........ss.ss.......ss.ss...F....................s..................... [ 44%]
+F
+=================================== FAILURES ===================================
+___________ TestRenderModuleComprehensive.test_render_module_imports ___________
+src/tests/test_core_modules.py:146: in test_render_module_imports
+    from src.render import (
+E   ImportError: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
 
-==================================== ERRORS ====================================
-_____________ ERROR collecting src/tests/test_gui_functionality.py _____________
-src/tests/test_gui_functionality.py:6: in <module>
-    from gui import run_gui
-src/gui/__init__.py:188: in <module>
-    def generate_html_navigation(pipeline_output_dir: Path, output_dir: Path, logger: logging.Logger) -> bool:
-                                                      ^^^^
-E   NameError: name 'Path' is not defined
-________________ ERROR collecting src/tests/test_gui_overall.py ________________
-src/tests/test_gui_overall.py:5: in <module>
-    from gui import (
-src/gui/__init__.py:188: in <module>
-    def generate_html_navigation(pipeline_output_dir: Path, output_dir: Path, logger: logging.Logger) -> bool:
-                                                      ^^^^
-E   NameError: name 'Path' is not defined
-________ ERROR collecting src/tests/test_visualization_comprehensive.py ________
-ImportError while importing test module '/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_visualization_comprehensive.py'.
-Hint: make sure your test modules/packages have valid Python names.
-Traceback:
-../../../.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/importlib/__init__.py:88: in import_module
-    return _bootstrap._gcd_import(name[level:], package, level)
-           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-src/tests/test_visualization_comprehensive.py:19: in <module>
-    from visualization import (
-src/visualization/__init__.py:63: in <module>
-    from .processor import (
-E   ImportError: cannot import name 'parse_matrix_data' from 'visualization.processor' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/processor.py)
+During handling of the above exception, another exception occurred:
+src/tests/test_core_modules.py:158: in test_render_module_imports
+    pytest.fail(f"Failed to import render module: {e}")
+E   Failed: Failed to import render module: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+______________ TestRenderModuleComprehensive.test_pymdp_rendering ______________
+src/tests/test_core_modules.py:164: in test_pymdp_rendering
+    from src.render import render_gnn_to_pymdp
+E   ImportError: cannot import name 'render_gnn_to_pymdp' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+_____________ TestRenderModuleComprehensive.test_rxinfer_rendering _____________
+src/tests/test_core_modules.py:180: in test_rxinfer_rendering
+    from src.render import render_gnn_to_rxinfer
+E   ImportError: cannot import name 'render_gnn_to_rxinfer' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+_________________ TestGUIFunctionality.test_headless_artifacts _________________
+src/tests/test_gui_functionality.py:36: in test_headless_artifacts
+    assert status.exists()
+E   AssertionError: assert False
+E    +  where False = exists()
+E    +    where exists = PosixPath('/var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/gui_processing_summary.json').exists
+----------------------------- Captured stderr call -----------------------------
+2026-01-06 11:34:13,966 - gui - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-01-06 11:34:13,966 - gui - INFO - Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/input
+2026-01-06 11:34:13,966 - gui - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-01-06 11:34:13,966 - gui - INFO - Mode: HEADLESS
+2026-01-06 11:34:13,966 - gui - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-01-06 11:34:13,966 - gui - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-01-06 11:34:13,966 - gui - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/constructed_model_gui1.md
+2026-01-06 11:34:13,966 - gui - INFO - ✅ GUI 1 completed successfully
+2026-01-06 11:34:13,966 - gui - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-01-06 11:34:13,967 - gui - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-01-06 11:34:13,967 - gui - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/visual_model_gui2.md
+2026-01-06 11:34:13,967 - gui - INFO - ✅ GUI 2 completed successfully
+2026-01-06 11:34:13,967 - gui - INFO - 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/gui_processing_summary.json
+2026-01-06 11:34:13,967 - gui - INFO - Generating HTML navigation page for pipeline outputs
+2026-01-06 11:34:13,967 - gui - INFO - ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/navigation.html
+2026-01-06 11:34:13,967 - gui - INFO - ✅ HTML navigation page generated
+------------------------------ Captured log call -------------------------------
+INFO     gui:__init__.py:86 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui:__init__.py:101 Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/input
+INFO     gui:__init__.py:102 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui:__init__.py:103 Mode: HEADLESS
+INFO     gui:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui:processor.py:65 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui:pipeline_template.py:48 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/constructed_model_gui1.md
+INFO     gui:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui:processor.py:76 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui:pipeline_template.py:48 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/22_gui_output/visual_model_gui2.md
+INFO     gui:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui:__init__.py:171 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/gui_processing_summary.json
+INFO     gui:__init__.py:203 Generating HTML navigation page for pipeline outputs
+INFO     gui:__init__.py:467 ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpokxnhoe1/output/navigation.html
+INFO     gui:__init__.py:180 ✅ HTML navigation page generated
+_______ TestPipelineScriptDiscovery.test_pipeline_script_discovery_logic _______
+src/tests/test_main_orchestrator.py:129: in test_pipeline_script_discovery_logic
+    assert int(match.group(1)) == expected_num, \
+E   AssertionError: Script 3_gnn.py should extract number 2
+E   assert 3 == 2
+E    +  where 3 = int('3')
+E    +    where '3' = <built-in method group of re.Match object at 0x1175a8310>(1)
+E    +      where <built-in method group of re.Match object at 0x1175a8310> = <re.Match object; span=(0, 8), match='3_gnn.py'>.group
+============================= slowest 10 durations =============================
+2.56s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+1.33s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
+0.73s call     src/tests/test_llm_ollama.py::test_ollama_simple_chat
+0.44s call     src/tests/test_llm_ollama.py::test_ollama_streaming
+0.36s call     src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation
+0.20s call     src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration
+0.10s call     src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes
+0.09s call     src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation
+0.08s call     src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help
+0.06s call     src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats
 =========================== short test summary info ============================
-ERROR src/tests/test_gui_functionality.py - NameError: name 'Path' is not def...
-ERROR src/tests/test_gui_overall.py - NameError: name 'Path' is not defined
-ERROR src/tests/test_visualization_comprehensive.py
-!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!
-20 deselected, 3 errors in 1.84s
+SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
+SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
+SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
+SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
+SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
+assert False
+SKIPPED [1] src/tests/test_core_modules.py:205: DisCoPy rendering not available: cannot import name 'render_gnn_to_discopy' from 'src.render' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/render/__init__.py)
+SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
+SKIPPED [1] src/tests/test_d2_visualizer.py:260: D2 CLI not available
+SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
+SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
+SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
+SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
+SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
+SKIPPED [1] src/tests/test_llm_ollama_integration.py:88: Test depends on external Ollama service state - service may be installed but not running
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering
+FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering
+FAILED src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts
+FAILED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
+5 failed, 263 passed, 21 skipped, 25 deselected in 7.40s
 
 
 STDERR:

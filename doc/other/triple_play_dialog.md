@@ -50,7 +50,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Specs:** So, `StateSpaceBlock` is the field? And `ModelName` is playing *on* the field? But you said `ModelName` was the team name! I'm confused. Who's on first?
 
-**Rickety:** `Who` is but a fleeting `Observation`, Specs. `What` is a `HiddenState`. And `ModelName`… `ModelName` is the echo of the question itself, resonating through the `src/gnn/examples/` folder, forever seeking its `gnn_file_structure.md`. The first turn of the triple play often ends in such ontological pickles.
+**Rickety:** `Who` is but a fleeting `Observation`, Specs. `What` is a `HiddenState`. And `ModelName`… `ModelName` is the echo of the question itself, resonating through the `src/gnn/gnn_examples/` folder, forever seeking its `gnn_file_structure.md`. The first turn of the triple play often ends in such ontological pickles.
 
 **(The ticker-tape machine sputters: "ERROR: AMBIGUOUS_REFERENCE_TO_FIRST_BASE. CONSULT_SRC_MCP_MCP.PY")**
 
@@ -136,7 +136,7 @@ The deepest, dustiest back office of the "National Generative Model League" (NGM
 
 **Specs:** The umpire! Of course! That's `main.py`! Always sticking his nose in, checking the `GNNVersionAndFlags`, making sure the `Footer` and `Signature` are in order! Thinks he's `God` or `G` or some other fancy letter! But without him, it's all just `output/logs/chaos.txt`.
 
-**Rickety:** The `main.py`… the silent orchestrator. The loom upon which the GNN tapestry is woven. It does not judge the `ModelAnnotation`'s poetry, nor the `Equations`' elegance. It merely ensures the `Pipeline` flows, from `Text` to `Graph` to `Code`. A humble servant of the Triple Play. The true mystery, gentlemen, is not Who's on First, or What's on Second, or even I Don't Know on Third. It's *Why* we play the `Game` at all. And for that answer... you'll need to consult a `ModelName` far grander than any found in `src/gnn/examples/`.
+**Rickety:** The `main.py`… the silent orchestrator. The loom upon which the GNN tapestry is woven. It does not judge the `ModelAnnotation`'s poetry, nor the `Equations`' elegance. It merely ensures the `Pipeline` flows, from `Text` to `Graph` to `Code`. A humble servant of the Triple Play. The true mystery, gentlemen, is not Who's on First, or What's on Second, or even I Don't Know on Third. It's *Why* we play the `Game` at all. And for that answer... you'll need to consult a `ModelName` far grander than any found in `src/gnn/gnn_examples/`.
 
 **(Rickety fades further into the shadows. Specs starts idly checking the `ModelParameters` on an imaginary bat. Abner stares at his GNN rulebook, a single bead of sweat tracing a path through the dust on his forehead. The ticker-tape machine clatters one last time: "SIMULATION_COMPLETE. OBSERVED_OUTCOME_UNLIKELY_UNDER_CURRENT_PRIORS. SUGGEST_REVISING_WORLD_MODEL. OR_PERHAPS_THE_RULES_OF_THE_GAME_ITSELF.")**
 

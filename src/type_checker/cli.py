@@ -52,7 +52,7 @@ def main(cmd_args=None):
     
     parsed_args = parser.parse_args(cmd_args)
     
-    # The caller (4_type_checker.py or user via CLI) is responsible for configuring logging levels.
+    # The caller (5_type_checker.py or user via CLI) is responsible for configuring logging levels.
     # This script just uses the logger.
 
     actual_output_dir = Path(parsed_args.output_dir).resolve()

@@ -8,6 +8,12 @@
 
 **Category**: Visualization / Graph Analysis
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,15 +38,27 @@
 
 ### Public Functions
 
-#### `process_visualization_main(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Main visualization processing function
+#### `process_visualization_main(target_dir, output_dir, verbose=False, **kwargs) -> bool`
+**Description**: Main visualization processing function called by orchestrator (8_visualization.py)
 
 **Parameters**:
-- `target_dir`: Directory containing GNN files
-- `output_dir`: Output directory for visualizations
+- `target_dir` (Path): Directory containing GNN files
+- `output_dir` (Path): Output directory for visualizations
+- `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional visualization options
 
 **Returns**: `True` if visualization succeeded
+
+**Example**:
+```python
+from visualization import process_visualization_main
+
+success = process_visualization_main(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/8_visualization_output"),
+    verbose=True
+)
+```
 
 #### `generate_graph_visualization(graph_data) -> List[str]`
 **Description**: Generate graph visualization from graph data

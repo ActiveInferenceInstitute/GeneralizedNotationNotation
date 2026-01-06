@@ -8,7 +8,7 @@ by analyzing and updating code patterns across pipeline modules.
 Usage:
     python -m utils.migration_helper --analyze
     python -m utils.migration_helper --apply-improvements
-    python -m utils.migration_helper --module 5_export.py --dry-run
+    python -m utils.migration_helper --module 7_export.py --dry-run
 """
 
 import re
@@ -157,7 +157,7 @@ class PipelineMigrationHelper:
     
     def _needs_performance_tracking(self, module_path: Path) -> bool:
         """Check if module should have performance tracking."""
-        compute_intensive = ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py']
+        compute_intensive = ['7_export.py', '6_visualization.py', '11_render.py', '12_execute.py', '11_llm.py']
         return module_path.name in compute_intensive
     
     def _remove_redundant_fallbacks(self, content: str) -> Tuple[str, List[str]]:

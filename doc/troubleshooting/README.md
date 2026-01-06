@@ -269,7 +269,7 @@ pip uninstall -y $(pip list --format=freeze | cut -d= -f1)
 pip install -r requirements.txt
 
 # Minimal test
-python src/main.py --target-dir src/gnn/examples/basic/ --only-steps 1,4
+python src/main.py --target-dir input/gnn_files/ --only-steps 1,4
 ```
 
 ### Emergency Recovery

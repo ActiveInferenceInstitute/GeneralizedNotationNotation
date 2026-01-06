@@ -558,7 +558,7 @@ results = execute_pymdp_simulation(model_path, config, debug=True, verbose=True)
 
 ### Related Documentation
 - [Execute Module](../../execute/AGENTS.md) - Parent execute module
-- [PyMDP Render](../render/pymdp/AGENTS.md) - PyMDP code generation
+- [PyMDP Render](../../render/pymdp/AGENTS.md) - PyMDP code generation
 - [PyMDP Documentation](https://pymdp.readthedocs.io/) - Official PyMDP docs
 
 ### External Resources

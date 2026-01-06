@@ -8,6 +8,12 @@
 
 **Category**: Code Generation / Simulation Framework Integration
 
+**Status**: ✅ Production Ready
+
+**Version**: 2.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -65,8 +71,34 @@
 
 ### Public Functions
 
+#### `process_render(target_dir, output_dir, verbose=False, **kwargs) -> bool`
+**Description**: Main rendering processing function called by orchestrator (11_render.py)
+
+**Parameters**:
+- `target_dir` (Path): Directory containing GNN files to process
+- `output_dir` (Path): Output directory for rendered files
+- `verbose` (bool): Enable verbose logging (default: False)
+- `**kwargs`: Additional processing options including:
+  - `frameworks`: List of frameworks to render for (default: all)
+  - `strict_validation`: Enable strict POMDP validation
+  - `include_documentation`: Generate framework documentation
+
+**Returns**: `True` if processing succeeded, `False` otherwise
+
+**Example**:
+```python
+from render import process_render
+
+success = process_render(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/11_render_output"),
+    verbose=True,
+    frameworks=["pymdp", "rxinfer"]
+)
+```
+
 #### `render_gnn_spec(gnn_spec, target, output_directory, options=None) -> Tuple[bool, str, List[str]]`
-**Description**: Main rendering function for GNN specifications
+**Description**: Render a single GNN specification to a target framework
 
 **Parameters**:
 - `gnn_spec`: Parsed GNN specification dictionary

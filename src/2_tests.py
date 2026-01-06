@@ -3,22 +3,68 @@
 Step 2: Test Suite Execution (Thin Orchestrator)
 
 This script orchestrates comprehensive tests for the GNN pipeline in staged execution.
-It is a thin orchestrator that delegates core functionality to the test runner.
+It follows the thin orchestrator pattern, delegating all core functionality to the
+tests module (specifically tests.run_tests() from runner.py).
 
-How to run:
-  python src/2_tests.py --fast-only --verbose  # Fast tests (default)
-  python src/2_tests.py --comprehensive         # All tests
-  python src/main.py  # (runs as part of the pipeline with fast tests)
+Architecture:
+  This script acts as a thin wrapper that:
+  1. Parses command-line arguments
+  2. Sets up logging and visual output
+  3. Creates output directories
+  4. Delegates to tests.run_tests() for actual test execution
+  5. Returns standardized exit codes (0=success, 1=failure)
 
-Expected outputs:
-  - All test logs and reports in output/2_tests_output/
+  All test execution logic is in src/tests/runner.py, which provides:
+  - run_fast_pipeline_tests() - Fast tests for quick validation (default)
+  - run_comprehensive_tests() - All tests including slow/performance
+  - run_fast_reliable_tests() - Essential tests fallback
+
+Usage:
+  # Fast tests (default - used in pipeline)
+  python src/2_tests.py --fast-only --verbose
+  
+  # Comprehensive test suite (all tests)
+  python src/2_tests.py --comprehensive --verbose
+  
+  # As part of full pipeline (runs fast tests by default)
+  python src/main.py
+
+Command-Line Arguments:
+  --output-dir DIR     Output directory for test results (default: 'output')
+  --verbose            Enable verbose output with detailed logging
+  --fast-only          Run only fast tests (default: True)
+  --comprehensive      Run comprehensive test suite (overrides fast-only)
+  --target-dir DIR     Target directory (unused for tests, kept for API compatibility)
+
+Test Mode Selection:
+  The script determines test mode based on flags:
+  - If --comprehensive: Runs all tests via run_comprehensive_tests()
+  - If --fast-only (default): Runs fast tests via run_fast_pipeline_tests()
+  - Otherwise: Falls back to run_fast_reliable_tests()
+
+Environment Variables:
+  SKIP_TESTS_IN_PIPELINE  Set to any value to skip tests entirely
+  FAST_TESTS_TIMEOUT      Override timeout for fast tests (default: 600 seconds)
+
+Expected Outputs:
+  - Test execution reports in output/2_tests_output/
+  - pytest_comprehensive_output.txt - Full pytest output
+  - test_execution_report.json - Structured test results
   - Clear pass/fail status for each test
   - Performance metrics and timing data
 
-If you encounter errors:
+Error Handling:
+  - Returns exit code 0 on success
+  - Returns exit code 1 on failure (with detailed error messages)
+  - Detects and reports collection errors (import/syntax errors)
+  - Provides actionable suggestions for common issues
+
+Troubleshooting:
   - Check that pytest is installed: pip install pytest pytest-cov
   - Check that src/tests/ contains test files
   - Check that the output directory is writable
+  - Review output/2_tests_output/pytest_comprehensive_output.txt for details
+  - Set SKIP_TESTS_IN_PIPELINE=1 to skip tests in pipeline runs
 """
 
 import sys
@@ -33,7 +79,21 @@ from utils.pipeline_template import setup_step_logging
 from utils.visual_logging import create_visual_logger, VisualConfig, format_step_header, format_status_message
 
 def main() -> int:
-    """Main entry point for the tests step."""
+    """
+    Main entry point for the tests step.
+    
+    This function:
+    1. Parses command-line arguments
+    2. Sets up enhanced visual logging
+    3. Creates output directory
+    4. Determines test mode (fast/comprehensive/reliable)
+    5. Calls tests.run_tests() with appropriate parameters
+    6. Returns exit code based on test results
+    
+    Returns:
+        0: Tests passed successfully
+        1: Tests failed or execution error occurred
+    """
     import argparse
 
     # Simple argument parser

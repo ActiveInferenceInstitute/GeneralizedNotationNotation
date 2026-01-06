@@ -1,7 +1,7 @@
-# GNN Pipeline - 28 Agent Capabilities Summary
+# GNN Pipeline - 26 Agent Capabilities Summary
 
-**Version**: 2.0.0  
-**Last Updated**: November 19, 2025  
+**Version**: 2.1.0  
+**Last Updated**: December 2025  
 **Total Agents**: 28 (24 pipeline modules + 4 infrastructure)  
 **Status**: ✅ Production Ready
 
@@ -37,8 +37,6 @@
 | 23 | Report | `report/` | Documentation | ✅ |
 | — | Utils | `utils/` | Infrastructure | ✅ |
 | — | Pipeline | `pipeline/` | Orchestration | ✅ |
-| — | Integration | `integration/` | Coordination | ✅ |
-| — | Security | `security/` | Protection | ✅ |
 
 ---
 
@@ -358,6 +356,16 @@
   - Performance monitoring
 - **Status**: ✅ Production Ready
 - **Steps Managed**: 24 (0-23)
+
+#### 🎵 **SAPF Agent** - Audio Framework
+- **Location**: `src/sapf/`
+- **Role**: Synthetic Audio Processing Framework
+- **Key Capabilities**:
+  - Audio synthesis and processing
+  - GNN model sonification
+  - Multi-backend audio generation
+  - Real-time audio processing
+- **Status**: ✅ Production Ready
 
 ---
 

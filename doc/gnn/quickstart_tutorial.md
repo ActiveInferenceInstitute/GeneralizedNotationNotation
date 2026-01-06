@@ -206,7 +206,7 @@ python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 # 📊 Resource estimation: [details]
 ```
 
-**If you see errors**: Check the [Common Errors Guide](troubleshooting/common_errors.md) or compare with the template above.
+**If you see errors**: Check the [Common Errors Guide](../troubleshooting/common_errors.md) or compare with the template above.
 
 For more information on the type checker, see **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**.
 
@@ -278,7 +278,7 @@ Your agent:
 ### Build Your Own Model:
 1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
-3. **Get help**: Check [FAQ](troubleshooting/faq.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
+3. **Get help**: Check [FAQ](../troubleshooting/faq.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 4. **Process with pipeline**: Use `src/main.py` to run complete workflow
 
 ## 🧠 Key Concepts You've Learned

@@ -234,7 +234,7 @@ DisCoPy's implementation of the `Int`-construction (Geometry of Interaction) emb
 DisCoPy can be integrated into the existing GNN processing pipeline (`src/main.py` and its numbered steps) to provide enhanced capabilities:
 
 *   **`src/12_discopy.py` (New Step):** A dedicated pipeline step could be introduced. This script would:
-    *   Take GNN files (e.g., from `output/gnn_exports/` or directly from `src/gnn/examples/`) as input.
+    *   Take GNN files (e.g., from `output/gnn_exports/` or directly from `src/gnn/gnn_examples/`) as input.
     *   Utilize a GNN parser and a `gnn_to_discopy_diagram` translator.
     *   Generate DisCoPy diagrams.
     *   Output these diagrams in various formats (e.g., serialized DisCoPy objects, Python scripts that reconstruct the diagrams, or images via `diagram.draw()`) to a new directory like `output/discopy_gnn/`.

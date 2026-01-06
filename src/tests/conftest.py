@@ -129,6 +129,11 @@ def pytest_sessionstart(session):
 
     # Prepare essential pipeline artifacts when running directly after setup
     try:
+        # Avoid running setup in workers when using pytest-xdist
+        # workerinput is present only in worker nodes
+        if getattr(session.config, 'workerinput', None) is not None:
+            return
+
         project_root = Path(__file__).parent.parent.parent
         output_dir = project_root / "output"
         # Expected artifacts used by functionality tests

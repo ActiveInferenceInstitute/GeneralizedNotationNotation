@@ -377,12 +377,12 @@ python src/main.py my_model.md --debug --verbose
 ### 1. Start with Examples (5 minutes)
 ```bash
 # Explore provided examples
-ls src/gnn/examples/
-python src/main.py --target-dir src/gnn/examples/basic_agent.md
+ls src/gnn/gnn_examples/
+python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
 ```
 
 ### 2. Learn GNN Syntax (15 minutes)
-- Read: [GNN Syntax Guide](doc/gnn/gnn_syntax.md)
+- Read: [GNN Syntax Guide](gnn/gnn_syntax.md)
 - Practice: Modify the example models
 - Validate: Use the type checker to check your syntax
 
@@ -463,7 +463,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 
 ### Beginner Path
 1. **Follow Tutorials**: Work through [doc/tutorials/README.md](doc/tutorials/README.md)
-2. **Read Documentation**: Study [doc/gnn/about_gnn.md](doc/gnn/about_gnn.md)
+2. **Read Documentation**: Study [doc/gnn/about_gnn.md](gnn/about_gnn.md)
 3. **Join Community**: Participate in [discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ### Intermediate Path  
@@ -478,7 +478,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 
 ## 📖 Essential Documentation
 
-- **[GNN Syntax Reference](doc/gnn/gnn_syntax.md)**: Complete syntax guide
+- **[GNN Syntax Reference](gnn/gnn_syntax.md)**: Complete syntax guide
 - **[Pipeline Documentation](doc/pipeline/README.md)**: Detailed pipeline steps
 - **[API Reference](doc/api/README.md)**: Programming interface
 - **[Troubleshooting](doc/troubleshooting/README.md)**: Common problems and solutions
@@ -491,7 +491,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 - **Documentation**: Search the comprehensive docs in `/doc`
 
 ### Quick Support
-1. **Check Examples**: Look at `src/gnn/examples/` for similar models
+1. **Check Examples**: Look at `src/gnn/gnn_examples/` for similar models
 2. **Validate First**: Run step 4 (type checker) to catch common errors
 3. **Read Error Messages**: They often contain helpful hints
 4. **Use Debug Mode**: Add `--debug --verbose` for detailed output
@@ -518,7 +518,7 @@ python src/main.py model.md --debug --verbose
 
 ### Key File Locations
 ```
-src/gnn/examples/     # Example GNN models
+src/gnn/gnn_examples/  # Example GNN models
 doc/templates/        # Model templates  
 doc/gnn/gnn_syntax.md # Syntax reference
 output/               # Generated results

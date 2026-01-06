@@ -110,7 +110,7 @@ class TestPipelineScriptDiscovery:
         
         test_scripts = [
             ("1_setup.py", True, 1),
-            ("2_gnn.py", True, 2),
+            ("3_gnn.py", True, 2),
             ("13_website.py", True, 13),
         ("14_report.py", True, 14),
             ("main.py", False, None),

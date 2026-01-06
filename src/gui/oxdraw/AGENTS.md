@@ -492,13 +492,13 @@ for error in errors:
 ### Related Documentation
 - [oxdraw Technical Overview](./README.md)
 - [GNN-oxdraw Integration Guide](./README.md)
-- [GNN Parser](../gnn/AGENTS.md)
-- [Ontology Module](../ontology/AGENTS.md)
+- [GNN Parser](../../../doc/gnn/AGENTS.md)
+- [Ontology Module](../../ontology/AGENTS.md)
 
 ### External Resources
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
 - [Mermaid Documentation](https://mermaid.js.org/)
-- [Active Inference Ontology](../../input/ontology_terms.json)
+- [Active Inference Ontology](../../../input/ontology_terms.json)
 
 ---
 

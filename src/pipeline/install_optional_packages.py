@@ -7,13 +7,13 @@ using UV. It can be run from a cold start and will install the specified package
 
 Usage:
     # Install all optional packages
-    python3 scripts/install_optional_packages.py --all
+    python3 src/pipeline/install_optional_packages.py --all
     
     # Install specific groups
-    python3 scripts/install_optional_packages.py --groups jax,pymdp,visualization
+    python3 src/pipeline/install_optional_packages.py --groups jax,pymdp,visualization
     
     # Install with verbose output
-    python3 scripts/install_optional_packages.py --all --verbose
+    python3 src/pipeline/install_optional_packages.py --all --verbose
     
 Available package groups:
     - jax: JAX, jaxlib, optax, flax (high-performance computing)
@@ -28,8 +28,9 @@ import argparse
 import sys
 from pathlib import Path
 
-# Add src to path (go up one level from scripts/ to root, then to src/)
-sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
+# Add src to path (now in src/pipeline/, so go up one level to src/)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+sys.path.insert(0, str(PROJECT_ROOT / "src"))
 
 from setup.setup import (
     install_optional_package_group,

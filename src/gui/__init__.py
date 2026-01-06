@@ -17,6 +17,8 @@ Public API:
 """
 
 # Import GUI runners
+from pathlib import Path
+import logging
 from .gui_1 import gui_1, get_gui_1_info
 from .gui_2 import gui_2, get_gui_2_info
 from .gui_3 import gui_3, get_gui_3_info

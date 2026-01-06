@@ -8,6 +8,12 @@
 
 **Category**: Audio Generation / Sonification
 
+**Status**: 🔄 In Development
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,8 +38,8 @@
 
 ### Public Functions
 
-#### `process_audio(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Main audio processing function
+#### `process_audio(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main audio processing function called by orchestrator (15_audio.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files

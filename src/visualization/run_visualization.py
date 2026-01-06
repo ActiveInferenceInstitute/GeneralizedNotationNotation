@@ -2,7 +2,7 @@
 """
 GNN Visualization Runner
 
-This script runs the GNN visualization module on all examples in the src/gnn/examples directory.
+This script runs the GNN visualization module on all examples in the input/gnn_files directory.
 It generates comprehensive visualizations and saves them to the output directory.
 """
 

@@ -1,0 +1,26 @@
+{
+  "framework": "jax",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_jax.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 0.039406,
+  "timestamp": "2026-01-06T11:40:42.679523",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line 13, in <module>\n    import jax\nModuleNotFoundError: No module named 'jax'\n"
+  },
+  "execution_metadata": {
+    "executor": "python3",
+    "stdout_length": 0,
+    "stderr_length": 275,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax"
+  }
+}

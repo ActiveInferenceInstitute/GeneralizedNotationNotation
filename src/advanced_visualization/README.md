@@ -152,12 +152,34 @@ generated_files = visualizer.generate_visualizations(
 - Edge weight visualization
 
 ### 4. Statistical Analysis
-- Distribution plots
-- Correlation matrices
-- Time series analysis
-- Performance metrics
+- Variable type distribution pie charts
+- Variable dimension distribution analysis
+- Scalar parameter value histograms
+- Matrix size distribution analysis
+- Matrix correlation heatmaps between all matrices
+- Comprehensive statistical overview panels
 
-### 5. Matrix Visualizations
+### 5. POMDP-Specific Visualizations
+- Transition matrix (B) analysis with action-specific slices
+- Policy distribution visualizations (π and E matrices)
+- State-action relationship diagrams
+- 3D transition matrix heatmaps
+
+### 6. Network Analysis
+- Network metrics (nodes, edges, density, clustering)
+- Centrality analysis and node importance rankings
+- Network graph visualization with force-directed layout
+- Connection strength and pattern analysis
+- Network topology statistics
+
+### 7. Interactive Plotly Dashboards
+- Multi-panel interactive dashboard
+- Real-time matrix exploration
+- Network graph interaction
+- Model statistics tables
+- HTML and PNG export support
+
+### 8. Matrix Visualizations
 - Heatmap representations
 - Interactive matrix exploration
 - Value highlighting

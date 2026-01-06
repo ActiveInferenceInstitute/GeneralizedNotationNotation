@@ -80,7 +80,7 @@ When adding support for a new simulation backend in `src/render/`, `AutoGenLib` 
     # Conceptual: in a script to bootstrap the new renderer
     # from autogenlib.render.simplex_renderer import generate_initial_scaffold
     #
-    # gnn_example_path = "src/gnn/examples/gnn_example_simple.gnn" # Provide a GNN example
+    # gnn_example_path = "src/gnn/gnn_examples/actinf_pomdp_agent.md" # Provide a GNN example
     # target_language = "Python" # Or Julia, etc.
     #
     # scaffold_code = generate_initial_scaffold(

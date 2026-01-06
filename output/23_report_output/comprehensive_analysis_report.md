@@ -1,15 +1,15 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-05T16:37:54.326975  
+**Generated:** 2026-01-06T11:35:28.927110  
 **Pipeline Output Directory:** output  
-**Health Score:** 25.0/100
+**Health Score:** 30.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 14
 - **Total Files Processed:** 0
 - **Total Size:** 0.0 MB
-- **Success Rate:** 0.0%
+- **Success Rate:** 7.1%
 
 ## ⚡ Performance Metrics
 
@@ -53,9 +53,14 @@
 
 *Step directory not found or empty*
 
-### ❌ Execution Results
+### ✅ Execution Results
 
-*Step directory not found or empty*
+- **Files:** 0
+- **Size:** 0.0 MB
+- **Last Modified:** None
+- **Status:** success
+
+- **Missing Dependencies:** gnn_rendered_simulators
 
 ### ❌ Llm Processing Step
 
@@ -76,14 +81,27 @@
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 5
+**Total Visualizations:** 12
+
+### 8 Visualization
+
+**Count:** 5
+
+**Files:**
+- [actinf_pomdp_agent_matrix_0_heatmap.png](../8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png) (0.08 MB)
+- [actinf_pomdp_agent_combined_analysis.png](../8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png) (0.3 MB)
+- [actinf_pomdp_agent_matrix_1_heatmap.png](../8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png) (0.08 MB)
+- [actinf_pomdp_agent_network_graph.png](../8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png) (0.38 MB)
+- [actinf_pomdp_agent_matrix_2_heatmap.png](../8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png) (0.08 MB)
 
 ### 9 Advanced Viz
 
-**Count:** 1
+**Count:** 3
 
 **Files:**
+- [actinf_pomdp_agent_statistical_analysis.png](../9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png) (0.28 MB)
 - [actinf_pomdp_agent_3d_visualization.png](../9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png) (0.18 MB)
+- [actinf_pomdp_agent_network_metrics.png](../9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png) (0.25 MB)
 
 ### 11 Render
 
@@ -102,10 +120,15 @@
 - [index.html](../20_website_output/website_results/index.html) (0.0 MB)
 
 
+## 🔗 Dependency Analysis
+
+### Missing Prerequisites:
+- **execution_results** missing: gnn_rendered_simulators
+
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** 2026-01-05T16:36:04.519322
-- **End Time:** 2026-01-05T16:36:51.285793
-- **Overall Status:** FAILED
+- **Start Time:** 2026-01-06T11:33:40.971585
+- **End Time:** 2026-01-06T11:34:09.144388
+- **Overall Status:** SUCCESS
 - **Total Steps:** 7
 

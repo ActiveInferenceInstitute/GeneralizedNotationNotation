@@ -403,7 +403,25 @@ class POMDPRenderProcessor:
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_pymdp.py"
             
+            # Validate state spaces are present before rendering
+            validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'pymdp')
+            if not validation_result['valid']:
+                warnings = validation_result.get('warnings', [])
+                if validation_result.get('critical', False):
+                    return {
+                        'success': False,
+                        'message': f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
+                        'artifacts': [],
+                        'warnings': warnings
+                    }
+            
             success, message, warnings = render_gnn_to_pymdp(gnn_spec, output_file, kwargs)
+            
+            # Post-render validation: verify state spaces are in generated script
+            if success and output_file.exists():
+                post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
+                if not post_validation['valid']:
+                    warnings.extend(post_validation.get('warnings', []))
             
             return {
                 'success': success,
@@ -427,7 +445,25 @@ class POMDPRenderProcessor:
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_rxinfer.jl"
             
+            # Validate state spaces are present before rendering
+            validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'rxinfer')
+            if not validation_result['valid']:
+                warnings = validation_result.get('warnings', [])
+                if validation_result.get('critical', False):
+                    return {
+                        'success': False,
+                        'message': f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
+                        'artifacts': [],
+                        'warnings': warnings
+                    }
+            
             success, message, warnings = render_gnn_to_rxinfer(gnn_spec, output_file, kwargs)
+            
+            # Post-render validation
+            if success and output_file.exists():
+                post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
+                if not post_validation['valid']:
+                    warnings.extend(post_validation.get('warnings', []))
             
             return {
                 'success': success,
@@ -451,13 +487,32 @@ class POMDPRenderProcessor:
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_activeinference.jl"
             
+            # Validate state spaces are present before rendering
+            validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'activeinference_jl')
+            warnings = []
+            if not validation_result['valid']:
+                warnings = validation_result.get('warnings', [])
+                if validation_result.get('critical', False):
+                    return {
+                        'success': False,
+                        'message': f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
+                        'artifacts': [],
+                        'warnings': warnings
+                    }
+            
             success, message, artifacts = render_gnn_to_activeinference_jl(gnn_spec, output_file, kwargs)
+            
+            # Post-render validation
+            if success and output_file.exists():
+                post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
+                if not post_validation['valid']:
+                    warnings.extend(post_validation.get('warnings', []))
             
             return {
                 'success': success,
                 'message': message,
                 'artifacts': artifacts,
-                'warnings': []
+                'warnings': warnings
             }
             
         except ImportError:
@@ -513,6 +568,82 @@ class POMDPRenderProcessor:
                 'success': False,
                 'message': "DisCoPy renderer not available",
                 'artifacts': []
+            }
+    
+    def _validate_state_spaces_in_spec(self, gnn_spec: Dict[str, Any], framework: str) -> Dict[str, Any]:
+        """
+        Validate that state spaces are present in GNN spec.
+        
+        Args:
+            gnn_spec: GNN specification dictionary
+            framework: Target framework name
+            
+        Returns:
+            Validation result dictionary
+        """
+        warnings = []
+        initial_params = gnn_spec.get('initialparameterization', {})
+        config = self.framework_configs[framework]
+        
+        # Check required matrices
+        missing_required = []
+        for required_matrix in config['requires_matrices']:
+            if required_matrix not in initial_params:
+                missing_required.append(required_matrix)
+        
+        if missing_required:
+            return {
+                'valid': False,
+                'critical': True,
+                'reason': f"Missing required matrices: {missing_required}",
+                'warnings': warnings
+            }
+        
+        # Check optional matrices
+        for optional_matrix in config.get('optional_matrices', []):
+            if optional_matrix not in initial_params:
+                warnings.append(f"Optional matrix {optional_matrix} not found")
+        
+        return {
+            'valid': True,
+            'critical': False,
+            'warnings': warnings
+        }
+    
+    def _validate_state_spaces_in_script(self, script_path: Path, gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Validate that state spaces are present in generated script.
+        
+        Args:
+            script_path: Path to generated script
+            gnn_spec: Original GNN specification
+            
+        Returns:
+            Validation result dictionary
+        """
+        warnings = []
+        
+        try:
+            with open(script_path, 'r', encoding='utf-8') as f:
+                script_content = f.read()
+            
+            initial_params = gnn_spec.get('initialparameterization', {})
+            
+            # Check if matrices are referenced in script
+            for matrix_name in ['A', 'B', 'C', 'D', 'E']:
+                if matrix_name in initial_params:
+                    # Check if matrix is present in script (as variable or in data structure)
+                    if matrix_name not in script_content and f'"{matrix_name}"' not in script_content:
+                        warnings.append(f"Matrix {matrix_name} may not be properly injected into script")
+            
+            return {
+                'valid': len(warnings) == 0,
+                'warnings': warnings
+            }
+        except Exception as e:
+            return {
+                'valid': False,
+                'warnings': [f"Failed to validate script: {e}"]
             }
     
     def _create_framework_documentation(self, 

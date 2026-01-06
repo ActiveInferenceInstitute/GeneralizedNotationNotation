@@ -647,7 +647,8 @@ renamed_chains = rename_chains(chains, multi_subject_model)
 # plot(renamed_chains)
 # ```
 #
-# ![image2](assets/chain_traces.png)
+# > [!WARNING] Image missing: assets/chain_traces.png
+> *(image2)*
 #
 # We can also visualize the posterior distributions against the priors. This can be done by first taking samples from the prior:
 # ```julia
@@ -661,7 +662,8 @@ renamed_chains = rename_chains(chains, multi_subject_model)
 # plot_parameters(renamed_prior_chains, renamed_chains)
 # ```
 
-# ![image3](assets/posteriors.png)
+# > [!WARNING] Image missing: assets/posteriors.png
+> *(image3)*
 
 
 
@@ -1033,7 +1035,8 @@ using ActiveInference.Environments
 
 # Let's start with the factors of the environment. Let's take a look at the T-Maze environment:
 
-# ![image1](assets/TMazeIllustrationSmaller.png)
+# > [!WARNING] Image missing: assets/TMazeIllustrationSmaller.png
+> *(image1)*
 
 # We here have two factors with the following number of states:
 
@@ -1720,7 +1723,8 @@ using StatsPlots # Load the StatsPlots package
 plot(renamed_chains)
 ```
 
-![image2](assets/chain_traces.png)
+> [!WARNING] Image missing: assets/chain_traces.png
+> *(image2)*
 
 We can also visualize the posterior distributions against the priors. This can be done by first taking samples from the prior:
 ```julia
@@ -1734,7 +1738,8 @@ To plot the posterior distributions against the priors, we use the `plot_paramet
 plot_parameters(renamed_prior_chains, renamed_chains)
 ```
 
-![image3](assets/posteriors.png)
+> [!WARNING] Image missing: assets/posteriors.png
+> *(image3)*
 
 ---
 
@@ -2200,7 +2205,8 @@ To use the helper function we need to know the following:
 
 Let's start with the factors of the environment. Let's take a look at the T-Maze environment:
 
-![image1](assets/TMazeIllustrationSmaller.png)
+> [!WARNING] Image missing: assets/TMazeIllustrationSmaller.png
+> *(image1)*
 
 We here have two factors with the following number of states:
 

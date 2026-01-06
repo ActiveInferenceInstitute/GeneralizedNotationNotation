@@ -8,6 +8,12 @@
 
 **Category**: System Integration / Coordination
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -31,18 +37,31 @@
 
 ### Public Functions
 
-#### `process_integration(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main integration processing function for system coordination
+#### `process_integration(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main integration processing function called by orchestrator (17_integration.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for integration results
-- `logger` (Logger): Logger instance for progress reporting
-- `integration_mode` (str): Integration mode ("coordinated", "standalone", "fallback")
-- `system_coordination` (bool): Enable system-wide coordination
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `integration_mode` (str): Integration mode ("coordinated", "standalone", "fallback", default: "coordinated")
+- `system_coordination` (bool): Enable system-wide coordination (default: True)
 - `**kwargs`: Additional integration options
 
 **Returns**: `True` if integration processing succeeded
+
+**Example**:
+```python
+from integration import process_integration
+
+success = process_integration(
+    target_dir=Path("output"),
+    output_dir=Path("output/17_integration_output"),
+    verbose=True,
+    integration_mode="coordinated"
+)
+```
 
 ---
 

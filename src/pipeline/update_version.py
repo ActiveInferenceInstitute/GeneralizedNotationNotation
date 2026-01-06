@@ -198,9 +198,9 @@ def main():
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
-  python scripts/update_version.py 1.2.0
-  python scripts/update_version.py 1.2.0-rc.1
-  python scripts/update_version.py 1.2.0+build.123
+  python src/pipeline/update_version.py 1.2.0
+  python src/pipeline/update_version.py 1.2.0-rc.1
+  python src/pipeline/update_version.py 1.2.0+build.123
         """
     )
     

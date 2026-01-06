@@ -54,7 +54,7 @@ pipeline:
 
 # Development paths
 paths:
-  target_dir: "./src/gnn/examples"
+  target_dir: "./src/gnn/gnn_examples"
   output_dir: "./dev_output"
   cache_dir: "./cache"
   logs_dir: "./logs"
@@ -131,7 +131,7 @@ name: "dev_hotreload"
 # File watching for development
 development:
   hot_reload: true
-  watch_directories: ["./src/gnn/examples", "./src/templates"]
+  watch_directories: ["./src/gnn/gnn_examples", "./src/templates"]
   watch_extensions: [".md", ".gnn", ".yaml"]
   reload_delay: 2.0
   

@@ -476,7 +476,7 @@ result = process_sapf_audio(audio_data, spectral_config, debug=True, verbose=Tru
 ### Related Documentation
 - [Audio Module](../../audio/AGENTS.md) - Parent audio module
 - [SAPF Specification](../../../doc/sapf/sapf.md) - SAPF framework details
-- [Pipeline Overview](../../../../README.md) - Main pipeline documentation
+- [Pipeline Overview](../../../README.md) - Main pipeline documentation
 
 ### External Resources
 - [FFT Algorithms](https://en.wikipedia.org/wiki/Fast_Fourier_transform)

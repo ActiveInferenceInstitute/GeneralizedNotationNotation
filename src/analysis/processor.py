@@ -103,25 +103,62 @@ def process_analysis(
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
             
-            # 2. Empirical Analysis: Load execution results if available
-            execution_dir = output_dir.parent / "12_execute_output" / "execution_results"
-            execution_summary_file = execution_dir / "execution_summary.json"
+            # 2. Post-Simulation Analysis: Load execution results if available
+            execution_dir = output_dir.parent / "12_execute_output"
+            execution_results_dir = execution_dir / "execution_results"
             
-            if execution_summary_file.exists():
-                logger.info("Found execution results, performing empirical analysis")
+            if execution_results_dir.exists():
+                logger.info("Found execution results, performing post-simulation analysis")
                 try:
-                    with open(execution_summary_file, 'r') as f:
-                        execution_results = json.load(f)
+                    # Import post-simulation analysis module
+                    from .post_simulation import analyze_execution_results
                     
-                    # Generate empirical visualizations
-                    empirical_viz = visualize_simulation_results(execution_results, results_dir)
-                    results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
-                    logger.info(f"Generated {len(empirical_viz)} empirical visualizations")
+                    # Analyze execution results for each model
+                    for gnn_file in gnn_files:
+                        model_name = gnn_file.stem
+                        logger.info(f"Analyzing execution results for {model_name}")
+                        
+                        # Find execution results for this model
+                        model_execution_dir = execution_dir / model_name
+                        if model_execution_dir.exists():
+                            # Analyze results
+                            post_sim_analysis = analyze_execution_results(
+                                model_execution_dir,
+                                model_name=model_name
+                            )
+                            
+                            # Save analysis results
+                            analysis_file = results_dir / f"{model_name}_post_simulation_analysis.json"
+                            with open(analysis_file, 'w') as f:
+                                json.dump(post_sim_analysis, f, indent=2, default=convert_numpy_types)
+                            
+                            results["post_simulation_analysis"] = results.get("post_simulation_analysis", [])
+                            results["post_simulation_analysis"].append({
+                                "model_name": model_name,
+                                "analysis_file": str(analysis_file),
+                                "framework_count": len(post_sim_analysis.get("framework_results", {})),
+                                "has_comparison": "cross_framework_comparison" in post_sim_analysis
+                            })
+                            
+                            logger.info(f"Post-simulation analysis completed for {model_name}")
+                    
+                    # Also try to load execution summary for visualization
+                    execution_summary_file = execution_results_dir / "execution_summary.json"
+                    if execution_summary_file.exists():
+                        with open(execution_summary_file, 'r') as f:
+                            execution_results = json.load(f)
+                        
+                        # Generate empirical visualizations
+                        empirical_viz = visualize_simulation_results(execution_results, results_dir)
+                        results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
+                        logger.info(f"Generated {len(empirical_viz)} empirical visualizations")
                     
                 except Exception as e:
                     logger.error(f"Failed to process execution results: {e}")
+                    import traceback
+                    logger.debug(traceback.format_exc())
             else:
-                logger.warning(f"Execution results not found at {execution_summary_file}. Skipping empirical analysis.")
+                logger.warning(f"Execution results directory not found at {execution_results_dir}. Skipping post-simulation analysis.")
             
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:

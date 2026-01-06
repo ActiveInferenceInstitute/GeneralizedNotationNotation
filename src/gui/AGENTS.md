@@ -8,6 +8,12 @@
 
 **Category**: Interactive Visualization / Model Construction
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -33,19 +39,43 @@
 
 ### Public Functions
 
-#### `process_gui(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main GUI processing function that runs all available GUI implementations
+#### `process_gui(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main GUI processing function called by orchestrator (22_gui.py). Runs all available GUI implementations.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for GUI results
-- `logger` (Logger): Logger instance for progress reporting
-- `gui_mode` (str): GUI mode ("all", "gui_1", "gui_2", "gui_3")
-- `interactive_mode` (bool): Run GUIs in interactive mode
-- `headless` (bool): Run in headless mode (artifact generation only)
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `gui_types` (str): Comma-separated list of GUI types ("gui_1", "gui_2", "gui_3", "oxdraw", default: "gui_1,gui_2")
+- `interactive` (bool): Run GUIs in interactive mode (default: False)
+- `headless` (bool): Run in headless mode - artifact generation only (default: True if not interactive)
+- `open_browser` (bool): Automatically open browser for interactive GUIs (default: False)
 - `**kwargs`: Additional GUI-specific options
 
 **Returns**: `True` if GUI processing succeeded
+
+**Example**:
+```python
+from gui import process_gui
+
+# Headless mode (pipeline default)
+success = process_gui(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/22_gui_output"),
+    verbose=True,
+    headless=True
+)
+
+# Interactive mode
+success = process_gui(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/22_gui_output"),
+    interactive=True,
+    gui_types="gui_1,oxdraw",
+    open_browser=True
+)
+```
 
 #### `gui_1(target_dir, output_dir, logger, **kwargs) -> Dict[str, Any]`
 **Description**: Form-based Interactive GNN Constructor (GUI 1)

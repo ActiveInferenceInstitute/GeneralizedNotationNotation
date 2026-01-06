@@ -422,7 +422,7 @@ def execute_rendered_simulators(
     log_step_start(logger, "Executing rendered simulator scripts with framework-specific organization")
     
     # Use centralized output directory configuration
-    execution_output_dir = get_output_dir_for_script("10_execute.py", output_dir)
+    execution_output_dir = get_output_dir_for_script("12_execute.py", output_dir)
     execution_output_dir.mkdir(parents=True, exist_ok=True)
     
     # Create framework-specific output directories
@@ -815,7 +815,7 @@ def execute_rendered_simulators(
                 f.write("### Fix Syntax Errors\n\n")
                 f.write("- Review and fix syntax errors in rendered scripts\n")
                 f.write("- Check for stray characters or malformed code\n")
-                f.write("- Re-run the rendering step (9_render.py) to regenerate scripts\n\n")
+                f.write("- Re-run the rendering step (11_render.py) to regenerate scripts\n\n")
         
         # Log results summary
         total_executions = (len(execution_results["pymdp_executions"]) + 

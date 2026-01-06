@@ -5,14 +5,26 @@ Scans all output directories and catalogs all visualization files with metadata
 """
 
 import json
+import sys
 from pathlib import Path
 from datetime import datetime
-from PIL import Image
-import hashlib
 from typing import Dict, List, Any
+
+# Get project root (go up from src/pipeline/ to project root)
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+
+try:
+    from PIL import Image
+    PIL_AVAILABLE = True
+except ImportError:
+    PIL_AVAILABLE = False
+
+import hashlib
 
 def get_image_metadata(image_path: Path) -> Dict[str, Any]:
     """Extract metadata from image file."""
+    if not PIL_AVAILABLE:
+        return {"error": "PIL not available"}
     try:
         img = Image.open(image_path)
         return {
@@ -175,7 +187,7 @@ def generate_report(visualizations: List[Dict[str, Any]], output_file: Path):
         f.write(f"| Framework | Count | Percentage |\n")
         f.write(f"|-----------|-------|------------|\n")
         for fw, count in sorted(by_framework.items(), key=lambda x: x[1], reverse=True):
-            pct = round(100 * count / total_count, 1)
+            pct = round(100 * count / total_count, 1) if total_count > 0 else 0
             f.write(f"| {fw} | {count} | {pct}% |\n")
         
         f.write(f"\n### By Type\n\n")
@@ -202,9 +214,14 @@ def generate_report(visualizations: List[Dict[str, Any]], output_file: Path):
     
     print(f"📄 Generated markdown report: {md_file}")
 
-if __name__ == "__main__":
-    root = Path("/home/q/Documents/GitHub/GeneralizedNotationNotation/output")
+def main():
+    """Main execution"""
+    root = PROJECT_ROOT / "output"
     output_file = root / "VISUALIZATION_INVENTORY.json"
+    
+    if not root.exists():
+        print(f"Error: Output directory does not exist: {root}")
+        return 1
     
     print("🔍 Scanning for visualizations...")
     visualizations = scan_visualizations(root)
@@ -214,4 +231,8 @@ if __name__ == "__main__":
     generate_report(visualizations, output_file)
     
     print("\n✅ Visualization inventory complete!")
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
 

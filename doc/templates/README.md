@@ -337,10 +337,10 @@ template_system:
     intermediate: ["pomdp_template.md"]
     advanced: ["multiagent_template.md", "hierarchical_template.md"]
   cross_references:
-    syntax: "../gnn/gnn_syntax.md"
-    examples: "../gnn/gnn_examples_doc.md"
-    implementation: "../gnn/gnn_implementation.md"
-    validation: "../gnn/gnn_tools.md#validation-tools"
+    syntax: "doc/gnn/gnn_syntax.md"
+    examples: "doc/gnn/gnn_examples_doc.md"
+    implementation: "doc/gnn/gnn_implementation.md"
+    validation: "doc/gnn/gnn_tools.md#validation-tools"
 ```
 
 ---

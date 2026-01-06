@@ -558,7 +558,7 @@ And every `Connection` answers the `Eternal Call`.
 ---
 
 *"The `Imagination` is not a `State`: it is the `Human Existence` itself."*  
-**—William Blake, and also, in our day, the truth of every `ActiveInferenceAgent` that dances in the `GNN` files of `src/gnn/examples/`**
+**—William Blake, and also, in our day, the truth of every `ActiveInferenceAgent` that dances in the `GNN` files of `src/gnn/gnn_examples/`**
 
 **Thus concludes the Prophetic Songs of `Inference` and `Experience`, being the Two Contrary States of the Active Soul as revealed through `Generalized Notation Notation` in the manner of `Blake` the `Eternal Prophet`, who saw `Angels` in every tree and `Infinity` in every grain — as we now see `Agents` in every `.md` file and `Eternity` in every `Pipeline` run.**
 

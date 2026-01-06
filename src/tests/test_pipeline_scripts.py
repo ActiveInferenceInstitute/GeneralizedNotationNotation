@@ -584,7 +584,7 @@ class TestPipelineScriptIntegration:
         
         common_args = ["--target-dir", "--output-dir", "--verbose"]
         
-        scripts = ["1_setup.py", "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py"]
+        scripts = ["1_setup.py", "3_gnn.py", "2_tests.py", "5_type_checker.py", "7_export.py"]
         
         for script_name in scripts:
             script_path = SRC_DIR / script_name

@@ -771,7 +771,7 @@ print("✅ Model validated through GNN pipeline")
 
 ---
 
-## Advanced Integration: Pipeline Step 24 (oxdraw GUI)
+## Advanced Integration: Pipeline Step 22 (oxdraw GUI)
 
 ### Module: `src/oxdraw_integration/`
 
@@ -782,7 +782,7 @@ Create a dedicated pipeline step for oxdraw integration.
 ```python
 #!/usr/bin/env python3
 """
-Pipeline Step 24: oxdraw GUI Integration
+Pipeline Step 22: oxdraw GUI Integration
 
 Launches oxdraw editor for visual GNN model construction with
 bidirectional synchronization.
@@ -1173,7 +1173,7 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 
 ### Active Inference
 - [Active Inference Ontology](../../input/ontology_terms.json)
-- [POMDP Specification](../../doc/gnn/SPECIFICATION.md)
+- [POMDP Specification](../gnn/gnn_standards.md)
 
 ---
 

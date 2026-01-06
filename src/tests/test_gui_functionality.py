@@ -3,7 +3,7 @@ import pytest
 from pathlib import Path
 import logging
 
-from gui import run_gui
+from gui import process_gui
 
 
 class _Logger:
@@ -28,10 +28,10 @@ class TestGUIFunctionality:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test\n")
         logger = _Logger()
-        ok = run_gui(target_dir=target, output_dir=output, logger=logger, verbose=True, headless=True)
+        ok = process_gui(target_dir=target, output_dir=output, logger=logger, verbose=True, headless=True)
         assert ok
-        status = output / "22_gui_output" / "gui_status.json"
-        # run_gui uses get_output_dir_for_script, which nests under output dir passed to script.
+        status = output / "22_gui_output" / "gui_processing_summary.json"
+        # process_gui uses get_output_dir_for_script, which nests under output dir passed to script.
         # In this headless call we passed output directly, so artifacts should exist under output/22_gui_output.
         assert status.exists()
 

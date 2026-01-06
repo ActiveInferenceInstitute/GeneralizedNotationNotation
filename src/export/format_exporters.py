@@ -373,4 +373,4 @@ def export_to_plaintext_dsl(gnn_model: dict, output_file_path: str):
         return False, f"Failed to export to Plaintext DSL: {e}"
 
 # This file is now the single source of truth for GNN parsing and exporting.
-# The main 5_export.py script should now correctly find and use these functions. 
+# The main 7_export.py script should now correctly find and use these functions. 

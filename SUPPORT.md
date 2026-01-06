@@ -19,7 +19,7 @@ Before seeking direct support, please check the extensive documentation provided
     -   [`doc/gnn/gnn_file_structure_doc.md`](./doc/gnn/gnn_file_structure_doc.md): Description of GNN file organization.
     -   [`doc/gnn/gnn_examples_doc.md`](./doc/gnn/gnn_examples_doc.md): Examples and use cases.
     -   And many other useful documents covering implementation, tools, and the GNN paper.
--   **Example GNN Files**: Explore the GNN files in `src/gnn/examples/` to understand practical applications.
+-   **Example GNN Files**: Explore the GNN files in `src/gnn/gnn_examples/` to understand practical applications.
 -   **Pipeline Documentation**: Check [`src/README.md`](./src/README.md) for detailed pipeline information.
 
 ## Quick Troubleshooting
@@ -68,7 +68,7 @@ python src/main.py --only-steps 2 --dev
 **🎯 Quick Test**
 ```bash
 # Test with example files
-python src/main.py --target-dir src/gnn/examples --verbose
+python src/main.py --target-dir src/gnn/gnn_examples --verbose
 ```
 
 ## GitHub Issues

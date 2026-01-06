@@ -8,6 +8,12 @@
 
 **Category**: Data Export / Transformation
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,17 +38,30 @@
 
 ### Public Functions
 
-#### `process_export(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-**Description**: Main export processing function
+#### `process_export(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main export processing function called by orchestrator (7_export.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for exports
 - `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
 - `formats` (List[str]): Formats to export (default: ['json', 'xml', 'graphml', 'gexf', 'pickle'])
 - `**kwargs`: Additional options
 
 **Returns**: `True` if export succeeded
+
+**Example**:
+```python
+from export import process_export
+
+success = process_export(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/7_export_output"),
+    verbose=True,
+    formats=['json', 'xml', 'graphml']
+)
+```
 
 ---
 

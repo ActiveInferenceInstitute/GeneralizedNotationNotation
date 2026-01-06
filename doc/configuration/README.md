@@ -42,7 +42,7 @@ steps: "all"  # or a subset, e.g., [1, 4, 5, 6]
   fail_fast: true      # Stop on first error
   
   # Directories
-  target_dir: "src/gnn/examples/"  # Input GNN files
+  target_dir: "input/gnn_files/"     # Input GNN files
   output_dir: "output/"             # All output files
   temp_dir: "temp/"                # Temporary files
   

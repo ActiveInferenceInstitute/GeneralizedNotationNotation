@@ -1,8 +1,8 @@
-# trouuleshooting
+# troubleshooting
 
 ## Overview
 
-This directory contains documentation and resources for the trouuleshooting subsystem.
+This directory contains documentation and resources for the troubleshooting subsystem.
 
 **Status**: ✅ Documentation Module  
 **Version**: 1.0  

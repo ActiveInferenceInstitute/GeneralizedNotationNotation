@@ -390,6 +390,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         
         # Execute the script with improved error handling
         script_name = script_path.name
+        result = None
         try:
             result = subprocess.run(
                 [executor, script_name],
@@ -424,6 +425,12 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = "Timeout"
             logger.warning(f"⏰ Script {script_info['name']} timed out after 60 seconds")
+            # Create dummy result for consistency
+            class DummyResult:
+                returncode = -1
+                stdout = ""
+                stderr = "Timeout"
+            result = DummyResult()
 
         except Exception as e:
             end_time = datetime.now()
@@ -433,7 +440,21 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
-                
+            # Create dummy result for consistency
+            class DummyResult:
+                returncode = -2
+                stdout = ""
+                stderr = str(e)
+            result = DummyResult()
+        
+        # Ensure result is defined before using it
+        if result is None:
+            class DummyResult:
+                returncode = -3
+                stdout = ""
+                stderr = "Unknown error"
+            result = DummyResult()
+        
         # Save individual script output in implementation-specific subdirectory
         # Create the implementation-specific directory structure
         impl_specific_dir = results_dir.parent / model_name / framework / "execution_logs"
@@ -457,6 +478,37 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             (results_dir.parent / model_name / framework / "posterior_traces").mkdir(parents=True, exist_ok=True)
             (results_dir.parent / model_name / framework / "visualizations").mkdir(parents=True, exist_ok=True)
         
+        # Extract simulation data from stdout/stderr
+        simulation_data = _extract_simulation_data(result.stdout, result.stderr, framework, logger)
+        exec_result['simulation_data'] = simulation_data
+        
+        # Save structured execution results in JSON format
+        structured_result = {
+            "framework": framework,
+            "model_name": model_name,
+            "script_name": script_info['name'],
+            "script_path": str(script_path),
+            "success": exec_result['success'],
+            "return_code": exec_result.get('return_code'),
+            "execution_time": exec_result.get('execution_time', 0),
+            "timestamp": exec_result['timestamp'],
+            "simulation_data": simulation_data,
+            "execution_metadata": {
+                "executor": executor,
+                "stdout_length": len(result.stdout),
+                "stderr_length": len(result.stderr),
+                "output_directory": str(impl_specific_dir.parent)
+            }
+        }
+        
+        # Save structured JSON result
+        json_output_file = impl_specific_dir / f"{script_info['name']}_results.json"
+        with open(json_output_file, 'w') as f:
+            json.dump(structured_result, f, indent=2, default=str)
+        
+        exec_result['structured_result_file'] = str(json_output_file)
+        
+        # Also save human-readable log
         output_file = impl_specific_dir / f"{script_info['name']}_execution.log"
         with open(output_file, 'w') as f:
             f.write(f"Execution Results for {script_info['name']}\n")
@@ -500,6 +552,152 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         logger.error(f"Error executing {script_info['name']}: {e}")
     
     return exec_result
+
+
+def _extract_simulation_data(stdout: str, stderr: str, framework: str, logger) -> Dict[str, Any]:
+    """
+    Extract simulation data from execution output.
+    
+    Args:
+        stdout: Standard output from script execution
+        stderr: Standard error from script execution
+        framework: Framework name
+        logger: Logger instance
+        
+    Returns:
+        Dictionary with extracted simulation data
+    """
+    simulation_data = {
+        "traces": [],
+        "free_energy": [],
+        "states": [],
+        "observations": [],
+        "actions": [],
+        "policy": [],
+        "raw_output": stdout[:10000] if stdout else "",  # Limit size
+        "raw_error": stderr[:10000] if stderr else ""
+    }
+    
+    try:
+        # Framework-specific extraction
+        if framework == "pymdp":
+            simulation_data.update(_extract_pymdp_data(stdout, stderr))
+        elif framework == "rxinfer":
+            simulation_data.update(_extract_rxinfer_data(stdout, stderr))
+        elif framework == "activeinference_jl":
+            simulation_data.update(_extract_activeinference_jl_data(stdout, stderr))
+        elif framework == "jax":
+            simulation_data.update(_extract_jax_data(stdout, stderr))
+        elif framework == "discopy":
+            simulation_data.update(_extract_discopy_data(stdout, stderr))
+        else:
+            # Generic extraction - try to find common patterns
+            simulation_data.update(_extract_generic_data(stdout, stderr))
+            
+    except Exception as e:
+        logger.warning(f"Failed to extract simulation data for {framework}: {e}")
+    
+    return simulation_data
+
+
+def _extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Extract PyMDP-specific simulation data."""
+    import re
+    data = {}
+    
+    # Try to find state trajectories
+    state_pattern = r'state[:\s]+\[([^\]]+)\]|states[:\s]+\[([^\]]+)\]'
+    state_matches = re.findall(state_pattern, stdout, re.IGNORECASE)
+    if state_matches:
+        data["states"] = [match[0] or match[1] for match in state_matches]
+    
+    # Try to find observations
+    obs_pattern = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
+    obs_matches = re.findall(obs_pattern, stdout, re.IGNORECASE)
+    if obs_matches:
+        data["observations"] = [int(match[0] or match[1]) for match in obs_matches]
+    
+    # Try to find actions
+    action_pattern = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
+    action_matches = re.findall(action_pattern, stdout, re.IGNORECASE)
+    if action_matches:
+        data["actions"] = [int(match[0] or match[1]) for match in action_matches]
+    
+    # Try to find free energy
+    fe_pattern = r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)'
+    fe_matches = re.findall(fe_pattern, stdout, re.IGNORECASE)
+    if fe_matches:
+        data["free_energy"] = [float(match[0] or match[1]) for match in fe_matches]
+    
+    return data
+
+
+def _extract_rxinfer_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Extract RxInfer.jl-specific simulation data."""
+    import re
+    data = {}
+    
+    # Try to find posterior distributions
+    posterior_pattern = r'posterior[:\s]+\[([^\]]+)\]'
+    posterior_matches = re.findall(posterior_pattern, stdout, re.IGNORECASE)
+    if posterior_matches:
+        data["posterior"] = posterior_matches
+    
+    return data
+
+
+def _extract_activeinference_jl_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Extract ActiveInference.jl-specific simulation data."""
+    import re
+    data = {}
+    
+    # Try to find free energy traces
+    fe_pattern = r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)'
+    fe_matches = re.findall(fe_pattern, stdout, re.IGNORECASE)
+    if fe_matches:
+        data["free_energy"] = [float(match[0] or match[1]) for match in fe_matches]
+    
+    # Try to find state beliefs
+    belief_pattern = r'belief[:\s]+\[([^\]]+)\]|q\(s\)[:\s]+\[([^\]]+)\]'
+    belief_matches = re.findall(belief_pattern, stdout, re.IGNORECASE)
+    if belief_matches:
+        data["beliefs"] = [match[0] or match[1] for match in belief_matches]
+    
+    return data
+
+
+def _extract_jax_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Extract JAX-specific simulation data."""
+    # Similar to PyMDP but may have different output format
+    return _extract_pymdp_data(stdout, stderr)
+
+
+def _extract_discopy_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Extract DisCoPy-specific simulation data."""
+    import re
+    data = {}
+    
+    # Try to find diagram information
+    diagram_pattern = r'diagram[:\s]+(\w+)|circuit[:\s]+(\w+)'
+    diagram_matches = re.findall(diagram_pattern, stdout, re.IGNORECASE)
+    if diagram_matches:
+        data["diagrams"] = [match[0] or match[1] for match in diagram_matches]
+    
+    return data
+
+
+def _extract_generic_data(stdout: str, stderr: str) -> Dict[str, Any]:
+    """Generic extraction for unknown frameworks."""
+    import re
+    data = {}
+    
+    # Try to find any numeric arrays or lists
+    array_pattern = r'\[([\d.,\s]+)\]'
+    array_matches = re.findall(array_pattern, stdout)
+    if array_matches:
+        data["arrays"] = array_matches[:10]  # Limit to first 10
+    
+    return data
 
 
 def generate_execution_report(execution_results: Dict[str, Any], results_dir: Path, logger):

@@ -8,6 +8,12 @@
 
 **Category**: Type Checking / Validation
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -30,10 +36,37 @@
 
 ## API Reference
 
+### Public Classes
+
+#### `GNNTypeChecker`
+**Description**: Type checker class for GNN files called by orchestrator (5_type_checker.py)
+
+**Methods**:
+- `validate_gnn_files(target_dir, output_dir, verbose=False, **kwargs) -> bool` - Validate GNN files in target directory
+  - `target_dir` (Path): Directory containing GNN files
+  - `output_dir` (Path): Output directory for results
+  - `verbose` (bool): Enable verbose output (default: False)
+  - `**kwargs`: Additional validation options (strict, estimate_resources)
+  - Returns: `True` if validation succeeded
+
+**Example**:
+```python
+from type_checker import GNNTypeChecker
+
+checker = GNNTypeChecker()
+success = checker.validate_gnn_files(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/5_type_checker_output"),
+    verbose=True,
+    strict=True,
+    estimate_resources=True
+)
+```
+
 ### Public Functions
 
 #### `validate_gnn_files(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Validate GNN files in target directory
+**Description**: Convenience function for validating GNN files (creates GNNTypeChecker instance)
 
 **Parameters**:
 - `target_dir`: Directory containing GNN files

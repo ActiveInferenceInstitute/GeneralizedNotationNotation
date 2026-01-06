@@ -2,6 +2,66 @@
 
 This directory contains the comprehensive test suite for the GNN Processing Pipeline. The test infrastructure has been completely refactored to follow a modular, organized structure that provides comprehensive coverage for all modules.
 
+## Architecture
+
+The test infrastructure follows the **thin orchestrator pattern**, where `2_tests.py` acts as a thin wrapper that delegates all core functionality to the `tests/` module.
+
+### Component Overview
+
+**2_tests.py** (Thin Orchestrator):
+- Handles command-line argument parsing
+- Sets up logging and visual output
+- Manages output directory creation
+- Delegates to `tests.run_tests()` from `tests/__init__.py`
+- Returns standardized exit codes (0=success, 1=failure)
+
+**runner.py** (Core Implementation):
+- Contains all test execution logic
+- Provides multiple execution modes: fast, comprehensive, reliable
+- Implements `ModularTestRunner` for category-based execution
+- Handles resource monitoring, timeouts, and error recovery
+- Generates comprehensive test reports
+
+**test_utils.py** (Shared Utilities):
+- Provides test fixtures and helper functions
+- Defines test categories, markers, and configuration
+- Provides test data creation utilities
+- Used by both test files and the runner
+
+**conftest.py** (Pytest Configuration):
+- Defines pytest fixtures available to all tests
+- Configures pytest markers
+- Handles test environment setup/teardown
+- Provides shared test utilities
+
+### Execution Flow
+
+```mermaid
+flowchart TD
+    A["2_tests.py<br/>(CLI Entry Point)"] -->|"Parse arguments"| B["Setup logging"]
+    B -->|"Create output dir"| C["tests.run_tests()"]
+    C -->|"Route by mode"| D{"Test Mode"}
+    D -->|"fast_only=True"| E["run_fast_pipeline_tests()"]
+    D -->|"comprehensive=True"| F["run_comprehensive_tests()"]
+    D -->|"fallback"| G["run_fast_reliable_tests()"]
+    
+    E --> H["ModularTestRunner"]
+    F --> H
+    G --> H
+    
+    H -->|"Execute categories"| I["pytest subprocess"]
+    I -->|"Collect tests"| J["Test discovery"]
+    I -->|"Run tests"| K["Test execution"]
+    K -->|"Collect results"| L["Result parsing"]
+    L -->|"Generate reports"| M["JSON/Markdown reports"]
+    
+    style A fill:#e1f5ff
+    style C fill:#fff4e1
+    style H fill:#e8f5e9
+    style I fill:#f3e5f5
+    style M fill:#fce4ec
+```
+
 ## Test File Structure
 
 ### Module-Based Naming Convention
@@ -131,28 +191,57 @@ graph TD
     Results --> Metrics[Metrics Analysis]
 ```
 
-### Running All Tests
-```bash
-# Run all tests
-python src/2_tests.py
+### Running Tests
 
-# Run with specific options
-python src/2_tests.py --verbose --parallel --coverage
+#### Fast Tests (Default - Pipeline Mode)
+```bash
+# Run fast tests only (default for pipeline)
+python src/2_tests.py --fast-only --verbose
+
+# Or simply (fast-only is default)
+python src/2_tests.py --verbose
 ```
 
-### Running Module-Specific Tests
+#### Comprehensive Tests
 ```bash
-# Run GNN tests only
-python src/2_tests.py --category gnn
-
-# Run multiple categories
-python src/2_tests.py --category gnn,render,audio
+# Run all tests including slow and performance tests
+python src/2_tests.py --comprehensive --verbose
 ```
 
-### Running Fast Tests
+#### Direct Test Runner
 ```bash
-# Run fast test suite
+# Run fast test suite directly
 python src/tests/run_fast_tests.py
+```
+
+### Environment Variables
+
+The test runner supports several environment variables for configuration:
+
+#### `SKIP_TESTS_IN_PIPELINE`
+Skip all tests during pipeline execution (for faster pipeline runs).
+```bash
+export SKIP_TESTS_IN_PIPELINE=1
+python src/main.py  # Tests will be skipped
+```
+
+#### `FAST_TESTS_TIMEOUT`
+Override the default timeout for fast tests (default: 600 seconds = 10 minutes).
+```bash
+export FAST_TESTS_TIMEOUT=300  # 5 minutes
+python src/2_tests.py --fast-only
+```
+
+#### Usage Examples
+```bash
+# Skip tests in pipeline for faster execution
+SKIP_TESTS_IN_PIPELINE=1 python src/main.py
+
+# Run fast tests with custom timeout
+FAST_TESTS_TIMEOUT=180 python src/2_tests.py --fast-only
+
+# Run comprehensive tests with verbose output
+python src/2_tests.py --comprehensive --verbose
 ```
 
 ## Test Utilities
@@ -266,6 +355,89 @@ pytest -m "not slow"
 - Coverage analysis
 - Error summaries
 
+## Test Organization Patterns
+
+### Naming Conventions
+
+Test files follow a consistent naming pattern:
+- `test_MODULENAME_overall.py` - Comprehensive module tests (required for each module)
+- `test_MODULENAME_area.py` - Specific area tests (e.g., `test_gnn_parsing.py`, `test_gnn_validation.py`)
+- `test_MODULENAME_integration.py` - Integration tests for the module
+- `test_MODULENAME_performance.py` - Performance tests for the module
+
+### Test Markers
+
+Use pytest markers to categorize tests:
+
+```python
+@pytest.mark.fast  # Quick tests (< 1 second)
+def test_quick_functionality():
+    pass
+
+@pytest.mark.slow  # Slow tests (> 10 seconds)
+def test_complex_scenario():
+    pass
+
+@pytest.mark.integration  # Integration tests
+def test_module_integration():
+    pass
+
+@pytest.mark.safe_to_fail  # Tests that can fail without breaking pipeline
+def test_optional_feature():
+    pass
+```
+
+### Adding New Test Categories
+
+To add a new test category to `MODULAR_TEST_CATEGORIES` in `runner.py`:
+
+```python
+MODULAR_TEST_CATEGORIES["new_module"] = {
+    "name": "New Module Tests",
+    "description": "Tests for the new module functionality",
+    "files": [
+        "test_new_module_overall.py",
+        "test_new_module_integration.py"
+    ],
+    "markers": ["new_module"],  # Optional pytest markers to filter
+    "timeout_seconds": 120,      # Maximum execution time
+    "max_failures": 8,           # Stop after N failures
+    "parallel": True              # Allow parallel execution
+}
+```
+
+### Creating New Test Files
+
+Example test file structure:
+
+```python
+# src/tests/test_new_module_overall.py
+"""Comprehensive tests for the new module."""
+
+import pytest
+from pathlib import Path
+from utils.test_utils import create_sample_gnn_content, assert_file_exists
+
+@pytest.mark.fast
+def test_new_module_basic():
+    """Test basic functionality."""
+    # Test implementation using real methods
+    result = process_module(data)
+    assert result is not None
+
+@pytest.mark.slow
+def test_new_module_complex():
+    """Test complex scenarios."""
+    # Test implementation
+    pass
+
+@pytest.mark.integration
+def test_new_module_integration():
+    """Test integration with other modules."""
+    # Test implementation
+    pass
+```
+
 ## Best Practices
 
 ### Test Organization
@@ -285,6 +457,66 @@ pytest -m "not slow"
 2. **Parallel Execution**: Use parallel execution for faster results
 3. **Resource Monitoring**: Monitor resource usage during execution
 4. **Error Recovery**: Handle errors gracefully with fallback mechanisms
+
+## Troubleshooting
+
+### Common Issues and Solutions
+
+#### Issue: Tests Timeout
+**Symptoms**: Tests fail with timeout errors
+**Solutions**:
+- Increase timeout: `export FAST_TESTS_TIMEOUT=900` (15 minutes)
+- Run fast tests only: `python src/2_tests.py --fast-only`
+- Skip tests in pipeline: `export SKIP_TESTS_IN_PIPELINE=1`
+
+#### Issue: Collection Errors
+**Symptoms**: `ERROR collecting` messages, import errors
+**Solutions**:
+- Check for missing dependencies: `pip install -r requirements.txt`
+- Verify Python path includes `src/` directory
+- Check for syntax errors in test files
+- Review error messages for specific import failures
+
+#### Issue: Tests Fail to Run
+**Symptoms**: No tests collected, exit code 5
+**Solutions**:
+- Verify test files follow naming convention: `test_*.py`
+- Check that test functions are named with `test_` prefix
+- Ensure test files are in `src/tests/` directory
+- Check pytest is installed: `pip install pytest`
+
+#### Issue: Memory Errors
+**Symptoms**: Out of memory errors during test execution
+**Solutions**:
+- Run tests sequentially instead of parallel
+- Reduce number of tests: use `--fast-only` flag
+- Increase system memory or use swap space
+- Check for memory leaks in test code
+
+#### Issue: Slow Test Execution
+**Symptoms**: Tests take too long to complete
+**Solutions**:
+- Use `--fast-only` flag to skip slow tests
+- Mark slow tests with `@pytest.mark.slow` and exclude: `pytest -m "not slow"`
+- Run specific test categories instead of all tests
+- Use parallel execution (if not already enabled)
+
+#### Issue: Import Errors in Tests
+**Symptoms**: `ImportError` or `ModuleNotFoundError` in test files
+**Solutions**:
+- Ensure `src/` is in Python path
+- Check that modules are properly installed
+- Verify relative imports are correct
+- Use `sys.path.insert(0, str(SRC_DIR))` if needed
+
+### Getting Help
+
+If issues persist:
+1. Check test output files in `output/2_tests_output/`
+2. Review `pytest_comprehensive_output.txt` for detailed error messages
+3. Check `test_execution_report.json` for execution summary
+4. Verify environment variables are set correctly
+5. Ensure all dependencies are installed
 
 ## Current Status
 

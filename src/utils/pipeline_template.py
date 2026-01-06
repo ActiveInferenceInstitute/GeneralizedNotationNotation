@@ -105,10 +105,10 @@ def create_standard_pipeline_script(
             target_dir_raw = getattr(parsed_args, 'target_dir', None)
             if target_dir_raw is None:
                 # Set default based on step type
-                if step_name == "9_render.py":
+                if step_name == "11_render.py":
                     # Step 9 should process exports from step 5 by default
                     target_dir = Path('output/gnn_exports/gnn_exports')
-                elif step_name == "10_execute.py":
+                elif step_name == "12_execute.py":
                     # Step 10 should process rendered simulators from step 9 by default
                     target_dir = Path('output/gnn_rendered_simulators')
                 else:
@@ -121,7 +121,7 @@ def create_standard_pipeline_script(
             output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
             
             # Set recursive flag default based on step type
-            if step_name in ["9_render.py", "10_execute.py"]:
+            if step_name in ["11_render.py", "12_execute.py"]:
                 # Steps 9 and 10 need recursive processing by default
                 recursive_default = True
             else:
@@ -421,7 +421,7 @@ def create_standardized_pipeline_script(
                 fallback_additional_args = additional_arguments or {}
                 
                 # Add step-specific arguments from pipeline template configuration
-                if step_name == "8_ontology.py" and "ontology_terms_file" not in fallback_additional_args:
+                if step_name == "10_ontology.py" and "ontology_terms_file" not in fallback_additional_args:
                     fallback_additional_args["ontology_terms_file"] = {
                         "type": Path, 
                         "help": "Path to ontology terms JSON file",
@@ -438,10 +438,10 @@ def create_standardized_pipeline_script(
             target_dir_raw = getattr(parsed_args, 'target_dir', None)
             if target_dir_raw is None:
                 # Set default based on step type
-                if step_name == "9_render.py":
+                if step_name == "11_render.py":
                     # Step 9 should process exports from step 5 by default
                     target_dir = Path('output/gnn_exports/gnn_exports')
-                elif step_name == "10_execute.py":
+                elif step_name == "12_execute.py":
                     # Step 10 should process rendered simulators from step 9 by default
                     target_dir = Path('output/gnn_rendered_simulators')
                 else:
@@ -454,7 +454,7 @@ def create_standardized_pipeline_script(
             output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
             
             # Set recursive flag default based on step type
-            if step_name in ["9_render.py", "10_execute.py"]:
+            if step_name in ["11_render.py", "12_execute.py"]:
                 # Steps 9 and 10 need recursive processing by default
                 recursive_default = True
             else:
@@ -566,7 +566,7 @@ STEP_ADDITIONAL_ARGUMENTS = {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
         "dev": {"type": bool, "help": "Install development dependencies"}
     },
-    "7_mcp.py": {
+    "21_mcp.py": {
         "performance-mode": {
             "type": str,
             "default": "low",

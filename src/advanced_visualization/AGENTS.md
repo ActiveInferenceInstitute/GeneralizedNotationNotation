@@ -8,6 +8,12 @@
 
 **Category**: Advanced Visualization / Interactive Analysis
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -35,18 +41,32 @@
 ### Public Functions
 
 #### `process_advanced_viz_standardized_impl(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main advanced visualization processing function (FIXED import)
+**Description**: Main advanced visualization processing function called by orchestrator (9_advanced_viz.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for visualizations
 - `logger` (Logger): Logger instance
-- `viz_type` (str): Visualization type ("all", "3d", "interactive", "dashboard")
-- `interactive` (bool): Enable interactive features
-- `export_formats` (List[str]): Export formats ["html", "json", "png"]
+- `viz_type` (str): Visualization type ("all", "3d", "interactive", "dashboard", "d2", "diagrams", "pipeline", "statistical", "pomdp", "network", default: "all")
+- `interactive` (bool): Enable interactive features (default: True)
+- `export_formats` (List[str]): Export formats ["html", "json", "png"], default: ["html", "json"]
 - `**kwargs**: Additional options
 
 **Returns**: `True` if visualization succeeded
+
+**Example**:
+```python
+from advanced_visualization.processor import process_advanced_viz_standardized_impl
+
+success = process_advanced_viz_standardized_impl(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/9_advanced_viz_output"),
+    logger=logger,
+    viz_type="all",
+    interactive=True,
+    export_formats=["html", "json"]
+)
+```
 
 ---
 
@@ -59,41 +79,32 @@
 - Interactive hover information with variable details
 
 ### Statistical Analysis Plots
-- POMDP-specific statistical analysis with real data
-- Variable type distribution (matrices, vectors, states)
-- Matrix dimension analysis and correlation heatmaps
-- Network density and connectivity metrics
-- Model performance and evolution tracking
+- Variable type distribution pie charts
+- Variable dimension distribution analysis
+- Scalar parameter value histograms
+- Matrix size distribution analysis
+- Matrix correlation heatmaps between all matrices
+- Comprehensive statistical overview panels
 
-### State Transition Visualization
-- Conceptual state transition diagrams
-- POMDP state-action-state relationships
-- Transition probability visualization
-- Markov chain representation
+### POMDP-Specific Visualizations
+- **Transition Matrix Analysis**: B matrix visualization with action-specific slices
+- **Policy Visualization**: Policy distribution over actions (π and E matrices)
+- **3D Transition Visualization**: Multi-action transition matrix heatmaps
+- **State-Action Relationships**: Visual representation of POMDP dynamics
 
-### Belief Evolution Analysis
-- Belief state evolution over time
-- Free energy landscape visualization
-- Observation likelihood distributions
-- Policy confidence tracking
+### Network Analysis Visualizations
+- **Network Metrics**: Node count, edge count, density, clustering coefficients
+- **Centrality Analysis**: Degree centrality and node importance rankings
+- **Network Graph Visualization**: Force-directed layout with connection visualization
+- **Connection Strength Analysis**: Edge weight and connection pattern analysis
+- **Network Statistics**: Comprehensive network topology metrics
 
-### Policy Visualization
-- Policy distribution over actions
-- Expected free energy analysis
-- Policy sensitivity to parameters
-- Policy convergence over iterations
-
-### Matrix Correlation Analysis
-- Matrix size comparison across POMDP components
-- Correlation heatmaps between matrices
-- Matrix type distribution analysis
-- Matrix dimension scatter plots
-
-### Timeline Visualization
-- POMDP model development timeline
-- Computational complexity evolution
-- Model performance metrics over time
-- Development stage tracking
+### Interactive Plotly Dashboards
+- **Multi-Panel Dashboard**: Variable types, matrix overview, network graph, statistics
+- **Interactive Matrix Explorer**: Zoom, pan, and explore matrix heatmaps
+- **Real-Time Updates**: Dynamic visualization updates based on model data
+- **Export Support**: HTML and PNG export formats
+- **Responsive Design**: Adapts to different screen sizes
 
 ### Interactive Dashboard
 - Real-time model exploration (when plotly available)
@@ -122,10 +133,13 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 - `viz_type` (str): Type of visualization to generate
   - `"all"`: Generate all visualization types (default)
   - `"3d"`: Only 3D network visualizations
-  - `"interactive"`: Only interactive dashboards
+  - `"interactive"`: Only interactive Plotly dashboards
   - `"dashboard"`: Only dashboard interfaces
-  - `"d2"`: Only D2 diagram generation
-  - `"statistical"`: Only statistical analysis plots
+  - `"d2"` or `"diagrams"`: Only D2 diagram generation
+  - `"pipeline"`: Only pipeline D2 diagrams
+  - `"statistical"`: Statistical analysis plots (distributions, correlations, histograms)
+  - `"pomdp"`: POMDP-specific visualizations (transitions, policies, beliefs)
+  - `"network"`: Network analysis visualizations (metrics, centrality, connection strength)
 
 #### Interactive Features
 - `interactive` (bool): Enable interactive features (default: `True`)

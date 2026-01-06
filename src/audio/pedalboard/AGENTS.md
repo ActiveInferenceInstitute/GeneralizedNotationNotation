@@ -541,7 +541,7 @@ result = process_pedalboard_audio(audio_data, effects_chain, debug=True, verbose
 ### Related Documentation
 - [Audio Module](../../audio/AGENTS.md) - Parent audio module
 - [Pedalboard Documentation](https://spotify.github.io/pedalboard/) - Official Pedalboard docs
-- [Pipeline Overview](../../../../README.md) - Main pipeline documentation
+- [Pipeline Overview](../../../README.md) - Main pipeline documentation
 
 ### External Resources
 - [Digital Signal Processing](https://en.wikipedia.org/wiki/Digital_signal_processing)

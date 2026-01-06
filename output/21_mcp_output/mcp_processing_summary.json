@@ -1,15 +1,16 @@
 {
-  "timestamp": "2026-01-05T16:37:51.677713",
+  "timestamp": "2026-01-06T11:35:27.696350",
   "target_dir": "input/gnn_files",
   "output_dir": "output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "2.0.0",
-  "tools_registered": 107,
-  "registered_modules_count": 20,
+  "tools_registered": 112,
+  "registered_modules_count": 21,
   "registered_modules": [
     "gnn",
     "ontology",
     "audio",
+    "visualization",
     "export",
     "execute",
     "render",
@@ -29,5 +30,5 @@
     "utils"
   ],
   "resources_count": 1,
-  "message": "MCP processing completed - 107 tools registered from 20 modules"
+  "message": "MCP processing completed - 112 tools registered from 21 modules"
 }

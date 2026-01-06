@@ -77,6 +77,24 @@ except ImportError:
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
     UTILS_AVAILABLE = False
 
+# Import analysis utilities
+try:
+    from analysis.analyzer import parse_matrix_data, generate_matrix_visualizations
+except ImportError:
+    # Fallback definition if analysis module is not available
+    def parse_matrix_data(matrix_str: str) -> Any:
+        try:
+            import re
+            numbers = re.findall(r'[-+]?\d*\.\d+|\d+', matrix_str)
+            if len(numbers) >= 1:
+                return np.array([float(n) for n in numbers])
+            return None
+        except:
+            return None
+            
+    def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
+        return []
+
 # Set up logger
 logger = logging.getLogger(__name__)
 
@@ -272,9 +290,7 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
         # Generate different types of visualizations with error handling
         visualizations = []
         
-        # Network visualizations (skip if too many nodes)
-        
-        # Network visualizations (skip if too many nodes)
+        # 1. Network visualizations
         if len(parsed_data.get("variables", [])) <= 200:
             try:
                 network_viz = generate_network_visualizations(parsed_data, model_dir, model_name)
@@ -285,7 +301,79 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
         elif verbose:
             print(f"Skipping network visualizations for {model_name} - too many nodes")
         
-        # Ontology visualization (if available)
+        # 2. Matrix visualizations
+        try:
+            from .matrix_visualizer import MatrixVisualizer
+            mv = MatrixVisualizer()
+            
+            # Try to load from parsed JSON file first (from step 3 GNN processing)
+            matrices = {}
+            try:
+                from pipeline.config import get_output_dir_for_script
+                gnn_output_dir = get_output_dir_for_script("3_gnn.py", output_dir.parent if output_dir.name.endswith("_output") else output_dir)
+                parsed_json_file = gnn_output_dir / model_name / f"{model_name}_parsed.json"
+                
+                if parsed_json_file.exists():
+                    import json
+                    with open(parsed_json_file, 'r') as f:
+                        gnn_parsed_data = json.load(f)
+                    # Extract from parameters field (correct location)
+                    parameters = gnn_parsed_data.get("parameters", [])
+                    matrices = mv.extract_matrix_data_from_parameters(parameters)
+                    if verbose and matrices:
+                        logger.info(f"Extracted {len(matrices)} matrices from parsed JSON for {model_name}")
+            except Exception as e:
+                if verbose:
+                    logger.debug(f"Could not load from parsed JSON: {e}")
+            
+            # Fallback: Extract from parsed_data (from parse_gnn_content)
+            if not matrices:
+                # Try parameters field first (correct location)
+                parameters = parsed_data.get("parameters", [])
+                if parameters:
+                    matrices = mv.extract_matrix_data_from_parameters(parameters)
+                
+                # If still no matrices, try variables (for backward compatibility)
+                if not matrices:
+                    matrices = mv.extract_matrix_data_from_parameters(parsed_data.get("variables", []))
+                
+                # Last resort: try matrices section
+                if not matrices:
+                    for m_info in parsed_data.get("matrices", []):
+                        if "data" in m_info:
+                            m_name = m_info.get("name", f"matrix_{len(matrices)}")
+                            try:
+                                import numpy as np
+                                m_data = np.array(m_info["data"], dtype=float)
+                                matrices[m_name] = m_data
+                            except Exception:
+                                continue
+            
+            # Generate visualizations for extracted matrices
+            if matrices:
+                for m_name, m_data in matrices.items():
+                    m_path = model_dir / f"{model_name}_{m_name}_heatmap.png"
+                    if mv.generate_matrix_heatmap(m_name, m_data, m_path):
+                        visualizations.append(str(m_path))
+                if verbose:
+                    logger.info(f"Generated {len(matrices)} matrix visualizations for {model_name}")
+            else:
+                if verbose:
+                    logger.warning(f"No matrix data found for {model_name} - checked parameters, variables, and matrices sections")
+        except Exception as e:
+            if verbose:
+                logger.error(f"Matrix visualization failed for {model_name}: {e}")
+                import traceback
+                traceback.print_exc()
+
+        # 3. Combined analysis
+        try:
+            analysis_viz = generate_combined_analysis(parsed_data, model_dir, model_name)
+            visualizations.extend(analysis_viz)
+        except Exception as e:
+            if verbose:
+                print(f"Combined analysis failed for {model_name}: {e}")
+
         # Add sampling note to visualizations if applied
         if should_sample and visualizations:
             try:

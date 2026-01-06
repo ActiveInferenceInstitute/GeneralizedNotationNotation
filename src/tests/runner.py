@@ -1,23 +1,57 @@
 """
 Test Runner for GNN Processing Pipeline.
 
-This module provides comprehensive test execution capabilities with:
-- Staged test execution (fast, standard, slow, performance)
-- Parallel test execution with resource monitoring
-- Comprehensive reporting and analytics
-- Graceful error handling and recovery
-- Performance regression detection
-- Memory usage tracking
-- Coverage analysis integration
+This module provides comprehensive test execution capabilities for the GNN pipeline.
+It implements the core test execution logic, following the thin orchestrator pattern
+where 2_tests.py delegates all functionality to this module.
 
-Features:
-- Real-time test progress monitoring
-- Resource usage tracking and limits
-- Test result aggregation and reporting
-- Performance baseline comparison
-- Automatic test discovery and organization
-- Safe-to-fail test execution
-- Modular test category execution
+Architecture:
+  The module provides multiple test execution modes:
+  - run_tests() - Main entry point that routes to appropriate mode
+  - run_fast_pipeline_tests() - Fast tests for quick pipeline validation (default)
+  - run_comprehensive_tests() - All tests including slow/performance tests
+  - run_fast_reliable_tests() - Essential tests fallback mode
+  
+  The ModularTestRunner class provides category-based execution with:
+  - Resource monitoring (memory, CPU)
+  - Timeout handling per category
+  - Parallel execution support
+  - Comprehensive error recovery
+
+Key Features:
+  - Staged test execution (fast, comprehensive, reliable)
+  - Parallel test execution with resource monitoring
+  - Comprehensive reporting and analytics (JSON, Markdown)
+  - Graceful error handling and recovery
+  - Performance regression detection
+  - Memory usage tracking
+  - Coverage analysis integration
+  - Collection error detection (import/syntax errors)
+  - Category-based test organization
+
+Test Categories:
+  Tests are organized into categories defined in MODULAR_TEST_CATEGORIES:
+  - gnn, render, mcp, audio, visualization, pipeline, etc.
+  Each category has its own timeout, max failures, and parallel execution settings.
+
+Usage:
+  from tests import run_tests
+  from pathlib import Path
+  import logging
+  
+  logger = logging.getLogger(__name__)
+  success = run_tests(
+      logger=logger,
+      output_dir=Path("output/2_tests_output"),
+      verbose=True,
+      fast_only=True
+  )
+
+Dependencies:
+  - pytest: Test framework
+  - pytest-cov: Coverage analysis (optional)
+  - pytest-timeout: Per-test timeouts (optional)
+  - psutil: Resource monitoring (optional)
 """
 
 import logging
@@ -663,7 +697,24 @@ class TestRunner:
         return report
 
 def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
-    """Check that all test dependencies are available."""
+    """
+    Check if required test dependencies are available.
+    
+    Verifies that pytest and optional dependencies (pytest-cov, pytest-timeout)
+    are installed and available.
+    
+    Args:
+        logger: Logger instance for reporting
+    
+    Returns:
+        Dictionary with dependency status:
+        {
+            'pytest': bool,
+            'pytest_cov': bool,
+            'pytest_timeout': bool,
+            'all_required': bool
+        }
+    """
     dependencies = {
         "pytest": False,
         "pytest-cov": False,
@@ -724,18 +775,32 @@ def build_pytest_command(
     """
     Build pytest command with appropriate options.
     
+    Constructs a pytest command line with all necessary flags and options
+    based on the provided parameters. Handles test filtering, timeout,
+    coverage, and execution mode settings.
+    
     Args:
-        test_markers: List of pytest markers to include
-        timeout_seconds: Maximum execution time
-        max_failures: Maximum number of test failures before stopping
-        parallel: Enable parallel test execution
-        verbose: Enable verbose output
-        generate_coverage: Generate coverage reports
-        fast_only: Run only fast tests
-        include_slow: Include slow tests
+        test_markers: List of pytest markers to include (e.g., ['fast', 'unit'])
+        timeout_seconds: Maximum execution time per test (default: 600)
+        max_failures: Maximum number of test failures before stopping (default: 20)
+        parallel: Enable parallel test execution (default: True)
+        verbose: Enable verbose output (default: False)
+        generate_coverage: Generate coverage reports (default: True)
+        fast_only: Run only fast tests, exclude slow tests (default: False)
+        include_slow: Include slow tests (default: False)
     
     Returns:
-        List of command arguments for pytest
+        List of command arguments for subprocess.run()
+    
+    Example:
+        cmd = build_pytest_command(
+            test_markers=['fast'],
+            timeout_seconds=120,
+            max_failures=5,
+            verbose=True,
+            fast_only=True
+        )
+        # Returns: ['python', '-m', 'pytest', '--verbose', '--tb=short', ...]
     """
     cmd = [
         sys.executable, "-m", "pytest",
@@ -912,6 +977,16 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         
         logger.info(f"📁 Test output saved to: {output_dir / 'pytest_comprehensive_output.txt'}")
 
+        # Check for collection errors first (before parsing stats)
+        collection_errors = _extract_collection_errors(stdout, stderr)
+        if collection_errors:
+            logger.error("❌ Test collection failed with errors:")
+            for error in collection_errors:
+                logger.error(f"  • {error}")
+            logger.error("💡 Fix collection errors before tests can run")
+            logger.error("💡 Common issues: missing imports, syntax errors, circular dependencies")
+            return False
+
         # Parse test statistics from output
         test_stats = _parse_test_statistics(stdout)
 
@@ -931,6 +1006,8 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         if tests_run == 0:
             # No tests were collected or all were skipped
             logger.error("❌ No tests were executed - all tests were skipped or not collected")
+            logger.error("💡 Check that test files exist and follow pytest naming conventions (test_*.py)")
+            logger.error("💡 Ensure test functions are named with 'test_' prefix")
             return False
         elif tests_failed == 0:
             logger.info(f"✅ Complete test suite passed ({tests_passed}/{tests_run} tests passed)")
@@ -959,7 +1036,40 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
 
 def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, generate_coverage: bool = False) -> bool:
     """
-    Run comprehensive test suite with enhanced monitoring and better timeout handling.
+    Run comprehensive test suite with all tests enabled.
+    
+    This function executes all test categories from MODULAR_TEST_CATEGORIES, including
+    slow tests and performance tests. It uses ModularTestRunner for category-based
+    execution with resource monitoring.
+    
+    Args:
+        logger: Logger instance for progress reporting
+        output_dir: Output directory for test results and reports
+        verbose: Enable verbose output (default: False)
+        generate_coverage: Generate coverage reports (default: False)
+    
+    Returns:
+        True if tests passed, False otherwise
+    
+    Features:
+        - Executes all test categories sequentially
+        - Includes slow and performance tests
+        - Generates comprehensive coverage reports if enabled
+        - Resource monitoring per category
+        - Comprehensive error recovery
+    
+    Example:
+        from tests.runner import run_comprehensive_tests
+        from pathlib import Path
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        success = run_comprehensive_tests(
+            logger=logger,
+            output_dir=Path("output/2_tests_output"),
+            verbose=True,
+            generate_coverage=True
+        )
     """
     logger.info("🔬 Running comprehensive test suite with enhanced monitoring")
 
@@ -990,6 +1100,40 @@ def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: b
 def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
     """
     Run a reliable subset of fast tests with improved error handling.
+    
+    This function runs only essential test files that should always pass:
+    - test_core_modules.py
+    - test_fast_suite.py
+    - test_main_orchestrator.py
+    
+    Used as a fallback when fast pipeline tests are not suitable, or for
+    quick validation of core functionality.
+    
+    Args:
+        logger: Logger instance for progress reporting
+        output_dir: Output directory for test results
+        verbose: Enable verbose output (default: False)
+    
+    Returns:
+        True if tests passed, False otherwise
+    
+    Features:
+        - 90-second timeout for reliability
+        - Focuses on essential tests only
+        - Improved error handling
+        - Fast execution (< 2 minutes typically)
+    
+    Example:
+        from tests.runner import run_fast_reliable_tests
+        from pathlib import Path
+        import logging
+        
+        logger = logging.getLogger(__name__)
+        success = run_fast_reliable_tests(
+            logger=logger,
+            output_dir=Path("output/2_tests_output"),
+            verbose=True
+        )
     """
     import subprocess
     import sys
@@ -1050,6 +1194,86 @@ def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: b
     except Exception as e:
         logger.error(f"❌ Reliable test execution failed: {e}")
         return False
+
+def _extract_collection_errors(stdout: str, stderr: str) -> List[str]:
+    """
+    Extract and parse collection errors from pytest output.
+    
+    Detects import errors, syntax errors, and other collection failures that
+    prevent tests from being collected. Returns a list of unique error messages
+    with actionable information.
+    
+    Args:
+        stdout: Standard output from pytest execution
+        stderr: Standard error from pytest execution
+    
+    Returns:
+        List of unique error messages (strings)
+    
+    Error Types Detected:
+        - ERROR collecting: Test file collection failures
+        - NameError: Missing variable/import names
+        - ImportError: Module import failures
+        - SyntaxError: Code syntax issues
+    
+    Example:
+        errors = _extract_collection_errors(pytest_stdout, pytest_stderr)
+        # Returns: ["test_file.py: ImportError: No module named 'missing_module'"]
+    """
+    errors = []
+    combined_output = stdout + "\n" + stderr
+    
+    # Look for ERROR collecting patterns
+    import re
+    error_patterns = [
+        r'ERROR collecting ([^\n]+)\n([^\n]+: [^\n]+)',
+        r'NameError: name \'([^\']+)\' is not defined',
+        r'ImportError: ([^\n]+)',
+        r'SyntaxError: ([^\n]+)',
+    ]
+    
+    for pattern in error_patterns:
+        matches = re.finditer(pattern, combined_output, re.MULTILINE)
+        for match in matches:
+            error_msg = match.group(0)
+            # Extract the key part of the error
+            if 'ERROR collecting' in error_msg:
+                # Extract the file and error message
+                lines = error_msg.split('\n')
+                if len(lines) >= 2:
+                    file_line = lines[0].replace('ERROR collecting ', '').strip()
+                    error_line = lines[1].strip()
+                    errors.append(f"{file_line}: {error_line}")
+            elif 'NameError' in error_msg:
+                var_name = match.group(1) if match.groups() else 'unknown'
+                errors.append(f"NameError: '{var_name}' is not defined (missing import?)")
+            elif 'ImportError' in error_msg:
+                import_name = match.group(1) if match.groups() else 'unknown'
+                errors.append(f"ImportError: {import_name}")
+            elif 'SyntaxError' in error_msg:
+                syntax_error = match.group(1) if match.groups() else 'unknown'
+                errors.append(f"SyntaxError: {syntax_error}")
+    
+    # Also check for "ERRORS" section
+    if "ERRORS" in combined_output or "ERROR collecting" in combined_output:
+        # Extract all unique error messages
+        error_section = re.search(r'=+\s+ERRORS\s+=+(.*?)(?=\n=+|\Z)', combined_output, re.DOTALL)
+        if error_section:
+            error_text = error_section.group(1)
+            # Extract individual error blocks
+            error_blocks = re.findall(r'ERROR collecting ([^\n]+)\n([^\n]+: [^\n]+)', error_text)
+            for file_path, error_msg in error_blocks:
+                errors.append(f"{file_path}: {error_msg}")
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique_errors = []
+    for error in errors:
+        if error not in seen:
+            seen.add(error)
+            unique_errors.append(error)
+    
+    return unique_errors
 
 def _parse_test_statistics(pytest_output: str) -> Dict[str, int]:
     """Parse pytest output to extract test statistics."""

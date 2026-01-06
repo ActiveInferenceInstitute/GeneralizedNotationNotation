@@ -172,7 +172,7 @@ pkl eval -f xml VisualForagingModel.pkl > model.xml
 
 - [Pkl Language Reference](https://pkl-lang.org/main/current/language-reference/)
 - [GNN Project Documentation](../../README.md)
-- [Active Inference Ontology](../ontology/)
+- [Active Inference Ontology](../../../src/ontology/AGENTS.md)
 - [Pkl vs Other Config Languages](https://pkl-lang.org/main/current/introduction/comparison.html)
 
 ## 🤝 Contributing

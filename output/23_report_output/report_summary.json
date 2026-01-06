@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-01-05T16:37:54.326975",
+  "report_generation_time": "2026-01-06T11:35:28.927110",
   "pipeline_output_directory": "output",
   "steps": {
     "setup_artifacts": {
@@ -85,12 +85,15 @@
     },
     "execution_results": {
       "directory": "output/execution_results",
-      "exists": false,
+      "exists": true,
       "file_count": 0,
       "total_size_mb": 0.0,
       "file_types": {},
       "last_modified": null,
-      "status": "missing"
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
     },
     "llm_processing_step": {
       "directory": "output/llm_processing_step",
@@ -135,7 +138,7 @@
     "total_warnings": 0,
     "processing_time": 0.0,
     "total_size_mb": 0.0,
-    "success_rate": 0.0
+    "success_rate": 7.142857142857142
   },
   "performance_metrics": {},
   "error_analysis": {},
@@ -161,11 +164,28 @@
       "website",
       "report_processing_step"
     ],
-    "dependency_chain": {},
-    "missing_prerequisites": []
+    "dependency_chain": {
+      "execution_results": {
+        "prerequisites": [
+          "gnn_rendered_simulators"
+        ],
+        "missing_prerequisites": [
+          "gnn_rendered_simulators"
+        ],
+        "status": "incomplete"
+      }
+    },
+    "missing_prerequisites": [
+      {
+        "step": "execution_results",
+        "missing": [
+          "gnn_rendered_simulators"
+        ]
+      }
+    ]
   },
   "pipeline_summary": {
-    "start_time": "2026-01-05T16:36:04.519322",
+    "start_time": "2026-01-06T11:33:40.971585",
     "arguments": {
       "target_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
       "output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output",
@@ -198,10 +218,10 @@
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:04,571 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-05 16:36:04,605 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-05 16:36:04,605 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-05 16:36:04,606 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-05 16:36:04,606 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-05 16:36:04,608 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-05 16:36:04,608 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-05 16:36:04,608 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-05 16:36:04,609 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-05 16:36:04,611 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-05 16:36:04,611 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-05 16:36:04,612 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-05 16:36:04,615 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-05 16:36:04,616 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
-        "memory_usage_mb": 36.140625,
-        "peak_memory_mb": 36.140625,
-        "memory_delta_mb": 0.09375,
+        "stderr": "2026-01-06 11:33:41,024 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-06 11:33:41,040 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-06 11:33:41,040 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-06 11:33:41,042 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-06 11:33:41,042 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 11:33:41,043 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-06 11:33:41,043 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-06 11:33:41,043 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-06 11:33:41,043 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-06 11:33:41,043 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-06 11:33:41,044 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-06 11:33:41,044 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-06 11:33:41,044 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-06 11:33:41,044 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-06 11:33:41,045 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-06 11:33:41,046 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-06 11:33:41,046 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-06 11:33:41,049 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-06 11:33:41,049 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-06 11:33:41,049 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-06 11:33:41,050 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-06 11:33:41,051 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-06 11:33:41,051 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-06 11:33:41,051 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
+        "memory_usage_mb": 36.125,
+        "peak_memory_mb": 36.125,
+        "memory_delta_mb": 0.046875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -210,14 +230,14 @@
         "step_number": 1,
         "script_name": "3_gnn.py",
         "description": "GNN file processing",
-        "start_time": "2026-01-05T16:36:04.520382",
-        "end_time": "2026-01-05T16:36:04.625873",
-        "duration_seconds": 0.10548925399780273
+        "start_time": "2026-01-06T11:33:40.973129",
+        "end_time": "2026-01-06T11:33:41.061718",
+        "duration_seconds": 0.08858919143676758
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:04,676 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-05 16:36:04,678 - type_checker - INFO - \u2705 Type checking completed successfully\n",
+        "stderr": "2026-01-06 11:33:41,113 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-06 11:33:41,115 - type_checker - INFO - \u2705 Type checking completed successfully\n",
         "memory_usage_mb": 36.265625,
         "peak_memory_mb": 36.265625,
         "memory_delta_mb": 0.0,
@@ -229,17 +249,17 @@
         "step_number": 2,
         "script_name": "5_type_checker.py",
         "description": "Type checking",
-        "start_time": "2026-01-05T16:36:04.626796",
-        "end_time": "2026-01-05T16:36:04.685619",
-        "duration_seconds": 0.0588228702545166
+        "start_time": "2026-01-06T11:33:41.062747",
+        "end_time": "2026-01-06T11:33:41.123708",
+        "duration_seconds": 0.0609591007232666
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:04,743 - export - INFO - Loaded 1 parsed GNN files\n2026-01-05 16:36:04,743 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-05 16:36:04,744 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-05 16:36:04,744 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-05 16:36:04,748 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-05 16:36:04,748 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-05 16:36:04,749 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-05 16:36:04,749 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-05 16:36:04,749 - export - INFO - Export processing completed:\n2026-01-05 16:36:04,749 - export - INFO -   Total files: 1\n2026-01-05 16:36:04,749 - export - INFO -   Successful exports: 1\n2026-01-05 16:36:04,749 - export - INFO -   Failed exports: 0\n2026-01-05 16:36:04,749 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
+        "stderr": "2026-01-06 11:33:41,178 - export - INFO - Loaded 1 parsed GNN files\n2026-01-06 11:33:41,178 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-06 11:33:41,178 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-06 11:33:41,179 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-06 11:33:41,180 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-06 11:33:41,180 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-06 11:33:41,180 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-06 11:33:41,181 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-06 11:33:41,181 - export - INFO - Export processing completed:\n2026-01-06 11:33:41,181 - export - INFO -   Total files: 1\n2026-01-06 11:33:41,181 - export - INFO -   Successful exports: 1\n2026-01-06 11:33:41,181 - export - INFO -   Failed exports: 0\n2026-01-06 11:33:41,181 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
         "memory_usage_mb": 36.3125,
         "peak_memory_mb": 36.3125,
-        "memory_delta_mb": 0.03125,
+        "memory_delta_mb": 0.015625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -248,18 +268,18 @@
         "step_number": 3,
         "script_name": "7_export.py",
         "description": "Multi-format export",
-        "start_time": "2026-01-05T16:36:04.686164",
-        "end_time": "2026-01-05T16:36:04.758815",
-        "duration_seconds": 0.0726480484008789
+        "start_time": "2026-01-06T11:33:41.124667",
+        "end_time": "2026-01-06T11:33:41.190292",
+        "duration_seconds": 0.06562376022338867
       },
       {
-        "status": "FAILED",
-        "stdout": "",
-        "stderr": "Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/8_visualization.py\", line 41, in <module>\n    from visualization import process_visualization_main\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py\", line 63, in <module>\n    from .processor import (\n    ...<8 lines>...\n    )\nImportError: cannot import name 'parse_matrix_data' from 'visualization.processor' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/processor.py)\n",
-        "memory_usage_mb": 36.3125,
-        "peak_memory_mb": 36.3125,
+        "status": "SUCCESS",
+        "stdout": "Using cached visualizations for actinf_pomdp_agent\n",
+        "stderr": "2026-01-06 11:33:41,492 - visualization - INFO - \ud83d\ude80 Processing visualizations\n2026-01-06 11:33:41,493 - visualization - INFO - \u2705 Generated 5 visualizations\n",
+        "memory_usage_mb": 36.359375,
+        "peak_memory_mb": 36.359375,
         "memory_delta_mb": 0.0,
-        "exit_code": 1,
+        "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
         "dependency_warnings": [],
@@ -267,17 +287,17 @@
         "step_number": 4,
         "script_name": "8_visualization.py",
         "description": "Visualization",
-        "start_time": "2026-01-05T16:36:04.759358",
-        "end_time": "2026-01-05T16:36:05.146545",
-        "duration_seconds": 0.38718199729919434
+        "start_time": "2026-01-06T11:33:41.190880",
+        "end_time": "2026-01-06T11:33:41.548168",
+        "duration_seconds": 0.3572843074798584
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:05,309 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-05 16:36:05,309 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-05 16:36:05,309 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-05 16:36:05,315 - render.processor - INFO - Found 1 GNN files to process\n2026-01-05 16:36:05,315 - render.processor - INFO - Target frameworks: all available\n2026-01-05 16:36:05,315 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-05 16:36:05,316 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-05 16:36:05,316 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-05 16:36:05,316 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-05 16:36:05,316 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2026-01-05 16:36:05,316 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-05 16:36:05,316 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-05 16:36:05,323 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-05 16:36:05,323 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-05 16:36:05,323 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-05 16:36:05,323 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-05 16:36:05,323 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-05 16:36:05,324 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-05 16:36:05,324 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-05 16:36:05,324 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-05 16:36:05,324 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-05 16:36:05,324 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-05 16:36:05,324 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-05 16:36:05,324 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-05 16:36:05,325 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-05 16:36:05,325 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-05 16:36:05,325 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-05 16:36:05,325 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-05 16:36:05,325 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
-        "memory_usage_mb": 36.40625,
-        "peak_memory_mb": 36.40625,
-        "memory_delta_mb": 0.03125,
+        "stderr": "2026-01-06 11:33:41,659 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-06 11:33:41,659 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 11:33:41,659 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-06 11:33:41,660 - render.processor - INFO - Found 1 GNN files to process\n2026-01-06 11:33:41,660 - render.processor - INFO - Target frameworks: all available\n2026-01-06 11:33:41,660 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 11:33:41,661 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-06 11:33:41,661 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-06 11:33:41,661 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-06 11:33:41,661 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2026-01-06 11:33:41,661 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:33:41,661 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-06 11:33:41,662 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-06 11:33:41,662 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-06 11:33:41,662 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:33:41,662 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-06 11:33:41,662 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-06 11:33:41,662 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-06 11:33:41,662 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-06 11:33:41,662 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-06 11:33:41,662 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-06 11:33:41,663 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-06 11:33:41,663 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:33:41,663 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-06 11:33:41,663 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-06 11:33:41,663 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-06 11:33:41,663 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-06 11:33:41,663 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:33:41,663 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-06 11:33:41,663 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-06 11:33:41,663 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-06 11:33:41,663 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-06 11:33:41,663 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-06 11:33:41,663 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
+        "memory_usage_mb": 36.390625,
+        "peak_memory_mb": 36.390625,
+        "memory_delta_mb": 0.015625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -286,17 +306,17 @@
         "step_number": 5,
         "script_name": "11_render.py",
         "description": "Code rendering",
-        "start_time": "2026-01-05T16:36:05.147419",
-        "end_time": "2026-01-05T16:36:05.339194",
-        "duration_seconds": 0.1917729377746582
+        "start_time": "2026-01-06T11:33:41.548850",
+        "end_time": "2026-01-06T11:33:41.677988",
+        "duration_seconds": 0.1291360855102539
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:05,540 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-05 16:36:05,884 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-05 16:36:05,884 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-05 16:36:05,884 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-05 16:36:05,884 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-05 16:36:05,885 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-05 16:36:05,885 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-05 16:36:05,885 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-05 16:36:05,885 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-05 16:36:05,885 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-05 16:36:05,885 - execute - INFO - Found 5 executable scripts to run\n2026-01-05 16:36:05,885 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-05 16:36:10,220 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1\n2026-01-05 16:36:10,220 - execute - WARNING - Error output: WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, o...\n2026-01-05 16:36:10,221 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-05 16:36:10,269 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1\n2026-01-05 16:36:10,269 - execute - WARNING - Error output: Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line...\n2026-01-05 16:36:10,270 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-05 16:36:11,108 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-05 16:36:11,108 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-05 16:36:11,109 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-05 16:36:30,516 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1\n2026-01-05 16:36:30,516 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-05 16:36:30,517 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-05 16:36:50,882 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1\n2026-01-05 16:36:50,882 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-05 16:36:50,885 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-05 16:36:50,885 - execute - ERROR - \u274c Execute processing completed with 4/5 failures (critical failures)\n",
-        "memory_usage_mb": 12.546875,
-        "peak_memory_mb": 36.53125,
-        "memory_delta_mb": -23.984375,
+        "stderr": "2026-01-06 11:33:41,880 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-06 11:33:42,088 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-06 11:33:42,088 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-06 11:33:42,090 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-06 11:33:42,090 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-06 11:33:42,090 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:33:42,090 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:33:42,090 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:33:42,090 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:33:42,090 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:33:42,090 - execute - INFO - Found 5 executable scripts to run\n2026-01-06 11:33:42,090 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:33:43,700 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1\n2026-01-06 11:33:43,701 - execute - WARNING - Error output: WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, o...\n2026-01-06 11:33:43,701 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:33:43,738 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1\n2026-01-06 11:33:43,738 - execute - WARNING - Error output: Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line...\n2026-01-06 11:33:43,739 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:33:44,238 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:33:44,238 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-06 11:33:44,239 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:33:57,272 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1\n2026-01-06 11:33:57,272 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 11:33:57,273 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:34:08,951 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1\n2026-01-06 11:34:08,951 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 11:34:08,953 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-06 11:34:08,953 - execute - ERROR - \u274c Execute processing completed with 4/5 failures (critical failures)\n",
+        "memory_usage_mb": 15.328125,
+        "peak_memory_mb": 36.515625,
+        "memory_delta_mb": -21.1875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -305,17 +325,17 @@
         "step_number": 6,
         "script_name": "12_execute.py",
         "description": "Execution",
-        "start_time": "2026-01-05T16:36:05.340025",
-        "end_time": "2026-01-05T16:36:51.045856",
-        "duration_seconds": 45.7058219909668
+        "start_time": "2026-01-06T11:33:41.678659",
+        "end_time": "2026-01-06T11:34:09.040361",
+        "duration_seconds": 27.36169195175171
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-05 16:36:51,274 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-05 16:36:51,274 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-05 16:36:51,274 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-05 16:36:51,274 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
-        "memory_usage_mb": 23.046875,
-        "peak_memory_mb": 23.046875,
-        "memory_delta_mb": 1.671875,
+        "stderr": "2026-01-06 11:34:09,134 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 11:34:09,134 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-06 11:34:09,134 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-06 11:34:09,134 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
+        "memory_usage_mb": 25.59375,
+        "peak_memory_mb": 25.59375,
+        "memory_delta_mb": 1.46875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -324,14 +344,14 @@
         "step_number": 7,
         "script_name": "15_audio.py",
         "description": "Audio processing",
-        "start_time": "2026-01-05T16:36:51.046934",
-        "end_time": "2026-01-05T16:36:51.284997",
-        "duration_seconds": 0.23805999755859375
+        "start_time": "2026-01-06T11:34:09.041594",
+        "end_time": "2026-01-06T11:34:09.143901",
+        "duration_seconds": 0.10230493545532227
       }
     ],
-    "end_time": "2026-01-05T16:36:51.285793",
-    "overall_status": "FAILED",
-    "total_duration_seconds": 46.766471,
+    "end_time": "2026-01-06T11:34:09.144388",
+    "overall_status": "SUCCESS",
+    "total_duration_seconds": 28.172803,
     "environment_info": {
       "python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]",
       "platform": "darwin",
@@ -339,24 +359,90 @@
       "working_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation",
       "user": "mini",
       "memory_total_gb": "16.0",
-      "disk_free_gb": "117.9"
+      "disk_free_gb": "116.2"
     },
     "performance_summary": {
-      "peak_memory_mb": 36.53125,
+      "peak_memory_mb": 36.515625,
       "total_steps": 7,
-      "failed_steps": 1,
-      "critical_failures": 1,
-      "successful_steps": 6,
+      "failed_steps": 0,
+      "critical_failures": 0,
+      "successful_steps": 7,
       "warnings": 0
     }
   },
   "visualizations": {
-    "total_count": 5,
+    "total_count": 12,
     "by_step": {
+      "8_visualization_output": {
+        "step": "8_visualization_output",
+        "count": 5,
+        "files": [
+          {
+            "name": "actinf_pomdp_agent_matrix_0_heatmap.png",
+            "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+            "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 87007,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_combined_analysis.png",
+            "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+            "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 314258,
+            "size_mb": 0.3,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_matrix_1_heatmap.png",
+            "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+            "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 84429,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_network_graph.png",
+            "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+            "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 397987,
+            "size_mb": 0.38,
+            "step": "8_visualization_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_matrix_2_heatmap.png",
+            "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+            "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 85222,
+            "size_mb": 0.08,
+            "step": "8_visualization_output"
+          }
+        ]
+      },
       "9_advanced_viz_output": {
         "step": "9_advanced_viz_output",
-        "count": 1,
+        "count": 3,
         "files": [
+          {
+            "name": "actinf_pomdp_agent_statistical_analysis.png",
+            "path": "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+            "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 293574,
+            "size_mb": 0.28,
+            "step": "9_advanced_viz_output"
+          },
           {
             "name": "actinf_pomdp_agent_3d_visualization.png",
             "path": "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
@@ -365,6 +451,16 @@
             "extension": ".png",
             "size_bytes": 189795,
             "size_mb": 0.18,
+            "step": "9_advanced_viz_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_network_metrics.png",
+            "path": "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+            "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 257218,
+            "size_mb": 0.25,
             "step": "9_advanced_viz_output"
           }
         ]
@@ -425,6 +521,66 @@
     "by_type": {
       "image": [
         {
+          "name": "actinf_pomdp_agent_matrix_0_heatmap.png",
+          "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+          "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 87007,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_combined_analysis.png",
+          "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+          "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 314258,
+          "size_mb": 0.3,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_matrix_1_heatmap.png",
+          "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+          "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 84429,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_network_graph.png",
+          "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+          "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 397987,
+          "size_mb": 0.38,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_matrix_2_heatmap.png",
+          "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+          "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 85222,
+          "size_mb": 0.08,
+          "step": "8_visualization_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_statistical_analysis.png",
+          "path": "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+          "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 293574,
+          "size_mb": 0.28,
+          "step": "9_advanced_viz_output"
+        },
+        {
           "name": "actinf_pomdp_agent_3d_visualization.png",
           "path": "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
           "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
@@ -432,6 +588,16 @@
           "extension": ".png",
           "size_bytes": 189795,
           "size_mb": 0.18,
+          "step": "9_advanced_viz_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_network_metrics.png",
+          "path": "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+          "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 257218,
+          "size_mb": 0.25,
           "step": "9_advanced_viz_output"
         },
         {
@@ -480,6 +646,66 @@
     },
     "all_visualizations": [
       {
+        "name": "actinf_pomdp_agent_matrix_0_heatmap.png",
+        "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+        "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 87007,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_combined_analysis.png",
+        "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 314258,
+        "size_mb": 0.3,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_matrix_1_heatmap.png",
+        "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+        "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 84429,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_network_graph.png",
+        "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 397987,
+        "size_mb": 0.38,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_matrix_2_heatmap.png",
+        "path": "output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+        "relative_path": "8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 85222,
+        "size_mb": 0.08,
+        "step": "8_visualization_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_statistical_analysis.png",
+        "path": "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+        "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 293574,
+        "size_mb": 0.28,
+        "step": "9_advanced_viz_output"
+      },
+      {
         "name": "actinf_pomdp_agent_3d_visualization.png",
         "path": "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
         "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
@@ -487,6 +713,16 @@
         "extension": ".png",
         "size_bytes": 189795,
         "size_mb": 0.18,
+        "step": "9_advanced_viz_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_network_metrics.png",
+        "path": "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+        "relative_path": "9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 257218,
+        "size_mb": 0.25,
         "step": "9_advanced_viz_output"
       },
       {
@@ -531,9 +767,9 @@
       }
     ]
   },
-  "health_score": 25.0,
+  "health_score": 30.0,
   "report_metadata": {
-    "generation_time": "2026-01-05T16:37:54.334161",
+    "generation_time": "2026-01-06T11:35:28.933142",
     "formats_generated": [
       "html",
       "markdown",

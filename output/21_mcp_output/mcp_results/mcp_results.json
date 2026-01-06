@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-01-05T16:37:51.676566",
+  "timestamp": "2026-01-06T11:35:27.695125",
   "mcp_version": "2.0.0",
-  "tools_count": 107,
+  "tools_count": 112,
   "resources_count": 1,
   "tools": [
     {
@@ -306,6 +306,13 @@
       "version": "1.0.0"
     },
     {
+      "name": "process_visualization",
+      "description": "Process visualization for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
       "name": "process_website",
       "description": "Generate website from pipeline artifacts in the specified directory.",
       "module": "",
@@ -530,6 +537,20 @@
       "version": "1.0.0"
     },
     {
+      "name": "src.visualization.call_function",
+      "description": "Call any public function in the src.visualization module with keyword arguments.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.list_functions",
+      "description": "List callable functions exported by the src.visualization module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
       "name": "src.website.call_function",
       "description": "Call any public function in the src.website module with keyword arguments.",
       "module": "",
@@ -740,6 +761,20 @@
       "version": "1.0.0"
     },
     {
+      "name": "visualization.call_function",
+      "description": "Call any public function in the visualization module with keyword arguments.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "visualization.list_functions",
+      "description": "List callable functions exported by the visualization module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
       "name": "website.call_function",
       "description": "Call any public function in the website module with keyword arguments.",
       "module": "",
@@ -764,11 +799,12 @@
     }
   ],
   "status": "healthy",
-  "registered_modules": 20,
+  "registered_modules": 21,
   "registered_module_names": [
     "gnn",
     "ontology",
     "audio",
+    "visualization",
     "export",
     "execute",
     "render",

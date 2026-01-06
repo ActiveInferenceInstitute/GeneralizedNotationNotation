@@ -8,6 +8,12 @@
 
 **Category**: Simulation / Execution
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,15 +38,32 @@
 
 ### Public Functions
 
-#### `process_execute(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Main execution function for rendered simulation scripts
+#### `process_execute(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main execution function called by orchestrator (12_execute.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for execution results
-- `**kwargs`: Additional options (simulation_engine, validate_only)
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
+- `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
+- `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
+- `validate_only` (bool): Only validate scripts, don't execute (default: False)
+- `**kwargs`: Additional options
 
 **Returns**: `True` if execution succeeded
+
+**Example**:
+```python
+from execute import process_execute
+
+success = process_execute(
+    target_dir=Path("output/11_render_output"),
+    output_dir=Path("output/12_execute_output"),
+    verbose=True,
+    frameworks="pymdp,jax"
+)
+```
 
 #### `execute_simulation_from_gnn(gnn_file, framework, output_dir) -> Dict`
 **Description**: Execute simulation for specific GNN file and framework

@@ -559,7 +559,7 @@ results = execute_rxinfer_simulation(script_path, config, debug=True, verbose=Tr
 
 ### Related Documentation
 - [Execute Module](../../execute/AGENTS.md) - Parent execute module
-- [RxInfer.jl Render](../render/rxinfer/AGENTS.md) - RxInfer.jl code generation
+- [RxInfer.jl Render](../../render/rxinfer/AGENTS.md) - RxInfer.jl code generation
 - [RxInfer.jl Documentation](https://rxinfer.ml/) - Official RxInfer.jl docs
 
 ### External Resources

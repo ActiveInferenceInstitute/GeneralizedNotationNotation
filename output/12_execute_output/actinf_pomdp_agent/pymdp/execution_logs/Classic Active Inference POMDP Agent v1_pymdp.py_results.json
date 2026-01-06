@@ -1,0 +1,26 @@
+{
+  "framework": "pymdp",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_pymdp.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 2.724625,
+  "timestamp": "2026-01-06T11:40:39.952929",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u2705 PyMDP is available\n",
+    "raw_error": "WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\nERROR:src.execute.pymdp.simple_simulation:PyMDP not available: No module named 'pymdp.agent'\nERROR:src.execute.pymdp.executor:PyMDP simulation failed: PyMDP import failed: No module named 'pymdp.agent'\nERROR:__main__:\u2717 Simulation failed!\nERROR:__main__:Error: PyMDP import failed: No module named 'pymdp.agent'\n"
+  },
+  "execution_metadata": {
+    "executor": "python3",
+    "stdout_length": 21,
+    "stderr_length": 572,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp"
+  }
+}

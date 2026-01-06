@@ -3,6 +3,9 @@
 > **📋 Document Metadata**  
 > **Type**: Interactive Learning Platform | **Audience**: All Users | **Complexity**: Beginner-Advanced  
 > **Cross-References**: [Learning Paths](../learning_paths.md) | [Quickstart](../quickstart.md) | [Tutorials](README.md)
+>
+> [!NOTE]
+> This document describes a **proposed** interactive learning platform. The code components described below are currently in design/development phase.
 
 ## 🎮 Interactive Learning Platform
 
@@ -427,5 +430,5 @@ python src/tutorials/quick_start_wizard.py
 
 ---
 
-**Status**: Production-Ready Interactive Platform  
-**Next Steps**: [Launch Tutorials](quick_start_wizard.py) | [Tutorial Development](development/README.md) 
+**Status**: Design Phase - Proposed Interactive Platform  
+**Next Steps**: Launch Tutorials (TBD) | Tutorial Development (TBD) 

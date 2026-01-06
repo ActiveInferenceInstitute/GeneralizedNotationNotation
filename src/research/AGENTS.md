@@ -8,6 +8,12 @@
 
 **Category**: Research / Experimental Analysis
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,15 +38,28 @@
 
 ### Public Functions
 
-#### `process_research(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Main research processing function
+#### `process_research(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main research processing function called by orchestrator (19_research.py)
 
 **Parameters**:
-- `target_dir`: Directory containing research data
-- `output_dir`: Output directory for research results
+- `target_dir` (Path): Directory containing research data
+- `output_dir` (Path): Output directory for research results
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
 - `**kwargs`: Additional research options
 
 **Returns**: `True` if research processing succeeded
+
+**Example**:
+```python
+from research import process_research
+
+success = process_research(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/19_research_output"),
+    verbose=True
+)
+```
 
 #### `perform_research_analysis(data, analysis_type="comprehensive") -> Dict[str, Any]`
 **Description**: Perform advanced research analysis

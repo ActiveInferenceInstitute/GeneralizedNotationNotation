@@ -62,7 +62,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 > **🔬 Julia Bayesian Inference** | **🎯 Research-Grade**
 - **Primary**: [RxInfer Guide](rxinfer/gnn_rxinfer.md)
 - **Templates**: [Multi-agent Template](templates/multiagent_template.md), [Hierarchical Template](templates/hierarchical_template.md)
-- **Examples**: [Multi-agent Trajectory Planning](rxinfer/multiagent_trajectory_planning/), [Hidden Markov Model](src/gnn/examples/rxinfer_hidden_markov_model.md)
+- **Examples**: [Multi-agent Trajectory Planning](rxinfer/multiagent_trajectory_planning/), [Hidden Markov Model](../doc/archive/rxinfer_hidden_markov_model.md)
 - **Engineering**: [Engineering Guide](rxinfer/engineering_rxinfer_gnn.md)
 - **Pipeline**: [Step 9 Rendering](pipeline/README.md#step-9-rendering)
 
@@ -252,7 +252,7 @@ navigation_graph:
     rxinfer:
       primary: rxinfer/gnn_rxinfer.md  
       templates: [templates/multiagent_template.md, templates/hierarchical_template.md]
-      examples: [rxinfer/multiagent_trajectory_planning/, src/gnn/examples/rxinfer_hidden_markov_model.md]
+      examples: [rxinfer/multiagent_trajectory_planning/, archive/rxinfer_hidden_markov_model.md]
     discopy:
       primary: discopy/gnn_discopy.md
       templates: [templates/hierarchical_template.md]

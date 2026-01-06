@@ -1229,7 +1229,7 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
     log_step_start(logger, "Running comprehensive type checking on GNN files")
     
     # Use centralized output directory configuration
-    type_check_output_dir = get_output_dir_for_script("4_type_checker.py", output_dir)
+    type_check_output_dir = get_output_dir_for_script("5_type_checker.py", output_dir)
     type_check_output_dir.mkdir(parents=True, exist_ok=True)
     
     try:

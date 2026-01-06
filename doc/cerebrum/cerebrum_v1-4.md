@@ -6,6 +6,9 @@
 # Main Text
 
 ---
+
+> [!WARNING]
+> This document references figures (e.g., `Figure_9.png`) that are currently missing from the repository.
 title: "Case-Enabled Reasoning Engine with Bayesian Representations for Unified Modeling (CEREBRUM)"
 author: "Daniel Ari Friedman"
 date: "Version 1.2 (2025-04-12)"
@@ -354,7 +357,7 @@ Here, $\kappa_c$ is a case-specific learning rate that determines how quickly th
 
 For planning and policy selection, CEREBRUM extends to expected free energy minimization over sequences of case transformations:
 
-$$\mathbb{E}[\Delta F] = \sum_{s,a}T(s'|s,a)\pi[a|s](F(s,c)-F(s',c'))$$
+$$\mathbb{E}[\Delta F] = \sum_{s,a}T(s'|s,a)\pi[a|s] (F(s,c)-F(s',c'))$$
 
 Where $T(s'|s,a)$ is the transition probability from state $s$ to $s'$ given action $a$, and $\pi[a|s]$ is the policy. This allows for optimal sequencing of case transformations to achieve goals.
 

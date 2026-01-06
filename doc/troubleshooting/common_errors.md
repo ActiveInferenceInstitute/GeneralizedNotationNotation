@@ -6,7 +6,7 @@ This guide helps you diagnose and fix common issues when working with GNN models
 
 | Error Type | Symptoms | Quick Fix |
 |------------|----------|-----------|
-| **Syntax Error** | Parser fails, invalid character warnings | Check [GNN Syntax Reference](../gnn_syntax.md) |
+| **Syntax Error** | Parser fails, invalid character warnings | Check [GNN Syntax Reference](../gnn/gnn_syntax.md) |
 | **Dimension Mismatch** | Type checker fails, matrix incompatibility | Verify matrix dimensions in StateSpaceBlock |
 | **Connection Error** | Invalid variable references | Ensure all connected variables are defined |
 | **Parameterization Error** | Probabilities don't sum to 1 | Normalize probability distributions |
@@ -58,7 +58,7 @@ Error: Unexpected character '[' at line 15
 Error: Unknown section "StateSpace" at line 8
 ```
 
-**Solution:** Use exact section names from the [GNN File Structure](../gnn_file_structure_doc.md):
+**Solution:** Use exact section names from the [GNN File Structure](../gnn/gnn_file_structure_doc.md):
 ```gnn
 # ❌ Wrong
 ## StateSpace
@@ -298,7 +298,7 @@ If you're still stuck:
    - Your GNN file (or minimal reproducing example)
    - Error messages
    - What you've already tried
-4. **Review the specification** in [GNN Syntax](../gnn_syntax.md) and [File Structure](../gnn_file_structure_doc.md)
+4. **Review the specification** in [GNN Syntax](../gnn/gnn_syntax.md) and [File Structure](../gnn/gnn_file_structure_doc.md)
 
 ## 🔄 Error Recovery Templates
 
@@ -336,3 +336,47 @@ Debug Test Model
 ```
 
 This minimal model should always parse correctly and can serve as a baseline for debugging more complex models. 
+
+## 🐛 Internal Pipeline Errors
+
+### Problem: "ImportError: cannot import name 'parse_matrix_data'"
+```
+ImportError: cannot import name 'parse_matrix_data' from 'visualization.processor'
+```
+
+**Cause:**
+Missing import or definition in `src/visualization/processor.py`. This function is now correctly imported from `analysis.analyzer`.
+
+**Solution:**
+Ensure you are using the latest version of the `visualization` module. The function should be imported as:
+```python
+from analysis.analyzer import parse_matrix_data, generate_matrix_visualizations
+```
+
+### Problem: "NameError: name 'Path' is not defined" in GUI
+```
+NameError: name 'Path' is not defined
+```
+
+**Cause:**
+Missing `from pathlib import Path` in `src/gui/__init__.py`.
+
+**Solution:**
+Add the missing import to the top of the file:
+```python
+from pathlib import Path
+```
+
+### Problem: "ImportError: cannot import name 'run_gui' from 'gui'"
+```
+ImportError: cannot import name 'run_gui' from 'gui'
+```
+
+**Cause:**
+`run_gui` has been renamed to `process_gui` in the `gui` module public API.
+
+**Solution:**
+Update your code/tests to use `process_gui` instead:
+```python
+from gui import process_gui
+```

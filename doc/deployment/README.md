@@ -20,7 +20,7 @@ cd GeneralizedNotationNotation
 python src/main.py --only-steps 2  # Setup environment
 
 # Run pipeline
-python src/main.py --target-dir src/gnn/examples/
+python src/main.py --target-dir input/gnn_files/
 ```
 
 #### Development Configuration
@@ -68,7 +68,7 @@ python src/main.py --only-steps 2
 
 # Create user workspace template
 mkdir -p /home/template/gnn_workspace
-cp -r src/gnn/examples/* /home/template/gnn_workspace/
+cp -r src/gnn/gnn_examples/* /home/template/gnn_workspace/
 ```
 
 #### User Environment Script

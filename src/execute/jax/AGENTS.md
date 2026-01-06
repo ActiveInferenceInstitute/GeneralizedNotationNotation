@@ -594,7 +594,7 @@ results = execute_jax_script(
 
 ### Related Documentation
 - [Execute Module](../../execute/AGENTS.md) - Parent execute module
-- [JAX Render](../render/jax/AGENTS.md) - JAX code generation
+- [JAX Render](../../render/jax/AGENTS.md) - JAX code generation
 - [JAX Documentation](https://jax.readthedocs.io/) - Official JAX docs
 
 ### External Resources

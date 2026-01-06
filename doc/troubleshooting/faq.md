@@ -23,9 +23,9 @@ GNN supports three complementary modalities:
 
 ### Do I need to know Active Inference to use GNN?
 Basic understanding helps, but GNN can be learned incrementally:
-- **Beginners**: Start with [simple examples](../gnn_examples_doc.md) and [basic concepts](../about_gnn.md)
+- **Beginners**: Start with [simple examples](../gnn/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
 - **Intermediate**: Learn [Active Inference fundamentals](https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
-- **Advanced**: Explore [research applications](../gnn_paper.md) and [complex models](../archive/)
+- **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../archive/)
 
 ## 🛠️ Getting Started
 
@@ -48,7 +48,7 @@ python main.py --target-dir gnn/examples/ --output-dir ../output/
 ### What's the easiest way to create my first model?
 1. **Use the template**: Copy [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Start simple**: Begin with a 2-state, 2-observation static model
-3. **Follow examples**: Reference [`gnn_examples_doc.md`](../gnn_examples_doc.md)
+3. **Follow examples**: Reference [`gnn_examples_doc.md`](../gnn/gnn_examples_doc.md)
 4. **Validate early**: Run the type checker frequently
 
 ### Which simulation framework should I choose?
@@ -87,7 +87,7 @@ python main.py --target-dir gnn/examples/ --output-dir ../output/
   ```
 
 ### How do I handle multiple agents?
-See [Multiagent Systems Guide](../gnn_multiagent.md). Key approaches:
+See [Multiagent Systems Guide](../gnn/gnn_multiagent.md). Key approaches:
 1. **Separate models**: Individual GNN files per agent
 2. **Shared states**: Common environmental factors
 3. **Communication**: Message passing between agents
@@ -209,7 +209,7 @@ See [Performance Guide](performance.md) for optimization strategies.
 ## 📚 Learning Resources
 
 ### Recommended learning path
-1. **GNN Basics**: [Overview](../gnn_overview.md) → [Syntax](../gnn_syntax.md) → [Examples](../gnn_examples_doc.md)
+1. **GNN Basics**: [Overview](../gnn/gnn_overview.md) → [Syntax](../gnn/gnn_syntax.md) → [Examples](../gnn/gnn_examples_doc.md)
 2. **Active Inference**: Smith et al. tutorial → Parr et al. textbook
 3. **Implementation**: Choose framework and work through examples
 4. **Advanced Topics**: Multi-agent, learning, optimization
@@ -829,7 +829,7 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 - **Search this FAQ**: Use Ctrl+F to find specific topics
 - **Documentation index**: [Main documentation](../README.md)
 - **Examples gallery**: [Model examples](../archive/)
-- **Syntax reference**: [GNN syntax guide](../gnn_syntax.md)
+- **Syntax reference**: [GNN syntax guide](../gnn/gnn_syntax.md)
 
 ### Community Support
 - **GitHub Discussions**: [Community Q&A](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)

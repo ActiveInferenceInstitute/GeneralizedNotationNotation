@@ -8,6 +8,12 @@
 
 **Category**: Machine Learning / Model Training
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -31,18 +37,32 @@
 
 ### Public Functions
 
-#### `process_ml_integration(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main ML integration processing function for GNN models
+#### `process_ml_integration(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main ML integration processing function called by orchestrator (14_ml_integration.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for ML integration results
-- `logger` (Logger): Logger instance for progress reporting
-- `model_type` (str): ML model type ("auto", "supervised", "unsupervised")
-- `training_mode` (str): Training mode ("train", "evaluate", "predict")
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `model_type` (str): ML model type ("auto", "supervised", "unsupervised", default: "auto")
+- `training_mode` (str): Training mode ("train", "evaluate", "predict", default: "train")
 - `**kwargs`: Additional ML-specific options
 
 **Returns**: `True` if ML integration processing succeeded
+
+**Example**:
+```python
+from ml_integration import process_ml_integration
+
+success = process_ml_integration(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/14_ml_integration_output"),
+    verbose=True,
+    model_type="supervised",
+    training_mode="train"
+)
+```
 
 ---
 

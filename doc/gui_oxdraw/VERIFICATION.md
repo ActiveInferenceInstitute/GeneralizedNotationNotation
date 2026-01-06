@@ -41,7 +41,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 
 | File | Lines | Status | Purpose |
 |------|-------|--------|---------|
-| `24_oxdraw.py` | 79 | ✅ Complete | Thin orchestrator (Step 24) |
+| `22_gui.py` (oxdraw option) | 79 | ✅ Complete | Thin orchestrator (Step 22) |
 
 ### Documentation (doc/oxdraw/)
 
@@ -137,7 +137,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
 - ✅ **Interactive Mode**: Launch oxdraw editor for visual editing
 - ✅ **File-based**: Convert individual files
 - ✅ **Directory-based**: Process multiple files
-- ✅ **Pipeline Integration**: Works as Step 24
+- ✅ **Pipeline Integration**: Works as Step 22 (GUI step with oxdraw option)
 
 ### Integration with Real GNN Pipeline
 - ✅ Uses real `gnn.processor.parse_gnn_file()`
@@ -197,7 +197,7 @@ The oxdraw integration module is **fully complete** with comprehensive implement
   - `src/gnn/mermaid_converter.py` (full implementation)
   - `src/gnn/mermaid_parser.py` (full implementation)
 - ✅ Workflow example with `actinf_pomdp_agent.md`
-- ✅ Advanced pipeline integration (Step 24)
+- ✅ Advanced pipeline integration (Step 22)
 - ✅ Use cases (rapid prototyping, collaboration, education)
 - ✅ Performance considerations
 - ✅ Technical requirements
@@ -265,7 +265,7 @@ from pipeline.config import get_output_dir_for_script
 - ✅ Step 5 (Type Checker): Can validate converted models
 - ✅ Step 6 (Validation): Can check semantic consistency  
 - ✅ Step 10 (Ontology): Validates ontology mappings
-- ✅ Step 24 (oxdraw): New dedicated step
+- ✅ Step 22 (GUI with oxdraw option): Integrated into GUI step
 
 ---
 

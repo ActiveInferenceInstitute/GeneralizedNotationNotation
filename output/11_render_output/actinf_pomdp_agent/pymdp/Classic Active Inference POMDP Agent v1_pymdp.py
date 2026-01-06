@@ -7,18 +7,27 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Classic Active Inference POMDP Agent v1
 Description: 
-Generated: 2026-01-05 16:36:56
+Generated: 2026-01-06 11:40:39
 
 State Space:
 - Hidden States: 3
 - Observations: 3 
 - Actions: 1
+
+State Space Matrices (from GNN):
+- A (Likelihood): Present
+- B (Transition): Present
+- C (Preferences): Present
+- D (Prior): Present
+- E (Habits): Present
 """
 
 import sys
 from pathlib import Path
 import logging
 import subprocess
+import json
+import numpy as np
 
 # Ensure PyMDP is installed before importing
 try:
@@ -69,7 +78,49 @@ logger = logging.getLogger(__name__)
 def main():
     """Main simulation function."""
     
-    # GNN Specification (embedded)
+    # State Space Matrices (extracted from GNN and embedded here)
+    A_matrix_data = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]  # Likelihood matrix P(o|s)
+    B_matrix_data = [[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]]]  # Transition matrix P(s'|s,u)
+    C_vector_data = [0.1, 0.1, 1.0]  # Preferences over observations
+    D_vector_data = [0.33333, 0.33333, 0.33333]  # Prior beliefs over states
+    E_vector_data = [0.33333, 0.33333, 0.33333]  # Policy priors (habits)
+    
+    # Convert to numpy arrays
+    if A_matrix_data is not None:
+        A_matrix = np.array(A_matrix_data)
+        logger.info(f"A matrix shape: {A_matrix.shape}")
+    else:
+        A_matrix = None
+        logger.warning("A matrix not provided")
+    
+    if B_matrix_data is not None:
+        B_matrix = np.array(B_matrix_data)
+        logger.info(f"B matrix shape: {B_matrix.shape}")
+    else:
+        B_matrix = None
+        logger.warning("B matrix not provided")
+    
+    if C_vector_data is not None:
+        C_vector = np.array(C_vector_data)
+        logger.info(f"C vector shape: {C_vector.shape}")
+    else:
+        C_vector = None
+        logger.warning("C vector not provided")
+    
+    if D_vector_data is not None:
+        D_vector = np.array(D_vector_data)
+        logger.info(f"D vector shape: {D_vector.shape}")
+    else:
+        D_vector = None
+        logger.warning("D vector not provided")
+    
+    if E_vector_data is not None:
+        E_vector = np.array(E_vector_data)
+        logger.info(f"E vector shape: {E_vector.shape}")
+    else:
+        E_vector = None
+    
+    # GNN Specification (embedded with state spaces)
     gnn_spec = {
     "name": "Classic Active Inference POMDP Agent v1",
     "model_name": "Classic Active Inference POMDP Agent v1",
@@ -352,12 +403,27 @@ def main():
     }
 }
     
+    # Ensure state space matrices are in gnn_spec for execution
+    if 'initialparameterization' not in gnn_spec:
+        gnn_spec['initialparameterization'] = {}
+    if A_matrix is not None:
+        gnn_spec['initialparameterization']['A'] = A_matrix.tolist() if hasattr(A_matrix, 'tolist') else A_matrix
+    if B_matrix is not None:
+        gnn_spec['initialparameterization']['B'] = B_matrix.tolist() if hasattr(B_matrix, 'tolist') else B_matrix
+    if C_vector is not None:
+        gnn_spec['initialparameterization']['C'] = C_vector.tolist() if hasattr(C_vector, 'tolist') else C_vector
+    if D_vector is not None:
+        gnn_spec['initialparameterization']['D'] = D_vector.tolist() if hasattr(D_vector, 'tolist') else D_vector
+    if E_vector is not None:
+        gnn_spec['initialparameterization']['E'] = E_vector.tolist() if hasattr(E_vector, 'tolist') else E_vector
+    
     # Output directory
     output_dir = Path("output") / "pymdp_simulations" / "Classic Active Inference POMDP Agent v1"
     output_dir.mkdir(parents=True, exist_ok=True)
     
     logger.info("Starting PyMDP simulation for Classic Active Inference POMDP Agent v1")
     logger.info(f"Output directory: {output_dir}")
+    logger.info(f"State space matrices: A={A_matrix is not None}, B={B_matrix is not None}, C={C_vector is not None}, D={D_vector is not None}, E={E_vector is not None}")
     
     # Run simulation
     try:

@@ -359,7 +359,7 @@ python src/main.py [options]
 
 | Option | Description | Default |
 |--------|-------------|---------|
-| `--target-dir DIR` | Target directory for GNN files | `src/gnn/examples` |
+| `--target-dir DIR` | Target directory for GNN files | `input/gnn_files` |
 | `--output-dir DIR` | Directory to save outputs | `output/` |
 | `--recursive` | Recursively process directories | `True` |
 | `--skip-steps LIST` | Skip specific steps (e.g., "1,7") | None |
@@ -588,7 +588,7 @@ Use `uv` to run the pipeline inside the managed project environment:
 
 ```bash
 uv sync                # ensure dependencies from pyproject.toml are installed
-uv run python src/main.py -- --target-dir src/gnn/examples --verbose
+uv run python src/main.py -- --target-dir input/gnn_files --verbose
 ```
 
 You can also run individual commands under `uv` (recommended):
@@ -706,7 +706,7 @@ Explore practical GNN implementations and use cases:
 
 ### 📂 Example Files Location
 
-- **📁 Primary Examples**: [`src/gnn/examples/`](./src/gnn/examples/)
+- **📁 Primary Examples**: [`src/gnn/gnn_examples/`](./src/gnn/gnn_examples/)
 - **📁 Cognitive Models**: [`doc/cognitive_phenomena/`](./doc/cognitive_phenomena/)
 - **📁 Templates**: [`doc/templates/`](./doc/templates/)
 
@@ -714,7 +714,7 @@ Explore practical GNN implementations and use cases:
 
 | Example | Description | Location |
 |---------|-------------|----------|
-| **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/examples/actinf_pomdp_agent.md`](src/gnn/examples/actinf_pomdp_agent.md) |
+| **🎯 PyMDP POMDP Agent** | Complete POMDP implementation | [`src/gnn/gnn_examples/actinf_pomdp_agent.md`](src/gnn/gnn_examples/actinf_pomdp_agent.md) |
 | **🔬 RxInfer Hidden Markov Model** | Probabilistic sequence modeling | [`doc/archive/rxinfer_hidden_markov_model.md`](doc/archive/rxinfer_hidden_markov_model.md) |
 | **🧠 ActiveInference.jl Examples** | Julia-based Active Inference models | [`doc/activeinference_jl/actinf_jl_src/`](doc/activeinference_jl/actinf_jl_src/) |
 | **🤝 Multi-Agent System** | Collaborative agent modeling | [`doc/archive/rxinfer_multiagent_gnn.md`](doc/archive/rxinfer_multiagent_gnn.md) |
@@ -733,13 +733,13 @@ Explore practical GNN implementations and use cases:
 
 ```bash
 # Process all examples
-python src/main.py --target-dir src/gnn/examples
+python src/main.py --target-dir src/gnn/gnn_examples
 
 # Process specific example
-python src/main.py --target-dir src/gnn/examples/actinf_pomdp_agent.md
+python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
 
 # Process with full analysis
-python src/main.py --target-dir src/gnn/examples --estimate-resources --verbose
+python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verbose
 ```
 
 ### ⚡ Power User Tips

@@ -2,7 +2,7 @@
 
 # RxInfer.jl Minimal Working Simulation
 # Generated from GNN Model: Classic Active Inference POMDP Agent v1
-# Generated: 2026-01-05 16:36:56
+# Generated: 2026-01-06 11:40:39
 
 # Ensure required packages are installed
 using Pkg

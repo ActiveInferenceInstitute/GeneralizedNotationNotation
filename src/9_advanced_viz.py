@@ -25,9 +25,9 @@ run_script = create_standardized_pipeline_script(
     additional_arguments={
         "viz_type": {
             "type": str,
-            "choices": ["all", "3d", "interactive", "dashboard", "d2", "diagrams", "pipeline"],
+            "choices": ["all", "3d", "interactive", "dashboard", "d2", "diagrams", "pipeline", "statistical", "pomdp", "network"],
             "default": "all",
-            "help": "Type of visualization to generate (d2 = D2 diagrams, diagrams = D2 diagrams, pipeline = pipeline D2 diagrams)",
+            "help": "Type of visualization to generate: all, 3d, interactive, dashboard, d2/diagrams (D2 diagrams), pipeline (pipeline D2 diagrams), statistical (statistical plots and correlations), pomdp (POMDP-specific visualizations), network (network analysis)",
         },
         "interactive": {
             "type": bool,

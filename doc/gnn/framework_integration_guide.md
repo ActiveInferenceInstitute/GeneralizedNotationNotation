@@ -719,14 +719,14 @@ class IntegrationTestSuite:
 
 ## Related Documentation
 
-- **[PyMDP Integration Guide](pymdp/gnn_pymdp.md)**: Detailed PyMDP-specific documentation
-- **[RxInfer Integration Guide](rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
-- **[DisCoPy Integration Guide](discopy/gnn_discopy.md)**: Categorical diagram processing
-- **[Performance Guide](performance/README.md)**: Performance optimization strategies
-- **[Error Handling Guide](troubleshooting/error_taxonomy.md)**: Comprehensive error management
+- **[PyMDP Integration Guide](../pymdp/gnn_pymdp.md)**: Detailed PyMDP-specific documentation
+- **[RxInfer Integration Guide](../rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
+- **[DisCoPy Integration Guide](../discopy/gnn_discopy.md)**: Categorical diagram processing
+- **[Performance Guide](../performance/README.md)**: Performance optimization strategies
+- **[Error Handling Guide](../troubleshooting/error_taxonomy.md)**: Comprehensive error management
 
 ---
 
-**Integration Guide Version**: 2.0  
+**Integration Guide Version**: 2.1.0  
 **Framework Coverage**: PyMDP, RxInfer, DisCoPy  
 **Status**: Production-Ready 

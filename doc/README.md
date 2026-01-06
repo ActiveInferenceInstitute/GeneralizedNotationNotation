@@ -168,7 +168,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 - **[Learning Agent](archive/gnn_example_jax_pymdp_learning_agent.md)** - Parameter learning in JAX
   - *See Also*: [Advanced Patterns](gnn/advanced_modeling_patterns.md#learning-algorithms), [Performance Guide](troubleshooting/performance.md)
 - **[Poetic Muse](archive/gnn_poetic_muse_model.md)** - Creative Bayesian network
-  - *See Also*: [Creative AI](cognitive_phenomena/imagination/), [Multi-modal Models](gnn/advanced_modeling_patterns.md)
+  - *See Also*: [Multi-modal Models](gnn/advanced_modeling_patterns.md)
 
 ## 🎯 Advanced Topics
 
@@ -285,7 +285,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Release Cycles*: Regular and emergency release procedures
   - *Quality Assurance*: Testing and validation requirements
   - *Security Releases*: Critical vulnerability response process
-- **[Changelog](../CHANGELOG.md)** - Complete project change history
+- **[Releases](releases/README.md)** - Release management and version history
   - *Current Version*: v1.1.0 with comprehensive feature additions
   - *Version History*: Detailed change tracking since project inception
   - *Upgrade Guides*: Migration assistance between major versions

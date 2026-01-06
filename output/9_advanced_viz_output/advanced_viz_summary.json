@@ -1,15 +1,21 @@
 {
-  "timestamp": "2026-01-05T16:36:56.373126",
-  "total_attempts": 3,
-  "successful": 1,
-  "failed": 0,
+  "timestamp": "2026-01-06T11:34:18.921159",
+  "total_attempts": 8,
+  "successful": 3,
+  "failed": 3,
   "skipped": 2,
   "total_duration_ms": 0.0,
   "output_files": [
-    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
   ],
   "warnings": [],
-  "errors": [],
+  "errors": [
+    "attempted relative import beyond top-level package",
+    "attempted relative import beyond top-level package",
+    "attempted relative import beyond top-level package"
+  ],
   "skipped_features": {
     "count": 2,
     "by_reason": {
@@ -36,9 +42,58 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 177.8738498687744,
+      "duration_ms": 158.68306159973145,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 229.55608367919922,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "matrix_correlations",
+      "model_name": "actinf_pomdp_agent",
+      "status": "failed",
+      "duration_ms": 0.049114227294921875,
+      "output_files": [],
+      "error_message": "attempted relative import beyond top-level package",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "pomdp_transitions",
+      "model_name": "actinf_pomdp_agent",
+      "status": "failed",
+      "duration_ms": 0.016689300537109375,
+      "output_files": [],
+      "error_message": "attempted relative import beyond top-level package",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "policy",
+      "model_name": "actinf_pomdp_agent",
+      "status": "failed",
+      "duration_ms": 0.014066696166992188,
+      "output_files": [],
+      "error_message": "attempted relative import beyond top-level package",
+      "fallback_used": false
+    },
+    {
+      "viz_type": "network_metrics",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 226.37009620666504,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -47,7 +102,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Classic Active Inference POMDP Agent v1",
       "status": "skipped",
-      "duration_ms": 0.15592575073242188,
+      "duration_ms": 0.19693374633789062,
       "output_files": [],
       "error_message": "D2 CLI not installed",
       "fallback_used": true
@@ -56,7 +111,7 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "skipped",
-      "duration_ms": 0.0629425048828125,
+      "duration_ms": 0.07390975952148438,
       "output_files": [],
       "error_message": "D2 CLI not installed",
       "fallback_used": true

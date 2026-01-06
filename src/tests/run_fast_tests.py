@@ -20,17 +20,21 @@ def run_fast_tests():
     # Prepare pytest command for fast tests only
     pytest_cmd = [
         sys.executable, "-m", "pytest",
-        "-p", "pytest_timeout",
         "--quiet",
         "--tb=short",
         "--maxfail=5",
         "--durations=5",
-        "--timeout=10",
-        "--timeout-method=thread",
         "--disable-warnings",
         "-m", "fast",
         "src/tests/test_fast_suite.py"
     ]
+    
+    # Add timeout plugin if available
+    try:
+        import pytest_timeout
+        pytest_cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])
+    except ImportError:
+        pass
     
     try:
         # Run pytest with 60 second timeout

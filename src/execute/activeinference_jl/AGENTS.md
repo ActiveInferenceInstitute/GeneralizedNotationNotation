@@ -551,7 +551,7 @@ results = run_activeinference_analysis(
 
 ### Related Documentation
 - [Execute Module](../../execute/AGENTS.md) - Parent execute module
-- [ActiveInference.jl Render](../render/activeinference_jl/AGENTS.md) - ActiveInference.jl code generation
+- [ActiveInference.jl Render](../../render/activeinference_jl/AGENTS.md) - ActiveInference.jl code generation
 - [Active Inference](https://en.wikipedia.org/wiki/Active_inference) - Active Inference theory
 
 ### External Resources

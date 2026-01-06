@@ -36,7 +36,7 @@ except (ImportError, RecursionError) as e:
     SEABORN_AVAILABLE = False
 
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any, Optional, Tuple, Union
 
 class MatrixVisualizer:
     """
@@ -105,26 +105,136 @@ class MatrixVisualizer:
         """
         Extract matrix data from parameters section.
         
+        Supports multiple parameter formats:
+        - List of dicts with 'name' and 'value' keys (GNN parser output)
+        - Dict mapping names to values
+        - Variables list (for backward compatibility)
+        
         Args:
-            parameters: List of parameter dictionaries
+            parameters: List of parameter dictionaries or dict of parameter values
             
         Returns:
             Dictionary mapping matrix names to numpy arrays
         """
         matrices = {}
         
-        for param in parameters:
-            param_name = param.get("name", "")
-            param_value = param.get("value")
-            
-            if param_value is not None and isinstance(param_value, (list, tuple)):
-                try:
-                    # Convert to numpy array
-                    matrix = np.array(param_value, dtype=float)
+        if not parameters:
+            return matrices
+        
+        # Handle dict format (name -> value mapping)
+        if isinstance(parameters, dict):
+            for param_name, param_value in parameters.items():
+                matrix = self._convert_to_matrix(param_value, param_name)
+                if matrix is not None:
                     matrices[param_name] = matrix
-                except (ValueError, TypeError):
-                    # Skip if conversion fails
-                    continue
+            return matrices
+        
+        # Handle list format (list of parameter objects)
+        for param in parameters:
+            if not isinstance(param, dict):
+                continue
+                
+            param_name = param.get("name", "")
+            if not param_name:
+                continue
+                
+            param_value = param.get("value")
+            if param_value is None:
+                continue
+            
+            matrix = self._convert_to_matrix(param_value, param_name)
+            if matrix is not None:
+                matrices[param_name] = matrix
+        
+        return matrices
+    
+    def _convert_to_matrix(self, value: Any, name: str = "") -> Optional[np.ndarray]:
+        """
+        Convert a value to a numpy matrix array.
+        
+        Args:
+            value: Value to convert (list, tuple, nested lists, etc.)
+            name: Name of the matrix (for error messages)
+            
+        Returns:
+            Numpy array or None if conversion fails
+        """
+        if not NUMPY_AVAILABLE or np is None:
+            return None
+        
+        if value is None:
+            return None
+        
+        try:
+            # Handle nested lists/tuples (matrices)
+            if isinstance(value, (list, tuple)):
+                # Check if it's a nested structure (matrix)
+                if len(value) > 0 and isinstance(value[0], (list, tuple)):
+                    # This is a 2D or higher dimensional matrix
+                    matrix = np.array(value, dtype=float)
+                    # Validate it's a proper matrix
+                    if matrix.size > 0:
+                        return matrix
+                else:
+                    # This is a 1D vector
+                    matrix = np.array(value, dtype=float)
+                    if matrix.size > 0:
+                        return matrix
+            
+            # Try direct conversion
+            matrix = np.array(value, dtype=float)
+            if matrix.size > 0:
+                return matrix
+                
+        except (ValueError, TypeError) as e:
+            # Conversion failed - skip this parameter
+            return None
+        
+        return None
+    
+    def extract_from_parsed_gnn(self, parsed_data: Dict[str, Any]) -> Dict[str, np.ndarray]:
+        """
+        Extract matrix data from parsed GNN structure.
+        
+        Checks multiple locations:
+        - parameters field (primary location)
+        - InitialParameterization section
+        - matrices field
+        - variables with matrix values
+        
+        Args:
+            parsed_data: Parsed GNN data dictionary
+            
+        Returns:
+            Dictionary mapping matrix names to numpy arrays
+        """
+        matrices = {}
+        
+        # Primary: Extract from parameters field
+        parameters = parsed_data.get("parameters", [])
+        if parameters:
+            param_matrices = self.extract_matrix_data_from_parameters(parameters)
+            matrices.update(param_matrices)
+        
+        # Secondary: Check InitialParameterization section
+        initial_params = parsed_data.get("InitialParameterization", {})
+        if isinstance(initial_params, dict):
+            for param_name, param_value in initial_params.items():
+                matrix = self._convert_to_matrix(param_value, param_name)
+                if matrix is not None:
+                    matrices[param_name] = matrix
+        
+        # Tertiary: Check matrices field
+        matrices_list = parsed_data.get("matrices", [])
+        if matrices_list:
+            for m_info in matrices_list:
+                if isinstance(m_info, dict):
+                    m_name = m_info.get("name", f"matrix_{len(matrices)}")
+                    m_data = m_info.get("data")
+                    if m_data is not None:
+                        matrix = self._convert_to_matrix(m_data, m_name)
+                        if matrix is not None:
+                            matrices[m_name] = matrix
         
         return matrices
     
@@ -144,6 +254,10 @@ class MatrixVisualizer:
             True if successful, False otherwise
         """
         try:
+            # Reshape 1D vector to 2D for imshow if necessary
+            if matrix.ndim == 1:
+                matrix = matrix.reshape(1, -1)
+            
             plt.figure(figsize=(10, 8))
             
             # Create heatmap

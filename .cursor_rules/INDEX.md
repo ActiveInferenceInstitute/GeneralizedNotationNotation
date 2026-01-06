@@ -174,7 +174,7 @@ This directory contains comprehensive architectural and implementation guideline
 #### 14. **AGENTS.md** (~550 lines)
 **28 Agent capabilities summary**
 
-- **Agent Index**: All 28 modules
+- **Agent Index**: All 26 modules (24 pipeline + 2 infrastructure)
 - **Capabilities by Category**: Core, simulation, integration
 - **Agent Performance Metrics**: Execution times
 - **Agent Development Guidelines**: Standards

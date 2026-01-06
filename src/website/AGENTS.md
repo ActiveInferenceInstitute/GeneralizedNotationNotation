@@ -8,6 +8,12 @@
 
 **Category**: Documentation / Website Generation
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,15 +38,30 @@
 
 ### Public Functions
 
-#### `process_website(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Generate website from pipeline artifacts
+#### `process_website(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main website generation function called by orchestrator (20_website.py)
 
 **Parameters**:
-- `target_dir`: Directory containing pipeline artifacts
-- `output_dir`: Output directory for website
+- `target_dir` (Path): Directory containing pipeline artifacts
+- `output_dir` (Path): Output directory for website
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
+- `website_html_filename` (str): Output HTML filename (default: "gnn_pipeline_summary_website.html")
 - `**kwargs`: Additional website options
 
 **Returns**: `True` if website generation succeeded
+
+**Example**:
+```python
+from website import process_website
+
+success = process_website(
+    target_dir=Path("output"),
+    output_dir=Path("output/20_website_output"),
+    verbose=True,
+    website_html_filename="custom_summary.html"
+)
+```
 
 #### `generate_html_report(content) -> str`
 **Description**: Generate HTML report from content

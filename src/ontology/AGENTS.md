@@ -8,6 +8,12 @@
 
 **Category**: Semantic Validation / Ontology Management
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,18 +38,29 @@
 
 ### Public Functions
 
-#### `process_ontology_standardized(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main ontology processing function
+#### `process_ontology(target_dir, output_dir, logger=None, **kwargs) -> bool`
+**Description**: Main ontology processing function called by orchestrator (10_ontology.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for ontology results
-- `logger` (Logger): Logger instance
-- `ontology_terms_file` (Path): Path to ontology terms JSON
-- `recursive` (bool): Process directories recursively
+- `logger` (Logger, optional): Logger instance (default: None)
+- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file
+- `recursive` (bool, optional): Process directories recursively (default: True)
 - `**kwargs`: Additional options
 
 **Returns**: `True` if processing succeeded
+
+**Example**:
+```python
+from ontology import process_ontology
+
+success = process_ontology(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/10_ontology_output"),
+    ontology_terms_file=Path("input/ontology_terms.json")
+)
+```
 
 #### `extract_ontology_terms(gnn_model: Dict) -> List[str]`
 **Description**: Extract ontology terms from parsed GNN model

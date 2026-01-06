@@ -8,6 +8,12 @@
 
 **Category**: Documentation / Analysis Reporting
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -33,18 +39,32 @@
 
 ### Public Functions
 
-#### `process_report(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main report processing function for comprehensive analysis reporting
+#### `process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main report processing function called by orchestrator (23_report.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for report results
-- `logger` (Logger): Logger instance for progress reporting
-- `report_format` (str): Report format ("comprehensive", "summary", "technical")
-- `include_visualizations` (bool): Include visualizations in report
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `report_format` (str): Report format ("comprehensive", "summary", "technical", default: "comprehensive")
+- `include_visualizations` (bool): Include visualizations in report (default: True)
 - `**kwargs`: Additional report-specific options
 
 **Returns**: `True` if report generation succeeded
+
+**Example**:
+```python
+from report import process_report
+
+success = process_report(
+    target_dir=Path("output"),
+    output_dir=Path("output/23_report_output"),
+    verbose=True,
+    report_format="comprehensive",
+    include_visualizations=True
+)
+```
 
 #### `generate_comprehensive_report(target_dir, output_dir, **kwargs) -> Dict[str, Any]`
 **Description**: Generate comprehensive analysis report from pipeline results

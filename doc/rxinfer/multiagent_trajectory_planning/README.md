@@ -29,7 +29,7 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 
 ### Legacy Files
 
-- **[Original_Multi-agent Trajectory Planning.jl](Original_Multi-agent%20Trajectory%20Planning.jl)**: Original script version (preserved for reference).
+- **Original_Multi-agent Trajectory Planning.jl**: Original script version (file not present in current version).
 
 ## Running the Project
 

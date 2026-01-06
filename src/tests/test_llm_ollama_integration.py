@@ -232,8 +232,10 @@ Minimize free energy while maintaining preferred states.
         # Cleanup
         shutil.rmtree(test_dir)
     
+    @pytest.mark.slow
+    @pytest.mark.timeout(180)  # 3 minute timeout for LLM operations
     def test_llm_processing_with_ollama(self, test_gnn_dir, test_output_dir, caplog):
-        """Test LLM processing when Ollama is available."""
+        """Test LLM processing when Ollama is available (slow test - runs actual LLM prompts)."""
         import logging
         caplog.set_level(logging.INFO)
         
@@ -276,8 +278,9 @@ Minimize free energy while maintaining preferred states.
         log_text = caplog.text
         assert "LLM" in log_text or "ollama" in log_text.lower() or "llm" in log_text.lower()
     
+    @pytest.mark.slow
     def test_llm_processing_without_ollama(self, test_gnn_dir, test_output_dir, caplog, monkeypatch):
-        """Test LLM processing fallback when Ollama is not available."""
+        """Test LLM processing fallback when Ollama is not available (slow test)."""
         import logging
         caplog.set_level(logging.INFO)
         
@@ -322,8 +325,10 @@ Minimize free energy while maintaining preferred states.
         log_text = caplog.text.lower()
         assert "fallback" in log_text or "not found" in log_text or "not available" in log_text
     
+    @pytest.mark.slow
+    @pytest.mark.timeout(120)  # 2 minute timeout
     def test_llm_processing_model_selection(self, test_gnn_dir, test_output_dir, caplog):
-        """Test that LLM processing selects and uses appropriate model."""
+        """Test that LLM processing selects and uses appropriate model (slow test)."""
         import logging
         caplog.set_level(logging.INFO)
         
@@ -359,8 +364,10 @@ Minimize free energy while maintaining preferred states.
                     assert "model" in log_text.lower() or "🤖" in log_text
             # else: fallback mode, model selection not required
     
+    @pytest.mark.slow
+    @pytest.mark.timeout(120)  # 2 minute timeout
     def test_llm_processing_creates_outputs(self, test_gnn_dir, test_output_dir):
-        """Test that LLM processing creates expected output files."""
+        """Test that LLM processing creates expected output files (slow test)."""
         llm_output_dir = test_output_dir / "13_llm_output"
         llm_output_dir.mkdir()
         
@@ -387,8 +394,10 @@ Minimize free energy while maintaining preferred states.
         # At least 0 prompt directories (depends on Ollama availability)
         assert len(prompt_dirs) >= 0
     
+    @pytest.mark.slow
+    @pytest.mark.timeout(60)  # 1 minute timeout for error case
     def test_llm_processing_error_handling(self, test_output_dir, caplog):
-        """Test LLM processing error handling with no input files."""
+        """Test LLM processing error handling with no input files (slow test)."""
         import logging
         caplog.set_level(logging.WARNING)
         

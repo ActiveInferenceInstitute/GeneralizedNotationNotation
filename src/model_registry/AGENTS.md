@@ -8,6 +8,12 @@
 
 **Category**: Core Management
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,15 +38,30 @@
 
 ### Public Functions
 
-#### `process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Main registry processing function
+#### `process_model_registry(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main registry processing function called by orchestrator (4_model_registry.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for registry
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
+- `registry_path` (str, optional): Path to model registry file
 - `**kwargs`: Additional options
 
-**Returns**: Dictionary with processing results including success status and registry data
+**Returns**: `True` if registry processing succeeded
+
+**Example**:
+```python
+from model_registry import process_model_registry
+
+success = process_model_registry(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/4_model_registry_output"),
+    verbose=True,
+    registry_path="registry.json"
+)
+```
 
 ### Public Classes
 

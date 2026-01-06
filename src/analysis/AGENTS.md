@@ -8,6 +8,12 @@
 
 **Category**: Statistical Analysis / Performance Evaluation
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,18 +38,30 @@
 
 ### Public Functions
 
-#### `process_analysis(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main analysis processing function for GNN models
+#### `process_analysis(target_dir, output_dir, logger=None, **kwargs) -> bool`
+**Description**: Main analysis processing function called by orchestrator (16_analysis.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for analysis results
-- `logger` (Logger): Logger instance for progress reporting
-- `analysis_type` (str): Type of analysis to perform ("comprehensive", "statistical", "performance")
-- `include_performance` (bool): Include performance benchmarking
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `analysis_type` (str): Type of analysis to perform ("comprehensive", "statistical", "performance", default: "comprehensive")
+- `include_performance` (bool): Include performance benchmarking (default: True)
 - `**kwargs`: Additional analysis options
 
 **Returns**: `True` if analysis succeeded
+
+**Example**:
+```python
+from analysis import process_analysis
+
+success = process_analysis(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/16_analysis_output"),
+    analysis_type="comprehensive",
+    include_performance=True
+)
+```
 
 #### `perform_statistical_analysis(variables, connections) -> Dict[str, Any]`
 **Description**: Perform comprehensive statistical analysis on model components

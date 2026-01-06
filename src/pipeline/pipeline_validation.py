@@ -34,47 +34,77 @@ logger = setup_step_logging("pipeline_validation", verbose=True)
 
 # Expected output patterns for each step
 EXPECTED_OUTPUTS = {
-    "1_gnn": [
-        "gnn_processing_step/1_gnn_discovery_report.md"
+    "0_template": [
+        "template_processing_summary.json"
     ],
-    "2_setup": [
+    "1_setup": [
         "setup_artifacts/installed_packages.json"
     ],
-    "3_tests": [
+    "2_tests": [
         "test_reports/pytest_report.xml"
     ],
-    "4_type_checker": [
-        "type_check/type_check_report.md"
+    "3_gnn": [
+        "gnn_processing_results.json"
     ],
-    "5_export": [
-        "gnn_exports/"
+    "4_model_registry": [
+        "model_registry_results.json"
     ],
-    "6_visualization": [
+    "5_type_checker": [
+        "type_check_results.json"
+    ],
+    "6_validation": [
+        "validation_results.json"
+    ],
+    "7_export": [
+        "export_results.json"
+    ],
+    "8_visualization": [
         "visualization/"
     ],
-    "7_mcp": [
-        "mcp_processing_step/"
+    "9_advanced_viz": [
+        "advanced_viz_summary.json"
     ],
-    "8_ontology": [
-        "ontology_processing/"
+    "10_ontology": [
+        "ontology_results/"
     ],
-    "9_render": [
+    "11_render": [
         "gnn_rendered_simulators/"  # PyMDP, RxInfer.jl, ActiveInference.jl code
     ],
-    "10_execute": [
+    "12_execute": [
         "execution_results/"  # PyMDP, RxInfer.jl, ActiveInference.jl results
     ],
-    "11_llm": [
-        "llm_processing_step/"
+    "13_llm": [
+        "llm_results/"
     ],
-    "12_website": [
+    "14_ml_integration": [
+        "ml_integration_summary.json"
+    ],
+    "15_audio": [
+        "audio_processing_summary.json"
+    ],
+    "16_analysis": [
+        "analysis_results.json"
+    ],
+    "17_integration": [
+        "integration_summary.json"
+    ],
+    "18_security": [
+        "security_processing_summary.json"
+    ],
+    "19_research": [
+        "research_processing_summary.json"
+    ],
+    "20_website": [
         "website/"
     ],
-    "13_website": [
-        "website/"
+    "21_mcp": [
+        "mcp_results/"
     ],
-    "14_report": [
-        "report_processing_step/"
+    "22_gui": [
+        "gui_processing_summary.json"
+    ],
+    "23_report": [
+        "report_summary.json"
     ]
 }
 
@@ -210,7 +240,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 issues["suggestions"].append("Consider using ArgumentParser.parse_step_arguments for consistency")
         
         # Check for performance tracking usage
-        if module_path.name in ['5_export.py', '6_visualization.py', '9_render.py', '10_execute.py', '11_llm.py', '12_audio.py', '13_website.py', '14_report.py']:
+        if module_path.name in ['7_export.py', '6_visualization.py', '11_render.py', '12_execute.py', '11_llm.py', '12_audio.py', '13_website.py', '14_report.py']:
             if "performance_tracker" not in content:
                 issues["suggestions"].append("Consider adding performance tracking for this compute-intensive step")
                 
@@ -451,22 +481,32 @@ def validate_output_naming_conventions() -> Dict[str, List[str]]:
         
         config = get_pipeline_config()
         
-        # Expected naming pattern: step name + descriptive suffix
+        # Expected naming pattern: step name + descriptive suffix (matching config.py)
         expected_patterns = {
-            "1_setup.py": "setup_artifacts",
-            "2_gnn.py": "gnn_processing_step", 
-            "3_tests.py": "test_reports",
-            "4_type_checker.py": "type_check",
-            "5_export.py": "gnn_exports",
-            "6_visualization.py": "visualization",
-            "7_mcp.py": "mcp_processing_step",
-            "8_ontology.py": "ontology_processing", 
-            "9_render.py": "gnn_rendered_simulators",
-            "10_execute.py": "execution_results",
-            "11_llm.py": "llm_processing_step",
-            "12_audio.py": "audio_processing_step",
-"13_website.py": "website",
-"14_report.py": "report_processing_step"
+            "0_template.py": "0_template_output",
+            "1_setup.py": "1_setup_output",
+            "2_tests.py": "2_tests_output",
+            "3_gnn.py": "3_gnn_output",
+            "4_model_registry.py": "4_model_registry_output",
+            "5_type_checker.py": "5_type_checker_output",
+            "6_validation.py": "6_validation_output",
+            "7_export.py": "7_export_output",
+            "8_visualization.py": "8_visualization_output",
+            "9_advanced_viz.py": "9_advanced_viz_output",
+            "10_ontology.py": "10_ontology_output",
+            "11_render.py": "11_render_output",
+            "12_execute.py": "12_execute_output",
+            "13_llm.py": "13_llm_output",
+            "14_ml_integration.py": "14_ml_integration_output",
+            "15_audio.py": "15_audio_output",
+            "16_analysis.py": "16_analysis_output",
+            "17_integration.py": "17_integration_output",
+            "18_security.py": "18_security_output",
+            "19_research.py": "19_research_output",
+            "20_website.py": "20_website_output",
+            "21_mcp.py": "21_mcp_output",
+            "22_gui.py": "22_gui_output",
+            "23_report.py": "23_report_output"
         }
         
         violations = []
@@ -495,9 +535,9 @@ def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
         
         # Steps that should have performance tracking (compute-intensive)
         should_have_tracking = [
-            "2_gnn.py", "3_tests.py", "4_type_checker.py", "5_export.py", 
-            "6_visualization.py", "7_mcp.py", "8_ontology.py", "9_render.py", 
-            "10_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
+            "3_gnn.py", "2_tests.py", "5_type_checker.py", "7_export.py", 
+            "6_visualization.py", "21_mcp.py", "10_ontology.py", "11_render.py", 
+            "12_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
         ]
         
         missing_tracking = []

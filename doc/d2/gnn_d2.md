@@ -802,7 +802,10 @@ Include D2 diagrams in AGENTS.md documentation files:
 
 Below is a visual representation of the GNN pipeline architecture:
 
-![Pipeline Architecture](diagrams/pipeline/architecture.svg)
+> [!NOTE]
+> Pipeline Architecture diagram to be generated.
+> `diagrams/pipeline/architecture.svg`
+
 
 ```d2
 # D2 source code for the above diagram

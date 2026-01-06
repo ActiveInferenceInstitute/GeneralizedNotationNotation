@@ -34,6 +34,27 @@ from .generators import (
     create_active_inference_diagram
 )
 
+# Import specific renderers (used by tests)
+try:
+    from .pymdp import render_gnn_to_pymdp
+except ImportError:
+    render_gnn_to_pymdp = None
+
+try:
+    from .rxinfer import render_gnn_to_rxinfer
+except ImportError:
+    render_gnn_to_rxinfer = None
+
+try:
+    from .discopy import render_gnn_to_discopy
+except ImportError:
+    render_gnn_to_discopy = None
+
+try:
+    from .activeinference_jl import render_gnn_to_activeinference_jl
+except ImportError:
+    render_gnn_to_activeinference_jl = None
+
 __all__ = [
     # Core functions
     'process_render',
@@ -49,8 +70,16 @@ __all__ = [
     'generate_activeinference_jl_fallback_code',
     'generate_discopy_code',
     'generate_discopy_fallback_code',
-    'create_active_inference_diagram'
+    'create_active_inference_diagram',
+    
+    # Specific renderer functions (may be None if submodule unavailable)
+    'render_gnn_to_pymdp',
+    'render_gnn_to_rxinfer',
+    'render_gnn_to_discopy',
+    'render_gnn_to_activeinference_jl'
 ] + (['POMDPRenderProcessor', 'process_pomdp_for_frameworks'] if POMDP_PROCESSING_AVAILABLE else [])
+
+
 
 __version__ = "2.0.0"
 FEATURES = {

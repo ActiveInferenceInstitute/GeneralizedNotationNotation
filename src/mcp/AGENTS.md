@@ -8,6 +8,12 @@
 
 **Category**: Protocol Integration / Tool Management
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -34,18 +40,32 @@
 
 ### Public Functions
 
-#### `process_mcp(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main MCP processing function for tool registration and coordination
+#### `process_mcp(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main MCP processing function called by orchestrator (21_mcp.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for MCP results
-- `logger` (Logger): Logger instance for progress reporting
-- `mcp_mode` (str): MCP mode ("tool_discovery", "server", "client")
-- `enable_tools` (bool): Enable MCP tools functionality
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
+- `mcp_mode` (str): MCP mode ("tool_discovery", "server", "client", default: "tool_discovery")
+- `enable_tools` (bool): Enable MCP tools functionality (default: True)
 - `**kwargs`: Additional MCP options
 
 **Returns**: `True` if MCP processing succeeded
+
+**Example**:
+```python
+from mcp import process_mcp
+
+success = process_mcp(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/21_mcp_output"),
+    verbose=True,
+    mcp_mode="tool_discovery",
+    enable_tools=True
+)
+```
 
 #### `register_module_tools(module_name, tools) -> bool`
 **Description**: Register tools from a specific module in the MCP system

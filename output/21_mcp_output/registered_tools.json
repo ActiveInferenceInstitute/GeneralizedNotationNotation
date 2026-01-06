@@ -301,6 +301,13 @@
     "version": "1.0.0"
   },
   {
+    "name": "process_visualization",
+    "description": "Process visualization for GNN files in the specified directory.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "process_website",
     "description": "Generate website from pipeline artifacts in the specified directory.",
     "module": "",
@@ -525,6 +532,20 @@
     "version": "1.0.0"
   },
   {
+    "name": "src.visualization.call_function",
+    "description": "Call any public function in the src.visualization module with keyword arguments.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "src.visualization.list_functions",
+    "description": "List callable functions exported by the src.visualization module public API.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "src.website.call_function",
     "description": "Call any public function in the src.website module with keyword arguments.",
     "module": "",
@@ -730,6 +751,20 @@
   {
     "name": "validation.validate_semantic",
     "description": "Validate the semantic aspects of a GNN model",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "visualization.call_function",
+    "description": "Call any public function in the visualization module with keyword arguments.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "visualization.list_functions",
+    "description": "List callable functions exported by the visualization module public API.",
     "module": "",
     "category": "",
     "version": "1.0.0"

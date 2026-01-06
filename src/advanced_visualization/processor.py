@@ -172,10 +172,106 @@ def process_advanced_viz_standardized_impl(
                     else:
                         results.skipped += 1
                 
+                if viz_type in ["all", "statistical"]:
+                    attempt = _generate_statistical_plots(
+                        model_name, model_data, output_dir,
+                        dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
+                if viz_type in ["all", "statistical"]:
+                    attempt = _generate_matrix_correlations(
+                        model_name, model_data, output_dir,
+                        dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
+                if viz_type in ["all", "pomdp"]:
+                    attempt = _generate_pomdp_transition_analysis(
+                        model_name, model_data, output_dir,
+                        dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
+                if viz_type in ["all", "pomdp"]:
+                    attempt = _generate_policy_visualization(
+                        model_name, model_data, output_dir,
+                        dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
+                if viz_type in ["all", "interactive"] and interactive:
+                    attempt = _generate_interactive_plotly_dashboard(
+                        model_name, model_data, output_dir,
+                        export_formats, dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
                 if viz_type in ["all", "dashboard"] and interactive:
                     attempt = _generate_interactive_dashboard(
                         model_name, model_data, output_dir,
                         export_formats, dependencies_available, logger
+                    )
+                    results.attempts.append(attempt)
+                    results.total_attempts += 1
+                    if attempt.status == "success":
+                        results.successful += 1
+                        results.output_files.extend(attempt.output_files)
+                    elif attempt.status == "failed":
+                        results.failed += 1
+                        results.errors.append(attempt.error_message or "Unknown error")
+                    else:
+                        results.skipped += 1
+                
+                if viz_type in ["all", "network"]:
+                    attempt = _generate_network_metrics(
+                        model_name, model_data, output_dir,
+                        dependencies_available, logger
                     )
                     results.attempts.append(attempt)
                     results.total_attempts += 1
@@ -255,13 +351,21 @@ def process_advanced_viz_standardized_impl(
         return False
 
 
+# Global seaborn availability flag
+SEABORN_AVAILABLE = False
+try:
+    import seaborn as sns
+    SEABORN_AVAILABLE = True
+except ImportError:
+    sns = None
+
 def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     """Check availability of visualization dependencies"""
-    global MATPLOTLIB_AVAILABLE
+    global MATPLOTLIB_AVAILABLE, SEABORN_AVAILABLE
     dependencies = {
         "matplotlib": MATPLOTLIB_AVAILABLE,
         "plotly": False,
-        "seaborn": False,
+        "seaborn": SEABORN_AVAILABLE,
         "bokeh": False,
         "numpy": False
     }
@@ -276,15 +380,9 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
     except ImportError:
         logger.info("plotly not available - interactive visualizations will be limited")
 
-    # Check seaborn
-    global SEABORN_AVAILABLE
-    try:
-        import seaborn
-        dependencies["seaborn"] = True
-        SEABORN_AVAILABLE = True
-    except ImportError:
+    # Check seaborn (already checked globally)
+    if not SEABORN_AVAILABLE:
         logger.debug("seaborn not available - will use matplotlib fallback")
-        SEABORN_AVAILABLE = False
 
     # Check bokeh
     try:
@@ -689,7 +787,211 @@ def _calculate_semantic_positions(variables: List[Dict], connections: List[Dict]
 
     return positions
 
-# Removed _generate_statistical_plots (moved to Step 16 analysis)
+def _generate_statistical_plots(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate statistical analysis visualizations"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="statistical",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        if not MATPLOTLIB_AVAILABLE or not np:
+            attempt.status = "skipped"
+            attempt.error_message = "matplotlib/numpy not available"
+            return attempt
+        
+        output_files = []
+        
+        # Extract data
+        variables = model_data.get("variables", [])
+        parameters = model_data.get("parameters", [])
+        
+        # 1. Variable type distribution
+        if variables:
+            fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+            
+            # Variable type distribution
+            var_types = {}
+            for var in variables:
+                if isinstance(var, dict):
+                    vtype = var.get("var_type", "unknown")
+                    var_types[vtype] = var_types.get(vtype, 0) + 1
+            
+            if var_types:
+                axes[0, 0].pie(var_types.values(), labels=var_types.keys(), autopct='%1.1f%%')
+                axes[0, 0].set_title("Variable Type Distribution")
+            
+            # Variable dimension distribution
+            dim_counts = {}
+            for var in variables:
+                if isinstance(var, dict):
+                    dims = var.get("dimensions", [])
+                    dim_str = str(dims) if dims else "scalar"
+                    dim_counts[dim_str] = dim_counts.get(dim_str, 0) + 1
+            
+            if dim_counts:
+                axes[0, 1].bar(range(len(dim_counts)), list(dim_counts.values()))
+                axes[0, 1].set_xticks(range(len(dim_counts)))
+                axes[0, 1].set_xticklabels(list(dim_counts.keys()), rotation=45, ha='right')
+                axes[0, 1].set_title("Variable Dimension Distribution")
+                axes[0, 1].set_ylabel("Count")
+            
+            # Parameter value distribution (for scalar parameters)
+            scalar_values = []
+            for param in parameters:
+                if isinstance(param, dict):
+                    value = param.get("value")
+                    if isinstance(value, (int, float)):
+                        scalar_values.append(value)
+            
+            if scalar_values:
+                axes[1, 0].hist(scalar_values, bins=min(20, len(scalar_values)), alpha=0.7)
+                axes[1, 0].set_title("Scalar Parameter Distribution")
+                axes[1, 0].set_xlabel("Value")
+                axes[1, 0].set_ylabel("Frequency")
+            
+            # Matrix size distribution
+            matrix_sizes = []
+            for param in parameters:
+                if isinstance(param, dict):
+                    value = param.get("value")
+                    if isinstance(value, (list, tuple)):
+                        try:
+                            arr = np.array(value)
+                            matrix_sizes.append(arr.size)
+                        except:
+                            pass
+            
+            if matrix_sizes:
+                axes[1, 1].hist(matrix_sizes, bins=min(15, len(matrix_sizes)), alpha=0.7, color='green')
+                axes[1, 1].set_title("Matrix Size Distribution")
+                axes[1, 1].set_xlabel("Matrix Size (elements)")
+                axes[1, 1].set_ylabel("Frequency")
+            
+            plt.suptitle(f"Statistical Analysis: {model_name}", fontsize=14, fontweight='bold')
+            plt.tight_layout()
+            
+            output_file = output_dir / f"{model_name}_statistical_analysis.png"
+            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            output_files.append(str(output_file))
+        
+        attempt.status = "success"
+        attempt.output_files = output_files
+        
+    except Exception as e:
+        logger.error(f"Failed to generate statistical plots for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
+
+
+def _generate_matrix_correlations(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate matrix correlation heatmaps"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="matrix_correlations",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        if not MATPLOTLIB_AVAILABLE or not np:
+            attempt.status = "skipped"
+            attempt.error_message = "matplotlib/numpy not available"
+            return attempt
+        
+        from ..visualization.matrix_visualizer import MatrixVisualizer
+        mv = MatrixVisualizer()
+        
+        # Extract matrices
+        parameters = model_data.get("parameters", [])
+        matrices = mv.extract_matrix_data_from_parameters(parameters)
+        
+        if len(matrices) < 2:
+            attempt.status = "skipped"
+            attempt.error_message = "Need at least 2 matrices for correlation"
+            return attempt
+        
+        # Flatten matrices and compute correlations
+        matrix_names = list(matrices.keys())
+        matrix_vectors = []
+        
+        for name in matrix_names:
+            matrix = matrices[name]
+            # Flatten to 1D
+            flat = matrix.flatten()
+            # Normalize
+            if flat.max() > flat.min():
+                flat = (flat - flat.min()) / (flat.max() - flat.min())
+            matrix_vectors.append(flat)
+        
+        # Pad to same length
+        max_len = max(len(v) for v in matrix_vectors)
+        for i, vec in enumerate(matrix_vectors):
+            if len(vec) < max_len:
+                padded = np.zeros(max_len)
+                padded[:len(vec)] = vec
+                matrix_vectors[i] = padded
+        
+        # Compute correlation matrix
+        correlation_matrix = np.corrcoef(matrix_vectors)
+        
+        # Create heatmap
+        plt.figure(figsize=(10, 8))
+        
+        if SEABORN_AVAILABLE and sns:
+            sns.heatmap(correlation_matrix, annot=True, fmt='.2f', 
+                       xticklabels=matrix_names, yticklabels=matrix_names,
+                       cmap='coolwarm', center=0, vmin=-1, vmax=1)
+        else:
+            im = plt.imshow(correlation_matrix, cmap='coolwarm', aspect='auto', vmin=-1, vmax=1)
+            plt.colorbar(im)
+            plt.xticks(range(len(matrix_names)), matrix_names, rotation=45, ha='right')
+            plt.yticks(range(len(matrix_names)), matrix_names)
+            # Add text annotations
+            for i in range(len(matrix_names)):
+                for j in range(len(matrix_names)):
+                    plt.text(j, i, f'{correlation_matrix[i, j]:.2f}',
+                           ha='center', va='center', color='white' if abs(correlation_matrix[i, j]) > 0.5 else 'black')
+        
+        plt.title(f"Matrix Correlation Heatmap: {model_name}", fontsize=14, fontweight='bold')
+        plt.tight_layout()
+        
+        output_file = output_dir / f"{model_name}_matrix_correlations.png"
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        attempt.status = "success"
+        attempt.output_files = [str(output_file)]
+        
+    except Exception as e:
+        logger.error(f"Failed to generate matrix correlations for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
 
 
 def _generate_fallback_report(
@@ -930,25 +1232,466 @@ def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dic
     return validation_results
 
 
-# Removed _generate_state_transitions (moved to Step 16 analysis)
+def _generate_pomdp_transition_analysis(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate POMDP transition matrix (B matrix) analysis"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="pomdp_transitions",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        if not MATPLOTLIB_AVAILABLE or not np:
+            attempt.status = "skipped"
+            attempt.error_message = "matplotlib/numpy not available"
+            return attempt
+        
+        from ..visualization.matrix_visualizer import MatrixVisualizer
+        mv = MatrixVisualizer()
+        
+        # Extract B matrix (transition matrix)
+        parameters = model_data.get("parameters", [])
+        matrices = mv.extract_matrix_data_from_parameters(parameters)
+        
+        if 'B' not in matrices:
+            attempt.status = "skipped"
+            attempt.error_message = "B matrix (transition matrix) not found"
+            return attempt
+        
+        B_matrix = matrices['B']
+        
+        # Handle 3D B matrix (states x states x actions)
+        if B_matrix.ndim == 3:
+            num_actions = B_matrix.shape[0]
+            fig, axes = plt.subplots(1, num_actions, figsize=(5*num_actions, 5))
+            if num_actions == 1:
+                axes = [axes]
+            
+            for action_idx in range(num_actions):
+                transition_slice = B_matrix[action_idx, :, :]
+                
+                if SEABORN_AVAILABLE and sns:
+                    sns.heatmap(transition_slice, annot=True, fmt='.2f', 
+                              cmap='Blues', ax=axes[action_idx], cbar=True)
+                else:
+                    im = axes[action_idx].imshow(transition_slice, cmap='Blues', aspect='auto')
+                    plt.colorbar(im, ax=axes[action_idx])
+                    # Add annotations
+                    for i in range(transition_slice.shape[0]):
+                        for j in range(transition_slice.shape[1]):
+                            axes[action_idx].text(j, i, f'{transition_slice[i, j]:.2f}',
+                                                 ha='center', va='center', color='white' if transition_slice[i, j] > 0.5 else 'black')
+                
+                axes[action_idx].set_title(f"Transition Matrix (Action {action_idx})")
+                axes[action_idx].set_xlabel("Next State")
+                axes[action_idx].set_ylabel("Previous State")
+        else:
+            # 2D matrix
+            fig, ax = plt.subplots(figsize=(8, 6))
+            if SEABORN_AVAILABLE and sns:
+                sns.heatmap(B_matrix, annot=True, fmt='.2f', cmap='Blues', ax=ax)
+            else:
+                im = ax.imshow(B_matrix, cmap='Blues', aspect='auto')
+                plt.colorbar(im, ax=ax)
+            ax.set_title("Transition Matrix (B)")
+            ax.set_xlabel("Next State")
+            ax.set_ylabel("Previous State")
+        
+        plt.suptitle(f"POMDP Transition Analysis: {model_name}", fontsize=14, fontweight='bold')
+        plt.tight_layout()
+        
+        output_file = output_dir / f"{model_name}_pomdp_transitions.png"
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        attempt.status = "success"
+        attempt.output_files = [str(output_file)]
+        
+    except Exception as e:
+        logger.error(f"Failed to generate POMDP transition analysis for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
 
 
-# Removed _generate_belief_evolution (moved to Step 16 analysis)
+def _generate_policy_visualization(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate policy distribution visualizations"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="policy",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        if not MATPLOTLIB_AVAILABLE or not np:
+            attempt.status = "skipped"
+            attempt.error_message = "matplotlib/numpy not available"
+            return attempt
+        
+        # Find policy-related variables and parameters
+        variables = model_data.get("variables", [])
+        parameters = model_data.get("parameters", [])
+        
+        policy_data = {}
+        
+        # Look for π (pi) or policy variables
+        for var in variables:
+            if isinstance(var, dict):
+                name = var.get("name", "")
+                var_type = var.get("var_type", "")
+                if "policy" in var_type.lower() or name == "π" or name == "pi":
+                    policy_data[name] = var
+        
+        # Look for E (habit) parameter
+        from ..visualization.matrix_visualizer import MatrixVisualizer
+        mv = MatrixVisualizer()
+        matrices = mv.extract_matrix_data_from_parameters(parameters)
+        
+        if 'E' in matrices:
+            policy_data['E'] = matrices['E']
+        
+        if not policy_data:
+            attempt.status = "skipped"
+            attempt.error_message = "No policy data found"
+            return attempt
+        
+        # Create visualization
+        num_policies = len(policy_data)
+        fig, axes = plt.subplots(1, num_policies, figsize=(5*num_policies, 5))
+        if num_policies == 1:
+            axes = [axes]
+        
+        for idx, (name, data) in enumerate(policy_data.items()):
+            if isinstance(data, np.ndarray):
+                policy_vec = data.flatten()
+            elif isinstance(data, dict):
+                # Extract from variable dimensions or default
+                dims = data.get("dimensions", [3])
+                policy_vec = np.ones(dims[0]) / dims[0]  # Uniform default
+            else:
+                continue
+            
+            axes[idx].bar(range(len(policy_vec)), policy_vec, alpha=0.7)
+            axes[idx].set_title(f"Policy Distribution: {name}")
+            axes[idx].set_xlabel("Action Index")
+            axes[idx].set_ylabel("Probability")
+            axes[idx].set_ylim(0, 1)
+            axes[idx].grid(True, alpha=0.3)
+        
+        plt.suptitle(f"Policy Visualization: {model_name}", fontsize=14, fontweight='bold')
+        plt.tight_layout()
+        
+        output_file = output_dir / f"{model_name}_policy_visualization.png"
+        plt.savefig(output_file, dpi=300, bbox_inches='tight')
+        plt.close()
+        
+        attempt.status = "success"
+        attempt.output_files = [str(output_file)]
+        
+    except Exception as e:
+        logger.error(f"Failed to generate policy visualization for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
 
 
-# Removed _generate_policy_visualization (moved to Step 16 analysis)
+def _generate_interactive_plotly_dashboard(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    export_formats: List[str],
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate full interactive Plotly dashboard"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="interactive_dashboard",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        # Check for plotly
+        try:
+            import plotly.graph_objects as go
+            import plotly.express as px
+            from plotly.subplots import make_subplots
+            plotly_available = True
+        except ImportError:
+            plotly_available = False
+        
+        if not plotly_available:
+            attempt.status = "skipped"
+            attempt.error_message = "plotly not available"
+            return attempt
+        
+        # Extract data
+        variables = model_data.get("variables", [])
+        parameters = model_data.get("parameters", [])
+        connections = model_data.get("connections", [])
+        
+        from ..visualization.matrix_visualizer import MatrixVisualizer
+        mv = MatrixVisualizer()
+        matrices = mv.extract_matrix_data_from_parameters(parameters)
+        
+        # Create dashboard with subplots
+        fig = make_subplots(
+            rows=2, cols=2,
+            subplot_titles=("Variable Types", "Matrix Overview", "Network Graph", "Model Statistics"),
+            specs=[[{"type": "pie"}, {"type": "bar"}],
+                   [{"type": "scatter"}, {"type": "table"}]]
+        )
+        
+        # 1. Variable type pie chart
+        var_types = {}
+        for var in variables:
+            if isinstance(var, dict):
+                vtype = var.get("var_type", "unknown")
+                var_types[vtype] = var_types.get(vtype, 0) + 1
+        
+        if var_types:
+            fig.add_trace(
+                go.Pie(labels=list(var_types.keys()), values=list(var_types.values()), name="Types"),
+                row=1, col=1
+            )
+        
+        # 2. Matrix sizes bar chart
+        matrix_names = list(matrices.keys())
+        matrix_sizes = [matrices[name].size for name in matrix_names]
+        
+        if matrix_names:
+            fig.add_trace(
+                go.Bar(x=matrix_names, y=matrix_sizes, name="Matrix Sizes"),
+                row=1, col=2
+            )
+        
+        # 3. Network graph (simplified scatter)
+        if connections:
+            # Extract connection endpoints
+            x_coords = []
+            y_coords = []
+            labels = []
+            
+            for i, conn in enumerate(connections[:20]):  # Limit to 20 for performance
+                if isinstance(conn, dict):
+                    source = str(conn.get("source_variables", [conn.get("source", "")])[0] if conn.get("source_variables") else conn.get("source", ""))
+                    target = str(conn.get("target_variables", [conn.get("target", "")])[0] if conn.get("target_variables") else conn.get("target", ""))
+                    x_coords.append(i % 5)
+                    y_coords.append(i // 5)
+                    labels.append(f"{source}→{target}")
+            
+            if x_coords:
+                fig.add_trace(
+                    go.Scatter(x=x_coords, y=y_coords, mode='markers+text',
+                             text=labels, textposition="middle center",
+                             name="Connections"),
+                    row=2, col=1
+                )
+        
+        # 4. Statistics table
+        stats_data = {
+            "Metric": ["Variables", "Parameters", "Connections", "Matrices"],
+            "Count": [len(variables), len(parameters), len(connections), len(matrices)]
+        }
+        
+        fig.add_trace(
+            go.Table(
+                header=dict(values=list(stats_data.keys())),
+                cells=dict(values=[stats_data[k] for k in stats_data.keys()])
+            ),
+            row=2, col=2
+        )
+        
+        fig.update_layout(
+            title_text=f"Interactive Dashboard: {model_name}",
+            height=800,
+            showlegend=True
+        )
+        
+        # Save as HTML
+        if "html" in export_formats:
+            output_file = output_dir / f"{model_name}_interactive_dashboard.html"
+            fig.write_html(str(output_file))
+            attempt.output_files.append(str(output_file))
+        
+        # Save as PNG if requested
+        if "png" in export_formats:
+            output_file = output_dir / f"{model_name}_interactive_dashboard.png"
+            fig.write_image(str(output_file), width=1200, height=800)
+            attempt.output_files.append(str(output_file))
+        
+        attempt.status = "success"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate interactive dashboard for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
 
 
-# Removed _generate_matrix_correlations (moved to Step 16 analysis)
-
-
-# Removed _generate_timeline_visualization (moved to Step 16 analysis)
-
-
-# Removed _generate_state_space_analysis (moved to Step 16 analysis)
-
-
-# Removed _generate_belief_flow_visualization (moved to Step 16 analysis)
+def _generate_network_metrics(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate network analysis metrics and visualizations"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="network_metrics",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        if not MATPLOTLIB_AVAILABLE or not np:
+            attempt.status = "skipped"
+            attempt.error_message = "matplotlib/numpy not available"
+            return attempt
+        
+        # Try to import networkx
+        try:
+            import networkx as nx
+            nx_available = True
+        except ImportError:
+            nx_available = False
+        
+        variables = model_data.get("variables", [])
+        connections = model_data.get("connections", [])
+        
+        if not variables or not connections:
+            attempt.status = "skipped"
+            attempt.error_message = "Insufficient network data"
+            return attempt
+        
+        output_files = []
+        
+        # Create network graph if networkx available
+        if nx_available:
+            G = nx.DiGraph()
+            
+            # Add nodes
+            for var in variables:
+                if isinstance(var, dict):
+                    G.add_node(var.get("name", "unknown"))
+            
+            # Add edges
+            for conn in connections:
+                if isinstance(conn, dict):
+                    normalized = _normalize_connection_format(conn)
+                    sources = normalized.get("source_variables", [])
+                    targets = normalized.get("target_variables", [])
+                    for source in sources:
+                        for target in targets:
+                            if source and target:
+                                G.add_edge(source, target)
+            
+            # Calculate metrics
+            metrics = {
+                "nodes": G.number_of_nodes(),
+                "edges": G.number_of_edges(),
+                "density": nx.density(G) if G.number_of_nodes() > 1 else 0,
+                "avg_clustering": nx.average_clustering(G.to_undirected()) if G.number_of_nodes() > 1 else 0,
+            }
+            
+            # Calculate centrality if possible
+            if G.number_of_nodes() > 0:
+                try:
+                    degree_centrality = nx.degree_centrality(G)
+                    metrics["max_degree_centrality"] = max(degree_centrality.values()) if degree_centrality else 0
+                except:
+                    pass
+            
+            # Visualize network with metrics
+            fig, axes = plt.subplots(1, 2, figsize=(16, 6))
+            
+            # Network graph
+            pos = nx.spring_layout(G, k=1, iterations=50, seed=42)
+            nx.draw(G, pos, ax=axes[0], with_labels=True, node_color='lightblue',
+                   node_size=500, font_size=8, arrows=True, edge_color='gray')
+            axes[0].set_title("Network Graph")
+            
+            # Metrics bar chart
+            metric_names = list(metrics.keys())
+            metric_values = [metrics[k] for k in metric_names]
+            axes[1].bar(range(len(metric_names)), metric_values, alpha=0.7)
+            axes[1].set_xticks(range(len(metric_names)))
+            axes[1].set_xticklabels(metric_names, rotation=45, ha='right')
+            axes[1].set_title("Network Metrics")
+            axes[1].set_ylabel("Value")
+            axes[1].grid(True, alpha=0.3)
+            
+            plt.suptitle(f"Network Analysis: {model_name}", fontsize=14, fontweight='bold')
+            plt.tight_layout()
+            
+            output_file = output_dir / f"{model_name}_network_metrics.png"
+            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            output_files.append(str(output_file))
+        else:
+            # Fallback: simple statistics
+            fig, ax = plt.subplots(figsize=(8, 6))
+            
+            stats = {
+                "Variables": len(variables),
+                "Connections": len(connections),
+                "Avg Connections/Node": len(connections) / len(variables) if variables else 0
+            }
+            
+            ax.bar(range(len(stats)), list(stats.values()), alpha=0.7)
+            ax.set_xticks(range(len(stats)))
+            ax.set_xticklabels(list(stats.keys()), rotation=45, ha='right')
+            ax.set_title(f"Network Statistics: {model_name}")
+            ax.set_ylabel("Count")
+            ax.grid(True, alpha=0.3)
+            
+            plt.tight_layout()
+            
+            output_file = output_dir / f"{model_name}_network_metrics.png"
+            plt.savefig(output_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            output_files.append(str(output_file))
+        
+        attempt.status = "success"
+        attempt.output_files = output_files
+        
+    except Exception as e:
+        logger.error(f"Failed to generate network metrics for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
 
 
 def _generate_d2_visualizations_safe(

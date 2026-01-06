@@ -107,28 +107,28 @@ sequenceDiagram
 
 ```mermaid
 flowchart TD
-  O0[output/template/] --> O1[output/setup_artifacts/]
-  O1 --> O2[output/test_reports/]
-  O2 --> O3[output/gnn_processing_step/]
-  O3 --> O4[output/model_registry/]
-  O4 --> O5[output/type_check/]
-  O5 --> O6[output/validation/]
-  O6 --> O7[output/gnn_exports/]
-  O7 --> O8[output/visualization/]
-  O8 --> O9[output/advanced_visualization/]
-  O9 --> O10[output/ontology_processing/]
-  O10 --> O11[output/gnn_rendered_simulators/]
-  O11 --> O12[output/execution_results/]
-  O12 --> O13[output/llm_processing_step/]
-  O13 --> O14[output/ml_integration/]
-  O14 --> O15[output/audio_processing_step/]
-  O15 --> O16[output/analysis/]
-  O16 --> O17[output/integration/]
-  O17 --> O18[output/security/]
-  O18 --> O19[output/research/]
-  O19 --> O20[output/website/]
-  O20 --> O21[output/report_processing_step/]
-  O21 --> O22[output/mcp_processing_step/]
+  O0[output/0_template_output/] --> O1[output/1_setup_output/]
+  O1 --> O2[output/2_tests_output/]
+  O2 --> O3[output/3_gnn_output/]
+  O3 --> O4[output/4_model_registry_output/]
+  O4 --> O5[output/5_type_checker_output/]
+  O5 --> O6[output/6_validation_output/]
+  O6 --> O7[output/7_export_output/]
+  O7 --> O8[output/8_visualization_output/]
+  O8 --> O9[output/9_advanced_viz_output/]
+  O9 --> O10[output/10_ontology_output/]
+  O10 --> O11[output/11_render_output/]
+  O11 --> O12[output/12_execute_output/]
+  O12 --> O13[output/13_llm_output/]
+  O13 --> O14[output/14_ml_integration_output/]
+  O14 --> O15[output/15_audio_output/]
+  O15 --> O16[output/16_analysis_output/]
+  O16 --> O17[output/17_integration_output/]
+  O17 --> O18[output/18_security_output/]
+  O18 --> O19[output/19_research_output/]
+  O19 --> O20[output/20_website_output/]
+  O20 --> O21[output/23_report_output/]
+  O21 --> O22[output/21_mcp_output/]
 ```
 
 ## Module Interaction Map
@@ -201,30 +201,30 @@ flowchart LR
 ```json
 {
   "steps": [
-    {"n": 0,  "script": "0_template.py",        "module": "template",          "output": "template/"},
-    {"n": 1,  "script": "1_setup.py",           "module": "setup",             "output": "setup_artifacts/"},
-    {"n": 2,  "script": "2_tests.py",           "module": "tests",             "output": "test_reports/"},
-    {"n": 3,  "script": "3_gnn.py",             "module": "gnn",               "output": "gnn_processing_step/"},
-    {"n": 4,  "script": "4_model_registry.py",  "module": "model_registry",    "output": "model_registry/"},
-    {"n": 5,  "script": "5_type_checker.py",    "module": "type_checker",      "output": "type_check/"},
-    {"n": 6,  "script": "6_validation.py",      "module": "validation",        "output": "validation/"},
-    {"n": 7,  "script": "7_export.py",          "module": "export",            "output": "gnn_exports/"},
-    {"n": 8,  "script": "8_visualization.py",   "module": "visualization",     "output": "visualization/"},
-    {"n": 9,  "script": "9_advanced_viz.py",    "module": "advanced_visualization", "output": "advanced_visualization/"},
-    {"n": 10, "script": "10_ontology.py",       "module": "ontology",          "output": "ontology_processing/"},
-    {"n": 11, "script": "11_render.py",         "module": "render",            "output": "gnn_rendered_simulators/"},
-    {"n": 12, "script": "12_execute.py",        "module": "execute",           "output": "execution_results/"},
-    {"n": 13, "script": "13_llm.py",            "module": "llm",               "output": "llm_processing_step/"},
-    {"n": 14, "script": "14_ml_integration.py", "module": "ml_integration",    "output": "ml_integration/"},
-    {"n": 15, "script": "15_audio.py",          "module": "audio",             "output": "audio_processing_step/"},
-    {"n": 16, "script": "16_analysis.py",       "module": "analysis",          "output": "analysis/"},
-    {"n": 17, "script": "17_integration.py",    "module": "integration",       "output": "integration/"},
-    {"n": 18, "script": "18_security.py",       "module": "security",          "output": "security/"},
-    {"n": 19, "script": "19_research.py",       "module": "research",          "output": "research/"},
-    {"n": 20, "script": "20_website.py",        "module": "website",           "output": "website/"},
-    {"n": 21, "script": "21_mcp.py",            "module": "mcp",               "output": "mcp_processing_step/"},
-    {"n": 22, "script": "22_gui.py",            "module": "gui",               "output": "gui_processing_step/"},
-    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "report_processing_step/"}
+    {"n": 0,  "script": "0_template.py",        "module": "template",          "output": "0_template_output/"},
+    {"n": 1,  "script": "1_setup.py",           "module": "setup",             "output": "1_setup_output/"},
+    {"n": 2,  "script": "2_tests.py",           "module": "tests",             "output": "2_tests_output/"},
+    {"n": 3,  "script": "3_gnn.py",             "module": "gnn",               "output": "3_gnn_output/"},
+    {"n": 4,  "script": "4_model_registry.py",  "module": "model_registry",    "output": "4_model_registry_output/"},
+    {"n": 5,  "script": "5_type_checker.py",    "module": "type_checker",      "output": "5_type_checker_output/"},
+    {"n": 6,  "script": "6_validation.py",      "module": "validation",        "output": "6_validation_output/"},
+    {"n": 7,  "script": "7_export.py",          "module": "export",            "output": "7_export_output/"},
+    {"n": 8,  "script": "8_visualization.py",   "module": "visualization",     "output": "8_visualization_output/"},
+    {"n": 9,  "script": "9_advanced_viz.py",    "module": "advanced_visualization", "output": "9_advanced_viz_output/"},
+    {"n": 10, "script": "10_ontology.py",       "module": "ontology",          "output": "10_ontology_output/"},
+    {"n": 11, "script": "11_render.py",         "module": "render",            "output": "11_render_output/"},
+    {"n": 12, "script": "12_execute.py",        "module": "execute",           "output": "12_execute_output/"},
+    {"n": 13, "script": "13_llm.py",            "module": "llm",               "output": "13_llm_output/"},
+    {"n": 14, "script": "14_ml_integration.py", "module": "ml_integration",    "output": "14_ml_integration_output/"},
+    {"n": 15, "script": "15_audio.py",          "module": "audio",             "output": "15_audio_output/"},
+    {"n": 16, "script": "16_analysis.py",       "module": "analysis",          "output": "16_analysis_output/"},
+    {"n": 17, "script": "17_integration.py",    "module": "integration",       "output": "17_integration_output/"},
+    {"n": 18, "script": "18_security.py",       "module": "security",          "output": "18_security_output/"},
+    {"n": 19, "script": "19_research.py",       "module": "research",          "output": "19_research_output/"},
+    {"n": 20, "script": "20_website.py",        "module": "website",           "output": "20_website_output/"},
+    {"n": 21, "script": "21_mcp.py",            "module": "mcp",               "output": "21_mcp_output/"},
+    {"n": 22, "script": "22_gui.py",            "module": "gui",               "output": "22_gui_output/"},
+    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "23_report_output/"}
   ]
 }
 ```

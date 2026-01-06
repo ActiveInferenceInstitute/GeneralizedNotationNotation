@@ -10,9 +10,9 @@ This script performs comprehensive validation of GNN documentation including:
 - File existence checks
 
 Usage:
-    python scripts/validate_documentation.py
-    python scripts/validate_documentation.py --fix-issues
-    python scripts/validate_documentation.py --verbose
+    python src/pipeline/validate_documentation.py
+    python src/pipeline/validate_documentation.py --fix-issues
+    python src/pipeline/validate_documentation.py --verbose
 """
 
 import os
@@ -191,9 +191,9 @@ class DocumentationValidator:
             
             # Check for specific incorrect references (old pipeline references)
             incorrect_refs = [
-                "12_discopy.py", "13_discopy_jax_eval.py", "14_site.py",
-                "2_gnn.py",  # Should be 3_gnn.py
-                "3_tests.py",  # Should be 2_tests.py
+                "15_audio.py", "20_website.py", "20_website.py",
+                "3_gnn.py",  # Should be 3_gnn.py
+                "2_tests.py",  # Should be 2_tests.py
                 "14-step", "14 steps", "steps 1-14", "fourteen steps",
                 "13-step", "13 steps", "steps 1-13", "thirteen steps"
             ]

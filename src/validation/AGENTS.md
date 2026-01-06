@@ -8,6 +8,12 @@
 
 **Category**: Validation / Quality Assurance
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -32,16 +38,32 @@
 
 ### Public Functions
 
-#### `process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-**Description**: Main validation processing function for GNN models
+#### `process_validation(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main validation processing function called by orchestrator (6_validation.py)
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to validate
 - `output_dir` (Path): Output directory for validation results
 - `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
+- `strict` (bool): Enable strict validation mode (default: False)
+- `profile` (bool): Enable performance profiling (default: False)
 - `**kwargs`: Additional validation options
 
 **Returns**: `True` if validation succeeded
+
+**Example**:
+```python
+from validation import process_validation
+
+success = process_validation(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/6_validation_output"),
+    verbose=True,
+    strict=True,
+    profile=True
+)
+```
 
 #### `process_semantic_validation(model_data: Dict[str, Any]) -> Dict[str, Any]`
 **Description**: Perform semantic validation on model data

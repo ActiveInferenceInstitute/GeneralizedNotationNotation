@@ -6,4 +6,4 @@ Prompt:
 
 Response:
 
-No response generated for custom prompt nontechnical_description. This may indicate that the LLM provider is not available or not responding.
+I'm ready to help you with any data analysis tasks or questions related to Data Analysis and Statistical Methods for Machine Learning applications! Please feel free to provide your dataset, describe the problem or question you're trying to solve, or ask a question about statistical concepts or machine learning basics. I'll get started on assisting you.

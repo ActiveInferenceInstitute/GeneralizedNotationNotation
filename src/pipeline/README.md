@@ -8,11 +8,26 @@ This module provides core pipeline orchestration, configuration management, and 
 src/pipeline/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── AGENTS.md                      # Agent scaffolding documentation
 ├── config.py                      # Pipeline configuration management
-├── orchestrator.py                # Pipeline orchestration
-├── step_manager.py                # Step execution management
-├── validation.py                  # Pipeline validation utilities
-└── template.py                    # Pipeline step template
+├── audit_filepaths.py            # Filepath and reference audit script
+├── fix_filepath_references.py    # Fix outdated script references
+├── fix_path_issues.py            # Fix documentation path issues
+├── audit_docs.py                 # Documentation audit script
+├── generate_viz_inventory.py     # Visualization inventory generator
+├── install_optional_packages.py  # Optional package installer
+├── validate_documentation.py     # Documentation validation
+├── pipeline_validation.py        # Pipeline validation utilities
+├── pipeline_validator.py         # Pipeline validator
+├── pipeline_step_template.py    # Pipeline step template
+├── health_check.py               # Pipeline health checker
+├── diagnostic_enhancer.py        # Diagnostic enhancement
+├── execution.py                   # Pipeline execution
+├── discovery.py                  # Pipeline discovery
+├── mcp.py                        # MCP integration
+├── update_version.py             # Version update utility
+├── verify_pipeline.py            # Pipeline verification
+└── generate_api_index.py         # API index generator
 ```
 
 ### Pipeline Flow

@@ -8,6 +8,12 @@
 
 **Category**: Environment Management / Dependency Installation
 
+**Status**: ✅ Production Ready
+
+**Version**: 2.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -33,6 +39,24 @@
 ## API Reference
 
 ### Public Functions
+
+#### `setup_orchestrator(target_dir, output_dir, logger, **kwargs) -> bool`
+**Description**: Main setup orchestrator function called by orchestrator (1_setup.py). This function coordinates setup operations based on provided arguments.
+
+**Parameters**:
+- `target_dir` (Path): Target directory (used for context)
+- `output_dir` (Path): Output directory for setup logs
+- `logger` (Logger): Logger instance
+- `**kwargs`: Additional setup options:
+  - `verbose` (bool): Enable verbose output
+  - `recreate_venv` (bool): Recreate virtual environment
+  - `dev` (bool): Install development dependencies
+  - `install_optional` (bool): Install optional dependencies
+  - `optional_groups` (str): Comma-separated list of optional groups
+
+**Returns**: `True` if setup succeeded
+
+**Note**: This function internally calls `setup_uv_environment` or `setup_complete_environment` based on arguments.
 
 #### `setup_uv_environment(verbose=False, recreate=False, dev=True, extras=[], skip_jax_test=True, output_dir=None) -> bool`
 **Description**: Set up UV virtual environment with dependencies using native UV sync

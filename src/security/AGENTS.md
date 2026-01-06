@@ -8,6 +8,12 @@
 
 **Category**: Security / Access Control
 
+**Status**: ✅ Production Ready
+
+**Version**: 1.0.0
+
+**Last Updated**: 2025-12-30
+
 ---
 
 ## Core Functionality
@@ -35,15 +41,28 @@
 
 ### Public Functions
 
-#### `process_security(target_dir, output_dir, **kwargs) -> bool`
-**Description**: Main security processing function
+#### `process_security(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+**Description**: Main security processing function called by orchestrator (18_security.py)
 
 **Parameters**:
-- `target_dir`: Directory containing files to validate
-- `output_dir`: Output directory for security reports
+- `target_dir` (Path): Directory containing files to validate
+- `output_dir` (Path): Output directory for security reports
+- `verbose` (bool): Enable verbose logging (default: False)
+- `logger` (Logger, optional): Logger instance (default: None)
 - `**kwargs`: Additional security options
 
 **Returns**: `True` if security validation passed
+
+**Example**:
+```python
+from security import process_security
+
+success = process_security(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/18_security_output"),
+    verbose=True
+)
+```
 
 #### `validate_model_security(file_path, security_level="standard") -> Dict[str, Any]`
 **Description**: Validate security aspects of a GNN model

@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
-Timestamp: 2026-01-05T16:37:01.390618
+Timestamp: 2026-01-06T11:40:43.396978
 Return Code: 1
-Execution Time: 16.64 seconds
+Execution Time: 26.07 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -13,7 +13,7 @@ Model: Classic Active Inference POMDP Agent v1
 📊 State Space: 3 states, 3 observations
 ⏱️  Time Steps: 5
 \n🚀 Running Bayesian inference...
-📋 Observations: [2, 1, 3, 1, 2]
+📋 Observations: [1, 2, 2, 2, 3]
 \n❌ Simulation failed: UndefRefError()
 UndefRefError: access to undefined reference
 Stacktrace:
