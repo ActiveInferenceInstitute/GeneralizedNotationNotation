@@ -454,6 +454,32 @@ julia -e 'using Pkg; Pkg.add("ActiveInference"); Pkg.add("RxInfer")'
 - **JAX**: [https://jax.readthedocs.io/](https://jax.readthedocs.io/)
 - **RxInfer.jl**: [https://rxinfer.ml/](https://rxinfer.ml/)
 
+## 🛠️ Troubleshooting Dependency Conflicts
+
+While the `main.py --only-steps 1` approach typically handles dependencies, certain environments (especially on Apple Silicon or specialized Linux distros) can experience conflicts.
+
+### **JAX vs. PyMDP Version Mismatch**
+Some versions of PyMDP depend on specific NumPy ranges that can conflict with the latest JAX requirements.
+- **Symptom**: `ImportError: numpy.core.multiarray failed to import`
+- **Solution**:
+    ```bash
+    uv pip install --upgrade "numpy>=1.24,<1.27" "jax[cpu]" "pymdp[full]"
+    ```
+
+### **Julia Environment Issues**
+- **Symptom**: `julia: command not found` but Julia is definitely installed.
+- **Solution**: Ensure your PATH includes the Julia bin directory. On macOS:
+    ```bash
+    export PATH="$PATH:/Applications/Julia-1.10.app/Contents/Resources/julia/bin"
+    ```
+
+### **Category Theory Backend Conflicts**
+- **Symptom**: `TypeError: 'module' object is not callable` when using DisCoPy with JAX.
+- **Solution**: Ensure you install DisCoPy with the matrix extra:
+    ```bash
+    uv pip install "discopy[matrix]"
+    ```
+
 
 ## Common Issues and Troubleshooting
 

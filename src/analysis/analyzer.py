@@ -8,6 +8,23 @@ from typing import Dict, Any, List, Optional
 import re
 import numpy as np
 from datetime import datetime
+import logging
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+# Import visualization libraries with error handling
+try:
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    from matplotlib import cm
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    plt = None
+    sns = None
+    cm = None
 
 def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
     """Perform comprehensive statistical analysis on a GNN file."""
@@ -463,3 +480,412 @@ def generate_analysis_summary(results: Dict[str, Any]) -> str:
         summary += f"- Average connections per model: {total_connections / len(analyses):.1f}\n"
     
     return summary
+
+def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
+    """Generate heatmaps for model matrices."""
+    visualizations = []
+    if not MATPLOTLIB_AVAILABLE:
+        return visualizations
+
+    matrices = parsed_data.get("matrices", [])
+    # Extract matrices from parsed data (A, B, C, D maps)
+    for i, matrix_info in enumerate(matrices):
+        matrix_data = matrix_info.get("data")
+        if matrix_data is not None and isinstance(matrix_data, np.ndarray):
+            matrix_name = matrix_info.get("name", f"matrix_{i}")
+            plt.figure(figsize=(10, 8))
+            sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap='viridis')
+            plt.title(f"{model_name} - {matrix_name}")
+            plot_file = output_dir / f"{model_name}_{matrix_name}_heatmap.png"
+            plt.savefig(plot_file, bbox_inches='tight')
+            plt.close()
+            visualizations.append(str(plot_file))
+    return visualizations
+
+def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: Path) -> List[str]:
+    """Visualize actual simulation data from execution results."""
+    visualizations = []
+    if not MATPLOTLIB_AVAILABLE:
+        return visualizations
+
+    # Example: Visualize belief evolution if traces are present
+    details = execution_results.get("execution_details", [])
+    for detail in details:
+        model_name = detail.get("model_name", "unknown")
+        framework = detail.get("framework", "unknown")
+        impl_dir = Path(detail.get("implementation_directory", ""))
+        
+        # Look for simulation data (e.g., traces.json or simulation_dump.json)
+        trace_files = list(impl_dir.glob("**/traces.json")) + list(impl_dir.glob("**/simulation_data/*.json"))
+        
+        for trace_file in trace_files:
+            try:
+                with open(trace_file, 'r') as f:
+                    data = json.load(f)
+                
+                # Plot traces (e.g., belief over time)
+                if 'beliefs' in data or 'states' in data:
+                    plt.figure(figsize=(10, 6))
+                    # Simplified plotting logic for arbitrary trace data
+                    beliefs = np.array(data.get('beliefs', data.get('states', [])))
+                    if beliefs.ndim == 2:
+                        for i in range(min(10, beliefs.shape[1])):
+                            plt.plot(beliefs[:, i], label=f"State {i}")
+                        plt.title(f"Belief Evolution - {model_name} ({framework})")
+                        plt.legend()
+                        plot_file = output_dir / f"{model_name}_{framework}_belief_trace.png"
+                        plt.savefig(plot_file)
+                        plt.close()
+                        visualizations.append(str(plot_file))
+            except Exception:
+                continue
+                
+    return visualizations
+
+def parse_matrix_data(matrix_str: str) -> Optional[np.ndarray]:
+    """Parse matrix data from string representation."""
+    try:
+        # Simplified parsing logic for moving to analyzer
+        import re
+        numbers = re.findall(r'[-+]?\d*\.\d+|\d+', matrix_str)
+        if len(numbers) >= 1:
+            return np.array([float(n) for n in numbers])
+        return None
+    except Exception:
+        return None
+
+def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
+    """
+    Analyze and compare outputs from all framework executions.
+    
+    Args:
+        execution_output_dir: Directory containing execution results (e.g., output/12_execute_output)
+        logger: Optional logger instance
+        
+    Returns:
+        Dictionary with framework comparison results
+    """
+    import json
+    import logging
+    
+    if logger is None:
+        logger = logging.getLogger(__name__)
+    
+    results = {
+        "timestamp": datetime.now().isoformat(),
+        "frameworks": {},
+        "comparisons": {},
+        "metrics": {}
+    }
+    
+    # Read execution summary
+    execution_summary_file = execution_output_dir / "execution_results" / "execution_summary.json"
+    if not execution_summary_file.exists():
+        logger.warning(f"Execution summary not found at {execution_summary_file}")
+        return results
+    
+    try:
+        with open(execution_summary_file, 'r') as f:
+            execution_summary = json.load(f)
+        
+        execution_details = execution_summary.get("execution_details", [])
+        
+        # Group by framework
+        framework_data = {}
+        for detail in execution_details:
+            framework = detail.get("framework", "unknown")
+            if framework not in framework_data:
+                framework_data[framework] = []
+            framework_data[framework].append(detail)
+        
+        # Extract metrics from each framework
+        for framework, details in framework_data.items():
+            framework_results = {
+                "success_count": sum(1 for d in details if d.get("success", False)),
+                "total_count": len(details),
+                "execution_times": [d.get("execution_time", 0) for d in details],
+                "output_files": [d.get("output_file", "") for d in details],
+                "implementation_dirs": [d.get("implementation_directory", "") for d in details]
+            }
+            
+            # Try to extract simulation data
+            simulation_metrics = _extract_simulation_metrics(framework, details, execution_output_dir, logger)
+            framework_results.update(simulation_metrics)
+            
+            results["frameworks"][framework] = framework_results
+        
+        # Perform cross-framework comparisons
+        results["comparisons"] = _compare_framework_results(results["frameworks"], logger)
+        
+        # Generate aggregate metrics
+        results["metrics"] = _calculate_aggregate_metrics(results["frameworks"], logger)
+        
+    except Exception as e:
+        logger.error(f"Error analyzing framework outputs: {e}")
+        import traceback
+        logger.debug(traceback.format_exc())
+    
+    return results
+
+def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], execution_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
+    """Extract simulation-specific metrics from framework outputs."""
+    metrics = {
+        "beliefs": [],
+        "actions": [],
+        "observations": [],
+        "free_energy": [],
+        "execution_times": []
+    }
+    
+    for detail in details:
+        impl_dir = Path(detail.get("implementation_directory", ""))
+        if not impl_dir.exists():
+            continue
+        
+        # Look for common output files
+        output_files = [
+            impl_dir / "simulation_results.json",
+            impl_dir / "results.json",
+            impl_dir / "output.json",
+            impl_dir / "traces.json"
+        ]
+        
+        for output_file in output_files:
+            if output_file.exists():
+                try:
+                    with open(output_file, 'r') as f:
+                        data = json.load(f)
+                    
+                    # Extract common metrics
+                    if "beliefs" in data:
+                        metrics["beliefs"].append(data["beliefs"])
+                    if "actions" in data:
+                        metrics["actions"].append(data["actions"])
+                    if "observations" in data:
+                        metrics["observations"].append(data["observations"])
+                    if "free_energy" in data:
+                        metrics["free_energy"].append(data["free_energy"])
+                    
+                    break
+                except Exception as e:
+                    logger.debug(f"Error reading {output_file}: {e}")
+                    continue
+    
+    return metrics
+
+def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
+    """Compare results across frameworks."""
+    comparisons = {
+        "success_rates": {},
+        "performance_comparison": {},
+        "metric_agreement": {}
+    }
+    
+    # Compare success rates
+    for framework, data in framework_data.items():
+        success_count = data.get("success_count", 0)
+        total_count = data.get("total_count", 0)
+        if total_count > 0:
+            comparisons["success_rates"][framework] = success_count / total_count
+    
+    # Compare execution times
+    for framework, data in framework_data.items():
+        times = data.get("execution_times", [])
+        if times:
+            comparisons["performance_comparison"][framework] = {
+                "mean": float(np.mean(times)),
+                "std": float(np.std(times)),
+                "min": float(np.min(times)),
+                "max": float(np.max(times))
+            }
+    
+    return comparisons
+
+def _calculate_aggregate_metrics(framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
+    """Calculate aggregate metrics across all frameworks."""
+    metrics = {
+        "total_frameworks": len(framework_data),
+        "total_successful": sum(data.get("success_count", 0) for data in framework_data.values()),
+        "total_executions": sum(data.get("total_count", 0) for data in framework_data.values()),
+        "overall_success_rate": 0.0
+    }
+    
+    if metrics["total_executions"] > 0:
+        metrics["overall_success_rate"] = metrics["total_successful"] / metrics["total_executions"]
+    
+    return metrics
+
+def generate_framework_comparison_report(comparison_data: Dict[str, Any], output_dir: Path, logger: Optional[logging.Logger] = None) -> str:
+    """
+    Generate a comprehensive comparison report across frameworks.
+    
+    Args:
+        comparison_data: Output from analyze_framework_outputs()
+        output_dir: Directory to save report
+        logger: Optional logger instance
+        
+    Returns:
+        Path to generated report file
+    """
+    import logging
+    import json
+    
+    if logger is None:
+        logger = logging.getLogger(__name__)
+    
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Generate Markdown report
+    report_lines = [
+        "# Framework Execution Comparison Report",
+        "",
+        f"Generated: {comparison_data.get('timestamp', 'Unknown')}",
+        "",
+        "## Summary",
+        ""
+    ]
+    
+    metrics = comparison_data.get("metrics", {})
+    report_lines.extend([
+        f"- Total Frameworks: {metrics.get('total_frameworks', 0)}",
+        f"- Total Executions: {metrics.get('total_executions', 0)}",
+        f"- Successful Executions: {metrics.get('total_successful', 0)}",
+        f"- Overall Success Rate: {metrics.get('overall_success_rate', 0.0):.2%}",
+        ""
+    ])
+    
+    # Framework details
+    report_lines.extend([
+        "## Framework Details",
+        ""
+    ])
+    
+    for framework, data in comparison_data.get("frameworks", {}).items():
+        success_count = data.get("success_count", 0)
+        total_count = data.get("total_count", 0)
+        success_rate = (success_count / total_count * 100) if total_count > 0 else 0
+        
+        report_lines.extend([
+            f"### {framework.upper()}",
+            "",
+            f"- Success Rate: {success_rate:.1f}% ({success_count}/{total_count})",
+            f"- Execution Times: {len(data.get('execution_times', []))} recorded",
+            ""
+        ])
+    
+    # Comparisons
+    comparisons = comparison_data.get("comparisons", {})
+    if comparisons.get("performance_comparison"):
+        report_lines.extend([
+            "## Performance Comparison",
+            "",
+            "| Framework | Mean Time (s) | Std Dev | Min | Max |",
+            "|-----------|---------------|---------|-----|-----|"
+        ])
+        
+        for framework, perf in comparisons["performance_comparison"].items():
+            report_lines.append(
+                f"| {framework} | {perf['mean']:.3f} | {perf['std']:.3f} | {perf['min']:.3f} | {perf['max']:.3f} |"
+            )
+        report_lines.append("")
+    
+    # Save report
+    report_file = output_dir / "framework_comparison_report.md"
+    with open(report_file, 'w') as f:
+        f.write('\n'.join(report_lines))
+    
+    # Also save JSON version
+    json_file = output_dir / "framework_comparison_data.json"
+    with open(json_file, 'w') as f:
+        json.dump(comparison_data, f, indent=2, default=str)
+    
+    logger.info(f"Generated framework comparison report: {report_file}")
+    
+    return str(report_file)
+
+def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_dir: Path, logger: Optional[logging.Logger] = None) -> List[str]:
+    """
+    Generate visualizations comparing metrics across frameworks.
+    
+    Args:
+        comparison_data: Output from analyze_framework_outputs()
+        output_dir: Directory to save visualizations
+        logger: Optional logger instance
+        
+    Returns:
+        List of generated visualization file paths
+    """
+    import logging
+    
+    if logger is None:
+        logger = logging.getLogger(__name__)
+    
+    if not MATPLOTLIB_AVAILABLE:
+        logger.warning("Matplotlib not available, skipping visualizations")
+        return []
+    
+    output_dir.mkdir(parents=True, exist_ok=True)
+    visualizations = []
+    
+    try:
+        # Success rate comparison
+        frameworks = list(comparison_data.get("frameworks", {}).keys())
+        success_rates = []
+        for framework in frameworks:
+            data = comparison_data["frameworks"][framework]
+            success_count = data.get("success_count", 0)
+            total_count = data.get("total_count", 0)
+            rate = (success_count / total_count * 100) if total_count > 0 else 0
+            success_rates.append(rate)
+        
+        if frameworks and success_rates:
+            fig, ax = plt.subplots(figsize=(10, 6))
+            bars = ax.bar(frameworks, success_rates, color=['#2ecc71' if r > 50 else '#e74c3c' for r in success_rates])
+            ax.set_ylabel('Success Rate (%)', fontweight='bold')
+            ax.set_xlabel('Framework', fontweight='bold')
+            ax.set_title('Framework Execution Success Rates', fontweight='bold', fontsize=14)
+            ax.set_ylim([0, 100])
+            ax.grid(True, alpha=0.3, axis='y')
+            
+            # Add value labels on bars
+            for bar, rate in zip(bars, success_rates):
+                height = bar.get_height()
+                ax.text(bar.get_x() + bar.get_width()/2., height,
+                       f'{rate:.1f}%',
+                       ha='center', va='bottom', fontweight='bold')
+            
+            plt.tight_layout()
+            viz_file = output_dir / "framework_success_rates.png"
+            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            visualizations.append(str(viz_file))
+        
+        # Performance comparison
+        perf_comparison = comparison_data.get("comparisons", {}).get("performance_comparison", {})
+        if perf_comparison:
+            fig, ax = plt.subplots(figsize=(12, 6))
+            frameworks = list(perf_comparison.keys())
+            means = [perf_comparison[f]["mean"] for f in frameworks]
+            stds = [perf_comparison[f]["std"] for f in frameworks]
+            
+            x_pos = np.arange(len(frameworks))
+            bars = ax.bar(x_pos, means, yerr=stds, capsize=5, alpha=0.7, color='steelblue')
+            ax.set_ylabel('Execution Time (seconds)', fontweight='bold')
+            ax.set_xlabel('Framework', fontweight='bold')
+            ax.set_title('Framework Execution Time Comparison', fontweight='bold', fontsize=14)
+            ax.set_xticks(x_pos)
+            ax.set_xticklabels(frameworks)
+            ax.grid(True, alpha=0.3, axis='y')
+            
+            plt.tight_layout()
+            viz_file = output_dir / "framework_performance_comparison.png"
+            plt.savefig(viz_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            visualizations.append(str(viz_file))
+        
+    except Exception as e:
+        logger.error(f"Error generating cross-framework visualizations: {e}")
+        import traceback
+        logger.debug(traceback.format_exc())
+    
+    return visualizations

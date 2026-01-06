@@ -25,7 +25,10 @@ from .analyzer import (
     calculate_technical_debt,
     run_performance_benchmarks,
     perform_model_comparisons,
-    generate_analysis_summary
+    generate_analysis_summary,
+    analyze_framework_outputs,
+    generate_framework_comparison_report,
+    visualize_cross_framework_metrics
 )
 
 
@@ -161,5 +164,8 @@ __all__ = [
     'calculate_technical_debt',
     'run_performance_benchmarks',
     'perform_model_comparisons',
-    'generate_analysis_summary'
+    'generate_analysis_summary',
+    'analyze_framework_outputs',
+    'generate_framework_comparison_report',
+    'visualize_cross_framework_metrics'
 ]

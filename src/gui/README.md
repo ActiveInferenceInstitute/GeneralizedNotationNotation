@@ -54,10 +54,20 @@ python src/22_gui.py --gui-mode "gui_1,gui_2,gui_3" --target-dir input/gnn_files
 
 ## Output Structure
 - Standard pipeline mapping: output/22_gui_output/
-  - `gui_1_output/`: GUI 1 specific outputs (constructed_model_gui_1.md, etc.)
-  - `gui_2_output/`: GUI 2 specific outputs (visual_model_gui_2.md, visual_matrices.json, etc.)
-  - `gui_3_output/`: GUI 3 specific outputs (designed_model_gui_3.md, design_analysis.json, etc.)
-  - `gui_processing_summary.json`: Overall processing summary
+  - `constructed_model_gui1.md`: GUI 1 output - Form-based constructed GNN model
+  - `visual_model_gui2.md`: GUI 2 output - Visual matrix editor GNN model
+  - `visual_matrices.json`: GUI 2 output - Matrix data and visualizations
+  - `gui_status.json`: GUI execution status and backend information
+  - `gui_processing_summary.json`: Overall processing summary with results from all GUIs
+  - `navigation.html`: **Comprehensive HTML navigation page** linking to all pipeline outputs
+
+### Navigation.html
+The `navigation.html` file provides a centralized navigation interface for all pipeline outputs:
+- **Pipeline Overview**: Summary statistics (total steps, total files)
+- **Output Sections**: Organized by all 24 pipeline steps with file listings
+- **File Metadata**: File type, size, and direct links to all artifacts
+- **Integration**: Links to comprehensive reports and visualizations
+- **Access**: Open `output/22_gui_output/navigation.html` in a web browser
 
 ## Public API
 ```python
@@ -76,7 +86,10 @@ from gui import (
   get_gui_2_info,
   get_gui_3_info,
   
-  # GUI 1 utilities (backward compatibility)
+  # Navigation generation
+  generate_html_navigation,
+  
+  # GUI 1 utilities
   add_component_to_markdown,
   update_component_states,
   remove_component_from_markdown,

@@ -1,0 +1,13 @@
+Execution Results for Classic Active Inference POMDP Agent v1_jax.py
+Timestamp: 2026-01-05T16:37:00.480432
+Return Code: 1
+Execution Time: 0.04 seconds
+
+STDOUT:
+
+
+STDERR:
+Traceback (most recent call last):
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py", line 13, in <module>
+    import jax
+ModuleNotFoundError: No module named 'jax'

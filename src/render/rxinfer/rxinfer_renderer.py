@@ -176,15 +176,31 @@ class RxInferRenderer:
         initial_params = gnn_spec.get('initial_parameterization', {})
         
         # Generate the Julia code
-        code = f'''# RxInfer.jl Active Inference Simulation
+        code = f'''#!/usr/bin/env julia
+
+# RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: {model_display_name}
 # Generated: {self._get_timestamp()}
+
+# Ensure required packages are installed
+using Pkg
+
+# Install missing packages if needed
+println("📦 Ensuring required packages are installed...")
+try
+    # Try to precompile key packages - will add if missing
+    Pkg.add(["RxInfer", "Distributions", "Plots", "LinearAlgebra", "Random", "StatsBase"])
+    println("✅ Package installation complete")
+catch e
+    println("⚠️  Some packages may need manual installation: $e")
+end
 
 using RxInfer
 using Distributions
 using LinearAlgebra
 using Plots
 using Random
+using StatsBase
 
 # Set random seed for reproducibility
 Random.seed!(42)

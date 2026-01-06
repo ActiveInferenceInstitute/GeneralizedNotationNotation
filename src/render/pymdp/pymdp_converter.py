@@ -332,7 +332,7 @@ class GnnToPyMdpConverter:
             self._add_log(f"Found parsed GNN data with {len(self.gnn_spec['variables'])} variables.")
             self._parse_variables_from_gnn_data()
         else:
-            # Handle legacy raw text format
+            # Handle older raw text format
             self._extract_gnn_data_legacy()
         
         # Handle ModelParameters
@@ -453,7 +453,7 @@ class GnnToPyMdpConverter:
             self._add_log("No observation modalities or state factors found in variables", "WARNING")
 
     def _extract_gnn_data_legacy(self):
-        """Legacy method for extracting data from raw text GNN format."""
+        """Method for extracting data from older raw text GNN format."""
         # Handle both old and new JSON export formats
         statespace_key = None
         if "StateSpaceBlock" in self.gnn_spec:
@@ -658,7 +658,7 @@ class GnnToPyMdpConverter:
         if "parameters" in self.gnn_spec:
             self._parse_parameters_from_gnn_data()
         else:
-            # Handle legacy raw text format
+            # Handle older raw text format
             self._infer_from_initial_parameterization_legacy()
         
         # NEW: Extract InitialParameterization matrices if available
@@ -1118,8 +1118,8 @@ class GnnToPyMdpConverter:
                     self._add_log(f"Inferred {len(self.E_spec)} actions from E vector")
 
     def _infer_from_initial_parameterization_legacy(self):
-        """Legacy method to infer dimensions from raw InitialParameterization text."""
-        # Original legacy implementation
+        """Method to infer dimensions from older raw InitialParameterization text format."""
+        # Original implementation for older format
         pass
 
     def _parse_model_parameters_from_text(self, text: str) -> Dict[str, Any]:

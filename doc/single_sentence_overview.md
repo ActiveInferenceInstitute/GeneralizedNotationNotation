@@ -1,4 +1,4 @@
-# 📚 GeneralizedNotationNotation Documentation Overview
+# 📚 GNN Documentation: Multi-Framework Active Inference Ecosystem
 
 > A comprehensive single-sentence guide to every documentation folder in the GNN ecosystem
 

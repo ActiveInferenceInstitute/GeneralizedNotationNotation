@@ -108,17 +108,3 @@ def execute_pymdp_simulation(
             "traceback": traceback.format_exc(),
             "correlation_id": correlation_id
         }
-
-def execute_pymdp_scripts(*args, **kwargs):
-    """
-    Execute PyMDP scripts (legacy compatibility function).
-    
-    Args:
-        *args: Positional arguments
-        **kwargs: Keyword arguments
-        
-    Returns:
-        Execution results
-    """
-    logger.warning("execute_pymdp_scripts is deprecated, use execute_pymdp_simulation instead")
-    return execute_pymdp_simulation(*args, **kwargs)

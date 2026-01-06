@@ -435,7 +435,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 except Exception as e:
                     logger.warning(f"Failed to parse D vector: {e}")
     
-    # Handle parsed GNN data structure (legacy format)
+    # Handle parsed GNN data structure (older format)
     elif "variables" in gnn_spec:
         logger.info("Extracting matrices from parsed GNN data structure")
         
@@ -563,7 +563,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 except Exception as e:
                     logger.warning(f"Failed to parse D vector: {e}")
         
-        # Extract actual parameter values if available (legacy parameters section)
+        # Extract actual parameter values if available (older parameters section)
         for param_data in gnn_spec.get("parameters", []):
             param_name = param_data.get("name", "")
             param_value = param_data.get("value")
@@ -609,7 +609,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     continue
 
     else:
-        # Handle legacy raw text format
+        # Handle older raw text format
         logger.info("Extracting matrices from raw text format")
         
         # Extract InitialParameterization section
@@ -1279,13 +1279,78 @@ Based on the GNN specification with belief updates, value iteration, and alpha v
 @Web: https://optax.readthedocs.io
 """
 
-import jax
+import sys
+import subprocess
+
+# Ensure JAX is installed before importing
+try:
+    import jax
+    print("✅ JAX is available")
+except ImportError:
+    print("📦 JAX not found - installing...")
+    try:
+        # Try UV first (as per project rules)
+        result = subprocess.run(
+            [sys.executable, "-m", "uv", "pip", "install", "jax", "jaxlib"],
+            capture_output=True,
+            text=True,
+            timeout=300
+        )
+        if result.returncode != 0:
+            # Fallback to pip if UV fails
+            print("⚠️  UV install failed, trying pip...")
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", "jax", "jaxlib"],
+                capture_output=True,
+                text=True,
+                timeout=300
+            )
+        if result.returncode == 0:
+            print("✅ JAX installed successfully")
+            import jax
+        else:
+            print(f"❌ Failed to install JAX: {result.stderr}")
+            sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print("❌ JAX installation timed out")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error installing JAX: {e}")
+        sys.exit(1)
+
 import jax.numpy as jnp
 from functools import partial
 from jax import jit, vmap, pmap
 from typing import Dict, Any, Optional, Tuple, List
 import numpy as np
-import optax
+
+# Try to import optax, install if missing
+try:
+    import optax
+except ImportError:
+    print("📦 Optax not found - installing...")
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "uv", "pip", "install", "optax"],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        if result.returncode != 0:
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", "optax"],
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+        if result.returncode == 0:
+            import optax
+        else:
+            print("⚠️  Optax installation failed, continuing without it")
+            optax = None
+    except Exception as e:
+        print(f"⚠️  Error installing optax: {e}, continuing without it")
+        optax = None
 
 class POMDPModels:
     """Container for POMDP model parameters."""

@@ -92,7 +92,7 @@ class PipelineArguments:
     website_html_filename: str = "gnn_pipeline_summary_website.html"
     
     # Setup options
-    recreate_venv: bool = False  # renamed from recreate_venv but keeping for compatibility
+    recreate_venv: bool = False  # Virtual environment recreation flag
     dev: bool = False
     # Optional setup groups to install (comma-separated), used by step 1
     install_optional: Optional[str] = None

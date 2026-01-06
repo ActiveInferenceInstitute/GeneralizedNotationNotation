@@ -54,7 +54,7 @@ Each numbered script corresponds to a specific module folder and implements real
 
 **Current Implementation Status:**
 - **Thin Orchestrators**: Steps 0, 4, 10, 13-23 (correctly delegate to modules)
-- **Full Implementation**: Steps 1-3, 5-9, 11-12 (contain substantial logic - legacy pattern)
+- **Full Implementation**: Steps 1-3, 5-9, 11-12 (contain substantial logic - older implementation pattern)
 - **Hybrid Implementation**: Some steps mix approaches
 
 **Target Architecture**: All steps should eventually follow thin orchestrator pattern while maintaining current functionality.

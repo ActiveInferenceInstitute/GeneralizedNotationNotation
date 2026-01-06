@@ -86,6 +86,13 @@ Top-down attention emerges from higher-level goals and expectations, while botto
 4. **Computational Psychiatry**: Precision-based models of attention disorders
 5. **Artificial Attention**: Implementing attention mechanisms in AI systems
 
+## 🏗️ Precision as Attention in GNN
+
+In GNN models, attention is not a separate block but is implemented via **Precision Modulators**:
+1. **Likelihood Precision**: Use the `@precision` flag on an `A_m0` matrix to dynamically scale the influence of sensory input.
+2. **Prior Precision**: Adjust the `D_f0` concentration to model expected uncertainty.
+3. **Policy Precision (Gamma)**: Scale the expected free energy ($\gamma$) to control the exploration-exploitation trade-off, effectively "attending" to future goals.
+
 ## References
 
 ### Core Papers

@@ -159,6 +159,45 @@ This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
 """
 
+import sys
+import subprocess
+
+# Ensure DisCoPy is installed before importing
+try:
+    import discopy
+    print("✅ DisCoPy is available")
+except ImportError:
+    print("📦 DisCoPy not found - installing...")
+    try:
+        # Try UV first (as per project rules)
+        result = subprocess.run(
+            [sys.executable, "-m", "uv", "pip", "install", "discopy"],
+            capture_output=True,
+            text=True,
+            timeout=180
+        )
+        if result.returncode != 0:
+            # Fallback to pip if UV fails
+            print("⚠️  UV install failed, trying pip...")
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", "discopy"],
+                capture_output=True,
+                text=True,
+                timeout=180
+            )
+        if result.returncode == 0:
+            print("✅ DisCoPy installed successfully")
+            import discopy
+        else:
+            print(f"❌ Failed to install DisCoPy: {{result.stderr}}")
+            sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print("❌ DisCoPy installation timed out")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error installing DisCoPy: {{e}}")
+        sys.exit(1)
+
 from discopy import *
 from discopy.monoidal import Ty, Box, Id
 from discopy.drawing import Equation

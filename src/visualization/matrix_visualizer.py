@@ -193,7 +193,6 @@ class MatrixVisualizer:
             plt.close()
             return False
 
-    # Backwards-compat API expected by tests
     def create_heatmap(self, matrix: List[List[float]] | np.ndarray) -> bool:
         try:
             arr = np.array(matrix, dtype=float)

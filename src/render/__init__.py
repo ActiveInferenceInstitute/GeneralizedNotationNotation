@@ -34,20 +34,6 @@ from .generators import (
     create_active_inference_diagram
 )
 
-# Import legacy wrapper functions
-from .legacy import (
-    render_gnn_to_pymdp,
-    render_gnn_to_activeinference_jl,
-    render_gnn_to_rxinfer,
-    render_gnn_to_rxinfer_toml,
-    render_gnn_to_discopy,
-    pymdp_renderer,
-    activeinference_jl_renderer,
-    rxinfer_renderer,
-    discopy_renderer,
-    pymdp_converter
-)
-
 __all__ = [
     # Core functions
     'process_render',
@@ -63,18 +49,7 @@ __all__ = [
     'generate_activeinference_jl_fallback_code',
     'generate_discopy_code',
     'generate_discopy_fallback_code',
-    'create_active_inference_diagram',
-    
-    # Legacy wrappers
-    'render_gnn_to_pymdp',
-    'render_gnn_to_activeinference_jl',
-    'render_gnn_to_rxinfer',
-    'render_gnn_to_discopy',
-    'pymdp_renderer',
-    'activeinference_jl_renderer',
-    'rxinfer_renderer',
-    'discopy_renderer',
-    'pymdp_converter'
+    'create_active_inference_diagram'
 ] + (['POMDPRenderProcessor', 'process_pomdp_for_frameworks'] if POMDP_PROCESSING_AVAILABLE else [])
 
 __version__ = "2.0.0"

@@ -8,9 +8,8 @@
 ## Overview
 
 > **🎯 Machine Navigation**: Comprehensive cross-reference system for automated tools and enhanced user navigation  
-> **📊 Coverage**: 70+ documents with 1300+ cross-references  
-> **🔗 Integration**: Bidirectional linking with semantic relationships  
-> **🆕 Recent Additions**: Integrated learning_paths.md, expanded cognitive phenomena, PoE-World integration
+- **[Learning Paths Overview](learning_paths.md)** - Structured beginner guidance
+- **Total Coverage**: 52 subdirectories, 100% documented
 
 This index provides a comprehensive mapping of all cross-references within the GNN documentation ecosystem, designed for both human navigation and machine processing.
 

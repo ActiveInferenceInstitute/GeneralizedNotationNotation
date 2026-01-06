@@ -1,0 +1,38 @@
+STDOUT:
+
+==================================== ERRORS ====================================
+_____________ ERROR collecting src/tests/test_gui_functionality.py _____________
+src/tests/test_gui_functionality.py:6: in <module>
+    from gui import run_gui
+src/gui/__init__.py:188: in <module>
+    def generate_html_navigation(pipeline_output_dir: Path, output_dir: Path, logger: logging.Logger) -> bool:
+                                                      ^^^^
+E   NameError: name 'Path' is not defined
+________________ ERROR collecting src/tests/test_gui_overall.py ________________
+src/tests/test_gui_overall.py:5: in <module>
+    from gui import (
+src/gui/__init__.py:188: in <module>
+    def generate_html_navigation(pipeline_output_dir: Path, output_dir: Path, logger: logging.Logger) -> bool:
+                                                      ^^^^
+E   NameError: name 'Path' is not defined
+________ ERROR collecting src/tests/test_visualization_comprehensive.py ________
+ImportError while importing test module '/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_visualization_comprehensive.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+../../../.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+src/tests/test_visualization_comprehensive.py:19: in <module>
+    from visualization import (
+src/visualization/__init__.py:63: in <module>
+    from .processor import (
+E   ImportError: cannot import name 'parse_matrix_data' from 'visualization.processor' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/processor.py)
+=========================== short test summary info ============================
+ERROR src/tests/test_gui_functionality.py - NameError: name 'Path' is not def...
+ERROR src/tests/test_gui_overall.py - NameError: name 'Path' is not defined
+ERROR src/tests/test_visualization_comprehensive.py
+!!!!!!!!!!!!!!!!!!! Interrupted: 3 errors during collection !!!!!!!!!!!!!!!!!!!!
+20 deselected, 3 errors in 1.84s
+
+
+STDERR:

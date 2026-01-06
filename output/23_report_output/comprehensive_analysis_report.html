@@ -1,0 +1,446 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GNN Pipeline Comprehensive Analysis Report</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f8f9fa; 
+            color: #333;
+        }
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            background-color: white; 
+            padding: 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        .header { 
+            text-align: center; 
+            margin-bottom: 40px; 
+            padding-bottom: 20px; 
+            border-bottom: 3px solid #007bff; 
+        }
+        h1 { 
+            color: #2c3e50; 
+            margin: 0; 
+            font-size: 2.5em; 
+            font-weight: 300; 
+        }
+        h2 { 
+            color: #34495e; 
+            margin-top: 40px; 
+            margin-bottom: 20px; 
+            font-size: 1.8em; 
+            border-left: 4px solid #007bff; 
+            padding-left: 15px; 
+        }
+        h3 { 
+            color: #495057; 
+            margin-top: 25px; 
+            margin-bottom: 15px; 
+            font-size: 1.4em; 
+        }
+        .health-score { 
+            display: inline-block; 
+            background-color: #dc3545; 
+            color: white; 
+            padding: 10px 20px; 
+            border-radius: 25px; 
+            font-size: 1.2em; 
+            font-weight: bold; 
+            margin: 10px 0; 
+        }
+        .summary-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+            gap: 20px; 
+            margin: 30px 0; 
+        }
+        .summary-card { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            padding: 25px; 
+            border-radius: 10px; 
+            text-align: center; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
+        }
+        .summary-card h3 { 
+            margin: 0 0 15px 0; 
+            font-size: 1.1em; 
+            opacity: 0.9; 
+        }
+        .summary-card .value { 
+            font-size: 2em; 
+            font-weight: bold; 
+            margin: 10px 0; 
+        }
+        .step-grid { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 20px; 
+            margin: 30px 0; 
+        }
+        .step-card { 
+            background-color: #f8f9fa; 
+            border: 1px solid #dee2e6; 
+            border-radius: 10px; 
+            padding: 20px; 
+            transition: transform 0.2s, box-shadow 0.2s; 
+        }
+        .step-card:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15); 
+        }
+        .step-card.success { 
+            border-left: 4px solid #28a745; 
+        }
+        .step-card.error { 
+            border-left: 4px solid #dc3545; 
+        }
+        .step-card.missing { 
+            border-left: 4px solid #ffc107; 
+            opacity: 0.7; 
+        }
+        .step-title { 
+            font-weight: bold; 
+            color: #495057; 
+            margin-bottom: 15px; 
+            font-size: 1.1em; 
+        }
+        .step-details { 
+            font-size: 14px; 
+            color: #6c757d; 
+            line-height: 1.6; 
+        }
+        .step-details p { 
+            margin: 8px 0; 
+        }
+        .file-types { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 5px; 
+            margin-top: 10px; 
+        }
+        .file-type-tag { 
+            background-color: #e9ecef; 
+            color: #495057; 
+            padding: 2px 8px; 
+            border-radius: 12px; 
+            font-size: 12px; 
+        }
+        .performance-section { 
+            background-color: #e8f5e8; 
+            border: 1px solid #4caf50; 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin: 30px 0; 
+        }
+        .error-section { 
+            background-color: #ffebee; 
+            border: 1px solid #f44336; 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin: 30px 0; 
+        }
+        .warning-section { 
+            background-color: #fff3e0; 
+            border: 1px solid #ff9800; 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin: 30px 0; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 20px 0; 
+            background-color: white; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1); 
+        }
+        th, td { 
+            border: 1px solid #dee2e6; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        th { 
+            background-color: #f8f9fa; 
+            font-weight: 600; 
+            color: #495057; 
+        }
+        .timestamp { 
+            color: #6c757d; 
+            font-size: 14px; 
+            text-align: center; 
+            margin-top: 20px; 
+        }
+        .key-files { 
+            margin-top: 15px; 
+        }
+        .key-file { 
+            background-color: #e3f2fd; 
+            padding: 8px 12px; 
+            border-radius: 6px; 
+            margin: 5px 0; 
+            font-size: 13px; 
+        }
+        .dependency-chain { 
+            background-color: #f8f9fa; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin: 10px 0; 
+        }
+        .missing-deps { 
+            color: #dc3545; 
+            font-weight: bold; 
+        }
+        .complete-deps { 
+            color: #28a745; 
+            font-weight: bold; 
+        }
+        .chart-container { 
+            margin: 30px 0; 
+            text-align: center; 
+        }
+        .progress-bar { 
+            width: 100%; 
+            height: 20px; 
+            background-color: #e9ecef; 
+            border-radius: 10px; 
+            overflow: hidden; 
+            margin: 10px 0; 
+        }
+        .progress-fill { 
+            height: 100%; 
+            background: linear-gradient(90deg, #28a745, #20c997); 
+            transition: width 0.3s ease; 
+        }
+        @media (max-width: 768px) {
+            .container { 
+                padding: 15px; 
+            }
+            .summary-grid { 
+                grid-template-columns: 1fr; 
+            }
+            .step-grid { 
+                grid-template-columns: 1fr; 
+            }
+            h1 { 
+                font-size: 2em; 
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 GNN Pipeline Comprehensive Analysis Report</h1>
+            <div class="health-score">Health Score: 25.0/100</div>
+            <p class="timestamp">Generated: 2026-01-05T16:37:54.326975</p>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Pipeline Output Directory</h3>
+                <div class="value">output</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Steps Analyzed</h3>
+                <div class="value">14</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Files Processed</h3>
+                <div class="value">0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Total Size</h3>
+                <div class="value">0.0 MB</div>
+            </div>
+        </div>
+        
+        <h2>📊 Pipeline Overview</h2>
+        <div class="performance-section">
+            <h3>Success Rate</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 0.0%"></div>
+            </div>
+            <p><strong>0.0%</strong> of pipeline steps completed successfully</p>
+        </div>
+
+        <h2>🔍 Step-by-Step Analysis</h2>
+        <div class="step-grid">
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Setup Artifacts</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Gnn Processing Step</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Test Reports</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Type Check</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Gnn Exports</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Visualization</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Mcp Processing Step</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Ontology Processing</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Gnn Rendered Simulators</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Execution Results</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Llm Processing Step</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Audio Processing Step</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Website</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        <div class="step-card missing">
+            <div class="step-title">📁 Report Processing Step</div>
+            <div class="step-details">
+<p><em>Step directory not found or empty</em></p>
+            </div>
+        </div>
+
+        </div>
+
+        <h2>🎨 Visualizations</h2>
+        <div class="performance-section">
+            <p><strong>Total Visualizations:</strong> 5</p>
+            <div class="step-grid">
+            <div class="step-card success">
+                <div class="step-title">📁 9 Advanced Viz</div>
+                <div class="step-details">
+                    <p><strong>Visualizations:</strong> 1</p>
+                    <div class="key-files">
+
+                        <div class="key-file">
+                            <a href="../9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png" target="_blank" class="link">actinf_pomdp_agent_3d_visualization.png</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (0.18 MB)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card success">
+                <div class="step-title">📁 11 Render</div>
+                <div class="step-details">
+                    <p><strong>Visualizations:</strong> 3</p>
+                    <div class="key-files">
+
+                        <div class="key-file">
+                            <a href="../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png" target="_blank" class="link">model_components.png</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (0.03 MB)</span>
+                        </div>
+                        <div class="key-file">
+                            <a href="../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png" target="_blank" class="link">generative_model.png</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (0.07 MB)</span>
+                        </div>
+                        <div class="key-file">
+                            <a href="../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png" target="_blank" class="link">perception_action_loop.png</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (0.06 MB)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="step-card success">
+                <div class="step-title">📁 20 Website</div>
+                <div class="step-details">
+                    <p><strong>Visualizations:</strong> 1</p>
+                    <div class="key-files">
+
+                        <div class="key-file">
+                            <a href="../20_website_output/website_results/index.html" target="_blank" class="link">index.html</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (HTML)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+</div><h3>Visualizations by Type</h3><table><tr><th>Type</th><th>Count</th></tr><tr><td>Image</td><td>4</td></tr><tr><td>Html</td><td>1</td></tr></table>
+        </div>
+
+        <h2>📈 Pipeline Execution Summary</h2>
+        <div class="performance-section">
+            <p><strong>Start Time:</strong> 2026-01-05T16:36:04.519322</p>
+            <p><strong>End Time:</strong> 2026-01-05T16:36:51.285793</p>
+            <p><strong>Overall Status:</strong> FAILED</p>
+            <p><strong>Total Steps:</strong> 7</p>
+        </div>
+
+    </div>
+</body>
+</html>

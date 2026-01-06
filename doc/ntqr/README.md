@@ -22,6 +22,12 @@ ntqr/
 └── [additional resources]
 ```
 
+## ⚛️ Quantum-Inspired Active Inference
+
+NTQR (Noisy Tensor Quantum Reasoning) integration allows for exploring:
+- **Non-Classical Decision Theory**: Modeling cognitive biases through quantum-inspired probability distributions in GNN.
+- **Interference Effects**: Using GNN to specify how "noisy" belief states might experience interference during complex policy selection.
+
 ## Integration
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem.

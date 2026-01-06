@@ -136,7 +136,12 @@ output/
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **Architecture Status**: ✅ Production Ready
 
-### Recent Fixes (November 30, 2025)
+### Recent Updates (December 2025)
+- **Removed**: All legacy compatibility code and backwards-compatibility wrappers
+  - Deleted 5 legacy.py module files (model_registry, validation, execute, render, visualization)
+  - Removed deprecated function wrappers (execute_pymdp_scripts, run_gui, etc.)
+  - Updated all module __init__.py files to use modern function names directly
+  - Cleaned up compatibility comments and terminology
 - **Fixed**: All documentation gaps and inconsistencies
 - **Created**: Missing AGENTS.md files for all modules
 - **Added**: Comprehensive AGENTS.md documentation for framework-specific subdirectories (render/pymdp, render/rxinfer, render/activeinference_jl, render/discopy, render/jax, audio/sapf, audio/pedalboard, execute/pymdp, execute/rxinfer, execute/activeinference_jl, execute/jax)
@@ -301,9 +306,10 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: November 30, 2025
+**Last Updated**: December 2025
 **Pipeline Version**: 2.1.0
 **Total Modules**: 28
 **Total Steps**: 24 (0-23)
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files for modules and subdirectories)
+**Legacy Code**: ✅ Removed (all backwards-compatibility wrappers and legacy modules eliminated)
 **Status**: ✅ Production Ready

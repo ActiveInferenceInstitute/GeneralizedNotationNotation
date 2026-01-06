@@ -109,6 +109,9 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
     # Analyze step dependencies
     pipeline_data["step_dependencies"] = analyze_step_dependencies(pipeline_data["steps"], logger)
     
+    # Collect visualizations from all pipeline outputs
+    pipeline_data["visualizations"] = collect_visualizations(pipeline_output_dir, logger)
+    
     return pipeline_data
 
 def analyze_step_directory(step_path: Path, step_name: str, logger: logging.Logger) -> Dict[str, Any]:
@@ -444,6 +447,97 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
             return True
     
     return False
+
+def collect_visualizations(pipeline_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
+    """
+    Collect all visualizations from pipeline output directories.
+    
+    Args:
+        pipeline_output_dir: Directory containing pipeline outputs
+        logger: Logger for this operation
+        
+    Returns:
+        Dictionary with visualization catalog organized by step and type
+    """
+    visualizations = {
+        "total_count": 0,
+        "by_step": {},
+        "by_type": {},
+        "all_visualizations": []
+    }
+    
+    # Visualization output directories to scan
+    viz_directories = [
+        ("8_visualization_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
+        ("9_advanced_viz_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
+        ("11_render_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
+        ("12_execute_output", ["*.png", "*.svg", "*.jpg", "*.jpeg", "*.html"]),
+        ("20_website_output", ["*.html"]),
+    ]
+    
+    try:
+        for step_dir, patterns in viz_directories:
+            step_path = pipeline_output_dir / step_dir
+            if not step_path.exists():
+                continue
+            
+            step_viz = {
+                "step": step_dir,
+                "count": 0,
+                "files": []
+            }
+            
+            # Scan for visualization files
+            for pattern in patterns:
+                for viz_file in step_path.rglob(pattern):
+                    if viz_file.is_file():
+                        try:
+                            file_size = viz_file.stat().st_size
+                            file_size_mb = file_size / (1024 * 1024)
+                            
+                            # Determine file type
+                            file_ext = viz_file.suffix.lower()
+                            file_type = "image" if file_ext in [".png", ".svg", ".jpg", ".jpeg", ".gif"] else "html"
+                            
+                            # Get relative path from pipeline output directory
+                            rel_path = str(viz_file.relative_to(pipeline_output_dir))
+                            
+                            viz_info = {
+                                "name": viz_file.name,
+                                "path": str(viz_file),
+                                "relative_path": rel_path,
+                                "type": file_type,
+                                "extension": file_ext,
+                                "size_bytes": file_size,
+                                "size_mb": round(file_size_mb, 2),
+                                "step": step_dir
+                            }
+                            
+                            step_viz["files"].append(viz_info)
+                            step_viz["count"] += 1
+                            visualizations["total_count"] += 1
+                            
+                            # Track by type
+                            if file_type not in visualizations["by_type"]:
+                                visualizations["by_type"][file_type] = []
+                            visualizations["by_type"][file_type].append(viz_info)
+                            
+                            # Add to all visualizations
+                            visualizations["all_visualizations"].append(viz_info)
+                            
+                        except Exception as e:
+                            logger.debug(f"Error processing visualization file {viz_file}: {e}")
+            
+            if step_viz["count"] > 0:
+                visualizations["by_step"][step_dir] = step_viz
+                logger.info(f"Found {step_viz['count']} visualizations in {step_dir}")
+        
+        logger.info(f"Total visualizations discovered: {visualizations['total_count']}")
+        
+    except Exception as e:
+        logger.warning(f"Failed to collect visualizations: {e}")
+    
+    return visualizations
 
 def get_pipeline_health_score(pipeline_data: Dict[str, Any]) -> float:
     """

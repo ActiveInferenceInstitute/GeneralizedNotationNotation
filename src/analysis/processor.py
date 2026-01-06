@@ -23,6 +23,8 @@ from .analyzer import (
     run_performance_benchmarks,
     perform_model_comparisons,
     generate_analysis_summary,
+    generate_matrix_visualizations,
+    visualize_simulation_results,
 )
 
 def process_analysis(
@@ -88,6 +90,10 @@ def process_analysis(
                     benchmarks = run_performance_benchmarks(gnn_file, verbose)
                     results["performance_benchmarks"].append(benchmarks)
                     
+                    # Generate matrix visualizations (moved from Step 8)
+                    matrix_viz = generate_matrix_visualizations({"matrices": stats_analysis.get("matrices", [])}, results_dir, gnn_file.stem)
+                    results["visualization_files"] = results.get("visualization_files", []) + matrix_viz
+
                 except Exception as e:
                     error_info = {
                         "file": str(gnn_file),
@@ -97,10 +103,54 @@ def process_analysis(
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
             
+            # 2. Empirical Analysis: Load execution results if available
+            execution_dir = output_dir.parent / "12_execute_output" / "execution_results"
+            execution_summary_file = execution_dir / "execution_summary.json"
+            
+            if execution_summary_file.exists():
+                logger.info("Found execution results, performing empirical analysis")
+                try:
+                    with open(execution_summary_file, 'r') as f:
+                        execution_results = json.load(f)
+                    
+                    # Generate empirical visualizations
+                    empirical_viz = visualize_simulation_results(execution_results, results_dir)
+                    results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
+                    logger.info(f"Generated {len(empirical_viz)} empirical visualizations")
+                    
+                except Exception as e:
+                    logger.error(f"Failed to process execution results: {e}")
+            else:
+                logger.warning(f"Execution results not found at {execution_summary_file}. Skipping empirical analysis.")
+            
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
                 comparisons = perform_model_comparisons(results["statistical_analysis"], verbose)
                 results["model_comparisons"].append(comparisons)
+        
+        # Perform cross-framework analysis if execution results exist
+        execution_dir = output_dir.parent / "12_execute_output" if output_dir.name != "12_execute_output" else output_dir
+        if execution_dir.exists():
+            logger.info("Performing cross-framework analysis...")
+            try:
+                from .analyzer import analyze_framework_outputs, generate_framework_comparison_report, visualize_cross_framework_metrics
+                
+                framework_comparison = analyze_framework_outputs(execution_dir, logger)
+                results["framework_comparison"] = framework_comparison
+                
+                # Generate comparison report
+                report_file = generate_framework_comparison_report(framework_comparison, results_dir, logger)
+                results["framework_comparison_report"] = report_file
+                
+                # Generate comparison visualizations
+                comparison_viz = visualize_cross_framework_metrics(framework_comparison, results_dir, logger)
+                results["visualization_files"] = results.get("visualization_files", []) + comparison_viz
+                
+                logger.info(f"Generated {len(comparison_viz)} cross-framework comparison visualizations")
+            except Exception as e:
+                logger.warning(f"Cross-framework analysis failed: {e}")
+                import traceback
+                logger.debug(traceback.format_exc())
         
         # Save detailed results
         results_file = results_dir / "analysis_results.json"

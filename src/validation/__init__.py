@@ -13,16 +13,6 @@ from .semantic_validator import SemanticValidator, process_semantic_validation
 from .performance_profiler import PerformanceProfiler, profile_performance
 from .consistency_checker import ConsistencyChecker, check_consistency
 
-# Import legacy wrapper functions
-from .legacy import (
-    semantic_validator,
-    performance_profiler,
-    consistency_checker,
-    validate_semantic_fallback,
-    profile_performance_fallback,
-    check_consistency_fallback
-)
-
 def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool:
     """
     Main validation processing function for GNN models.
@@ -215,14 +205,8 @@ __all__ = [
     'SemanticValidator',
     'PerformanceProfiler',
     'ConsistencyChecker',
-    'semantic_validator',
-    'performance_profiler',
-    'consistency_checker',
     'process_semantic_validation',
     'profile_performance',
     'check_consistency',
-    'validate_semantic_fallback',
-    'profile_performance_fallback',
-    'check_consistency_fallback',
     'process_validation'
 ]

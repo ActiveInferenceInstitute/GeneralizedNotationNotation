@@ -155,7 +155,6 @@ class OntologyVisualizer:
         
         return mappings
 
-    # Backwards-compat name expected by tests
     def extract_ontology_mappings(self, ontology_content: str) -> List[Tuple[str, str]]:
         return self._extract_ontology_mappings(ontology_content)
     

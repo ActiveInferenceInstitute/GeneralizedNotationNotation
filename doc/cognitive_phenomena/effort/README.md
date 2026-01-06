@@ -177,7 +177,11 @@ def estimate_effort_parameters(behavioral_data):
 - **Real-time Parameter Estimation**: Adaptive experimental paradigms
 - **Multi-modal Integration**: Combining behavioral, physiological, and neural data
 
-## Future Directions
+## 📉 Effort and the Free Energy Principle
+
+Cognitive effort is formally modeled as the **complexity cost** of belief updating:
+- **Complexity vs. Accuracy**: GNN allows specifying a `CostFunction` that penalizes large shifts from prior beliefs (KL-divergence), representing the metabolic effort required to update internal models.
+- **Bounded Rationality**: By limiting the iterations in the variational message passing (VMP) steps, GNN models can simulate "low-effort" heuristic decision-making under time pressure.
 
 1. **Predictive Effort Models**: Anticipating effort demands before task engagement
 2. **Social Effort**: Effort in social cognition and interpersonal interactions

@@ -79,13 +79,6 @@ except Exception:
     except Exception:
         execute_simulation_from_gnn = lambda *a, **k: {"success": False, "error": "execute_simulation_from_gnn not available"}
 
-# Import legacy functions
-from .legacy import (
-    execute_pymdp_simulation_from_gnn,
-    validator,
-    pymdp
-)
-
 # Add to __all__ for proper exports
 __all__ = [
     # Core classes
@@ -95,11 +88,6 @@ __all__ = [
     # Processor functions
     'process_execute',
     'execute_simulation_from_gnn',
-    
-    # Legacy functions
-    'execute_pymdp_simulation_from_gnn', 
-    'validator', 
-    'pymdp',
     
     # Validation functions
     'validate_execution_environment',

@@ -23,6 +23,11 @@ This document outlines structured learning paths for users of varying expertise 
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.
 
+### **🎓 Beginner Skill Checkpoints**
+- [ ] Can you explain the "triple play" approach?
+- [ ] Have you successfully generated visualization output for a basic model?
+- [ ] Can you identify the difference between `s_f0` and `o_m0` in a GNN file?
+
 ## Intermediate Path: Building and Integrating Models
 **Target Audience**: Users familiar with GNN basics, seeking integrations and advanced patterns.
 
@@ -49,6 +54,11 @@ This document outlines structured learning paths for users of varying expertise 
 
 **Next Steps**: Proceed to Advanced Path for research-level applications.
 
+### **🛠️ Intermediate Skill Checkpoints**
+- [ ] Have you modified a POMDP template for a custom domain?
+- [ ] Can you run the same GNN model across two different frameworks (e.g., PyMDP and RxInfer)?
+- [ ] Do you understand how to use the MCP tools to query your model structure?
+
 ## Advanced Path: Research and Custom Extensions
 **Target Audience**: Experienced researchers extending GNN for novel Active Inference applications.
 
@@ -71,9 +81,14 @@ This document outlines structured learning paths for users of varying expertise 
 
 4. **Contribution and Research**:
    - Read [GNN Paper](/doc/gnn/gnn_paper.md).
-   - Contribute via [Releases](/doc/releases/README.md) and [Security Framework](/doc/security/security_framework.md).
-
-**Additional Resources**:
+74:    - Contribute via [Releases](/doc/releases/README.md) and [Security Framework](/doc/security/security_framework.md).
+75: 
+76: ### **🔬 Advanced Skill Checkpoints**
+77: - [ ] Have you implemented a custom cognitive phenomenon model using GNN?
+78: - [ ] Can you explain the categorical foundations of your model using the DisCoPy output?
+79: - [ ] Have you integrated a new scientific library into the GNN pipeline?
+80: 
+81: **Additional Resources**:
 - Full index: [Cross-Reference Index](/doc/CROSS_REFERENCE_INDEX.md).
 - Style Guide: [Style Guide](/doc/style_guide.md) for contributions.
 - For updates, check project [README](/README.md) and [CHANGELOG](/CHANGELOG.md).

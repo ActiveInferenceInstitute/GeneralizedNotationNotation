@@ -378,16 +378,16 @@ cross_references:
   support: [troubleshooting/README.md, troubleshooting/common_errors.md, troubleshooting/faq.md]
   research_integration: [poe-world/poe-world.md, gnn/gnn_llm_neurosymbolic_active_inference.md, dspy/gnn_dspy.md]
 coverage_metrics:
-  total_documents: 65+
-  total_content: 1.2MB+
+  total_documents: 70+
+  total_content: 1.3MB+
   template_count: 4
-  framework_integrations: 7
-  research_integrations: 3
-  pipeline_steps: 13
-  cognitive_phenomena: 20+
+  framework_integrations: 12+
+  research_integrations: 5+
+  pipeline_steps: 24
+  cognitive_phenomena: 22+
 status: production_ready
 quality_level: gold_standard
-recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways]
+recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways, 100%_signposting_coverage]
 ```
 
 ---

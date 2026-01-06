@@ -411,6 +411,17 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
         </table>
 """
     
+    # Add visualizations section if available
+    visualizations = pipeline_data.get('visualizations', {})
+    if visualizations and visualizations.get('total_count', 0) > 0:
+        html_content += f"""
+        <h2>🎨 Visualizations</h2>
+        <div class="performance-section">
+            <p><strong>Total Visualizations:</strong> {visualizations.get('total_count', 0)}</p>
+            {_format_visualization_gallery(visualizations)}
+        </div>
+"""
+    
     # Add pipeline summary if available
     if 'pipeline_summary' in pipeline_data:
         summary = pipeline_data['pipeline_summary']
@@ -431,6 +442,74 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
 """
     
     return html_content
+
+def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
+    """
+    Format visualization gallery HTML.
+    
+    Args:
+        visualizations: Visualization data dictionary
+        
+    Returns:
+        HTML string for visualization gallery
+    """
+    if not visualizations or visualizations.get('total_count', 0) == 0:
+        return "<p>No visualizations found.</p>"
+    
+    html = ""
+    
+    # Group by step
+    by_step = visualizations.get('by_step', {})
+    if by_step:
+        html += '<div class="step-grid">'
+        for step_name, step_data in by_step.items():
+            step_display = step_name.replace('_', ' ').replace('output', '').strip().title()
+            html += f"""
+            <div class="step-card success">
+                <div class="step-title">📁 {step_display}</div>
+                <div class="step-details">
+                    <p><strong>Visualizations:</strong> {step_data.get('count', 0)}</p>
+                    <div class="key-files">
+"""
+            # Show first 5 visualizations per step
+            for viz in step_data.get('files', [])[:5]:
+                viz_name = viz.get('name', 'Unknown')
+                rel_path = viz.get('relative_path', '')
+                file_type = viz.get('type', 'image')
+                size_mb = viz.get('size_mb', 0)
+                
+                if file_type == 'image':
+                    html += f"""
+                        <div class="key-file">
+                            <a href="../{rel_path}" target="_blank" class="link">{viz_name}</a>
+                            <span style="color: #6c757d; font-size: 11px;"> ({size_mb} MB)</span>
+                        </div>"""
+                else:
+                    html += f"""
+                        <div class="key-file">
+                            <a href="../{rel_path}" target="_blank" class="link">{viz_name}</a>
+                            <span style="color: #6c757d; font-size: 11px;"> (HTML)</span>
+                        </div>"""
+            
+            if step_data.get('count', 0) > 5:
+                html += f'<div class="key-file" style="color: #6c757d; font-style: italic;">... and {step_data.get("count", 0) - 5} more</div>'
+            
+            html += """
+                    </div>
+                </div>
+            </div>
+"""
+        html += '</div>'
+    
+    # Add summary by type
+    by_type = visualizations.get('by_type', {})
+    if by_type:
+        html += '<h3>Visualizations by Type</h3><table><tr><th>Type</th><th>Count</th></tr>'
+        for viz_type, viz_list in by_type.items():
+            html += f'<tr><td>{viz_type.title()}</td><td>{len(viz_list)}</td></tr>'
+        html += '</table>'
+    
+    return html
 
 def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
     """
@@ -552,6 +631,30 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 """
         for file_ext, info in file_type_analysis['total_by_type'].items():
             markdown_content += f"| {file_ext} | {info['count']} | {info['total_size_mb']} |\n"
+    
+    # Add visualizations section if available
+    visualizations = pipeline_data.get('visualizations', {})
+    if visualizations and visualizations.get('total_count', 0) > 0:
+        markdown_content += f"""
+## 🎨 Visualizations
+
+**Total Visualizations:** {visualizations.get('total_count', 0)}
+
+"""
+        # Group by step
+        by_step = visualizations.get('by_step', {})
+        for step_name, step_data in by_step.items():
+            step_display = step_name.replace('_', ' ').replace('output', '').strip().title()
+            markdown_content += f"### {step_display}\n\n"
+            markdown_content += f"**Count:** {step_data.get('count', 0)}\n\n"
+            markdown_content += "**Files:**\n"
+            for viz in step_data.get('files', [])[:10]:  # Show first 10
+                rel_path = viz.get('relative_path', '')
+                size_mb = viz.get('size_mb', 0)
+                markdown_content += f"- [{viz.get('name', 'Unknown')}](../{rel_path}) ({size_mb} MB)\n"
+            if step_data.get('count', 0) > 10:
+                markdown_content += f"- ... and {step_data.get('count', 0) - 10} more\n"
+            markdown_content += "\n"
     
     # Add dependency analysis
     dependencies = pipeline_data.get('step_dependencies', {})

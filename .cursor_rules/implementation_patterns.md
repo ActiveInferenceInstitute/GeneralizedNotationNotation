@@ -86,7 +86,7 @@ if __name__ == "__main__":
 - **Error Handling**: Consistent error handling and exit codes
 - **Path Normalization**: Automatic conversion of string paths to `Path` objects
 
-### Legacy Pattern (For Reference Only)
+### Older Implementation Pattern (For Reference Only)
 
 The following pattern is shown for reference but should NOT be used for new scripts. All existing scripts are being migrated to the standardized pattern above.
 

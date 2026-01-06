@@ -245,7 +245,42 @@ output/
 ├── visualization/        # Model diagrams
 ├── discopy/              # Categorical diagrams
 └── site/                 # Documentation website
+    └── report/               # Comprehensive analysis reports
+
+---
+
+## 🏎️ Quick Path to First Inference
+
+If you have GNN installed and want to run a model *right now*, follow these 3 steps:
+
+### **1. Copy this GNN Snippet**
+Save this as `fast_agent.md`:
+```gnn
+## ModelName
+FastAgent
+
+## StateSpaceBlock
+s_f0[2,1,type=categorical]  ### State: [A, B]
+o_m0[2,1,type=categorical]  ### Obs: [Red, Green]
+u_c0[2,1,type=categorical]  ### Act: [Stay, Switch]
+
+## Connections
+s_f0 > o_m0
+s_f0, u_c0 > s_f0
 ```
+
+### **2. Generate and Execute in One Command**
+```bash
+python src/main.py --target-dir fast_agent.md --steps 1-10 --frameworks pymdp
+```
+
+### **3. Inspect the Logic**
+Check `output/pymdp/fast_agent.py` to see the generated belief update logic. You can run it directly:
+```bash
+python output/pymdp/fast_agent.py
+```
+
+---
 
 ## 📊 Quick Examples
 

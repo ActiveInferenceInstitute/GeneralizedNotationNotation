@@ -80,6 +80,23 @@
 
 **Returns**: Dictionary with GUI information including names, descriptions, and ports
 
+#### `generate_html_navigation(pipeline_output_dir, output_dir, logger) -> bool`
+**Description**: Generate HTML navigation page that links to all pipeline output types
+
+**Parameters**:
+- `pipeline_output_dir` (Path): Directory containing all pipeline outputs (typically output/)
+- `output_dir` (Path): GUI output directory where navigation.html will be created
+- `logger` (Logger): Logger instance for progress reporting
+
+**Returns**: `True` if navigation page generated successfully, `False` otherwise
+
+**Features**:
+- Scans all 24 pipeline output directories
+- Discovers files by type (JSON, MD, PNG, SVG, HTML, etc.)
+- Generates organized HTML navigation with file metadata
+- Provides links to all pipeline artifacts
+- Includes summary statistics and integration with comprehensive reports
+
 ---
 
 ## GUI Implementations
@@ -213,26 +230,72 @@ for gui_name, info in guis.items():
 ## Output Specification
 
 ### Output Products
-- `{gui_type}_output/constructed_model_{gui_type}.md` - Generated GNN model
-- `{gui_type}_output/gui_status.json` - GUI execution status
-- `{gui_type}_output/visual_matrices.json` - Matrix data (GUI 2)
-- `{gui_type}_output/design_analysis.json` - Design metadata (GUI 3)
-- `gui_processing_summary.json` - Overall GUI processing summary
+
+#### GUI-Specific Outputs
+- `constructed_model_gui1.md` - Generated GNN model from GUI 1 (Form-based Constructor)
+- `visual_model_gui2.md` - Generated GNN model from GUI 2 (Visual Matrix Editor)
+- `visual_matrices.json` - Matrix data and visualizations from GUI 2
+- `gui_status.json` - GUI execution status and backend information
+- `gui_processing_summary.json` - Overall GUI processing summary with results from all GUIs
+
+#### Navigation and Discovery
+- `navigation.html` - **Comprehensive HTML navigation page** that provides:
+  - Links to all pipeline output files across all 24 steps
+  - Organized by pipeline step with file counts and metadata
+  - File type filtering and search capabilities
+  - Direct links to visualizations, reports, execution results, and all artifacts
+  - Summary statistics of pipeline outputs
+  - Links to comprehensive reports
 
 ### Output Directory Structure
 ```
 output/22_gui_output/
-├── gui_1_output/
-│   ├── constructed_model_gui_1.md
-│   └── gui_status.json
-├── gui_2_output/
-│   ├── visual_model_gui_2.md
-│   └── visual_matrices.json
-├── gui_3_output/
-│   ├── designed_model_gui_3.md
-│   └── design_analysis.json
-└── gui_processing_summary.json
+├── constructed_model_gui1.md          # GUI 1 output: Form-based constructed model
+├── visual_model_gui2.md               # GUI 2 output: Visual matrix editor model
+├── visual_matrices.json                # GUI 2 output: Matrix data and visualizations
+├── gui_status.json                     # GUI execution status and backend info
+├── gui_processing_summary.json         # Overall processing summary
+└── navigation.html                     # HTML navigation to all pipeline outputs
 ```
+
+### Navigation.html Features
+
+The `navigation.html` file provides comprehensive navigation to all pipeline outputs:
+
+1. **Pipeline Overview**: Summary statistics showing total pipeline steps and files
+2. **Output Sections**: Organized by all 24 pipeline steps:
+   - Template (0_template_output)
+   - Setup (1_setup_output)
+   - Tests (2_tests_output)
+   - GNN Processing (3_gnn_output)
+   - Model Registry (4_model_registry_output)
+   - Type Checker (5_type_checker_output)
+   - Validation (6_validation_output)
+   - Export (7_export_output)
+   - Visualization (8_visualization_output)
+   - Advanced Visualization (9_advanced_viz_output)
+   - Ontology (10_ontology_output)
+   - Render (11_render_output)
+   - Execute (12_execute_output)
+   - LLM (13_llm_output)
+   - ML Integration (14_ml_integration_output)
+   - Audio (15_audio_output)
+   - Analysis (16_analysis_output)
+   - Integration (17_integration_output)
+   - Security (18_security_output)
+   - Research (19_research_output)
+   - Website (20_website_output)
+   - MCP (21_mcp_output)
+   - GUI (22_gui_output)
+   - Report (23_report_output)
+
+3. **File Information**: For each file, displays:
+   - File name with clickable link
+   - File type/extension
+   - File size in MB
+   - Relative path for navigation
+
+4. **Integration**: Links to comprehensive report at `23_report_output/comprehensive_analysis_report.html`
 
 ---
 
@@ -344,5 +407,31 @@ def construct_model_gui(model_type="pymdp", interactive=True):
 
 ---
 
-**Last Updated: October 28, 2025
-**Status**: ✅ Ready (Timeout Issue Fixed - Headless Mode Default)
+## Recent Enhancements (January 5, 2026)
+
+### HTML Navigation Generation
+- **Added**: `generate_html_navigation()` function to create comprehensive navigation page
+- **Features**:
+  - Scans all 24 pipeline output directories automatically
+  - Discovers and catalogs all output files by type
+  - Generates organized HTML with file metadata (type, size, path)
+  - Provides direct links to all pipeline artifacts
+  - Includes summary statistics and integration with comprehensive reports
+- **Output**: `navigation.html` file in GUI output directory
+- **Integration**: Automatically generated during `process_gui()` execution
+- **Access**: Open `output/22_gui_output/navigation.html` in web browser for full pipeline navigation
+
+### Output File Discovery
+- **Enhanced**: All output files are now properly discovered and documented
+- **Files Generated**:
+  - `constructed_model_gui1.md` - GUI 1 form-based model construction
+  - `visual_model_gui2.md` - GUI 2 visual matrix editor model
+  - `visual_matrices.json` - GUI 2 matrix data and visualizations
+  - `gui_status.json` - GUI execution status and backend information
+  - `gui_processing_summary.json` - Overall processing summary
+  - `navigation.html` - Comprehensive navigation to all pipeline outputs
+
+---
+
+**Last Updated: January 5, 2026**
+**Status**: ✅ Ready (HTML Navigation Added - Full Output Discovery)

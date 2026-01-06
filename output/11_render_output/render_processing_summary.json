@@ -1,0 +1,73 @@
+{
+  "timestamp": "2026-01-05T16:36:56.642460",
+  "processing_type": "POMDP-aware rendering",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "total_framework_attempts": 5,
+  "successful_framework_renderings": 5,
+  "framework_success_rate": 100.0,
+  "configuration": {
+    "frameworks": "all",
+    "strict_validation": true,
+    "verbose": false,
+    "pomdp_processing_available": true
+  },
+  "file_results": {
+    "input/gnn_files/actinf_pomdp_agent.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/pymdp",
+          "warnings": []
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
+          "warnings": [
+            "rxinfer has limited multi-modality support"
+          ]
+        },
+        "activeinference_jl": {
+          "success": true,
+          "message": "Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl",
+          "output_files": [
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/activeinference_jl",
+          "warnings": []
+        },
+        "jax": {
+          "success": true,
+          "message": "JAX model code generated successfully.",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/jax",
+          "warnings": []
+        },
+        "discopy": {
+          "success": true,
+          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
+          "output_files": [
+            "output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py"
+          ],
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/discopy",
+          "warnings": []
+        }
+      },
+      "summary_file": "output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+      "output_directory": "output/11_render_output/actinf_pomdp_agent",
+      "base_output_dir": "output/11_render_output/actinf_pomdp_agent"
+    }
+  }
+}

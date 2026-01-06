@@ -1,0 +1,20 @@
+{
+  "report_generation_summary": {
+    "generation_time": "2026-01-05T16:37:54.334947",
+    "pipeline_directory": "output",
+    "report_directory": "output/23_report_output",
+    "health_score": 25.0,
+    "generated_files": [
+      "comprehensive_analysis_report.html",
+      "comprehensive_analysis_report.md",
+      "report_summary.json"
+    ],
+    "pipeline_summary": {
+      "total_steps": 14,
+      "successful_steps": 0,
+      "total_files": 0,
+      "total_size_mb": 0.0,
+      "success_rate": 0.0
+    }
+  }
+}

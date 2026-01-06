@@ -1,9 +1,25 @@
+#!/usr/bin/env julia
+
 # RxInfer.jl Minimal Working Simulation
 # Generated from GNN Model: {model_name}
 # Generated: {timestamp}
 
+# Ensure required packages are installed
+using Pkg
+
+# Install missing packages if needed
+println("📦 Ensuring required packages are installed...")
+try
+    # Try to precompile key packages - will add if missing
+    Pkg.add(["RxInfer", "Distributions", "StatsBase"])
+    println("✅ Package installation complete")
+catch e
+    println("⚠️  Some packages may need manual installation: $e")
+end
+
 using RxInfer
 using Distributions
+using StatsBase
 
 println("============================================================")
 println("RxInfer.jl Active Inference - GNN Generated Simulation")

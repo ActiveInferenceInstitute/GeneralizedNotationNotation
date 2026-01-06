@@ -22,6 +22,13 @@ arc-agi/
 └── [additional resources]
 ```
 
+## 🧩 Modeling ARC with GNN
+
+To model ARC-AGI tasks using GNN, use the following template strategy:
+1. **Grid as State Space**: Define `s_f0` as a flattened categorical factor representing grid cell colors.
+2. **Symmetry Operators as Transition Matrices**: Map grid rotations and flips to specific `B` matrices.
+3. **Object-Oriented priors**: Use the GNN `ModelAnnotation` to specify object-level constraints that guide policy inference.
+
 ## Integration
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem.

@@ -293,43 +293,90 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         # Extract matrices from GNN spec
         init_params = gnn_spec.get('initialparameterization', {})
         
-        # Get A matrix (observation model)
-        A_data = init_params.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]])
-        A = np.array(A_data, dtype=np.float64)
+        # 1. Get A matrix (observation model)
+        # PyMDP expects A to be an obj_array of modalities, each a (num_obs, num_states) matrix
+        A_data = init_params.get('A')
+        if A_data is None:
+            logger.info("A matrix not found in spec, using default identity")
+            A = np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], dtype=np.float64)
+        else:
+            A = np.array(A_data, dtype=np.float64)
         
-        # Get B matrix (transition model) - simplified to identity for now
-        num_states = A.shape[1]
-        B = np.eye(num_states, dtype=np.float64)
-        B = B[:, :, np.newaxis]  # Add action dimension
+        # 2. Get B matrix (transition model)
+        # PyMDP expects B to be an obj_array of factors, each a (num_states, num_states, num_actions) matrix
+        B_data = init_params.get('B')
+        if B_data is None:
+            logger.info("B matrix not found in spec, using default identity")
+            B = np.eye(A.shape[1], dtype=np.float64)[:, :, np.newaxis]
+        else:
+            B_raw = np.array(B_data, dtype=np.float64)
+            # GNN format for B often is (action, prev_state, next_state) or (action, next_state, prev_state)
+            # PyMDP expects (next_state, prev_state, action)
+            # Let's check dimensions and transpose if necessary
+            num_states = A.shape[1]
+            if B_raw.shape == (3, 3, 3): # Most common for our examples
+                # If it's (action, prev_state, next_state), we need to move action to the last axis
+                # and maybe transpose states
+                # In GNN actinf_pomdp_agent.md: B[3,3,3] is states_next, states_previous, actions
+                # So it's already (next, prev, action) if parsed as B[next][prev][action]
+                # But wait, InitialParameterization says:
+                # B={ ( (1,0,0), (0,1,0), (0,0,1) ), ... }
+                # This is B[action][prev][next]
+                if B_raw.shape[0] == B_raw.shape[1] == B_raw.shape[2]:
+                    # Assume (action, prev, next) and transpose to (next, prev, action)
+                    B = B_raw.transpose(2, 1, 0)
+                else:
+                    # Best guess based on dimensions
+                    # Action is often the dimension that matches num_actions, if specified
+                    B = B_raw 
+            else:
+                B = B_raw
         
-        # Get C vector (preferences)
-        C_data = init_params.get('C', [0.1, 0.1, 1.0])
-        C = np.array(C_data, dtype=np.float64)
-        
-        # Get D vector (prior over states)
-        D_data = init_params.get('D', [0.33333, 0.33333, 0.33333])
-        D = np.array(D_data, dtype=np.float64)
+        # 3. Get C vector (preferences)
+        C_data = init_params.get('C')
+        if C_data is None:
+            C = np.zeros(A.shape[0], dtype=np.float64)
+        else:
+            C = np.array(C_data, dtype=np.float64).flatten()
+            
+        # 4. Get D vector (prior over states)
+        D_data = init_params.get('D')
+        if D_data is None:
+            D = np.ones(A.shape[1], dtype=np.float64) / A.shape[1]
+        else:
+            D = np.array(D_data, dtype=np.float64).flatten()
+            
+        # 5. Get E vector (habit/policy prior) - optional
+        E_data = init_params.get('E')
+        if E_data is not None:
+            E = np.array(E_data, dtype=np.float64).flatten()
+        else:
+            E = None
         
         logger.info(f"Created matrices: A={A.shape}, B={B.shape}, C={C.shape}, D={D.shape}")
         
         # PyMDP expects obj_array format (numpy object arrays)
-        # Use utils.obj_array to properly wrap arrays
-        A_obj = utils.obj_array(1)  # 1 observation modality
+        A_obj = utils.obj_array(1)
         A_obj[0] = A
         
-        B_obj = utils.obj_array(1)  # 1 hidden state factor
+        B_obj = utils.obj_array(1)
         B_obj[0] = B
         
-        C_obj = utils.obj_array(1)  # 1 observation modality
+        C_obj = utils.obj_array(1)
         C_obj[0] = C
         
-        D_obj = utils.obj_array(1)  # 1 hidden state factor
+        D_obj = utils.obj_array(1)
         D_obj[0] = D
+        
+        E_obj = None
+        if E is not None:
+            E_obj = utils.obj_array(1)
+            E_obj[0] = E
         
         logger.info("Wrapped arrays in obj_array format")
         
-        # Create PyMDP agent with obj_array wrapped arrays
-        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj)
+        # Create PyMDP agent
+        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E_obj)
         logger.info("Successfully created PyMDP agent")
         
         # Run a simple simulation loop (increased timesteps for better visualization)

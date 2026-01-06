@@ -191,7 +191,7 @@ def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False) ->
     
     return logger
 
-# Compatibility functions for legacy code
+# Standalone logging setup for scripts not part of the main pipeline
 def setup_standalone_logging(
     level: int = logging.INFO,
     logger_name: str = "GNN_Pipeline", 
@@ -200,7 +200,7 @@ def setup_standalone_logging(
     console_level: int = logging.INFO,
     file_level: int = logging.DEBUG
 ) -> logging.Logger:
-    """Legacy compatibility function."""
+    """Setup standalone logging with file and console handlers."""
     log_dir = output_dir / "logs" if output_dir else None
     PipelineLogger.initialize(log_dir=log_dir, console_level=console_level, file_level=file_level)
     return PipelineLogger.get_logger(logger_name)
@@ -956,9 +956,9 @@ def setup_correlation_context(step_name: str, correlation_id: Optional[str] = No
     """
     return PipelineLogger.set_correlation_context(step_name, correlation_id) 
 
-# --- Backwards compatibility alias ---
+# Module-level function for setting correlation context
 # Some modules import set_correlation_context directly from this module.
-# Provide a thin wrapper that delegates to PipelineLogger.set_correlation_context.
+# This is a thin wrapper that delegates to PipelineLogger.set_correlation_context.
 def set_correlation_context(step_name: str, correlation_id: Optional[str] = None) -> str:
-    """Compatibility alias. Prefer setup_correlation_context or PipelineLogger.set_correlation_context."""
+    """Set correlation context for logging. Delegates to PipelineLogger.set_correlation_context."""
     return PipelineLogger.set_correlation_context(step_name, correlation_id)

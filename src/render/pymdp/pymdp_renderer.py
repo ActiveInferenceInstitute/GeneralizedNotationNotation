@@ -341,6 +341,43 @@ State Space:
 import sys
 from pathlib import Path
 import logging
+import subprocess
+
+# Ensure PyMDP is installed before importing
+try:
+    import pymdp
+    print("✅ PyMDP is available")
+except ImportError:
+    print("📦 PyMDP not found - installing...")
+    try:
+        # Try UV first (as per project rules)
+        result = subprocess.run(
+            [sys.executable, "-m", "uv", "pip", "install", "pymdp"],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        if result.returncode != 0:
+            # Fallback to pip if UV fails
+            print("⚠️  UV install failed, trying pip...")
+            result = subprocess.run(
+                [sys.executable, "-m", "pip", "install", "pymdp"],
+                capture_output=True,
+                text=True,
+                timeout=120
+            )
+        if result.returncode == 0:
+            print("✅ PyMDP installed successfully")
+            import pymdp
+        else:
+            print(f"❌ Failed to install PyMDP: {{result.stderr}}")
+            sys.exit(1)
+    except subprocess.TimeoutExpired:
+        print("❌ PyMDP installation timed out")
+        sys.exit(1)
+    except Exception as e:
+        print(f"❌ Error installing PyMDP: {{e}}")
+        sys.exit(1)
 
 # Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)
 project_root = Path(__file__).parent.parent.parent.parent.parent

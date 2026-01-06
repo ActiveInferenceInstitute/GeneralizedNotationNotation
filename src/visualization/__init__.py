@@ -71,12 +71,6 @@ from .processor import (
     generate_combined_visualizations
 )
 
-# Import legacy compatibility functions
-from .legacy import (
-    matrix_visualizer,
-    generate_visualizations
-)
-
 __version__ = "1.0.0"
 
 def get_module_info() -> dict:
@@ -102,7 +96,7 @@ def process_visualization_main(target_dir, output_dir, verbose: bool = False, **
         return False
 
 
-# Helper functions for backward compatibility
+# Helper functions for model analysis
 def _create_model_summary(model_data: Dict[str, Any], file_name: str) -> Dict[str, Any]:
             """Create a summary of the model data."""
             return {
@@ -260,7 +254,7 @@ def _visualize_connectivity_matrix(connectivity_matrix, output_path: Path) -> bo
 
 __all__ = [
     'MatrixVisualizer', 'GNNVisualizer', 'OntologyVisualizer', 'GraphVisualizer',
-    'matrix_visualizer', 'process_matrix_visualization', 'process_visualization',
-    'generate_visualizations', 'generate_graph_visualization', 'generate_matrix_visualization',
+    'process_matrix_visualization', 'process_visualization',
+    'generate_graph_visualization', 'generate_matrix_visualization',
     '__version__', 'process_visualization_main'
 ]

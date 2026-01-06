@@ -22,6 +22,12 @@ quadray/
 └── [additional resources]
 ```
 
+## 📐 4D Spatial Priors in GNN
+
+Quadray coordinates provide a unique 4D perspective on 3D space:
+- **Symmetric Spatial Priors**: Encode spatial layout using Quadray symmetry, which can simplify the Dirichlet priors `d_f0` in navigation models.
+- **Direct Geometry Mapping**: Translate 3D movements into GNN policies via Quadray transformation matrices.
+
 ## Integration
 
 This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem.

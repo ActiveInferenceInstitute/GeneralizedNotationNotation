@@ -363,194 +363,102 @@ class POMDPExtractor:
     
     def _parse_parameter_value(self, value_str: str) -> Union[List, float, int]:
         """Parse parameter value string into appropriate data structure."""
+        import ast
         value_str = value_str.strip()
         
-        # Handle the specific format used in the GNN file: (val1, val2, val3)
-        # First check if it's a simple tuple
-        if value_str.startswith('(') and value_str.endswith(')') and value_str.count('(') == 1:
-            # Simple tuple: (0.1, 0.1, 1.0)
-            inner = value_str[1:-1].strip()
-            values = []
-            for item in inner.split(','):
-                item = item.strip()
-                try:
-                    if '.' in item:
-                        values.append(float(item))
-                    else:
-                        values.append(int(item))
-                except ValueError:
-                    values.append(item)
-            return values
-        
-        # Handle nested structure for matrices using safer parsing
-        elif '(' in value_str and ')' in value_str:
-            # This is a multi-dimensional structure - use safe parsing
+        # Handle simple numeric values
+        try:
+            if re.match(r'^[-+]?\d*\.\d+$', value_str):
+                return float(value_str)
+            if re.match(r'^[-+]?\d+$', value_str):
+                return int(value_str)
+        except ValueError:
+            pass
+
+        # Handle structured data (tuples/nested lists)
+        if '(' in value_str or '[' in value_str:
             try:
+                # Convert ( ) to [ ] for literal_eval if needed, or just let it handle tuples
+                # Better to convert to a standard format
+                clean_str = value_str.replace('(', '[').replace(')', ']')
+                # Handle cases like ( (1,2), (3,4) ) -> [ [1,2], [3,4] ]
+                # Remove extra commas if any (e.g., from trailing commas in GNN)
+                clean_str = re.sub(r',\s*\]', ']', clean_str)
+                return ast.literal_eval(clean_str)
+            except (ValueError, SyntaxError) as e:
+                self.logger.warning(f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing.")
                 return self._parse_nested_structure_safe(value_str)
-            except RecursionError:
-                # Fallback to eval for complex nested structures
-                try:
-                    # Convert to Python-evaluable format
-                    python_str = value_str.replace('(', '[').replace(')', ']')
-                    result = eval(python_str)
-                    return result
-                except Exception as e:
-                    self.logger.warning(f"Failed to parse complex structure, using fallback: {e}")
-                    return []
         
+        # Fallback for simple comma-separated values without brackets
+        values = []
+        for item in value_str.split(','):
+            item = item.strip()
+            if not item: continue
+            try:
+                if '.' in item:
+                    values.append(float(item))
+                else:
+                    values.append(int(item))
+            except ValueError:
+                values.append(item)
+        
+        return values[0] if len(values) == 1 else values
+
+    def _parse_nested_structure_safe(self, value_str: str) -> List:
+        """
+        Robust manual parser for nested structures as a last resort.
+        Handles nested parentheses/brackets by tracking depth.
+        """
+        value_str = value_str.strip()
+        if not value_str:
+            return []
+            
+        result = []
+        current = ""
+        depth = 0
+        
+        # Normalize delimiters
+        value_str = value_str.replace('(', '[').replace(')', ']')
+        
+        if value_str.startswith('[') and value_str.endswith(']'):
+            content = value_str[1:-1].strip()
         else:
-            # Simple comma-separated values
-            values = []
-            for item in value_str.split(','):
-                item = item.strip()
-                try:
-                    if '.' in item:
-                        values.append(float(item))
-                    else:
-                        values.append(int(item))
-                except ValueError:
-                    values.append(item)
-            return values
-    
-    def _parse_nested_structure(self, value_str: str) -> List:
-        """Parse nested parameter structure (for matrices)."""
-        result = []
-        current = ''
-        paren_depth = 0
-        
-        # Clean up the value string
-        value_str = value_str.strip()
-        
-        for char in value_str:
-            if char == '(':
-                paren_depth += 1
-                if paren_depth > 1:  # Don't include outermost parentheses
-                    current += char
-            elif char == ')':
-                paren_depth -= 1
-                if paren_depth >= 1:  # Don't include outermost parentheses
-                    current += char
-                elif paren_depth == 0:
-                    # End of a group
-                    if current.strip():
-                        # Parse the current group as a nested structure or simple values
-                        if '(' in current:
-                            parsed = self._parse_nested_structure(f"({current})")
-                        else:
-                            # Simple comma-separated values
-                            values = []
-                            for item in current.split(','):
-                                item = item.strip()
-                                try:
-                                    if '.' in item:
-                                        values.append(float(item))
-                                    else:
-                                        values.append(int(item))
-                                except ValueError:
-                                    values.append(item)
-                            parsed = values
-                        result.append(parsed)
-                        current = ''
-            elif char == ',' and paren_depth <= 1:
-                # Top-level separator (or within first level)
-                if current.strip() and paren_depth == 1:
-                    # We're inside the outer parentheses, this is an element separator
-                    if '(' in current and ')' in current:
-                        # This is a complete sub-element
-                        parsed = self._parse_parameter_value(current.strip())
-                        result.append(parsed)
-                        current = ''
-                    else:
-                        # Add comma to current (it's part of a sub-element)
-                        current += char
-                elif paren_depth == 0:
-                    # Top-level separator
-                    if current.strip():
-                        parsed = self._parse_parameter_value(current)
-                        result.append(parsed)
-                        current = ''
-                else:
-                    current += char
-            else:
-                if paren_depth >= 1:  # Only add characters when we're inside parentheses
-                    current += char
-        
-        # Handle final group
-        if current.strip():
-            if '(' in current:
-                parsed = self._parse_nested_structure(f"({current})")
-            else:
-                values = []
-                for item in current.split(','):
-                    item = item.strip()
-                    try:
-                        if '.' in item:
-                            values.append(float(item))
-                        else:
-                            values.append(int(item))
-                    except ValueError:
-                        values.append(item)
-                parsed = values
-            result.append(parsed)
+            content = value_str
             
-        return result
-    
-    def _parse_nested_structure_safe(self, value_str: str, max_depth: int = 10) -> List:
-        """Parse nested parameter structure safely with recursion limit."""
-        if max_depth <= 0:
-            raise RecursionError("Maximum parsing depth exceeded")
-            
-        # Remove outer curly braces if present
-        value_str = value_str.strip()
-        if value_str.startswith('{') and value_str.endswith('}'):
-            value_str = value_str[1:-1].strip()
-        
-        # For B matrix format like: ((1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0))
-        result = []
-        current = ''
-        paren_depth = 0
         i = 0
-        
-        while i < len(value_str):
-            char = value_str[i]
-            
-            if char == '(':
-                paren_depth += 1
-                if paren_depth == 1:
-                    # Start of a new group - don't include the opening parenthesis
-                    current = ''
-                else:
-                    current += char
-            elif char == ')':
-                paren_depth -= 1
-                if paren_depth == 0:
-                    # End of a complete group
-                    if current.strip():
-                        # Parse simple numeric tuple
-                        values = []
-                        for item in current.split(','):
-                            item = item.strip()
-                            if item:
-                                try:
-                                    if '.' in item:
-                                        values.append(float(item))
-                                    else:
-                                        values.append(int(item))
-                                except ValueError:
-                                    values.append(item)
-                        result.append(values)
-                        current = ''
-                else:
-                    current += char
-            elif char == ',' and paren_depth == 0:
-                # Top-level separator between groups - ignore
-                pass
-            else:
-                if paren_depth > 0:
-                    current += char
-            
+        while i < len(content):
+            char = content[i]
+            if char == '[':
+                if depth == 0:
+                    start_idx = i
+                depth += 1
+            elif char == ']':
+                depth -= 1
+                if depth == 0:
+                    # Found a complete nested group
+                    group = content[start_idx:i+1]
+                    result.append(self._parse_nested_structure_safe(group))
+            elif char == ',' and depth == 0:
+                if current.strip():
+                    try:
+                        val = current.strip()
+                        if '.' in val: result.append(float(val))
+                        else: result.append(int(val))
+                    except ValueError:
+                        result.append(current.strip())
+                    current = ""
+            elif depth == 0:
+                current += char
             i += 1
-        
+            
+        if current.strip():
+            try:
+                val = current.strip()
+                if '.' in val: result.append(float(val))
+                else: result.append(int(val))
+            except ValueError:
+                result.append(current.strip())
+                
         return result
     
     def _parse_connections(self, content: str) -> List[Tuple[str, str, str]]:
