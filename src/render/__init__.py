@@ -41,9 +41,10 @@ except ImportError:
     render_gnn_to_pymdp = None
 
 try:
-    from .rxinfer import render_gnn_to_rxinfer
+    from .rxinfer import render_gnn_to_rxinfer, render_gnn_to_rxinfer_toml
 except ImportError:
     render_gnn_to_rxinfer = None
+    render_gnn_to_rxinfer_toml = None
 
 try:
     from .discopy import render_gnn_to_discopy
@@ -75,6 +76,7 @@ __all__ = [
     # Specific renderer functions (may be None if submodule unavailable)
     'render_gnn_to_pymdp',
     'render_gnn_to_rxinfer',
+    'render_gnn_to_rxinfer_toml',
     'render_gnn_to_discopy',
     'render_gnn_to_activeinference_jl'
 ] + (['POMDPRenderProcessor', 'process_pomdp_for_frameworks'] if POMDP_PROCESSING_AVAILABLE else [])

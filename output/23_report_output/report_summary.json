@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-01-06T11:44:11.919101",
+  "report_generation_time": "2026-01-06T13:51:04.370345",
   "pipeline_output_directory": "output",
   "steps": {
     "setup_artifacts": {
@@ -185,7 +185,7 @@
     ]
   },
   "pipeline_summary": {
-    "start_time": "2026-01-06T11:40:38.711552",
+    "start_time": "2026-01-06T13:44:09.958638",
     "arguments": {
       "target_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
       "output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output",
@@ -218,10 +218,10 @@
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:40:38,796 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-06 11:40:38,815 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-06 11:40:38,815 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-06 11:40:38,816 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-06 11:40:38,816 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 11:40:38,817 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-06 11:40:38,818 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-06 11:40:38,818 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-06 11:40:38,818 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-06 11:40:38,818 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-06 11:40:38,818 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-06 11:40:38,819 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-06 11:40:38,819 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-06 11:40:38,819 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-06 11:40:38,820 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-06 11:40:38,821 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-06 11:40:38,821 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-06 11:40:38,826 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-06 11:40:38,826 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-06 11:40:38,827 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-06 11:40:38,827 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-06 11:40:38,827 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-06 11:40:38,828 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-06 11:40:38,828 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-06 11:40:38,829 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-06 11:40:38,829 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-06 11:40:38,829 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-06 11:40:38,829 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-06 11:40:38,829 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
-        "memory_usage_mb": 36.15625,
-        "peak_memory_mb": 36.15625,
-        "memory_delta_mb": 0.03125,
+        "stderr": "2026-01-06 13:44:10,006 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-06 13:44:10,022 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-06 13:44:10,022 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-06 13:44:10,023 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-06 13:44:10,023 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 13:44:10,024 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-06 13:44:10,024 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-06 13:44:10,024 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-06 13:44:10,025 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-06 13:44:10,025 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-06 13:44:10,025 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-06 13:44:10,025 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-06 13:44:10,025 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-06 13:44:10,026 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-06 13:44:10,027 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-06 13:44:10,028 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-06 13:44:10,028 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-06 13:44:10,031 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-06 13:44:10,031 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-06 13:44:10,031 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-06 13:44:10,031 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-06 13:44:10,031 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-06 13:44:10,032 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-06 13:44:10,033 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
+        "memory_usage_mb": 36.125,
+        "peak_memory_mb": 36.125,
+        "memory_delta_mb": 0.0625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -230,17 +230,17 @@
         "step_number": 1,
         "script_name": "3_gnn.py",
         "description": "GNN file processing",
-        "start_time": "2026-01-06T11:40:38.712681",
-        "end_time": "2026-01-06T11:40:38.840385",
-        "duration_seconds": 0.127701997756958
+        "start_time": "2026-01-06T13:44:09.959834",
+        "end_time": "2026-01-06T13:44:10.043150",
+        "duration_seconds": 0.0833139419555664
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:40:38,894 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-06 11:40:38,904 - type_checker - INFO - \u2705 Type checking completed successfully\n",
-        "memory_usage_mb": 36.296875,
-        "peak_memory_mb": 36.328125,
-        "memory_delta_mb": -0.03125,
+        "stderr": "2026-01-06 13:44:10,094 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-06 13:44:10,096 - type_checker - INFO - \u2705 Type checking completed successfully\n",
+        "memory_usage_mb": 36.25,
+        "peak_memory_mb": 36.25,
+        "memory_delta_mb": 0.0,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -249,16 +249,16 @@
         "step_number": 2,
         "script_name": "5_type_checker.py",
         "description": "Type checking",
-        "start_time": "2026-01-06T11:40:38.841767",
-        "end_time": "2026-01-06T11:40:38.914128",
-        "duration_seconds": 0.07235932350158691
+        "start_time": "2026-01-06T13:44:10.044156",
+        "end_time": "2026-01-06T13:44:10.104518",
+        "duration_seconds": 0.06036114692687988
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:40:38,968 - export - INFO - Loaded 1 parsed GNN files\n2026-01-06 11:40:38,968 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-06 11:40:38,968 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-06 11:40:38,969 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-06 11:40:38,970 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-06 11:40:38,970 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-06 11:40:38,971 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-06 11:40:38,971 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-06 11:40:38,971 - export - INFO - Export processing completed:\n2026-01-06 11:40:38,971 - export - INFO -   Total files: 1\n2026-01-06 11:40:38,971 - export - INFO -   Successful exports: 1\n2026-01-06 11:40:38,971 - export - INFO -   Failed exports: 0\n2026-01-06 11:40:38,971 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
-        "memory_usage_mb": 36.328125,
-        "peak_memory_mb": 36.328125,
+        "stderr": "2026-01-06 13:44:10,154 - export - INFO - Loaded 1 parsed GNN files\n2026-01-06 13:44:10,154 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-06 13:44:10,154 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-06 13:44:10,155 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-06 13:44:10,157 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-06 13:44:10,157 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-06 13:44:10,158 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-06 13:44:10,158 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-06 13:44:10,158 - export - INFO - Export processing completed:\n2026-01-06 13:44:10,158 - export - INFO -   Total files: 1\n2026-01-06 13:44:10,158 - export - INFO -   Successful exports: 1\n2026-01-06 13:44:10,158 - export - INFO -   Failed exports: 0\n2026-01-06 13:44:10,158 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
+        "memory_usage_mb": 36.3125,
+        "peak_memory_mb": 36.3125,
         "memory_delta_mb": 0.015625,
         "exit_code": 0,
         "retry_count": 0,
@@ -268,17 +268,17 @@
         "step_number": 3,
         "script_name": "7_export.py",
         "description": "Multi-format export",
-        "start_time": "2026-01-06T11:40:38.914750",
-        "end_time": "2026-01-06T11:40:38.982783",
-        "duration_seconds": 0.06803011894226074
+        "start_time": "2026-01-06T13:44:10.105125",
+        "end_time": "2026-01-06T13:44:10.169541",
+        "duration_seconds": 0.06441283226013184
       },
       {
         "status": "SUCCESS",
-        "stdout": "Using cached visualizations for actinf_pomdp_agent\n",
-        "stderr": "2026-01-06 11:40:39,307 - visualization - INFO - \ud83d\ude80 Processing visualizations\n2026-01-06 11:40:39,309 - visualization - INFO - \u2705 Generated 5 visualizations\n",
-        "memory_usage_mb": 31.703125,
-        "peak_memory_mb": 36.359375,
-        "memory_delta_mb": -4.65625,
+        "stdout": "",
+        "stderr": "2026-01-06 13:44:10,454 - visualization - INFO - \ud83d\ude80 Processing visualizations\n2026-01-06 13:44:12,272 - visualization.processor - INFO - Generated 3 matrix visualizations for actinf_pomdp_agent\n2026-01-06 13:44:12,940 - visualization - INFO - \u2705 Generated 6 visualizations\n",
+        "memory_usage_mb": 30.375,
+        "peak_memory_mb": 36.328125,
+        "memory_delta_mb": -5.953125,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -287,17 +287,17 @@
         "step_number": 4,
         "script_name": "8_visualization.py",
         "description": "Visualization",
-        "start_time": "2026-01-06T11:40:38.983428",
-        "end_time": "2026-01-06T11:40:39.378140",
-        "duration_seconds": 0.3947110176086426
+        "start_time": "2026-01-06T13:44:10.170201",
+        "end_time": "2026-01-06T13:44:13.070839",
+        "duration_seconds": 2.900632858276367
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:40:39,463 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-06 11:40:39,463 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 11:40:39,463 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-06 11:40:39,464 - render.processor - INFO - Found 1 GNN files to process\n2026-01-06 11:40:39,464 - render.processor - INFO - Target frameworks: all available\n2026-01-06 11:40:39,464 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 11:40:39,465 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-06 11:40:39,465 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-06 11:40:39,465 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-06 11:40:39,465 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2026-01-06 11:40:39,465 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:40:39,465 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-06 11:40:39,466 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-06 11:40:39,466 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-06 11:40:39,466 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-06 11:40:39,466 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-06 11:40:39,466 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-06 11:40:39,467 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:40:39,467 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-06 11:40:39,467 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-06 11:40:39,467 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-06 11:40:39,467 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-06 11:40:39,467 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-06 11:40:39,467 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
-        "memory_usage_mb": 31.765625,
-        "peak_memory_mb": 31.78125,
-        "memory_delta_mb": -0.015625,
+        "stderr": "2026-01-06 13:44:13,271 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-06 13:44:13,271 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 13:44:13,271 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-06 13:44:13,273 - render.processor - INFO - Found 1 GNN files to process\n2026-01-06 13:44:13,273 - render.processor - INFO - Target frameworks: all available\n2026-01-06 13:44:13,273 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-06 13:44:13,273 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-06 13:44:13,274 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-06 13:44:13,274 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-06 13:44:13,275 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2026-01-06 13:44:13,275 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 13:44:13,275 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-06 13:44:13,275 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-06 13:44:13,276 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-06 13:44:13,276 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 13:44:13,276 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-06 13:44:13,276 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-06 13:44:13,277 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 13:44:13,277 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-06 13:44:13,277 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-06 13:44:13,277 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-06 13:44:13,277 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-06 13:44:13,277 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 13:44:13,278 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-06 13:44:13,279 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-06 13:44:13,279 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-06 13:44:13,279 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-06 13:44:13,279 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-06 13:44:13,279 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
+        "memory_usage_mb": 30.875,
+        "peak_memory_mb": 30.875,
+        "memory_delta_mb": 0.171875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -306,17 +306,17 @@
         "step_number": 5,
         "script_name": "11_render.py",
         "description": "Code rendering",
-        "start_time": "2026-01-06T11:40:39.378872",
-        "end_time": "2026-01-06T11:40:39.478195",
-        "duration_seconds": 0.09932065010070801
+        "start_time": "2026-01-06T13:44:13.071904",
+        "end_time": "2026-01-06T13:44:13.313506",
+        "duration_seconds": 0.24159908294677734
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:40:39,652 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-06 11:40:39,944 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-06 11:40:39,944 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-06 11:40:39,949 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-06 11:40:39,949 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-06 11:40:39,950 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:40:39,951 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:40:39,951 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:40:39,952 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:40:39,952 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:40:39,952 - execute - INFO - Found 5 executable scripts to run\n2026-01-06 11:40:39,952 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 11:40:42,677 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1\n2026-01-06 11:40:42,678 - execute - WARNING - Error output: WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, o...\n2026-01-06 11:40:42,679 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 11:40:42,719 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1\n2026-01-06 11:40:42,719 - execute - WARNING - Error output: Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line...\n2026-01-06 11:40:42,719 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:40:43,396 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 11:40:43,396 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-06 11:40:43,396 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 11:41:09,470 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1\n2026-01-06 11:41:09,470 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 11:41:09,472 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 11:41:30,984 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1\n2026-01-06 11:41:30,984 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 11:41:30,986 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-06 11:41:30,986 - execute - ERROR - \u274c Execute processing completed with 4/5 failures (critical failures)\n",
-        "memory_usage_mb": 15.3125,
-        "peak_memory_mb": 31.859375,
-        "memory_delta_mb": -16.546875,
+        "stderr": "2026-01-06 13:44:13,838 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-06 13:44:15,029 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-06 13:44:15,029 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-06 13:44:15,031 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-06 13:44:15,031 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-06 13:44:15,032 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 13:44:15,032 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 13:44:15,032 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 13:44:15,033 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 13:44:15,033 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 13:44:15,033 - execute - INFO - Found 5 executable scripts to run\n2026-01-06 13:44:15,033 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 13:44:19,586 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-06 13:44:19,586 - execute - INFO - Script output: \u2705 PyMDP is available\n...\n2026-01-06 13:44:19,588 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-06 13:44:19,624 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1\n2026-01-06 13:44:19,624 - execute - WARNING - Error output: Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line...\n2026-01-06 13:44:19,625 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 13:44:20,384 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-06 13:44:20,384 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-06 13:44:20,385 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-06 13:44:36,522 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_rxinfer.jl failed with return code 1\n2026-01-06 13:44:36,522 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 13:44:36,523 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-06 13:44:49,021 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_activeinference.jl failed with return code 1\n2026-01-06 13:44:49,021 - execute - WARNING - Error output:    Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v...\n2026-01-06 13:44:49,023 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-06 13:44:49,023 - execute - ERROR - \u274c Execute processing completed with 3/5 failures (critical failures)\n",
+        "memory_usage_mb": 15.328125,
+        "peak_memory_mb": 30.96875,
+        "memory_delta_mb": -15.640625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -325,17 +325,17 @@
         "step_number": 6,
         "script_name": "12_execute.py",
         "description": "Execution",
-        "start_time": "2026-01-06T11:40:39.478828",
-        "end_time": "2026-01-06T11:41:31.128984",
-        "duration_seconds": 51.65014886856079
+        "start_time": "2026-01-06T13:44:13.314193",
+        "end_time": "2026-01-06T13:44:49.139067",
+        "duration_seconds": 35.824864864349365
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-06 11:41:31,234 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 11:41:31,234 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-06 11:41:31,235 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-06 11:41:31,235 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
-        "memory_usage_mb": 25.546875,
-        "peak_memory_mb": 25.546875,
-        "memory_delta_mb": 1.46875,
+        "stderr": "2026-01-06 13:44:49,244 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-06 13:44:49,245 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-06 13:44:49,245 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-06 13:44:49,245 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
+        "memory_usage_mb": 25.6875,
+        "peak_memory_mb": 25.6875,
+        "memory_delta_mb": 1.546875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -344,14 +344,14 @@
         "step_number": 7,
         "script_name": "15_audio.py",
         "description": "Audio processing",
-        "start_time": "2026-01-06T11:41:31.130282",
-        "end_time": "2026-01-06T11:41:31.244881",
-        "duration_seconds": 0.11459612846374512
+        "start_time": "2026-01-06T13:44:49.140207",
+        "end_time": "2026-01-06T13:44:49.256341",
+        "duration_seconds": 0.11612987518310547
       }
     ],
-    "end_time": "2026-01-06T11:41:31.245447",
+    "end_time": "2026-01-06T13:44:49.256918",
     "overall_status": "SUCCESS",
-    "total_duration_seconds": 52.533895,
+    "total_duration_seconds": 39.29828,
     "environment_info": {
       "python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]",
       "platform": "darwin",
@@ -359,10 +359,10 @@
       "working_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation",
       "user": "mini",
       "memory_total_gb": "16.0",
-      "disk_free_gb": "117.1"
+      "disk_free_gb": "115.2"
     },
     "performance_summary": {
-      "peak_memory_mb": 36.359375,
+      "peak_memory_mb": 36.328125,
       "total_steps": 7,
       "failed_steps": 0,
       "critical_failures": 0,
@@ -371,7 +371,7 @@
     }
   },
   "visualizations": {
-    "total_count": 12,
+    "total_count": 18,
     "by_step": {
       "8_visualization_output": {
         "step": "8_visualization_output",
@@ -467,7 +467,7 @@
       },
       "11_render_output": {
         "step": "11_render_output",
-        "count": 3,
+        "count": 9,
         "files": [
           {
             "name": "model_components.png",
@@ -497,6 +497,66 @@
             "extension": ".png",
             "size_bytes": 59924,
             "size_mb": 0.06,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 379281,
+            "size_mb": 0.36,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 482178,
+            "size_mb": 0.46,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 143516,
+            "size_mb": 0.14,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 111885,
+            "size_mb": 0.11,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 202506,
+            "size_mb": 0.19,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 115684,
+            "size_mb": 0.11,
             "step": "11_render_output"
           }
         ]
@@ -629,6 +689,66 @@
           "size_bytes": 59924,
           "size_mb": 0.06,
           "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 379281,
+          "size_mb": 0.36,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 482178,
+          "size_mb": 0.46,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 143516,
+          "size_mb": 0.14,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 111885,
+          "size_mb": 0.11,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 202506,
+          "size_mb": 0.19,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 115684,
+          "size_mb": 0.11,
+          "step": "11_render_output"
         }
       ],
       "html": [
@@ -756,6 +876,66 @@
         "step": "11_render_output"
       },
       {
+        "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 379281,
+        "size_mb": 0.36,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 482178,
+        "size_mb": 0.46,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 143516,
+        "size_mb": 0.14,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 111885,
+        "size_mb": 0.11,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 202506,
+        "size_mb": 0.19,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 115684,
+        "size_mb": 0.11,
+        "step": "11_render_output"
+      },
+      {
         "name": "index.html",
         "path": "output/20_website_output/website_results/index.html",
         "relative_path": "20_website_output/website_results/index.html",
@@ -769,7 +949,7 @@
   },
   "health_score": 30.0,
   "report_metadata": {
-    "generation_time": "2026-01-06T11:44:11.925370",
+    "generation_time": "2026-01-06T13:51:04.376091",
     "formats_generated": [
       "html",
       "markdown",

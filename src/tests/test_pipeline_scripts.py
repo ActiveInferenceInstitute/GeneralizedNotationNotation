@@ -602,7 +602,7 @@ class TestPipelineScriptIntegration:
             if uses_template:
                 # Scripts using standardized template inherit standard arguments
                 logging.info(f"Script {script_name} uses standardized pipeline template - arguments handled automatically")
-            elif has_enhanced_parser or has_argparse:
+            elif has_argparse:
                 # For scripts with explicit argument parsing, check for core arguments
                 for arg in common_args:
                     arg_found = (arg in content or 

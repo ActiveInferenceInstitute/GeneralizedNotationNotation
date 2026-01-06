@@ -275,6 +275,3 @@ def generate_website_tool(artifacts_dir, output_dir):
 ```
 
 ---
-
-**Last Updated: October 28, 2025
-**Status**: ✅ Production Ready

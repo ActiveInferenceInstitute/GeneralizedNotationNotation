@@ -1,0 +1,42 @@
+ERROR: LoadError: Half-edge has been found: s_curr_1. To terminate half-edges 'Uninformative' node can be used.
+Stacktrace:
+  [1] error(s::LazyString)
+    @ Base ./error.jl:44
+  [2] #70
+    @ ~/.julia/packages/RxInfer/AvqBF/src/model/plugins/reactivemp_inference.jl:136 [inlined]
+  [3] variable_nodes(callback::RxInfer.var"#70#71"{RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}}, model::GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String})
+    @ GraphPPL ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:878
+  [4] postprocess_plugin
+    @ ~/.julia/packages/RxInfer/AvqBF/src/model/plugins/reactivemp_inference.jl:130 [inlined]
+  [5] #add_toplevel_model!##0
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:2138 [inlined]
+  [6] foreach(f::GraphPPL.var"#add_toplevel_model!##0#add_toplevel_model!##1"{GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}}, itr::GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}})
+    @ Base ./abstractarray.jl:3188
+  [7] add_toplevel_model!
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:2137 [inlined]
+  [8] create_model(callback::RxInfer.var"#__infer_create_factor_graph_model##0#__infer_create_factor_graph_model##1"{@NamedTuple{y::Vector{Int64}}}, generator::GraphPPL.ModelGenerator{typeof(minimal_model), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String})
+    @ GraphPPL ~/.julia/packages/GraphPPL/IVPQ2/src/model_generator.jl:159
+  [9] __infer_create_factor_graph_model
+    @ ~/.julia/packages/RxInfer/AvqBF/src/model/model.jl:140 [inlined]
+ [10] create_model(generator::RxInfer.ConditionedModelGenerator{GraphPPL.ModelGenerator{typeof(minimal_model), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{y::Vector{Int64}}})
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/model/model.jl:128
+ [11] batch_inference(; model::GraphPPL.ModelGenerator{typeof(minimal_model), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, data::@NamedTuple{y::Vector{Int64}}, initialization::Nothing, constraints::Nothing, meta::Nothing, options::Nothing, returnvars::Nothing, predictvars::Nothing, iterations::Nothing, free_energy::Bool, free_energy_diagnostics::Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, allow_node_contraction::Bool, showprogress::Bool, callbacks::Nothing, addons::Nothing, postprocess::DefaultPostprocess, warn::Bool, catch_exception::Bool)
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/inference/batch.jl:207
+ [12] batch_inference
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/batch.jl:96 [inlined]
+ [13] #299
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/inference.jl:545 [inlined]
+ [14] with_session(f::RxInfer.var"#299#300"{GraphPPL.ModelGenerator{typeof(minimal_model), @Kwargs{}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{y::Vector{Int64}}, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Bool, Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, Bool, Bool, Bool, Nothing, Nothing, DefaultPostprocess, Nothing, Bool, Bool, Bool}, session::RxInfer.Session, label::Symbol)
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/session.jl:253
+ [15] #infer#296
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/inference.jl:515 [inlined]
+ [16] top-level scope
+    @ ~/Documents/GitHub/GeneralizedNotationNotation/try_rxinfer_v2.jl:28
+ [17] include(mod::Module, _path::String)
+    @ Base ./Base.jl:306
+ [18] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:317
+ [19] _start()
+    @ Base ./client.jl:550
+in expression starting at /Users/mini/Documents/GitHub/GeneralizedNotationNotation/try_rxinfer_v2.jl:28
+Model defined successfully

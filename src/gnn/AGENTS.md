@@ -411,9 +411,5 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 
 ---
 
-**Last Updated: October 28, 2025  
-**Maintainer**: GNN Pipeline Team  
-**Status**: ✅ Production Ready
-
 
 

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.682234,
-  "timestamp": "2026-01-06T11:53:38.605883",
+  "execution_time": 0.56419,
+  "timestamp": "2026-01-06T13:47:52.343558",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -29,6 +29,6 @@
     "executor": "python3",
     "stdout_length": 1726,
     "stderr_length": 173,
-    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy"
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
   }
 }

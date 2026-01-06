@@ -368,15 +368,11 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         D_obj = utils.obj_array(1)
         D_obj[0] = D
         
-        E_obj = None
-        if E is not None:
-            E_obj = utils.obj_array(1)
-            E_obj[0] = E
-        
-        logger.info("Wrapped arrays in obj_array format")
+        # E vector is policy-level, so pass directly (pyMDP expects 1D array over policies)
+        logger.info("Wrapped arrays in obj_array format (except E)")
         
         # Create PyMDP agent
-        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E_obj)
+        agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E)
         logger.info("Successfully created PyMDP agent")
         
         # Run a simple simulation loop (increased timesteps for better visualization)

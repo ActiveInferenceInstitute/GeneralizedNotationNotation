@@ -1,145 +1,122 @@
 STDOUT:
 .............s..........................ssssss.......................... [ 11%]
-........................s...F...............s........................... [ 22%]
+........................s...................s........................... [ 22%]
 ...s...................................................................s [ 33%]
-.........ss.ss.......ss.ss...F....................s..................... [ 44%]
-F.............s................s.......sssssss.......................... [ 56%]
+.........ss.ss.......ss.ss........................s..................... [ 44%]
+..............s................s.......sssssss.......................... [ 56%]
 .s.......s............................................ss......ss........ [ 67%]
-........................ssssss.ss.ss..s.ss.ssss..................FF
-=================================== FAILURES ===================================
-_____________ TestRenderModuleComprehensive.test_discopy_rendering _____________
-src/tests/test_core_modules.py:200: in test_discopy_rendering
-    result = render_gnn_to_discopy()
-             ^^^^^^^^^^^^^^^^^^^^^^^
-E   TypeError: render_gnn_to_discopy() missing 2 required positional arguments: 'gnn_spec' and 'output_script_path'
-_________________ TestGUIFunctionality.test_headless_artifacts _________________
-src/tests/test_gui_functionality.py:36: in test_headless_artifacts
-    assert status.exists()
-E   AssertionError: assert False
-E    +  where False = exists()
-E    +    where exists = PosixPath('/var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/gui_processing_summary.json').exists
------------------------------ Captured stderr call -----------------------------
-2026-01-06 11:41:36,044 - gui - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
-2026-01-06 11:41:36,044 - gui - INFO - Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/input
-2026-01-06 11:41:36,044 - gui - INFO - Running GUI types: ['gui_1', 'gui_2']
-2026-01-06 11:41:36,044 - gui - INFO - Mode: HEADLESS
-2026-01-06 11:41:36,044 - gui - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
-2026-01-06 11:41:36,045 - gui - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
-2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/constructed_model_gui1.md
-2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 1 completed successfully
-2026-01-06 11:41:36,045 - gui - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
-2026-01-06 11:41:36,045 - gui - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
-2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/visual_model_gui2.md
-2026-01-06 11:41:36,045 - gui - INFO - ✅ GUI 2 completed successfully
-2026-01-06 11:41:36,046 - gui - INFO - 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/gui_processing_summary.json
-2026-01-06 11:41:36,046 - gui - INFO - Generating HTML navigation page for pipeline outputs
-2026-01-06 11:41:36,046 - gui - INFO - ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/navigation.html
-2026-01-06 11:41:36,046 - gui - INFO - ✅ HTML navigation page generated
------------------------------- Captured log call -------------------------------
-INFO     gui:__init__.py:86 📦 Running in HEADLESS mode - generating artifacts only (fast)
-INFO     gui:__init__.py:101 Processing GUI module for files in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/input
-INFO     gui:__init__.py:102 Running GUI types: ['gui_1', 'gui_2']
-INFO     gui:__init__.py:103 Mode: HEADLESS
-INFO     gui:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
-INFO     gui:processor.py:65 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
-INFO     gui:pipeline_template.py:48 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/constructed_model_gui1.md
-INFO     gui:__init__.py:74 ✅ GUI 1 completed successfully
-INFO     gui:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
-INFO     gui:processor.py:76 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
-INFO     gui:pipeline_template.py:48 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/22_gui_output/visual_model_gui2.md
-INFO     gui:__init__.py:72 ✅ GUI 2 completed successfully
-INFO     gui:__init__.py:171 📊 GUI processing summary saved to: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/gui_processing_summary.json
-INFO     gui:__init__.py:203 Generating HTML navigation page for pipeline outputs
-INFO     gui:__init__.py:467 ✅ HTML navigation page generated: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp5pydo5i1/output/navigation.html
-INFO     gui:__init__.py:180 ✅ HTML navigation page generated
-_______ TestPipelineScriptDiscovery.test_pipeline_script_discovery_logic _______
-src/tests/test_main_orchestrator.py:129: in test_pipeline_script_discovery_logic
-    assert int(match.group(1)) == expected_num, \
-E   AssertionError: Script 3_gnn.py should extract number 2
-E   assert 3 == 2
-E    +  where 3 = int('3')
-E    +    where '3' = <built-in method group of re.Match object at 0x115d8c0d0>(1)
-E    +      where <built-in method group of re.Match object at 0x115d8c0d0> = <re.Match object; span=(0, 8), match='3_gnn.py'>.group
-________ TestVisualizationPerformance.test_visualization_scaling[small] ________
-src/tests/test_pipeline_performance.py:157: in test_visualization_scaling
-    from src.visualization import generate_visualizations
-E   ImportError: cannot import name 'generate_visualizations' from 'src.visualization' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
-_______ TestVisualizationPerformance.test_visualization_scaling[medium] ________
-src/tests/test_pipeline_performance.py:157: in test_visualization_scaling
-    from src.visualization import generate_visualizations
-E   ImportError: cannot import name 'generate_visualizations' from 'src.visualization' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/visualization/__init__.py)
-============================= slowest 10 durations =============================
-38.92s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
-2.98s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_steps_3_7_8_produce_artifacts
-2.74s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
-2.34s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
-2.19s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
-2.17s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
-2.02s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-1.83s call     src/tests/test_pipeline_error_scenarios.py::TestPipelineIntegrationScenarios::test_pipeline_with_missing_dependencies
-1.53s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers0]
-1.23s call     src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution
-=========================== short test summary info ============================
-SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
-SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
-SKIPPED [1] src/tests/test_audio_sapf.py:51: SAPF validation not available
-SKIPPED [1] src/tests/test_audio_sapf.py:90: SAPF conversion function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:119: SAPF oscillator function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:134: SAPF envelope function not available
-SKIPPED [1] src/tests/test_audio_sapf.py:153: SAPF mixing function not available
-SKIPPED [1] src/tests/test_core_modules.py:136: Validation test skipped due to: Valid GNN file should have basic structure: simple.gnn
-assert False
-SKIPPED [1] src/tests/test_core_modules.py:610: SAPF conversion not available: convert_gnn_to_sapf() missing 1 required positional argument: 'model_name'
-SKIPPED [1] src/tests/test_d2_visualizer.py:260: D2 CLI not available
-SKIPPED [1] src/tests/test_gnn_integration.py:28: GNN module not available
-SKIPPED [1] src/tests/test_gnn_overall.py:94: GNN reporting not available
-SKIPPED [1] src/tests/test_gnn_overall.py:117: GNN reporting not available
-SKIPPED [1] src/tests/test_gnn_parsing.py:69: GNN discovery not available
-SKIPPED [1] src/tests/test_gnn_parsing.py:101: GNN discovery not available
-SKIPPED [1] src/tests/test_gnn_processing.py:60: GNN serializers not available
-SKIPPED [1] src/tests/test_gnn_processing.py:80: GNN serializers not available
-SKIPPED [1] src/tests/test_gnn_validation.py:57: GNN validation not available
-SKIPPED [1] src/tests/test_gnn_validation.py:80: GNN validation not available
-SKIPPED [1] src/tests/test_llm_ollama_integration.py:88: Test depends on external Ollama service state - service may be installed but not running
-SKIPPED [1] src/tests/test_mcp_integration.py:28: MCP module not available
-SKIPPED [1] src/tests/test_mcp_overall.py:160: MCP module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:47: MCP TCP server not available
-SKIPPED [1] src/tests/test_mcp_transport.py:60: MCP WebSocket server not available
-SKIPPED [1] src/tests/test_mcp_transport.py:77: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:90: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:103: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:121: MCP transport module not available
-SKIPPED [1] src/tests/test_mcp_transport.py:134: MCP transport module not available
-SKIPPED [1] src/tests/test_mermaid_parser.py:59: Legacy single-line format deprecated in GNN v2.0 - use multiline format instead
-SKIPPED [1] src/tests/test_mermaid_parser.py:137: Trapezoid node shape not in current GNN v2.0 specification
-SKIPPED [1] src/tests/test_performance_baselines.py:175: Core modules not available: cannot import name 'exporter' from 'export' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/export/__init__.py)
-SKIPPED [1] src/tests/test_performance_baselines.py:192: Classes not available: cannot import name 'GNNParser' from 'gnn.parser' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/gnn/parser.py)
-SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:123: Test requires non-existent directory simulation - existing error handling works correctly
-SKIPPED [1] src/tests/test_pipeline_error_scenarios.py:148: Test requires filesystem permission simulation - platform-specific behavior skipped
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:109: Pipeline step template not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:128: Pipeline step template not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:151: Pipeline step template not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:169: Pipeline validation not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:187: Pipeline validation not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:207: Pipeline validation not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:243: Pipeline verify not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:264: Pipeline verify not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:309: Migration helper not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:333: Migration helper not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:397: Pipeline monitor not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:438: Resource manager not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:458: Resource manager not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:495: Script validator not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:526: Script validator not available
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:553: Pipeline modules not available for integration test
-SKIPPED [1] src/tests/test_pipeline_infrastructure.py:579: Utils modules not available for integration test
-FAILED src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering
-FAILED src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts
-FAILED src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic
-FAILED src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[small]
-FAILED src/tests/test_pipeline_performance.py::TestVisualizationPerformance::test_visualization_scaling[medium]
-!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 5 failures !!!!!!!!!!!!!!!!!!!!!!!!!!!
-5 failed, 442 passed, 52 skipped, 25 deselected in 65.61s (0:01:05)
+........................ssssss.ss.ss..s.ss.ssss......................... [ 78%]
+..........+++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Captured stdout ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-01-06 13:45:46,419 [d1f82b32:integration_test] llm.llm_processor - INFO - Loaded API keys for providers: ['ollama']
+2026-01-06 13:45:46,419 [d1f82b32:integration_test] llm.llm_processor - INFO - No cloud API keys detected. Defaulting to local Ollama for LLM operations.
+2026-01-06 13:45:46,419 [d1f82b32:integration_test] llm.llm_operations - INFO - Created new LLM processor
+2026-01-06 13:45:46,420 [d1f82b32:integration_test] llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI fallback)
+2026-01-06 13:45:46,420 [d1f82b32:integration_test] llm.llm_processor - INFO - Initialized ollama provider
+2026-01-06 13:45:46,420 [d1f82b32:integration_test] llm.llm_processor - INFO - LLM Processor initialized with 1/4 providers
+2026-01-06 13:46:46,450 [d1f82b32:integration_test] llm.providers.ollama_provider - ERROR - Ollama chat failed: Command '['ollama', 'run', 'smollm2:135m-instruct-q4_K_S', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n    # ModelName\n    Test Model\n    \n    # StateSpaceBlock\n    s[3,1]\n    \n    # Connections\n    s -> s\n    ']' timed out after 60.0 seconds
+2026-01-06 13:46:46,452 [d1f82b32:integration_test] llm.llm_processor - ERROR - Analysis failed with ollama: Command '['ollama', 'run', 'smollm2:135m-instruct-q4_K_S', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n    # ModelName\n    Test Model\n    \n    # StateSpaceBlock\n    s[3,1]\n    \n    # Connections\n    s -> s\n    ']' timed out after 60.0 seconds
+~~~~~~~~~~~~~~~~~~~~~~~ Stack of asyncio_0 (6127857664) ~~~~~~~~~~~~~~~~~~~~~~~~
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/threading.py", line 1015, in _bootstrap
+    self._bootstrap_inner()
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/threading.py", line 1044, in _bootstrap_inner
+    self.run()
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/threading.py", line 995, in run
+    self._target(*self._args, **self._kwargs)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py", line 93, in _worker
+    work_item.run()
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/concurrent/futures/thread.py", line 59, in run
+    result = self.fn(*self.args, **self.kwargs)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/llm/providers/ollama_provider.py", line 152, in _call_cli
+    completed = subprocess.run(
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 2154, in _communicate
+    ready = selector.select(timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
+~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8285563968) ~~~~~~~~~~~~~~~~~~~~~~~
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pytest/__main__.py", line 9, in <module>
+    raise SystemExit(pytest.console_main())
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 201, in console_main
+    code = main()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 289, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 343, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 136, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 245, in call_and_report
+    call = CallInfo.from_call(
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 344, in from_call
+    result: TResult | None = func()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 246, in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
+    item.runtest()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 1671, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_pipeline_recovery.py", line 131, in test_sync_wrapper_recovery
+    result = analyze_gnn_file_with_llm(sample_gnn_file)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/llm/analyzer.py", line 112, in analyze_gnn_file_with_llm
+    return asyncio.run(coro)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/asyncio/runners.py", line 195, in run
+    return runner.run(main)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/asyncio/runners.py", line 118, in run
+    return self._loop.run_until_complete(task)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 712, in run_until_complete
+    self.run_forever()
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 683, in run_forever
+    self._run_once()
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/asyncio/base_events.py", line 2012, in _run_once
+    event_list = self._selector.select(timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/selectors.py", line 548, in select
+    kev_list = self._selector.control(None, max_ev, timeout)
++++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
 
 
 STDERR:

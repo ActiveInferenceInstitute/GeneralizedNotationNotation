@@ -152,47 +152,33 @@ class RxInferRenderer:
         """
         # Extract key information from GNN spec
         model_display_name = gnn_spec.get('model_name', model_name)
-        
+
         # Extract dimensions from model parameters
         model_params = gnn_spec.get('model_parameters', {})
         num_states = model_params.get('num_hidden_states', 3)
         num_observations = model_params.get('num_obs', 3)
-        num_actions = model_params.get('num_actions', 3)
-        
-        # Try to extract from variables if available
-        variables = gnn_spec.get('variables', [])
-        for var in variables:
-            if var.get('name') == 'A' and 'dimensions' in var:
-                dims = var['dimensions']
-                if len(dims) >= 2:
-                    num_observations = dims[0]
-                    num_states = dims[1]
-            elif var.get('name') == 'B' and 'dimensions' in var:
-                dims = var['dimensions']
-                if len(dims) >= 3:
-                    num_actions = dims[2]
+        num_actions = model_params.get('num_actions', 3) # Make sure this is correct key
         
         # Get initial parameterization if available
         initial_params = gnn_spec.get('initial_parameterization', {})
+        A_data = initial_params.get('A', [])
+        B_data = initial_params.get('B', [])
+        C_data = initial_params.get('C', [])
+        D_data = initial_params.get('D', [])
         
         # Generate the Julia code
         code = f'''#!/usr/bin/env julia
-
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: {model_display_name}
 # Generated: {self._get_timestamp()}
 
-# Ensure required packages are installed
 using Pkg
 
-# Install missing packages if needed
 println("📦 Ensuring required packages are installed...")
 try
-    # Try to precompile key packages - will add if missing
     Pkg.add(["RxInfer", "Distributions", "Plots", "LinearAlgebra", "Random", "StatsBase"])
-    println("✅ Package installation complete")
 catch e
-    println("⚠️  Some packages may need manual installation: $e")
+    println("⚠️  Package install error (might be already installed): $e")
 end
 
 using RxInfer
@@ -202,204 +188,174 @@ using Plots
 using Random
 using StatsBase
 
-# Set random seed for reproducibility
 Random.seed!(42)
 
-# Model parameters extracted from GNN specification
+# --- Model Parameters ---
 const NUM_STATES = {num_states}
 const NUM_OBSERVATIONS = {num_observations}
 const NUM_ACTIONS = {num_actions}
 const TIME_STEPS = 20
 
-println("🔬 RxInfer.jl Active Inference Simulation")
-println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations, $NUM_ACTIONS actions")
+# Parameter Matrices (from GNN)
+# We use raw Vector of Vectors and convert to Matrix/Tensor for RxInfer
+A_raw = {A_data if A_data else "fill(1.0/NUM_OBSERVATIONS, NUM_OBSERVATIONS, NUM_STATES)"}
+B_raw = {B_data if B_data else "fill(1.0/NUM_STATES, NUM_STATES, NUM_STATES, NUM_ACTIONS)"}
+D_raw = {D_data if D_data else "fill(1.0/NUM_STATES, NUM_STATES)"}
 
-# Define the Active Inference model using GraphPPL
-@model function active_inference_model(n_steps)
+# Convert to Julia Matrices
+function to_matrix(raw)
+    try
+        if raw isa Matrix
+            return raw
+        elseif raw isa Vector && raw[1] isa Vector
+            return hcat(raw...)
+        end
+    catch
+    end
+    return raw
+end
+
+function to_tensor(raw)
+    try
+        # B is [actions][prev][next] or similar. 
+        # GNN Standard: B[action][next_state][prev_state] usually?
+        # Let's assume input matches expected dimensions or is list of lists of lists
+        if raw isa Array{{Float64, 3}}
+            return raw
+        elseif raw isa Vector && raw[1] isa Vector && raw[1][1] isa Vector
+            # Dimensions: Action x Next x Prev ?
+            # RxInfer expects: Next x Prev x Action (or similar, checking dims)
+            # Let's construct generic 3D array
+            n_actions = length(raw)
+            n_next = length(raw[1])
+            n_prev = length(raw[1][1])
+            
+            # Create tensor
+            tensor = zeros(n_next, n_prev, n_actions)
+            for a in 1:n_actions
+                for n in 1:n_next
+                    for p in 1:n_prev
+                        tensor[n, p, a] = raw[a][n][p]
+                    end
+                end
+            end
+            return tensor
+        end
+    catch
+    end
+    return raw
+end
+
+A_matrix = to_matrix(A_raw)
+B_matrix = to_tensor(B_raw) # Handling GNN B format
+D_vector = Vector{{Float64}}(D_raw)
+
+println("A matrix size: $(size(A_matrix))")
+println("B matrix size: $(size(B_matrix))")
+println("D vector size: $(size(D_vector))")
+
+
+# --- RxInfer Model ---
+# Fixed parameters version (active inference with known model)
+@model function active_inference_model(observations, n_steps, A, B, D)
     
-    # Hyperparameters for priors
-    α_A = ones(NUM_OBSERVATIONS, NUM_STATES)  # Prior for A matrix
-    α_B = ones(NUM_STATES, NUM_STATES, NUM_ACTIONS)  # Prior for B tensor
-    α_D = ones(NUM_STATES)  # Prior for initial state distribution
-    
-    # Model parameters
-    A ~ MatrixDirichlet(α_A)  # Observation model P(o|s)
-    B ~ ArrayDirichlet(α_B)   # Transition model P(s'|s,a) 
-    D ~ Dirichlet(α_D)        # Initial state distribution
-    
-    # Preference parameters (can be learned or fixed)
-    C = zeros(NUM_OBSERVATIONS)
-    C[end] = 2.0  # Prefer last observation state
-    
-    # State sequence - use randomvar() for proper RxInfer variable creation
-    s = randomvar(n_steps)
-    
-    # Observations - declare as data variables
-    observations = datavar(Vector{{Int}}, n_steps)
+    # State sequence
+    s = Vector{{Any}}(undef, n_steps)
     
     # Initial state
-    s[1] ~ Categorical(D)
+    s_init ~ Categorical(D)
+    s[1] = s_init
     
-    # State transitions (simplified - assumes action selection)
+    # First observation
+    observations[1] ~ Categorical(s[1], copy(A))
+    
+    # State transitions and observations
     for t in 2:n_steps
-        # For now, assume optimal action selection (can be extended)
-        action_idx = 1  # Default action
-        s[t] ~ Categorical(B[:, s[t-1], action_idx])
+        # Action selection (Random policy for now)
+        action_idx = rand(1:NUM_ACTIONS)
+        
+        # State transition 
+        # B is [Next, Prev, Action]
+        # We slice B by action to get a transition matrix B_a
+        B_a = B[:, :, action_idx] 
+        s_next ~ DiscreteTransition(s[t-1], copy(B_a)) 
+        s[t] = s_next
+        
+        # Observation
+        # Try Categorical with two arguments (aliased to DiscreteTransition or similar?)
+        observations[t] ~ Categorical(s[t], copy(A))
     end
     
-    # Observations
-    for t in 1:n_steps
-        observations[t] ~ Categorical(A[:, s[t]])
-    end
-    
-    return (states=s, A=A, B=B, D=D)
+    return s
 end
 
-# Generate synthetic observations for demonstration
-function generate_observations(n_steps::Int)
-    # Simple observation sequence (can be replaced with real data)
-    obs = Vector{{Int}}(undef, n_steps)
-    for t in 1:n_steps
-        if t <= n_steps ÷ 2
-            obs[t] = 1  # First half: observation 1
-        else
-            obs[t] = NUM_OBSERVATIONS  # Second half: final observation
-        end
+# --- Simulation & Inference ---
+function run_simulation()
+    
+    # Generate synthetic observations using the generative model (manual)
+    # We use the same A and B matrices
+    real_states = Vector{{Int}}(undef, TIME_STEPS)
+    real_obs = Vector{{Int}}(undef, TIME_STEPS)
+    
+    # Initial
+    current_state = rand(Categorical(D_vector))
+    real_states[1] = current_state
+    # Manual categorical logic for observations (using probability vector)
+    real_obs[1] = rand(Categorical(A_matrix[:, current_state]))
+    
+    for t in 2:TIME_STEPS
+        action = rand(1:NUM_ACTIONS)
+        # B_matrix is [Next, Prev, Action]
+        next_probs = B_matrix[:, current_state, action]
+        current_state = rand(Categorical(next_probs))
+        real_states[t] = current_state
+        real_obs[t] = rand(Categorical(A_matrix[:, current_state]))
     end
-    return obs
-end
-
-# Run inference
-function run_active_inference_simulation()
-    println("\\n🚀 Starting Active Inference simulation...")
     
-    # Generate observations
-    observations_data = generate_observations(TIME_STEPS)
-    println("📋 Generated observation sequence: $observations_data")
+    println("Observation sequence: $real_obs")
     
-    # Create data for inference (observations provided here, not in model)
-    data = (observations = observations_data,)
-    
-    # Perform inference
-    println("\\n🧠 Running variational inference...")
+    # Run Inference
     result = infer(
-        model = active_inference_model(n_steps=TIME_STEPS),
-        data = data,
-        iterations = 50,
-        showprogress = true,
-        free_energy = true
+        model = active_inference_model(n_steps=TIME_STEPS, A=A_matrix, B=B_matrix, D=D_vector),
+        data = (observations = real_obs,),
+        iterations = 10 # Not needed for exact inference in discrete case usually, but good for stability if loops
     )
     
-    # Extract results
-    println("\\n📊 Inference Results:")
-    
-    # Extract posterior marginals
-    states_marginals = result.posteriors[:states]
-    A_marginal = result.posteriors[:A]
-    B_marginal = result.posteriors[:B]
-    D_marginal = result.posteriors[:D]
-    
-    println("✓ Successfully computed posterior marginals")
-    println("  - State posteriors: $(length(states_marginals)) time steps")
-    
-    # Compute free energy if available
-    if haskey(result, :free_energy)
-        free_energy = result.free_energy
-        println("🎯 Free Energy: $free_energy")
-    end
-    
-    # Display state beliefs over time
-    println("\\n📈 State beliefs over time:")
-    for (t, state_belief) in enumerate(states_marginals)
-        belief_mode = mode(state_belief)
-        belief_prob = pdf(state_belief, belief_mode)
-        println("  Step $t: Most likely state = $belief_mode (prob ≈ $(round(belief_prob, digits=3)))")
-    end
-    
-    return result
+    println("Inference complete.")
+    return result, real_states, real_obs
 end
 
-# Visualization function
-function plot_results(result, observations_data)
-    println("\\n📊 Creating visualization...")
-    
-    try
-        # Extract state posteriors
-        states_marginals = result.posteriors[:states]
-        
-        # Create state probability matrix
-        state_probs = zeros(TIME_STEPS, NUM_STATES)
-        for (t, marginal) in enumerate(states_marginals)
-            for s in 1:NUM_STATES
-                state_probs[t, s] = pdf(marginal, s)
-            end
-        end
-        
-        # Plot state beliefs over time
-        p1 = heatmap(
-            1:TIME_STEPS, 1:NUM_STATES, state_probs',
-            title="State Beliefs Over Time",
-            xlabel="Time Step", ylabel="State",
-            color=:viridis
-        )
-        
-        # Plot observations
-        p2 = plot(
-            1:TIME_STEPS, observations_data,
-            title="Observation Sequence",
-            xlabel="Time Step", ylabel="Observation",
-            marker=:circle, linewidth=2
-        )
-        
-        # Combine plots
-        combined_plot = plot(p1, p2, layout=(2,1), size=(800, 600))
-        
-        # Save plot
-        output_file = "rxinfer_active_inference_results.png"
-        savefig(combined_plot, output_file)
-        println("💾 Saved visualization to: $output_file")
-        
-    catch e
-        println("⚠️  Visualization failed: $e")
-    end
-end
-
-# Main execution
+# --- Main ---
 function main()
-    println("="^60)
-    println("RxInfer.jl Active Inference - GNN Generated Simulation")
-    println("Model: {model_display_name}")
-    println("="^60)
-    
     try
-        # Run the simulation
-        result = run_active_inference_simulation()
+        result, true_states, obs = run_simulation()
         
-        # Generate synthetic observations for plotting
-        observations_data = generate_observations(TIME_STEPS)
+        # Visualize
+        posteriors = result.posteriors[:s]
         
-        # Create visualizations
-        plot_results(result, observations_data)
+        # Extract belief trace for state 1 over time
+        belief_trace = [pdf(posteriors[t], 1) for t in 1:TIME_STEPS]
         
-        println("\\n✅ Simulation completed successfully!")
-        println("🎉 Active Inference with RxInfer.jl finished.")
+        p = plot(belief_trace, label="Belief(State 1)", title="State Inference", xlabel="Time", ylabel="Probability")
+        scatter!(p, true_states .== 1, label="True State 1", markershape=:star)
         
+        out_path = "rxinfer_results.png"
+        savefig(p, out_path)
+        println("Saved plot to $out_path")
+        println("✅ RxInfer simulation successful")
         return 0
-        
     catch e
         println("❌ Simulation failed: $e")
-        println("🔍 Stack trace:")
-        println(sprint(showerror, e, catch_backtrace()))
+        # print stacktrace
+        showerror(stdout, e, catch_backtrace())
         return 1
     end
 end
 
-# Run the simulation
 if abspath(PROGRAM_FILE) == @__FILE__
     exit(main())
 end
 '''
-        
         return code
     
     def _get_timestamp(self) -> str:
@@ -437,7 +393,8 @@ def render_gnn_to_rxinfer(
         
         # Generate simulation code directly from spec (using simplified working version)
         try:
-            rxinfer_code = renderer._generate_rxinfer_simulation_code_simple(gnn_spec, model_name)
+            # Use the full generator with updated syntax
+            rxinfer_code = renderer._generate_rxinfer_simulation_code(gnn_spec, model_name)
         except Exception as gen_error:
             logger.error(f"Code generation failed: {gen_error}")
             return False, f"Error generating RxInfer.jl code: {gen_error}", []

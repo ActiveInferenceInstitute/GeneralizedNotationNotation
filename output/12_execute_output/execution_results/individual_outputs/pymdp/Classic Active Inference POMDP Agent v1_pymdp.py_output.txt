@@ -1,15 +1,54 @@
 Execution Results for Classic Active Inference POMDP Agent v1_pymdp.py
-Timestamp: 2026-01-06T11:53:36.714432
-Return Code: 1
-Execution Time: 1.84 seconds
+Timestamp: 2026-01-06T13:47:49.176846
+Return Code: 0
+Execution Time: 3.12 seconds
 
 STDOUT:
 ✅ PyMDP is available
 
 
 STDERR:
-WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.
-ERROR:src.execute.pymdp.simple_simulation:PyMDP not available: No module named 'pymdp.agent'
-ERROR:src.execute.pymdp.executor:PyMDP simulation failed: PyMDP import failed: No module named 'pymdp.agent'
-ERROR:__main__:✗ Simulation failed!
-ERROR:__main__:Error: PyMDP import failed: No module named 'pymdp.agent'
+2026-01-06 13:47:50,791 - __main__ - INFO - A matrix shape: (3, 3)
+2026-01-06 13:47:50,791 - __main__ - INFO - B matrix shape: (3, 3, 3)
+2026-01-06 13:47:50,791 - __main__ - INFO - C vector shape: (3,)
+2026-01-06 13:47:50,791 - __main__ - INFO - D vector shape: (3,)
+2026-01-06 13:47:50,791 - __main__ - INFO - E vector shape: (3,)
+2026-01-06 13:47:50,791 - __main__ - INFO - Starting PyMDP simulation for Classic Active Inference POMDP Agent v1
+2026-01-06 13:47:50,791 - __main__ - INFO - Output directory: output/pymdp_simulations/Classic Active Inference POMDP Agent v1
+2026-01-06 13:47:50,791 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True
+2026-01-06 13:47:50,791 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)
+2026-01-06 13:47:50,799 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation
+2026-01-06 13:47:50,799 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)
+2026-01-06 13:47:50,799 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)
+2026-01-06 13:47:50,800 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent
+2026-01-06 13:47:50,801 - src.execute.pymdp.simple_simulation - INFO - Step 0: obs=2, belief=[0.05 0.05 0.9 ], action=0.0
+2026-01-06 13:47:50,802 - src.execute.pymdp.simple_simulation - INFO - Step 1: obs=2, belief=[0.00306748 0.00306748 0.99386503], action=0.0
+2026-01-06 13:47:50,803 - src.execute.pymdp.simple_simulation - INFO - Step 2: obs=2, belief=[1.71408982e-04 1.71408982e-04 9.99657182e-01], action=0.0
+2026-01-06 13:47:50,803 - src.execute.pymdp.simple_simulation - INFO - Step 3: obs=0, belief=[3.07639720e-03 1.70910955e-04 9.96752692e-01], action=1.0
+2026-01-06 13:47:50,804 - src.execute.pymdp.simple_simulation - INFO - Step 4: obs=2, belief=[9.52426306e-06 1.71436735e-04 9.99819039e-01], action=0.0
+2026-01-06 13:47:50,805 - src.execute.pymdp.simple_simulation - INFO - Step 5: obs=0, belief=[1.71408982e-04 1.71408982e-04 9.99657182e-01], action=0.0
+2026-01-06 13:47:50,805 - src.execute.pymdp.simple_simulation - INFO - Step 6: obs=0, belief=[3.07639720e-03 1.70910955e-04 9.96752692e-01], action=0.0
+2026-01-06 13:47:50,806 - src.execute.pymdp.simple_simulation - INFO - Step 7: obs=1, belief=[0.00306748 0.00306748 0.99386503], action=1.0
+2026-01-06 13:47:50,806 - src.execute.pymdp.simple_simulation - INFO - Step 8: obs=0, belief=[0.05247813 0.00291545 0.94460641], action=0.0
+2026-01-06 13:47:50,807 - src.execute.pymdp.simple_simulation - INFO - Step 9: obs=2, belief=[3.07639720e-03 1.70910955e-04 9.96752692e-01], action=1.0
+2026-01-06 13:47:50,807 - src.execute.pymdp.simple_simulation - INFO - Step 10: obs=1, belief=[1.62416761e-04 5.26230307e-02 9.47214553e-01], action=0.0
+2026-01-06 13:47:50,807 - src.execute.pymdp.simple_simulation - INFO - Step 11: obs=0, belief=[0.00291545 0.05247813 0.94460641], action=0.0
+2026-01-06 13:47:50,807 - src.execute.pymdp.simple_simulation - INFO - Step 12: obs=2, belief=[1.70910955e-04 3.07639720e-03 9.96752692e-01], action=0.0
+2026-01-06 13:47:50,808 - src.execute.pymdp.simple_simulation - INFO - Step 13: obs=2, belief=[9.52426306e-06 1.71436735e-04 9.99819039e-01], action=0.0
+2026-01-06 13:47:50,808 - src.execute.pymdp.simple_simulation - INFO - Step 14: obs=2, belief=[5.29216173e-07 9.52589111e-06 9.99989945e-01], action=0.0
+2026-01-06 13:47:50,808 - src.execute.pymdp.simple_simulation - INFO - Generating PyMDP-specific visualizations...
+2026-01-06 13:47:51,036 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated belief evolution plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png
+2026-01-06 13:47:51,230 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated action analysis plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png
+2026-01-06 13:47:51,326 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated A matrix heatmap: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png
+2026-01-06 13:47:51,452 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated preferences/prior plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png
+2026-01-06 13:47:51,599 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated 3D belief trajectory: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png
+2026-01-06 13:47:52,063 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated summary dashboard: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png
+2026-01-06 13:47:52,063 - src.execute.pymdp.simple_simulation - INFO - ✅ Generated 6 visualization files
+2026-01-06 13:47:52,064 - src.execute.pymdp.simple_simulation - INFO - 💾 Saved results to output/pymdp_simulations/Classic Active Inference POMDP Agent v1/simulation_results.json
+2026-01-06 13:47:52,064 - src.execute.pymdp.simple_simulation - INFO - 📊 Validation: beliefs_valid=True, sum_to_one=True
+2026-01-06 13:47:52,064 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully
+2026-01-06 13:47:52,064 - __main__ - INFO - ✓ Simulation completed successfully!
+2026-01-06 13:47:52,064 - __main__ - INFO - Results summary:
+2026-01-06 13:47:52,064 - __main__ - INFO -   Correlation ID: render_generated_script
+2026-01-06 13:47:52,064 - __main__ - INFO -   Success: True
+2026-01-06 13:47:52,064 - __main__ - INFO -   Output: output/pymdp_simulations/Classic Active Inference POMDP Agent v1

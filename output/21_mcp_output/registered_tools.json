@@ -238,6 +238,13 @@
     "version": "1.0.0"
   },
   {
+    "name": "process_analysis",
+    "description": "Process analysis for GNN files in the specified directory.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "process_audio",
     "description": "Process audio for GNN files in the specified directory.",
     "module": "",

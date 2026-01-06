@@ -1,0 +1,157 @@
+{
+  "success": true,
+  "framework": "PyMDP",
+  "num_timesteps": 15,
+  "observations": [
+    2,
+    2,
+    2,
+    0,
+    2,
+    0,
+    0,
+    1,
+    0,
+    2,
+    1,
+    0,
+    2,
+    2,
+    2
+  ],
+  "beliefs": [
+    [
+      0.050000000000000086,
+      0.050000000000000086,
+      0.8999999999999998
+    ],
+    [
+      0.0030674846625767045,
+      0.0030674846625767045,
+      0.9938650306748466
+    ],
+    [
+      0.00017140898183065485,
+      0.00017140898183065485,
+      0.9996571820363386
+    ],
+    [
+      0.0030763971970622396,
+      0.00017091095539234713,
+      0.9967526918475454
+    ],
+    [
+      9.524263060157266e-06,
+      0.00017143673508273558,
+      0.9998190390018571
+    ],
+    [
+      0.00017140898183265463,
+      0.0001714089818308603,
+      0.9996571820363364
+    ],
+    [
+      0.0030763971970980265,
+      0.0001709109553925462,
+      0.9967526918475095
+    ],
+    [
+      0.0030674846626143485,
+      0.003067484662583938,
+      0.9938650306748016
+    ],
+    [
+      0.052478134110906606,
+      0.0029154518950792736,
+      0.9446064139940141
+    ],
+    [
+      0.0030763971970678198,
+      0.0001709109553943565,
+      0.9967526918475378
+    ],
+    [
+      0.00016241676141186352,
+      0.052623030696891164,
+      0.9472145525416971
+    ],
+    [
+      0.0029154518950828545,
+      0.05247813411090824,
+      0.944606413994009
+    ],
+    [
+      0.0001709109553945678,
+      0.003076397197067928,
+      0.9967526918475376
+    ],
+    [
+      9.524263060281072e-06,
+      0.00017143673508305374,
+      0.9998190390018566
+    ],
+    [
+      5.292161726476284e-07,
+      9.525891107451403e-06,
+      0.9999899448927199
+    ]
+  ],
+  "actions": [
+    0,
+    0,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "model_parameters": {
+    "A_shape": [
+      3,
+      3
+    ],
+    "B_shape": [
+      3,
+      3,
+      3
+    ],
+    "C_shape": [
+      3
+    ],
+    "D_shape": [
+      3
+    ]
+  },
+  "visualizations": {
+    "count": 6,
+    "files": [
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+      "output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png"
+    ],
+    "types": [
+      "belief_evolution",
+      "action_analysis",
+      "A_matrix_heatmap",
+      "preferences_prior",
+      "belief_trajectory_3d",
+      "dashboard"
+    ]
+  },
+  "validation": {
+    "all_beliefs_valid": true,
+    "beliefs_sum_to_one": true,
+    "actions_in_range": true
+  }
+}

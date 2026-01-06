@@ -1,19 +1,19 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-01-06T11:51:25.518567
+Generated: 2026-01-06T13:50:52.626710
 
 ## Summary
 
 - Total Frameworks: 5
 - Total Executions: 5
-- Successful Executions: 1
-- Overall Success Rate: 20.00%
+- Successful Executions: 2
+- Overall Success Rate: 40.00%
 
 ## Framework Details
 
 ### PYMDP
 
-- Success Rate: 0.0% (0/1)
+- Success Rate: 100.0% (1/1)
 - Execution Times: 0 recorded
 
 ### JAX

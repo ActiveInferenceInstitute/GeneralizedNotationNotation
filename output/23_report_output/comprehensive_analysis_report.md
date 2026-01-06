@@ -1,6 +1,6 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-06T11:44:11.919101  
+**Generated:** 2026-01-06T13:51:04.370345  
 **Pipeline Output Directory:** output  
 **Health Score:** 30.0/100
 
@@ -81,7 +81,7 @@
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 12
+**Total Visualizations:** 18
 
 ### 8 Visualization
 
@@ -105,12 +105,18 @@
 
 ### 11 Render
 
-**Count:** 3
+**Count:** 9
 
 **Files:**
 - [model_components.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png) (0.03 MB)
 - [generative_model.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png) (0.07 MB)
 - [perception_action_loop.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png) (0.06 MB)
+- [Classic Active Inference POMDP Agent v1_dashboard.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png) (0.36 MB)
+- [Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png) (0.46 MB)
+- [Classic Active Inference POMDP Agent v1_action_analysis.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png) (0.14 MB)
+- [Classic Active Inference POMDP Agent v1_preferences_prior.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png) (0.11 MB)
+- [Classic Active Inference POMDP Agent v1_belief_evolution.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png) (0.19 MB)
+- [Classic Active Inference POMDP Agent v1_A_matrix.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png) (0.11 MB)
 
 ### 20 Website
 
@@ -127,8 +133,8 @@
 
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** 2026-01-06T11:40:38.711552
-- **End Time:** 2026-01-06T11:41:31.245447
+- **Start Time:** 2026-01-06T13:44:09.958638
+- **End Time:** 2026-01-06T13:44:49.256918
 - **Overall Status:** SUCCESS
 - **Total Steps:** 7
 

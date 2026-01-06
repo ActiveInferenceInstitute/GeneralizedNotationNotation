@@ -421,6 +421,3 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
    - Sampling notifications for large models
 
 ---
-
-**Last Updated: October 28, 2025
-**Status**: ✅ Production Ready - Enhanced with Automatic Backend Detection

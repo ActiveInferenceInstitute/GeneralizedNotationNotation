@@ -396,7 +396,7 @@ The GNN ecosystem includes several sophisticated tools to aid in model developme
 
 ### ✅ Type Checker and Resource Estimator
 
-The **GNN Type Checker** (pipeline step 4) helps validate GNN files and estimates computational resources.
+The **GNN Type Checker** (pipeline step 5) helps validate GNN files and estimates computational resources.
 
 #### 🎯 Quick Usage
 
@@ -432,7 +432,7 @@ output/5_type_checker_output/
 
 ### 🎨 Visualization
 
-GNN files can be visualized to create comprehensive graphical representations of models (pipeline step 6).
+GNN files can be visualized to create comprehensive graphical representations of models (pipeline step 8).
 
 #### 🎯 Usage
 

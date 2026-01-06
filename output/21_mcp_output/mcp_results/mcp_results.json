@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-01-06T11:44:10.747956",
+  "timestamp": "2026-01-06T13:51:03.310154",
   "mcp_version": "2.0.0",
-  "tools_count": 112,
+  "tools_count": 113,
   "resources_count": 1,
   "tools": [
     {
@@ -238,6 +238,13 @@
     {
       "name": "parse_gnn_content",
       "description": "Parse GNN content with enhanced multi-format support and return structured model representation.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_analysis",
+      "description": "Process analysis for GNN files in the specified directory.",
       "module": "",
       "category": "",
       "version": "1.0.0"

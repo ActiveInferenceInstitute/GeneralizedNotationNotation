@@ -9,22 +9,24 @@ import re
 import numpy as np
 from datetime import datetime
 import logging
-import matplotlib
-matplotlib.use('Agg')
-import matplotlib.pyplot as plt
-import seaborn as sns
-
 # Import visualization libraries with error handling
 try:
+    import matplotlib
+    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
-    import seaborn as sns
     from matplotlib import cm
     MATPLOTLIB_AVAILABLE = True
 except ImportError:
     MATPLOTLIB_AVAILABLE = False
     plt = None
-    sns = None
     cm = None
+
+try:
+    import seaborn as sns
+    SEABORN_AVAILABLE = True
+except ImportError:
+    sns = None
+    SEABORN_AVAILABLE = False
 
 def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
     """Perform comprehensive statistical analysis on a GNN file."""
@@ -494,7 +496,20 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
         if matrix_data is not None and isinstance(matrix_data, np.ndarray):
             matrix_name = matrix_info.get("name", f"matrix_{i}")
             plt.figure(figsize=(10, 8))
-            sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap='viridis')
+            
+            if SEABORN_AVAILABLE and sns is not None:
+                sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap='viridis')
+            else:
+                # Fallback to matplotlib imshow
+                plt.imshow(matrix_data, cmap='viridis', aspect='auto')
+                plt.colorbar()
+                # Add annotations if small enough
+                if matrix_data.size < 100:
+                    for r in range(matrix_data.shape[0]):
+                        for c in range(matrix_data.shape[1]):
+                            plt.text(c, r, f"{matrix_data[r, c]:.2g}", 
+                                   ha="center", va="center", color="w")
+            
             plt.title(f"{model_name} - {matrix_name}")
             plot_file = output_dir / f"{model_name}_{matrix_name}_heatmap.png"
             plt.savefig(plot_file, bbox_inches='tight')

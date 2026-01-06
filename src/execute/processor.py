@@ -13,6 +13,7 @@ import json
 import os
 import stat
 from datetime import datetime
+from shutil import copy2
 
 # Import logging helpers with fallback
 try:
@@ -542,6 +543,43 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         exec_result['centralized_output_file'] = str(centralized_output)
         exec_result['implementation_directory'] = str(impl_specific_dir.parent)
         
+        # Collect execution outputs (visualizations, simulation data, traces)
+        if exec_result['success']:
+            try:
+                collected_outputs = collect_execution_outputs(
+                    script_path, 
+                    impl_specific_dir.parent, 
+                    framework, 
+                    logger
+                )
+                exec_result['collected_outputs'] = collected_outputs
+                
+                # Update structured result with collected file paths
+                structured_result['collected_outputs'] = collected_outputs
+                
+                # Re-save structured result with collected outputs
+                with open(json_output_file, 'w') as f:
+                    json.dump(structured_result, f, indent=2, default=str)
+                
+                # Enhance simulation data extraction from collected files
+                if collected_outputs:
+                    enhanced_data = _extract_simulation_data_from_files(
+                        impl_specific_dir.parent,
+                        framework,
+                        logger
+                    )
+                    if enhanced_data:
+                        simulation_data.update(enhanced_data)
+                        exec_result['simulation_data'] = simulation_data
+                        structured_result['simulation_data'] = simulation_data
+                        
+                        # Re-save again with enhanced data
+                        with open(json_output_file, 'w') as f:
+                            json.dump(structured_result, f, indent=2, default=str)
+                
+            except Exception as e:
+                logger.warning(f"Failed to collect execution outputs: {e}")
+        
     except subprocess.TimeoutExpired:
         exec_result['error'] = 'Script execution timed out (5 minutes)'
         logger.error(f"Script {script_info['name']} timed out")
@@ -552,6 +590,330 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         logger.error(f"Error executing {script_info['name']}: {e}")
     
     return exec_result
+
+
+def collect_execution_outputs(
+    script_path: Path,
+    output_dir: Path,
+    framework: str,
+    logger
+) -> Dict[str, List[str]]:
+    """
+    Collect all outputs from executed script and copy to execute output directory.
+    
+    Args:
+        script_path: Path to the executed script
+        output_dir: Execute output directory for this model/framework
+        framework: Framework name
+        logger: Logger instance
+        
+    Returns:
+        Dictionary with lists of copied file paths by category
+    """
+    collected = {
+        "visualizations": [],
+        "simulation_data": [],
+        "traces": [],
+        "other": []
+    }
+    
+    try:
+        # Find script's output directory (varies by framework)
+        script_dir = script_path.parent
+        
+        # Framework-specific output location patterns
+        output_patterns = {
+            "pymdp": [
+                script_dir / "output" / "pymdp_simulations" / "*" / "visualizations" / "*.png",
+                script_dir / "output" / "pymdp_simulations" / "*" / "*.json",
+                script_dir / "output" / "pymdp_simulations" / "*" / "*.pkl",
+            ],
+            "discopy": [
+                script_dir / "discopy_diagrams" / "*.png",
+                script_dir / "discopy_diagrams" / "*.json",
+            ],
+            "activeinference_jl": [
+                script_dir / "activeinference_outputs_*" / "*.png",
+                script_dir / "activeinference_outputs_*" / "*.json",
+                script_dir / "activeinference_outputs_*" / "free_energy_traces" / "*.csv",
+            ],
+            "rxinfer": [
+                script_dir / "rxinfer_outputs" / "*.png",
+                script_dir / "rxinfer_outputs" / "*.json",
+                script_dir / "rxinfer_outputs" / "posterior_traces" / "*.csv",
+            ],
+            "jax": [
+                script_dir / "jax_outputs" / "*.png",
+                script_dir / "jax_outputs" / "*.json",
+            ]
+        }
+        
+        patterns = output_patterns.get(framework, [])
+        
+        # Also search recursively in script directory for common output files
+        if not patterns:
+            patterns = [
+                script_dir / "**" / "*.png",
+                script_dir / "**" / "*.svg",
+                script_dir / "**" / "*.json",
+                script_dir / "**" / "*.pkl",
+                script_dir / "**" / "*.csv",
+            ]
+        
+        import glob
+        
+        # Collect files matching patterns
+        found_files = []
+        for pattern in patterns:
+            try:
+                # Convert Path to string for glob
+                pattern_str = str(pattern)
+                matches = glob.glob(pattern_str, recursive=True)
+                found_files.extend([Path(f) for f in matches])
+            except Exception as e:
+                logger.debug(f"Pattern {pattern} failed: {e}")
+        
+        # Remove duplicates and filter out the script itself
+        found_files = list(set([f for f in found_files if f != script_path and f.exists()]))
+        
+        if not found_files:
+            logger.debug(f"No output files found for {framework} script {script_path.name}")
+            return collected
+        
+        logger.info(f"Found {len(found_files)} output files to collect for {framework}")
+        
+        # Categorize and copy files
+        for source_file in found_files:
+            try:
+                # Determine category
+                ext = source_file.suffix.lower()
+                if ext in ['.png', '.svg', '.jpg', '.jpeg']:
+                    dest_dir = output_dir / "visualizations"
+                    category = "visualizations"
+                elif ext in ['.json', '.pkl', '.csv']:
+                    # Check if it's a trace file
+                    if 'trace' in source_file.name.lower() or 'posterior' in source_file.name.lower():
+                        dest_dir = output_dir / "traces"
+                        category = "traces"
+                    else:
+                        dest_dir = output_dir / "simulation_data"
+                        category = "simulation_data"
+                else:
+                    dest_dir = output_dir / "other"
+                    category = "other"
+                
+                # Create destination directory
+                dest_dir.mkdir(parents=True, exist_ok=True)
+                
+                # Copy file
+                dest_file = dest_dir / source_file.name
+                copy2(source_file, dest_file)
+                
+                collected[category].append(str(dest_file))
+                logger.debug(f"Copied {source_file.name} to {dest_dir}")
+                
+            except Exception as e:
+                logger.warning(f"Failed to copy {source_file}: {e}")
+        
+        # Log summary
+        total_copied = sum(len(files) for files in collected.values())
+        if total_copied > 0:
+            logger.info(f"Collected {total_copied} output files: "
+                       f"{len(collected['visualizations'])} visualizations, "
+                       f"{len(collected['simulation_data'])} data files, "
+                       f"{len(collected['traces'])} traces")
+        
+    except Exception as e:
+        logger.error(f"Error collecting execution outputs: {e}")
+        import traceback
+        logger.debug(traceback.format_exc())
+    
+    return collected
+
+
+def _extract_simulation_data_from_files(
+    output_dir: Path,
+    framework: str,
+    logger
+) -> Dict[str, Any]:
+    """
+    Extract simulation data from collected files (not just stdout/stderr).
+    
+    Args:
+        output_dir: Directory containing collected output files
+        framework: Framework name
+        logger: Logger instance
+        
+    Returns:
+        Dictionary with extracted simulation data
+    """
+    enhanced_data = {}
+    
+    try:
+        if framework == "pymdp":
+            enhanced_data = _extract_pymdp_data_from_files(output_dir, logger)
+        elif framework == "rxinfer":
+            enhanced_data = _extract_rxinfer_data_from_files(output_dir, logger)
+        elif framework == "activeinference_jl":
+            enhanced_data = _extract_activeinference_jl_data_from_files(output_dir, logger)
+        elif framework == "discopy":
+            enhanced_data = _extract_discopy_data_from_files(output_dir, logger)
+        elif framework == "jax":
+            enhanced_data = _extract_jax_data_from_files(output_dir, logger)
+            
+    except Exception as e:
+        logger.warning(f"Failed to extract simulation data from files for {framework}: {e}")
+        import traceback
+        logger.debug(traceback.format_exc())
+    
+    return enhanced_data
+
+
+def _extract_pymdp_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+    """Extract PyMDP simulation data from saved files."""
+    data = {}
+    
+    try:
+        # Look for simulation_results.json
+        sim_data_dir = output_dir / "simulation_data"
+        if sim_data_dir.exists():
+            results_files = list(sim_data_dir.glob("*simulation_results.json"))
+            if results_files:
+                results_file = results_files[0]
+                try:
+                    with open(results_file, 'r') as f:
+                        results = json.load(f)
+                    
+                    # Extract beliefs, actions, observations
+                    if "beliefs" in results:
+                        data["beliefs"] = results["beliefs"]
+                    if "actions" in results:
+                        data["actions"] = results["actions"]
+                    if "observations" in results:
+                        data["observations"] = results["observations"]
+                    if "num_timesteps" in results:
+                        data["num_timesteps"] = results["num_timesteps"]
+                    
+                    logger.info(f"Extracted PyMDP data from {results_file.name}")
+                except Exception as e:
+                    logger.warning(f"Failed to parse {results_file}: {e}")
+        
+        # Count visualizations
+        viz_dir = output_dir / "visualizations"
+        if viz_dir.exists():
+            viz_files = list(viz_dir.glob("*.png")) + list(viz_dir.glob("*.svg"))
+            if viz_files:
+                data["visualization_count"] = len(viz_files)
+                data["visualization_files"] = [str(f.name) for f in viz_files]
+        
+    except Exception as e:
+        logger.warning(f"Error extracting PyMDP data from files: {e}")
+    
+    return data
+
+
+def _extract_rxinfer_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+    """Extract RxInfer.jl simulation data from saved files."""
+    data = {}
+    
+    try:
+        # Look for inference data JSON files
+        data_dir = output_dir / "inference_data"
+        if data_dir.exists():
+            json_files = list(data_dir.glob("*.json"))
+            for json_file in json_files:
+                try:
+                    with open(json_file, 'r') as f:
+                        inference_data = json.load(f)
+                        if "posterior" in inference_data:
+                            data["posterior"] = inference_data["posterior"]
+                except Exception:
+                    pass
+        
+        # Look for trace files
+        trace_dir = output_dir / "posterior_traces"
+        if trace_dir.exists():
+            trace_files = list(trace_dir.glob("*.csv"))
+            if trace_files:
+                data["trace_files"] = [str(f.name) for f in trace_files]
+                
+    except Exception as e:
+        logger.warning(f"Error extracting RxInfer data from files: {e}")
+    
+    return data
+
+
+def _extract_activeinference_jl_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+    """Extract ActiveInference.jl simulation data from saved files."""
+    data = {}
+    
+    try:
+        # Look for simulation data JSON files
+        data_dir = output_dir / "simulation_data"
+        if data_dir.exists():
+            json_files = list(data_dir.glob("*.json"))
+            for json_file in json_files:
+                try:
+                    with open(json_file, 'r') as f:
+                        sim_data = json.load(f)
+                        if "free_energy" in sim_data:
+                            data["free_energy"] = sim_data["free_energy"]
+                        if "beliefs" in sim_data:
+                            data["beliefs"] = sim_data["beliefs"]
+                except Exception:
+                    pass
+        
+        # Look for free energy traces
+        fe_dir = output_dir / "free_energy_traces"
+        if fe_dir.exists():
+            trace_files = list(fe_dir.glob("*.csv"))
+            if trace_files:
+                data["free_energy_trace_files"] = [str(f.name) for f in trace_files]
+                
+    except Exception as e:
+        logger.warning(f"Error extracting ActiveInference.jl data from files: {e}")
+    
+    return data
+
+
+def _extract_discopy_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+    """Extract DisCoPy simulation data from saved files."""
+    data = {}
+    
+    try:
+        # Look for circuit analysis JSON
+        analysis_dir = output_dir / "analysis"
+        if analysis_dir.exists():
+            json_files = list(analysis_dir.glob("*circuit*.json")) + list(analysis_dir.glob("*analysis*.json"))
+            for json_file in json_files:
+                try:
+                    with open(json_file, 'r') as f:
+                        circuit_data = json.load(f)
+                        if "circuit" in circuit_data:
+                            data["circuit"] = circuit_data["circuit"]
+                        if "components" in circuit_data:
+                            data["components"] = circuit_data["components"]
+                except Exception:
+                    pass
+        
+        # Count diagram outputs
+        diagram_dir = output_dir / "diagram_outputs"
+        if diagram_dir.exists():
+            diagram_files = list(diagram_dir.glob("*.png"))
+            if diagram_files:
+                data["diagram_count"] = len(diagram_files)
+                data["diagram_files"] = [str(f.name) for f in diagram_files]
+                
+    except Exception as e:
+        logger.warning(f"Error extracting DisCoPy data from files: {e}")
+    
+    return data
+
+
+def _extract_jax_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+    """Extract JAX simulation data from saved files."""
+    # Similar to PyMDP
+    return _extract_pymdp_data_from_files(output_dir, logger)
 
 
 def _extract_simulation_data(stdout: str, stderr: str, framework: str, logger) -> Dict[str, Any]:

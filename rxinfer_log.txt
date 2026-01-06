@@ -1,0 +1,63 @@
+   Resolving package versions...
+     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
+    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`
+📦 Ensuring required packages are installed...
+✅ Package installation complete
+🔬 RxInfer.jl Active Inference Simulation
+📊 State Space: 3 states, 3 observations, 3 actions
+============================================================
+RxInfer.jl Active Inference - GNN Generated Simulation
+Model: Classic Active Inference POMDP Agent v1
+============================================================
+
+🚀 Starting Active Inference simulation...
+📋 Generated observation sequence: [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3]
+
+🧠 Running variational inference...
+❌ Simulation failed: UndefVarError(:MatrixDirichlet, 0x0000000000009838, Main)
+🔍 Stack trace:
+UndefVarError: `MatrixDirichlet` not defined in `Main`
+Suggestion: check for spelling errors or missing imports.
+Stacktrace:
+  [1] macro expansion
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/model_macro.jl:444 [inlined]
+  [2] macro expansion
+    @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:48 [inlined]
+  [3] add_terminated_submodel!(__model__::GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, RxInfer.ReactiveMPFreeEnergyPlugin{RxInfer.BetheFreeEnergy{Real, SkipInitial, AsapScheduler}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, __context__::GraphPPL.Context, __options__::GraphPPL.NodeCreationOptions{@NamedTuple{created_by::GraphPPL.var"#add_terminated_submodel!##0#add_terminated_submodel!##1"}}, ::typeof(active_inference_model), __interfaces__::@NamedTuple{n_steps::Int64, observations::GraphPPL.ProxyLabel{GraphPPL.VariableRef{GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, RxInfer.ReactiveMPFreeEnergyPlugin{RxInfer.BetheFreeEnergy{Real, SkipInitial, AsapScheduler}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, GraphPPL.Context, GraphPPL.NodeCreationOptions{@NamedTuple{kind::Symbol, factorized::Bool}}, Tuple{Nothing}, Vector{Int64}, Nothing}, Nothing, Static.True}}, ::Static.StaticInt{2})
+    @ Main ~/.julia/packages/GraphPPL/IVPQ2/src/model_macro.jl:791
+  [4] add_terminated_submodel!(model::GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, RxInfer.ReactiveMPFreeEnergyPlugin{RxInfer.BetheFreeEnergy{Real, SkipInitial, AsapScheduler}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, context::GraphPPL.Context, options::GraphPPL.NodeCreationOptions{@NamedTuple{created_by::GraphPPL.var"#add_terminated_submodel!##0#add_terminated_submodel!##1"}}, fform::Function, interfaces::@NamedTuple{n_steps::Int64, observations::GraphPPL.ProxyLabel{GraphPPL.VariableRef{GraphPPL.Model{MetaGraphsNext.MetaGraph{Int64, Graphs.SimpleGraphs.SimpleGraph{Int64}, GraphPPL.NodeLabel, GraphPPL.NodeData, GraphPPL.EdgeLabel, GraphPPL.Context, MetaGraphsNext.var"#MetaGraph##6#MetaGraph##7", Float64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, RxInfer.ReactiveMPFreeEnergyPlugin{RxInfer.BetheFreeEnergy{Real, SkipInitial, AsapScheduler}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, GraphPPL.Context, GraphPPL.NodeCreationOptions{@NamedTuple{kind::Symbol, factorized::Bool}}, Tuple{Nothing}, Vector{Int64}, Nothing}, Nothing, Static.True}})
+    @ GraphPPL ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:2120
+  [5] add_terminated_submodel!
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:2116 [inlined]
+  [6] add_toplevel_model!
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/graph_engine.jl:2136 [inlined]
+  [7] create_model
+    @ ~/.julia/packages/GraphPPL/IVPQ2/src/model_generator.jl:159 [inlined]
+  [8] __infer_create_factor_graph_model
+    @ ~/.julia/packages/RxInfer/AvqBF/src/model/model.jl:140 [inlined]
+  [9] create_model(generator::RxInfer.ConditionedModelGenerator{GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64}, GraphPPL.PluginsCollection{Tuple{GraphPPL.VariationalConstraintsPlugin{GraphPPL.NoConstraints}, GraphPPL.MetaPlugin{GraphPPL.MetaSpecification}, RxInfer.InitializationPlugin{RxInfer.NoInit}, RxInfer.ReactiveMPInferencePlugin{RxInfer.ReactiveMPInferenceOptions{Nothing, Nothing, Nothing}}, RxInfer.ReactiveMPFreeEnergyPlugin{RxInfer.BetheFreeEnergy{Real, SkipInitial, AsapScheduler}}}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{observations::Vector{Int64}}})
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/model/model.jl:128
+ [10] batch_inference(; model::GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, data::@NamedTuple{observations::Vector{Int64}}, initialization::Nothing, constraints::Nothing, meta::Nothing, options::Nothing, returnvars::Nothing, predictvars::Nothing, iterations::Int64, free_energy::Bool, free_energy_diagnostics::Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, allow_node_contraction::Bool, showprogress::Bool, callbacks::Nothing, addons::Nothing, postprocess::DefaultPostprocess, warn::Bool, catch_exception::Bool)
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/inference/batch.jl:207
+ [11] batch_inference
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/batch.jl:96 [inlined]
+ [12] #299
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/inference.jl:545 [inlined]
+ [13] with_session(f::RxInfer.var"#299#300"{GraphPPL.ModelGenerator{typeof(active_inference_model), @Kwargs{n_steps::Int64}, GraphPPL.PluginsCollection{Tuple{}}, RxInfer.ReactiveMPGraphPPLBackend{Static.False}, String}, @NamedTuple{observations::Vector{Int64}}, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Nothing, Int64, Bool, Tuple{RxInfer.ObjectiveDiagnosticCheckNaNs, RxInfer.ObjectiveDiagnosticCheckInfs}, Bool, Bool, Bool, Nothing, Nothing, DefaultPostprocess, Nothing, Bool, Bool, Bool}, session::RxInfer.Session, label::Symbol)
+    @ RxInfer ~/.julia/packages/RxInfer/AvqBF/src/session.jl:253
+ [14] #infer#296
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/inference.jl:515 [inlined]
+ [15] infer
+    @ ~/.julia/packages/RxInfer/AvqBF/src/inference/inference.jl:468 [inlined]
+ [16] run_active_inference_simulation()
+    @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:108
+ [17] main()
+    @ Main ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:200
+ [18] top-level scope
+    @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl:223
+ [19] include(mod::Module, _path::String)
+    @ Base ./Base.jl:306
+ [20] exec_options(opts::Base.JLOptions)
+    @ Base ./client.jl:317
+ [21] _start()
+    @ Base ./client.jl:550

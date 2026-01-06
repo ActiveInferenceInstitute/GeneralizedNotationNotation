@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-06T11:51:25.509854",
+  "timestamp": "2026-01-06T13:50:52.618434",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -633,7 +633,7 @@
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-01-06T11:51:25.512656"
+      "analysis_timestamp": "2026-01-06T13:50:52.620852"
     }
   ],
   "complexity_metrics": [
@@ -645,7 +645,7 @@
       "structural_complexity": 21.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.2,
-      "analysis_timestamp": "2026-01-06T11:51:25.514164"
+      "analysis_timestamp": "2026-01-06T13:50:52.622372"
     }
   ],
   "performance_benchmarks": [
@@ -656,7 +656,7 @@
       "memory_usage": 423.6,
       "complexity_score": 72,
       "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-01-06T11:51:25.515653"
+      "benchmark_timestamp": "2026-01-06T13:50:52.623905"
     }
   ],
   "model_comparisons": [],
@@ -672,10 +672,10 @@
     }
   ],
   "framework_comparison": {
-    "timestamp": "2026-01-06T11:51:25.518567",
+    "timestamp": "2026-01-06T13:50:52.626710",
     "frameworks": {
       "pymdp": {
-        "success_count": 0,
+        "success_count": 1,
         "total_count": 1,
         "execution_times": [],
         "output_files": [
@@ -752,7 +752,7 @@
     },
     "comparisons": {
       "success_rates": {
-        "pymdp": 0.0,
+        "pymdp": 1.0,
         "jax": 0.0,
         "discopy": 1.0,
         "rxinfer": 0.0,
@@ -763,9 +763,9 @@
     },
     "metrics": {
       "total_frameworks": 5,
-      "total_successful": 1,
+      "total_successful": 2,
       "total_executions": 5,
-      "overall_success_rate": 0.2
+      "overall_success_rate": 0.4
     }
   },
   "framework_comparison_report": "output/16_analysis_output/analysis_results/framework_comparison_report.md"

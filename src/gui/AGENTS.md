@@ -462,6 +462,3 @@ def construct_model_gui(model_type="pymdp", interactive=True):
   - `navigation.html` - Comprehensive navigation to all pipeline outputs
 
 ---
-
-**Last Updated: January 5, 2026**
-**Status**: ✅ Ready (HTML Navigation Added - Full Output Discovery)
