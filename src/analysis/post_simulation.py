@@ -19,6 +19,8 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation, PillowWriter
 
 logger = logging.getLogger(__name__)
 
@@ -349,20 +351,24 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                 results_files = list(sim_data_dir.glob("*simulation_results.json"))
                 if results_files:
                     try:
+                        logger.info(f"Reading PyMDP simulation data from {results_files[0].name}")
                         with open(results_files[0], 'r') as f:
                             file_data = json.load(f)
                             
                             # Extract from file data
                             if "beliefs" in file_data:
                                 simulation_data["beliefs"] = file_data["beliefs"]
+                                logger.debug(f"Extracted {len(file_data['beliefs'])} belief states")
                             if "actions" in file_data:
                                 simulation_data["actions"] = file_data["actions"]
+                                logger.debug(f"Extracted {len(file_data['actions'])} actions")
                             if "observations" in file_data:
                                 simulation_data["observations"] = file_data["observations"]
+                                logger.debug(f"Extracted {len(file_data['observations'])} observations")
                             
                             logger.info(f"Enhanced PyMDP data from {results_files[0].name}")
                     except Exception as e:
-                        logger.debug(f"Failed to read simulation_results.json: {e}")
+                        logger.warning(f"Failed to read simulation_results.json: {e}")
             
             # Count visualizations
             viz_dir = impl_path / "visualizations"
@@ -391,16 +397,33 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
 def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract RxInfer.jl-specific data from execution result.
-    
-    Args:
-        execution_result: Execution result dictionary
-        
-    Returns:
-        Extracted simulation data
+    Enhanced to read from collected files if available.
     """
     simulation_data = execution_result.get("simulation_data", {})
     
+    # Try to read from collected files if available
+    implementation_dir = execution_result.get("implementation_directory")
+    if implementation_dir:
+        try:
+            impl_path = Path(implementation_dir)
+            results_file = impl_path / "simulation_results.json"
+            if results_file.exists():
+                logger.info(f"Reading RxInfer simulation data from {results_file.name}")
+                with open(results_file, 'r') as f:
+                    file_data = json.load(f)
+                    if "beliefs" in file_data:
+                        simulation_data["beliefs"] = file_data["beliefs"]
+                    if "true_states" in file_data:
+                        simulation_data["true_states"] = file_data["true_states"]
+                    if "observations" in file_data:
+                        simulation_data["observations"] = file_data["observations"]
+        except Exception as e:
+            logger.debug(f"Error reading RxInfer files: {e}")
+
     return {
+        "beliefs": simulation_data.get("beliefs", []),
+        "true_states": simulation_data.get("true_states", []),
+        "observations": simulation_data.get("observations", []),
         "posterior": simulation_data.get("posterior", []),
         "inference_data": simulation_data.get("inference_data", [])
     }
@@ -457,6 +480,80 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
+def plot_belief_evolution(
+    beliefs: List[List[float]],
+    output_path: Path,
+    title: str = "Belief Evolution",
+    true_states: Optional[List[int]] = None
+) -> str:
+    """
+    Plot belief evolution over time.
+    """
+    plt.figure(figsize=(10, 6))
+    belief_array = np.array(beliefs)
+    time_steps = range(len(beliefs))
+    
+    for i in range(belief_array.shape[1]):
+        plt.plot(time_steps, belief_array[:, i], label=f"State {i+1}")
+    
+    if true_states:
+        # Normalize true states if they are 1-indexed
+        min_state = min(true_states)
+        for t, s in enumerate(true_states):
+            plt.scatter(t, 1.05, marker='*', color='black', alpha=0.5 if t > 0 else 0)
+            plt.text(t, 1.1, f"S{s}", ha='center', fontsize=8)
+
+    plt.title(title)
+    plt.xlabel("Time Step")
+    plt.ylabel("Probability")
+    plt.ylim(0, 1.2)
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    plt.savefig(output_path, bbox_inches='tight', dpi=300)
+    plt.close()
+    return str(output_path)
+
+def animate_belief_evolution(
+    beliefs: List[List[float]],
+    output_path: Path,
+    title: str = "Belief Evolution Animation"
+) -> str:
+    """
+    Create a GIF animation of belief evolution.
+    """
+    belief_array = np.array(beliefs)
+    n_steps, n_states = belief_array.shape
+    
+    fig, ax = plt.subplots(figsize=(10, 6))
+    lines = [ax.plot([], [], label=f"State {i+1}")[0] for i in range(n_states)]
+    
+    ax.set_xlim(0, n_steps - 1)
+    ax.set_ylim(0, 1.1)
+    ax.set_title(title)
+    ax.set_xlabel("Time Step")
+    ax.set_ylabel("Probability")
+    ax.legend()
+    ax.grid(True, alpha=0.3)
+
+    def init():
+        for line in lines:
+            line.set_data([], [])
+        return lines
+
+    def update(frame):
+        for i in range(n_states):
+            lines[i].set_data(range(frame + 1), belief_array[:frame+1, i])
+        return lines
+
+    ani = FuncAnimation(fig, update, frames=n_steps, init_func=init, blit=True)
+    
+    # Save as GIF
+    writer = PillowWriter(fps=5)
+    ani.save(output_path, writer=writer)
+    plt.close()
+    return str(output_path)
+
 def analyze_execution_results(
     execution_results_dir: Path,
     model_name: Optional[str] = None
@@ -511,80 +608,116 @@ def analyze_execution_results(
         
         # Analyze each framework's results
         for framework, results in framework_data.items():
-            framework_analysis = {
-                "framework": framework,
-                "result_count": len(results),
-                "analyses": []
-            }
-            
-            for result in results:
-                # Extract framework-specific data
-                if framework == "pymdp":
-                    extracted = extract_pymdp_data(result)
-                elif framework == "rxinfer":
-                    extracted = extract_rxinfer_data(result)
-                elif framework == "activeinference_jl":
-                    extracted = extract_activeinference_jl_data(result)
-                elif framework == "jax":
-                    extracted = extract_jax_data(result)
-                elif framework == "discopy":
-                    extracted = extract_discopy_data(result)
-                else:
-                    extracted = result.get("simulation_data", {})
+            try:
+                framework_analysis = {
+                    "framework": framework,
+                    "result_count": len(results),
+                    "analyses": []
+                }
                 
-                # Also try to read from collected files if extraction didn't find data
-                if not extracted.get("beliefs") and not extracted.get("observations"):
-                    implementation_dir = result.get("implementation_directory")
-                    if implementation_dir:
-                        try:
-                            impl_path = Path(implementation_dir)
-                            # Try to read simulation data files directly
-                            sim_data_dir = impl_path / "simulation_data"
-                            if sim_data_dir.exists():
-                                results_files = list(sim_data_dir.glob("*.json"))
-                                for results_file in results_files:
-                                    try:
-                                        with open(results_file, 'r') as f:
-                                            file_data = json.load(f)
-                                            if "beliefs" in file_data and not extracted.get("beliefs"):
-                                                extracted["beliefs"] = file_data["beliefs"]
-                                            if "actions" in file_data and not extracted.get("actions"):
-                                                extracted["actions"] = file_data["actions"]
-                                            if "observations" in file_data and not extracted.get("observations"):
-                                                extracted["observations"] = file_data["observations"]
-                                    except Exception:
-                                        pass
-                        except Exception as e:
-                            logger.debug(f"Error reading files for {framework}: {e}")
-                
-                # Run generic analyses
-                model_name_for_analysis = result.get("model_name", "unknown")
-                
-                if extracted.get("free_energy"):
-                    fe_analysis = analyze_free_energy(
-                        extracted["free_energy"],
-                        framework,
-                        model_name_for_analysis
-                    )
-                    framework_analysis["analyses"].append(fe_analysis)
-                
-                if extracted.get("traces"):
-                    trace_analysis = analyze_simulation_traces(
-                        extracted["traces"],
-                        framework,
-                        model_name_for_analysis
-                    )
-                    framework_analysis["analyses"].append(trace_analysis)
-                
-                if extracted.get("policy"):
-                    policy_analysis = analyze_policy_convergence(
-                        extracted["policy"],
-                        framework,
-                        model_name_for_analysis
-                    )
-                    framework_analysis["analyses"].append(policy_analysis)
-            
-            analysis_results["framework_results"][framework] = framework_analysis
+                for result in results:
+                    # Extract framework-specific data
+                    try:
+                        if framework == "pymdp":
+                            extracted = extract_pymdp_data(result)
+                        elif framework == "rxinfer":
+                            extracted = extract_rxinfer_data(result)
+                        elif framework == "activeinference_jl":
+                            extracted = extract_activeinference_jl_data(result)
+                        elif framework == "jax":
+                            extracted = extract_jax_data(result)
+                        elif framework == "discopy":
+                            extracted = extract_discopy_data(result)
+                        else:
+                            extracted = result.get("simulation_data", {}) or {}
+                        
+                        # Also try to read from collected files if extraction didn't find data
+                        if isinstance(extracted, dict) and not extracted.get("beliefs") and not extracted.get("observations"):
+                            implementation_dir = result.get("implementation_directory")
+                            if implementation_dir:
+                                try:
+                                    impl_path = Path(implementation_dir)
+                                    # Try to read simulation data files directly
+                                    sim_data_dir = impl_path / "simulation_data"
+                                    if sim_data_dir.exists():
+                                        results_files = list(sim_data_dir.glob("*.json"))
+                                        for results_file in results_files:
+                                            try:
+                                                with open(results_file, 'r') as f:
+                                                    file_data = json.load(f)
+                                                    if isinstance(file_data, dict):
+                                                        if "beliefs" in file_data and not extracted.get("beliefs"):
+                                                            extracted["beliefs"] = file_data["beliefs"]
+                                                        if "actions" in file_data and not extracted.get("actions"):
+                                                            extracted["actions"] = file_data["actions"]
+                                                        if "observations" in file_data and not extracted.get("observations"):
+                                                            extracted["observations"] = file_data["observations"]
+                                            except Exception:
+                                                pass
+                                except Exception as e:
+                                    logger.debug(f"Error reading files for {framework}: {e}")
+                        
+                        # Run generic analyses
+                        model_name_for_analysis = result.get("model_name", "unknown")
+                        
+                        if isinstance(extracted, dict):
+                            if extracted.get("free_energy"):
+                                fe_analysis = analyze_free_energy(
+                                    extracted["free_energy"],
+                                    framework,
+                                    model_name_for_analysis
+                                )
+                                framework_analysis["analyses"].append(fe_analysis)
+                            
+                            if extracted.get("traces"):
+                                trace_analysis = analyze_simulation_traces(
+                                    extracted["traces"],
+                                    framework,
+                                    model_name_for_analysis
+                                )
+                                framework_analysis["analyses"].append(trace_analysis)
+                            
+                            if extracted.get("policy"):
+                                policy_analysis = analyze_policy_convergence(
+                                    extracted["policy"],
+                                    framework,
+                                    model_name_for_analysis
+                                )
+                                framework_analysis["analyses"].append(policy_analysis)
+                    except Exception as e:
+                        logger.warning(f"Error analyzing result for {framework}: {e}")
+                        framework_analysis["analyses"].append({"error": str(e)})
+
+                # Validate serializability with logic similar to processor.py
+                def safe_json_default(obj):
+                    if isinstance(obj, Path):
+                        return str(obj)
+                    if isinstance(obj, (np.integer, int)):
+                        return int(obj)
+                    if isinstance(obj, (np.floating, float)):
+                        return float(obj)
+                    if isinstance(obj, np.ndarray):
+                        return obj.tolist()
+                    if isinstance(obj, (set, frozenset)):
+                        return list(obj)
+                    if hasattr(obj, '__dict__'):
+                        return str(obj)
+                    return str(obj)
+
+                try:
+                    # Test dump to catch circular references early
+                    json.dumps(framework_analysis, default=safe_json_default)
+                    analysis_results["framework_results"][framework] = framework_analysis
+                except Exception as e:
+                    logger.error(f"Circular reference or serialization error in {framework} analysis: {e}")
+                    analysis_results["framework_results"][framework] = {
+                        "framework": framework,
+                        "error": f"Serialization failed: {e}"
+                    }
+
+            except Exception as e:
+                logger.error(f"Failed to analyze framework {framework}: {e}")
+                analysis_results["framework_results"][framework] = {"error": str(e)}
         
         # Cross-framework comparison
         if len(framework_data) > 1:
@@ -598,6 +731,31 @@ def analyze_execution_results(
             comparison = compare_framework_results(comparison_input, model_name or "unknown")
             analysis_results["cross_framework_comparison"] = comparison
         
+        # Trigger visualizations and animations for the model results
+        if model_name:
+            results_dir = execution_results_dir.parent / "analysis_results"
+            results_dir.mkdir(parents=True, exist_ok=True)
+            
+            for framework, data in analysis_results["framework_results"].items():
+                for i, analysis in enumerate(data.get("analyses", [])):
+                    # Check if we have belief data to plot/animate
+                    if "beliefs" in analysis or (isinstance(analysis, dict) and "simulation_data" in analysis and "beliefs" in analysis["simulation_data"]):
+                        beliefs = analysis.get("beliefs") or analysis["simulation_data"].get("beliefs")
+                        if beliefs:
+                            # Plot
+                            plot_file = results_dir / f"{model_name}_{framework}_beliefs.png"
+                            plot_belief_evolution(beliefs, plot_file, title=f"Beliefs - {model_name} ({framework})")
+                            
+                            # Animate
+                            anim_file = results_dir / f"{model_name}_{framework}_beliefs.gif"
+                            try:
+                                animate_belief_evolution(beliefs, anim_file, title=f"Evolution - {model_name} ({framework})")
+                            except Exception as e:
+                                logger.warning(f"Animation failed for {framework}: {e}")
+                            
+                            analysis["plots"] = analysis.get("plots", [])
+                            analysis["plots"].extend([str(plot_file), str(anim_file)])
+
         return analysis_results
         
     except Exception as e:

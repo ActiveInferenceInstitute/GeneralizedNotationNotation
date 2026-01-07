@@ -2,6 +2,33 @@
 
 This module provides comprehensive JAX implementations for POMDPs and other Active Inference models, including optimized belief updates, value iteration, and policy optimization using JAX's advanced features.
 
+## JAX Rendering Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Matrices]
+    
+    Extract --> A[A Matrix]
+    Extract --> B[B Matrix]
+    Extract --> C[C Vector]
+    Extract --> D[D Vector]
+    
+    A --> Convert[Convert to JAX]
+    B --> Convert
+    C --> Convert
+    D --> Convert
+    
+    Convert --> Optimize[Optimize Code]
+    Optimize --> JIT[JIT Compile]
+    Optimize --> Vectorize[Vectorize]
+    
+    JIT --> Generate[Generate Code]
+    Vectorize --> Generate
+    
+    Generate --> Output[JAX Simulation]
+```
+
 ## Features
 
 - **JAX POMDP Solver**: Complete POMDP implementation with JIT compilation, vmap, and pmap

@@ -234,6 +234,100 @@ output/15_audio_output/
 - **Current**: 74%
 - **Target**: 80%+
 
+### Key Test Scenarios
+1. Audio generation from GNN models
+2. SAPF code generation
+3. Audio backend validation
+4. Sonification strategies
+
 ---
 
+## MCP Integration
 
+### Tools Registered
+- `audio.generate_audio` - Generate audio from GNN model
+- `audio.create_sonification` - Create model sonification
+- `audio.validate_backend` - Validate audio backend
+
+### Tool Endpoints
+```python
+@mcp_tool("audio.generate_audio")
+def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, Any]:
+    """Generate audio from GNN content"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/audio/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Audio backend not available
+**Symptom**: Audio generation fails with backend errors  
+**Cause**: Required audio libraries not installed  
+**Solution**: 
+- Install audio dependencies: `uv pip install soundfile librosa pedalboard`
+- Check backend availability: `python -c "import soundfile; print('OK')"`
+- Use `--audio-backend auto` for automatic selection
+
+#### Issue 2: WAV file generation fails
+**Symptom**: Audio processing completes but no WAV files created  
+**Cause**: File permissions or disk space issues  
+**Solution**:
+- Check output directory permissions
+- Verify sufficient disk space
+- Check file system format supports WAV files
+
+#### Issue 3: Sonification produces silence
+**Symptom**: Generated audio files are silent  
+**Cause**: Model dynamics not extracted or sonification strategy mismatch  
+**Solution**:
+- Verify GNN model has state transitions or dynamics
+- Try different sonification strategies
+- Check audio sample rate and duration settings
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- SAPF code generation
+- Audio synthesis and processing
+- Model sonification
+- Multi-backend support
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced sonification strategies
+- **Future**: Real-time audio streaming
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [SAPF Documentation](../../doc/sapf/)
+- [Pedalboard Documentation](../../doc/pedalboard/)
+
+### External Resources
+- [SAPF Specification](https://github.com/activeinference/sapf)
+- [Pedalboard Documentation](https://github.com/spotify/pedalboard)
+- [Librosa Documentation](https://librosa.org/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: 🔄 In Development
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

@@ -39,52 +39,66 @@
 
 ### Public Functions
 
-#### `process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main report processing function called by orchestrator (23_report.py)
+#### `process_report(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main report processing function called by orchestrator (23_report.py). Generates comprehensive analysis reports from pipeline results.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing pipeline results (typically "output/")
 - `output_dir` (Path): Output directory for report results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `report_format` (str): Report format ("comprehensive", "summary", "technical", default: "comprehensive")
-- `include_visualizations` (bool): Include visualizations in report (default: True)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `report_format` (str, optional): Report format ("comprehensive", "summary", "technical") (default: "comprehensive")
+- `include_visualizations` (bool, optional): Include visualizations in report (default: True)
+- `output_formats` (List[str], optional): Output formats ["html", "markdown", "json"] (default: ["html", "markdown"])
 - `**kwargs`: Additional report-specific options
 
-**Returns**: `True` if report generation succeeded
+**Returns**: `bool` - True if report generation succeeded, False otherwise
 
 **Example**:
 ```python
 from report import process_report
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_report(
     target_dir=Path("output"),
     output_dir=Path("output/23_report_output"),
+    logger=logger,
     verbose=True,
     report_format="comprehensive",
-    include_visualizations=True
+    include_visualizations=True,
+    output_formats=["html", "markdown", "json"]
 )
 ```
 
-#### `generate_comprehensive_report(target_dir, output_dir, **kwargs) -> Dict[str, Any]`
-**Description**: Generate comprehensive analysis report from pipeline results
+#### `generate_comprehensive_report(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate comprehensive analysis report from pipeline results.
 
 **Parameters**:
 - `target_dir` (Path): Input directory with pipeline results
 - `output_dir` (Path): Output directory for reports
-- `format` (str): Report format ("html", "markdown", "json")
+- `format` (str, optional): Report format ("html", "markdown", "json") (default: "html")
+- `include_executive_summary` (bool, optional): Include executive summary (default: True)
+- `include_detailed_analysis` (bool, optional): Include detailed analysis (default: True)
 - `**kwargs`: Additional formatting options
 
-**Returns**: Dictionary with report generation results
+**Returns**: `Dict[str, Any]` - Report generation results with:
+- `success` (bool): Whether generation succeeded
+- `report_files` (List[Path]): Paths to generated report files
+- `summary` (Dict): Report summary statistics
 
-#### `generate_html_report(data, output_path) -> bool`
-**Description**: Generate interactive HTML report from analysis data
+#### `generate_html_report(data: Dict[str, Any], output_path: Path, **kwargs) -> bool`
+**Description**: Generate interactive HTML report from analysis data.
 
 **Parameters**:
-- `data` (Dict): Analysis data to include in report
+- `data` (Dict[str, Any]): Analysis data to include in report
 - `output_path` (Path): Output path for HTML file
+- `include_charts` (bool, optional): Include interactive charts (default: True)
+- `theme` (str, optional): HTML theme ("default", "dark", "light") (default: "default")
+- `**kwargs`: Additional HTML formatting options
 
-**Returns**: `True` if HTML report generation succeeded
+**Returns**: `bool` - True if HTML report generation succeeded, False otherwise
 
 ---
 
@@ -349,4 +363,68 @@ def generate_report(pipeline_data, format="html", template="default"):
     # Implementation
 ```
 
+### MCP File Location
+- `src/report/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Report generation fails
+**Symptom**: Report files not generated or incomplete  
+**Cause**: Missing pipeline artifacts or template issues  
+**Solution**: 
+- Verify all pipeline steps completed successfully
+- Check that required artifacts exist in output directories
+- Use `--verbose` flag for detailed generation logs
+- Review report template structure
+
+#### Issue 2: HTML validation errors
+**Symptom**: HTML reports have validation errors  
+**Cause**: Template issues or missing content  
+**Solution**:
+- Check HTML structure in generated files
+- Verify all referenced assets exist
+- Review HTML validation logs
+- Use markdown format if HTML issues persist
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Multi-format report generation
+- Pipeline results aggregation
+- Automated documentation
+- Customizable templates
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced visualization integration
+- **Future**: Real-time report updates
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Report Guide](../../doc/report/)
+
+### External Resources
+- [Markdown Specification](https://daringfireball.net/projects/markdown/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

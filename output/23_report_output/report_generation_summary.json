@@ -1,9 +1,9 @@
 {
   "report_generation_summary": {
-    "generation_time": "2026-01-06T13:51:04.377009",
+    "generation_time": "2026-01-07T05:50:20.287636",
     "pipeline_directory": "output",
     "report_directory": "output/23_report_output",
-    "health_score": 30.0,
+    "health_score": 35.0,
     "generated_files": [
       "comprehensive_analysis_report.html",
       "comprehensive_analysis_report.md",
@@ -11,10 +11,10 @@
     ],
     "pipeline_summary": {
       "total_steps": 14,
-      "successful_steps": 1,
-      "total_files": 0,
+      "successful_steps": 2,
+      "total_files": 1,
       "total_size_mb": 0.0,
-      "success_rate": 7.142857142857142
+      "success_rate": 14.285714285714285
     }
   }
 }

@@ -23,6 +23,32 @@ This module provides comprehensive execution and analysis capabilities for Activ
 - `export_enhancement.jl` - Enhanced export capabilities
 - `visualization_utils.jl` - Visualization utility functions
 
+## ActiveInference.jl Execution Pipeline
+
+```mermaid
+graph TD
+    Scripts[ActiveInference.jl Scripts] --> Discover[Discover Scripts]
+    Discover --> Validate[Validate Environment]
+    
+    Validate --> Setup[Setup Julia Environment]
+    Setup --> Check[Check Dependencies]
+    
+    Check -->|Available| Execute[Execute Script]
+    Check -->|Missing| Install[Install Packages]
+    Install --> Execute
+    
+    Execute --> Analysis[Run Analysis Suite]
+    Analysis --> Meta[Meta-Cognitive Analysis]
+    Analysis --> Uncertainty[Uncertainty Quantification]
+    Analysis --> Statistical[Statistical Analysis]
+    
+    Meta --> Report[Generate Reports]
+    Uncertainty --> Report
+    Statistical --> Report
+    
+    Report --> Summary[Analysis Summary]
+```
+
 ## Features
 
 - **Comprehensive Analysis**: Multiple analysis types (basic, comprehensive, all)

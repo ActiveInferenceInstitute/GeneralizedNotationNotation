@@ -65,6 +65,80 @@ Summary of completed improvements and their impact.
 
 ---
 
+## Pipeline Architecture
+
+```mermaid
+graph TB
+    subgraph "Pipeline Execution"
+        Main[main.py] --> Steps[24 Pipeline Steps]
+        Steps --> Step0[Step 0: Template]
+        Step0 --> Step1[Step 1: Setup]
+        Step1 --> Step2[Step 2: Tests]
+        Step2 --> Step3[Step 3: GNN]
+        Step3 --> Step4[Step 4: Registry]
+        Step4 --> Step5[Step 5: Type Check]
+        Step5 --> Step6[Step 6: Validation]
+        Step6 --> Step7[Step 7: Export]
+        Step7 --> Step8[Step 8: Visualization]
+        Step8 --> Step9[Step 9: Advanced Viz]
+        Step9 --> Step10[Step 10: Ontology]
+        Step10 --> Step11[Step 11: Render]
+        Step11 --> Step12[Step 12: Execute]
+        Step12 --> Step13[Step 13: LLM]
+        Step13 --> Step14[Step 14: ML Integration]
+        Step14 --> Step15[Step 15: Audio]
+        Step15 --> Step16[Step 16: Analysis]
+        Step16 --> Step17[Step 17: Integration]
+        Step17 --> Step18[Step 18: Security]
+        Step18 --> Step19[Step 19: Research]
+        Step19 --> Step20[Step 20: Website]
+        Step20 --> Step21[Step 21: MCP]
+        Step21 --> Step22[Step 22: GUI]
+        Step22 --> Step23[Step 23: Report]
+    end
+    
+    Step23 --> Output[output/]
+    Output --> Summary[pipeline_execution_summary.json]
+```
+
+### Data Flow Architecture
+
+```mermaid
+flowchart LR
+    subgraph "Input"
+        GNNFiles[GNN Files]
+    end
+    
+    subgraph "Core Processing"
+        Parse[GNN Parsing]
+        Validate[Validation]
+        Export[Export]
+    end
+    
+    subgraph "Simulation"
+        Render[Code Generation]
+        Execute[Execution]
+        Analysis[Analysis]
+    end
+    
+    subgraph "Output"
+        Reports[Reports]
+        Visualizations[Visualizations]
+        Website[Website]
+    end
+    
+    GNNFiles --> Parse
+    Parse --> Validate
+    Validate --> Export
+    Export --> Render
+    Render --> Execute
+    Execute --> Analysis
+    Analysis --> Reports
+    Analysis --> Visualizations
+    Reports --> Website
+    Visualizations --> Website
+```
+
 ## Quick Reference
 
 ### Pipeline Status Overview

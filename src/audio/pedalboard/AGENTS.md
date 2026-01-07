@@ -33,19 +33,22 @@
 
 ### Public Functions
 
-#### `process_pedalboard_audio(audio_data: np.ndarray, effects_chain: List[Dict], **kwargs) -> np.ndarray`
-**Description**: Process audio data through a Pedalboard effects chain
+#### `process_pedalboard_audio(audio_data: np.ndarray, effects_chain: List[Dict[str, Any]], **kwargs) -> np.ndarray`
+**Description**: Process audio data through a Pedalboard effects chain with real-time processing.
 
 **Parameters**:
-- `audio_data` (np.ndarray): Input audio data
-- `effects_chain` (List[Dict]): List of effect configurations
-- `**kwargs`: Additional processing options (sample_rate, buffer_size, etc.)
+- `audio_data` (np.ndarray): Input audio data (1D or 2D array)
+- `effects_chain` (List[Dict[str, Any]]): List of effect configurations with type and parameters
+- `sample_rate` (int, optional): Audio sample rate in Hz (default: 44100)
+- `buffer_size` (int, optional): Processing buffer size (default: 1024)
+- `**kwargs`: Additional processing options
 
-**Returns**: Processed audio data as numpy array
+**Returns**: `np.ndarray` - Processed audio data as numpy array
 
 **Example**:
 ```python
 from audio.pedalboard import process_pedalboard_audio
+import numpy as np
 
 effects_chain = [
     {"type": "reverb", "room_size": 0.8, "wet_level": 0.3},
@@ -53,31 +56,48 @@ effects_chain = [
     {"type": "chorus", "rate_hz": 1.5, "depth": 0.5}
 ]
 
-processed_audio = process_pedalboard_audio(audio_data, effects_chain)
+processed_audio = process_pedalboard_audio(
+    audio_data=audio_data,
+    effects_chain=effects_chain,
+    sample_rate=44100,
+    buffer_size=1024
+)
 ```
 
-#### `create_effects_chain(effects_config: List[Dict]) -> List[pedalboard.Plugin]`
-**Description**: Create a Pedalboard effects chain from configuration
+#### `create_effects_chain(effects_config: List[Dict[str, Any]], **kwargs) -> List[Any]`
+**Description**: Create a Pedalboard effects chain from configuration.
 
 **Parameters**:
-- `effects_config` (List[Dict]): List of effect configuration dictionaries
+- `effects_config` (List[Dict[str, Any]]): List of effect configuration dictionaries
+- `validate` (bool, optional): Validate effect configurations (default: True)
+- `**kwargs`: Additional chain creation options
 
-**Returns**: List of Pedalboard plugin instances
+**Returns**: `List[Any]` - List of Pedalboard plugin instances
 
-#### `apply_effects_chain(audio: np.ndarray, effects_chain: List[pedalboard.Plugin]) -> np.ndarray`
-**Description**: Apply an effects chain to audio data
+#### `apply_effects_chain(audio: np.ndarray, effects_chain: List[Any], **kwargs) -> np.ndarray`
+**Description**: Apply an effects chain to audio data.
 
 **Parameters**:
 - `audio` (np.ndarray): Input audio data
-- `effects_chain` (List): List of Pedalboard plugins
+- `effects_chain` (List[Any]): List of Pedalboard plugins
+- `sample_rate` (int, optional): Audio sample rate (default: 44100)
+- `**kwargs`: Additional processing options
 
-**Returns**: Processed audio data
+**Returns**: `np.ndarray` - Processed audio data
 
-#### `sonify_gnn_model(model_data: Dict[str, Any], sonification_config: Dict) -> np.ndarray`
-**Description**: Convert GNN model data to audio using Pedalboard effects
+#### `sonify_gnn_model(model_data: Dict[str, Any], sonification_config: Dict[str, Any], **kwargs) -> np.ndarray`
+**Description**: Convert GNN model data to audio using Pedalboard effects and sonification mapping.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, parameters
+- `sonification_config` (Dict[str, Any]): Sonification configuration with:
+  - `mapping` (Dict): Variable-to-audio parameter mapping
+  - `effects` (List[Dict]): Effects chain configuration
+  - `duration` (float): Audio duration in seconds
+- `sample_rate` (int, optional): Audio sample rate (default: 44100)
+- `**kwargs`: Additional sonification options
+
+**Returns**: `np.ndarray` - Audio representation of the model
 - `sonification_config` (Dict): Sonification configuration
 
 **Returns**: Audio representation of the model

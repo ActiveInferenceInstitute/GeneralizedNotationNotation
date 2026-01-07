@@ -462,26 +462,26 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ## 🚀 Next Steps
 
 ### Beginner Path
-1. **Follow Tutorials**: Work through [doc/tutorials/README.md](doc/tutorials/README.md)
-2. **Read Documentation**: Study [doc/gnn/about_gnn.md](gnn/about_gnn.md)
+1. **Follow Tutorials**: Work through [tutorials/README.md](tutorials/README.md)
+2. **Read Documentation**: Study [gnn/about_gnn.md](gnn/about_gnn.md)
 3. **Join Community**: Participate in [discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ### Intermediate Path  
-1. **Framework Deep-Dive**: Master [PyMDP](doc/pymdp/gnn_pymdp.md) or [RxInfer](doc/rxinfer/gnn_rxinfer.md)
-2. **Performance Optimization**: Learn [performance tuning](doc/performance/README.md)
-3. **Deploy Models**: Set up [production deployment](doc/deployment/README.md)
+1. **Framework Deep-Dive**: Master [PyMDP](pymdp/gnn_pymdp.md) or [RxInfer](rxinfer/gnn_rxinfer.md)
+2. **Performance Optimization**: Learn [performance tuning](performance/README.md)
+3. **Deploy Models**: Set up [production deployment](deployment/README.md)
 
 ### Advanced Path
-1. **Categorical Modeling**: Explore [DisCoPy integration](doc/discopy/gnn_discopy.md)
+1. **Categorical Modeling**: Explore [DisCoPy integration](discopy/gnn_discopy.md)
 2. **Extend GNN**: Develop new pipeline steps
 3. **Research Applications**: Apply to your research domain
 
 ## 📖 Essential Documentation
 
 - **[GNN Syntax Reference](gnn/gnn_syntax.md)**: Complete syntax guide
-- **[Pipeline Documentation](doc/pipeline/README.md)**: Detailed pipeline steps
-- **[API Reference](doc/api/README.md)**: Programming interface
-- **[Troubleshooting](doc/troubleshooting/README.md)**: Common problems and solutions
+- **[Pipeline Documentation](pipeline/README.md)**: Detailed pipeline steps
+- **[API Reference](api/README.md)**: Programming interface
+- **[Troubleshooting](troubleshooting/README.md)**: Common problems and solutions
 
 ## 🤝 Getting Help
 
@@ -543,7 +543,7 @@ config/               # Configuration files
 
 ---
 
-**🎉 Congratulations!** You now have a working GNN model. Explore the generated outputs and dive deeper into the [full documentation](doc/README.md) to unlock GNN's full potential for your research and applications.
+**🎉 Congratulations!** You now have a working GNN model. Explore the generated outputs and dive deeper into the [full documentation](README.md) to unlock GNN's full potential for your research and applications.
 
 ---
 

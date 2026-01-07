@@ -77,7 +77,7 @@
 ### 14-Step Pipeline Structure
 - **Core Processing Modules**: `setup/`, `gnn/`, `tests/`, `type_checker/`, `export/`, `visualization/`, `mcp/`, `ontology/`, `render/`, `execute/`, `llm/`, `website/`, `sapf/`
 - **Infrastructure Modules**: `utils/`, `pipeline/` (centralized configuration and execution), `tests/` (comprehensive testing)
-- **Pipeline Scripts**: `1_setup.py`, `2_gnn.py`, `3_tests.py`, `4_type_checker.py`, `5_export.py`, `6_visualization.py`, `7_mcp.py`, `8_ontology.py`, `9_render.py`, `10_execute.py`, `11_llm.py`, `12_audio.py`, `13_website.py`, `14_report.py`
+- **Pipeline Scripts**: `1_setup.py`, `3_gnn.py`, `2_tests.py`, `5_type_checker.py`, `7_export.py`, `6_visualization.py`, `21_mcp.py`, `10_ontology.py`, `11_render.py`, `12_execute.py`, `11_llm.py`, `12_audio.py`, `13_website.py`, `14_report.py`
 
 ### Standardized Output Directory Structure
 - **Setup Artifacts**: `output/setup_artifacts/` (environment info, dependency reports)

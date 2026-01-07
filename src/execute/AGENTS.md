@@ -38,42 +38,71 @@
 
 ### Public Functions
 
-#### `process_execute(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main execution function called by orchestrator (12_execute.py)
+#### `process_execute(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main execution function called by orchestrator (12_execute.py). Executes rendered simulation scripts across multiple frameworks.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing rendered scripts (typically output from Step 11)
 - `output_dir` (Path): Output directory for execution results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance (default: None)
+- `logger` (Optional[logging.Logger]): Logger instance (default: None)
 - `frameworks` (str): Frameworks to execute ("all", "lite", or comma-separated list, default: "all")
+  - `"all"`: Execute all available frameworks
+  - `"lite"`: Execute only PyMDP, JAX, DisCoPy (no Julia)
+  - Comma-separated: `"pymdp,jax"` for specific frameworks
 - `simulation_engine` (str): Engine to use ("auto", "pymdp", "rxinfer", etc., default: "auto")
 - `validate_only` (bool): Only validate scripts, don't execute (default: False)
-- `**kwargs`: Additional options
+- `timeout` (int): Execution timeout per script in seconds (default: 300)
+- `parallel` (bool): Execute scripts in parallel (default: False)
+- `**kwargs`: Additional framework-specific options
 
-**Returns**: `True` if execution succeeded
+**Returns**: `bool` - True if execution succeeded, False otherwise
 
 **Example**:
 ```python
 from execute import process_execute
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_execute(
     target_dir=Path("output/11_render_output"),
     output_dir=Path("output/12_execute_output"),
     verbose=True,
-    frameworks="pymdp,jax"
+    frameworks="pymdp,jax",
+    timeout=600
 )
 ```
 
-#### `execute_simulation_from_gnn(gnn_file, framework, output_dir) -> Dict`
-**Description**: Execute simulation for specific GNN file and framework
+#### `execute_simulation_from_gnn(gnn_file: Path, framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Execute simulation for specific GNN file and framework.
 
-**Returns**: Dictionary with execution results
+**Parameters**:
+- `gnn_file` (Path): Path to GNN file
+- `framework` (str): Framework to use ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
+- `output_dir` (Path): Output directory for execution results
+- `**kwargs`: Framework-specific execution options
 
-#### `get_execution_health_status() -> Dict`
-**Description**: Get health status of execution environment
+**Returns**: `Dict[str, Any]` - Execution results dictionary with:
+- `success` (bool): Whether execution succeeded
+- `return_code` (int): Process return code
+- `stdout` (str): Standard output
+- `stderr` (str): Standard error
+- `duration` (float): Execution duration in seconds
+- `output_files` (List[Path]): Generated output files
 
-**Returns**: Dictionary with framework availability
+#### `get_execution_health_status() -> Dict[str, Any]`
+**Description**: Get health status of execution environment and framework availability.
+
+**Returns**: `Dict[str, Any]` - Health status dictionary with:
+- `pymdp_available` (bool): PyMDP availability
+- `rxinfer_available` (bool): RxInfer.jl availability
+- `activeinference_jl_available` (bool): ActiveInference.jl availability
+- `jax_available` (bool): JAX availability
+- `discopy_available` (bool): DisCoPy availability
+- `julia_available` (bool): Julia installation status
+- `python_version` (str): Python version
+- `julia_version` (Optional[str]): Julia version if available
 
 ---
 
@@ -233,6 +262,105 @@ output/12_execute_output/
 - **Current**: 79%
 - **Target**: 85%+
 
+### Key Test Scenarios
+1. Multi-framework execution
+2. Error handling and recovery
+3. Result capture and validation
+4. Timeout handling
+
 ---
 
+## MCP Integration
 
+### Tools Registered
+- `execute.run_simulation` - Execute simulation script
+- `execute.validate_environment` - Validate execution environment
+- `execute.get_health_status` - Get framework health status
+- `execute.analyze_error` - Analyze execution errors
+
+### Tool Endpoints
+```python
+@mcp_tool("execute.run_simulation")
+def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
+    """Execute simulation script"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/execute/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Julia execution fails
+**Symptom**: Julia scripts fail to execute  
+**Cause**: Julia not installed or not in PATH  
+**Solution**: 
+- Install Julia: `brew install julia` (macOS) or download from [julialang.org](https://julialang.org)
+- Verify Julia installation: `julia --version`
+- Check Julia is in PATH: `which julia`
+- Install required Julia packages if needed
+
+#### Issue 2: Framework dependencies missing
+**Symptom**: Execution fails with import errors  
+**Cause**: Required packages not installed in environment  
+**Solution**:
+- Install framework dependencies: `uv pip install pymdp jax`
+- For Julia: Install packages via `julia -e 'using Pkg; Pkg.add("RxInfer")'`
+- Check framework-specific requirements in documentation
+
+#### Issue 3: Execution timeout
+**Symptom**: Scripts timeout before completion  
+**Cause**: Simulation too complex or timeout too short  
+**Solution**:
+- Increase timeout: `--timeout 600` (10 minutes)
+- Simplify model complexity
+- Use faster frameworks (JAX) for large models
+- Process models individually instead of batch
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Multi-framework execution support
+- Graceful degradation when frameworks unavailable
+- Comprehensive error logging
+- Result capture and validation
+- Execution timeout handling
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced parallel execution
+- **Future**: Real-time execution monitoring
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Render Module](../render/AGENTS.md)
+- [Execution Guide](../../doc/execution/)
+
+### External Resources
+- [PyMDP Framework](https://github.com/infer-actively/pymdp)
+- [RxInfer.jl](https://github.com/biaslab/RxInfer.jl)
+- [ActiveInference.jl](https://github.com/ComputationalPsychiatry/ActiveInference.jl)
+- [JAX Documentation](https://jax.readthedocs.io/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

@@ -75,13 +75,25 @@ success = checker.validate_gnn_files(
 
 **Returns**: `True` if validation succeeded
 
-#### `estimate_resources(gnn_content) -> Dict[str, Any]`
-**Description**: Estimate computational resources for GNN model
+#### `estimate_file_resources(content: str) -> Dict[str, Any]`
+**Description**: Estimate computational resources for GNN model from file content
 
 **Parameters**:
-- `gnn_content`: GNN content to analyze
+- `content` (str): GNN file content to analyze
 
-**Returns**: Dictionary with resource estimates
+**Returns**: Dictionary with resource estimates including memory, execution time, and optimization suggestions
+
+**Example**:
+```python
+from type_checker import estimate_file_resources
+
+with open("model.md", "r") as f:
+    content = f.read()
+
+estimates = estimate_file_resources(content)
+print(f"Estimated memory: {estimates.get('memory_mb', 0)} MB")
+print(f"Estimated execution time: {estimates.get('execution_time', 0)} seconds")
+```
 
 #### `check_type_safety(gnn_content) -> Dict[str, Any]`
 **Description**: Check type safety of GNN model
@@ -132,14 +144,14 @@ success = validate_gnn_files(
 
 ### Resource Estimation
 ```python
-from type_checker import estimate_resources
+from type_checker import estimate_file_resources
 
-with open("model.gnn", "r") as f:
+with open("model.md", "r") as f:
     content = f.read()
 
-estimates = estimate_resources(content)
-print(f"Estimated memory: {estimates['memory_mb']} MB")
-print(f"Estimated time: {estimates['execution_time']} seconds")
+estimates = estimate_file_resources(content)
+print(f"Estimated memory: {estimates.get('memory_mb', 0)} MB")
+print(f"Estimated execution time: {estimates.get('execution_time', 0)} seconds")
 ```
 
 ### Type Safety Check
@@ -252,7 +264,7 @@ GNN Files → Syntax Validation → Type Checking → Resource Estimation → Op
 
 ### Tools Registered
 - `type_checker.validate` - Validate GNN type safety
-- `type_checker.estimate_resources` - Estimate computational resources
+- `type_checker.estimate_file_resources` - Estimate computational resources
 - `type_checker.check_structure` - Check model structure
 - `type_checker.optimize` - Provide optimization suggestions
 
@@ -264,4 +276,84 @@ def validate_gnn_tool(file_path):
     # Implementation
 ```
 
+### MCP File Location
+- `src/type_checker/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Type checking fails on valid GNN files
+**Symptom**: Type checker reports errors on files that appear valid  
+**Cause**: GNN syntax variations or missing sections  
+**Solution**: 
+- Check that all required sections are present (StateSpaceBlock, Connections, etc.)
+- Verify syntax matches GNN specification
+- Use `--verbose` flag for detailed error messages
+
+#### Issue 2: Resource estimation returns zero values
+**Symptom**: `estimate_file_resources()` returns all zeros  
+**Cause**: File content parsing failed or empty content  
+**Solution**:
+- Verify file content is not empty
+- Check file encoding (should be UTF-8)
+- Ensure file contains valid GNN syntax
+
+### Performance Issues
+
+#### Slow Type Checking
+**Symptoms**: Type checking takes longer than expected  
+**Diagnosis**:
+```bash
+# Enable verbose logging
+python src/5_type_checker.py --target-dir input/ --verbose
+```
+
+**Solutions**:
+- Use `--fast` mode for basic validation only
+- Disable resource estimation if not needed
+- Process files in smaller batches
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- GNN syntax validation
+- Type checking and inference
+- Resource estimation
+- Performance prediction
+- Type safety verification
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced type inference for complex models
+- **Future**: Integration with static analysis tools
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [GNN Syntax Guide](../../doc/gnn/gnn_syntax.md)
+- [Type System Documentation](../../doc/gnn/gnn_type_system.md)
+
+### External Resources
+- [Active Inference Documentation](https://activeinference.org)
+- [Python Type Hints (PEP 484)](https://www.python.org/dev/peps/pep-0484/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

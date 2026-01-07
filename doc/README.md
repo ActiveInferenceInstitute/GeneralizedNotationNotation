@@ -133,9 +133,17 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 - **[Klong](klong/klong.md)** - Array programming language integration
 
 #### Temporal and Analytical
-- **[TimEP](timep/timep_gnn.md)** - Temporal modeling and time series analysis
+- **[TimEP](timep/timep_gnn.md)** - Performance profiling and temporal analysis
 - **[POMDP](pomdp/pomdp_overall.md)** - POMDP analytical framework
 - **[SPM](spm/spm_gnn.md)** - Statistical Parametric Mapping for neuroscience
+
+#### Configuration and Performance
+- **[Pkl](pkl/pkl_gnn.md)** - Configuration-as-code language integration
+- **[Muscle-Mem](muscle-mem/gnn-muscle-mem.md)** - Behavior caching for performance optimization
+- **[SymPy](sympy/gnn_sympy.md)** - Symbolic mathematics and MCP integration
+- **[Kit](kit/gnn_kit.md)** - Code intelligence and developer tools
+- **[ActiveInference.jl](activeinference_jl/activeinference-jl.md)** - High-performance Julia framework
+- **[Quadray](quadray/quadray_gnn.md)** - Geometric coordinate system for spatial modeling
 
 ## 📖 Example Gallery
 

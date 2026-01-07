@@ -1,19 +1,25 @@
-# sapf
+# SAPF Documentation Agent
+
+> **📋 Document Metadata**  
+> **Type**: Audio Framework Integration Agent | **Audience**: Researchers, Audio Engineers | **Complexity**: Advanced  
+> **Cross-References**: [README.md](README.md) | [SAPF GNN Guide](sapf_gnn.md) | [Audio Processing](../audio/README.md) | [Pedalboard Integration](../pedalboard/pedalboard_gnn.md) | [Main Documentation](../README.md)
 
 ## Overview
 
-This directory contains documentation and resources for the sapf subsystem.
+This directory contains comprehensive documentation, resources, and implementation guides for integrating **SAPF** (Sound As Pure Form) with GNN (Generalized Notation Notation). SAPF provides a concatenative programming paradigm for auditory representation and real-time sonification of Active Inference generative models.
 
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
+**Status**: ✅ Production Ready  
+**Version**: 1.0
 
 ## Purpose
 
-SAPF - Structured Audio Processing Framework for Active Inference sonification
+SAPF integration enables:
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+- **Auditory Model Representation**: Understanding models through sound
+- **Real-Time Sonification**: Real-time sonification of Active Inference dynamics
+- **Multi-Dimensional Audio**: Multi-dimensional audio synthesis for complex models
+- **Debugging Through Sound**: Audio-based model debugging and analysis
+- **Concatenative Programming**: Lazy evaluation and infinite sequences
 
 ## Contents
 
@@ -39,11 +45,49 @@ This module is organized as follows:
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+### Core Processing (Steps 0-9)
+- **Step 3 (GNN)**: SAPF audio generation from parsed GNN models
+- **Step 7 (Export)**: Audio parameter mapping in export formats
+
+### Simulation (Steps 10-16)
+- **Step 15 (Audio)**: Real-time sonification using SAPF concatenative programming
+- **Step 16 (Analysis)**: Audio-based model analysis
+
+### Integration (Steps 17-23)
+- **Step 20 (Website)**: Audio visualization integration
+- **Step 23 (Report)**: Audio analysis results in reports
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+## Function Signatures and API
+
+### Audio Synthesis Functions
+
+```python
+def sonify_gnn_model(gnn_model: GNNModel, audio_params: dict) -> AudioSequence:
+    """
+    Generate audio sequence from GNN model using SAPF.
+    
+    Parameters:
+        gnn_model: Parsed GNN model structure
+        audio_params: Audio generation parameters
+    
+    Returns:
+        AudioSequence with sonified model representation
+    """
+
+def apply_sapf_processing(audio: AudioSequence, operations: List[SAPFOp]) -> AudioSequence:
+    """
+    Apply SAPF concatenative operations to audio sequence.
+    
+    Parameters:
+        audio: Input audio sequence
+        operations: List of SAPF operations to apply
+    
+    Returns:
+        Processed AudioSequence
+    """
+```
 
 ## Standards and Guidelines
 
@@ -56,17 +100,30 @@ All documentation in this module adheres to professional standards:
 
 ## Related Resources
 
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+### Main GNN Documentation
+- **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
+- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[Audio Processing](../audio/README.md)**: Audio generation and sonification
 
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/AGENTS.md)
-- [Pipeline README](../../src/README.md)
+### Audio Resources
+- **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
+- **[Audio Processing](../audio/README.md)**: Audio generation tools
+- **[Sonification](../CROSS_REFERENCE_INDEX.md#audio--sonification)**: Audio sonification overview
+
+### Pipeline Architecture
+- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/README.md)**: Pipeline overview
+
+## See Also
+
+- **[SAPF Cross-Reference](../CROSS_REFERENCE_INDEX.md#sapf)**: Cross-reference index entry
+- **[Audio Processing](../audio/README.md)**: Audio generation and sonification
+- **[Pedalboard Integration](../pedalboard/pedalboard_gnn.md)**: Audio processing library
+- **[Main Index](../README.md)**: Return to main documentation
 
 ---
 
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new features
+**Maintenance**: Regular updates with new SAPF features and integration capabilities

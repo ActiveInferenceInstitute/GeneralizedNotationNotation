@@ -32,52 +32,70 @@
 
 ### Public Functions
 
-#### `generate_pymdp_code(model_data: Dict[str, Any], output_path: Optional[str] = None) -> str`
-**Description**: Generate PyMDP simulation code from GNN model data
+#### `generate_pymdp_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
+**Description**: Generate PyMDP simulation code from GNN model data.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `output_path` (Optional[str]): Output file path (optional)
+- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
+- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
+- `optimize` (bool, optional): Enable PyMDP-specific optimizations (default: True)
+- `include_examples` (bool, optional): Include example usage code (default: True)
+- `**kwargs`: Additional PyMDP generation options
 
-**Returns**: Generated PyMDP code as string
+**Returns**: `str` - Generated PyMDP code as string
 
 **Example**:
 ```python
 from render.pymdp import generate_pymdp_code
+from pathlib import Path
 
 # Generate PyMDP code
-pymdp_code = generate_pymdp_code(model_data)
+pymdp_code = generate_pymdp_code(
+    model_data=parsed_gnn_model,
+    output_path=Path("output/simulation.py"),
+    optimize=True,
+    include_examples=True
+)
 
-# Save to file
-with open("simulation.py", "w") as f:
-    f.write(pymdp_code)
+# Code is also saved to file if output_path provided
 ```
 
-#### `convert_gnn_to_pymdp(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Convert GNN model data to PyMDP-compatible format
+#### `convert_gnn_to_pymdp(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN model data to PyMDP-compatible format.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, matrices
+- `validate` (bool, optional): Validate PyMDP compatibility (default: True)
+- `**kwargs`: Additional conversion options
 
-**Returns**: PyMDP-compatible model structure
+**Returns**: `Dict[str, Any]` - PyMDP-compatible model structure with:
+- `state_space` (List): State space definition
+- `observation_space` (List): Observation space definition
+- `action_space` (List): Action space definition
+- `matrices` (Dict): A, B, C, D matrices
 
-#### `create_pymdp_agent(model_structure: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Create PyMDP agent implementation
-
-**Parameters**:
-- `model_structure` (Dict): Model structure data
-- `config` (Dict): PyMDP configuration options
-
-**Returns**: PyMDP agent code
-
-#### `generate_pymdp_simulation_script(model_data: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Generate complete PyMDP simulation script
+#### `create_pymdp_agent(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Create PyMDP agent implementation code.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
-- `config` (Dict): Simulation configuration
+- `model_structure` (Dict[str, Any]): PyMDP-compatible model structure
+- `config` (Dict[str, Any], optional): PyMDP configuration options (default: {})
+- `agent_type` (str, optional): Agent type ("standard", "optimized") (default: "standard")
+- `**kwargs`: Additional agent generation options
 
-**Returns**: Complete simulation script
+**Returns**: `str` - PyMDP agent code as string
+
+#### `generate_pymdp_simulation_script(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Generate complete PyMDP simulation script with agent and execution loop.
+
+**Parameters**:
+- `model_data` (Dict[str, Any]): GNN model data
+- `config` (Dict[str, Any], optional): Simulation configuration (default: {})
+- `num_steps` (int, optional): Number of simulation steps (default: 100)
+- `include_visualization` (bool, optional): Include visualization code (default: True)
+- `**kwargs`: Additional simulation options
+
+**Returns**: `str` - Complete simulation script as string
 
 ---
 

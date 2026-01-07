@@ -233,7 +233,7 @@ DisCoPy's implementation of the `Int`-construction (Geometry of Interaction) emb
 
 DisCoPy can be integrated into the existing GNN processing pipeline (`src/main.py` and its numbered steps) to provide enhanced capabilities:
 
-*   **`src/12_discopy.py` (New Step):** A dedicated pipeline step could be introduced. This script would:
+*   **`src/15_audio.py` (New Step):** A dedicated pipeline step could be introduced. This script would:
     *   Take GNN files (e.g., from `output/gnn_exports/` or directly from `src/gnn/gnn_examples/`) as input.
     *   Utilize a GNN parser and a `gnn_to_discopy_diagram` translator.
     *   Generate DisCoPy diagrams.
@@ -285,13 +285,13 @@ Citations:
 [10] https://github.com/discopy/discopy/blob/main/CONTRIBUTING.md
 [11] https://github.com/rknaebel/discopy-data (Likely related to [6])
 
-## Using the GNN-to-DisCoPy Pipeline Step (12_discopy.py)
+## Using the GNN-to-DisCoPy Pipeline Step (15_audio.py)
 
-The GNN processing pipeline includes a dedicated step, `12_discopy.py`, for automatically translating GNN model specifications into DisCoPy diagrams and visualizing them. This step leverages the `src.discopy_translator_module.translator` module.
+The GNN processing pipeline includes a dedicated step, `15_audio.py`, for automatically translating GNN model specifications into DisCoPy diagrams and visualizing them. This step leverages the `src.discopy_translator_module.translator` module.
 
 ### Purpose
 
-The `12_discopy.py` script aims to:
+The `15_audio.py` script aims to:
 1.  Discover GNN files (typically `.md` or `.gnn.md` files containing GNN specifications) in a specified input directory.
 2.  For each GNN file, parse its content to identify `StateSpaceBlock` and `Connections` sections.
 3.  Translate these GNN structures into corresponding DisCoPy elements:

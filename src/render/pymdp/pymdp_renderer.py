@@ -453,6 +453,10 @@ def main():
     # Convert to numpy arrays
     if A_matrix_data is not None:
         A_matrix = np.array(A_matrix_data)
+        # Normalize A matrix (columns should sum to 1)
+        if A_matrix.ndim == 2:
+            norm = np.sum(A_matrix, axis=0)
+            A_matrix = A_matrix / np.where(norm == 0, 1, norm)
         logger.info(f"A matrix shape: {{A_matrix.shape}}")
     else:
         A_matrix = None
@@ -460,6 +464,24 @@ def main():
     
     if B_matrix_data is not None:
         B_matrix = np.array(B_matrix_data)
+        # Normalize B matrix (columns should sum to 1)
+        # B shape in PyMDP usually (next_state, prev_state, action)
+        # But GNN might provide (action, prev_state, next_state) or similar.
+        # Here we assume GNN provides B as [action][prev][next] or similar from JSON
+        # We will trust the default simple_simulation handling for dimension/transposition,
+        # but here we just ensure values are normalized along the last dimension if it sums approx to > 0.
+        # Actually, let's just ensure it's normalized in simple_simulation or here?
+        # Better to do it in simple_simulation.py where we know the dimensions?
+        # The simple_simulation.py loads this gnn_spec.
+        # So we should modify simple_simulation.py instead?
+        # NO, this script IS the one that passes data to simple_simulation via gnn_spec['initialparameterization'].
+        # The simple_simulation.py reads A from gnn_spec['initialparameterization']['A'].
+        # So if we update 'A_matrix' variable here, we must ensure it is passed back to gnn_spec correctly.
+        # Lines 494 update gnn_spec using 'A_matrix.tolist()'.
+        # So normalizing HERE is correct.
+        
+        # However, for B matrix, dimensions are tricky. 
+        # Let's simple_simulation handle B normalization since it does transposition logic.
         logger.info(f"B matrix shape: {{B_matrix.shape}}")
     else:
         B_matrix = None
@@ -474,6 +496,9 @@ def main():
     
     if D_vector_data is not None:
         D_vector = np.array(D_vector_data)
+        # Normalize D vector
+        norm = np.sum(D_vector)
+        D_vector = D_vector / np.where(norm == 0, 1, norm)
         logger.info(f"D vector shape: {{D_vector.shape}}")
     else:
         D_vector = None

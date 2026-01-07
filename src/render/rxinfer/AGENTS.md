@@ -33,52 +33,69 @@
 
 ### Public Functions
 
-#### `generate_rxinfer_code(model_data: Dict[str, Any], output_path: Optional[str] = None) -> str`
-**Description**: Generate RxInfer.jl simulation code from GNN model data
+#### `generate_rxinfer_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
+**Description**: Generate RxInfer.jl simulation code from GNN model data.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `output_path` (Optional[str]): Output file path (optional)
+- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
+- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
+- `include_toml` (bool, optional): Generate TOML configuration file (default: True)
+- `template_type` (str, optional): Template type ("minimal", "simple", "full") (default: "simple")
+- `**kwargs`: Additional RxInfer.jl generation options
 
-**Returns**: Generated RxInfer.jl code as string
+**Returns**: `str` - Generated RxInfer.jl code as string
 
 **Example**:
 ```python
 from render.rxinfer import generate_rxinfer_code
+from pathlib import Path
 
 # Generate RxInfer.jl code
-rxinfer_code = generate_rxinfer_code(model_data)
+rxinfer_code = generate_rxinfer_code(
+    model_data=parsed_gnn_model,
+    output_path=Path("output/simulation.jl"),
+    include_toml=True,
+    template_type="simple"
+)
 
-# Save to file
-with open("simulation.jl", "w") as f:
-    f.write(rxinfer_code)
+# Code is also saved to file if output_path provided
 ```
 
-#### `generate_rxinfer_toml_config(model_data: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Generate TOML configuration for RxInfer.jl simulation
+#### `generate_rxinfer_toml_config(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Generate TOML configuration for RxInfer.jl simulation.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
-- `config` (Dict): Simulation configuration
+- `model_data` (Dict[str, Any]): GNN model data
+- `config` (Dict[str, Any], optional): Simulation configuration (default: {})
+- `project_name` (str, optional): Julia project name (default: "GNN_Model")
+- `**kwargs`: Additional TOML generation options
 
-**Returns**: TOML configuration as string
+**Returns**: `str` - TOML configuration as string
 
-#### `convert_gnn_to_rxinfer(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Convert GNN model data to RxInfer.jl-compatible format
-
-**Parameters**:
-- `model_data` (Dict): GNN model data
-
-**Returns**: RxInfer.jl-compatible model structure
-
-#### `create_rxinfer_model(model_structure: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Create RxInfer.jl model implementation
+#### `convert_gnn_to_rxinfer(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN model data to RxInfer.jl-compatible format.
 
 **Parameters**:
-- `model_structure` (Dict): Model structure data
-- `config` (Dict): RxInfer.jl configuration options
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, matrices
+- `validate` (bool, optional): Validate RxInfer.jl compatibility (default: True)
+- `**kwargs`: Additional conversion options
 
-**Returns**: RxInfer.jl model code
+**Returns**: `Dict[str, Any]` - RxInfer.jl-compatible model structure with:
+- `variables` (List[Dict]): Variable definitions
+- `factors` (List[Dict]): Factor graph definitions
+- `constraints` (List[Dict]): Reactive constraints
+- `inference_config` (Dict): Inference algorithm configuration
+
+#### `create_rxinfer_model(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Create RxInfer.jl model implementation code.
+
+**Parameters**:
+- `model_structure` (Dict[str, Any]): RxInfer.jl-compatible model structure
+- `config` (Dict[str, Any], optional): RxInfer.jl configuration options (default: {})
+- `inference_algorithm` (str, optional): Inference algorithm ("VMP", "BP", "EP") (default: "VMP")
+- `**kwargs`: Additional model generation options
+
+**Returns**: `str` - RxInfer.jl model code as string
 
 ---
 

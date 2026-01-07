@@ -1,19 +1,25 @@
-# sympy
+# SymPy Documentation Agent
+
+> **📋 Document Metadata**  
+> **Type**: Symbolic Mathematics Integration Agent | **Audience**: Researchers, Mathematicians | **Complexity**: Intermediate-Advanced  
+> **Cross-References**: [README.md](README.md) | [SymPy GNN Guide](gnn_sympy.md) | [MCP Integration](../mcp/README.md) | [Mathematical Foundations](../gnn/advanced_modeling_patterns.md) | [Main Documentation](../README.md)
 
 ## Overview
 
-This directory contains documentation and resources for the sympy subsystem.
+This directory contains comprehensive documentation, resources, and implementation guides for integrating **SymPy** (Symbolic Mathematics Library) with GNN (Generalized Notation Notation). SymPy provides symbolic computation capabilities through the Model Context Protocol (MCP), enhancing mathematical processing for Active Inference model specification, validation, and analysis.
 
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
+**Status**: ✅ Production Ready  
+**Version**: 1.0
 
 ## Purpose
 
-Symbolic mathematics integration for analytical solutions
+SymPy integration enables:
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+- **Mathematical Validation**: Validate mathematical expressions in GNN files
+- **Expression Simplification**: Simplify and canonicalize GNN equations
+- **LaTeX Generation**: Consistent mathematical formatting
+- **Symbolic Analysis**: Symbolic manipulation of Active Inference equations
+- **MCP Integration**: Model Context Protocol server for AI agent interaction
 
 ## Contents
 
@@ -39,11 +45,49 @@ This module is organized as follows:
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+### Core Processing (Steps 0-9)
+- **Step 3 (GNN)**: SymPy validation of equation sections
+- **Step 5 (Type Checker)**: Mathematical expression validation
+- **Step 6 (Validation)**: Expression simplification and canonicalization
+
+### Simulation (Steps 10-16)
+- **Step 11 (Render)**: Symbolic computation for code generation
+- **Step 13 (LLM)**: SymPy MCP integration for LLM analysis
+- **Step 16 (Analysis)**: Mathematical validation and analysis
+
+### Integration (Steps 17-23)
+- **Step 21 (MCP)**: SymPy MCP tool registration
+- **Step 23 (Report)**: Mathematical documentation generation
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+## Function Signatures and API
+
+### Symbolic Computation Functions
+
+```python
+def validate_gnn_equations(gnn_equations: List[str]) -> Dict[str, ValidationResult]:
+    """
+    Validate mathematical expressions from GNN Equations section.
+    
+    Parameters:
+        gnn_equations: List of equation strings from GNN file
+    
+    Returns:
+        Dictionary mapping equations to validation results
+    """
+
+def simplify_expression(expression: str) -> str:
+    """
+    Simplify mathematical expression using SymPy.
+    
+    Parameters:
+        expression: Mathematical expression string
+    
+    Returns:
+        Simplified expression string
+    """
+```
 
 ## Standards and Guidelines
 
@@ -56,17 +100,30 @@ All documentation in this module adheres to professional standards:
 
 ## Related Resources
 
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+### Main GNN Documentation
+- **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
+- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
 
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/AGENTS.md)
-- [Pipeline README](../../src/README.md)
+### Mathematical Resources
+- **[MCP Integration](../mcp/README.md)**: Model Context Protocol
+- **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
+- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+
+### Pipeline Architecture
+- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/README.md)**: Pipeline overview
+
+## See Also
+
+- **[SymPy Cross-Reference](../CROSS_REFERENCE_INDEX.md#sympy)**: Cross-reference index entry
+- **[MCP Integration](../mcp/README.md)**: Model Context Protocol
+- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
+- **[Main Index](../README.md)**: Return to main documentation
 
 ---
 
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new features
+**Maintenance**: Regular updates with new SymPy features and integration capabilities

@@ -99,6 +99,22 @@ This index provides a comprehensive mapping of all cross-references within the G
 - **Iroh**: [Iroh P2P](iroh/iroh.md) → [Distributed Models](iroh/README.md)
 - **Nock**: [Nock Formal Spec](nock/nock-gnn.md) → [Formal Methods](nock/cognitive-security-framework.md)
 - **Pedalboard**: [Audio Effects](pedalboard/pedalboard_gnn.md) → [Sonification](pedalboard/README.md)
+- **Pkl**: [Configuration Language](pkl/pkl_gnn.md) → [Configuration Management](pkl/README.md)
+- **POMDP**: [Theoretical Framework](pomdp/pomdp_overall.md) → [POMDP Analysis](pomdp/README.md)
+- **SPM**: [Statistical Mapping](spm/spm_gnn.md) → [Neuroimaging Analysis](spm/README.md)
+- **SymPy**: [Symbolic Math](sympy/gnn_sympy.md) → [MCP Integration](sympy/README.md)
+- **TimEP**: [Performance Profiling](timep/timep_gnn.md) → [Profiling Tools](timep/README.md)
+- **Kit**: [Code Intelligence](kit/gnn_kit.md) → [Developer Tools](kit/README.md)
+- **Klong**: [Array Language](klong/klong.md) → [Array Programming](klong/README.md)
+- **ActiveInference.jl**: [Julia Framework](activeinference_jl/activeinference-jl.md) → [High-Performance](activeinference_jl/README.md)
+- **Pkl**: [Configuration Language](pkl/pkl_gnn.md) → [Configuration Management](pkl/README.md)
+- **POMDP**: [Theoretical Framework](pomdp/pomdp_overall.md) → [POMDP Analysis](pomdp/README.md)
+- **SPM**: [Statistical Mapping](spm/spm_gnn.md) → [Neuroimaging Analysis](spm/README.md)
+- **SymPy**: [Symbolic Math](sympy/gnn_sympy.md) → [MCP Integration](sympy/README.md)
+- **TimEP**: [Performance Profiling](timep/timep_gnn.md) → [Profiling Tools](timep/README.md)
+- **Kit**: [Code Intelligence](kit/gnn_kit.md) → [Developer Tools](kit/README.md)
+- **Klong**: [Array Language](klong/klong.md) → [Array Programming](klong/README.md)
+- **ActiveInference.jl**: [Julia Framework](activeinference_jl/activeinference-jl.md) → [High-Performance](activeinference_jl/README.md)
 
 ## Topic-Based Index
 
@@ -152,9 +168,10 @@ This index provides a comprehensive mapping of all cross-references within the G
 
 ### Data Persistence and Serialization
 > **💾 Data Management** | **🔄 Serialization Formats**
-- **PKL Integration**: [PKL Guide](pkl/pkl_gnn.md) → [PKL Demo](pkl/pkl_gnn_demo.py)
+- **PKL Integration**: [PKL Guide](pkl/pkl_gnn.md) → [Configuration Language](pkl/README.md)
 - **Examples**: [Base Model](pkl/examples/BaseActiveInferenceModel.pkl), [Visual Foraging](pkl/examples/VisualForagingModel.pkl)
 - **Multi-Format**: [Export Formats](gnn/gnn_tools.md#export-formats), [Format Converters](README.md#format-converters)
+- **Pickle Format**: [Pickle Serialization](pkl/pkl_gnn.md) → [Serialization Tools](pkl/README.md)
 
 ### Support and Learning
 > **📖 Learning Resources** | **🆘 Support Systems**
@@ -181,11 +198,14 @@ This index provides a comprehensive mapping of all cross-references within the G
 ### Mathematical Foundations
 > **📐 Mathematical Rigor** | **🔢 Formal Methods**
 - **Category Theory**: [DisCoPy Guide](discopy/gnn_discopy.md) → [Advanced Patterns](gnn/advanced_modeling_patterns.md)
-- **Symbolic Math**: [SymPy Integration](sympy/gnn_sympy.md) → [Implementation Summary](sympy/implementation_summary.md)
+- **Symbolic Math**: [SymPy Integration](sympy/gnn_sympy.md) → [MCP Integration](sympy/README.md)
 - **Formal Methods**: [Academic Paper](gnn/gnn_paper.md) → [Ontology System](gnn/ontology_system.md)
 - **Formal Verification**: [Axiom Framework](axiom/axiom_gnn.md) → [Theorem Proving](axiom/axiom.md)
 - **Petri Nets**: [Workflow Modeling](petri_nets/pnml.pnml) → [Process Analysis](petri_nets/README.md)
 - **NTQR**: [Quantum Reasoning](ntqr/gnn_ntqr.md) → [Hybrid Approaches](ntqr/README.md)
+- **POMDP**: [Theoretical Framework](pomdp/pomdp_overall.md) → [POMDP Analysis](pomdp/README.md)
+- **Quadray**: [Geometric Coordinates](quadray/quadray_gnn.md) → [Spatial Modeling](quadray/README.md)
+- **Type Inference Zoo**: [Type Systems](type-inference-zoo/type-inference-zoo.md) → [Type Inference](type-inference-zoo/README.md)
 
 ### Audio and Sonification
 > **🎵 Auditory Representation** | **🔊 Sensory Modalities**
@@ -205,6 +225,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 ### Neuroscience Integration
 > **🧠 Brain Science** | **🔬 Neuroscientific Methods**
 - **SPM**: [Statistical Mapping](spm/spm_gnn.md) → [Neuroimaging Analysis](spm/README.md)
+- **Cognitive Phenomena**: [Cognitive Modeling](cognitive_phenomena/README.md) → [Phenomenon Models](cognitive_phenomena/README.md)
 
 ### Setup and Infrastructure
 > **⚙️ Environment Configuration** | **🛠️ System Management**
@@ -229,9 +250,9 @@ This index provides a comprehensive mapping of all cross-references within the G
 | 9 | **Rendering** | [Code Generation](gnn/gnn_tools.md#code-generation), [Pipeline Step 9](pipeline/README.md#step-9-rendering) | [PyMDP](pymdp/gnn_pymdp.md), [RxInfer](rxinfer/gnn_rxinfer.md) | Framework-Specific |
 | 10 | **Execution** | [Execution Guide](gnn/gnn_tools.md#execution), [Pipeline Step 10](pipeline/README.md#step-10-execution) | [PyMDP Examples](pymdp/gnn_pymdp.md#examples), [RxInfer Examples](rxinfer/gnn_rxinfer.md#examples) | Framework-Specific |
 | 11 | **LLM** | [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md), [Pipeline Step 11](pipeline/README.md#step-11-llm) | [DSPy](dspy/gnn_dspy.md), [PoE-World](poe-world/poe-world_gnn.md) | AI-Enhanced |
-| 12 | **Audio** | [Audio Generation](audio/README.md), [Pipeline Step 12](pipeline/README.md#step-12-audio) | [SAPF](sapf/sapf.md), [Pedalboard](pedalboard/pedalboard.md) | Audio Processing |
+| 12 | **Audio** | [Audio Generation](../src/audio/README.md), [Pipeline Step 12](pipeline/README.md#step-12-audio) | [SAPF](sapf/sapf.md), [Pedalboard](pedalboard/pedalboard.md) | Audio Processing |
 | 13 | **Website** | [Website Generation](gnn/gnn_tools.md#documentation), [Pipeline Step 13](pipeline/README.md#step-13-website) | [Documentation](README.md), [Site Generation](README.md) | Documentation |
-| 14 | **Report** | [Report Generation](report/README.md), [Pipeline Step 14](pipeline/README.md#step-14-report) | [Analysis](report/README.md), [Comprehensive Reports](report/README.md) | Analysis |
+| 14 | **Report** | [Report Generation](../src/report/README.md), [Pipeline Step 14](pipeline/README.md#step-14-report) | [Analysis](../src/report/README.md), [Comprehensive Reports](../src/report/README.md) | Analysis |
 
 
 ## Machine-Readable Navigation Data
@@ -343,7 +364,7 @@ navigation_graph:
 ### Documentation Completeness
 > **✅ Comprehensive Integration** | **📊 Complete Coverage**
 
-- **Coverage**: Comprehensive documentation of all 49 subdirectories with AGENTS.md and README.md
+- **Coverage**: Comprehensive documentation of all 52 subdirectories with AGENTS.md and README.md
 - **Sections**: Audio processing, formal methods, distributed systems, infrastructure
 - **Audio**: Sonification frameworks (SAPF, Pedalboard) and audio representation
 - **Formal Methods**: Verification frameworks (Axiom, Petri Nets, Nock) and formal specification
@@ -353,11 +374,11 @@ navigation_graph:
 - **Neuroscience**: SPM integration and neuroscientific methods
 - **YAML Integration**: Framework integrations with tool categories
 - **Topic Clusters**: Comprehensive topic organization and emerging categories
-- **Metrics**: Cross-reference coverage (49 subdirectories, 1400+ references)
+- **Metrics**: Cross-reference coverage (52 subdirectories, 1400+ references)
 
 ---
 
 **Status**: Production Ready  
 **Cross-Reference Network**: ✅ Fully Integrated (1400+ references)  
 **Machine Readability**: ✅ Structured Data Available with YAML Format  
-**Coverage Metrics**: 📊 49 subdirectories, 100% documentation coverage
+**Coverage Metrics**: 📊 52 subdirectories, 100% documentation coverage

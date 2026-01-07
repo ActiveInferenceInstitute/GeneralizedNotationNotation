@@ -38,52 +38,100 @@
 
 ### Public Functions
 
-#### `process_template_standardized(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Process pipeline template with standardized patterns
+#### `process_template_standardized(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = False, verbose: bool = False, **kwargs) -> bool`
+**Description**: Process pipeline template with standardized patterns. This is the main processing function called by the thin orchestrator.
 
 **Parameters**:
-- `target_dir`: Target directory for template processing
-- `output_dir`: Output directory for results
-- `logger`: Logger instance
+- `target_dir` (Path): Target directory for template processing
+- `output_dir` (Path): Output directory for results
+- `logger` (logging.Logger): Logger instance for logging
+- `recursive` (bool): Process subdirectories recursively (default: False)
+- `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional processing options
 
-**Returns**: `True` if template processing succeeded
+**Returns**: `bool` - True if template processing succeeded, False otherwise
 
-#### `process_single_file(input_file, output_dir, options) -> bool`
+**Example**:
+```python
+from template import process_template_standardized
+from pathlib import Path
+import logging
+
+logger = logging.getLogger(__name__)
+success = process_template_standardized(
+    target_dir=Path("input/"),
+    output_dir=Path("output/0_template_output/"),
+    logger=logger,
+    recursive=True,
+    verbose=True
+)
+```
+
+#### `process_single_file(input_file: Path, output_dir: Path, options: Dict[str, Any] = None) -> bool`
 **Description**: Process a single file using the template logic.
 
 **Parameters**:
-- `input_file`: Path to input file
-- `output_dir`: Directory to save output
-- `options`: Processing options dictionary
+- `input_file` (Path): Path to input file to process
+- `output_dir` (Path): Directory to save output files
+- `options` (Dict[str, Any], optional): Processing options dictionary
 
-#### `validate_file(input_file) -> Dict[str, Any]`
+**Returns**: `bool` - True if file processing succeeded, False otherwise
+
+#### `validate_file(input_file: Path) -> Dict[str, Any]`
 **Description**: Validate a file against template requirements.
 
 **Parameters**:
-- `input_file`: Path to file to validate
+- `input_file` (Path): Path to file to validate
 
-**Returns**: Validation result dictionary
+**Returns**: `Dict[str, Any]` - Validation result dictionary with:
+- `valid` (bool): Whether file is valid
+- `errors` (List[str]): List of validation errors
+- `warnings` (List[str]): List of validation warnings
 
-#### `safe_template_execution(func, *args, **kwargs) -> Any`
-**Description**: Execute a template function with comprehensive error handling.
-
-#### `get_version_info() -> Dict[str, str]`
-**Description**: Get module version and metadata.
-
-#### `generate_correlation_id() -> str`
-**Description**: Generate unique correlation ID for pipeline tracking
-
-**Returns**: Unique correlation ID string
-
-#### `demonstrate_utility_patterns(context, logger) -> Dict[str, Any]`
-**Description**: Demonstrate utility patterns and capabilities
+#### `safe_template_execution(func: Callable, *args, **kwargs) -> Any`
+**Description**: Execute a template function with comprehensive error handling and logging.
 
 **Parameters**:
-- `context`: Processing context
-- `logger`: Logger instance
+- `func` (Callable): Function to execute
+- `*args`: Positional arguments for function
+- `**kwargs`: Keyword arguments for function
 
-**Returns**: Dictionary with demonstration results
+**Returns**: `Any` - Function return value, or None if execution failed
+
+**Raises**: Logs errors but does not raise exceptions
+
+#### `get_version_info() -> Dict[str, str]`
+**Description**: Get module version and metadata information.
+
+**Returns**: `Dict[str, str]` - Version information dictionary with:
+- `version` (str): Module version string
+- `name` (str): Module name
+- `description` (str): Module description
+- `author` (str): Module author
+
+#### `generate_correlation_id() -> str`
+**Description**: Generate unique correlation ID for pipeline tracking and request correlation.
+
+**Returns**: `str` - Unique correlation ID string (UUID format)
+
+**Example**:
+```python
+from template import generate_correlation_id
+correlation_id = generate_correlation_id()
+# Returns: "550e8400-e29b-41d4-a716-446655440000"
+```
+
+#### `demonstrate_utility_patterns(context: Dict[str, Any], logger: logging.Logger) -> Dict[str, Any]`
+**Description**: Demonstrate utility patterns and capabilities for documentation and testing purposes.
+
+**Parameters**:
+- `context` (Dict[str, Any]): Processing context dictionary
+- `logger` (logging.Logger): Logger instance for demonstration logging
+
+**Returns**: `Dict[str, Any]` - Demonstration results dictionary with:
+- `patterns_demonstrated` (List[str]): List of demonstrated patterns
+- `results` (Dict[str, Any]): Results from each pattern demonstration
+- `performance_metrics` (Dict[str, float]): Performance metrics
 
 ---
 

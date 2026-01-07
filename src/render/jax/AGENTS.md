@@ -33,52 +33,74 @@
 
 ### Public Functions
 
-#### `generate_jax_code(model_data: Dict[str, Any], output_path: Optional[str] = None) -> str`
-**Description**: Generate JAX simulation code from GNN model data
+#### `generate_jax_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
+**Description**: Generate JAX simulation code from GNN model data with JIT compilation and optimization.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `output_path` (Optional[str]): Output file path (optional)
+- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
+- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
+- `optimize` (bool, optional): Enable JAX optimizations (default: True)
+- `jit_compile` (bool, optional): Enable JIT compilation (default: True)
+- `device` (str, optional): Target device ("cpu", "gpu", "tpu", "auto") (default: "auto")
+- `**kwargs`: Additional JAX generation options
 
-**Returns**: Generated JAX code as string
+**Returns**: `str` - Generated JAX code as string
 
 **Example**:
 ```python
 from render.jax import generate_jax_code
+from pathlib import Path
 
 # Generate JAX code
-jax_code = generate_jax_code(model_data)
+jax_code = generate_jax_code(
+    model_data=parsed_gnn_model,
+    output_path=Path("output/jax_simulation.py"),
+    optimize=True,
+    jit_compile=True,
+    device="gpu"
+)
 
-# Save to file
-with open("jax_simulation.py", "w") as f:
-    f.write(jax_code)
+# Code is also saved to file if output_path provided
 ```
 
-#### `convert_gnn_to_jax(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Convert GNN model data to JAX-compatible format
+#### `convert_gnn_to_jax(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN model data to JAX-compatible format with automatic differentiation support.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, matrices
+- `enable_gradients` (bool, optional): Enable automatic differentiation (default: True)
+- `validate` (bool, optional): Validate JAX compatibility (default: True)
+- `**kwargs`: Additional conversion options
 
-**Returns**: JAX-compatible model structure
+**Returns**: `Dict[str, Any]` - JAX-compatible model structure with:
+- `parameters` (Dict): JAX arrays for model parameters
+- `functions` (Dict): JAX functions for forward/inference
+- `gradients` (Dict): Gradient functions if enabled
+- `jit_functions` (Dict): JIT-compiled functions
 
-#### `create_jax_simulation(model_structure: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Create JAX simulation implementation
-
-**Parameters**:
-- `model_structure` (Dict): Model structure data
-- `config` (Dict): JAX configuration options
-
-**Returns**: JAX simulation code
-
-#### `generate_jax_optimized_code(model_data: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Generate optimized JAX code with performance enhancements
+#### `create_jax_simulation(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Create JAX simulation implementation with performance optimizations.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
-- `config` (Dict): Optimization configuration
+- `model_structure` (Dict[str, Any]): JAX-compatible model structure
+- `config` (Dict[str, Any], optional): JAX configuration options (default: {})
+- `simulation_type` (str, optional): Simulation type ("standard", "optimized", "vectorized") (default: "optimized")
+- `**kwargs`: Additional simulation generation options
 
-**Returns**: Optimized JAX code
+**Returns**: `str` - JAX simulation code as string
+
+#### `generate_jax_optimized_code(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Generate optimized JAX code with performance enhancements and GPU support.
+
+**Parameters**:
+- `model_data` (Dict[str, Any]): GNN model data
+- `config` (Dict[str, Any], optional): Optimization configuration (default: {})
+- `vectorize` (bool, optional): Enable vectorization (default: True)
+- `parallelize` (bool, optional): Enable parallel execution (default: True)
+- `memory_efficient` (bool, optional): Use memory-efficient operations (default: True)
+- `**kwargs`: Additional optimization options
+
+**Returns**: `str` - Optimized JAX code as string
 
 ---
 

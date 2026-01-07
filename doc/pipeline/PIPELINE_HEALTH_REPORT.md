@@ -300,8 +300,8 @@ The primary remaining issue is the test suite timeout, which is expected to reso
 
 - [Test Timeout Improvements](test_timeout_improvements.md)
 - [Test Execution Profiling](test_execution_profiling.md)
-- [Pipeline Architecture](ARCHITECTURE.md)
-- [Pipeline Execution Summary](pipeline_execution_summary.json)
+- [Pipeline Architecture](PIPELINE_ARCHITECTURE.md)
+- [Pipeline Execution Summary](../../output/pipeline_execution_summary.json)
 
 ---
 

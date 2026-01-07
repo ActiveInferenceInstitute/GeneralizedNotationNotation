@@ -71,33 +71,102 @@
 
 ### Public Functions
 
-#### `process_render(target_dir, output_dir, verbose=False, **kwargs) -> bool`
-**Description**: Main rendering processing function called by orchestrator (11_render.py)
+#### `process_render(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+**Description**: Main rendering processing function called by orchestrator (11_render.py). Processes GNN files and generates code for multiple simulation frameworks.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for rendered files
 - `verbose` (bool): Enable verbose logging (default: False)
 - `**kwargs`: Additional processing options including:
-  - `frameworks`: List of frameworks to render for (default: all)
-  - `strict_validation`: Enable strict POMDP validation
-  - `include_documentation`: Generate framework documentation
+  - `frameworks` (List[str]): List of frameworks to render for (default: ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"])
+  - `strict_validation` (bool): Enable strict POMDP validation (default: False)
+  - `include_documentation` (bool): Generate framework documentation (default: True)
+  - `pomdp_aware` (bool): Enable POMDP-aware processing (default: True)
 
-**Returns**: `True` if processing succeeded, `False` otherwise
+**Returns**: `bool` - True if processing succeeded, False otherwise
 
 **Example**:
 ```python
 from render import process_render
+from pathlib import Path
 
 success = process_render(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/11_render_output"),
     verbose=True,
-    frameworks=["pymdp", "rxinfer"]
+    frameworks=["pymdp", "rxinfer"],
+    strict_validation=True
 )
 ```
 
-#### `render_gnn_spec(gnn_spec, target, output_directory, options=None) -> Tuple[bool, str, List[str]]`
+#### `render_gnn_spec(gnn_spec: str, target: str, output_directory: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
+**Description**: Render a GNN specification to a target framework.
+
+**Parameters**:
+- `gnn_spec` (str): GNN specification content as string
+- `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
+- `output_directory` (Path): Output directory for generated code
+- `options` (Optional[Dict[str, Any]]): Rendering options dictionary
+
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `main_script` (str): Path to main generated script
+- `generated_files` (List[str]): List of all generated file paths
+
+#### `generate_pymdp_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate PyMDP simulation code from GNN content.
+
+**Parameters**:
+- `gnn_content` (str): GNN specification content
+- `output_dir` (Path): Output directory for PyMDP code
+- `**kwargs`: Additional PyMDP-specific options
+
+**Returns**: `Dict[str, Any]` - Generation results with:
+- `success` (bool): Whether generation succeeded
+- `main_script` (str): Path to main PyMDP script
+- `files` (List[str]): List of generated files
+- `config` (Dict[str, Any]): PyMDP configuration
+
+#### `generate_rxinfer_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate RxInfer.jl simulation code from GNN content.
+
+**Parameters**:
+- `gnn_content` (str): GNN specification content
+- `output_dir` (Path): Output directory for RxInfer.jl code
+- `**kwargs`: Additional RxInfer.jl-specific options
+
+**Returns**: `Dict[str, Any]` - Generation results with:
+- `success` (bool): Whether generation succeeded
+- `main_script` (str): Path to main Julia script
+- `toml_config` (str): Path to TOML configuration file
+- `files` (List[str]): List of generated files
+
+#### `generate_activeinference_jl_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate ActiveInference.jl simulation code from GNN content.
+
+**Parameters**:
+- `gnn_content` (str): GNN specification content
+- `output_dir` (Path): Output directory for ActiveInference.jl code
+- `**kwargs`: Additional ActiveInference.jl-specific options
+
+**Returns**: `Dict[str, Any]` - Generation results with:
+- `success` (bool): Whether generation succeeded
+- `main_script` (str): Path to main Julia script
+- `files` (List[str]): List of generated files
+
+#### `generate_discopy_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Generate DisCoPy diagram code from GNN content.
+
+**Parameters**:
+- `gnn_content` (str): GNN specification content
+- `output_dir` (Path): Output directory for DisCoPy code
+- `**kwargs`: Additional DisCoPy-specific options
+
+**Returns**: `Dict[str, Any]` - Generation results with:
+- `success` (bool): Whether generation succeeded
+- `diagram_script` (str): Path to diagram script
+- `files` (List[str]): List of generated files
 **Description**: Render a single GNN specification to a target framework
 
 **Parameters**:
@@ -371,4 +440,85 @@ def generate_pymdp_tool(model_data, options=None):
     # Implementation
 ```
 
+### MCP File Location
+- `src/render/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Framework-specific rendering fails
+**Symptom**: Code generation fails for specific framework  
+**Cause**: Missing framework dependencies or invalid GNN model structure  
+**Solution**: 
+- Check framework dependencies are installed
+- Verify GNN model has required sections for framework
+- Use `--verbose` flag for detailed error messages
+- Check framework-specific requirements in documentation
+
+#### Issue 2: POMDP validation errors
+**Symptom**: POMDP-aware rendering reports validation errors  
+**Cause**: GNN model missing POMDP-required components or invalid structure  
+**Solution**:
+- Ensure GNN model has complete state space, observations, actions
+- Verify connections follow POMDP structure (s->o, s->s, a->s)
+- Use `--strict-validation=False` for lenient validation
+- Review POMDP requirements in documentation
+
+#### Issue 3: Generated code doesn't execute
+**Symptom**: Rendered code has syntax errors or import failures  
+**Cause**: Framework version mismatch or template issues  
+**Solution**:
+- Verify framework versions match requirements
+- Check generated code for syntax errors
+- Review framework-specific documentation
+- Report template issues if systematic
+
+---
+
+## Version History
+
+### Current Version: 2.0.0
+
+**Features**:
+- Multi-framework code generation (PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX)
+- POMDP-aware processing
+- Framework-specific optimization
+- Template-based generation
+- Cross-framework compatibility validation
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Additional framework support
+- **Future**: Real-time code generation API
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [PyMDP Integration](../../doc/pymdp/)
+- [RxInfer Integration](../../doc/rxinfer/)
+- [ActiveInference.jl Integration](../../doc/activeinference_jl/)
+- [DisCoPy Integration](../../doc/discopy/)
+
+### External Resources
+- [PyMDP Framework](https://github.com/infer-actively/pymdp)
+- [RxInfer.jl](https://github.com/biaslab/RxInfer.jl)
+- [ActiveInference.jl](https://github.com/ComputationalPsychiatry/ActiveInference.jl)
+- [DisCoPy](https://github.com/oxford-quantum-group/discopy)
+- [JAX Documentation](https://jax.readthedocs.io/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 2.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

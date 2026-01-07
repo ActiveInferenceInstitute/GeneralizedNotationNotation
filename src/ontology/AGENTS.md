@@ -38,38 +38,71 @@
 
 ### Public Functions
 
-#### `process_ontology(target_dir, output_dir, logger=None, **kwargs) -> bool`
-**Description**: Main ontology processing function called by orchestrator (10_ontology.py)
+#### `process_ontology(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main ontology processing function called by orchestrator (10_ontology.py). Processes GNN files for ontology validation and mapping.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for ontology results
-- `logger` (Logger, optional): Logger instance (default: None)
-- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file
+- `logger` (Optional[logging.Logger]): Logger instance (default: None)
+- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `input/ontology_terms.json`)
 - `recursive` (bool, optional): Process directories recursively (default: True)
-- `**kwargs`: Additional options
+- `strict_validation` (bool, optional): Require all terms to be in ontology (default: False)
+- `generate_mapping` (bool, optional): Generate ontology mapping (default: True)
+- `generate_enhancements` (bool, optional): Generate enhancement suggestions (default: True)
+- `**kwargs`: Additional processing options
 
-**Returns**: `True` if processing succeeded
+**Returns**: `bool` - True if processing succeeded, False otherwise
 
 **Example**:
 ```python
 from ontology import process_ontology
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    ontology_terms_file=Path("input/ontology_terms.json")
+    ontology_terms_file=Path("input/ontology_terms.json"),
+    strict_validation=True
 )
 ```
 
-#### `extract_ontology_terms(gnn_model: Dict) -> List[str]`
-**Description**: Extract ontology terms from parsed GNN model
+#### `extract_ontology_terms(gnn_model: Dict[str, Any]) -> List[str]`
+**Description**: Extract ontology terms from parsed GNN model.
 
-#### `validate_ontology_compliance(terms: List[str], ontology: Dict) -> Dict`
-**Description**: Validate extracted terms against ontology
+**Parameters**:
+- `gnn_model` (Dict[str, Any]): Parsed GNN model dictionary
 
-#### `generate_ontology_mapping(gnn_model: Dict, ontology: Dict) -> Dict`
-**Description**: Generate term mapping between GNN and ontology
+**Returns**: `List[str]` - List of extracted ontology terms
+
+#### `validate_ontology_compliance(terms: List[str], ontology: Dict[str, Any], strict: bool = False) -> Dict[str, Any]`
+**Description**: Validate extracted terms against Active Inference ontology.
+
+**Parameters**:
+- `terms` (List[str]): List of terms to validate
+- `ontology` (Dict[str, Any]): Ontology dictionary
+- `strict` (bool): Require all terms to be in ontology (default: False)
+
+**Returns**: `Dict[str, Any]` - Validation results with:
+- `valid_terms` (List[str]): Valid terms found in ontology
+- `invalid_terms` (List[str]): Terms not found in ontology
+- `compliance_score` (float): Compliance score (0.0-1.0)
+- `suggestions` (List[str]): Suggestions for invalid terms
+
+#### `generate_ontology_mapping(gnn_model: Dict[str, Any], ontology: Dict[str, Any]) -> Dict[str, Any]`
+**Description**: Generate term mapping between GNN model and ontology concepts.
+
+**Parameters**:
+- `gnn_model` (Dict[str, Any]): Parsed GNN model dictionary
+- `ontology` (Dict[str, Any]): Ontology dictionary
+
+**Returns**: `Dict[str, Any]` - Mapping results with:
+- `mapped_terms` (Dict[str, str]): GNN term to ontology concept mapping
+- `relationships` (List[Dict]): Identified term relationships
+- `semantic_clusters` (List[List[str]]): Terms grouped by semantic similarity
+- `coverage` (float): Ontology coverage score (0.0-1.0)
 
 ---
 
@@ -243,5 +276,104 @@ output/10_ontology_output/
 - **Current**: 78%
 - **Target**: 85%+
 
+### Key Test Scenarios
+1. Ontology term extraction
+2. Ontology compliance validation
+3. Semantic relationship mapping
+4. Cross-reference validation
+
 ---
+
+## MCP Integration
+
+### Tools Registered
+- `ontology.extract_terms` - Extract ontology terms from GNN model
+- `ontology.validate_compliance` - Validate ontology compliance
+- `ontology.generate_mapping` - Generate ontology mapping
+- `ontology.analyze_semantics` - Analyze semantic relationships
+
+### Tool Endpoints
+```python
+@mcp_tool("ontology.extract_terms")
+def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
+    """Extract ontology terms from GNN content"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/ontology/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Ontology validation fails
+**Symptom**: Validation reports errors even for valid terms  
+**Cause**: Ontology terms file missing or outdated  
+**Solution**: 
+- Check that `input/ontology_terms.json` exists
+- Verify ontology terms file format is valid JSON
+- Update ontology terms file if needed
+- Use `--verbose` flag for detailed validation messages
+
+#### Issue 2: Terms not found in ontology
+**Symptom**: Valid Active Inference terms reported as invalid  
+**Cause**: Ontology terms file incomplete or term naming mismatch  
+**Solution**:
+- Check term spelling and case sensitivity
+- Verify ontology terms file includes all required terms
+- Use `--strict-validation=False` for lenient validation
+- Review ontology terms file structure
+
+#### Issue 3: Semantic mapping incomplete
+**Symptom**: Mapping generation produces incomplete results  
+**Cause**: Missing ontology relationships or incomplete GNN model  
+**Solution**:
+- Ensure GNN model has complete ontology annotations
+- Verify ontology terms file includes relationship data
+- Check that GNN processing (step 3) completed successfully
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Ontology term extraction
+- Ontology compliance validation
+- Semantic relationship mapping
+- Hierarchical concept analysis
+- Cross-reference validation
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced semantic relationship detection
+- **Future**: Automated ontology term suggestion
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Active Inference Ontology](https://activeinference.org)
+- [GNN Ontology Guide](../../doc/gnn/gnn_ontology.md)
+
+### External Resources
+- [Active Inference Institute](https://activeinference.institute/)
+- [Active Inference Ontology Documentation](https://activeinference.org/ontology)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 

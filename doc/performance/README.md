@@ -188,7 +188,7 @@ Understanding model complexity is crucial for optimization:
 
 ```python
 # Detailed complexity analysis
-python src/4_type_checker.py examples/complex_model.md \
+python src/5_type_checker.py examples/complex_model.md \
     --complexity-analysis \
     --optimization-suggestions \
     --resource-estimation

@@ -18,7 +18,7 @@ from . import process_analysis
 
 def process_analysis_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
     """
-    Process $module for GNN files. Exposed via MCP.
+    Process Analysis for GNN files. Exposed via MCP.
     
     Args:
         target_directory: Directory containing GNN files to process
@@ -41,7 +41,7 @@ def process_analysis_mcp(target_directory: str, output_directory: str, verbose: 
             "message": f"analysis processing {'completed successfully' if success else 'failed'}"
         }
     except Exception as e:
-        logger.error(f"Error in process_$module_mcp for {target_directory}: {e}", exc_info=True)
+        logger.error(f"Error in process_analysis_mcp for {target_directory}: {e}", exc_info=True)
         return {
             "success": False,
             "error": str(e)

@@ -240,7 +240,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
                 issues["suggestions"].append("Consider using ArgumentParser.parse_step_arguments for consistency")
         
         # Check for performance tracking usage
-        if module_path.name in ['7_export.py', '6_visualization.py', '11_render.py', '12_execute.py', '11_llm.py', '12_audio.py', '13_website.py', '14_report.py']:
+        if module_path.name in ['7_export.py', '8_visualization.py', '11_render.py', '12_execute.py', '13_llm.py', '15_audio.py', '20_website.py', '23_report.py']:
             if "performance_tracker" not in content:
                 issues["suggestions"].append("Consider adding performance tracking for this compute-intensive step")
                 
@@ -536,8 +536,8 @@ def validate_performance_tracking_coverage() -> Dict[str, List[str]]:
         # Steps that should have performance tracking (compute-intensive)
         should_have_tracking = [
             "3_gnn.py", "2_tests.py", "5_type_checker.py", "7_export.py", 
-            "6_visualization.py", "21_mcp.py", "10_ontology.py", "11_render.py", 
-            "12_execute.py", "11_llm.py", "12_audio.py", "13_website.py", "14_report.py"
+            "8_visualization.py", "21_mcp.py", "10_ontology.py", "11_render.py", 
+            "12_execute.py", "13_llm.py", "15_audio.py", "20_website.py", "23_report.py"
         ]
         
         missing_tracking = []

@@ -33,52 +33,70 @@
 
 ### Public Functions
 
-#### `generate_activeinference_jl_code(model_data: Dict[str, Any], output_path: Optional[str] = None) -> str`
-**Description**: Generate ActiveInference.jl simulation code from GNN model data
+#### `generate_activeinference_jl_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
+**Description**: Generate ActiveInference.jl simulation code from GNN model data.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `output_path` (Optional[str]): Output file path (optional)
+- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
+- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
+- `hierarchical` (bool, optional): Enable hierarchical model support (default: False)
+- `temporal` (bool, optional): Enable temporal dynamics (default: True)
+- `**kwargs`: Additional ActiveInference.jl generation options
 
-**Returns**: Generated ActiveInference.jl code as string
+**Returns**: `str` - Generated ActiveInference.jl code as string
 
 **Example**:
 ```python
 from render.activeinference_jl import generate_activeinference_jl_code
+from pathlib import Path
 
 # Generate ActiveInference.jl code
-ai_code = generate_activeinference_jl_code(model_data)
+ai_code = generate_activeinference_jl_code(
+    model_data=parsed_gnn_model,
+    output_path=Path("output/active_inference_simulation.jl"),
+    hierarchical=True,
+    temporal=True
+)
 
-# Save to file
-with open("active_inference_simulation.jl", "w") as f:
-    f.write(ai_code)
+# Code is also saved to file if output_path provided
 ```
 
-#### `convert_gnn_to_activeinference(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Convert GNN model data to ActiveInference.jl-compatible format
+#### `convert_gnn_to_activeinference(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN model data to ActiveInference.jl-compatible format.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, matrices
+- `validate` (bool, optional): Validate ActiveInference.jl compatibility (default: True)
+- `**kwargs`: Additional conversion options
 
-**Returns**: ActiveInference.jl-compatible model structure
+**Returns**: `Dict[str, Any]` - ActiveInference.jl-compatible model structure with:
+- `agent_structure` (Dict): Agent definition
+- `generative_model` (Dict): Generative model specification
+- `inference_config` (Dict): Inference algorithm configuration
+- `hierarchical_levels` (List[Dict]): Hierarchical levels if applicable
 
-#### `create_activeinference_agent(model_structure: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Create ActiveInference.jl agent implementation
-
-**Parameters**:
-- `model_structure` (Dict): Model structure data
-- `config` (Dict): ActiveInference.jl configuration options
-
-**Returns**: ActiveInference.jl agent code
-
-#### `generate_activeinference_simulation_script(model_data: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Generate complete ActiveInference.jl simulation script
+#### `create_activeinference_agent(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Create ActiveInference.jl agent implementation code.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
-- `config` (Dict): Simulation configuration
+- `model_structure` (Dict[str, Any]): ActiveInference.jl-compatible model structure
+- `config` (Dict[str, Any], optional): ActiveInference.jl configuration options (default: {})
+- `agent_type` (str, optional): Agent type ("standard", "hierarchical", "temporal") (default: "standard")
+- `**kwargs`: Additional agent generation options
 
-**Returns**: Complete simulation script
+**Returns**: `str` - ActiveInference.jl agent code as string
+
+#### `generate_activeinference_simulation_script(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Generate complete ActiveInference.jl simulation script with agent and execution.
+
+**Parameters**:
+- `model_data` (Dict[str, Any]): GNN model data
+- `config` (Dict[str, Any], optional): Simulation configuration (default: {})
+- `num_steps` (int, optional): Number of simulation steps (default: 100)
+- `include_analysis` (bool, optional): Include analysis code (default: True)
+- `**kwargs`: Additional simulation options
+
+**Returns**: `str` - Complete simulation script as string
 
 ---
 

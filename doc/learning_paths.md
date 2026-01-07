@@ -18,8 +18,8 @@ This document outlines structured learning paths for users of varying expertise 
    - Explore simple examples in [GNN Examples](/doc/gnn/gnn_examples_doc.md).
 
 4. **Run Your First Pipeline**:
-   - Execute via `src/main.py` (details in [Pipeline Architecture](/doc/pipeline/PIPELINE_ARCHITECTURE.md)).
-   - Visualize results (see [Visualization Docs](/doc/visualization/)).
+   - Execute via `src/main.py` (details in [Pipeline Architecture](../pipeline/PIPELINE_ARCHITECTURE.md)).
+   - Visualize results (see [Visualization Docs](../visualization/README.md)).
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.
 

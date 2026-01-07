@@ -1,78 +1,18 @@
 # ANALYZE_STRUCTURE
 
-Here is a detailed analysis of the GNN Representation:
-
-**1. Graph Structure:**
-
-1.1. **Number of Variables and Types**:
-    - Number of variables: 3 (one observation modality, one hidden state factor)
-   - Type: `{(0.9,), (0.25,)` is used to represent the agent's actions as an action vector, while `{()}` represents the policy prior.
-
-1.2. **Variable Analysis**:
-    - Number of variables for each variable: 3
-       - `num_observations`: 3
-       - `num_actions`: 3
-       - `numberOfStepCounts:**
-           - `nsteps=1`: for every step, there are 4 steps
-       - `shape(0):** "([a.b..])" represents the structure of each observation (state) with one observation at a time and two actions in it
-   - `connections`, `actions` :
-        - `num_states = num_observations + nsteps/2`: for every step, there are 4 states
-          - `current_history=[0.,1.]]` represents the history of each action (state)
-```python
-    # state space dimensionality for each variable:
- 
-    # Network topology (hierarchical vs hierarchical):
-     ```python
-   - Network structure:
-      - Hierarchical, with "levels" at which actions are taken
-       - Number of nodes in layers = number_of_steps/2
-         - Each node has 3 paths to reach the next level
-         - Each path is connected to a path within that layer (see below)
-```
-    ```python
-   # Policy topology:
-      `actions` -> `current_history[0..nsteps]]`
-       - Each step, there are N steps left
-        - Forward propagation across previous states
-          - $p_{step1}$ = current_state(x+a.b), where a and b 
-              are actions
-          
-  ```
-   **Type**
-    - `type=float`: Likelihood map (each observation is equally probable)
-    """
-    
-    # Variable types:
-        type('A', 'LikelihoodMatrix[3]'),
-            type('B', 'TransitionVector[1]'),
-                type('C', 'ProbabilityVec[<numbers>]')
-```
-   **Connection patterns**:
-     `connections` 
-       - `current_history = [0..nsteps]]`. Each step is taken with a path
-        - The current state(x) can move to any of the states in the layer
-          - We are doing forward propagation across each path
-              - `next**path`, which has an (a.b..)` at its end, we then update the next_state
-            for each subsequent step:
-                - "next_states" now represents a new state
-                      $x+a$ -> x+a + b
-                  and so on
-
-    **Actions**:
-    *   `actions` can have multiple actions (action is taken).
-        - If action = 0.5 then there are two possible actions
-          - For step 1:
-            - "previous_states" now represents the state before it
-              $x-a$. Now we move to the previous node for action 'b'.
-                We will then have another path forward from this current node in next steps
-```python
-    # Activation pattern 
-    `action = [0.5]*[1..nsteps]`
-
-    **Type**
-        - "actions" now represents the sequence of actions
-        - These sequences are connected to each other
-        - Each action has two possible outcomes (success or failure)
-            - Each subsequent sequence can then be propagated across previous steps
-    """
-```
+I've reviewed your document, and here's a detailed analysis of GNNs with the given variables:
+1. **Graph Structure**: The graph consists of two main components: (A) a latent state space dimensionality of 3 and (B), which is uniform across all states, controlling the probability distribution over actions in each state:
+   - Random choice from prior probability vector for action selection at previous observation
+  - Uniform policy distribution used as initial belief distribution. The agent's preferences are encoded into the graph structure
+2. **Variable Analysis**: Variable types and their dependencies (directed/undirected edges) can be analyzed using Graph-based variable analysis:
+   - Random choice from prior probability vector for action selection at previous observation
+  - Uniform policy distribution used as initial belief distribution
+3. **Mathematical Structure**: The graph topology is composed of connected components, which are represented by directed edge connections between states (states).
+   - The graph structure shows a hierarchical representation where variables and their dependencies are organized into interconnected parts:
+   - Random choice from prior probability vector for action selection at previous observation
+  - Uniform policy distribution used as initial belief distribution
+4. **Complexity Assessment**: In terms of complexity, we can analyze two types of graphs:
+   - Simple networks (graphs with a single variable connected to the same subset of states) represent simple graphs that are easy to evaluate and understand.
+   - Complex graphs have multiple variables connected to different subsets of states, which provide insights into how well-connected specific relationships exist across the graph.
+5. **Design Patterns**: There is no explicit design pattern for GNNs: it's based on a combination of algebraic manipulations (including permuting variables) and graphical representations/mathematical concepts involving graphs. However, we can build intuition about how well-matched patterns fit into the structure by analyzing graph properties and their relationships with other parameters in the model.
+I'm not entirely clear about what specific requirements or constraints you need to meet for your analysis of GNNs?

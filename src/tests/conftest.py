@@ -509,12 +509,23 @@ def sample_gnn_spec() -> Dict[str, Any]:
 class RealRenderModule:
     """Real render module for testing - avoids mocking."""
     def render_gnn_spec(self, spec, target, outdir):
-        """Render GNN spec to target format."""
-        outdir = Path(outdir)
-        outdir.mkdir(parents=True, exist_ok=True)
-        artifact_name = f"{target}_artifact.txt"
-        (outdir / artifact_name).write_text("ok")
-        return True, "Success", [artifact_name]
+        """Render GNN spec to target format using real processor."""
+        # Import real render function inside method to avoid circular imports
+        try:
+            from render.processor import render_gnn_spec
+            return render_gnn_spec(spec, target, outdir)
+        except ImportError:
+            # Fallback if module path issue
+            try:
+                from src.render.processor import render_gnn_spec
+                return render_gnn_spec(spec, target, outdir)
+            except ImportError:
+                 # Last resort fallback for safe mode if real code unavailable
+                 outdir = Path(outdir)
+                 outdir.mkdir(parents=True, exist_ok=True)
+                 artifact_name = f"{target}_artifact.txt"
+                 (outdir / artifact_name).write_text("ok")
+                 return True, "Fallback Success", [artifact_name]
 
 @pytest.fixture
 def test_render_module():

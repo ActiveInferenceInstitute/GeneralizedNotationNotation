@@ -121,8 +121,8 @@ def list_capabilities(args):
                 # Show performance summary
                 status = mcp_instance.get_enhanced_server_status()
                 perf = status.get('performance', {})
-                print("
-⚡ Performance:"                print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
+                print("\n⚡ Performance:")
+                print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
                 print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
                 print(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
             except Exception:
@@ -202,7 +202,7 @@ def execute_tool(args):
         if args.format == "json":
             print(json.dumps(result, indent=2))
         else:
-            print(f"\n✅ Tool executed successfully in {execution_time:.".3f"")
+            print(f"\n✅ Tool executed successfully in {execution_time:.3f}s")
             print(f"📊 Result:")
             print(json.dumps(result, indent=2))
 
@@ -213,8 +213,9 @@ def execute_tool(args):
                     if stats:
                         print(f"\n📈 Tool Statistics:")
                         print(f"  Uses: {stats.get('use_count', 0)}")
-                        print(f"  Avg Time: {stats.get('average_execution_time', 0):.3".3f")
-                        print(f"  Success Rate: {stats.get('success_rate', 0):.1".1%"                except Exception:
+                        print(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
+                        print(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
+                except Exception:
                     pass
 
     except MCPError as e:
@@ -329,8 +330,8 @@ def get_tool_info(args):
             if detailed_info.get('use_count', 0) > 0:
                 print(f"\n📈 Usage Statistics:")
                 print(f"  Times Used: {detailed_info.get('use_count', 0)}")
-                print(f"  Avg Execution Time: {detailed_info.get('average_execution_time', 0):.3".3f")
-                print(f"  Success Rate: {detailed_info.get('success_rate', 0):.1".1%")
+                print(f"  Avg Execution Time: {detailed_info.get('average_execution_time', 0):.3f}s")
+                print(f"  Success Rate: {detailed_info.get('success_rate', 0):.1%}")
 
             print(f"\n⚙️ Configuration:")
             print(f"  Input Validation: {'Enabled' if detailed_info.get('input_validation', True) else 'Disabled'}")

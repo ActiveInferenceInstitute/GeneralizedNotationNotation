@@ -99,7 +99,7 @@ result = mcp_instance.execute_tool('sympy_validate_equation', {
 
 ### Pipeline Integration
 The SymPy tools are automatically available in:
-- Step 7: MCP Operations (`7_mcp.py`)
+- Step 7: MCP Operations (`21_mcp.py`)
 - All MCP-enabled pipeline components
 - External MCP clients connecting to GNN
 

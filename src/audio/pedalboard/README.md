@@ -14,6 +14,35 @@ src/audio/pedalboard/
 └── mcp.py                        # Model Context Protocol integration
 ```
 
+## Pedalboard Audio Processing Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Components]
+    
+    Extract --> Variables[Variables]
+    Extract --> Connections[Connections]
+    Extract --> Parameters[Parameters]
+    
+    Variables --> Map[Map to Audio]
+    Connections --> Map
+    Parameters --> Map
+    
+    Map --> Effects[Create Effects Chain]
+    Effects --> Process[Process Audio]
+    
+    Process --> Reverb[Reverb]
+    Process --> Delay[Delay]
+    Process --> Chorus[Chorus]
+    Process --> Other[Other Effects]
+    
+    Reverb --> Output[Processed Audio]
+    Delay --> Output
+    Chorus --> Output
+    Other --> Output
+```
+
 ## Core Components
 
 ### Audio Processing Functions

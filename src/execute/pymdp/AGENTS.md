@@ -33,18 +33,29 @@
 
 ### Public Functions
 
-#### `execute_pymdp_simulation(model_path: str, config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Execute a complete PyMDP simulation from model file
+#### `execute_pymdp_simulation(model_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Execute a complete PyMDP simulation from model file.
 
 **Parameters**:
-- `model_path` (str): Path to PyMDP model file
-- `config` (Dict): Simulation configuration parameters
+- `model_path` (Union[str, Path]): Path to PyMDP model file
+- `config` (Dict[str, Any], optional): Simulation configuration parameters (default: {})
+- `num_trials` (int, optional): Number of simulation trials (default: 100)
+- `trial_length` (int, optional): Length of each trial (default: 50)
+- `timeout` (int, optional): Execution timeout in seconds (default: 300)
+- `capture_output` (bool, optional): Capture stdout/stderr (default: True)
+- `**kwargs`: Additional execution options
 
-**Returns**: Dictionary with simulation results and metadata
+**Returns**: `Dict[str, Any]` - Simulation results dictionary with:
+- `success` (bool): Whether execution succeeded
+- `trials_completed` (int): Number of completed trials
+- `results` (List[Dict]): Trial results
+- `execution_time` (float): Total execution time
+- `output_files` (List[Path]): Generated output files
 
 **Example**:
 ```python
 from execute.pymdp import execute_pymdp_simulation
+from pathlib import Path
 
 config = {
     'num_trials': 100,
@@ -54,37 +65,49 @@ config = {
     'save_results': True
 }
 
-results = execute_pymdp_simulation("model_pymdp_simulation.py", config)
+results = execute_pymdp_simulation(
+    Path("output/11_render_output/model_pymdp_simulation.py"),
+    config=config
+)
 print(f"Simulation completed: {results['trials_completed']} trials")
 ```
 
-#### `run_pymdp_inference(agent, observations, config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Run PyMDP inference on observation sequence
+#### `run_pymdp_inference(agent: Any, observations: Union[List, np.ndarray], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Run PyMDP inference on observation sequence.
 
 **Parameters**:
-- `agent`: PyMDP agent instance
-- `observations`: Observation sequence
-- `config` (Dict): Inference configuration
+- `agent` (Any): PyMDP agent instance
+- `observations` (Union[List, np.ndarray]): Observation sequence
+- `config` (Dict[str, Any], optional): Inference configuration (default: {})
+- `iterations` (int, optional): Number of inference iterations (default: 10)
+- `threshold` (float, optional): Convergence threshold (default: 1e-4)
+- `**kwargs`: Additional inference options
 
-**Returns**: Inference results dictionary
+**Returns**: `Dict[str, Any]` - Inference results with beliefs, predictions, free energy
 
-#### `pymdp_simulation_loop(agent, environment, config: Dict[str, Any]) -> List[Dict[str, Any]]`
-**Description**: Main simulation loop for PyMDP agent-environment interaction
-
-**Parameters**:
-- `agent`: PyMDP agent
-- `environment`: Environment simulator
-- `config` (Dict): Simulation configuration
-
-**Returns**: List of trial results
-
-#### `validate_pymdp_simulation_setup(model_path: str) -> Dict[str, bool]`
-**Description**: Validate PyMDP simulation setup before execution
+#### `pymdp_simulation_loop(agent: Any, environment: Any, config: Dict[str, Any] = None, **kwargs) -> List[Dict[str, Any]]`
+**Description**: Main simulation loop for PyMDP agent-environment interaction.
 
 **Parameters**:
-- `model_path` (str): Path to simulation file
+- `agent` (Any): PyMDP agent instance
+- `environment` (Any): Environment simulator
+- `config` (Dict[str, Any], optional): Simulation configuration (default: {})
+- `num_steps` (int, optional): Number of simulation steps (default: 50)
+- `**kwargs`: Additional simulation options
 
-**Returns**: Validation results dictionary
+**Returns**: `List[Dict[str, Any]]` - List of step results with observations, actions, beliefs
+
+#### `validate_pymdp_simulation_setup(model_path: Union[str, Path]) -> Dict[str, bool]`
+**Description**: Validate PyMDP simulation setup before execution.
+
+**Parameters**:
+- `model_path` (Union[str, Path]): Path to simulation file
+
+**Returns**: `Dict[str, bool]` - Validation results with:
+- `file_exists` (bool): Whether file exists
+- `pymdp_available` (bool): Whether PyMDP is installed
+- `dependencies_met` (bool): Whether all dependencies are available
+- `code_valid` (bool): Whether code syntax is valid
 
 ---
 

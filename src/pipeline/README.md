@@ -52,6 +52,67 @@ graph TD
     end
 ```
 
+### Pipeline Orchestration Architecture
+
+```mermaid
+sequenceDiagram
+    participant Main as main.py
+    participant Config as Config Manager
+    participant Orchestrator as Pipeline Orchestrator
+    participant Step as Pipeline Step
+    participant Monitor as Health Monitor
+    participant Logger as Logger
+    
+    Main->>Config: Load pipeline configuration
+    Config-->>Main: Configuration dict
+    
+    Main->>Orchestrator: Initialize orchestrator
+    Orchestrator->>Monitor: Start health monitoring
+    Orchestrator->>Logger: Setup logging
+    
+    loop For each step
+        Main->>Orchestrator: Execute step
+        Orchestrator->>Step: Validate prerequisites
+        Step-->>Orchestrator: Prerequisites OK
+        Orchestrator->>Step: Execute step function
+        Step->>Logger: Log step start
+        Step-->>Orchestrator: Step result
+        Orchestrator->>Monitor: Update health status
+        Orchestrator->>Logger: Log step completion
+    end
+    
+    Orchestrator->>Monitor: Generate health report
+    Orchestrator-->>Main: Pipeline complete
+    Main->>Logger: Log pipeline summary
+```
+
+### Step Execution Flow
+
+```mermaid
+flowchart TD
+    Start[Step Execution Start] --> Validate{Validate<br/>Prerequisites}
+    Validate -->|Pass| Init[Initialize Step]
+    Validate -->|Fail| Error[Log Error & Skip]
+    
+    Init --> Execute[Execute Step Function]
+    Execute --> Check{Success?}
+    
+    Check -->|Yes| LogSuccess[Log Success]
+    Check -->|No| Retry{Retries<br/>Remaining?}
+    
+    Retry -->|Yes| RetryStep[Retry Step]
+    RetryStep --> Execute
+    Retry -->|No| LogError[Log Error]
+    
+    LogSuccess --> UpdateState[Update Pipeline State]
+    LogError --> UpdateState
+    Error --> UpdateState
+    
+    UpdateState --> Next{More Steps?}
+    Next -->|Yes| Start
+    Next -->|No| Complete[Pipeline Complete]
+```
+
 ## Core Components
 
 ### Pipeline Configuration Management

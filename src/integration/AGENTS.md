@@ -37,31 +37,48 @@
 
 ### Public Functions
 
-#### `process_integration(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main integration processing function called by orchestrator (17_integration.py)
+#### `process_integration(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main integration processing function called by orchestrator (17_integration.py). Coordinates cross-module interactions and validates system consistency using graph theory.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing pipeline outputs to integrate
 - `output_dir` (Path): Output directory for integration results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `integration_mode` (str): Integration mode ("coordinated", "standalone", "fallback", default: "coordinated")
-- `system_coordination` (bool): Enable system-wide coordination (default: True)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `integration_mode` (str, optional): Integration mode ("coordinated", "standalone", "fallback") (default: "coordinated")
+- `system_coordination` (bool, optional): Enable system-wide coordination (default: True)
+- `validate_dependencies` (bool, optional): Validate module dependencies (default: True)
+- `detect_cycles` (bool, optional): Detect circular dependencies (default: True)
 - `**kwargs`: Additional integration options
 
-**Returns**: `True` if integration processing succeeded
+**Returns**: `bool` - True if integration processing succeeded, False otherwise
 
 **Example**:
 ```python
 from integration import process_integration
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_integration(
     target_dir=Path("output"),
     output_dir=Path("output/17_integration_output"),
+    logger=logger,
     verbose=True,
-    integration_mode="coordinated"
+    integration_mode="coordinated",
+    validate_dependencies=True
 )
 ```
+
+#### `coordinate_pipeline_modules() -> Dict[str, Any]`
+**Description**: Coordinates all pipeline modules for integrated operation using dependency graph analysis.
+
+**Returns**: `Dict[str, Any]` - Coordination results with:
+- `modules` (List[str]): List of coordinated modules
+- `dependency_graph` (Dict): Module dependency graph
+- `cycles_detected` (List[List[str]]): Detected circular dependencies
+- `status` (str): Coordination status ("success", "partial", "failed")
+- `statistics` (Dict[str, Any]): Graph statistics (nodes, edges, density)
 
 ---
 
@@ -214,4 +231,69 @@ def get_integration_status():
     # Implementation
 ```
 
+### MCP File Location
+- `src/integration/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Circular dependency detection fails
+**Symptom**: Cycle detection reports false positives or misses cycles  
+**Cause**: Dependency graph construction incomplete or incorrect  
+**Solution**: 
+- Verify all modules are properly discovered
+- Check module import statements are correct
+- Use `--verbose` flag for detailed dependency graph
+- Review dependency graph visualization
+
+#### Issue 2: Cross-reference validation errors
+**Symptom**: Valid references reported as missing  
+**Cause**: File path resolution issues or incorrect reference format  
+**Solution**:
+- Verify file paths are relative to project root
+- Check reference format matches expected pattern
+- Ensure referenced files exist in expected locations
+- Review cross-reference validation logs
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Cross-module coordination
+- Dependency graph construction
+- Cycle detection
+- Cross-reference validation
+- System-wide configuration
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced dependency analysis
+- **Future**: Real-time integration monitoring
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Pipeline Configuration](../pipeline/AGENTS.md)
+
+### External Resources
+- [NetworkX Documentation](https://networkx.org/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

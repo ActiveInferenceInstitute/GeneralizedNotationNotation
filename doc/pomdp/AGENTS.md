@@ -1,19 +1,25 @@
-# pomdp
+# POMDP Documentation Agent
+
+> **📋 Document Metadata**  
+> **Type**: Theoretical Framework Integration Agent | **Audience**: Researchers, Theorists | **Complexity**: Advanced  
+> **Cross-References**: [README.md](README.md) | [POMDP Overview](pomdp_overall.md) | [POMDP Analytics](pomdp_analytic.md) | [Active Inference Theory](../gnn/about_gnn.md) | [Main Documentation](../README.md)
 
 ## Overview
 
-This directory contains documentation and resources for the pomdp subsystem.
+This directory contains comprehensive documentation, resources, and implementation guides for **POMDP** (Partially Observable Markov Decision Process) formalization within GNN (Generalized Notation Notation). POMDPs provide the mathematical foundation for Active Inference models, representing sequential decision-making under uncertainty with partial observability.
 
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
+**Status**: ✅ Production Ready  
+**Version**: 1.0
 
 ## Purpose
 
-POMDP analytical framework and tools for belief state analysis
+POMDP integration enables:
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+- **Theoretical Foundation**: Mathematical basis for GNN Active Inference models
+- **Formal Specification**: Precise mathematical representation of model structure
+- **Belief State Management**: Formal treatment of belief updating
+- **Optimal Control**: Theoretical framework for action selection
+- **Variational Active Inference**: Free energy minimization formulation
 
 ## Contents
 
@@ -39,11 +45,49 @@ This module is organized as follows:
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+### Core Processing (Steps 0-9)
+- **Step 3 (GNN)**: POMDP formalization of parsed GNN models
+- **Step 5 (Type Checker)**: Mathematical validation of POMDP structure
+- **Step 6 (Validation)**: POMDP constraint verification
+
+### Simulation (Steps 10-16)
+- **Step 11 (Render)**: POMDP-based code generation
+- **Step 12 (Execute)**: POMDP-based simulation execution with belief state tracking
+- **Step 16 (Analysis)**: POMDP analytical framework application
+
+### Integration (Steps 17-23)
+- **Step 23 (Report)**: POMDP theoretical analysis and validation results
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+## Function Signatures and API
+
+### POMDP Formalization Functions
+
+```python
+def formalize_gnn_as_pomdp(gnn_model: GNNModel) -> POMDP:
+    """
+    Formalize GNN model as POMDP structure.
+    
+    Parameters:
+        gnn_model: Parsed GNN model structure
+    
+    Returns:
+        POMDP with 7-tuple definition (S, A, T, R, Ω, O, γ)
+    """
+
+def compute_belief_state(pomdp: POMDP, history: List[Tuple[Action, Observation]]) -> BeliefState:
+    """
+    Compute belief state from action-observation history.
+    
+    Parameters:
+        pomdp: POMDP structure
+        history: Sequence of (action, observation) pairs
+    
+    Returns:
+        BeliefState probability distribution over states
+    """
+```
 
 ## Standards and Guidelines
 
@@ -56,17 +100,30 @@ All documentation in this module adheres to professional standards:
 
 ## Related Resources
 
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+### Main GNN Documentation
+- **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
+- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[Active Inference Theory](../gnn/about_gnn.md)**: Active Inference foundations
 
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/AGENTS.md)
-- [Pipeline README](../../src/README.md)
+### Theoretical Resources
+- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python POMDP implementation
+- **[Theoretical Foundations](../gnn/gnn_paper.md)**: Academic foundations
+- **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Advanced mathematical patterns
+
+### Pipeline Architecture
+- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/README.md)**: Pipeline overview
+
+## See Also
+
+- **[POMDP Cross-Reference](../CROSS_REFERENCE_INDEX.md#pomdp)**: Cross-reference index entry
+- **[Active Inference Theory](../gnn/about_gnn.md)**: Active Inference foundations
+- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python POMDP implementation
+- **[Main Index](../README.md)**: Return to main documentation
 
 ---
 
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new features
+**Maintenance**: Regular updates with new POMDP theoretical developments and Active Inference formulations

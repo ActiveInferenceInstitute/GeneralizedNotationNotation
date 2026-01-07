@@ -35,7 +35,7 @@ def generate_sapf_audio(
     log_step_start(logger, "Generating SAPF audio from GNN models")
     
     # Use centralized output directory configuration
-    sapf_output_dir = get_output_dir_for_script("13_sapf.py", output_dir)
+    sapf_output_dir = get_output_dir_for_script("15_audio.py", output_dir)
     sapf_output_dir.mkdir(parents=True, exist_ok=True)
     
     if not SAPF_AVAILABLE:

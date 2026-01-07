@@ -27,8 +27,93 @@ graph TD
     subgraph "Execution Environments"
     Run --> PyMDP[PyMDP Env]
     Run --> RxInfer[RxInfer Env]
-    Run --> Others[Other Envs]
+    Run --> ActInf[ActiveInference.jl Env]
+    Run --> JAX[JAX Env]
+    Run --> DisCoPy[DisCoPy Env]
     end
+```
+
+### Multi-Framework Execution Architecture
+
+```mermaid
+flowchart LR
+    subgraph "Input"
+        RenderedCode[Rendered Code from Step 11]
+    end
+    
+    subgraph "Framework Detection"
+        Detect[Framework Detector]
+        PyMDPDetect[PyMDP Detector]
+        RxInferDetect[RxInfer Detector]
+        ActInfDetect[ActiveInference.jl Detector]
+        JAXDetect[JAX Detector]
+        DisCoPyDetect[DisCoPy Detector]
+    end
+    
+    subgraph "Execution"
+        PyMDPExec[PyMDP Executor]
+        RxInferExec[RxInfer Executor]
+        ActInfExec[ActiveInference.jl Executor]
+        JAXExec[JAX Executor]
+        DisCoPyExec[DisCoPy Executor]
+    end
+    
+    subgraph "Output"
+        Results[Execution Results]
+        Logs[Execution Logs]
+        Reports[Execution Reports]
+    end
+    
+    RenderedCode --> Detect
+    Detect --> PyMDPDetect
+    Detect --> RxInferDetect
+    Detect --> ActInfDetect
+    Detect --> JAXDetect
+    Detect --> DisCoPyDetect
+    
+    PyMDPDetect --> PyMDPExec
+    RxInferDetect --> RxInferExec
+    ActInfDetect --> ActInfExec
+    JAXDetect --> JAXExec
+    DisCoPyDetect --> DisCoPyExec
+    
+    PyMDPExec --> Results
+    RxInferExec --> Results
+    ActInfExec --> Results
+    JAXExec --> Results
+    DisCoPyExec --> Results
+    
+    Results --> Logs
+    Results --> Reports
+```
+
+### Execution Sequence Flow
+
+```mermaid
+sequenceDiagram
+    participant Pipeline as Pipeline Step 12
+    participant Executor as Execute Module
+    participant Framework as Framework Executor
+    participant Subprocess as Subprocess
+    participant Monitor as Result Monitor
+    
+    Pipeline->>Executor: process_execute()
+    Executor->>Executor: Discover rendered scripts
+    Executor->>Executor: Detect framework type
+    
+    loop For each script
+        Executor->>Framework: Select framework executor
+        Framework->>Framework: Setup environment
+        Framework->>Subprocess: Execute script
+        Subprocess-->>Framework: Return code & output
+        Framework->>Monitor: Capture results
+        Monitor->>Monitor: Validate output
+        Monitor-->>Framework: Execution status
+        Framework-->>Executor: Execution result
+    end
+    
+    Executor->>Executor: Aggregate results
+    Executor-->>Pipeline: Execution summary
 ```
 
 ## Core Components

@@ -36,38 +36,99 @@
 
 ### Public Functions
 
-#### `process_gnn_multi_format(target_dir, output_dir, logger, **kwargs) -> bool`
-**Description**: Main processing function that discovers, parses, and serializes GNN files
+#### `process_gnn_directory(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = True, validation_level: str = "standard", **kwargs) -> bool`
+**Description**: Main processing function that discovers, parses, and serializes GNN files. This is the primary entry point for GNN processing.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for processed files
-- `logger` (Logger): Logger instance
-- `**kwargs`: Additional options (recursive, enable_round_trip, enable_cross_format)
+- `logger` (logging.Logger): Logger instance for logging
+- `recursive` (bool): Whether to search subdirectories recursively (default: True)
+- `validation_level` (str): Validation level ("basic", "standard", "strict", "research") (default: "standard")
+- `**kwargs`: Additional options:
+  - `enable_round_trip` (bool): Enable round-trip testing (default: False)
+  - `enable_cross_format` (bool): Enable cross-format validation (default: False)
+  - `formats` (List[str]): Specific formats to serialize (default: all formats)
 
-**Returns**: `True` if processing succeeded, `False` otherwise
+**Returns**: `bool` - True if processing succeeded, False otherwise
 
 **Example**:
 ```python
-from gnn.multi_format_processor import process_gnn_multi_format
+from gnn import process_gnn_directory
+from pathlib import Path
+import logging
 
-success = process_gnn_multi_format(
+logger = logging.getLogger(__name__)
+success = process_gnn_directory(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/3_gnn_output"),
     logger=logger,
     recursive=True,
-    enable_round_trip=True
+    validation_level="standard",
+    enable_round_trip=False
 )
 ```
 
-#### `discover_gnn_files(target_dir, recursive=True) -> List[Path]`
-**Description**: Discovers all GNN specification files in target directory
+#### `process_gnn_directory_lightweight(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> bool`
+**Description**: Lightweight GNN processing function with minimal dependencies and faster execution.
+
+**Parameters**:
+- `target_dir` (Path): Directory containing GNN files
+- `output_dir` (Path): Output directory for processed files
+- `logger` (logging.Logger): Logger instance
+- `**kwargs`: Additional lightweight processing options
+
+**Returns**: `bool` - True if processing succeeded, False otherwise
+
+#### `discover_gnn_files(target_dir: Path, recursive: bool = True) -> List[Path]`
+**Description**: Discovers all GNN specification files in target directory with support for multiple formats.
 
 **Parameters**:
 - `target_dir` (Path): Directory to search
-- `recursive` (bool): Whether to search subdirectories
+- `recursive` (bool): Whether to search subdirectories (default: True)
 
-**Returns**: List of Path objects for discovered GNN files
+**Returns**: `List[Path]` - List of Path objects for discovered GNN files
+
+**Supported Extensions**: `.md`, `.gnn`, `.json`, `.yaml`, `.xml`, and other GNN-compatible formats
+
+#### `parse_gnn_file(file_path: Path, validation_level: str = "standard") -> ParsedGNN`
+**Description**: Parse a single GNN file into structured representation.
+
+**Parameters**:
+- `file_path` (Path): Path to GNN file to parse
+- `validation_level` (str): Validation level to apply during parsing (default: "standard")
+
+**Returns**: `ParsedGNN` - Parsed GNN model object with:
+- `model_name` (str): Name of the model
+- `variables` (List[Variable]): List of variable definitions
+- `connections` (List[Connection]): List of connections
+- `parameters` (Dict[str, Any]): Initial parameterization
+- `metadata` (Dict[str, Any]): Model metadata
+
+**Raises**: `ParseError` if file cannot be parsed
+
+#### `validate_gnn_structure(parsed_gnn: ParsedGNN, validation_level: str = "standard") -> ValidationResult`
+**Description**: Validate GNN structure for correctness and consistency.
+
+**Parameters**:
+- `parsed_gnn` (ParsedGNN): Parsed GNN model to validate
+- `validation_level` (str): Validation level ("basic", "standard", "strict", "research")
+
+**Returns**: `ValidationResult` - Validation result with:
+- `is_valid` (bool): Whether structure is valid
+- `errors` (List[str]): List of validation errors
+- `warnings` (List[str]): List of validation warnings
+- `suggestions` (List[str]): Improvement suggestions
+
+#### `generate_gnn_report(parsed_gnn: ParsedGNN, output_dir: Path, format: str = "json") -> Path`
+**Description**: Generate comprehensive report for parsed GNN model.
+
+**Parameters**:
+- `parsed_gnn` (ParsedGNN): Parsed GNN model
+- `output_dir` (Path): Output directory for report
+- `format` (str): Report format ("json", "markdown", "html") (default: "json")
+
+**Returns**: `Path` - Path to generated report file
 
 ---
 

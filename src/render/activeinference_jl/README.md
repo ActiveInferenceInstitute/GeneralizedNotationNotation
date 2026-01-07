@@ -39,6 +39,29 @@ src/render/activeinference_jl/
 - Faster generation
 - Suitable for simple models
 
+## ActiveInference.jl Rendering Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Components]
+    
+    Extract --> Agent[Agent Structure]
+    Extract --> Generative[Generative Model]
+    Extract --> Hierarchical[Hierarchical Levels]
+    
+    Agent --> Convert[Convert to ActiveInference.jl]
+    Generative --> Convert
+    Hierarchical --> Convert
+    
+    Convert --> Generate[Generate Code]
+    Generate --> Julia[Julia Script]
+    Generate --> Analysis[Analysis Suite]
+    
+    Julia --> Output[ActiveInference.jl Code]
+    Analysis --> Output
+```
+
 ## Features
 
 - Full hierarchical Active Inference agent support

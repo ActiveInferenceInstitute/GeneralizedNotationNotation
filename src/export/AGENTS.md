@@ -241,6 +241,118 @@ output/7_export_output/
 - **Current**: 86%
 - **Target**: 90%+
 
+### Key Test Scenarios
+1. Multi-format export generation
+2. Format validation and error handling
+3. Graph format conversion
+4. Export integrity verification
+
 ---
 
+## MCP Integration
 
+### Tools Registered
+- `export.export_gnn_to_json` - Export GNN model to JSON
+- `export.export_gnn_to_xml` - Export GNN model to XML
+- `export.export_gnn_to_graphml` - Export GNN model to GraphML
+- `export.export_gnn_to_gexf` - Export GNN model to GEXF
+- `export.export_gnn_to_pickle` - Export GNN model to Pickle
+- `export.get_supported_formats` - Get list of supported export formats
+- `export.validate_export_format` - Validate export format name
+
+### Tool Endpoints
+```python
+@mcp_tool("export.export_gnn_to_json")
+def export_gnn_to_json_mcp(gnn_content: str, output_path: str) -> Dict[str, Any]:
+    """Export GNN content to JSON format"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/export/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Export fails for specific format
+**Symptom**: Export succeeds for some formats but fails for others  
+**Cause**: Missing optional dependencies (networkx, yaml) or format-specific errors  
+**Solution**: 
+- Check that required dependencies are installed: `uv pip install networkx pyyaml`
+- Use `--verbose` flag to see detailed error messages
+- Check format-specific requirements in documentation
+
+#### Issue 2: GraphML/GEXF export fails
+**Symptom**: Graph formats fail to generate  
+**Cause**: Missing networkx dependency or invalid graph structure  
+**Solution**:
+- Install networkx: `uv pip install networkx`
+- Verify GNN model has valid connections section
+- Check that graph data is properly structured
+
+#### Issue 3: Large model export timeout
+**Symptom**: Export times out or runs out of memory  
+**Cause**: Model too large for single export operation  
+**Solution**:
+- Use `compress=True` option to reduce file size
+- Export formats individually instead of all at once
+- Process models in smaller batches
+
+### Performance Issues
+
+#### Slow Export Performance
+**Symptoms**: Export takes longer than expected  
+**Diagnosis**:
+```bash
+# Enable verbose logging
+python src/7_export.py --target-dir input/ --verbose
+```
+
+**Solutions**:
+- Export only needed formats (don't export all formats if not needed)
+- Use pickle format for fastest serialization
+- Disable schema validation for faster XML export
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
+- Format validation and error handling
+- Graph format conversion
+- Export integrity verification
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Additional format support (YAML, CSV)
+- **Future**: Streaming export for very large models
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [GNN Export Guide](../../doc/gnn/gnn_export.md)
+
+### External Resources
+- [GraphML Specification](http://graphml.graphdrawing.org/)
+- [GEXF Format](https://gephi.org/gexf/format/)
+- [NetworkX Documentation](https://networkx.org/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

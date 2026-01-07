@@ -33,52 +33,69 @@
 
 ### Public Functions
 
-#### `generate_discopy_code(model_data: Dict[str, Any], output_path: Optional[str] = None) -> str`
-**Description**: Generate DisCoPy code from GNN model data
+#### `generate_discopy_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
+**Description**: Generate DisCoPy categorical diagram code from GNN model data.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `output_path` (Optional[str]): Output file path (optional)
+- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, categorical structures
+- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
+- `diagram_type` (str, optional): Diagram type ("string", "quantum", "nlp") (default: "string")
+- `include_visualization` (bool, optional): Include visualization code (default: True)
+- `**kwargs`: Additional DisCoPy generation options
 
-**Returns**: Generated DisCoPy code as string
+**Returns**: `str` - Generated DisCoPy code as string
 
 **Example**:
 ```python
 from render.discopy import generate_discopy_code
+from pathlib import Path
 
 # Generate DisCoPy code
-discopy_code = generate_discopy_code(model_data)
+discopy_code = generate_discopy_code(
+    model_data=parsed_gnn_model,
+    output_path=Path("output/categorical_diagram.py"),
+    diagram_type="string",
+    include_visualization=True
+)
 
-# Save to file
-with open("categorical_diagram.py", "w") as f:
-    f.write(discopy_code)
+# Code is also saved to file if output_path provided
 ```
 
-#### `convert_gnn_to_discopy(model_data: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Convert GNN model data to DisCoPy-compatible format
+#### `convert_gnn_to_discopy(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Convert GNN model data to DisCoPy-compatible categorical format.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, composition rules
+- `validate` (bool, optional): Validate categorical structure (default: True)
+- `**kwargs`: Additional conversion options
 
-**Returns**: DisCoPy-compatible model structure
+**Returns**: `Dict[str, Any]` - DisCoPy-compatible model structure with:
+- `types` (List): Categorical type definitions
+- `morphisms` (List[Dict]): Morphism definitions
+- `composition_rules` (List[Dict]): Composition rules
+- `diagram_structure` (Dict): String diagram structure
 
-#### `create_discopy_diagram(model_structure: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Create DisCoPy diagram implementation
-
-**Parameters**:
-- `model_structure` (Dict): Model structure data
-- `config` (Dict): DisCoPy configuration options
-
-**Returns**: DisCoPy diagram code
-
-#### `generate_discopy_visualization(model_data: Dict[str, Any], config: Dict[str, Any]) -> str`
-**Description**: Generate DisCoPy diagram with visualization
+#### `create_discopy_diagram(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Create DisCoPy diagram implementation code.
 
 **Parameters**:
-- `model_data` (Dict): GNN model data
-- `config` (Dict): Visualization configuration
+- `model_structure` (Dict[str, Any]): DisCoPy-compatible model structure
+- `config` (Dict[str, Any], optional): DisCoPy configuration options (default: {})
+- `optimize` (bool, optional): Optimize diagram representation (default: True)
+- `**kwargs`: Additional diagram generation options
 
-**Returns**: DisCoPy code with visualization
+**Returns**: `str` - DisCoPy diagram code as string
+
+#### `generate_discopy_visualization(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
+**Description**: Generate DisCoPy diagram code with visualization capabilities.
+
+**Parameters**:
+- `model_data` (Dict[str, Any]): GNN model data
+- `config` (Dict[str, Any], optional): Visualization configuration (default: {})
+- `output_format` (str, optional): Visualization format ("png", "svg", "pdf") (default: "png")
+- `**kwargs`: Additional visualization options
+
+**Returns**: `str` - DisCoPy code with visualization as string
 
 ---
 

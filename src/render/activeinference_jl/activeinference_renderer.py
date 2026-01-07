@@ -14,6 +14,58 @@ import json
 
 logger = logging.getLogger(__name__)
 
+def _matrix_to_julia(matrix_data: Any) -> str:
+    """
+    Convert shared matrix data structures to Julia format.
+    Handles lists, tuples, and nested structures (matrices/tensors).
+    """
+    # Handle string input (if coming from string-based GNN spec)
+    if isinstance(matrix_data, str):
+        matrix_data = matrix_data.strip()
+        if matrix_data.startswith('[') or matrix_data.startswith('('):
+            try:
+                import ast
+                matrix_data = ast.literal_eval(matrix_data)
+            except (ValueError, SyntaxError):
+                pass  # Keep as string if parsing fails
+    
+    # Normalize tuple to list for unified handling
+    if isinstance(matrix_data, tuple):
+        matrix_data = list(matrix_data)
+
+    if isinstance(matrix_data, list):
+        if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
+            if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
+                # 3D matrix (B matrix)
+                slices = []
+                for slice_data in matrix_data:
+                    rows = []
+                    for row in slice_data:
+                        if isinstance(row, (tuple, list)):
+                            row_values = " ".join(str(x) for x in row)
+                        else:
+                            row_values = str(row)
+                        rows.append(row_values)
+                    slice_matrix = "; ".join(rows)
+                    slices.append(f"[{slice_matrix}]")
+                return "cat(" + ", ".join(slices) + "; dims=3)"
+            else:
+                # 2D matrix (A matrix)
+                rows = []
+                for row in matrix_data:
+                    row_values = " ".join(str(x) for x in row)
+                    rows.append(row_values)
+                return "[" + "; ".join(rows) + "]"
+        else:
+            # 1D vector
+            return "[" + ", ".join(str(x) for x in matrix_data) + "]"
+    
+    elif isinstance(matrix_data, tuple):
+        return "[" + ", ".join(str(x) for x in matrix_data) + "]"
+        
+    return str(matrix_data)
+
+
 def render_gnn_to_activeinference_jl(
     gnn_spec: Dict[str, Any],
     output_path: Path,
@@ -273,52 +325,11 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
                     B_matrix = fixed_B
                     logger.info(f"Fixed mangled B matrix: {len(B_matrix)} slices of {len(B_matrix[0])}x{len(B_matrix[0][0])}")
     
-    # Convert to Julia format
-    def matrix_to_julia(matrix_data):
-        def convert_element(element):
-            """Convert tuple or list elements to proper Julia format."""
-            if isinstance(element, (tuple, list)):
-                return "[" + ", ".join(str(x) for x in element) + "]"
-            return str(element)
-        
-        if isinstance(matrix_data, list):
-            if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
-                if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
-                    # 3D matrix (B matrix) - handle nested tuples/lists
-                    # Convert to proper Julia 3D array syntax
-                    slices = []
-                    for slice_data in matrix_data:
-                        rows = []
-                        for row in slice_data:
-                            # Extract values from tuples/lists
-                            if isinstance(row, (tuple, list)):
-                                row_values = " ".join(str(x) for x in row)
-                            else:
-                                row_values = str(row)
-                            rows.append(row_values)
-                        slice_matrix = "; ".join(rows)
-                        slices.append(f"[{slice_matrix}]")
-                    return "cat(" + ", ".join(slices) + "; dims=3)"
-                else:
-                    # 2D matrix (A matrix) - use Julia matrix syntax with semicolons
-                    rows = []
-                    for row in matrix_data:
-                        row_values = " ".join(str(x) for x in row)
-                        rows.append(row_values)
-                    return "[" + "; ".join(rows) + "]"
-            else:
-                # 1D vector (C, D, E vectors)
-                return "[" + ", ".join(str(x) for x in matrix_data) + "]"
-        elif isinstance(matrix_data, tuple):
-            # Handle tuple input
-            return "[" + ", ".join(str(x) for x in matrix_data) + "]"
-        return str(matrix_data)
-    
-    julia_A = matrix_to_julia(A_matrix)
-    julia_B = matrix_to_julia(B_matrix)
-    julia_C = matrix_to_julia(C_vector)
-    julia_D = matrix_to_julia(D_vector)
-    julia_E = matrix_to_julia(E_vector)
+    julia_A = _matrix_to_julia(A_matrix)
+    julia_B = _matrix_to_julia(B_matrix)
+    julia_C = _matrix_to_julia(C_vector)
+    julia_D = _matrix_to_julia(D_vector)
+    julia_E = _matrix_to_julia(E_vector)
     
     script = f'''#!/usr/bin/env julia
 

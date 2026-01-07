@@ -82,14 +82,14 @@
 
 **Professor Cogswell:** Each one has its job, see?
 *   First, there's `1_setup.py` which makes sure the stage is set, directories are ready, and dependencies are installed. Critical, this one!
-*   Then `2_gnn.py` does some core GNN file processing, gets the basics sorted.
-*   `3_tests.py` runs a battery of tests, makes sure all the parts are in working order. No flappers falling off mid-show!
+*   Then `3_gnn.py` does some core GNN file processing, gets the basics sorted.
+*   `2_tests.py` runs a battery of tests, makes sure all the parts are in working order. No flappers falling off mid-show!
 *   `4_gnn_type_checker.py` – this one's a real eagle-eye! It checks your GNN file for a proper structure, makes sure your variable types aren't all higgledy-piggledy, and can even estimate the computational resources your model might need. A very smart cookie, that one.
-*   `5_export.py` takes your GNN model and can save it in all sorts of formats – JSON, XML, GraphML for those graph-minded folks, even a simple text summary.
+*   `7_export.py` takes your GNN model and can save it in all sorts of formats – JSON, XML, GraphML for those graph-minded folks, even a simple text summary.
 *   `6_visualization.py` – this is the artist! It takes the GNN and generates those graphical model diagrams, those matrix heatmaps, the ontology tables. Makes it all look pretty as a picture!
-*   `7_mcp.py` deals with something called the Model Context Protocol. Fancy talk for making all these GNN tools available as services, so other programs, even AI assistants, can use them!
-*   `8_ontology.py` specifically handles the `ActInfOntologyAnnotation` section, checking your terms against a master list, like the one in `src/ontology/act_inf_ontology_terms.json`.
-*   And `9_render.py` – this is the one that helps turn your GNN spec into that executable code for simulators like PyMDP or RxInfer.jl we mentioned for the Triple Play!
+*   `21_mcp.py` deals with something called the Model Context Protocol. Fancy talk for making all these GNN tools available as services, so other programs, even AI assistants, can use them!
+*   `10_ontology.py` specifically handles the `ActInfOntologyAnnotation` section, checking your terms against a master list, like the one in `src/ontology/act_inf_ontology_terms.json`.
+*   And `11_render.py` – this is the one that helps turn your GNN spec into that executable code for simulators like PyMDP or RxInfer.jl we mentioned for the Triple Play!
 
 All these steps work together, taking your GNN file from that `target-dir` you point them to, and putting all their good work into an `output-dir`. You get a whole suite of reports, diagrams, and data!
 

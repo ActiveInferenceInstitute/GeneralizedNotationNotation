@@ -1,8 +1,8 @@
-# GNN Pipeline - 26 Agent Capabilities Summary
+# GNN Pipeline - 28 Agent Capabilities Summary
 
 **Version**: 2.1.0  
 **Last Updated**: December 2025  
-**Total Agents**: 28 (24 pipeline modules + 4 infrastructure)  
+**Total Agents**: 28 (24 pipeline modules + 2 infrastructure + 2 documentation)  
 **Status**: ✅ Production Ready
 
 ---
@@ -198,7 +198,7 @@
 - **Output**: Execution results, performance metrics, logs
 - **Status**: ✅ Production Ready (Safe-to-Fail)
 
-#### 1️⃣3️⃣ **LLM Agent** - AI-Enhanced Analysis
+#### 1️⃣3️⃣ **LLM Agent** - AI Analysis
 - **Location**: `src/llm/`
 - **Role**: LLM-powered model interpretation
 - **Key Capabilities**:
@@ -337,7 +337,7 @@
 - **Location**: `src/utils/`
 - **Role**: Centralized infrastructure utilities
 - **Key Capabilities**:
-  - Enhanced argument parsing
+  - Argument parsing with error handling
   - Centralized logging
   - Performance tracking
   - Dependency validation

@@ -147,7 +147,7 @@ JAX renderer generates pure JAX code:
 ## Getting Started Workflows
 
 ### New Developer
-1. Read [AGENTS.md](AGENTS.md) - Understand 26 modules (24 pipeline + 2 infrastructure)
+1. Read [AGENTS.md](AGENTS.md) - Understand 28 modules (24 pipeline + 2 infrastructure + 2 documentation)
 2. Read [pipeline_architecture.md](pipeline_architecture.md) - Understand flow
 3. Read [gnn_standards.md](gnn_standards.md) - Understand domain
 4. Ready to fix bugs and write tests
@@ -277,7 +277,7 @@ python src/1_setup.py --verbose
 ## Version History
 
 - **v2.2.0** (Dec 2025) - Added 7 new documentation files, comprehensive coverage
-- **v2.1.0** (Nov 2025) - Enhanced documentation with performance & MCP
+- **v2.1.0** (Nov 2025) - Documentation updates with performance & MCP
 - **v2.0.0** (Oct 2025) - Major restructuring with agent documentation
 - **v1.0.0** (Sep 2025) - Initial comprehensive guidelines
 

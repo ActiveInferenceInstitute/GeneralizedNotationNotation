@@ -1,19 +1,25 @@
-# spm
+# SPM Documentation Agent
+
+> **📋 Document Metadata**  
+> **Type**: Neuroscientific Integration Agent | **Audience**: Neuroscientists, AI Researchers | **Complexity**: Advanced  
+> **Cross-References**: [README.md](README.md) | [SPM GNN Guide](spm_gnn.md) | [Cognitive Phenomena](../cognitive_phenomena/README.md) | [Main Documentation](../README.md)
 
 ## Overview
 
-This directory contains documentation and resources for the spm subsystem.
+This directory contains comprehensive documentation, resources, and implementation guides for integrating **SPM** (Statistical Parametric Mapping) with GNN (Generalized Notation Notation). SPM provides established statistical frameworks for neuroimaging analysis, enabling translation of neuroimaging insights into computational cognitive architectures.
 
-**Status**: ✅ Documentation Module  
-**Version**: 1.0  
-
----
+**Status**: ✅ Production Ready  
+**Version**: 1.0
 
 ## Purpose
 
-Statistical Parametric Mapping integration for neuroscience
+SPM integration enables:
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+- **Brain-Inspired AI**: Translation of neuroimaging insights to computational models
+- **Model Calibration**: SPM results inform GNN state space design
+- **Connectivity Mapping**: DCM connectivity matrices guide GNN transition models
+- **Temporal Dynamics**: SPM temporal dynamics constrain GNN time horizons
+- **Population-Level Inference**: Group statistics for model validation
 
 ## Contents
 
@@ -39,11 +45,49 @@ This module is organized as follows:
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+### Core Processing (Steps 0-9)
+- **Step 3 (GNN)**: SPM-informed GNN model specification
+- **Step 5 (Type Checker)**: Neuroimaging data validation
+- **Step 6 (Validation)**: SPM-based model validation
+
+### Simulation (Steps 10-16)
+- **Step 11 (Render)**: SPM-calibrated code generation
+- **Step 12 (Execute)**: Cross-validation with neuroimaging data
+- **Step 16 (Analysis)**: SPM statistical analysis integration
+
+### Integration (Steps 17-23)
+- **Step 23 (Report)**: Neuroscientific validation and analysis results
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+## Function Signatures and API
+
+### Neuroimaging Analysis Functions
+
+```python
+def calibrate_gnn_from_spm(gnn_model: GNNModel, spm_results: SPMResults) -> GNNModel:
+    """
+    Calibrate GNN model using SPM neuroimaging results.
+    
+    Parameters:
+        gnn_model: Parsed GNN model structure
+        spm_results: SPM statistical analysis results
+    
+    Returns:
+        Calibrated GNNModel with SPM-informed parameters
+    """
+
+def extract_connectivity_matrix(spm_results: SPMResults) -> ConnectivityMatrix:
+    """
+    Extract connectivity matrix from SPM DCM results.
+    
+    Parameters:
+        spm_results: SPM analysis results
+    
+    Returns:
+        ConnectivityMatrix for GNN transition model
+    """
+```
 
 ## Standards and Guidelines
 
@@ -56,17 +100,30 @@ All documentation in this module adheres to professional standards:
 
 ## Related Resources
 
-**Main GNN Documentation**: [gnn/](../gnn/)
-- [GNN Overview](../gnn/gnn_overview.md)
-- [GNN Quickstart](../gnn/quickstart_tutorial.md)
-- [GNN Examples](../gnn/gnn_examples_doc.md)
+### Main GNN Documentation
+- **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
+- **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
+- **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
-**Pipeline Architecture**: [src/](../../src/)
-- [Pipeline AGENTS](../../src/AGENTS.md)
-- [Pipeline README](../../src/README.md)
+### Neuroscientific Resources
+- **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
+- **[Neuroscience](../CROSS_REFERENCE_INDEX.md#neuroscience)**: Neuroscientific methods
+- **[Research Tools](../research/README.md)**: Research workflow tools
+
+### Pipeline Architecture
+- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
+- **[Pipeline README](../../src/README.md)**: Pipeline overview
+
+## See Also
+
+- **[SPM Cross-Reference](../CROSS_REFERENCE_INDEX.md#spm)**: Cross-reference index entry
+- **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
+- **[Neuroscience](../CROSS_REFERENCE_INDEX.md#neuroscience)**: Neuroscientific methods
+- **[Main Index](../README.md)**: Return to main documentation
 
 ---
 
 **Status**: ✅ Production Ready  
 **Compliance**: Professional documentation standards  
-**Maintenance**: Regular updates with new features
+**Maintenance**: Regular updates with new SPM features and integration capabilities

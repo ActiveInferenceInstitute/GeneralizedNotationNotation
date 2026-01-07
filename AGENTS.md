@@ -52,17 +52,41 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step syst
 
 ### Thin Orchestrator Design
 
+```mermaid
+graph TB
+    subgraph "Orchestrator Layer"
+        Script[N_Module.py<br/>Thin Orchestrator]
+    end
+    
+    subgraph "Module Layer"
+        Init[__init__.py<br/>Public API]
+        Processor[processor.py<br/>Core Logic]
+        Framework[framework/<br/>Framework Code]
+        MCP[mcp.py<br/>MCP Tools]
+    end
+    
+    Script -->|Calls| Init
+    Init -->|Delegates| Processor
+    Processor -->|Uses| Framework
+    Processor -->|Registers| MCP
+    
+    style Script fill:#e3f2fd
+    style Init fill:#f3e5f5
+    style Processor fill:#fff3e0
+```
+
 **Numbered Scripts** (`src/N_module.py`):
-- Handle argument parsing
-- Setup logging and output directories
-- Call module processing functions
-- Return standardized exit codes
+- Handle argument parsing via `utils.argument_utils.ArgumentParser`
+- Setup logging via `utils.logging_utils.setup_step_logging`
+- Get output directories via `pipeline.config.get_output_dir_for_script`
+- Call module processing functions from `module/__init__.py`
+- Return standardized exit codes (0=success, 1=error, 2=warning)
 
 **Module Implementation** (`src/module/`):
-- Contains all domain logic
-- Provides public API for orchestrators
+- Contains all domain logic in `processor.py` and subdirectories
+- Provides public API via `__init__.py` exports
 - Implements error handling and fallbacks
-- Exports functions via `__init__.py`
+- Registers MCP tools in `mcp.py`
 
 ### Example Structure
 ```
@@ -77,38 +101,89 @@ src/
 │   └── mcp.py               # MCP tool registration
 ```
 
+### Function Signature Pattern
+
+All module processing functions follow this pattern:
+
+```python
+def process_module(
+    target_dir: Path,
+    output_dir: Path,
+    verbose: bool = False,
+    **kwargs
+) -> bool:
+    """
+    Main processing function for module.
+    
+    Parameters:
+        target_dir: Directory containing input files
+        output_dir: Directory for output files
+        verbose: Enable verbose logging
+        **kwargs: Additional module-specific options
+    
+    Returns:
+        True if processing succeeded, False otherwise
+    """
+```
+
 ---
 
 ## Pipeline Execution Flow
 
-```
-src/main.py
-  ↓
-[Steps 0-23 executed sequentially]
-  ↓
-output/
-  ├── 0_template_output/
-  ├── 1_setup_output/
-  ├── ... (24 step outputs)
-  └── pipeline_execution_summary.json
+```mermaid
+flowchart TD
+    Main[src/main.py] -->|Orchestrates| Steps[24 Pipeline Steps]
+    
+    Steps --> Step0[Step 0: Template]
+    Step0 --> Step1[Step 1: Setup]
+    Step1 --> Step2[Step 2: Tests]
+    Step2 --> Step3[Step 3: GNN]
+    Step3 --> Step4[Step 4: Registry]
+    Step4 --> Step5[Step 5: Type Check]
+    Step5 --> Step6[Step 6: Validation]
+    Step6 --> Step7[Step 7: Export]
+    Step7 --> Step8[Step 8: Visualization]
+    Step8 --> Step9[Step 9: Advanced Viz]
+    Step9 --> Step10[Step 10: Ontology]
+    Step10 --> Step11[Step 11: Render]
+    Step11 --> Step12[Step 12: Execute]
+    Step12 --> Step13[Step 13: LLM]
+    Step13 --> Step14[Step 14: ML Integration]
+    Step14 --> Step15[Step 15: Audio]
+    Step15 --> Step16[Step 16: Analysis]
+    Step16 --> Step17[Step 17: Integration]
+    Step17 --> Step18[Step 18: Security]
+    Step18 --> Step19[Step 19: Research]
+    Step19 --> Step20[Step 20: Website]
+    Step20 --> Step21[Step 21: MCP]
+    Step21 --> Step22[Step 22: GUI]
+    Step22 --> Step23[Step 23: Report]
+    
+    Step23 --> Output[output/]
+    Output --> Summary[pipeline_execution_summary.json]
 ```
 
 ### Data Dependencies
 
-```
-3_gnn.py → [parses GNN files]
-  ↓
-  ├→ 5_type_checker.py
-  ├→ 6_validation.py
-  ├→ 7_export.py
-  ├→ 8_visualization.py
-  ├→ 10_ontology.py
-  ├→ 11_render.py
-  └→ 13_llm.py
-        ↓
-11_render.py → [generates code]
-  ↓
-12_execute.py → [runs simulations]
+```mermaid
+graph TD
+    Step3[Step 3: GNN Parse] -->|Parsed Models| Step5[Step 5: Type Check]
+    Step3 -->|Parsed Models| Step6[Step 6: Validation]
+    Step3 -->|Parsed Models| Step7[Step 7: Export]
+    Step3 -->|Parsed Models| Step8[Step 8: Visualization]
+    Step3 -->|Parsed Models| Step10[Step 10: Ontology]
+    Step3 -->|Parsed Models| Step11[Step 11: Render]
+    Step3 -->|Parsed Models| Step13[Step 13: LLM]
+    
+    Step11 -->|Generated Code| Step12[Step 12: Execute]
+    Step12 -->|Execution Results| Step16[Step 16: Analysis]
+    
+    Step5 -->|Type Info| Step6
+    Step6 -->|Validation Results| Step7
+    Step7 -->|Exported Data| Step8
+    Step8 -->|Visualizations| Step16
+    Step13 -->|LLM Insights| Step16
+    Step16 -->|Analysis Results| Step23[Step 23: Report]
 ```
 
 ---

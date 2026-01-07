@@ -26,13 +26,87 @@ graph TD
     Utils --> Args[Arg Parser]
     Utils --> Files[File Utils]
     Utils --> Valid[Validation]
+    Utils --> Config[Configuration]
+    Utils --> Error[Error Recovery]
+    Utils --> Perf[Performance Tracking]
     
     Log --> StructLog[Structured Logs]
     Args --> Config[Configuration]
     Files --> IOSafe[Safe IO Ops]
     Valid --> Checks[Path/Config Checks]
+    Error --> Recovery[Recovery Strategies]
+    Perf --> Metrics[Performance Metrics]
     
-    StructLog & Config & IOSafe & Checks --> Standard[Standardization]
+    StructLog & Config & IOSafe & Checks & Recovery & Metrics --> Standard[Standardization]
+```
+
+### Utility Module Architecture
+
+```mermaid
+graph LR
+    subgraph "Logging Utilities"
+        LogUtils[logging_utils.py]
+        StructLog[structured_logging.py]
+        VisualLog[visual_logging.py]
+    end
+    
+    subgraph "Configuration"
+        ConfigLoader[config_loader.py]
+        ConfigMgr[configuration.py]
+    end
+    
+    subgraph "Pipeline Support"
+        ArgUtils[argument_utils.py]
+        PipelineUtils[pipeline.py]
+        PipelineTemplate[pipeline_template.py]
+    end
+    
+    subgraph "Error Handling"
+        ErrorRecovery[error_recovery.py]
+        ErrorHandling[error_handling.py]
+    end
+    
+    subgraph "Resource Management"
+        ResourceMgr[resource_manager.py]
+        PerfTracker[performance_tracker.py]
+    end
+    
+    PipelineUtils --> LogUtils
+    PipelineUtils --> ArgUtils
+    PipelineUtils --> ConfigLoader
+    
+    LogUtils --> StructLog
+    LogUtils --> VisualLog
+    
+    ErrorRecovery --> ErrorHandling
+    ResourceMgr --> PerfTracker
+```
+
+### Logging Flow
+
+```mermaid
+sequenceDiagram
+    participant Script as Pipeline Script
+    participant Utils as Utils Module
+    participant Logger as Logger
+    participant Tracker as Performance Tracker
+    
+    Script->>Utils: setup_step_logging()
+    Utils->>Logger: Create logger with correlation ID
+    Utils->>Tracker: Initialize performance tracking
+    Logger-->>Script: Return logger instance
+    
+    Script->>Logger: log_step_start()
+    Logger->>Tracker: Record start time
+    Logger->>Logger: Emit structured log
+    
+    Script->>Logger: log_step_success()
+    Logger->>Tracker: Calculate duration
+    Logger->>Logger: Emit success log with metrics
+    
+    Script->>Logger: log_step_error()
+    Logger->>Tracker: Record error
+    Logger->>Logger: Emit error log with context
 ```
 
 ### Unified Logging System

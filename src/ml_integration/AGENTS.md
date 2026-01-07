@@ -37,30 +37,37 @@
 
 ### Public Functions
 
-#### `process_ml_integration(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main ML integration processing function called by orchestrator (14_ml_integration.py)
+#### `process_ml_integration(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main ML integration processing function called by orchestrator (14_ml_integration.py). Integrates machine learning frameworks with GNN models for training and evaluation.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for ML integration results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `model_type` (str): ML model type ("auto", "supervised", "unsupervised", default: "auto")
-- `training_mode` (str): Training mode ("train", "evaluate", "predict", default: "train")
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `model_type` (str, optional): ML model type ("auto", "supervised", "unsupervised") (default: "auto")
+- `training_mode` (str, optional): Training mode ("train", "evaluate", "predict") (default: "train")
+- `framework` (str, optional): ML framework ("auto", "sklearn", "pytorch", "tensorflow", "jax") (default: "auto")
+- `hyperparameter_optimization` (bool, optional): Enable hyperparameter optimization (default: False)
 - `**kwargs`: Additional ML-specific options
 
-**Returns**: `True` if ML integration processing succeeded
+**Returns**: `bool` - True if ML integration processing succeeded, False otherwise
 
 **Example**:
 ```python
 from ml_integration import process_ml_integration
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_ml_integration(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/14_ml_integration_output"),
+    logger=logger,
     verbose=True,
     model_type="supervised",
-    training_mode="train"
+    training_mode="train",
+    framework="sklearn"
 )
 ```
 

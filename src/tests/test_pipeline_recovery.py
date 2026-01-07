@@ -94,7 +94,7 @@ class TestRecursionErrorRecovery:
             
     def test_render_step_recovery(self, test_environment, sample_gnn_file):
         """Test render step recovery from recursion errors."""
-        from render.renderer import render_gnn_files
+        from tests.helpers.render_recovery import render_gnn_files
         
         # Execute real render; recovery should be handled internally if needed
         result = render_gnn_files(

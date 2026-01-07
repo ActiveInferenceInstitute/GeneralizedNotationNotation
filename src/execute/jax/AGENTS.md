@@ -33,49 +33,61 @@
 
 ### Public Functions
 
-#### `run_jax_scripts(pipeline_output_dir: str, recursive_search: bool = True, **kwargs) -> bool`
-**Description**: Execute all JAX scripts found in pipeline output directory
+#### `run_jax_scripts(pipeline_output_dir: Union[str, Path], recursive_search: bool = True, **kwargs) -> bool`
+**Description**: Execute all JAX scripts found in pipeline output directory.
 
 **Parameters**:
-- `pipeline_output_dir` (str): Directory containing pipeline outputs
-- `recursive_search` (bool): Whether to search subdirectories
-- `**kwargs`: Additional options (device, verbose, timeout)
+- `pipeline_output_dir` (Union[str, Path]): Directory containing pipeline outputs
+- `recursive_search` (bool): Whether to search subdirectories (default: True)
+- `device` (str, optional): Device to use ("auto", "cpu", "gpu", "tpu") (default: "auto")
+- `timeout` (int, optional): Execution timeout per script in seconds (default: 300)
+- `verbose` (bool, optional): Enable verbose logging (default: False)
+- `**kwargs`: Additional execution options
 
-**Returns**: `True` if all scripts executed successfully
+**Returns**: `bool` - True if all scripts executed successfully, False otherwise
 
 **Example**:
 ```python
 from execute.jax import run_jax_scripts
+from pathlib import Path
 
 success = run_jax_scripts(
-    pipeline_output_dir="output/11_render_output",
+    pipeline_output_dir=Path("output/11_render_output"),
     recursive_search=True,
     device="gpu",
-    verbose=True
+    verbose=True,
+    timeout=600
 )
 ```
 
-#### `execute_jax_script(script_path: str, device: str = "auto", **kwargs) -> Dict[str, Any]`
-**Description**: Execute a specific JAX script with performance monitoring
+#### `execute_jax_script(script_path: Union[str, Path], device: str = "auto", **kwargs) -> Dict[str, Any]`
+**Description**: Execute a specific JAX script with performance monitoring and hardware acceleration.
 
 **Parameters**:
-- `script_path` (str): Path to JAX script file
-- `device` (str): Device to use ("auto", "cpu", "gpu", "tpu")
+- `script_path` (Union[str, Path]): Path to JAX script file
+- `device` (str, optional): Device to use ("auto", "cpu", "gpu", "tpu") (default: "auto")
+- `profile` (bool, optional): Enable performance profiling (default: False)
+- `timeout` (int, optional): Execution timeout in seconds (default: 300)
 - `**kwargs`: Additional execution options
 
-**Returns**: Dictionary with execution results and metrics
+**Returns**: `Dict[str, Any]` - Execution results dictionary with:
+- `success` (bool): Whether execution succeeded
+- `execution_time` (float): Execution time in seconds
+- `device_used` (str): Device that was used
+- `performance_metrics` (Dict): Performance metrics if profiling enabled
+- `output_files` (List[Path]): Generated output files
 
-#### `find_jax_scripts(search_dir: str, recursive: bool = True) -> List[str]`
-**Description**: Find all JAX script files in a directory
+#### `find_jax_scripts(search_dir: Union[str, Path], recursive: bool = True) -> List[Path]`
+**Description**: Find all JAX script files in a directory.
 
 **Parameters**:
-- `search_dir` (str): Directory to search in
-- `recursive` (bool): Whether to search subdirectories
+- `search_dir` (Union[str, Path]): Directory to search in
+- `recursive` (bool): Whether to search subdirectories (default: True)
 
-**Returns**: List of paths to JAX script files
+**Returns**: `List[Path]` - List of paths to JAX script files
 
 #### `is_jax_available(device: str = "cpu") -> bool`
-**Description**: Check if JAX is available and configured for specified device
+**Description**: Check if JAX is available and configured for specified device.
 
 **Parameters**:
 - `device` (str): Device to check availability for

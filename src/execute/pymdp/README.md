@@ -44,6 +44,29 @@ src/execute/pymdp/
 - Error handling
 - Result collection
 
+## PyMDP Execution Pipeline
+
+```mermaid
+graph TD
+    Scripts[PyMDP Scripts] --> Discover[Discover Scripts]
+    Discover --> Validate[Validate Scripts]
+    
+    Validate --> Setup[Setup Environment]
+    Setup --> Check[Check Dependencies]
+    
+    Check -->|Available| Execute[Execute Script]
+    Check -->|Missing| Skip[Skip with Warning]
+    
+    Execute --> Monitor[Monitor Execution]
+    Monitor --> Capture[Capture Results]
+    
+    Capture --> ValidateResults[Validate Results]
+    ValidateResults --> Report[Generate Report]
+    
+    Skip --> Report
+    Report --> Summary[Execution Summary]
+```
+
 ## Features
 
 - Multi-script execution support

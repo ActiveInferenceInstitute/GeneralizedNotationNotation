@@ -1,48 +1,39 @@
 {
-  "timestamp": "2026-01-06T13:47:48.483626",
+  "timestamp": "2026-01-07T05:47:57.562555",
   "total_attempts": 8,
-  "successful": 3,
-  "failed": 3,
-  "skipped": 2,
+  "successful": 8,
+  "failed": 0,
+  "skipped": 0,
   "total_duration_ms": 0.0,
   "output_files": [
     "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
     "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
-    "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
+    "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
   ],
   "warnings": [],
-  "errors": [
-    "attempted relative import beyond top-level package",
-    "attempted relative import beyond top-level package",
-    "attempted relative import beyond top-level package"
-  ],
+  "errors": [],
   "skipped_features": {
-    "count": 2,
-    "by_reason": {
-      "D2 CLI not installed": [
-        "d2_diagrams:Classic Active Inference POMDP Agent v1",
-        "d2_pipeline_diagrams:gnn_pipeline"
-      ]
-    },
-    "details": [
-      {
-        "feature": "d2_diagrams:Classic Active Inference POMDP Agent v1",
-        "reason": "D2 CLI not installed",
-        "fallback_available": true
-      },
-      {
-        "feature": "d2_pipeline_diagrams:gnn_pipeline",
-        "reason": "D2 CLI not installed",
-        "fallback_available": true
-      }
-    ]
+    "count": 0,
+    "by_reason": {},
+    "details": []
   },
   "attempts": [
     {
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 162.92905807495117,
+      "duration_ms": 153.6870002746582,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -53,7 +44,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 242.52629280090332,
+      "duration_ms": 240.45586585998535,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],
@@ -63,35 +54,41 @@
     {
       "viz_type": "matrix_correlations",
       "model_name": "actinf_pomdp_agent",
-      "status": "failed",
-      "duration_ms": 0.05793571472167969,
-      "output_files": [],
-      "error_message": "attempted relative import beyond top-level package",
+      "status": "success",
+      "duration_ms": 291.4559841156006,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png"
+      ],
+      "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "pomdp_transitions",
       "model_name": "actinf_pomdp_agent",
-      "status": "failed",
-      "duration_ms": 0.018358230590820312,
-      "output_files": [],
-      "error_message": "attempted relative import beyond top-level package",
+      "status": "success",
+      "duration_ms": 293.43318939208984,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png"
+      ],
+      "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "policy",
       "model_name": "actinf_pomdp_agent",
-      "status": "failed",
-      "duration_ms": 0.015020370483398438,
-      "output_files": [],
-      "error_message": "attempted relative import beyond top-level package",
+      "status": "success",
+      "duration_ms": 157.42826461791992,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
+      ],
+      "error_message": null,
       "fallback_used": false
     },
     {
       "viz_type": "network_metrics",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 224.66802597045898,
+      "duration_ms": 203.9189338684082,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
       ],
@@ -101,20 +98,30 @@
     {
       "viz_type": "d2_diagrams",
       "model_name": "Classic Active Inference POMDP Agent v1",
-      "status": "skipped",
-      "duration_ms": 0.5710124969482422,
-      "output_files": [],
-      "error_message": "D2 CLI not installed",
-      "fallback_used": true
+      "status": "success",
+      "duration_ms": 1998.1181621551514,
+      "output_files": [
+        "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.svg",
+        "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
     },
     {
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
-      "status": "skipped",
-      "duration_ms": 0.0743865966796875,
-      "output_files": [],
-      "error_message": "D2 CLI not installed",
-      "fallback_used": true
+      "status": "success",
+      "duration_ms": 3775.4969596862793,
+      "output_files": [
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
     }
   ]
 }

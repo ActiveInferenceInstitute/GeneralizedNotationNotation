@@ -284,9 +284,48 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         Tuple of (success, results_dict)
     """
     try:
-        # Import PyMDP components
-        from pymdp.agent import Agent
-        from pymdp import utils
+        # Import PyMDP components - try multiple import paths for compatibility
+        # The correct package is 'inferactively-pymdp' (pip install inferactively-pymdp)
+        Agent = None
+        utils = None
+        
+        try:
+            # Modern inferactively-pymdp API
+            from pymdp import Agent as PyMDPAgent
+            from pymdp import utils
+            Agent = PyMDPAgent
+            logger.info("Using pymdp modern API")
+        except ImportError:
+            pass
+        
+        if Agent is None:
+            try:
+                # Legacy import path
+                from pymdp.agent import Agent as PyMDPAgent
+                from pymdp import utils
+                Agent = PyMDPAgent
+                logger.info("Using pymdp.agent API")
+            except ImportError:
+                pass
+        
+        if Agent is None:
+            # Check if we have the WRONG pymdp package installed
+            try:
+                import pymdp
+                available = dir(pymdp)
+                if 'MDP' in available and 'Agent' not in available:
+                    msg = ("Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver "
+                           "but this is not the Active Inference library. "
+                           "Install the correct package with: pip install inferactively-pymdp")
+                    logger.error(msg)
+                    return False, {"success": False, "error": msg}
+            except ImportError:
+                pass
+            
+            msg = ("PyMDP Agent class not found. Install with: pip install inferactively-pymdp")
+            logger.error(msg)
+            return False, {"success": False, "error": msg, 
+                          "suggestion": "Install with: pip install inferactively-pymdp"}
         
         logger.info("Starting simple PyMDP simulation")
         
@@ -375,18 +414,25 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E)
         logger.info("Successfully created PyMDP agent")
         
-        # Run a simple simulation loop (increased timesteps for better visualization)
         num_timesteps = 15
         observations = []
         beliefs = []
+        true_states = []
         actions = []
         beliefs_raw = []  # Store raw numpy arrays for visualization
         
+        # Initial true state
+        current_state = np.random.choice(range(A.shape[1]), p=D)
+        
         for t in range(num_timesteps):
-            # Sample observation (for demo, use random)
-            obs_idx = np.random.randint(0, A.shape[0])
+            # Track true state
+            true_states.append(int(current_state))
+            
+            # Sample observation from current true state
+            obs_probs = A[:, current_state]
+            obs_idx = np.random.choice(range(A.shape[0]), p=obs_probs)
             obs = np.array([obs_idx])
-            observations.append(obs_idx)
+            observations.append(int(obs_idx))
             
             # Infer states
             qs = agent.infer_states(obs)
@@ -400,7 +446,12 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             action = agent.sample_action()
             actions.append(int(action[0]))
             
-            logger.info(f"Step {t}: obs={obs_idx}, belief={qs[0]}, action={action[0]}")
+            # Transition true state using B matrix
+            # B is (next_state, prev_state, action)
+            next_state_probs = B[:, current_state, int(action[0])]
+            current_state = np.random.choice(range(B.shape[0]), p=next_state_probs)
+            
+            logger.info(f"Step {t}: true_s={true_states[-1]}, obs={obs_idx}, belief={np.round(qs[0], 2)}, action={action[0]}")
         
         # Generate comprehensive visualizations
         logger.info("Generating PyMDP-specific visualizations...")
@@ -425,6 +476,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             "framework": "PyMDP",
             "num_timesteps": num_timesteps,
             "observations": observations,
+            "true_states": true_states,
             "beliefs": beliefs,
             "actions": actions,
             "model_parameters": {

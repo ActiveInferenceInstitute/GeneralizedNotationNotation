@@ -33,18 +33,29 @@
 
 ### Public Functions
 
-#### `execute_rxinfer_simulation(julia_script_path: str, config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Execute RxInfer.jl simulation from generated Julia script
+#### `execute_rxinfer_simulation(julia_script_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Execute RxInfer.jl simulation from generated Julia script.
 
 **Parameters**:
-- `julia_script_path` (str): Path to RxInfer.jl simulation script
-- `config` (Dict): Execution configuration parameters
+- `julia_script_path` (Union[str, Path]): Path to RxInfer.jl simulation script
+- `config` (Dict[str, Any], optional): Execution configuration parameters (default: {})
+- `iterations` (int, optional): Number of inference iterations (default: 100)
+- `convergence_threshold` (float, optional): Convergence threshold (default: 1e-6)
+- `timeout` (int, optional): Execution timeout in seconds (default: 600)
+- `julia_path` (str, optional): Path to Julia executable (default: auto-detect)
+- `**kwargs`: Additional execution options
 
-**Returns**: Dictionary with simulation results and metadata
+**Returns**: `Dict[str, Any]` - Simulation results dictionary with:
+- `success` (bool): Whether execution succeeded
+- `execution_time` (float): Total execution time in seconds
+- `results` (Dict): Inference results
+- `converged` (bool): Whether inference converged
+- `output_files` (List[Path]): Generated output files
 
 **Example**:
 ```python
 from execute.rxinfer import execute_rxinfer_simulation
+from pathlib import Path
 
 config = {
     'iterations': 100,
@@ -55,27 +66,38 @@ config = {
     'visualization': True
 }
 
-results = execute_rxinfer_simulation("simulation.jl", config)
+results = execute_rxinfer_simulation(
+    Path("output/11_render_output/simulation.jl"),
+    config=config,
+    timeout=600
+)
 print(f"Inference completed in {results['execution_time']:.2f}s")
 ```
 
-#### `run_rxinfer_inference(model_code: str, data: Dict[str, Any], config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Run RxInfer.jl inference with model code and data
+#### `run_rxinfer_inference(model_code: str, data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Run RxInfer.jl inference with model code and data.
 
 **Parameters**:
 - `model_code` (str): RxInfer.jl model code
-- `data` (Dict): Observation data dictionary
-- `config` (Dict): Inference configuration
+- `data` (Dict[str, Any]): Observation data dictionary
+- `config` (Dict[str, Any], optional): Inference configuration (default: {})
+- `iterations` (int, optional): Number of inference iterations (default: 100)
+- `algorithm` (str, optional): Inference algorithm ("VMP", "BP", "EP") (default: "VMP")
+- `**kwargs`: Additional inference options
 
-**Returns**: Inference results dictionary
+**Returns**: `Dict[str, Any]` - Inference results with beliefs, free energy, convergence status
 
-#### `validate_julia_environment() -> Dict[str, bool]`
-**Description**: Validate Julia environment and RxInfer.jl installation
+#### `validate_julia_environment() -> Dict[str, Any]`
+**Description**: Validate Julia environment and RxInfer.jl installation.
 
-**Returns**: Validation results dictionary
+**Returns**: `Dict[str, Any]` - Validation results with:
+- `julia_available` (bool): Whether Julia is installed
+- `julia_version` (Optional[str]): Julia version if available
+- `rxinfer_available` (bool): Whether RxInfer.jl is installed
+- `rxinfer_version` (Optional[str]): RxInfer.jl version if available
 
-#### `setup_rxinfer_execution(config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Setup RxInfer.jl execution environment
+#### `setup_rxinfer_execution(config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Setup RxInfer.jl execution environment and install dependencies.
 
 **Parameters**:
 - `config` (Dict): Setup configuration

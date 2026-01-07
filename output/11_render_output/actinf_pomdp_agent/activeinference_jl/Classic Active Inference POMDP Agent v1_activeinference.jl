@@ -69,11 +69,11 @@ println("📁 Output directory: $output_dir")
 println("🔧 Creating model matrices from GNN specification...")
 
 # A matrix (observation model)
-A_matrix = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]
+A_matrix = [0.9 0.05 0.05; 0.05 0.9 0.05; 0.05 0.05 0.9]
 println("✅ A matrix created: $(size(A_matrix))")
 
 # B matrix (transition model) 
-B_matrix = [[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]]]
+B_matrix = cat([1.0 0.0 0.0; 0.0 1.0 0.0; 0.0 0.0 1.0], [0.0 1.0 0.0; 1.0 0.0 0.0; 0.0 0.0 1.0], [0.0 0.0 1.0; 0.0 1.0 0.0; 1.0 0.0 0.0]; dims=3)
 println("✅ B matrix created: $(size(B_matrix))")
 
 # C vector (preferences)

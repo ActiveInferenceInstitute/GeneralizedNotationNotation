@@ -38,45 +38,67 @@
 
 ### Public Functions
 
-#### `process_analysis(target_dir, output_dir, logger=None, **kwargs) -> bool`
-**Description**: Main analysis processing function called by orchestrator (16_analysis.py)
+#### `process_analysis(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main analysis processing function called by orchestrator (16_analysis.py). Performs comprehensive statistical analysis, complexity metrics, and performance benchmarking.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
+- `target_dir` (Path): Directory containing GNN files to analyze
 - `output_dir` (Path): Output directory for analysis results
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `analysis_type` (str): Type of analysis to perform ("comprehensive", "statistical", "performance", default: "comprehensive")
-- `include_performance` (bool): Include performance benchmarking (default: True)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `analysis_type` (str, optional): Type of analysis ("comprehensive", "statistical", "performance", "complexity") (default: "comprehensive")
+- `include_performance` (bool, optional): Include performance benchmarking (default: True)
+- `include_complexity` (bool, optional): Include complexity metrics (default: True)
+- `include_quality` (bool, optional): Include quality assessment (default: True)
+- `benchmark_iterations` (int, optional): Number of benchmark iterations (default: 5)
 - `**kwargs`: Additional analysis options
 
-**Returns**: `True` if analysis succeeded
+**Returns**: `bool` - True if analysis succeeded, False otherwise
 
 **Example**:
 ```python
 from analysis import process_analysis
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_analysis(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/16_analysis_output"),
+    logger=logger,
     analysis_type="comprehensive",
-    include_performance=True
+    include_performance=True,
+    benchmark_iterations=10
 )
 ```
 
-#### `perform_statistical_analysis(variables, connections) -> Dict[str, Any]`
-**Description**: Perform comprehensive statistical analysis on model components
+#### `perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict[str, Any]`
+**Description**: Perform comprehensive statistical analysis on a GNN file.
 
 **Parameters**:
-- `variables` (List[Dict]): Model variables data
-- `connections` (List[Dict]): Model connections data
+- `file_path` (Path): Path to the GNN file to analyze
+- `verbose` (bool, optional): Enable verbose output (default: False)
 
-**Returns**: Dictionary with statistical analysis results
+**Returns**: `Dict[str, Any]` - Statistical analysis results with:
+- `variable_count` (int): Total number of variables
+- `connection_count` (int): Total number of connections
+- `type_distribution` (Dict[str, int]): Distribution of variable types
+- `dimension_statistics` (Dict[str, Any]): Dimension statistics
+- `density_metrics` (Dict[str, float]): Connection density metrics
 
-#### `calculate_complexity_metrics(model_data) -> Dict[str, Any]`
-**Description**: Calculate various complexity metrics for GNN models
+#### `calculate_complexity_metrics(model_data: Dict[str, Any], variables: List[Dict[str, Any]] = None, connections: List[Dict[str, Any]] = None) -> Dict[str, Any]`
+**Description**: Calculate various complexity metrics for GNN models.
 
 **Parameters**:
-- `model_data` (Dict): Parsed GNN model data
+- `model_data` (Dict[str, Any]): Parsed GNN model data
+- `variables` (List[Dict[str, Any]], optional): Model variables (extracted if not provided)
+- `connections` (List[Dict[str, Any]], optional): Model connections (extracted if not provided)
+
+**Returns**: `Dict[str, Any]` - Complexity metrics with:
+- `cyclomatic_complexity` (float): Cyclomatic complexity score
+- `cognitive_complexity` (float): Cognitive complexity score
+- `structural_complexity` (float): Structural complexity score
+- `maintainability_index` (float): Maintainability index (0-100)
+- `technical_debt` (float): Technical debt score
 
 **Returns**: Dictionary with complexity metrics (cyclomatic, cognitive, structural)
 
@@ -245,16 +267,89 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 ## MCP Integration
 
 ### Tools Registered
-- `analysis_perform` - Perform statistical analysis
-- `analysis_complexity` - Calculate complexity metrics
-- `analysis_compare` - Compare multiple models
+- `process_analysis` - Process analysis for GNN files in a directory
 
 ### Tool Endpoints
 ```python
-@mcp_tool("analysis_perform")
-def perform_analysis_tool(model_data, analysis_type="comprehensive"):
-    """Perform statistical analysis on GNN model"""
+@mcp_tool("process_analysis")
+def process_analysis_mcp(target_directory: str, output_directory: str, verbose: bool = False):
+    """Process Analysis for GNN files. Exposed via MCP."""
     # Implementation
 ```
 
+### MCP File Location
+- `src/analysis/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Analysis fails on large models
+**Symptom**: Analysis times out or runs out of memory  
+**Cause**: Model too complex for comprehensive analysis  
+**Solution**: 
+- Use specific analysis types instead of "comprehensive"
+- Disable performance benchmarking for large models
+- Process models individually instead of batch
+- Increase system memory or use sampling
+
+#### Issue 2: Complexity metrics return zero
+**Symptom**: Complexity calculations return zero or invalid values  
+**Cause**: Model structure not properly extracted or missing components  
+**Solution**:
+- Verify GNN processing (step 3) completed successfully
+- Check that model has variables and connections
+- Use `--verbose` flag for detailed extraction logs
+
+#### Issue 3: Framework comparison fails
+**Symptom**: Cross-framework comparison reports errors  
+**Cause**: Execution results (step 12) not available or incomplete  
+**Solution**:
+- Ensure execution step (12) completed successfully
+- Verify framework outputs exist in execution results
+- Check execution results format matches expected structure
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Statistical analysis
+- Complexity metrics calculation
+- Performance benchmarking
+- Model comparison
+- Framework output analysis
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced visualization of analysis results
+- **Future**: Real-time analysis dashboard
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Execute Module](../execute/AGENTS.md)
+- [Analysis Module](../analysis/README.md)
+
+### External Resources
+- [NetworkX Documentation](https://networkx.org/)
+- [NumPy Documentation](https://numpy.org/doc/)
+- [SciPy Documentation](https://scipy.org/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

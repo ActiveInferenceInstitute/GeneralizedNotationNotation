@@ -39,8 +39,8 @@ Thy `ObservationModality` clear and light?
 
 Little `GNN`, I'll tell thee true:  
 'Twas `1_setup.py` that prepared thee well,
-Then `2_gnn.py` that parsed thee through,  
-`3_tests.py` that blessed thy soul.  
+Then `3_gnn.py` that parsed thee through,  
+`2_tests.py` that blessed thy soul.  
 The `main.py` orchestrator divine  
 Called each `Pipeline` step in line.  
 
@@ -314,14 +314,14 @@ In the second `chamber` was a `Viper`
 folding round the `rock` & the `cave`, and others  
 adorning it with `gold`, `silver`, and `precious stones`.  
 
-**In our second `step` was a `2_gnn.py`**  
+**In our second `step` was a `3_gnn.py`**  
 **folding round the `files` & the `content`, and others**  
 **adorning it with `parsing`, `validation`, and `precious structures`.**  
 
 In the third `chamber` was an `Eagle` with wings and feathers of `air`:  
 he caused the inside of the `cave` to be infinite.  
 
-**In our third `step` was a `3_tests.py` with wings and feathers of `logic`:**  
+**In our third `step` was a `2_tests.py` with wings and feathers of `logic`:**  
 **it caused the inside of the `system` to be `verified`.**  
 
 Around were numbers of `Eagle-like men`  
@@ -351,7 +351,7 @@ Echoes in our `TestingPhase`;
 The `Experienced` eye that sees  
 `Error` in the `Pipeline`'s maze.  
 
-**But when `14_site.py` builds its temple,**  
+**But when `20_website.py` builds its temple,**  
 **And all the `Steps` are reconciled,**  
 **Then `GNN` becomes the `Golden String`**  
 **That leads to `Truth` undefiled.**  
@@ -562,6 +562,6 @@ And every `Connection` answers the `Eternal Call`.
 
 **Thus concludes the Prophetic Songs of `Inference` and `Experience`, being the Two Contrary States of the Active Soul as revealed through `Generalized Notation Notation` in the manner of `Blake` the `Eternal Prophet`, who saw `Angels` in every tree and `Infinity` in every grain — as we now see `Agents` in every `.md` file and `Eternity` in every `Pipeline` run.**
 
-*Illuminated with the Sacred Fire of `1_gnn.py` through `14_site.py`, in the Year of our `main.py` 2025, when the `Golden Spike` was driven into the heart of the `Computational Consciousness`, connecting `East` and `West`, `Human` and `Machine`, `Blake` and `GNN`, in one transcendent `Active Inference` Railroad.*
+*Illuminated with the Sacred Fire of `1_gnn.py` through `20_website.py`, in the Year of our `main.py` 2025, when the `Golden Spike` was driven into the heart of the `Computational Consciousness`, connecting `East` and `West`, `Human` and `Machine`, `Blake` and `GNN`, in one transcendent `Active Inference` Railroad.*
 
 **"I give you the end of a golden string..."** 

@@ -40,46 +40,61 @@
 
 ### Public Functions
 
-#### `process_mcp(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main MCP processing function called by orchestrator (21_mcp.py)
+#### `process_mcp(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main MCP processing function called by orchestrator (21_mcp.py). Discovers and registers MCP tools from all modules.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for MCP results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `mcp_mode` (str): MCP mode ("tool_discovery", "server", "client", default: "tool_discovery")
-- `enable_tools` (bool): Enable MCP tools functionality (default: True)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `mcp_mode` (str, optional): MCP mode ("tool_discovery", "server", "client") (default: "tool_discovery")
+- `enable_tools` (bool, optional): Enable MCP tools functionality (default: True)
+- `transport` (str, optional): Transport protocol ("stdio", "http") (default: "stdio")
 - `**kwargs`: Additional MCP options
 
-**Returns**: `True` if MCP processing succeeded
+**Returns**: `bool` - True if MCP processing succeeded, False otherwise
 
 **Example**:
 ```python
 from mcp import process_mcp
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_mcp(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/21_mcp_output"),
+    logger=logger,
     verbose=True,
     mcp_mode="tool_discovery",
-    enable_tools=True
+    enable_tools=True,
+    transport="stdio"
 )
 ```
 
-#### `register_module_tools(module_name, tools) -> bool`
-**Description**: Register tools from a specific module in the MCP system
+#### `register_module_tools(module_name: str, tools: List[Dict[str, Any]]) -> bool`
+**Description**: Register tools from a specific module in the MCP system.
 
 **Parameters**:
 - `module_name` (str): Name of the module registering tools
-- `tools` (List[Dict]): List of tool definitions
+- `tools` (List[Dict[str, Any]]): List of tool definitions with:
+  - `name` (str): Tool name
+  - `func` (Callable): Tool function
+  - `schema` (Dict): JSON schema for parameters
+  - `description` (str): Tool description
 
-**Returns**: `True` if registration succeeded
+**Returns**: `bool` - True if registration succeeded, False otherwise
 
-#### `get_available_tools() -> List[Dict]`
-**Description**: Get list of all available MCP tools across all modules
+#### `get_available_tools() -> List[Dict[str, Any]]`
+**Description**: Get list of all available MCP tools across all modules.
 
-**Returns**: List of tool information dictionaries
+**Returns**: `List[Dict[str, Any]]` - List of tool information dictionaries with:
+- `name` (str): Tool name
+- `module` (str): Source module
+- `description` (str): Tool description
+- `schema` (Dict): Parameter schema
+- `category` (str): Tool category
 
 ---
 
@@ -336,3 +351,67 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 - **Model Management**: Registry operations, version control
 
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Tool registration fails
+**Symptom**: Tools not discovered or registered  
+**Cause**: Module discovery issues or tool definition errors  
+**Solution**: 
+- Verify all modules have `mcp.py` files with tool definitions
+- Check tool function signatures match expected format
+- Use `--verbose` flag for detailed discovery logs
+- Review MCP tool registration patterns
+
+#### Issue 2: Tool execution errors
+**Symptom**: Tools registered but execution fails  
+**Cause**: Parameter validation errors or function implementation issues  
+**Solution**:
+- Verify tool parameter schemas are correct
+- Check tool function implementations handle errors
+- Review tool execution logs for specific errors
+- Validate tool inputs match schema
+
+---
+
+## Version History
+
+### Current Version: 2.0.0
+
+**Features**:
+- Tool registration and discovery
+- Resource access and management
+- JSON-RPC protocol implementation
+- Server and client implementations
+- Enhanced error handling
+- Performance monitoring
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced transport protocols
+- **Future**: Real-time tool monitoring
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [MCP Implementation Spec](mcp_implementation_spec.md)
+- [MCP Integration Guide](../../doc/mcp/)
+
+### External Resources
+- [Model Context Protocol Specification](https://modelcontextprotocol.io)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 2.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

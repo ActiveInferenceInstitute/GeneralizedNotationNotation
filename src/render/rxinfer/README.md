@@ -11,6 +11,29 @@ The RxInfer module is part of the GNN Processing Pipeline and works in conjuncti
 3. Generating RxInfer.jl simulation scripts (Julia)
 4. Executing RxInfer.jl simulations
 
+## RxInfer.jl Rendering Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Components]
+    
+    Extract --> Variables[Variables]
+    Extract --> Factors[Factor Graph]
+    Extract --> Constraints[Reactive Constraints]
+    
+    Variables --> Convert[Convert to RxInfer]
+    Factors --> Convert
+    Constraints --> Convert
+    
+    Convert --> Generate[Generate Code]
+    Generate --> Julia[Julia Script]
+    Generate --> TOML[TOML Config]
+    
+    Julia --> Output[RxInfer.jl Code]
+    TOML --> Output
+```
+
 ## Integration with the Pipeline
 
 This module integrates with the GNN pipeline in the following ways:

@@ -39,50 +39,155 @@
 
 ## API Reference
 
-### Public Functions
+### Configuration Functions
 
 #### `get_pipeline_config() -> Dict[str, Any]`
-**Description**: Get the current pipeline configuration
+**Description**: Get the complete pipeline configuration including step metadata and settings
 
-**Returns**: Dictionary containing pipeline configuration parameters
+**Returns**: `Dict[str, Any]` - Pipeline configuration dictionary with:
+- `steps`: List of step names
+- `output_base_dir`: Base output directory
+- `log_level`: Logging level
+- `step_configs`: Step-specific configurations
 
-#### `get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path`
-**Description**: Get the output directory for a specific pipeline script
+**Example**:
+```python
+from pipeline import get_pipeline_config
+config = get_pipeline_config()
+print(f"Steps: {config['steps']}")
+```
 
-**Parameters**:
-- `script_name`: Name of the pipeline script (e.g., "3_gnn.py")
-- `base_output_dir`: Base output directory
-
-**Returns**: Path to the script's output directory
-
-#### `validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any]`
-**Description**: Validate prerequisites for a pipeline step
-
-**Parameters**:
-- `script_name`: Name of the script to validate
-- `args`: Command line arguments
-- `logger`: Logger instance
-
-**Returns**: Dictionary with validation results and warnings
-
-#### `validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger) -> Dict[str, Any]`
-**Description**: Validate the sequence of pipeline steps
+#### `set_pipeline_config(config: Dict[str, Any]) -> None`
+**Description**: Set pipeline configuration
 
 **Parameters**:
-- `steps_to_execute`: List of step tuples to execute
-- `logger`: Logger instance
+- `config` (Dict[str, Any]): Configuration dictionary to set
 
-**Returns**: Dictionary with sequence validation results
+**Returns**: `None`
 
-#### `generate_execution_plan(steps_to_execute: List[tuple], args, logger) -> Dict[str, Any]`
-**Description**: Generate execution plan for pipeline steps
+#### `get_output_dir_for_script(script_name: str, base_output_dir: Optional[Path] = None) -> Path`
+**Description**: Get standardized output directory for a pipeline script
 
 **Parameters**:
-- `steps_to_execute`: List of steps to execute
-- `args`: Pipeline arguments
-- `logger`: Logger instance
+- `script_name` (str): Name of the pipeline script (e.g., "3_gnn.py")
+- `base_output_dir` (Optional[Path]): Base output directory (default: Path("output"))
 
-**Returns**: Dictionary with execution plan and resource estimates
+**Returns**: `Path` - Output directory path (e.g., "output/3_gnn_output/")
+
+**Example**:
+```python
+from pipeline import get_output_dir_for_script
+from pathlib import Path
+output_dir = get_output_dir_for_script("3_gnn.py", Path("output"))
+```
+
+### Validation Functions
+
+#### `validate_step_prerequisites(script_name: str, args: argparse.Namespace, logger: logging.Logger) -> Dict[str, Any]`
+**Description**: Validate prerequisites for a pipeline step (input files, dependencies, etc.)
+
+**Parameters**:
+- `script_name` (str): Name of the script to validate (e.g., "3_gnn.py")
+- `args` (argparse.Namespace): Command line arguments
+- `logger` (logging.Logger): Logger instance
+
+**Returns**: `Dict[str, Any]` - Validation results with:
+- `passed` (bool): Whether validation passed
+- `warnings` (List[str]): List of warnings
+- `errors` (List[str]): List of errors
+- `missing_dependencies` (List[str]): Missing dependencies
+
+**Example**:
+```python
+from pipeline.pipeline_validator import validate_step_prerequisites
+result = validate_step_prerequisites("3_gnn.py", args, logger)
+if not result["passed"]:
+    print(f"Validation failed: {result['errors']}")
+```
+
+#### `validate_pipeline_step_sequence(steps_to_execute: List[tuple], logger: logging.Logger) -> Dict[str, Any]`
+**Description**: Validate the execution sequence of pipeline steps (dependency order, circular dependencies)
+
+**Parameters**:
+- `steps_to_execute` (List[tuple]): List of step tuples (step_name, step_function)
+- `logger` (logging.Logger): Logger instance
+
+**Returns**: `Dict[str, Any]` - Sequence validation results with:
+- `valid` (bool): Whether sequence is valid
+- `dependency_errors` (List[str]): Dependency violations
+- `circular_dependencies` (List[str]): Detected circular dependencies
+- `recommended_order` (List[str]): Recommended execution order
+
+### Execution Planning Functions
+
+#### `generate_execution_plan(steps_to_execute: List[tuple], args: argparse.Namespace, logger: logging.Logger) -> Dict[str, Any]`
+**Description**: Generate execution plan for pipeline steps with resource estimates
+
+**Parameters**:
+- `steps_to_execute` (List[tuple]): List of steps to execute
+- `args` (argparse.Namespace): Pipeline arguments
+- `logger` (logging.Logger): Logger instance
+
+**Returns**: `Dict[str, Any]` - Execution plan with:
+- `estimated_duration` (float): Estimated total duration in seconds
+- `resource_requirements` (Dict[str, Any]): Memory, CPU, disk requirements
+- `step_estimates` (List[Dict]): Per-step estimates
+- `parallelization_opportunities` (List[str]): Steps that can run in parallel
+
+**Example**:
+```python
+from pipeline.pipeline_planner import generate_execution_plan
+plan = generate_execution_plan(steps_to_execute, args, logger)
+print(f"Estimated time: {plan['estimated_duration']}s")
+```
+
+### Execution Functions
+
+#### `run_pipeline(target_dir: Path, output_dir: Path, steps: Optional[List[str]] = None, **kwargs) -> bool`
+**Description**: Execute the complete GNN processing pipeline
+
+**Parameters**:
+- `target_dir` (Path): Directory containing input files
+- `output_dir` (Path): Output directory for results
+- `steps` (Optional[List[str]]): Steps to execute (None = all steps)
+- `**kwargs`: Additional pipeline options (verbose, skip_steps, etc.)
+
+**Returns**: `bool` - True if pipeline executed successfully, False otherwise
+
+#### `execute_pipeline_step(step_name: str, target_dir: Path, output_dir: Path, **kwargs) -> StepExecutionResult`
+**Description**: Execute a single pipeline step
+
+**Parameters**:
+- `step_name` (str): Name of the step to execute
+- `target_dir` (Path): Input directory
+- `output_dir` (Path): Output directory
+- `**kwargs`: Step-specific options
+
+**Returns**: `StepExecutionResult` - Result object with:
+- `success` (bool): Whether step succeeded
+- `duration` (float): Execution time in seconds
+- `output_files` (List[Path]): Generated output files
+- `errors` (List[str]): Errors encountered
+
+#### `get_pipeline_status() -> Dict[str, Any]`
+**Description**: Get current pipeline execution status
+
+**Returns**: `Dict[str, Any]` - Status information with:
+- `current_step` (str): Currently executing step
+- `completed_steps` (List[str]): Completed steps
+- `failed_steps` (List[str]): Failed steps
+- `progress` (float): Completion percentage (0.0-1.0)
+
+### Health Check Functions
+
+#### `run_enhanced_health_check() -> Dict[str, Any]`
+**Description**: Run comprehensive pipeline health check
+
+**Returns**: `Dict[str, Any]` - Health check results with:
+- `overall_status` (str): "healthy", "degraded", or "unhealthy"
+- `component_status` (Dict[str, str]): Status of each component
+- `issues` (List[str]): Detected issues
+- `recommendations` (List[str]): Recommended actions
 
 ---
 
@@ -278,3 +383,65 @@ def get_pipeline_config_tool():
 ```
 
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Step discovery fails
+**Symptom**: Pipeline can't find or load pipeline steps  
+**Cause**: Step scripts missing or naming convention mismatch  
+**Solution**: 
+- Verify all step scripts exist in `src/` directory
+- Check script naming follows pattern `N_module.py`
+- Ensure scripts are executable and have correct imports
+- Review step discovery logs
+
+#### Issue 2: Configuration validation errors
+**Symptom**: Pipeline fails with configuration errors  
+**Cause**: Invalid configuration values or missing required settings  
+**Solution**:
+- Verify configuration file format is valid
+- Check all required configuration keys are present
+- Review configuration validation logs
+- Use default configuration if issues persist
+
+---
+
+## Version History
+
+### Current Version: 2.0.0
+
+**Features**:
+- Pipeline orchestration
+- Configuration management
+- Step discovery and dependency management
+- Health monitoring
+- Resource estimation
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced dependency analysis
+- **Future**: Real-time pipeline monitoring
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Utils Module](../utils/AGENTS.md)
+
+### External Resources
+- [Pipeline Architecture Documentation](../../doc/pipeline/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 2.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

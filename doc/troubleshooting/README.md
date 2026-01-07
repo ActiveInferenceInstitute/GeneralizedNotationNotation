@@ -153,7 +153,7 @@ echo "OPENAI_API_KEY=your-key" > .env
 python src/main.py --diagnostics
 
 # Check specific components
-python src/4_type_checker.py --validate-only
+python src/5_type_checker.py --validate-only
 python src/1_setup.py --check-deps
 ```
 
@@ -205,7 +205,7 @@ python -c "import src.gnn as gnn; print(gnn.__version__)"
 ### Export Format Issues
 **Problem**: Export fails or produces invalid output
 **Solutions**:
-- Check export format support: `python src/5_export.py --list-formats`
+- Check export format support: `python src/7_export.py --list-formats`
 - Use alternative format: `--export-format json`
 - Validate output: `--validate-export`
 

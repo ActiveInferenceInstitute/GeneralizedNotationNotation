@@ -104,8 +104,8 @@ Steps can be enabled/disabled via `PIPELINE_STEP_CONFIGURATION` in `src/pipeline
 ```python
 PIPELINE_STEP_CONFIGURATION = {
     "1_setup.py": True,
-"2_gnn.py": True,
-    "3_tests.py": False,  # Disabled by default
+"3_gnn.py": True,
+    "2_tests.py": False,  # Disabled by default
     # ... etc
 }
 ```

@@ -236,6 +236,81 @@ graph TD
     Score & Recs --> Doc[Security Documentation]
 ```
 
+### Security Validation Architecture
+
+```mermaid
+flowchart TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        Config[Security Config]
+    end
+    
+    subgraph "Security Analysis"
+        VulnScan[Vulnerability Scanner]
+        AccessCheck[Access Control Checker]
+        ComplCheck[Compliance Checker]
+        ThreatDetect[Threat Detector]
+    end
+    
+    subgraph "Validation"
+        InputValid[Input Validator]
+        OutputValid[Output Validator]
+        AuthValid[Authentication Validator]
+    end
+    
+    subgraph "Output"
+        SecurityReport[Security Report]
+        VulnReport[Vulnerability Report]
+        ComplReport[Compliance Report]
+        Recommendations[Recommendations]
+    end
+    
+    GNNFiles --> VulnScan
+    GNNFiles --> AccessCheck
+    GNNFiles --> ComplCheck
+    Config --> ThreatDetect
+    
+    VulnScan --> InputValid
+    AccessCheck --> AuthValid
+    ComplCheck --> OutputValid
+    ThreatDetect --> InputValid
+    
+    InputValid --> SecurityReport
+    AuthValid --> SecurityReport
+    OutputValid --> SecurityReport
+    
+    VulnScan --> VulnReport
+    ComplCheck --> ComplReport
+    SecurityReport --> Recommendations
+```
+
+### Security Validation Flow
+
+```mermaid
+sequenceDiagram
+    participant System as GNN System
+    participant Scanner as Vulnerability Scanner
+    participant Validator as Security Validator
+    participant Compliant as Compliance Checker
+    participant Reporter as Report Generator
+    
+    System->>Scanner: Scan for vulnerabilities
+    Scanner->>Scanner: Analyze code & dependencies
+    Scanner-->>System: Vulnerability list
+    
+    System->>Validator: Validate security measures
+    Validator->>Validator: Check access controls
+    Validator->>Validator: Verify authentication
+    Validator-->>System: Validation results
+    
+    System->>Compliant: Check compliance
+    Compliant->>Compliant: Validate against standards
+    Compliant-->>System: Compliance status
+    
+    System->>Reporter: Generate reports
+    Reporter-->>System: Security documentation
+```
+
 ### 1. Security Assessment
 ```python
 # Assess security posture

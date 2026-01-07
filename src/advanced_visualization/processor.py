@@ -920,7 +920,15 @@ def _generate_matrix_correlations(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
         
-        from ..visualization.matrix_visualizer import MatrixVisualizer
+        try:
+            from visualization.matrix_visualizer import MatrixVisualizer
+        except ImportError:
+            try:
+                from src.visualization.matrix_visualizer import MatrixVisualizer
+            except ImportError:
+                attempt.status = "failed"
+                attempt.error_message = "MatrixVisualizer not available"
+                return attempt
         mv = MatrixVisualizer()
         
         # Extract matrices
@@ -1254,7 +1262,15 @@ def _generate_pomdp_transition_analysis(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
         
-        from ..visualization.matrix_visualizer import MatrixVisualizer
+        try:
+            from visualization.matrix_visualizer import MatrixVisualizer
+        except ImportError:
+            try:
+                from src.visualization.matrix_visualizer import MatrixVisualizer
+            except ImportError:
+                attempt.status = "failed"
+                attempt.error_message = "MatrixVisualizer not available"
+                return attempt
         mv = MatrixVisualizer()
         
         # Extract B matrix (transition matrix)
@@ -1362,7 +1378,15 @@ def _generate_policy_visualization(
                     policy_data[name] = var
         
         # Look for E (habit) parameter
-        from ..visualization.matrix_visualizer import MatrixVisualizer
+        try:
+            from visualization.matrix_visualizer import MatrixVisualizer
+        except ImportError:
+            try:
+                from src.visualization.matrix_visualizer import MatrixVisualizer
+            except ImportError:
+                attempt.status = "failed"
+                attempt.error_message = "MatrixVisualizer not available"
+                return attempt
         mv = MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
         

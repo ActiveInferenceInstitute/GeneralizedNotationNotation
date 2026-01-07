@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Classic Active Inference POMDP Agent v1
-# Generated: 2026-01-06 13:50:31
+# Generated: 2026-01-07 05:47:57
 
 using Pkg
 
@@ -18,13 +18,14 @@ using LinearAlgebra
 using Plots
 using Random
 using StatsBase
+using JSON
 
 Random.seed!(42)
 
 # --- Model Parameters ---
 const NUM_STATES = 3
 const NUM_OBSERVATIONS = 3
-const NUM_ACTIONS = 3
+const NUM_ACTIONS = 1
 const TIME_STEPS = 20
 
 # Parameter Matrices (from GNN)
@@ -90,15 +91,15 @@ println("D vector size: $(size(D_vector))")
 # Fixed parameters version (active inference with known model)
 @model function active_inference_model(observations, n_steps, A, B, D)
     
-    # State sequence
-    s = Vector{Any}(undef, n_steps)
+    # State sequence 
+    # GraphPPL v3/v4 supports auto-collection of variables via indexing.
+    # No randomvar declaration needed.
     
     # Initial state
-    s_init ~ Categorical(D)
-    s[1] = s_init
+    s[1] ~ Categorical(D)
     
     # First observation
-    observations[1] ~ Categorical(s[1], copy(A))
+    observations[1] ~ DiscreteTransition(s[1], A)
     
     # State transitions and observations
     for t in 2:n_steps
@@ -109,12 +110,10 @@ println("D vector size: $(size(D_vector))")
         # B is [Next, Prev, Action]
         # We slice B by action to get a transition matrix B_a
         B_a = B[:, :, action_idx] 
-        s_next ~ DiscreteTransition(s[t-1], copy(B_a)) 
-        s[t] = s_next
+        s[t] ~ DiscreteTransition(s[t-1], B_a)
         
         # Observation
-        # Try Categorical with two arguments (aliased to DiscreteTransition or similar?)
-        observations[t] ~ Categorical(s[t], copy(A))
+        observations[t] ~ DiscreteTransition(s[t], A)
     end
     
     return s
@@ -145,14 +144,47 @@ function run_simulation()
     
     println("Observation sequence: $real_obs")
     
+    # One-hot encode observations (required for DiscreteTransition in RxInfer v4)
+    function one_hot(idx, n)
+        v = zeros(n)
+        v[idx] = 1.0
+        return v
+    end
+    
+    obs_one_hot = [one_hot(o, NUM_OBSERVATIONS) for o in real_obs]
+    println("Observation sequence (one-hot) prepared.")
+    
     # Run Inference
     result = infer(
         model = active_inference_model(n_steps=TIME_STEPS, A=A_matrix, B=B_matrix, D=D_vector),
-        data = (observations = real_obs,),
-        iterations = 10 # Not needed for exact inference in discrete case usually, but good for stability if loops
+        data = (observations = obs_one_hot,),
+        iterations = 10 
     )
     
     println("Inference complete.")
+    
+    # Standardized result extraction
+    # Convert belief traces (Categorical) to probability vectors
+    all_iterations = result.posteriors[:s]
+    final_iteration = all_iterations[end]
+    beliefs = [probvec(final_iteration[t]) for t in 1:TIME_STEPS]
+    
+    results_data = Dict(
+        "framework" => "rxinfer",
+        "model_name" => "Classic Active Inference POMDP Agent v1",
+        "time_steps" => TIME_STEPS,
+        "true_states" => real_states,
+        "observations" => real_obs,
+        "beliefs" => beliefs,
+        "num_states" => NUM_STATES,
+        "num_observations" => NUM_OBSERVATIONS
+    )
+    
+    open("simulation_results.json", "w") do f
+        JSON.print(f, results_data, 4)
+    end
+    println("✅ Standardized results saved to simulation_results.json")
+    
     return result, real_states, real_obs
 end
 
@@ -162,10 +194,13 @@ function main()
         result, true_states, obs = run_simulation()
         
         # Visualize
-        posteriors = result.posteriors[:s]
+        # result.posteriors[:s] returns a vector of iterations, 
+        # each being a vector of Categorical distributions over time.
+        all_iterations = result.posteriors[:s]
+        final_iteration_posteriors = all_iterations[end]
         
         # Extract belief trace for state 1 over time
-        belief_trace = [pdf(posteriors[t], 1) for t in 1:TIME_STEPS]
+        belief_trace = [pdf(final_iteration_posteriors[t], 1) for t in 1:TIME_STEPS]
         
         p = plot(belief_trace, label="Belief(State 1)", title="State Inference", xlabel="Time", ylabel="Probability")
         scatter!(p, true_states .== 1, label="True State 1", markershape=:star)

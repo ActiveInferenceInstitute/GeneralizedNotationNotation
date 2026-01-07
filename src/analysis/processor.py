@@ -213,11 +213,33 @@ def process_analysis(
         return False
 
 def convert_numpy_types(obj):
-    """Convert numpy types to native Python types for JSON serialization."""
+    """
+    Convert numpy types and other non-JSON-serializable types to native Python types.
+    
+    Handles:
+    - numpy integers, floats, arrays
+    - sets and frozensets
+    - objects with __dict__ (to prevent circular reference issues)
+    - Path objects
+    """
+    if obj is None:
+        return obj
     if isinstance(obj, np.integer):
         return int(obj)
     elif isinstance(obj, np.floating):
         return float(obj)
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
-    return obj
+    elif isinstance(obj, (set, frozenset)):
+        return list(obj)
+    elif isinstance(obj, Path):
+        return str(obj)
+    elif hasattr(obj, '__dict__') and not isinstance(obj, dict):
+        # Convert objects to dict representation to avoid circular references
+        return f"<{type(obj).__name__}>"
+    elif isinstance(obj, bytes):
+        return obj.decode('utf-8', errors='replace')
+    # Use string representation for any other unknown types to ensure serializability
+    # and prevent "Circular reference detected" or "not JSON serializable" errors
+    return str(obj)
+

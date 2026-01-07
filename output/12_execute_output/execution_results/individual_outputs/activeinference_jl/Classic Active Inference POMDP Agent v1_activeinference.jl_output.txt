@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_activeinference.jl
-Timestamp: 2026-01-06T13:48:08.198943
-Return Code: 1
-Execution Time: 12.29 seconds
+Timestamp: 2026-01-07T05:48:21.168175
+Return Code: 0
+Execution Time: 13.94 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -10,47 +10,44 @@ STDOUT:
 ActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1
 ======================================================================
 Julia version: 1.12.2
-Date: 2026-01-06T13:48:18.867
+Date: 2026-01-07T05:48:32.277
 Model dimensions: States=3, Observations=3, Actions=1
 
-📁 Output directory: activeinference_outputs_2026-01-06_13-48-18
+📁 Output directory: activeinference_outputs_2026-01-07_05-48-32
 🔧 Creating model matrices from GNN specification...
-✅ A matrix created: (3,)
-✅ B matrix created: (3,)
+✅ A matrix created: (3, 3)
+✅ B matrix created: (3, 3, 3)
 ✅ C vector created: 3
 ✅ D vector created: 3
 ⚠️  Adjusting E-vector from 3 to 1 elements
 ✅ E vector created: 1 (matches 1 policies)
 🔧 Normalizing matrices...
+✅ All matrices normalized
+🤖 Creating ActiveInference.jl agent...
+❌ Error during simulation: ErrorException("Length of E-vector must match the number of policies.")
+Stack trace:
+Length of E-vector must match the number of policies.
+Stacktrace:
+ [1] error(s::String)
+   @ Base ./error.jl:44
+ [2] create_aif(A::Vector{Matrix{Float64}}, B::Vector{Array{Float64, 3}}; C::Vector{Vector{Float64}}, D::Vector{Vector{Float64}}, E::Vector{Float64}, pA::Nothing, pB::Nothing, pD::Nothing, lr_pA::Float64, fr_pA::Float64, lr_pB::Float64, fr_pB::Float64, lr_pD::Float64, fr_pD::Float64, modalities_to_learn::String, factors_to_learn::String, gamma::Float64, alpha::Float64, policy_len::Int64, num_controls::Nothing, control_fac_idx::Nothing, use_utility::Bool, use_states_info_gain::Bool, use_param_info_gain::Bool, action_selection::String, FPI_num_iter::Int64, FPI_dF_tol::Float64, save_history::Bool)
+   @ ActiveInference ~/.julia/packages/ActiveInference/MXKFO/src/pomdp/struct.jl:106
+ [3] init_aif(A::Vector{Matrix{Float64}}, B::Vector{Array{Float64, 3}}; C::Vector{Vector{Float64}}, D::Vector{Vector{Float64}}, E::Vector{Float64}, pA::Nothing, pB::Nothing, pD::Nothing, parameters::Dict{String, Float64}, settings::Dict{String, Any}, save_history::Bool, verbose::Bool)
+   @ ActiveInference ~/.julia/packages/ActiveInference/MXKFO/src/pomdp/struct.jl:339
+ [4] top-level scope
+   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:168
+ [5] include(mod::Module, _path::String)
+   @ Base ./Base.jl:306
+ [6] exec_options(opts::Base.JLOptions)
+   @ Base ./client.jl:317
+ [7] _start()
+   @ Base ./client.jl:550
+
+ActiveInference.jl script completed!
+Model: Classic Active Inference POMDP Agent v1
 
 
 STDERR:
    Resolving package versions...
      Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
     Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`
-ERROR: LoadError: MethodError: no method matching isless(::Int64, ::Vector{Float64})
-The function `isless` exists, but no method is defined for this combination of argument types.
-
-Closest candidates are:
-  isless(!Matched::Missing, ::Any)
-   @ Base missing.jl:87
-  isless(::Real, !Matched::Symbolics.Num)
-   @ Symbolics ~/.julia/packages/Symbolics/T2Tbs/src/num.jl:155
-  isless(::Real, !Matched::AbstractFloat)
-   @ Base operators.jl:223
-  ...
-
-Stacktrace:
- [1] <(x::Int64, y::Vector{Float64})
-   @ Base ./operators.jl:399
- [2] >(x::Vector{Float64}, y::Int64)
-   @ Base ./operators.jl:425
- [3] top-level scope
-   @ ~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:115
- [4] include(mod::Module, _path::String)
-   @ Base ./Base.jl:306
- [5] exec_options(opts::Base.JLOptions)
-   @ Base ./client.jl:317
- [6] _start()
-   @ Base ./client.jl:550
-in expression starting at /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl:113

@@ -38,46 +38,57 @@
 
 ### Public Functions
 
-#### `process_research(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main research processing function called by orchestrator (19_research.py)
+#### `process_research(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main research processing function called by orchestrator (19_research.py). Performs rule-based hypothesis generation and research analysis.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing research data
+- `target_dir` (Path): Directory containing research data (GNN files)
 - `output_dir` (Path): Output directory for research results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance (default: None)
+- `logger` (Optional[logging.Logger]): Logger instance (default: None)
+- `analysis_type` (str, optional): Type of analysis ("comprehensive", "statistical", "experimental") (default: "comprehensive")
+- `generate_hypotheses` (bool, optional): Generate research hypotheses (default: True)
 - `**kwargs`: Additional research options
 
-**Returns**: `True` if research processing succeeded
+**Returns**: `bool` - True if research processing succeeded, False otherwise
 
 **Example**:
 ```python
 from research import process_research
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_research(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/19_research_output"),
-    verbose=True
+    logger=logger,
+    verbose=True,
+    analysis_type="comprehensive"
 )
 ```
 
-#### `perform_research_analysis(data, analysis_type="comprehensive") -> Dict[str, Any]`
-**Description**: Perform advanced research analysis
+#### `perform_research_analysis(data: Dict[str, Any], analysis_type: str = "comprehensive") -> Dict[str, Any]`
+**Description**: Perform advanced research analysis using rule-based expert system.
 
 **Parameters**:
-- `data`: Research data to analyze
-- `analysis_type`: Type of analysis to perform
+- `data` (Dict[str, Any]): Research data to analyze (parsed GNN models)
+- `analysis_type` (str): Type of analysis ("comprehensive", "statistical", "experimental")
 
-**Returns**: Dictionary with research analysis results
+**Returns**: `Dict[str, Any]` - Research analysis results with:
+- `hypotheses` (List[Dict]): Generated research hypotheses
+- `complexity_analysis` (Dict): Complexity metrics and diagnostics
+- `structural_diagnostics` (Dict): Structural analysis results
+- `recommendations` (List[str]): Research recommendations
 
-#### `generate_research_report(analysis_results, output_format="markdown") -> str`
-**Description**: Generate research report from analysis results
+#### `generate_research_report(analysis_results: Dict[str, Any], output_format: str = "markdown") -> str`
+**Description**: Generate research report from analysis results with evidence-based justifications.
 
 **Parameters**:
-- `analysis_results`: Results from research analysis
-- `output_format`: Output format for the report
+- `analysis_results` (Dict[str, Any]): Results from research analysis
+- `output_format` (str): Output format ("markdown", "html", "json")
 
-**Returns**: Research report as formatted string
+**Returns**: `str` - Research report as formatted string with evidence and justifications
 
 ---
 
@@ -254,4 +265,68 @@ def analyze_research_data_tool(data, analysis_type="comprehensive"):
     # Implementation
 ```
 
+### MCP File Location
+- `src/research/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Hypothesis generation produces no results
+**Symptom**: Research analysis completes but no hypotheses generated  
+**Cause**: Model structure doesn't match rule patterns or analysis incomplete  
+**Solution**: 
+- Verify GNN model has complete structure
+- Check that model has variables and connections
+- Use `--verbose` flag for detailed analysis logs
+- Review rule-based analysis patterns
+
+#### Issue 2: Research report generation fails
+**Symptom**: Analysis succeeds but report generation errors  
+**Cause**: Report template issues or output format problems  
+**Solution**:
+- Check output directory permissions
+- Verify report format is supported
+- Review report template structure
+- Use default markdown format if issues persist
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Rule-based hypothesis generation
+- Complexity analysis
+- Structural diagnostics
+- Automated reporting
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced hypothesis generation
+- **Future**: Machine learning-based hypothesis generation
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Research Module](../research/README.md)
+
+### External Resources
+- [Active Inference Research](https://activeinference.org/research)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

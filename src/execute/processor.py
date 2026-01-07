@@ -546,6 +546,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         # Collect execution outputs (visualizations, simulation data, traces)
         if exec_result['success']:
             try:
+                logger.info(f"Collecting execution outputs for {framework} script {script_info['name']}")
                 collected_outputs = collect_execution_outputs(
                     script_path, 
                     impl_specific_dir.parent, 
@@ -560,15 +561,18 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 # Re-save structured result with collected outputs
                 with open(json_output_file, 'w') as f:
                     json.dump(structured_result, f, indent=2, default=str)
+                logger.debug(f"Updated results JSON with collected outputs")
                 
                 # Enhance simulation data extraction from collected files
                 if collected_outputs:
+                    logger.info(f"Extracting simulation data from collected files for {framework}")
                     enhanced_data = _extract_simulation_data_from_files(
                         impl_specific_dir.parent,
                         framework,
                         logger
                     )
                     if enhanced_data:
+                        logger.info(f"Extracted {len(enhanced_data)} data fields from files")
                         simulation_data.update(enhanced_data)
                         exec_result['simulation_data'] = simulation_data
                         structured_result['simulation_data'] = simulation_data
@@ -576,9 +580,14 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                         # Re-save again with enhanced data
                         with open(json_output_file, 'w') as f:
                             json.dump(structured_result, f, indent=2, default=str)
+                        logger.debug(f"Updated results JSON with enhanced simulation data")
+                    else:
+                        logger.debug(f"No additional data extracted from files for {framework}")
                 
             except Exception as e:
                 logger.warning(f"Failed to collect execution outputs: {e}")
+                import traceback
+                logger.debug(traceback.format_exc())
         
     except subprocess.TimeoutExpired:
         exec_result['error'] = 'Script execution timed out (5 minutes)'
@@ -621,57 +630,52 @@ def collect_execution_outputs(
         # Find script's output directory (varies by framework)
         script_dir = script_path.parent
         
-        # Framework-specific output location patterns
-        output_patterns = {
-            "pymdp": [
-                script_dir / "output" / "pymdp_simulations" / "*" / "visualizations" / "*.png",
-                script_dir / "output" / "pymdp_simulations" / "*" / "*.json",
-                script_dir / "output" / "pymdp_simulations" / "*" / "*.pkl",
-            ],
-            "discopy": [
-                script_dir / "discopy_diagrams" / "*.png",
-                script_dir / "discopy_diagrams" / "*.json",
-            ],
-            "activeinference_jl": [
-                script_dir / "activeinference_outputs_*" / "*.png",
-                script_dir / "activeinference_outputs_*" / "*.json",
-                script_dir / "activeinference_outputs_*" / "free_energy_traces" / "*.csv",
-            ],
-            "rxinfer": [
-                script_dir / "rxinfer_outputs" / "*.png",
-                script_dir / "rxinfer_outputs" / "*.json",
-                script_dir / "rxinfer_outputs" / "posterior_traces" / "*.csv",
-            ],
-            "jax": [
-                script_dir / "jax_outputs" / "*.png",
-                script_dir / "jax_outputs" / "*.json",
-            ]
-        }
+        # Framework-specific output location patterns (using Path.rglob)
+        found_files = []
         
-        patterns = output_patterns.get(framework, [])
+        if framework == "pymdp":
+            # PyMDP saves to output/pymdp_simulations/{model_name}/
+            pymdp_output = script_dir / "output" / "pymdp_simulations"
+            if pymdp_output.exists():
+                found_files.extend(pymdp_output.rglob("*.png"))
+                found_files.extend(pymdp_output.rglob("*.svg"))
+                found_files.extend(pymdp_output.rglob("*.json"))
+                found_files.extend(pymdp_output.rglob("*.pkl"))
+        elif framework == "discopy":
+            # DisCoPy saves to discopy_diagrams/
+            discopy_dir = script_dir / "discopy_diagrams"
+            if discopy_dir.exists():
+                found_files.extend(discopy_dir.rglob("*.png"))
+                found_files.extend(discopy_dir.rglob("*.svg"))
+                found_files.extend(discopy_dir.rglob("*.json"))
+        elif framework == "activeinference_jl":
+            # ActiveInference.jl saves to activeinference_outputs_*/
+            for output_dir in script_dir.glob("activeinference_outputs_*"):
+                if output_dir.is_dir():
+                    found_files.extend(output_dir.rglob("*.png"))
+                    found_files.extend(output_dir.rglob("*.json"))
+                    found_files.extend(output_dir.rglob("*.csv"))
+        elif framework == "rxinfer":
+            # RxInfer saves to rxinfer_outputs/
+            rxinfer_dir = script_dir / "rxinfer_outputs"
+            if rxinfer_dir.exists():
+                found_files.extend(rxinfer_dir.rglob("*.png"))
+                found_files.extend(rxinfer_dir.rglob("*.json"))
+                found_files.extend(rxinfer_dir.rglob("*.csv"))
+        elif framework == "jax":
+            # JAX saves to jax_outputs/
+            jax_dir = script_dir / "jax_outputs"
+            if jax_dir.exists():
+                found_files.extend(jax_dir.rglob("*.png"))
+                found_files.extend(jax_dir.rglob("*.json"))
         
         # Also search recursively in script directory for common output files
-        if not patterns:
-            patterns = [
-                script_dir / "**" / "*.png",
-                script_dir / "**" / "*.svg",
-                script_dir / "**" / "*.json",
-                script_dir / "**" / "*.pkl",
-                script_dir / "**" / "*.csv",
-            ]
-        
-        import glob
-        
-        # Collect files matching patterns
-        found_files = []
-        for pattern in patterns:
-            try:
-                # Convert Path to string for glob
-                pattern_str = str(pattern)
-                matches = glob.glob(pattern_str, recursive=True)
-                found_files.extend([Path(f) for f in matches])
-            except Exception as e:
-                logger.debug(f"Pattern {pattern} failed: {e}")
+        if not found_files:
+            found_files.extend(script_dir.rglob("*.png"))
+            found_files.extend(script_dir.rglob("*.svg"))
+            found_files.extend(script_dir.rglob("*.json"))
+            found_files.extend(script_dir.rglob("*.pkl"))
+            found_files.extend(script_dir.rglob("*.csv"))
         
         # Remove duplicates and filter out the script itself
         found_files = list(set([f for f in found_files if f != script_path and f.exists()]))
@@ -705,12 +709,17 @@ def collect_execution_outputs(
                 # Create destination directory
                 dest_dir.mkdir(parents=True, exist_ok=True)
                 
-                # Copy file
+                # Copy file (handle name conflicts)
                 dest_file = dest_dir / source_file.name
+                if dest_file.exists():
+                    # Add parent directory name to avoid conflicts
+                    parent_name = source_file.parent.name
+                    dest_file = dest_dir / f"{parent_name}_{source_file.name}"
+                
                 copy2(source_file, dest_file)
                 
                 collected[category].append(str(dest_file))
-                logger.debug(f"Copied {source_file.name} to {dest_dir}")
+                logger.info(f"Copied {source_file.name} → {dest_file.relative_to(output_dir)}")
                 
             except Exception as e:
                 logger.warning(f"Failed to copy {source_file}: {e}")
@@ -963,31 +972,64 @@ def _extract_simulation_data(stdout: str, stderr: str, framework: str, logger) -
 
 
 def _extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
-    """Extract PyMDP-specific simulation data."""
+    """Extract PyMDP-specific simulation data from stdout/stderr."""
     import re
     data = {}
     
-    # Try to find state trajectories
+    # Combine stdout and stderr for parsing
+    combined_output = stdout + "\n" + stderr
+    
+    # Try to find observations from log lines like "Step 0: obs=2, belief=[...], action=0.0"
+    obs_pattern = r'Step\s+\d+:\s+obs=(\d+)'
+    obs_matches = re.findall(obs_pattern, combined_output, re.IGNORECASE)
+    if obs_matches:
+        data["observations"] = [int(obs) for obs in obs_matches]
+    
+    # Try to find actions from log lines
+    action_pattern = r'Step\s+\d+:\s+obs=\d+,\s+belief=[^\]]+,\s+action=([\d.]+)'
+    action_matches = re.findall(action_pattern, combined_output, re.IGNORECASE)
+    if action_matches:
+        data["actions"] = [int(float(act)) for act in action_matches]
+    
+    # Try to find beliefs from log lines
+    belief_pattern = r'belief=\[([^\]]+)\]'
+    belief_matches = re.findall(belief_pattern, combined_output, re.IGNORECASE)
+    if belief_matches:
+        try:
+            beliefs = []
+            for match in belief_matches:
+                # Parse array string like "0.05 0.05 0.9" or "0.05, 0.05, 0.9"
+                values = re.findall(r'[\d.]+', match)
+                if values:
+                    beliefs.append([float(v) for v in values])
+            if beliefs:
+                data["beliefs"] = beliefs
+        except Exception:
+            pass
+    
+    # Try to find state trajectories (legacy pattern)
     state_pattern = r'state[:\s]+\[([^\]]+)\]|states[:\s]+\[([^\]]+)\]'
-    state_matches = re.findall(state_pattern, stdout, re.IGNORECASE)
-    if state_matches:
+    state_matches = re.findall(state_pattern, combined_output, re.IGNORECASE)
+    if state_matches and "states" not in data:
         data["states"] = [match[0] or match[1] for match in state_matches]
     
-    # Try to find observations
-    obs_pattern = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
-    obs_matches = re.findall(obs_pattern, stdout, re.IGNORECASE)
-    if obs_matches:
-        data["observations"] = [int(match[0] or match[1]) for match in obs_matches]
+    # Try to find observations (legacy pattern)
+    if "observations" not in data:
+        obs_pattern_legacy = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
+        obs_matches_legacy = re.findall(obs_pattern_legacy, combined_output, re.IGNORECASE)
+        if obs_matches_legacy:
+            data["observations"] = [int(match[0] or match[1]) for match in obs_matches_legacy]
     
-    # Try to find actions
-    action_pattern = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
-    action_matches = re.findall(action_pattern, stdout, re.IGNORECASE)
-    if action_matches:
-        data["actions"] = [int(match[0] or match[1]) for match in action_matches]
+    # Try to find actions (legacy pattern)
+    if "actions" not in data:
+        action_pattern_legacy = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
+        action_matches_legacy = re.findall(action_pattern_legacy, combined_output, re.IGNORECASE)
+        if action_matches_legacy:
+            data["actions"] = [int(match[0] or match[1]) for match in action_matches_legacy]
     
     # Try to find free energy
     fe_pattern = r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)'
-    fe_matches = re.findall(fe_pattern, stdout, re.IGNORECASE)
+    fe_matches = re.findall(fe_pattern, combined_output, re.IGNORECASE)
     if fe_matches:
         data["free_energy"] = [float(match[0] or match[1]) for match in fe_matches]
     

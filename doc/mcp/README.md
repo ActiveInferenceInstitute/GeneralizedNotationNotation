@@ -169,7 +169,7 @@ The pipeline includes dedicated MCP analysis:
 python src/main.py --only-steps 7
 
 # Generate MCP integration report
-python src/7_mcp.py --output-dir output/
+python src/21_mcp.py --output-dir output/
 ```
 
 The MCP step generates comprehensive reports including:

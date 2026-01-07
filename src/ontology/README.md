@@ -176,6 +176,72 @@ graph TD
     Apply --> Report[Compliance Reporting]
 ```
 
+### Ontology Processing Architecture
+
+```mermaid
+flowchart TB
+    subgraph "Input Processing"
+        GNNFile[GNN File]
+        OntologyFile[Ontology Terms JSON]
+    end
+    
+    subgraph "Term Processing"
+        Extractor[Term Extractor]
+        Validator[Term Validator]
+        Mapper[Semantic Mapper]
+    end
+    
+    subgraph "Analysis"
+        RelationshipAnalyzer[Relationship Analyzer]
+        ComplianceAnalyzer[Compliance Analyzer]
+        EnhancementGenerator[Enhancement Generator]
+    end
+    
+    subgraph "Output"
+        ValidationReport[Validation Report]
+        MappingReport[Mapping Report]
+        ComplianceReport[Compliance Report]
+        EnhancedModel[Enhanced Model]
+    end
+    
+    GNNFile --> Extractor
+    OntologyFile --> Validator
+    Extractor --> Validator
+    Validator --> Mapper
+    Mapper --> RelationshipAnalyzer
+    RelationshipAnalyzer --> ComplianceAnalyzer
+    ComplianceAnalyzer --> EnhancementGenerator
+    
+    Validator --> ValidationReport
+    Mapper --> MappingReport
+    ComplianceAnalyzer --> ComplianceReport
+    EnhancementGenerator --> EnhancedModel
+```
+
+### Ontology Term Mapping Flow
+
+```mermaid
+sequenceDiagram
+    participant GNN as GNN Model
+    participant Extractor as Term Extractor
+    participant Ontology as Ontology DB
+    participant Validator as Validator
+    participant Mapper as Semantic Mapper
+    participant Reporter as Report Generator
+    
+    GNN->>Extractor: Extract terms
+    Extractor->>Ontology: Lookup terms
+    Ontology-->>Extractor: Term definitions
+    Extractor->>Validator: Validate terms
+    Validator->>Ontology: Check compliance
+    Ontology-->>Validator: Validation results
+    Validator->>Mapper: Map to concepts
+    Mapper->>Ontology: Get relationships
+    Ontology-->>Mapper: Semantic relationships
+    Mapper->>Reporter: Generate reports
+    Reporter-->>GNN: Compliance & mapping reports
+```
+
 ### 1. Term Extraction
 ```python
 # Extract terms from GNN content

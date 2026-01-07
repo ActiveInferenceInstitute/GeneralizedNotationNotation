@@ -172,6 +172,113 @@ graph TB
     style H fill:#fff3e0
 ```
 
+### Module Dependency Graph
+
+```mermaid
+graph LR
+    subgraph "Infrastructure Layer"
+        Utils[utils/]
+        Pipeline[pipeline/]
+    end
+    
+    subgraph "Core Processing"
+        GNN[gnn/]
+        TypeChecker[type_checker/]
+        Validation[validation/]
+        Export[export/]
+    end
+    
+    subgraph "Code Generation"
+        Render[render/]
+        Execute[execute/]
+    end
+    
+    subgraph "Analysis & Output"
+        LLM[llm/]
+        Analysis[analysis/]
+        Report[report/]
+    end
+    
+    Utils --> GNN
+    Utils --> TypeChecker
+    Utils --> Render
+    Pipeline --> GNN
+    Pipeline --> Render
+    
+    GNN --> TypeChecker
+    GNN --> Validation
+    GNN --> Export
+    GNN --> Render
+    
+    Render --> Execute
+    Execute --> Analysis
+    LLM --> Analysis
+    Analysis --> Report
+```
+
+### Framework Integration Architecture
+
+```mermaid
+graph TB
+    subgraph "GNN Input"
+        GNNFile[GNN Markdown File]
+    end
+    
+    subgraph "Parsing & Validation"
+        Parser[GNN Parser]
+        Validator[Type Checker]
+    end
+    
+    subgraph "Code Generation"
+        Renderer[Render Module]
+        PyMDP[PyMDP Generator]
+        RxInfer[RxInfer.jl Generator]
+        ActInf[ActiveInference.jl Generator]
+        JAX[JAX Generator]
+        DisCoPy[DisCoPy Generator]
+    end
+    
+    subgraph "Execution"
+        Executor[Execute Module]
+        PyMDPExec[PyMDP Runner]
+        RxInferExec[RxInfer Runner]
+        ActInfExec[ActiveInference Runner]
+        JAXExec[JAX Runner]
+    end
+    
+    subgraph "Analysis"
+        Analyzer[Analysis Module]
+        Results[Simulation Results]
+    end
+    
+    GNNFile --> Parser
+    Parser --> Validator
+    Validator --> Renderer
+    
+    Renderer --> PyMDP
+    Renderer --> RxInfer
+    Renderer --> ActInf
+    Renderer --> JAX
+    Renderer --> DisCoPy
+    
+    PyMDP --> Executor
+    RxInfer --> Executor
+    ActInf --> Executor
+    JAX --> Executor
+    
+    Executor --> PyMDPExec
+    Executor --> RxInferExec
+    Executor --> ActInfExec
+    Executor --> JAXExec
+    
+    PyMDPExec --> Analyzer
+    RxInferExec --> Analyzer
+    ActInfExec --> Analyzer
+    JAXExec --> Analyzer
+    
+    Analyzer --> Results
+```
+
 ### 📁 Directory Structure
 
 <details>
@@ -291,6 +398,53 @@ flowchart TD
     style A fill:#e1f5fe,stroke:#0277bd
     style C fill:#fff3e0,stroke:#f57c00
     style L fill:#e8f5e8,stroke:#388e3c
+```
+
+### Data Flow Between Pipeline Steps
+
+```mermaid
+flowchart LR
+    subgraph "Input Stage"
+        Input[GNN Files]
+    end
+    
+    subgraph "Processing Stage"
+        Step3[Step 3: GNN Parse]
+        Step5[Step 5: Type Check]
+        Step6[Step 6: Validation]
+        Step7[Step 7: Export]
+    end
+    
+    subgraph "Generation Stage"
+        Step8[Step 8: Visualization]
+        Step11[Step 11: Render]
+        Step12[Step 12: Execute]
+    end
+    
+    subgraph "Analysis Stage"
+        Step13[Step 13: LLM]
+        Step16[Step 16: Analysis]
+        Step23[Step 23: Report]
+    end
+    
+    Input --> Step3
+    Step3 --> Step5
+    Step3 --> Step6
+    Step3 --> Step7
+    Step3 --> Step8
+    Step3 --> Step11
+    
+    Step5 --> Step6
+    Step6 --> Step7
+    Step7 --> Step8
+    
+    Step11 --> Step12
+    Step12 --> Step13
+    Step12 --> Step16
+    
+    Step13 --> Step16
+    Step8 --> Step16
+    Step16 --> Step23
 ```
 
 ### 🏗️ Pipeline Architecture: Three-Tier Pattern

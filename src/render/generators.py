@@ -29,6 +29,53 @@ def _to_pascal_case(base: str, *, allow_empty_fallback: str = "Model") -> str:
         name = f"{allow_empty_fallback}{name}"
     return name
 
+
+def _matrix_to_julia(matrix_data) -> str:
+    """Convert Python matrix (list of lists/tuples) to Julia matrix syntax.
+    
+    2D matrices use semicolon row separators: [0.9 0.05; 0.05 0.9]
+    3D matrices use cat(...; dims=3) syntax
+    1D vectors use comma separators: [0.1, 0.2, 0.3]
+    """
+    if isinstance(matrix_data, str):
+        matrix_data = matrix_data.strip()
+        if matrix_data.startswith('[') or matrix_data.startswith('('):
+            try:
+                import ast
+                matrix_data = ast.literal_eval(matrix_data)
+            except (ValueError, SyntaxError):
+                return matrix_data
+
+    if isinstance(matrix_data, (list, tuple)):
+        if len(matrix_data) > 0 and isinstance(matrix_data[0], (list, tuple)):
+            if len(matrix_data[0]) > 0 and isinstance(matrix_data[0][0], (list, tuple)):
+                # 3D matrix (B matrix) - use cat(...; dims=3)
+                slices = []
+                for slice_data in matrix_data:
+                    rows = []
+                    for row in slice_data:
+                        if isinstance(row, (tuple, list)):
+                            row_values = " ".join(str(x) for x in row)
+                        else:
+                            row_values = str(row)
+                        rows.append(row_values)
+                    slice_matrix = "; ".join(rows)
+                    slices.append(f"[{slice_matrix}]")
+                return "cat(" + ", ".join(slices) + "; dims=3)"
+            else:
+                # 2D matrix (A matrix) - use [row1; row2; ...]
+                rows = []
+                for row in matrix_data:
+                    row_values = " ".join(str(x) for x in row)
+                    rows.append(row_values)
+                return "[" + "; ".join(rows) + "]"
+        else:
+            # 1D vector - use [val1, val2, ...]
+            return "[" + ", ".join(str(x) for x in matrix_data) + "]"
+    elif isinstance(matrix_data, tuple):
+        return "[" + ", ".join(str(x) for x in matrix_data) + "]"
+    return str(matrix_data)
+
 def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate Enhanced PyMDP simulation code with comprehensive visualizations."""
     try:
@@ -135,33 +182,26 @@ function create_enhanced_agent()
     num_obs = 4
     num_actions = 2
     
-    # Real POMDP matrices from GNN specification
-    A = {str(a_matrix)}
+    # Real POMDP matrices from GNN specification (using proper Julia matrix syntax)
+    A = {_matrix_to_julia(a_matrix)}
     
     # Normalize A matrix columns
-    for s in 1:num_states
+    for s in 1:size(A, 2)
         A[:, s] = A[:, s] ./ sum(A[:, s])
     end
     
-    # B tensor from GNN
-    B_data = {str(b_matrix)}
-    B = zeros(num_states, num_states, num_actions)
-    
-    for a in 1:num_actions
-        for s in 1:num_states
-            B[:, s, a] = B_data[a][s]
-        end
-    end
+    # B tensor from GNN (3D array using cat)
+    B = {_matrix_to_julia(b_matrix)}
     
     # Normalize B tensor
-    for a in 1:num_actions
-        for s in 1:num_states
+    for a in 1:size(B, 3)
+        for s in 1:size(B, 2)
             B[:, s, a] = B[:, s, a] ./ sum(B[:, s, a])
         end
     end
     
-    C = {str(c_vector)}
-    D = {str(d_vector)}
+    C = {_matrix_to_julia(c_vector)}
+    D = {_matrix_to_julia(d_vector)}
     D = D ./ sum(D)
     
     agent = Enhanced{model_pascal}Agent(

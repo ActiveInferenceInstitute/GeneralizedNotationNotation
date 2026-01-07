@@ -186,7 +186,7 @@ class TestPerformanceRegression:
         
         try:
             from gnn.parser import GNNParser
-            from render.renderer import Renderer
+            from render.pomdp_processor import POMDPRenderProcessor
             from export.exporter import Exporter
         except ImportError as e:
             pytest.skip(f"Classes not available: {e}")
@@ -201,6 +201,15 @@ class TestPerformanceRegression:
         duration = (time.perf_counter() - start) / 100
         
         assert duration < 0.01, f"Parser instantiation too slow: {duration:.4f}s per instance"
+        
+        # Test Render instantiation too
+        with tempfile.TemporaryDirectory() as tmp:
+            start = time.perf_counter()
+            for _ in range(100):
+                POMDPRenderProcessor(Path(tmp))
+            duration = (time.perf_counter() - start) / 100
+            assert duration < 0.01, f"Renderer instantiation too slow: {duration:.4f}s"
+
     
     @pytest.mark.performance
     def test_performance_metric_tracking(self):

@@ -1,0 +1,5561 @@
+{
+  "summary": {
+    "total_real_issues": 78,
+    "total_false_positives": 798,
+    "broken_links": 0,
+    "missing_files": 77,
+    "incorrect_paths": 0,
+    "outdated_references": 0,
+    "import_errors": 1,
+    "output_dir_mismatches": 0,
+    "script_name_errors": 0,
+    "false_positives_by_category": {
+      "anchor_links": 128,
+      "code_block_examples": 224,
+      "optional_files": 35,
+      "documentation_examples": 3,
+      "external_references": 408
+    }
+  },
+  "issues": {
+    "broken_links": [],
+    "missing_files": [
+      {
+        "source": "doc/learning_paths.md",
+        "line": 21,
+        "link": "../pipeline/PIPELINE_ARCHITECTURE.md",
+        "resolved": "pipeline/PIPELINE_ARCHITECTURE.md",
+        "file_part": "../pipeline/PIPELINE_ARCHITECTURE.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/learning_paths.md",
+        "line": 22,
+        "link": "../visualization/README.md",
+        "resolved": "visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/glowstick/README.md",
+        "line": 31,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/poe-world/README.md",
+        "line": 31,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/poe-world/README.md",
+        "line": 107,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/releases/README.md",
+        "line": 100,
+        "link": "doc/gnn/gnn_overview.md",
+        "resolved": "doc/releases/doc/gnn/gnn_overview.md",
+        "file_part": "doc/gnn/gnn_overview.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/releases/README.md",
+        "line": 101,
+        "link": "doc/gnn/quickstart_tutorial.md",
+        "resolved": "doc/releases/doc/gnn/quickstart_tutorial.md",
+        "file_part": "doc/gnn/quickstart_tutorial.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/spm/README.md",
+        "line": 30,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/spm/README.md",
+        "line": 113,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/spm/AGENTS.md",
+        "line": 111,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/README.md",
+        "line": 5,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/README.md",
+        "line": 27,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/README.md",
+        "line": 102,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/README.md",
+        "line": 106,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/README.md",
+        "line": 126,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/AGENTS.md",
+        "line": 5,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/AGENTS.md",
+        "line": 108,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/AGENTS.md",
+        "line": 112,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pedalboard/AGENTS.md",
+        "line": 123,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/arc-agi/README.md",
+        "line": 29,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/arc-agi/README.md",
+        "line": 105,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 5,
+        "link": "../gnn_overview.md",
+        "resolved": "doc/gnn_overview.md",
+        "file_part": "../gnn_overview.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 5,
+        "link": "../about_gnn.md#the-triple-play-modalities-of-gnn",
+        "resolved": "doc/about_gnn.md",
+        "file_part": "../about_gnn.md",
+        "anchor_part": "the-triple-play-modalities-of-gnn",
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 7,
+        "link": "../gnn_tools.md#gnn-type-checker-and-resource-estimator",
+        "resolved": "doc/gnn_tools.md",
+        "file_part": "../gnn_tools.md",
+        "anchor_part": "gnn-type-checker-and-resource-estimator",
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 7,
+        "link": "../gnn_implementation.md#organizing-gnn-processing-tools-a-practical-approach",
+        "resolved": "doc/gnn_implementation.md",
+        "file_part": "../gnn_implementation.md",
+        "anchor_part": "organizing-gnn-processing-tools-a-practical-approach",
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 7,
+        "link": "../gnn_llm_neurosymbolic_active_inference.md",
+        "resolved": "doc/gnn_llm_neurosymbolic_active_inference.md",
+        "file_part": "../gnn_llm_neurosymbolic_active_inference.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 49,
+        "link": "../gnn_tools.md#gnn-visualization",
+        "resolved": "doc/gnn_tools.md",
+        "file_part": "../gnn_tools.md",
+        "anchor_part": "gnn-visualization",
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 49,
+        "link": "../gnn_tools.md#gnn-type-checker-and-resource-estimator",
+        "resolved": "doc/gnn_tools.md",
+        "file_part": "../gnn_tools.md",
+        "anchor_part": "gnn-type-checker-and-resource-estimator",
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 53,
+        "link": "../ontology_system.md",
+        "resolved": "doc/ontology_system.md",
+        "file_part": "../ontology_system.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 58,
+        "link": "../gnn_file_structure_doc.md",
+        "resolved": "doc/gnn_file_structure_doc.md",
+        "file_part": "../gnn_file_structure_doc.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/other/README.md",
+        "line": 29,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/other/README.md",
+        "line": 90,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/other/README.md",
+        "line": 112,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pkl/README.md",
+        "line": 29,
+        "link": "../export/README.md",
+        "resolved": "doc/export/README.md",
+        "file_part": "../export/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pkl/README.md",
+        "line": 115,
+        "link": "../export/README.md",
+        "resolved": "doc/export/README.md",
+        "file_part": "../export/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pkl/README.md",
+        "line": 137,
+        "link": "../export/README.md",
+        "resolved": "doc/export/README.md",
+        "file_part": "../export/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pkl/AGENTS.md",
+        "line": 108,
+        "link": "../export/README.md",
+        "resolved": "doc/export/README.md",
+        "file_part": "../export/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/pkl/AGENTS.md",
+        "line": 121,
+        "link": "../export/README.md",
+        "resolved": "doc/export/README.md",
+        "file_part": "../export/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 108,
+        "link": ".github/animation_maze.gif",
+        "resolved": "doc/activeinference_jl/.github/animation_maze.gif",
+        "file_part": ".github/animation_maze.gif",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2547,
+        "link": "@ref \"Creating the POMDP Generative Model\"",
+        "resolved": "doc/activeinference_jl/@ref \"Creating the POMDP Generative Model\"",
+        "file_part": "@ref \"Creating the POMDP Generative Model\"",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/ntqr/README.md",
+        "line": 30,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/ntqr/README.md",
+        "line": 125,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 5,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 28,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 29,
+        "link": "../advanced_visualization/README.md",
+        "resolved": "doc/advanced_visualization/README.md",
+        "file_part": "../advanced_visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 100,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 103,
+        "link": "../advanced_visualization/README.md",
+        "resolved": "doc/advanced_visualization/README.md",
+        "file_part": "../advanced_visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 124,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/d2/README.md",
+        "line": 125,
+        "link": "../advanced_visualization/README.md",
+        "resolved": "doc/advanced_visualization/README.md",
+        "file_part": "../advanced_visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/README.md",
+        "line": 5,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/README.md",
+        "line": 28,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/README.md",
+        "line": 108,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/README.md",
+        "line": 112,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/README.md",
+        "line": 132,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/AGENTS.md",
+        "line": 5,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/AGENTS.md",
+        "line": 106,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/AGENTS.md",
+        "line": 110,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/sapf/AGENTS.md",
+        "line": 121,
+        "link": "../audio/README.md",
+        "resolved": "doc/audio/README.md",
+        "file_part": "../audio/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/type-inference-zoo/README.md",
+        "line": 105,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cognitive_phenomena/AGENTS.md",
+        "line": 56,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cognitive_phenomena/AGENTS.md",
+        "line": 124,
+        "link": "../research/README.md",
+        "resolved": "doc/research/README.md",
+        "file_part": "../research/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 71,
+        "link": "../figures/Figure_9.png",
+        "resolved": "doc/figures/Figure_9.png",
+        "file_part": "../figures/Figure_9.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 76,
+        "link": "../figures/Figure_6.png",
+        "resolved": "doc/figures/Figure_6.png",
+        "file_part": "../figures/Figure_6.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 95,
+        "link": "../figures/Figure_1.png",
+        "resolved": "doc/figures/Figure_1.png",
+        "file_part": "../figures/Figure_1.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 111,
+        "link": "../figures/Figure_7.png",
+        "resolved": "doc/figures/Figure_7.png",
+        "file_part": "../figures/Figure_7.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 123,
+        "link": "../figures/Figure_2.png",
+        "resolved": "doc/figures/Figure_2.png",
+        "file_part": "../figures/Figure_2.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 127,
+        "link": "../figures/Figure_3.png",
+        "resolved": "doc/figures/Figure_3.png",
+        "file_part": "../figures/Figure_3.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 235,
+        "link": "Figure_7.png",
+        "resolved": "doc/cerebrum/Figure_7.png",
+        "file_part": "Figure_7.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 265,
+        "link": "../figures/Figure_13.png",
+        "resolved": "doc/figures/Figure_13.png",
+        "file_part": "../figures/Figure_13.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 267,
+        "link": "../figures/Figure_14.png",
+        "resolved": "doc/figures/Figure_14.png",
+        "file_part": "../figures/Figure_14.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 272,
+        "link": "../figures/Figure_15.png",
+        "resolved": "doc/figures/Figure_15.png",
+        "file_part": "../figures/Figure_15.png",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/gui_oxdraw/README.md",
+        "line": 30,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/gui_oxdraw/README.md",
+        "line": 31,
+        "link": "../advanced_visualization/README.md",
+        "resolved": "doc/advanced_visualization/README.md",
+        "file_part": "../advanced_visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/gui_oxdraw/README.md",
+        "line": 108,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/gui_oxdraw/README.md",
+        "line": 109,
+        "link": "../advanced_visualization/README.md",
+        "resolved": "doc/advanced_visualization/README.md",
+        "file_part": "../advanced_visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/gui_oxdraw/README.md",
+        "line": 130,
+        "link": "../visualization/README.md",
+        "resolved": "doc/visualization/README.md",
+        "file_part": "../visualization/README.md",
+        "anchor_part": null,
+        "is_directory_ref": false
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/README.md",
+        "line": 18,
+        "link": "Multi-agent%20Trajectory%20Planning.jl",
+        "resolved": "doc/rxinfer/multiagent_trajectory_planning/Multi-agent%20Trajectory%20Planning.jl",
+        "file_part": "Multi-agent%20Trajectory%20Planning.jl",
+        "anchor_part": null,
+        "is_directory_ref": false
+      }
+    ],
+    "incorrect_paths": [],
+    "outdated_references": [],
+    "import_errors": [
+      "Error parsing /Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/utils/venv_utils.py: [Errno 1] Operation not permitted: '/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/utils/venv_utils.py'"
+    ],
+    "output_dir_mismatches": [],
+    "script_name_errors": []
+  },
+  "false_positives": {
+    "anchor_links": [
+      {
+        "source": "README.md",
+        "line": 16,
+        "link": "#-quick-start",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 17,
+        "link": "#-documentation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 18,
+        "link": "#-examples",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 19,
+        "link": "#%EF%B8%8F-tools-and-utilities",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 20,
+        "link": "#-contributing",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 28,
+        "link": "#-overview",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 29,
+        "link": "#-motivation-and-goals",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 30,
+        "link": "#-key-features",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 31,
+        "link": "#%EF%B8%8F-project-architecture",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 32,
+        "link": "#%EF%B8%8F-processing-pipeline",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 33,
+        "link": "#%EF%B8%8F-tools-and-utilities",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 34,
+        "link": "#-quick-start",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 35,
+        "link": "#-documentation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 36,
+        "link": "#-examples",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 37,
+        "link": "#-contributing",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 38,
+        "link": "#-license",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 803,
+        "link": "#-documentation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "README.md",
+        "line": 1018,
+        "link": "#generalizednotationnotation-gnn",
+        "reason": "anchor_only"
+      },
+      {
+        "source": ".cursor_rules/AGENTS.md",
+        "line": 504,
+        "link": "#-quick-agent-index",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 401,
+        "link": "#section-1",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 402,
+        "link": "#section-2",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 403,
+        "link": "#resources",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 58,
+        "link": "#framework-integrations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 67,
+        "link": "#framework-integrations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 70,
+        "link": "#advanced-topics",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 333,
+        "link": "#learning-resources",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 334,
+        "link": "#-getting-help",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 347,
+        "link": "#-example-gallery",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 7,
+        "link": "#basic-configuration",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 8,
+        "link": "#development-configurations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 9,
+        "link": "#production-configurations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 10,
+        "link": "#multi-target-configurations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 11,
+        "link": "#performance-optimization",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 12,
+        "link": "#cloud-configurations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 13,
+        "link": "#specialized-workflows",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/configuration/examples.md",
+        "line": 14,
+        "link": "#troubleshooting-configurations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 9,
+        "link": "#conceptual-foundation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 10,
+        "link": "#technical-integration-architecture",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 11,
+        "link": "#gnn-to-audio-mapping-strategies",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 12,
+        "link": "#pedalboard-plugin-applications",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 13,
+        "link": "#real-time-model-sonification",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 14,
+        "link": "#machine-learning-pipeline-integration",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 15,
+        "link": "#advanced-audio-analysis-techniques",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 16,
+        "link": "#implementation-examples",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 17,
+        "link": "#performance-considerations",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pedalboard/pedalboard_gnn.md",
+        "line": 18,
+        "link": "#future-research-directions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 37,
+        "link": "#hierarchical-modeling",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 38,
+        "link": "#multi-agent-systems",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 39,
+        "link": "#learning-and-adaptation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 40,
+        "link": "#temporal-dynamics",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 41,
+        "link": "#uncertainty-and-robustness",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 42,
+        "link": "#compositional-modeling",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 43,
+        "link": "#domain-specific-patterns",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 9,
+        "link": "#gnn-to-pymdp-translation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 10,
+        "link": "#working-with-generated-pymdp-code",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 11,
+        "link": "#simulation-examples",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 12,
+        "link": "#advanced-pymdp-features",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 13,
+        "link": "#hierarchical-and-multi-agent-models",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 14,
+        "link": "#integration-patterns",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 15,
+        "link": "#performance-optimization",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 16,
+        "link": "#common-issues-and-solutions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 17,
+        "link": "#best-practices",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 18,
+        "link": "#troubleshooting",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 9,
+        "link": "#real-time-learning-and-adaptation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 10,
+        "link": "#multi-modal-sensory-integration",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 11,
+        "link": "#emotion-and-interoception-modeling",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 12,
+        "link": "#collective-intelligence-and-swarm-behavior",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 13,
+        "link": "#neurodevelopmental-modeling",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 14,
+        "link": "#advanced-temporal-dynamics",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_advanced_tutorials.md",
+        "line": 15,
+        "link": "#research-integration-patterns",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 9,
+        "link": "#performance-benchmarking",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 10,
+        "link": "#memory-optimization",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 11,
+        "link": "#computational-optimization",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 12,
+        "link": "#scaling-strategies",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 13,
+        "link": "#parallel-processing",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 14,
+        "link": "#hardware-acceleration",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 9,
+        "link": "#conceptual-foundation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 10,
+        "link": "#sapf-gnn-schema-architecture",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 11,
+        "link": "#core-mapping-specifications",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 12,
+        "link": "#implementation-framework",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 13,
+        "link": "#strategic-applications",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 14,
+        "link": "#technical-implementation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 15,
+        "link": "#advanced-patterns-and-techniques",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 16,
+        "link": "#performance-and-optimization",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 17,
+        "link": "#use-cases-and-examples",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/sapf/sapf_gnn.md",
+        "line": 18,
+        "link": "#future-directions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 17,
+        "link": "#introduction",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 18,
+        "link": "#basic-phenomena",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 19,
+        "link": "#advanced-models",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 20,
+        "link": "#implementation-patterns",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 21,
+        "link": "#validation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cognitive_phenomena/README.md",
+        "line": 22,
+        "link": "#research-applications",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1241,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1247,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1253,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1265,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1271,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1277,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1291,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1292,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1294,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1297,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1303,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1317,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1323,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1329,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1339,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1345,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1351,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1359,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1365,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1371,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1381,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1387,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1393,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1407,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1413,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1423,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/cerebrum/cerebrum_v1-4.md",
+        "line": 1429,
+        "link": "#references",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 7,
+        "link": "#overview",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 8,
+        "link": "#animation-functions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 9,
+        "link": "#static-visualization-functions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 10,
+        "link": "#heatmap-functions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 11,
+        "link": "#data-export-functions",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 12,
+        "link": "#visualization-interpretation",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 13,
+        "link": "#customization-options",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 14,
+        "link": "#using-the-visualization-tools",
+        "reason": "anchor_only"
+      },
+      {
+        "source": "doc/rxinfer/multiagent_trajectory_planning/VISUALIZATION.md",
+        "line": 15,
+        "link": "#data-format-requirements",
+        "reason": "anchor_only"
+      }
+    ],
+    "code_block_examples": [
+      {
+        "source": "README.md",
+        "line": 678,
+        "link": "doc/quickstart.md#5-minute-demo",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 679,
+        "link": "doc/learning_paths.md#research-focused-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 680,
+        "link": "doc/learning_paths.md#developer-focused-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 681,
+        "link": "doc/learning_paths.md#academic-learning-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 683,
+        "link": "doc/learning_paths.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 804,
+        "link": "./doc/troubleshooting/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 818,
+        "link": "./doc/gnn/gnn_overview.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 819,
+        "link": "./doc/gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 820,
+        "link": "./doc/gnn/gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 821,
+        "link": "./doc/gnn/quickstart_tutorial.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 822,
+        "link": "./DOCS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 823,
+        "link": "./ARCHITECTURE.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 824,
+        "link": "./doc/api/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 830,
+        "link": "./doc/gnn/about_gnn.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 831,
+        "link": "./doc/gnn/gnn_llm_neurosymbolic_active_inference.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 832,
+        "link": "./doc/gnn/gnn_implementation.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 833,
+        "link": "./doc/gnn/gnn_tools.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 834,
+        "link": "./doc/gnn/gnn_paper.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 840,
+        "link": "./doc/pymdp/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 841,
+        "link": "./doc/rxinfer/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 842,
+        "link": "./doc/activeinference_jl/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 843,
+        "link": "./doc/mcp/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 844,
+        "link": "./doc/sympy/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 845,
+        "link": "./doc/discopy/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 851,
+        "link": "./doc/cognitive_phenomena/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 852,
+        "link": "./doc/templates/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 853,
+        "link": "./doc/configuration/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 863,
+        "link": "./src/gnn/gnn_examples/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 864,
+        "link": "./doc/cognitive_phenomena/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 865,
+        "link": "./doc/templates/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 871,
+        "link": "src/gnn/gnn_examples/actinf_pomdp_agent.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 872,
+        "link": "doc/archive/rxinfer_hidden_markov_model.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 873,
+        "link": "doc/activeinference_jl/actinf_jl_src/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 874,
+        "link": "doc/archive/rxinfer_multiagent_gnn.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 880,
+        "link": "./doc/cognitive_phenomena/attention/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 881,
+        "link": "./doc/cognitive_phenomena/consciousness/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 882,
+        "link": "./doc/cognitive_phenomena/effort/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 883,
+        "link": "./doc/cognitive_phenomena/emotion_affect/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "README.md",
+        "line": 884,
+        "link": "./doc/cognitive_phenomena/executive_control/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/module_patterns.md",
+        "line": 489,
+        "link": "**kwargs",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 106,
+        "link": "pipeline_architecture.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 106,
+        "link": "module_patterns.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 115,
+        "link": "code_quality.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 115,
+        "link": "testing_framework.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 124,
+        "link": "error_handling.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 134,
+        "link": "error_handling.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 143,
+        "link": "render_frameworks.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 143,
+        "link": "optional_dependencies.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 150,
+        "link": "AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 151,
+        "link": "pipeline_architecture.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 152,
+        "link": "gnn_standards.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 156,
+        "link": "module_patterns.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 157,
+        "link": "implementation_patterns.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 158,
+        "link": "code_quality.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 159,
+        "link": "testing_framework.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 162,
+        "link": "troubleshooting.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 163,
+        "link": "error_handling.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/README.md",
+        "line": 164,
+        "link": "optional_dependencies.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/implementation_patterns.md",
+        "line": 49,
+        "link": "target_dir, output_dir, logger, **kwargs",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/implementation_patterns.md",
+        "line": 374,
+        "link": "**kwargs",
+        "reason": "in_code_block"
+      },
+      {
+        "source": ".cursor_rules/implementation_patterns.md",
+        "line": 801,
+        "link": "optional_dependencies.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 14,
+        "link": "gnn/about_gnn.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 562,
+        "link": "security/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 95,
+        "link": "learning_paths.md#research-focused-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 100,
+        "link": "learning_paths.md#developer-focused-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 105,
+        "link": "learning_paths.md#academic-learning-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 110,
+        "link": "learning_paths.md#quick-exploration-path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 385,
+        "link": "gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 465,
+        "link": "tutorials/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 466,
+        "link": "gnn/about_gnn.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 470,
+        "link": "pymdp/gnn_pymdp.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 470,
+        "link": "rxinfer/gnn_rxinfer.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 471,
+        "link": "performance/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 472,
+        "link": "deployment/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 475,
+        "link": "discopy/gnn_discopy.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 481,
+        "link": "gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 482,
+        "link": "pipeline/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 483,
+        "link": "api/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 484,
+        "link": "troubleshooting/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 79,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 79,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 79,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 148,
+        "link": "relative/path/to/document.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 149,
+        "link": "document.md#section-anchor",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 150,
+        "link": "../other/document.md#relevant-section",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 175,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 176,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 177,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 331,
+        "link": "link",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 331,
+        "link": "link",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 369,
+        "link": "link",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 370,
+        "link": "link",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 371,
+        "link": "link",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 393,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 393,
+        "link": "path",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 452,
+        "link": "../CONTRIBUTING.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 453,
+        "link": "testing/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 454,
+        "link": "development/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 455,
+        "link": "templates/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 704,
+        "link": "gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 705,
+        "link": "../README.md#framework-integrations",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/PIPELINE_SCRIPTS.md",
+        "line": 154,
+        "link": "\n    target_dir: Path,\n    output_dir: Path,\n    verbose: bool = False,\n    **kwargs\n",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "src/advanced_visualization/AGENTS.md",
+        "line": 124,
+        "link": "D2_README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 510,
+        "link": "Llama",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1072,
+        "link": "Transformer",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1096,
+        "link": "Transformer",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1157,
+        "link": "TransformerBlock",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1175,
+        "link": "TransformerBlock",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1229,
+        "link": "FeedForward",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1239,
+        "link": "FeedForward",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1287,
+        "link": "KeyValueCache",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1333,
+        "link": "MultiHeadAttention",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1345,
+        "link": "MultiHeadAttention",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 184,
+        "link": ".github/agent_output.PNG",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 549,
+        "link": "./SimulationActionModels.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 755,
+        "link": "@ref \"The Generative Model Conceptually\"",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1346,
+        "link": "@ref \"Creating the POMDP Generative Model\"",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1557,
+        "link": "./SimulationActionModels.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1860,
+        "link": "@ref \"The Generative Model Conceptually\"",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/api_error_reference.md",
+        "line": 568,
+        "link": "error",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 49,
+        "link": "../templates/basic_gnn_template.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 51,
+        "link": "../gnn/gnn_examples_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 90,
+        "link": "../gnn/gnn_multiagent.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 101,
+        "link": "performance.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 112,
+        "link": "common_errors.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 181,
+        "link": "performance.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 203,
+        "link": "common_errors.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 204,
+        "link": "../archive/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 212,
+        "link": "../gnn/gnn_overview.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 212,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 212,
+        "link": "../gnn/gnn_examples_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/common_errors.md",
+        "line": 61,
+        "link": "../gnn/gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/common_errors.md",
+        "line": 301,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/common_errors.md",
+        "line": 301,
+        "link": "../gnn/gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/pipeline_warnings.md",
+        "line": 373,
+        "link": "../SETUP.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/pipeline_warnings.md",
+        "line": 374,
+        "link": "../pipeline/pipeline_warning_assessment.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/troubleshooting/pipeline_warnings.md",
+        "line": 380,
+        "link": "../../README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 408,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 409,
+        "link": "../../src/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 410,
+        "link": "quickstart_tutorial.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 456,
+        "link": "../../src/gnn/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 473,
+        "link": "../../src/visualization/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 480,
+        "link": "../../src/ontology/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 484,
+        "link": "../../src/render/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 488,
+        "link": "../../src/execute/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 492,
+        "link": "../../src/llm/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_implementation.md",
+        "line": 27,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 209,
+        "link": "../troubleshooting/common_errors.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 211,
+        "link": "../../src/type_checker/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 228,
+        "link": "../../src/render/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 229,
+        "link": "../../src/execute/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/framework_integration_guide.md",
+        "line": 29,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_examples_doc.md",
+        "line": 18,
+        "link": "../../src/gnn/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_examples_doc.md",
+        "line": 19,
+        "link": "../../src/render/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_examples_doc.md",
+        "line": 20,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/ontology_system.md",
+        "line": 54,
+        "link": "../../src/ontology/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_multiagent.md",
+        "line": 29,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/advanced_modeling_patterns.md",
+        "line": 27,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_syntax.md",
+        "line": 19,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_file_structure_doc.md",
+        "line": 22,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_overview.md",
+        "line": 165,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_troubleshooting.md",
+        "line": 64,
+        "link": "gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/gnn/gnn_schema.md",
+        "line": 24,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1264,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1265,
+        "link": "../gnn/gnn_implementation.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1272,
+        "link": "../troubleshooting/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/api/README.md",
+        "line": 140,
+        "link": "../../src/AGENTS.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 96,
+        "link": "../gnn/gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 96,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 104,
+        "link": "../pipeline/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 104,
+        "link": "../configuration/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 112,
+        "link": "../api/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 112,
+        "link": "../gnn/gnn_dsl_manual.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 156,
+        "link": "../gnn/gnn_file_structure_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 157,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 158,
+        "link": "../gnn/ontology_system.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 169,
+        "link": "../gnn/gnn_syntax.md#variable-naming-conventions",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 169,
+        "link": "../gnn/gnn_implementation.md#variable-design",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 176,
+        "link": "../gnn/gnn_syntax.md#connection-notation",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 176,
+        "link": "../gnn/advanced_modeling_patterns.md#causal-inference",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 183,
+        "link": "../gnn/gnn_implementation.md#parameter-specification",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 183,
+        "link": "../troubleshooting/performance.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 190,
+        "link": "../gnn/gnn_syntax.md#mathematical-expressions",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 190,
+        "link": "../gnn/advanced_modeling_patterns.md#mathematical-foundations",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 205,
+        "link": "../gnn/gnn_tools.md#validation-tools",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 206,
+        "link": "../pipeline/README.md#step-4-gnn-type-checker",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 207,
+        "link": "../troubleshooting/common_errors.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 221,
+        "link": "../../CONTRIBUTING.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 222,
+        "link": "../../doc/gnn/gnn_standards.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 236,
+        "link": "../../CONTRIBUTING.md#submitting-changes",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 236,
+        "link": "../style_guide.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 266,
+        "link": "../pymdp/gnn_pymdp.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 267,
+        "link": "../rxinfer/gnn_rxinfer.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 268,
+        "link": "../discopy/gnn_discopy.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 275,
+        "link": "basic_gnn_template.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 275,
+        "link": "../archive/gnn_example_dynamic_perception.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 276,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 276,
+        "link": "../gnn/gnn_tools.md#validation-tools",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 277,
+        "link": "../pymdp/gnn_pymdp.md#basic-examples",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 280,
+        "link": "pomdp_template.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 280,
+        "link": "../archive/gnn_example_butterfly_pheromone_agent.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 281,
+        "link": "../gnn/gnn_implementation.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 281,
+        "link": "../gnn/advanced_modeling_patterns.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 282,
+        "link": "../pymdp/gnn_pymdp.md#pomdp-examples",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 282,
+        "link": "../rxinfer/multiagent_trajectory_planning/",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 285,
+        "link": "multiagent_template.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 285,
+        "link": "../gnn/gnn_multiagent.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 286,
+        "link": "hierarchical_template.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 286,
+        "link": "../cerebrum/gnn_cerebrum.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 287,
+        "link": "../gnn/gnn_llm_neurosymbolic_active_inference.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 294,
+        "link": "../gnn/gnn_syntax.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 295,
+        "link": "../gnn/gnn_examples_doc.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 296,
+        "link": "../gnn/gnn_implementation.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 297,
+        "link": "../gnn/gnn_tools.md#validation-tools",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 300,
+        "link": "../pymdp/gnn_pymdp.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 301,
+        "link": "../rxinfer/gnn_rxinfer.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 302,
+        "link": "../discopy/gnn_discopy.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 305,
+        "link": "../gnn/advanced_modeling_patterns.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 306,
+        "link": "../gnn/gnn_multiagent.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 307,
+        "link": "../cognitive_phenomena/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 310,
+        "link": "../api/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 311,
+        "link": "../pipeline/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 312,
+        "link": "../troubleshooting/README.md",
+        "reason": "in_code_block"
+      },
+      {
+        "source": "doc/templates/README.md",
+        "line": 313,
+        "link": "../../CONTRIBUTING.md",
+        "reason": "in_code_block"
+      }
+    ],
+    "optional_files": [
+      {
+        "source": "CODE_OF_CONDUCT.md",
+        "line": 6,
+        "link": "CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "README.md",
+        "line": 985,
+        "link": "./LICENSE.md",
+        "resolved": "LICENSE.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 6,
+        "link": "CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 25,
+        "link": "CHANGELOG.md",
+        "resolved": "CHANGELOG.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 180,
+        "link": "doc/llm/security_guidelines.md",
+        "resolved": "doc/llm/security_guidelines.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 183,
+        "link": "doc/security/incident_response.md",
+        "resolved": "doc/security/incident_response.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 184,
+        "link": "doc/security/vulnerability_assessment.md",
+        "resolved": "doc/security/vulnerability_assessment.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 185,
+        "link": "doc/security/monitoring.md",
+        "resolved": "doc/security/monitoring.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 197,
+        "link": "CHANGELOG.md",
+        "resolved": "CHANGELOG.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 205,
+        "link": "CONTRIBUTING.md#security-considerations",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/learning_paths.md",
+        "line": 94,
+        "link": "/CHANGELOG.md",
+        "resolved": "CHANGELOG.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 5,
+        "link": "../.env",
+        "resolved": ".env",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 654,
+        "link": "../CHANGELOG.md",
+        "resolved": "CHANGELOG.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 6,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 320,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 340,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 349,
+        "link": "../CONTRIBUTING.md#submitting-changes",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 366,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/CROSS_REFERENCE_INDEX.md",
+        "line": 40,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/CROSS_REFERENCE_INDEX.md",
+        "line": 159,
+        "link": "cognitive_phenomena/meta-awareness/meta_aware_model.md",
+        "resolved": "doc/cognitive_phenomena/meta-awareness/meta_aware_model.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "doc/CROSS_REFERENCE_INDEX.md",
+        "line": 181,
+        "link": "../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/CROSS_REFERENCE_INDEX.md",
+        "line": 244,
+        "link": "tests/",
+        "resolved": "doc/tests",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "src/research/AGENTS.md",
+        "line": 321,
+        "link": "../../doc/research/",
+        "resolved": "doc/research",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "src/visualization/AGENTS.md",
+        "line": 452,
+        "link": "../../doc/gnn/gnn_visualization.md",
+        "resolved": "doc/gnn/gnn_visualization.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "src/analysis/AGENTS.md",
+        "line": 342,
+        "link": "../../doc/analysis/",
+        "resolved": "doc/analysis",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "src/website/AGENTS.md",
+        "line": 341,
+        "link": "../../doc/website/",
+        "resolved": "doc/website",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "src/ontology/AGENTS.md",
+        "line": 366,
+        "link": "../../doc/gnn/gnn_ontology.md",
+        "resolved": "doc/gnn/gnn_ontology.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "src/type_checker/AGENTS.md",
+        "line": 347,
+        "link": "../../doc/gnn/gnn_type_system.md",
+        "resolved": "doc/gnn/gnn_type_system.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "src/report/AGENTS.md",
+        "line": 419,
+        "link": "../../doc/report/",
+        "resolved": "doc/report",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "src/export/AGENTS.md",
+        "line": 345,
+        "link": "../../doc/gnn/gnn_export.md",
+        "resolved": "doc/gnn/gnn_export.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "doc/security/security_framework.md",
+        "line": 863,
+        "link": "security_assessment.md",
+        "resolved": "doc/security/security_assessment.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "doc/security/security_framework.md",
+        "line": 863,
+        "link": "compliance_guide.md",
+        "resolved": "doc/security/compliance_guide.md",
+        "reason": "planned_documentation"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 521,
+        "link": "../ontology/",
+        "resolved": "doc/ontology",
+        "reason": "missing_directory_reference"
+      },
+      {
+        "source": "doc/api/comprehensive_api_reference.md",
+        "line": 825,
+        "link": "../../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      },
+      {
+        "source": "doc/api/README.md",
+        "line": 186,
+        "link": "../../CONTRIBUTING.md",
+        "resolved": "CONTRIBUTING.md",
+        "reason": "optional_file"
+      }
+    ],
+    "documentation_examples": [
+      {
+        "source": "doc/style_guide.md",
+        "line": 5,
+        "link": "../CONTRIBUTING.md",
+        "reason": "documentation_example"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 5,
+        "link": "development/README.md",
+        "reason": "documentation_example"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 5,
+        "link": "testing/README.md",
+        "reason": "documentation_example"
+      }
+    ],
+    "external_references": [
+      {
+        "source": "CODE_OF_CONDUCT.md",
+        "line": 68,
+        "link": "mailto:blanket@activeinference.institute",
+        "reason": "external_link"
+      },
+      {
+        "source": "LICENSE.md",
+        "line": 3,
+        "link": "https://creativecommons.org/licenses/by-nc-sa/4.0/",
+        "reason": "external_link"
+      },
+      {
+        "source": "AGENTS_TEMPLATE.md",
+        "line": 549,
+        "link": "../../README.md",
+        "reason": "outside_project_root"
+      },
+      {
+        "source": "AGENTS_TEMPLATE.md",
+        "line": 550,
+        "link": "../../ARCHITECTURE.md",
+        "reason": "outside_project_root"
+      },
+      {
+        "source": "AGENTS_TEMPLATE.md",
+        "line": 551,
+        "link": "../../.cursorrules",
+        "reason": "outside_project_root"
+      },
+      {
+        "source": "README.md",
+        "line": 5,
+        "link": "https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 6,
+        "link": "https://img.shields.io/badge/python-3.9+-blue.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 7,
+        "link": "https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 8,
+        "link": "https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 9,
+        "link": "https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 10,
+        "link": "https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 11,
+        "link": "https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 12,
+        "link": "https://img.shields.io/badge/Documentation-Comprehensive-success.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 44,
+        "link": "https://activeinference.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 49,
+        "link": "https://doi.org/10.5281/zenodo.7803328",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 50,
+        "link": "https://zenodo.org/records/7803328",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 805,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 950,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 951,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 973,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 974,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 979,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1001,
+        "link": "https://activeinference.institute/",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1002,
+        "link": "https://discord.activeinference.institute/",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1006,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1007,
+        "link": "https://github.com/biaslab/RxInfer.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1008,
+        "link": "https://github.com/ComputationalPsychiatry/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1009,
+        "link": "https://github.com/oxford-quantum-group/discopy",
+        "reason": "external_link"
+      },
+      {
+        "source": "README.md",
+        "line": 1010,
+        "link": "https://arxiv.org/search/?query=active+inference&searchtype=all",
+        "reason": "external_link"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 76,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 91,
+        "link": "https://activeinference.institute/",
+        "reason": "external_link"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 92,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 93,
+        "link": "https://discord.activeinference.institute/",
+        "reason": "external_link"
+      },
+      {
+        "source": "SUPPORT.md",
+        "line": 99,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 38,
+        "link": "https://docs.github.com/en/code-security/security-advisories/guidance-on-reporting-and-writing/privately-reporting-a-security-vulnerability",
+        "reason": "external_link"
+      },
+      {
+        "source": "SECURITY.md",
+        "line": 39,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/security/advisories",
+        "reason": "external_link"
+      },
+      {
+        "source": ".pytest_cache/README.md",
+        "line": 8,
+        "link": "https://docs.pytest.org/en/stable/how-to/cache.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 451,
+        "link": "https://discopy.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 452,
+        "link": "https://github.com/biaslab/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 453,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 454,
+        "link": "https://jax.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 455,
+        "link": "https://rxinfer.ml/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 670,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 674,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SETUP.md",
+        "line": 675,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 467,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 489,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/quickstart.md",
+        "line": 490,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 155,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 156,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 698,
+        "link": "https://guides.github.com/features/mastering-markdown/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 699,
+        "link": "https://docs.microsoft.com/en-us/style-guide/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 700,
+        "link": "https://developers.google.com/style",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/style_guide.md",
+        "line": 703,
+        "link": "https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 359,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 361,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/README.md",
+        "line": 363,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SUPPORT.md",
+        "line": 11,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SUPPORT.md",
+        "line": 15,
+        "link": "https://discord.gg/activeinference",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SUPPORT.md",
+        "line": 16,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/SUPPORT.md",
+        "line": 19,
+        "link": "../../SECURITY.md",
+        "reason": "outside_project_root"
+      },
+      {
+        "source": "src/research/AGENTS.md",
+        "line": 324,
+        "link": "https://activeinference.org/research",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/visualization/AGENTS.md",
+        "line": 455,
+        "link": "https://matplotlib.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/visualization/AGENTS.md",
+        "line": 456,
+        "link": "https://networkx.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/visualization/AGENTS.md",
+        "line": 457,
+        "link": "https://plotly.com/python/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/llm/AGENTS.md",
+        "line": 656,
+        "link": "https://platform.openai.com/docs",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/llm/AGENTS.md",
+        "line": 657,
+        "link": "https://docs.anthropic.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/llm/AGENTS.md",
+        "line": 658,
+        "link": "https://ollama.ai/docs",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/analysis/AGENTS.md",
+        "line": 345,
+        "link": "https://networkx.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/analysis/AGENTS.md",
+        "line": 346,
+        "link": "https://numpy.org/doc/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/analysis/AGENTS.md",
+        "line": 347,
+        "link": "https://scipy.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/security/AGENTS.md",
+        "line": 404,
+        "link": "https://owasp.org/www-project-top-ten/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/security/AGENTS.md",
+        "line": 405,
+        "link": "https://cwe.mitre.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/integration/AGENTS.md",
+        "line": 291,
+        "link": "https://networkx.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/website/AGENTS.md",
+        "line": 344,
+        "link": "https://html.spec.whatwg.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/AGENTS.md",
+        "line": 512,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/AGENTS.md",
+        "line": 513,
+        "link": "https://github.com/biaslab/RxInfer.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/AGENTS.md",
+        "line": 514,
+        "link": "https://github.com/ComputationalPsychiatry/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/AGENTS.md",
+        "line": 515,
+        "link": "https://github.com/oxford-quantum-group/discopy",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/AGENTS.md",
+        "line": 516,
+        "link": "https://jax.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/utils/AGENTS.md",
+        "line": 529,
+        "link": "https://docs.python.org/3/library/logging.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/mcp/README.md",
+        "line": 394,
+        "link": "https://modelcontextprotocol.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/mcp/README.md",
+        "line": 395,
+        "link": "https://www.jsonrpc.org/specification",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/mcp/AGENTS.md",
+        "line": 409,
+        "link": "https://modelcontextprotocol.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/ontology/AGENTS.md",
+        "line": 365,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/ontology/AGENTS.md",
+        "line": 369,
+        "link": "https://activeinference.institute/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/ontology/AGENTS.md",
+        "line": 370,
+        "link": "https://activeinference.org/ontology",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gnn/AGENTS.md",
+        "line": 471,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/AGENTS.md",
+        "line": 323,
+        "link": "https://github.com/activeinference/sapf",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/AGENTS.md",
+        "line": 324,
+        "link": "https://github.com/spotify/pedalboard",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/AGENTS.md",
+        "line": 325,
+        "link": "https://librosa.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/AGENTS.md",
+        "line": 547,
+        "link": "https://gradio.app/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/AGENTS.md",
+        "line": 548,
+        "link": "https://streamlit.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/type_checker/AGENTS.md",
+        "line": 350,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/type_checker/AGENTS.md",
+        "line": 351,
+        "link": "https://www.python.org/dev/peps/pep-0484/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/report/AGENTS.md",
+        "line": 422,
+        "link": "https://daringfireball.net/projects/markdown/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/AGENTS.md",
+        "line": 302,
+        "link": "https://julialang.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/AGENTS.md",
+        "line": 355,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/AGENTS.md",
+        "line": 356,
+        "link": "https://github.com/biaslab/RxInfer.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/AGENTS.md",
+        "line": 357,
+        "link": "https://github.com/ComputationalPsychiatry/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/AGENTS.md",
+        "line": 358,
+        "link": "https://jax.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/export/AGENTS.md",
+        "line": 348,
+        "link": "http://graphml.graphdrawing.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/export/AGENTS.md",
+        "line": 349,
+        "link": "https://gephi.org/gexf/format/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/export/AGENTS.md",
+        "line": 350,
+        "link": "https://networkx.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/D2_README.md",
+        "line": 481,
+        "link": "https://d2lang.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/D2_README.md",
+        "line": 482,
+        "link": "https://d2lang.com/tour/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/D2_README.md",
+        "line": 483,
+        "link": "https://github.com/terrastruct/d2",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/AGENTS.md",
+        "line": 433,
+        "link": "https://d2lang.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/AGENTS.md",
+        "line": 501,
+        "link": "https://d2lang.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/AGENTS.md",
+        "line": 502,
+        "link": "https://plotly.com/python/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/advanced_visualization/AGENTS.md",
+        "line": 503,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/rxinfer/AGENTS.md",
+        "line": 585,
+        "link": "https://rxinfer.ml/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/rxinfer/AGENTS.md",
+        "line": 588,
+        "link": "https://julialang.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/rxinfer/AGENTS.md",
+        "line": 589,
+        "link": "https://en.wikipedia.org/wiki/Reactive_programming",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/rxinfer/AGENTS.md",
+        "line": 590,
+        "link": "https://en.wikipedia.org/wiki/Belief_propagation",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/activeinference_jl/AGENTS.md",
+        "line": 574,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/activeinference_jl/AGENTS.md",
+        "line": 577,
+        "link": "https://julialang.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/activeinference_jl/AGENTS.md",
+        "line": 578,
+        "link": "https://github.com/ilabcode/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/activeinference_jl/AGENTS.md",
+        "line": 579,
+        "link": "https://en.wikipedia.org/wiki/Free_energy_principle",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/pymdp/AGENTS.md",
+        "line": 585,
+        "link": "https://pymdp.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/pymdp/AGENTS.md",
+        "line": 588,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/pymdp/AGENTS.md",
+        "line": 589,
+        "link": "https://en.wikipedia.org/wiki/Markov_decision_process",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/pymdp/AGENTS.md",
+        "line": 590,
+        "link": "https://en.wikipedia.org/wiki/Variational_Bayesian_methods",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/README.md",
+        "line": 291,
+        "link": "https://github.com/google/jax",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/README.md",
+        "line": 292,
+        "link": "https://jax.readthedocs.io/en/latest/notebooks/thinking_in_jax.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/README.md",
+        "line": 293,
+        "link": "https://optax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/README.md",
+        "line": 294,
+        "link": "https://flax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/README.md",
+        "line": 295,
+        "link": "https://pfjax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/AGENTS.md",
+        "line": 610,
+        "link": "https://jax.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/AGENTS.md",
+        "line": 613,
+        "link": "https://github.com/google/jax",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/AGENTS.md",
+        "line": 614,
+        "link": "https://jax.readthedocs.io/en/latest/notebooks/thinking_in_jax.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/execute/jax/AGENTS.md",
+        "line": 615,
+        "link": "https://docs.nvidia.com/cuda/cuda-installation-guide-linux/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/oxdraw/README.md",
+        "line": 311,
+        "link": "https://github.com/RohanAdwankar/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/oxdraw/README.md",
+        "line": 315,
+        "link": "https://mermaid.js.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/oxdraw/AGENTS.md",
+        "line": 499,
+        "link": "https://github.com/RohanAdwankar/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/gui/oxdraw/AGENTS.md",
+        "line": 500,
+        "link": "https://mermaid.js.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/pedalboard/AGENTS.md",
+        "line": 563,
+        "link": "https://spotify.github.io/pedalboard/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/pedalboard/AGENTS.md",
+        "line": 567,
+        "link": "https://en.wikipedia.org/wiki/Digital_signal_processing",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/pedalboard/AGENTS.md",
+        "line": 568,
+        "link": "https://en.wikipedia.org/wiki/Audio_signal_processing",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/pedalboard/AGENTS.md",
+        "line": 569,
+        "link": "https://en.wikipedia.org/wiki/Real-time_computing",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/sapf/AGENTS.md",
+        "line": 512,
+        "link": "https://en.wikipedia.org/wiki/Fast_Fourier_transform",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/sapf/AGENTS.md",
+        "line": 513,
+        "link": "https://en.wikipedia.org/wiki/Spectral_music",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/audio/sapf/AGENTS.md",
+        "line": 514,
+        "link": "https://en.wikipedia.org/wiki/Digital_signal_processing",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/README.md",
+        "line": 3,
+        "link": "https://github.com/biaslab/RxInfer.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/AGENTS.md",
+        "line": 531,
+        "link": "https://rxinfer.ml/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/AGENTS.md",
+        "line": 532,
+        "link": "https://github.com/biaslab/ReactiveMP.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/AGENTS.md",
+        "line": 535,
+        "link": "https://en.wikipedia.org/wiki/Probabilistic_programming",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/AGENTS.md",
+        "line": 536,
+        "link": "https://en.wikipedia.org/wiki/Belief_propagation",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/rxinfer/AGENTS.md",
+        "line": 537,
+        "link": "https://en.wikipedia.org/wiki/Factor_graph",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/activeinference_jl/AGENTS.md",
+        "line": 537,
+        "link": "https://github.com/ilabcode/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/activeinference_jl/AGENTS.md",
+        "line": 538,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/activeinference_jl/AGENTS.md",
+        "line": 541,
+        "link": "https://www.sciencedirect.com/science/article/pii/S0022249615000164",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/activeinference_jl/AGENTS.md",
+        "line": 542,
+        "link": "https://en.wikipedia.org/wiki/Free_energy_principle",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/activeinference_jl/AGENTS.md",
+        "line": 543,
+        "link": "https://en.wikipedia.org/wiki/Hierarchical_reinforcement_learning",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/pymdp/AGENTS.md",
+        "line": 495,
+        "link": "https://pymdp.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/pymdp/AGENTS.md",
+        "line": 496,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/pymdp/AGENTS.md",
+        "line": 499,
+        "link": "https://en.wikipedia.org/wiki/Markov_decision_process",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/pymdp/AGENTS.md",
+        "line": 500,
+        "link": "https://en.wikipedia.org/wiki/Probabilistic_programming",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/pymdp/AGENTS.md",
+        "line": 501,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 179,
+        "link": "https://github.com/google/jax",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 180,
+        "link": "https://optax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 181,
+        "link": "https://flax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 182,
+        "link": "https://pfjax.readthedocs.io",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 183,
+        "link": "https://arxiv.org/abs/1304.1118",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/README.md",
+        "line": 184,
+        "link": "https://www.cs.cmu.edu/~ggordon/jpineau-ggordon-thrun.ijcai03.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/AGENTS.md",
+        "line": 551,
+        "link": "https://jax.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/AGENTS.md",
+        "line": 552,
+        "link": "https://en.wikipedia.org/wiki/Automatic_differentiation",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/AGENTS.md",
+        "line": 555,
+        "link": "https://en.wikipedia.org/wiki/Just-in-time_compilation",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/AGENTS.md",
+        "line": 556,
+        "link": "https://en.wikipedia.org/wiki/SIMD",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/jax/AGENTS.md",
+        "line": 557,
+        "link": "https://en.wikipedia.org/wiki/GPGPU",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/discopy/AGENTS.md",
+        "line": 512,
+        "link": "https://discopy.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/discopy/AGENTS.md",
+        "line": 513,
+        "link": "https://arxiv.org/abs/quant-ph/0510032",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/discopy/AGENTS.md",
+        "line": 516,
+        "link": "https://en.wikipedia.org/wiki/String_diagram",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/discopy/AGENTS.md",
+        "line": 517,
+        "link": "https://en.wikipedia.org/wiki/Category_theory",
+        "reason": "external_link"
+      },
+      {
+        "source": "src/render/discopy/AGENTS.md",
+        "line": 518,
+        "link": "https://arxiv.org/abs/1905.06547",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 177,
+        "link": "https://github.com/huggingface/candle",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 177,
+        "link": "https://github.com/tracel-ai/burn",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 265,
+        "link": "https://github.com/tracel-ai/burn",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 265,
+        "link": "https://github.com/tracel-ai/models/tree/main/llama-burn",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 582,
+        "link": "https://github.com/openai/tiktoken",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1701,
+        "link": "https://github.com/openai/tiktoken",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1797,
+        "link": "https://github.com/huggingface/candle",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1797,
+        "link": "https://github.com/huggingface/candle/tree/main/candle-examples/examples/llama",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1860,
+        "link": "https://arxiv.org/abs/2302.13971",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick.md",
+        "line": 1862,
+        "link": "https://github.com/huggingface/transformers/blob/main/src/transformers/models/llama/modeling_llama.py",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/glowstick/glowstick_gnn.md",
+        "line": 5,
+        "link": "https://github.com/nicksenger/glowstick",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pipeline/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 275,
+        "link": "https://doi.org/10.5281/zenodo.7803328",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 276,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 277,
+        "link": "https://reactivebayes.github.io/RxInfer.jl/stable/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 278,
+        "link": "https://doi.org/10.21105/joss.05161",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1021,
+        "link": "https://rxinfer.ml/docs/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1022,
+        "link": "https://reactivemp.github.io/ReactiveMP.jl/stable/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1023,
+        "link": "https://biaslab.github.io/GraphPPL.jl/stable/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1031,
+        "link": "https://github.com/biaslab/RxInfer.jl/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1032,
+        "link": "https://reactivemp.github.io/ReactiveMP.jl/stable/examples/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/gnn_rxinfer.md",
+        "line": 1034,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/rxinfer/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/security/README.md",
+        "line": 341,
+        "link": "https://owasp.org/www-project-top-ten/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/security/README.md",
+        "line": 342,
+        "link": "https://www.nist.gov/cyberframework",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/security/README.md",
+        "line": 343,
+        "link": "https://www.cisecurity.org/controls/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 20,
+        "link": "https://pig-dot-dev.github.io/muscle-mem-docs/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/muscle-mem/gnn-muscle-mem.md",
+        "line": 21,
+        "link": "https://discord.gg/N2z5aZzHAc",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/other/active_inferant_stream_014-3.md",
+        "line": 10,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/other/active_inferant_stream_014-3.md",
+        "line": 11,
+        "link": "https://donate.activeinference.institute",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/other/active_inferant_stream_014-2.md",
+        "line": 13,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/other/active_inferant_stream_014-2.md",
+        "line": 14,
+        "link": "https://coda.io/d/RxInfer-jl-Active-Inference-Institute_ddtS-XZ4BJb/Multi-agent-Trajectory-Planning_sutlGFZ9",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/other/active_inferant_stream_014-2.md",
+        "line": 76,
+        "link": "https://coda.io/d/RxInfer-jl-Active-Inference-Institute_ddtS-XZ4BJb/Multi-agent-Trajectory-Planning_sutlGFZ9",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 517,
+        "link": "https://pkl-lang.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 518,
+        "link": "https://pkl-lang.org/main/current/language-reference/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 519,
+        "link": "https://pkl-lang.org/package-docs/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 522,
+        "link": "https://docs.python.org/3/library/pickle.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 523,
+        "link": "https://pkl-lang.org/blog/pkl-evolution.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/pkl_gnn.md",
+        "line": 524,
+        "link": "https://pkl-lang.org/spring/current/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/kit/gnn_kit.md",
+        "line": 352,
+        "link": "https://www.pfw.edu/offices/learning-support/documents/how-to-write-an-analysis.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/dependencies/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 100,
+        "link": "https://img.shields.io/badge/docs-stable-blue.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 101,
+        "link": "https://github.com/samuelnehrer02/ActiveInference.jl/actions/workflows/CI_full.yml/badge.svg?branch=master",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 102,
+        "link": "https://codecov.io/gh/samuelnehrer02/ActiveInference.jl/branch/master/graph/badge.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 103,
+        "link": "https://img.shields.io/badge/License-MIT-yellow.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 104,
+        "link": "https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 109,
+        "link": "https://www.sciencedirect.com/science/article/pii/S0022519318303151?via%3Dihub",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 115,
+        "link": "https://computationalpsychiatry.github.io/ActiveInference.jl/stable/Introduction/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 167,
+        "link": "https://docs.julialang.org/en/v1/base/arrays/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 491,
+        "link": "https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 631,
+        "link": "https://turing.ml/dev/docs/using-turing/samplers/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1330,
+        "link": "https://www.biorxiv.org/content/10.1101/2024.02.19.581001v1",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1491,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1510,
+        "link": "https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1643,
+        "link": "https://turing.ml/dev/docs/using-turing/samplers/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1746,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 1916,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2030,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2044,
+        "link": "https://github.com/ilabcode/ActiveInference.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2086,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2148,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2164,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2491,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2513,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2531,
+        "link": "https://www.biorxiv.org/content/10.1101/2024.02.19.581001v1",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/activeinference-jl_source_code.md",
+        "line": 2560,
+        "link": "https://github.com/fredrikekre/Literate.jl",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/activeinference_jl/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 27,
+        "link": "https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 835,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 836,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/faq.md",
+        "line": 837,
+        "link": "https://www.activeinference.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/performance.md",
+        "line": 462,
+        "link": "https://pymdp.readthedocs.io/en/latest/performance.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/performance.md",
+        "line": 463,
+        "link": "https://jax.readthedocs.io/en/latest/notebooks/Common_Gotchas_in_JAX.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/performance.md",
+        "line": 464,
+        "link": "https://numpy.org/doc/stable/user/basics.performance.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/pipeline_warnings.md",
+        "line": 378,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/troubleshooting/pipeline_warnings.md",
+        "line": 379,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 5,
+        "link": "https://arxiv.org/abs/2505.24784",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1007,
+        "link": "https://arxiv.org/abs/2505.24784",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1008,
+        "link": "https://github.com/VersesTech/axiom/tree/main/axiom",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1009,
+        "link": "https://zenodo.org/records/7803328",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1010,
+        "link": "https://www.activeinference.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1011,
+        "link": "https://github.com/VersesTech/gameworld",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_gnn.md",
+        "line": 1012,
+        "link": "https://www.verses.ai/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 235,
+        "link": "https://gnn-editor.activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 324,
+        "link": "https://github.com/ActiveInferenceInstitute/GNN-Models",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 361,
+        "link": "https://activeinferenceinstitute.github.io/gnn/specification",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 362,
+        "link": "https://activeinferenceinstitute.github.io/gnn/api",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 363,
+        "link": "https://activeinferenceinstitute.github.io/gnn/tutorials",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 367,
+        "link": "https://activeinferenceinstitute.github.io/gnn/intro",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 368,
+        "link": "https://www.youtube.com/playlist?list=PLxxx",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 369,
+        "link": "https://activeinferenceinstitute.github.io/gnn/examples",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 373,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 374,
+        "link": "https://forum.activeinference.org/c/gnn",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 375,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_tools.md",
+        "line": 400,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/about_gnn.md",
+        "line": 225,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/about_gnn.md",
+        "line": 226,
+        "link": "https://doi.org/10.5281/zenodo.7430333",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 281,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/quickstart_tutorial.md",
+        "line": 326,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/README.md",
+        "line": 166,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/README.md",
+        "line": 167,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/README.md",
+        "line": 168,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_file_structure_doc.md",
+        "line": 365,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gnn/gnn_troubleshooting.md",
+        "line": 131,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1261,
+        "link": "https://pymdp.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1262,
+        "link": "https://pymdp.readthedocs.io/en/latest/notebooks/active_inference_demo.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1263,
+        "link": "https://doi.org/10.1016/j.jmp.2021.102632",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1270,
+        "link": "https://github.com/infer-actively/pymdp/issues",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1271,
+        "link": "https://pymdp.readthedocs.io/en/latest/examples.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/gnn_pymdp.md",
+        "line": 1273,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/README.md",
+        "line": 65,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/README.md",
+        "line": 78,
+        "link": "https://pymdp.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/README.md",
+        "line": 79,
+        "link": "https://activeinference.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/README.md",
+        "line": 80,
+        "link": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 642,
+        "link": "https://pymdp.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 643,
+        "link": "https://numpy.org/doc/stable/user/basics.performance.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 644,
+        "link": "https://docs.scipy.org/doc/scipy/reference/sparse.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 645,
+        "link": "https://numba.pydata.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_performance_guide.md",
+        "line": 646,
+        "link": "https://docs.python.org/3/library/profile.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/quadray/quadray_gnn.md",
+        "line": 70,
+        "link": "https://en.wikipedia.org/wiki/Generalized_quadrangle",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/quadray/quadray_gnn.md",
+        "line": 109,
+        "link": "https://people.duke.edu/~hpgavin/StructuralDynamics/LagrangesEqns.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 836,
+        "link": "https://d2lang.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 837,
+        "link": "https://d2lang.com/tour/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 838,
+        "link": "https://d2lang.com/tour/layouts/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 839,
+        "link": "https://d2lang.com/tour/themes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 840,
+        "link": "https://d2lang.com/tour/api/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 850,
+        "link": "https://en.wikipedia.org/wiki/Active_inference",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/gnn_d2.md",
+        "line": 851,
+        "link": "https://www.sciencedirect.com/science/article/pii/S0022249615000759",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1199,
+        "link": "https://d2lang.com/tour/install/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1200,
+        "link": "https://blog.logrocket.com/complete-guide-declarative-diagramming-d2/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1201,
+        "link": "https://www.code4it.dev/architecture-notes/d2-diagrams/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1202,
+        "link": "https://d2lang.com",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1203,
+        "link": "https://www.tools-online.app/blog/D2-Diagrams-Online-Complete-Architecture-Diagram-Guide",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1204,
+        "link": "https://linuxcommandlibrary.com/man/d2",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1205,
+        "link": "https://d2lang.com/tour/layouts/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1206,
+        "link": "https://terrastruct.com/blog/post/generate-diagrams-programmatically/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1207,
+        "link": "https://hideoo.dev/notes/starlight-add-diagrams-using-d2/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1208,
+        "link": "https://d2lang.com/tour/vars/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1209,
+        "link": "https://d2lang.com/tour/imports/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1210,
+        "link": "https://d2lang.com/tour/themes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1211,
+        "link": "https://kjrstory.netlify.app/en/post/d2anddiagrams/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1212,
+        "link": "https://d2lang.com/tour/shapes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1213,
+        "link": "https://d2lang.com/tour/sequence-diagrams/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1214,
+        "link": "https://d2lang.com/tour/uml-classes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1215,
+        "link": "https://d2lang.com/tour/api/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1216,
+        "link": "https://netlab.tools/outputs/d2/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1217,
+        "link": "https://d2lang.com/tour/man/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1218,
+        "link": "https://modeling-languages.com/text-uml-tools-complete-list/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1219,
+        "link": "https://www.cuemath.com/geometry/2d-shapes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1220,
+        "link": "https://www.mathsisfun.com/shape.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1221,
+        "link": "https://brighterly.com/math/2d-shapes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1222,
+        "link": "https://byjus.com/maths/2d-shapes/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1223,
+        "link": "https://www.math-salamanders.com/list-of-geometric-shapes.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/d2.md",
+        "line": 1224,
+        "link": "https://www.youtube.com/watch?v=8gdrmPs7118",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/d2/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/autogenlib/gnn_autogenlib.md",
+        "line": 36,
+        "link": "https://github.com/cofob/autogenlib",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 215,
+        "link": "https://github.com/jkool702/timep",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 216,
+        "link": "https://www.youtube.com/watch?v=F1_xKBjlINw",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 217,
+        "link": "https://www.reddit.com/r/bash/comments/1hdncbl/bash_profiler_to_measure_cost_of_execuction_of/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 218,
+        "link": "https://stackoverflow.com/questions/4336035/performance-profiling-tools-for-shell-scripts",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 219,
+        "link": "https://www.reddit.com/r/bash/comments/1ml7l60/timep_a_nextgen_timeprofiler_and/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 220,
+        "link": "https://moldstud.com/articles/p-10-essential-command-line-debugging-tools-every-bash-developer-should-know",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 221,
+        "link": "https://lacasa.uah.edu/images/Upload/tutorials/perf.tool/PerfTool_01182021.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 222,
+        "link": "https://news.ycombinator.com/item?id=45010461",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 223,
+        "link": "https://dev.to/apilover/top-10-profiler-tools-for-optimizing-software-performance-in-2024-5d09",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 224,
+        "link": "https://www.baeldung.com/linux/profiling-processes",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 225,
+        "link": "https://support.tools/linux-performance-profiling-optimization/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 226,
+        "link": "https://stackoverflow.com/questions/75866879/how-to-create-a-flamegraph-of-bash-script-running-time",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 227,
+        "link": "https://jichu4n.com/posts/debug-trap-and-prompt_command-in-bash/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 228,
+        "link": "https://johnnysswlab.com/flamegraphs-understand-where-your-program-is-spending-time/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 229,
+        "link": "https://linuxconfig.org/how-to-debug-bash-scripts",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 230,
+        "link": "https://github.com/jkool702/timeprofile",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 231,
+        "link": "https://www.brendangregg.com/Slides/LISA13_Flame_Graphs.pdf",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 232,
+        "link": "https://aaltoscicomp.github.io/linux-shell/traps-debugging-profiling/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 233,
+        "link": "https://github.com/awesome-lists/awesome-bash",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 234,
+        "link": "https://www.gabriel.urdhr.fr/2014/05/23/flamegraph/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 235,
+        "link": "https://opensource.com/article/20/6/bash-trap",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 236,
+        "link": "https://stackoverflow.com/questions/5014823/how-can-i-profile-a-bash-shell-script-slow-startup",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 237,
+        "link": "https://github.com/jkool702/timep/blob/main/timep.bash",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 238,
+        "link": "https://github.com/jkool702/timep/blob/main/TESTS/simple_example.bash",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 239,
+        "link": "https://github.com/jkool702/timep/blob/main/TESTS/timep.tests.bash",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 240,
+        "link": "https://github.com/jkool702/timep/tree/main/TESTS/FORKRUN",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 241,
+        "link": "https://github.com/jkool702/timep/blob/main/TESTS/OUTPUT/out.profile",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 242,
+        "link": "https://github.com/jkool702/timep/tree/main",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 243,
+        "link": "https://developer.nvidia.com/blog/nvidia-hopper-architecture-in-depth/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 244,
+        "link": "https://github.com/jkool702/forkrun",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 245,
+        "link": "https://www.reddit.com/r/StableDiffusion/comments/15wen8t/up_to_10x_more_performance_on_amd_gpus_using/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 246,
+        "link": "https://forum.openwrt.org/t/plex-media-server-for-openwrt/179676",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 247,
+        "link": "https://www.vegascreativesoftware.info/us/forum/any-easy-way-to-speed-up-a-clip-10x-to-100x-i-e-more-than-4x--113924/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 248,
+        "link": "https://www.reddit.com/r/shell/comments/1mpa2f2/timep_a_nextgen_timeprofiler_and/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 249,
+        "link": "https://tom-doerr.github.io/repo_posts/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 250,
+        "link": "https://sean.heelan.io/category/performance-optimisation/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/timep/timep.md",
+        "line": 251,
+        "link": "https://news.ycombinator.com/item?id=44564929",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/klong/klong.md",
+        "line": 121,
+        "link": "http://t3x.org/klong/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/klong/klong.md",
+        "line": 185,
+        "link": "https://github.com/briangu/klongpy",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/discopy/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/cerebrum/AGENTS.md",
+        "line": 24,
+        "link": "https://activeinference.org",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 334,
+        "link": "https://github.com/RohanAdwankar/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 335,
+        "link": "https://lib.rs/crates/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 336,
+        "link": "https://news.ycombinator.com/item?id=45706792",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 337,
+        "link": "https://create-react-app.dev/docs/getting-started/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 338,
+        "link": "https://www.youtube.com/watch?v=enk0o7eWNsc",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 339,
+        "link": "https://www.drawio.com/blog/mermaid-diagrams",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 340,
+        "link": "https://indiebase.io/tools/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 341,
+        "link": "https://docs.mermaidchart.com/mermaid-oss/intro/getting-started.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 342,
+        "link": "https://github.com/RohanAdwankar",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 343,
+        "link": "https://www.reddit.com/r/rust/comments/1ofo1li/media_oxdraw_cli_for_declarative_diagram/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 344,
+        "link": "https://www.linkedin.com/in/rohanadwankar",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 345,
+        "link": "https://mermaid.js.org/config/configuration.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 346,
+        "link": "https://doc.rust-lang.org/cargo/reference/specifying-dependencies.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 347,
+        "link": "https://doc.rust-lang.org/cargo/guide/dependencies.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 348,
+        "link": "https://users.rust-lang.org/t/psa-please-specify-precise-dependency-versions-in-cargo-toml/71277",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 349,
+        "link": "https://www.youtube.com/watch?v=9CcDy2HCNnU",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 350,
+        "link": "https://dev.to/rijultp/getting-started-with-dependency-management-in-rust-using-cargotoml-54oo",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 351,
+        "link": "https://www.reddit.com/r/rust/comments/skckkl/psa_please_specify_precise_dependency_versions_in/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 352,
+        "link": "https://create-react-app.dev/docs/deployment/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/oxdraw.md",
+        "line": 353,
+        "link": "https://community.lucid.co/inspiration-5/what-syntax-can-i-use-to-diagram-as-code-with-mermaid-9665",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/gnn_oxdraw.md",
+        "line": 1170,
+        "link": "https://github.com/RohanAdwankar/oxdraw",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/gui_oxdraw/gnn_oxdraw.md",
+        "line": 1171,
+        "link": "https://mermaid.js.org/syntax/flowchart.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+        "line": 5,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+        "line": 8,
+        "link": "https://pymdp-rtd.readthedocs.io/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+        "line": 9,
+        "link": "https://joss.theoj.org/papers/10.21105/joss.04098",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pymdp/pymdp_pomdp/POMDP_EXPLANATION.md",
+        "line": 10,
+        "link": "https://github.com/infer-actively/pymdp",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_implementation/README.md",
+        "line": 3,
+        "link": "https://arxiv.org/abs/2505.24784",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_implementation/README.md",
+        "line": 403,
+        "link": "https://arxiv.org/abs/2505.24784",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_implementation/README.md",
+        "line": 404,
+        "link": "https://zenodo.org/records/7803328",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/axiom/axiom_implementation/README.md",
+        "line": 405,
+        "link": "https://www.activeinference.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/examples/README.md",
+        "line": 3,
+        "link": "https://pkl-lang.org/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/examples/README.md",
+        "line": 7,
+        "link": "https://pkl-lang.org/main/current/pkl-cli/index.html",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/examples/README.md",
+        "line": 173,
+        "link": "https://pkl-lang.org/main/current/language-reference/",
+        "reason": "external_link"
+      },
+      {
+        "source": "doc/pkl/examples/README.md",
+        "line": 176,
+        "link": "https://pkl-lang.org/main/current/introduction/comparison.html",
+        "reason": "external_link"
+      }
+    ]
+  },
+  "fixes_applied": []
+}

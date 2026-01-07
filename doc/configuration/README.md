@@ -512,7 +512,7 @@ visualization:
 
 ### Loading Step Configuration
 ```bash
-python src/4_type_checker.py --config config.step4.yaml
+python src/5_type_checker.py --config config.step4.yaml
 python src/6_visualization.py --config config.step6.yaml
 ```
 

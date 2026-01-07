@@ -41,6 +41,33 @@ src/render/pymdp/
 - Active inference loop template
 - Visualization helper template
 
+## PyMDP Rendering Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Components]
+    
+    Extract --> States[State Space]
+    Extract --> Observations[Observations]
+    Extract --> Actions[Actions]
+    Extract --> Matrices[Matrices A,B,C,D]
+    
+    States --> Convert[Convert to PyMDP]
+    Observations --> Convert
+    Actions --> Convert
+    Matrices --> Convert
+    
+    Convert --> Generate[Generate Code]
+    Generate --> Agent[PyMDP Agent]
+    Generate --> Simulation[Simulation Script]
+    Generate --> Utils[Utility Functions]
+    
+    Agent --> Output[Executable Python]
+    Simulation --> Output
+    Utils --> Output
+```
+
 ## Features
 
 - Full PyMDP agent implementation generation

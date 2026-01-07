@@ -33,19 +33,26 @@
 
 ### Public Functions
 
-#### `process_sapf_audio(audio_data: np.ndarray, spectral_config: Dict, **kwargs) -> np.ndarray`
-**Description**: Main spectral audio processing function
+#### `process_sapf_audio(audio_data: np.ndarray, spectral_config: Dict[str, Any], **kwargs) -> np.ndarray`
+**Description**: Main spectral audio processing function using SAPF framework.
 
 **Parameters**:
-- `audio_data` (np.ndarray): Input audio data
-- `spectral_config` (Dict): Spectral processing configuration
-- `**kwargs`: Additional processing options (debug, verbose)
+- `audio_data` (np.ndarray): Input audio data (1D or 2D array)
+- `spectral_config` (Dict[str, Any]): Spectral processing configuration with:
+  - `window_size` (int): FFT window size (default: 2048)
+  - `hop_size` (int): Hop size for overlap (default: 512)
+  - `effects` (List[Dict]): List of spectral effects to apply
+- `sample_rate` (int, optional): Audio sample rate (default: 44100)
+- `debug` (bool, optional): Enable debug logging (default: False)
+- `verbose` (bool, optional): Enable verbose output (default: False)
+- `**kwargs`: Additional processing options
 
-**Returns**: Processed audio data as numpy array
+**Returns**: `np.ndarray` - Processed audio data as numpy array
 
 **Example**:
 ```python
 from audio.sapf import process_sapf_audio
+import numpy as np
 
 spectral_config = {
     "window_size": 2048,
@@ -56,43 +63,66 @@ spectral_config = {
     ]
 }
 
-processed_audio = process_sapf_audio(audio_data, spectral_config)
+processed_audio = process_sapf_audio(
+    audio_data=audio_data,
+    spectral_config=spectral_config,
+    sample_rate=44100
+)
 ```
 
-#### `analyze_spectrum(audio_data: np.ndarray, window_size: int = 2048) -> Dict[str, np.ndarray]`
-**Description**: Analyze audio data in the spectral domain
+#### `analyze_spectrum(audio_data: np.ndarray, window_size: int = 2048, **kwargs) -> Dict[str, Any]`
+**Description**: Analyze audio data in the spectral domain using FFT.
 
 **Parameters**:
 - `audio_data` (np.ndarray): Input audio data
 - `window_size` (int): FFT window size (default: 2048)
+- `hop_size` (int, optional): Hop size for analysis (default: window_size // 4)
+- `window_type` (str, optional): Window function type ("hann", "hamming", "blackman") (default: "hann")
+- `**kwargs`: Additional analysis options
 
-**Returns**: Dictionary with spectral data (magnitude, phase, centroid, etc.)
+**Returns**: `Dict[str, Any]` - Spectral data dictionary with:
+- `magnitude` (np.ndarray): Magnitude spectrum
+- `phase` (np.ndarray): Phase spectrum
+- `centroid` (float): Spectral centroid
+- `bandwidth` (float): Spectral bandwidth
+- `harmonics` (List[float]): Detected harmonic frequencies
 
-#### `synthesize_spectrum(spectral_data: Dict[str, np.ndarray], **kwargs) -> np.ndarray`
-**Description**: Synthesize audio from spectral data
-
-**Parameters**:
-- `spectral_data` (Dict): Spectral data dictionary
-- `**kwargs`: Synthesis parameters (window_size, hop_size, etc.)
-
-**Returns**: Synthesized audio data
-
-#### `sonify_gnn_model_spectral(model_data: Dict[str, Any], sonification_config: Dict) -> np.ndarray`
-**Description**: Convert GNN model data to audio using spectral processing
-
-**Parameters**:
-- `model_data` (Dict): GNN model data dictionary
-- `sonification_config` (Dict): Sonification configuration
-
-**Returns**: Audio representation of the model
-
-#### `create_spectral_mapping(model_structure: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Create spectral mapping for model sonification
+#### `synthesize_spectrum(spectral_data: Dict[str, Any], **kwargs) -> np.ndarray`
+**Description**: Synthesize audio from spectral data using inverse FFT.
 
 **Parameters**:
-- `model_structure` (Dict): Model structure data
+- `spectral_data` (Dict[str, Any]): Spectral data dictionary with magnitude and phase
+- `window_size` (int, optional): FFT window size (default: 2048)
+- `hop_size` (int, optional): Hop size for synthesis (default: window_size // 4)
+- `sample_rate` (int, optional): Output sample rate (default: 44100)
+- `**kwargs`: Additional synthesis options
 
-**Returns**: Spectral mapping configuration
+**Returns**: `np.ndarray` - Synthesized audio data
+
+#### `sonify_gnn_model_spectral(model_data: Dict[str, Any], sonification_config: Dict[str, Any], **kwargs) -> np.ndarray`
+**Description**: Convert GNN model data to audio using spectral processing and mapping.
+
+**Parameters**:
+- `model_data` (Dict[str, Any]): GNN model data with variables, connections, parameters
+- `sonification_config` (Dict[str, Any]): Sonification configuration with:
+  - `mapping` (Dict): Variable-to-frequency mapping rules
+  - `spectral_effects` (List[Dict]): Spectral effects to apply
+  - `duration` (float): Audio duration in seconds
+- `sample_rate` (int, optional): Audio sample rate (default: 44100)
+- `**kwargs`: Additional sonification options
+
+**Returns**: `np.ndarray` - Audio representation of the model
+
+#### `create_spectral_mapping(model_structure: Dict[str, Any], **kwargs) -> Dict[str, Any]`
+**Description**: Create spectral mapping configuration for model sonification.
+
+**Parameters**:
+- `model_structure` (Dict[str, Any]): Model structure with variables, connections, weights
+- `frequency_range` (Tuple[float, float], optional): Frequency range in Hz (default: (50, 5000))
+- `mapping_type` (str, optional): Mapping type ("linear", "log", "harmonic") (default: "log")
+- `**kwargs`: Additional mapping options
+
+**Returns**: `Dict[str, Any]` - Spectral mapping configuration with variable-to-frequency mappings
 
 ---
 

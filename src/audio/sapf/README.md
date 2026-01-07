@@ -8,10 +8,40 @@ This submodule provides audio generation capabilities for GNN models using the S
 src/audio/sapf/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── AGENTS.md                      # Agent scaffolding
 ├── processor.py                   # Core spectral processing
-├── spectral.py                    # Spectral analysis and synthesis
-├── sonification.py                # Model sonification
-└── mcp.py                        # Model Context Protocol integration
+├── generator.py                   # Audio generation
+├── sapf_gnn_processor.py         # GNN to SAPF converter
+├── audio_generators.py           # Audio generation components
+└── utils.py                       # Utility functions
+```
+
+## SAPF Audio Generation Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN Sections]
+    Parse --> Extract[Extract Components]
+    
+    Extract --> States[State Variables]
+    Extract --> Conns[Connections]
+    Extract --> Params[Parameters]
+    
+    States --> Map[Map to Audio]
+    Conns --> Map
+    Params --> Map
+    
+    Map --> Frequencies[Frequencies]
+    Map --> Amplitudes[Amplitudes]
+    Map --> Effects[Effects]
+    
+    Frequencies --> Generate[Generate SAPF Code]
+    Amplitudes --> Generate
+    Effects --> Generate
+    
+    Generate --> Synthesize[Synthesize Audio]
+    Synthesize --> Process[Post-Process]
+    Process --> Output[Audio File]
 ```
 
 ## Core Components

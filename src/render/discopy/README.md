@@ -39,6 +39,28 @@ src/render/discopy/
 - Categorical relationship mapping
 - Composition rule generation
 
+## DisCoPy Rendering Pipeline
+
+```mermaid
+graph TD
+    GNN[GNN Model] --> Parse[Parse GNN]
+    Parse --> Extract[Extract Structure]
+    
+    Extract --> Types[Type System]
+    Extract --> Morphisms[Morphisms]
+    Extract --> Composition[Composition Rules]
+    
+    Types --> Convert[Convert to DisCoPy]
+    Morphisms --> Convert
+    Composition --> Convert
+    
+    Convert --> Diagram[String Diagram]
+    Diagram --> Optimize[Optimize Diagram]
+    Optimize --> Visualize[Visualize]
+    
+    Visualize --> Output[DisCoPy Code]
+```
+
 ## Features
 
 - String diagram generation

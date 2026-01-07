@@ -401,4 +401,111 @@ output/9_advanced_viz_output/
 
 ---
 
+## MCP Integration
 
+### Tools Registered
+- `advanced_visualization.generate_3d` - Generate 3D visualizations
+- `advanced_visualization.create_dashboard` - Create interactive dashboards
+- `advanced_visualization.generate_d2` - Generate D2 diagrams
+- `advanced_visualization.analyze_statistics` - Generate statistical plots
+
+### Tool Endpoints
+```python
+@mcp_tool("advanced_visualization.generate_3d")
+def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]:
+    """Generate 3D network visualization"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/advanced_visualization/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: D2 diagram generation fails
+**Symptom**: D2 diagrams not generated or errors during generation  
+**Cause**: Missing D2 CLI tool or invalid diagram syntax  
+**Solution**: 
+- Install D2: `brew install d2` (macOS) or download from [d2lang.com](https://d2lang.com)
+- Verify D2 installation: `d2 --version`
+- Check diagram syntax in generated D2 files
+- Use `--verbose` flag for detailed error messages
+
+#### Issue 2: Interactive visualizations not displaying
+**Symptom**: HTML files generated but visualizations not interactive  
+**Cause**: Missing Plotly JavaScript or browser compatibility  
+**Solution**:
+- Ensure Plotly is installed: `uv pip install plotly`
+- Open HTML files in modern browser (Chrome, Firefox, Safari)
+- Check browser console for JavaScript errors
+
+#### Issue 3: 3D visualizations fail to render
+**Symptom**: 3D visualization generation errors  
+**Cause**: Missing 3D plotting dependencies or insufficient resources  
+**Solution**:
+- Install required dependencies: `uv pip install plotly numpy`
+- Reduce model complexity for 3D rendering
+- Use 2D fallback visualizations
+
+### Performance Issues
+
+#### Slow Dashboard Generation
+**Symptoms**: Dashboard generation takes longer than expected  
+**Diagnosis**:
+```bash
+# Enable verbose logging
+python src/9_advanced_viz.py --target-dir input/ --verbose
+```
+
+**Solutions**:
+- Generate specific visualization types instead of "all"
+- Disable interactive features if not needed
+- Process files individually instead of batch
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- 3D network visualization
+- Interactive Plotly dashboards
+- D2 diagram generation
+- Statistical analysis plots
+- POMDP-specific visualizations
+- Network analysis visualizations
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced D2 diagram features
+- **Future**: Real-time visualization streaming
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Visualization Module](../visualization/AGENTS.md)
+- [D2 Documentation](../../doc/d2/)
+
+### External Resources
+- [D2 Language](https://d2lang.com)
+- [Plotly Documentation](https://plotly.com/python/)
+- [Active Inference Ontology](https://activeinference.org)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

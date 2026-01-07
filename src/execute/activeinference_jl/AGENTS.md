@@ -34,52 +34,71 @@
 
 ### Public Functions
 
-#### `run_activeinference_analysis(pipeline_output_dir: str, analysis_type: str = "comprehensive", **kwargs) -> bool`
-**Description**: Main function to run ActiveInference.jl analysis on simulation outputs
+#### `run_activeinference_analysis(pipeline_output_dir: Union[str, Path], analysis_type: str = "comprehensive", **kwargs) -> bool`
+**Description**: Main function to run ActiveInference.jl analysis on simulation outputs.
 
 **Parameters**:
-- `pipeline_output_dir` (str): Directory containing pipeline outputs
-- `analysis_type` (str): Type of analysis ("basic", "comprehensive", "all")
-- `**kwargs`: Additional options (recursive_search, verbose, output_dir)
+- `pipeline_output_dir` (Union[str, Path]): Directory containing pipeline outputs
+- `analysis_type` (str, optional): Type of analysis ("basic", "comprehensive", "all") (default: "comprehensive")
+- `recursive_search` (bool, optional): Search subdirectories recursively (default: True)
+- `verbose` (bool, optional): Enable verbose logging (default: False)
+- `output_dir` (Union[str, Path], optional): Output directory for analysis results
+- `timeout` (int, optional): Execution timeout in seconds (default: 600)
+- `**kwargs`: Additional analysis options
 
-**Returns**: `True` if analysis completed successfully
+**Returns**: `bool` - True if analysis completed successfully, False otherwise
 
 **Example**:
 ```python
 from execute.activeinference_jl import run_activeinference_analysis
+from pathlib import Path
 
 success = run_activeinference_analysis(
-    pipeline_output_dir="output/11_render_output",
+    pipeline_output_dir=Path("output/11_render_output"),
     analysis_type="comprehensive",
     recursive_search=True,
-    verbose=True
+    verbose=True,
+    timeout=600
 )
 ```
 
-#### `execute_activeinference_jl_script(script_path: str, config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Execute a specific ActiveInference.jl script with given configuration
+#### `execute_activeinference_jl_script(script_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Execute a specific ActiveInference.jl script with given configuration.
 
 **Parameters**:
-- `script_path` (str): Path to ActiveInference.jl script
-- `config` (Dict): Execution configuration parameters
+- `script_path` (Union[str, Path]): Path to ActiveInference.jl script
+- `config` (Dict[str, Any], optional): Execution configuration parameters (default: {})
+- `julia_path` (str, optional): Path to Julia executable (default: auto-detect)
+- `timeout` (int, optional): Execution timeout in seconds (default: 600)
+- `**kwargs`: Additional execution options
 
-**Returns**: Dictionary with execution results and analysis data
+**Returns**: `Dict[str, Any]` - Execution results dictionary with:
+- `success` (bool): Whether execution succeeded
+- `execution_time` (float): Execution time in seconds
+- `analysis_results` (Dict): Analysis results
+- `output_files` (List[Path]): Generated output files
 
-#### `analyze_activeinference_results(results_dir: str, analysis_config: Dict[str, Any]) -> Dict[str, Any]`
-**Description**: Perform comprehensive analysis on ActiveInference.jl simulation results
+#### `analyze_activeinference_results(results_dir: Union[str, Path], analysis_config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
+**Description**: Perform comprehensive analysis on ActiveInference.jl simulation results.
 
 **Parameters**:
-- `results_dir` (str): Directory containing simulation results
-- `analysis_config` (Dict): Analysis configuration parameters
+- `results_dir` (Union[str, Path]): Directory containing simulation results
+- `analysis_config` (Dict[str, Any], optional): Analysis configuration parameters (default: {})
+- `include_meta_cognitive` (bool, optional): Include meta-cognitive analysis (default: True)
+- `include_uncertainty` (bool, optional): Include uncertainty quantification (default: True)
+- `**kwargs`: Additional analysis options
 
-**Returns**: Dictionary with analysis results and metrics
+**Returns**: `Dict[str, Any]` - Analysis results dictionary with metrics, visualizations, and reports
 
-#### `validate_julia_activeinference_environment() -> Dict[str, bool]`
-**Description**: Validate Julia and ActiveInference.jl environment setup
+#### `validate_julia_activeinference_environment() -> Dict[str, Any]`
+**Description**: Validate Julia and ActiveInference.jl environment setup.
 
-**Parameters**: None
-
-**Returns**: Dictionary with validation results for each component
+**Returns**: `Dict[str, Any]` - Validation results with:
+- `julia_available` (bool): Whether Julia is installed
+- `julia_version` (Optional[str]): Julia version if available
+- `activeinference_jl_available` (bool): Whether ActiveInference.jl is installed
+- `activeinference_jl_version` (Optional[str]): ActiveInference.jl version if available
+- `dependencies_met` (bool): Whether all dependencies are available
 
 ---
 

@@ -1,0 +1,55 @@
+# GNN Framework Integration
+# Generated: 2026-01-07T05:47:55.222218
+
+Framework Integration: {
+  direction: down
+
+  gnn_model: GNN Specification {
+    shape: document
+    label: Active Inference Model
+  }
+
+  render_step: Code Generation {
+    direction: right
+
+    pymdp: PYMDP {
+      shape: rectangle
+      label: Python Active Inference
+    }
+
+    rxinfer: RXINFER {
+      shape: rectangle
+      label: Julia Reactive Inference
+    }
+
+    activeinference_jl: ACTIVEINFERENCE_JL {
+      shape: rectangle
+      label: Julia Active Inference
+    }
+
+    discopy: DISCOPY {
+      shape: rectangle
+      label: Python Categorical Diagrams
+    }
+
+    jax: JAX {
+      shape: rectangle
+      label: Python HPC Simulation
+    }
+
+  }
+
+  execution: Simulation Execution {
+    direction: right
+
+    pymdp_exec: PYMDP Simulation
+    rxinfer_exec: RXINFER Simulation
+    activeinference_jl_exec: ACTIVEINFERENCE_JL Simulation
+    discopy_exec: DISCOPY Simulation
+    jax_exec: JAX Simulation
+  }
+
+  # Connections
+  gnn_model -> render_step: GNN → Code Generation
+  render_step -> execution: Generated Code → Execution
+}

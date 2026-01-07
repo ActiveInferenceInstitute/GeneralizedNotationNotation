@@ -39,30 +39,34 @@
 
 ### Public Functions
 
-#### `process_gui(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
+#### `process_gui(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
 **Description**: Main GUI processing function called by orchestrator (22_gui.py). Runs all available GUI implementations.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for GUI results
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance for progress reporting (default: None)
-- `gui_types` (str): Comma-separated list of GUI types ("gui_1", "gui_2", "gui_3", "oxdraw", default: "gui_1,gui_2")
-- `interactive` (bool): Run GUIs in interactive mode (default: False)
-- `headless` (bool): Run in headless mode - artifact generation only (default: True if not interactive)
-- `open_browser` (bool): Automatically open browser for interactive GUIs (default: False)
+- `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
+- `gui_types` (str, optional): Comma-separated list of GUI types ("gui_1", "gui_2", "gui_3", "oxdraw") (default: "gui_1,gui_2")
+- `interactive` (bool, optional): Run GUIs in interactive mode (default: False)
+- `headless` (bool, optional): Run in headless mode - artifact generation only (default: True if not interactive)
+- `open_browser` (bool, optional): Automatically open browser for interactive GUIs (default: False)
 - `**kwargs`: Additional GUI-specific options
 
-**Returns**: `True` if GUI processing succeeded
+**Returns**: `bool` - True if GUI processing succeeded, False otherwise
 
 **Example**:
 ```python
 from gui import process_gui
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 # Headless mode (pipeline default)
 success = process_gui(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/22_gui_output"),
+    logger=logger,
     verbose=True,
     headless=True
 )
@@ -71,33 +75,39 @@ success = process_gui(
 success = process_gui(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/22_gui_output"),
+    logger=logger,
     interactive=True,
     gui_types="gui_1,oxdraw",
     open_browser=True
 )
 ```
 
-#### `gui_1(target_dir, output_dir, logger, **kwargs) -> Dict[str, Any]`
-**Description**: Form-based Interactive GNN Constructor (GUI 1)
+#### `gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
+**Description**: Form-based Interactive GNN Constructor (GUI 1). Two-pane editor with component management.
 
 **Parameters**:
 - `target_dir` (Path): Input directory
 - `output_dir` (Path): Output directory for GUI 1
-- `logger` (Logger): Logger instance
-- `verbose` (bool): Enable verbose logging
-- `headless` (bool): Run in headless mode
-- `export_filename` (str): Output filename for constructed model
-- `open_browser` (bool): Open browser for interactive mode
+- `logger` (logging.Logger): Logger instance
+- `verbose` (bool, optional): Enable verbose logging (default: False)
+- `headless` (bool, optional): Run in headless mode (default: True)
+- `export_filename` (str, optional): Output filename for constructed model (default: "constructed_model_gui1.md")
+- `open_browser` (bool, optional): Open browser for interactive mode (default: False)
+- `port` (int, optional): Port for web server (default: 7860)
 
-**Returns**: Dictionary with GUI 1 execution results
+**Returns**: `Dict[str, Any]` - GUI 1 execution results with:
+- `success` (bool): Whether GUI execution succeeded
+- `output_file` (Path): Path to generated GNN model
+- `status` (str): Execution status
+- `url` (Optional[str]): Web UI URL if interactive
 
-#### `gui_2(target_dir, output_dir, logger, **kwargs) -> Dict[str, Any]`
-**Description**: Visual Matrix Editor with drag-and-drop interface (GUI 2)
+#### `gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> Dict[str, Any]`
+**Description**: Visual Matrix Editor with drag-and-drop interface (GUI 2). Matrix heatmaps and POMDP template support.
 
 **Parameters**:
 - `target_dir` (Path): Input directory
 - `output_dir` (Path): Output directory for GUI 2
-- `logger` (Logger): Logger instance
+- `logger` (logging.Logger): Logger instance
 - `verbose` (bool): Enable verbose logging
 - `headless` (bool): Run in headless mode
 - `export_filename` (str): Output filename for visual model
@@ -462,3 +472,85 @@ def construct_model_gui(model_type="pymdp", interactive=True):
   - `navigation.html` - Comprehensive navigation to all pipeline outputs
 
 ---
+
+## MCP Integration
+
+### Tools Registered
+- `gui.construct_model` - Construct GNN model using GUI
+- `gui.edit_component` - Edit model component
+- `gui.visualize_model` - Visualize model structure
+
+### Tool Endpoints
+```python
+@mcp_tool("gui.construct_model")
+def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
+    """Construct GNN model from components"""
+    # Implementation
+```
+
+### MCP File Location
+- `src/gui/mcp.py` - MCP tool registrations
+
+---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: GUI fails to launch
+**Symptom**: GUI server doesn't start or browser doesn't open  
+**Cause**: Port already in use or dependencies missing  
+**Solution**: 
+- Check if port is already in use: `lsof -i :7860`
+- Use different port: `--port 7861`
+- Verify Gradio/Streamlit dependencies installed
+- Use `--headless` mode if GUI not needed
+
+#### Issue 2: Model export fails
+**Symptom**: GUI completes but model file not generated  
+**Cause**: Export function errors or file permissions  
+**Solution**:
+- Check output directory permissions
+- Verify export filename is valid
+- Review export function logs
+- Ensure GNN format validation passes
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Multiple GUI implementations (GUI 1, GUI 2, GUI 3, oxdraw)
+- Interactive model construction
+- Real-time validation
+- Model export to GNN format
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced visual editing
+- **Future**: Collaborative editing
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [GUI Guide](../../doc/gui_oxdraw/)
+
+### External Resources
+- [Gradio Documentation](https://gradio.app/)
+- [Streamlit Documentation](https://streamlit.io/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern

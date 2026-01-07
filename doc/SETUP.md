@@ -523,7 +523,7 @@ After setup, verify your installation with:
 
 ```bash
 cd src
-python3 3_tests.py
+python3 2_tests.py
 ```
 
 This will run the test suite to ensure everything is working correctly.
@@ -628,7 +628,7 @@ jobs:
     - name: Run Tests
       run: |
         cd src
-        python3 3_tests.py
+        python3 2_tests.py
 ```
 
 ## Version Management

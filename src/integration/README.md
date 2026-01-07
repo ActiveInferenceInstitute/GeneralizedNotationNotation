@@ -176,6 +176,67 @@ graph TD
     Monitor --> Report
 ```
 
+### System Integration Architecture
+
+```mermaid
+flowchart TB
+    subgraph "Pipeline Modules"
+        GNN[GNN Module]
+        Render[Render Module]
+        Execute[Execute Module]
+        Analysis[Analysis Module]
+        Report[Report Module]
+    end
+    
+    subgraph "Integration Layer"
+        Coordinator[Integration Coordinator]
+        DataFlowMgr[Data Flow Manager]
+        ResourceMgr[Resource Manager]
+        StateMgr[State Manager]
+    end
+    
+    subgraph "Output"
+        UnifiedOutput[Unified Output]
+        IntegrationReport[Integration Report]
+    end
+    
+    GNN --> Coordinator
+    Render --> Coordinator
+    Execute --> Coordinator
+    Analysis --> Coordinator
+    Report --> Coordinator
+    
+    Coordinator --> DataFlowMgr
+    Coordinator --> ResourceMgr
+    Coordinator --> StateMgr
+    
+    DataFlowMgr --> UnifiedOutput
+    ResourceMgr --> UnifiedOutput
+    StateMgr --> UnifiedOutput
+    
+    UnifiedOutput --> IntegrationReport
+```
+
+### Cross-Module Data Flow
+
+```mermaid
+sequenceDiagram
+    participant GNN as GNN Module
+    participant Render as Render Module
+    participant Execute as Execute Module
+    participant Analysis as Analysis Module
+    participant Integration as Integration Module
+    
+    GNN->>Integration: Parsed models
+    Integration->>Render: Model data
+    Render->>Integration: Generated code
+    Integration->>Execute: Code files
+    Execute->>Integration: Execution results
+    Integration->>Analysis: Results data
+    Analysis->>Integration: Analysis results
+    Integration->>Integration: Aggregate & coordinate
+```
+
 ### 1. Module Discovery
 ```python
 # Discover available modules

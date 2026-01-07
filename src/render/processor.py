@@ -433,29 +433,80 @@ def render_gnn_spec(
             pomdp_extractor = POMDPExtractor()
             
             # For now, create basic model data and use generators
+            files = []
             if target.lower() == "pymdp":
                 from .generators import generate_pymdp_code
                 code = generate_pymdp_code(gnn_spec)
                 output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_pymdp.py"
+                if code:
+                    output_file.write_text(code)
+                    files.append(str(output_file))
+                    
             elif target.lower() == "rxinfer":
                 from .generators import generate_rxinfer_code
                 code = generate_rxinfer_code(gnn_spec)
                 output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_rxinfer.jl"
+                if code:
+                    output_file.write_text(code)
+                    files.append(str(output_file))
+                    
+            elif target.lower() == "rxinfer_toml":
+                # Try to use specific renderer for TOML if avail, else fallback
+                try:
+                    from .rxinfer import render_gnn_to_rxinfer_toml
+                    success, msg, art = render_gnn_to_rxinfer_toml(gnn_spec, output_dir)
+                    if success:
+                        files.extend(art)
+                        return True, msg, art
+                except ImportError:
+                    return False, "RxInfer TOML renderer not available", []
+
             elif target.lower() == "activeinference_jl":
                 from .generators import generate_activeinference_jl_code
                 code = generate_activeinference_jl_code(gnn_spec)
                 output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_activeinference.jl"
+                if code:
+                    output_file.write_text(code)
+                    files.append(str(output_file))
+                    
             elif target.lower() == "discopy":
                 from .generators import generate_discopy_code
                 code = generate_discopy_code(gnn_spec)
                 output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
+                if code:
+                    output_file.write_text(code)
+                    files.append(str(output_file))
+            
+            elif target.lower() == "discopy_combined":
+                # DisCoPy renderer generates all diagrams by default
+                try:
+                    from .discopy import render_gnn_to_discopy
+                    output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
+                    success, msg, warnings = render_gnn_to_discopy(gnn_spec, output_file)
+                    
+                    if success:
+                        return True, msg, [str(output_file)]
+                    else:
+                         return False, msg, []
+                except ImportError:
+                    return False, "DisCoPy renderer not available", []
+
+            elif target.lower() in ["jax", "jax_pomdp"]:
+                try:
+                    from .jax.jax_renderer import render_gnn_to_jax
+                    output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_jax.py"
+                    success, msg, art = render_gnn_to_jax(gnn_spec, output_file)
+                    if success:
+                        files.extend(art)
+                        return True, msg, art
+                except ImportError:
+                     return False, "JAX renderer not available", []
+            
             else:
                 return False, f"Unsupported target: {target}", []
             
-            if code:
-                with open(output_file, 'w') as f:
-                    f.write(code)
-                return True, f"Successfully generated {target} code", []
+            if files:
+                return True, f"Successfully generated {target} code", files
             else:
                 return False, f"Failed to generate {target} code", []
                 

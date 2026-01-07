@@ -1,0 +1,87 @@
+# GNN Pipeline Data Flow
+# Generated: 2026-01-07T05:47:53.787233
+
+GNN Pipeline: {
+  direction: down
+
+  # Input Stage
+  input: Input {
+    direction: right
+    gnn_files: GNN Files {
+      shape: document
+      label: *.md specifications
+    }
+    config: Configuration {
+      shape: document
+      label: config.yaml
+    }
+  }
+
+  # Core Processing
+  processing: Core Processing {
+    direction: right
+
+    parse: GNN Parsing {
+      shape: rectangle
+      label: Step 3: Parse & Serialize\n22 formats
+    }
+
+    validate: Validation {
+      shape: rectangle
+      label: Steps 5-6: Type check &\nconsistency validation
+    }
+
+    export: Export {
+      shape: rectangle
+      label: Step 7: Multi-format export\nJSON, XML, GraphML...
+    }
+
+    visualize: Visualization {
+      shape: rectangle
+      label: Steps 8-9: Graph & matrix\nvisualization
+    }
+
+    parse -> validate -> export -> visualize
+  }
+
+  # Framework Generation
+  generation: Code Generation {
+    direction: right
+
+    render: Framework Rendering {
+      shape: hexagon
+      label: Step 11: Generate code for\nPyMDP, RxInfer.jl, etc.
+    }
+
+    execute: Simulation Execution {
+      shape: hexagon
+      label: Step 12: Run simulations\nwith result capture
+    }
+
+    render -> execute
+  }
+
+  # Analysis
+  analysis: Analysis & Output {
+    direction: right
+
+    llm: LLM Analysis {
+      shape: cloud
+    }
+
+    ml_integration: ML Integration {
+      shape: cloud
+    }
+
+    report: Final Report {
+      shape: document
+    }
+
+    llm -> ml_integration -> report
+  }
+
+  # Main Flow
+  input -> processing: Input data
+  processing -> generation: Parsed models
+  generation -> analysis: Simulation results
+}

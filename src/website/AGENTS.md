@@ -38,45 +38,56 @@
 
 ### Public Functions
 
-#### `process_website(target_dir, output_dir, verbose=False, logger=None, **kwargs) -> bool`
-**Description**: Main website generation function called by orchestrator (20_website.py)
+#### `process_website(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+**Description**: Main website generation function called by orchestrator (20_website.py). Generates static HTML website from pipeline artifacts.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing pipeline artifacts
-- `output_dir` (Path): Output directory for website
+- `output_dir` (Path): Output directory for website files
 - `verbose` (bool): Enable verbose logging (default: False)
-- `logger` (Logger, optional): Logger instance (default: None)
-- `website_html_filename` (str): Output HTML filename (default: "gnn_pipeline_summary_website.html")
-- `**kwargs`: Additional website options
+- `logger` (Optional[logging.Logger]): Logger instance (default: None)
+- `website_html_filename` (str, optional): Output HTML filename (default: "gnn_pipeline_summary_website.html")
+- `include_visualizations` (bool, optional): Include visualization pages (default: True)
+- `include_reports` (bool, optional): Include report pages (default: True)
+- `include_analysis` (bool, optional): Include analysis pages (default: True)
+- `**kwargs`: Additional website generation options
 
-**Returns**: `True` if website generation succeeded
+**Returns**: `bool` - True if website generation succeeded, False otherwise
 
 **Example**:
 ```python
 from website import process_website
+from pathlib import Path
+import logging
 
+logger = logging.getLogger(__name__)
 success = process_website(
     target_dir=Path("output"),
     output_dir=Path("output/20_website_output"),
+    logger=logger,
     verbose=True,
     website_html_filename="custom_summary.html"
 )
 ```
 
-#### `generate_html_report(content) -> str`
-**Description**: Generate HTML report from content
+#### `generate_html_report(content: Union[str, Dict[str, Any]], title: str = "Report") -> str`
+**Description**: Generate HTML report from content (markdown or structured data).
 
 **Parameters**:
-- `content`: Content to convert to HTML
+- `content` (Union[str, Dict[str, Any]]): Content to convert to HTML (markdown string or structured dict)
+- `title` (str): Report title (default: "Report")
 
-**Returns**: HTML string
+**Returns**: `str` - HTML string with formatted report
 
-#### `embed_image(image_path, output_file) -> bool`
-**Description**: Embed image in HTML output
+#### `embed_image(image_path: Path, output_file: Path, alt_text: str = "") -> bool`
+**Description**: Embed image in HTML output file.
 
 **Parameters**:
-- `image_path`: Path to image file
-- `output_file`: Output HTML file
+- `image_path` (Path): Path to image file
+- `output_file` (Path): Output HTML file to embed image in
+- `alt_text` (str): Alternative text for image (default: "")
+
+**Returns**: `bool` - True if embedding succeeded, False otherwise
 
 **Returns**: `True` if embedding succeeded
 
@@ -274,4 +285,68 @@ def generate_website_tool(artifacts_dir, output_dir):
     # Implementation
 ```
 
+### MCP File Location
+- `src/website/mcp.py` - MCP tool registrations
+
 ---
+
+## Troubleshooting
+
+### Common Issues
+
+#### Issue 1: Website generation fails
+**Symptom**: HTML files not generated or incomplete  
+**Cause**: Missing pipeline artifacts or template issues  
+**Solution**: 
+- Verify previous pipeline steps completed successfully
+- Check that required artifacts exist in output directories
+- Use `--verbose` flag for detailed generation logs
+- Review website template structure
+
+#### Issue 2: Embedded content missing
+**Symptom**: Website generated but images or markdown not embedded  
+**Cause**: File paths incorrect or files missing  
+**Solution**:
+- Verify all referenced files exist
+- Check file paths are relative to website output directory
+- Ensure images and markdown files are accessible
+- Review embedding function logs
+
+---
+
+## Version History
+
+### Current Version: 1.0.0
+
+**Features**:
+- Static HTML website generation
+- Interactive documentation
+- Cross-linked content
+- Asset management
+
+**Known Issues**:
+- None currently
+
+### Roadmap
+- **Next Version**: Enhanced interactivity
+- **Future**: Dynamic content generation
+
+---
+
+## References
+
+### Related Documentation
+- [Pipeline Overview](../../README.md)
+- [Architecture Guide](../../ARCHITECTURE.md)
+- [Website Module](../website/README.md)
+
+### External Resources
+- [HTML5 Specification](https://html.spec.whatwg.org/)
+
+---
+
+**Last Updated**: 2025-12-30
+**Maintainer**: GNN Pipeline Team
+**Status**: ✅ Production Ready
+**Version**: 1.0.0
+**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
