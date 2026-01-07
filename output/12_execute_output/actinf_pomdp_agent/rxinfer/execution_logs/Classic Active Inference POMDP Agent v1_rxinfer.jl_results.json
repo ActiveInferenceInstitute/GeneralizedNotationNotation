@@ -1,0 +1,36 @@
+{
+  "framework": "rxinfer",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_rxinfer.jl",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 138.203167,
+  "timestamp": "2026-01-07T13:16:53.696188",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 1)\nD vector size: (3,)\nObservation sequence: [2, 3, 3, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 1, 3]\nObservation sequence (one-hot) prepared.\nInference complete.\n\u2705 Standardized results saved to simulation_results.json\nSaved plot to rxinfer_results.png\n\u2705 RxInfer simulation successful\n",
+    "raw_error": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\njulia(35599) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.\n"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 379,
+    "stderr_length": 317,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer"
+  },
+  "collected_outputs": {
+    "visualizations": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png"
+    ],
+    "simulation_data": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}
