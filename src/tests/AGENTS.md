@@ -458,19 +458,40 @@ def test_new_module_complex():
 ## Testing
 
 ### Test Files
-- `src/tests/test_runner.py` - Test runner functionality
-- `src/tests/test_conftest.py` - Test configuration
-- Various test files for individual modules
+- **54 test files** covering all modules
+- **652 test functions** providing comprehensive coverage
+- **20+ test categories** for organized execution
+- **25+ test markers** for selective execution
 
-### Test Coverage
-- **Current**: 95%
-- **Target**: 98%+
+### Test Coverage Statistics
+- **Total Test Functions**: 652 across 54 files
+- **Fast Tests**: ~200+ functions (marked with `@pytest.mark.fast`)
+- **Integration Tests**: ~150+ functions (marked with `@pytest.mark.integration`)
+- **Unit Tests**: ~300+ functions (marked with `@pytest.mark.unit`)
+- **Performance Tests**: ~50+ functions (marked with `@pytest.mark.performance`)
+- **Safe-to-Fail Tests**: ~336 functions (marked with `@pytest.mark.safe_to_fail`)
+
+### Test Execution Modes
+1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
+2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
+3. **Reliable Tests** (fallback): Essential tests only, 90-second timeout
 
 ### Key Test Scenarios
-1. Test suite execution and management
-2. Coverage analysis and reporting
-3. Performance testing and benchmarking
-4. Error handling and recovery
+1. **Module Import Validation**: All modules can be imported and have expected structure
+2. **Core Functionality**: All core functions execute correctly with real data
+3. **Integration Testing**: Cross-module integration with real data flow
+4. **Error Handling**: Comprehensive error scenario testing with real failure modes
+5. **Performance Benchmarking**: Performance regression detection
+6. **Coverage Analysis**: Code coverage tracking and reporting
+7. **Test Suite Execution**: Test runner functionality and management
+
+### Test Quality Standards
+- **No Mock Usage**: All tests use real implementations per testing policy
+- **Real Data**: All tests use real, representative data (no synthetic/placeholder data)
+- **Real Dependencies**: Tests use real dependencies (skip if unavailable, never mock)
+- **File-Based Assertions**: Tests assert on real file outputs and artifacts
+- **Error Recovery**: Tests validate error handling with real failure modes
+- **Performance Monitoring**: Built-in timing and resource usage tracking
 
 ---
 

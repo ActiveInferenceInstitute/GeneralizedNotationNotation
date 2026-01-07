@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-01-07T05:50:08.188277
+Generated: 2026-01-07T06:32:06.688271
 
 ## Summary
 
@@ -13,12 +13,12 @@ Generated: 2026-01-07T05:50:08.188277
 
 ### PYMDP
 
-- Success Rate: 0.0% (0/1)
+- Success Rate: 100.0% (1/1)
 - Execution Times: 0 recorded
 
 ### JAX
 
-- Success Rate: 100.0% (1/1)
+- Success Rate: 0.0% (0/1)
 - Execution Times: 0 recorded
 
 ### DISCOPY

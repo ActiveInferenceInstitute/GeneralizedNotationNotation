@@ -1,0 +1,5 @@
+Category: pipeline
+Success: True
+Duration: 68.24s
+Peak Memory: 18.30 MB
+CPU Usage: 0.0%

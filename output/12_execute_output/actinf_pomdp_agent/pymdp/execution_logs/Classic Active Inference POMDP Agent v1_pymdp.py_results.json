@@ -3,24 +3,164 @@
   "model_name": "actinf_pomdp_agent",
   "script_name": "Classic Active Inference POMDP Agent v1_pymdp.py",
   "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py",
-  "success": false,
-  "return_code": 1,
-  "execution_time": 0.484326,
-  "timestamp": "2026-01-07T05:47:58.220078",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 2.73061,
+  "timestamp": "2026-01-07T06:57:43.197833",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [],
-    "actions": [],
+    "observations": [
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      2,
+      1,
+      1,
+      1,
+      0,
+      1
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
     "policy": [],
     "raw_output": "\u2705 PyMDP is available\n",
-    "raw_error": "WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\nERROR:src.execute.pymdp.simple_simulation:Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver but this is not the Active Inference library. Install the correct package with: pip install inferactively-pymdp\nERROR:src.execute.pymdp.executor:PyMDP simulation failed: Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver but this is not the Active Inference library. Install the correct package with: pip install inferactively-pymdp\nERROR:__main__:\u2717 Simulation failed!\nERROR:__main__:Error: Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver but this is not the Active Inference library. Install the correct package with: pip install inferactively-pymdp\n"
+    "raw_error": "2026-01-07 06:57:44,660 - __main__ - INFO - A matrix shape: (3, 3)\n2026-01-07 06:57:44,660 - __main__ - INFO - B matrix shape: (3, 3, 3)\n2026-01-07 06:57:44,660 - __main__ - INFO - C vector shape: (3,)\n2026-01-07 06:57:44,660 - __main__ - INFO - D vector shape: (3,)\n2026-01-07 06:57:44,660 - __main__ - INFO - E vector shape: (3,)\n2026-01-07 06:57:44,660 - __main__ - INFO - Starting PyMDP simulation for Classic Active Inference POMDP Agent v1\n2026-01-07 06:57:44,660 - __main__ - INFO - Output directory: output/pymdp_simulations/Classic Active Inference POMDP Agent v1\n2026-01-07 06:57:44,660 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-01-07 06:57:44,660 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-01-07 06:57:44,665 - src.execute.pymdp.simple_simulation - INFO - Using pymdp.agent API\n2026-01-07 06:57:44,665 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-01-07 06:57:44,665 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-01-07 06:57:44,665 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-01-07 06:57:44,665 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-01-07 06:57:44,666 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=2, obs=2, belief=[0.05 0.05 0.9 ], action=0.0\n2026-01-07 06:57:44,667 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=2, obs=1, belief=[0.03 0.49 0.49], action=0.0\n2026-01-07 06:57:44,667 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=2, obs=2, belief=[0.   0.05 0.94], action=0.0\n2026-01-07 06:57:44,667 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=2, obs=0, belief=[0.05 0.05 0.9 ], action=0.0\n2026-01-07 06:57:44,667 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=2, obs=2, belief=[0.   0.   0.99], action=0.0\n2026-01-07 06:57:44,667 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,668 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,668 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,668 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,668 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=1.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-01-07 06:57:44,669 - src.execute.pymdp.simple_simulation - INFO - Generating PyMDP-specific visualizations...\n2026-01-07 06:57:44,839 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated belief evolution plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png\n2026-01-07 06:57:44,972 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated action analysis plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png\n2026-01-07 06:57:45,059 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated A matrix heatmap: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png\n2026-01-07 06:57:45,171 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated preferences/prior plot: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png\n2026-01-07 06:57:45,303 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated 3D belief trajectory: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png\n2026-01-07 06:57:45,696 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated summary dashboard: output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png\n2026-01-07 06:57:45,696 - src.execute.pymdp.simple_simulation - INFO - \u2705 Generated 6 visualization files\n2026-01-07 06:57:45,696 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved results to output/pymdp_simulations/Classic Active Inference POMDP Agent v1/simulation_results.json\n2026-01-07 06:57:45,696 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-01-07 06:57:45,696 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-01-07 06:57:45,696 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-01-07 06:57:45,696 - __main__ - INFO - Results summary:\n2026-01-07 06:57:45,696 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-01-07 06:57:45,696 - __main__ - INFO -   Success: True\n2026-01-07 06:57:45,696 - __main__ - INFO -   Output: output/pymdp_simulations/Classic Active Inference POMDP Agent v1\n",
+    "beliefs": [
+      [
+        0.05000000000000008,
+        0.8999999999999999,
+        0.05000000000000008
+      ],
+      [
+        0.0030674846625767045,
+        0.9938650306748466,
+        0.0030674846625767045
+      ],
+      [
+        0.002915451895043839,
+        0.9446064139941672,
+        0.05247813411078899
+      ],
+      [
+        0.00017091095539225335,
+        0.9967526918475474,
+        0.003076397197060453
+      ],
+      [
+        9.524263060152023e-06,
+        0.9998190390018573,
+        0.00017143673508263573
+      ],
+      [
+        5.292161726404567e-07,
+        0.9999899448927201,
+        9.525891107428172e-06
+      ],
+      [
+        2.9401177693577096e-08,
+        0.999999441377624,
+        5.292211983843836e-07
+      ],
+      [
+        1.63339962807155e-09,
+        0.9999999689654072,
+        2.940119320528771e-08
+      ],
+      [
+        9.074443199706833e-11,
+        0.9999999982758558,
+        1.6333996759472218e-09
+      ],
+      [
+        9.074452947729267e-11,
+        0.9999999705080604,
+        2.9401195150643575e-08
+      ],
+      [
+        5.041368444713782e-12,
+        0.9999999983615588,
+        1.6333997816427627e-09
+      ],
+      [
+        2.800815806952794e-13,
+        0.9999999999089755,
+        9.074443800946168e-11
+      ],
+      [
+        1.5565643373298117e-14,
+        0.9999999999949432,
+        5.041363223181269e-12
+      ],
+      [
+        2.8198158071929026e-13,
+        0.9999999999946765,
+        5.0414632231799264e-12
+      ],
+      [
+        1.5671198928928293e-14,
+        0.9999999999997042,
+        2.8008684573362684e-13
+      ]
+    ],
+    "num_timesteps": 15,
+    "visualization_count": 12,
+    "visualization_files": [
+      "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+      "Classic Active Inference POMDP Agent v1_dashboard.png",
+      "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+      "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+      "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+      "Classic Active Inference POMDP Agent v1_action_analysis.png",
+      "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+      "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+      "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+      "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+      "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+      "Classic Active Inference POMDP Agent v1_A_matrix.png"
+    ]
   },
   "execution_metadata": {
     "executor": "python3",
     "stdout_length": 21,
-    "stderr_length": 947,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/pymdp"
+    "stderr_length": 5769,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp"
+  },
+  "collected_outputs": {
+    "visualizations": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png"
+    ],
+    "simulation_data": [
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/Classic Active Inference POMDP Agent v1_simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
   }
 }

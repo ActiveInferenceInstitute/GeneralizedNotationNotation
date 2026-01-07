@@ -6,36 +6,49 @@ Prompt:
 
 Response:
 
-The code uses the following methods to represent Active Inference POMDP agents and their functions:
-
-1. **Models are annotated with `__annotations`** to specify the function signatures for different model types (`ActiveInferencePomdp()`, `StateSpaceBlock`, etc.). This makes it easier to inspect the signature of a particular agent or function.
-
-2. The `GNNModelAnnotation` class is used to represent GNN POMDP agents and functions by providing annotations that indicate their type (active inference agent), action selection logic, policy initialization, hidden state distribution, prior distribution, habit distributions, etc. These annotations are annotated with the corresponding signature of the algorithm.
-
-3. The `ModelName` attribute in the `GNN` class is used to define a name for the type of the agent and function (Active Inference POMDP Agent) in code. This helps identify which parts of the code implement each type of agent or function.
-
-The code can be structured like this:
+This section contains the signature for the Advanced Neural Network (ANN) version of Active Inference POMDP agent model. The signature is described in more detail below:
 ```python
-class GNNModelAnnotation(cls):
-    def __init__(self, **kwargs):
-        super().__init__()
-        self._type_annotations = kwargs
+@staticmethod @classmethod
+def BaseClass(base_classes=[]):
+    super().__init__()
 
-    def get_signature(self):
-        signature = []
+    class Action(BaseA):
+        pass
 
-        if isinstance(self.__module__, "__import__"):
-            signature.append("base")
+        def __init__(self, state=None, actions=np.empty((len(state),)), *args):
+            BaseA.__init__(*args)
 
-            for key in inspect(**self).__code__.coargs-1:
-                signature.append((
-                    inspect.currentframe().findex(key),
-                    inspect._internalcall(*key, **kwargs)
-                 ))
-        elif hasattr(self.__class__.__name__, "__annotations__"):
-            signature = {}
+            self._actions = actions[:]
 
-        self._type_annotations['**baseClass'] = signature
+    class Policy(BaseA):
+        pass
 
-            # Implement the method signature for `GNNModelAnnotation`
+        def __init__(self):
+           super().__init__()
+
+   def initialize_hidden_states(*args):
+     def forward(x: np.ndarray, x2: np.ndarray)=
+      state=x[len([i for i in range(num_hidden_states)]),0]
+
+                 # Initialize hidden states
+                   # = prev_history+prev_obs
+           self._actions,_next=_infer_histo()
+             # Forward pass
+                  #  # forward step
+       self.forward: callable
+      def return_state(*args):
+          state=x[len([i for i in range(num_hidden_states)]),0]
+
+                 # Backward pass
+                   # backward step
+           #   ----------------------------------------
+              if isinstance(prev_,np.ndarray) and
+                  is_supervised('Forward'):
+                    self._forward = (base_classes$nextstep)(x, x2, *args)
+                else: 
+                    self._forward = base_classes$currentframe(*x**3)**0
+                    
+        @staticmethod
+    return policy
 ```
+The signature defines the action, state and hidden states of the POMDP agent. The `__init__` method is used to initialize all parameters after activation.

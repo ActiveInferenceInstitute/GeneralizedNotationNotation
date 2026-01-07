@@ -268,12 +268,121 @@ def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD
     except Exception as e:
         return False, [f"Validation error: {e}"]
 
-def _convert_parse_result_to_parsed_gnn(parse_result) -> ParsedGNN:
-    """Convert a parse result to a ParsedGNN object."""
+def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unknown") -> Optional[ParsedGNN]:
+    """
+    Convert a ParseResult to a ParsedGNN dataclass object.
+    
+    Args:
+        parse_result: ParseResult object from parser
+        source_format: Format hint for the source (e.g., "markdown", "json")
+        
+    Returns:
+        ParsedGNN object or None if parse_result is None
+    """
     if parse_result is None:
         return None
     
-    # This is a stub implementation
-    # In a real implementation, this would convert the parse result
-    # to a ParsedGNN object
-    return ParsedGNN("unknown")
+    try:
+        # Import types needed for conversion
+        from .types import ParsedGNN, GNNVariable, GNNConnection
+        from .parsers.common import ParseResult as ParseResultType
+        
+        # Verify it's a ParseResult
+        if not isinstance(parse_result, ParseResultType):
+            # If it's already a ParsedGNN, return as-is
+            if isinstance(parse_result, ParsedGNN):
+                return parse_result
+            # Otherwise, create minimal representation
+            return ParsedGNN(
+                gnn_section=f"{source_format.upper()}GNN",
+                version="1.0",
+                model_name="Unknown",
+                model_annotation="",
+                variables={},
+                connections=[],
+                parameters={},
+                equations=[],
+                time_config={},
+                ontology_mappings={},
+                model_parameters={},
+                footer="",
+                source_format=source_format
+            )
+        
+        model = parse_result.model
+        
+        # Convert variables
+        variables = {}
+        for var in getattr(model, 'variables', []):
+            var_name = getattr(var, 'name', 'unknown')
+            variables[var_name] = GNNVariable(
+                name=var_name,
+                dimensions=getattr(var, 'dimensions', []),
+                data_type=str(getattr(var, 'data_type', 'categorical')),
+                description=getattr(var, 'description', ''),
+                ontology_mapping=getattr(var, 'ontology_mapping', None)
+            )
+        
+        # Helper function to infer connection symbol
+        def _infer_symbol_from_type(connection_type: str) -> str:
+            """Infer connection symbol from type."""
+            type_lower = connection_type.lower()
+            if 'directed' in type_lower or '->' in type_lower:
+                return ">"
+            elif 'undirected' in type_lower or '-' in type_lower:
+                return "-"
+            elif 'conditional' in type_lower or '|' in type_lower:
+                return "|"
+            else:
+                return ">"
+        
+        # Convert connections
+        connections = []
+        for conn in getattr(model, 'connections', []):
+            connections.append(GNNConnection(
+                source=getattr(conn, 'source_variables', getattr(conn, 'source', [])),
+                target=getattr(conn, 'target_variables', getattr(conn, 'target', [])),
+                connection_type=str(getattr(conn, 'connection_type', 'directed')),
+                symbol=_infer_symbol_from_type(str(getattr(conn, 'connection_type', 'directed'))),
+                description=getattr(conn, 'description', '')
+            ))
+        
+        # Convert parameters
+        parameters = {}
+        for param in getattr(model, 'parameters', []):
+            param_name = getattr(param, 'name', 'unknown')
+            parameters[param_name] = getattr(param, 'value', None)
+        
+        return ParsedGNN(
+            gnn_section=getattr(model, 'gnn_section', f"{source_format.upper()}GNN"),
+            version=getattr(model, 'version', '1.0'),
+            model_name=getattr(model, 'model_name', 'Unknown'),
+            model_annotation=getattr(model, 'annotation', ''),
+            variables=variables,
+            connections=connections,
+            parameters=parameters,
+            equations=getattr(model, 'equations', []),
+            time_config=getattr(model, 'time_config', {}),
+            ontology_mappings=getattr(model, 'ontology_mappings', {}),
+            model_parameters=getattr(model, 'model_parameters', {}),
+            footer=getattr(model, 'footer', ''),
+            source_format=source_format
+        )
+    except Exception as e:
+        # Fallback to minimal representation on error
+        from .types import ParsedGNN
+        return ParsedGNN(
+            gnn_section=f"{source_format.upper()}GNN",
+            version="1.0",
+            model_name="ConversionError",
+            model_annotation=f"Error converting parse result: {e}",
+            variables={},
+            connections=[],
+            parameters={},
+            equations=[],
+            time_config={},
+            ontology_mappings={},
+            model_parameters={},
+            footer="",
+            source_format=source_format
+        )

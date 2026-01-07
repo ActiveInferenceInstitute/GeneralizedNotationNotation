@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-01-07T05:50:08.188277",
+  "timestamp": "2026-01-07T06:32:06.688271",
   "frameworks": {
     "pymdp": {
-      "success_count": 0,
+      "success_count": 1,
       "total_count": 1,
       "execution_times": [],
       "output_files": [
@@ -17,7 +17,7 @@
       "free_energy": []
     },
     "jax": {
-      "success_count": 1,
+      "success_count": 0,
       "total_count": 1,
       "execution_times": [],
       "output_files": [
@@ -79,8 +79,8 @@
   },
   "comparisons": {
     "success_rates": {
-      "pymdp": 0.0,
-      "jax": 1.0,
+      "pymdp": 1.0,
+      "jax": 0.0,
       "discopy": 1.0,
       "rxinfer": 1.0,
       "activeinference_jl": 1.0

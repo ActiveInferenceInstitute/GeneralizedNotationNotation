@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T05:50:08.184333",
+  "timestamp": "2026-01-07T06:32:06.684565",
   "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "discopy": {
@@ -10,23 +10,7 @@
     "jax": {
       "framework": "jax",
       "result_count": 1,
-      "analyses": [
-        {
-          "framework": "jax",
-          "model_name": "actinf_pomdp_agent",
-          "free_energy_count": 2,
-          "free_energy_values": [
-            0.0099,
-            0.002
-          ],
-          "mean_free_energy": 0.00595,
-          "std_free_energy": 0.00395,
-          "min_free_energy": 0.002,
-          "max_free_energy": 0.0099,
-          "free_energy_trend": -0.0079,
-          "free_energy_decreasing": "True"
-        }
-      ]
+      "analyses": []
     },
     "pymdp": {
       "framework": "pymdp",
@@ -55,32 +39,21 @@
     ],
     "framework_count": 5,
     "comparisons": {
-      "free_energy": {
-        "jax": {
-          "mean": 0.00595,
-          "min": 0.002,
-          "max": 0.0099
-        }
-      },
-      "best_free_energy": {
-        "framework": "jax",
-        "mean_fe": 0.00595
-      },
       "execution_time": {
-        "discopy": 0.489288,
-        "jax": 0.43185,
-        "pymdp": 0.484326,
-        "activeinference_jl": 13.943826,
-        "rxinfer": 21.53245
+        "discopy": 0.673481,
+        "jax": 0.03725,
+        "pymdp": 2.753749,
+        "activeinference_jl": 14.39227,
+        "rxinfer": 22.476862
       },
       "fastest_execution": {
         "framework": "jax",
-        "time": 0.43185
+        "time": 0.03725
       },
       "success_rates": {
         "discopy": true,
-        "jax": true,
-        "pymdp": false,
+        "jax": false,
+        "pymdp": true,
         "activeinference_jl": true,
         "rxinfer": true
       }

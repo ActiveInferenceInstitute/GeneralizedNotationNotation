@@ -1,0 +1,62 @@
+2026-01-07 06:51:00,493 - visualization - INFO - 🚀 Processing visualizations
+2026-01-07 06:51:01,342 - visualization - INFO - ✅ Generated 4 visualizations
+2026-01-07 06:51:01,378 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2026-01-07 06:51:01,378 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2026-01-07 06:51:01,378 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2026-01-07 06:51:01,378 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2026-01-07 06:51:01,378 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2026-01-07 06:51:01,378 - gnn.discovery - INFO - Starting file discovery in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpmkmq6iyr
+2026-01-07 06:51:01,379 - gnn.discovery - INFO - Discovery completed: 0/0 potential GNN files in 0.000s
+2026-01-07 06:51:01,379 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files
+2026-01-07 06:51:01,381 - export - INFO - 🚀 Generating multi-format exports
+2026-01-07 06:51:01,384 - export - INFO - ✅ All exports generated successfully
+2026-01-07 06:51:01,385 - visualization - INFO - 🚀 Processing visualizations
+2026-01-07 06:51:01,880 - visualization - INFO - ✅ Generated 3 visualizations
+2026-01-07 06:51:01,880 - export - INFO - 🚀 Generating multi-format exports
+2026-01-07 06:51:01,881 - export - INFO - ✅ All exports generated successfully
+2026-01-07 06:51:01,883 - visualization - INFO - 🚀 Processing visualizations
+2026-01-07 06:51:02,686 - visualization - INFO - ✅ Generated 4 visualizations
+2026-01-07 06:51:02,739 - test_viz_scaling - INFO - 🚀 Starting step: Generating visualizations for GNN files in: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpym0_copn/input
+2026-01-07 06:51:02,739 - test_viz_scaling - INFO - ✅ Found 1 GNN files to visualize
+2026-01-07 06:51:02,740 - test_viz_scaling - INFO - ✅ Generated visualization for test_model_small.md: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpym0_copn/output/8_visualization_output/test_model_small
+2026-01-07 06:51:02,740 - test_viz_scaling - INFO - ✅ Matrix visualizations completed
+2026-01-07 06:51:02,741 - test_viz_scaling - INFO - ✅ Ontology visualizations completed
+2026-01-07 06:51:02,741 - test_viz_scaling - INFO - ✅ Visualization generation completed successfully. Files processed: 1
+2026-01-07 06:51:02,742 - test_viz_scaling - INFO - 🚀 Starting step: Generating visualizations for GNN files in: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp9xo6k58x/input
+2026-01-07 06:51:02,742 - test_viz_scaling - INFO - ✅ Found 1 GNN files to visualize
+2026-01-07 06:51:02,743 - test_viz_scaling - INFO - ✅ Generated visualization for test_model_medium.md: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp9xo6k58x/output/8_visualization_output/test_model_medium
+2026-01-07 06:51:02,743 - test_viz_scaling - INFO - ✅ Matrix visualizations completed
+2026-01-07 06:51:02,743 - test_viz_scaling - INFO - ✅ Ontology visualizations completed
+2026-01-07 06:51:02,743 - test_viz_scaling - INFO - ✅ Visualization generation completed successfully. Files processed: 1
+2026-01-07 06:51:02,745 - test_viz_scaling - INFO - 🚀 Starting step: Generating visualizations for GNN files in: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpna1zrrq1/input
+2026-01-07 06:51:02,745 - test_viz_scaling - INFO - ✅ Found 1 GNN files to visualize
+2026-01-07 06:51:02,745 - test_viz_scaling - INFO - ✅ Generated visualization for test_model_large.md: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpna1zrrq1/output/8_visualization_output/test_model_large
+2026-01-07 06:51:02,745 - test_viz_scaling - INFO - ✅ Matrix visualizations completed
+2026-01-07 06:51:02,746 - test_viz_scaling - INFO - ✅ Ontology visualizations completed
+2026-01-07 06:51:02,746 - test_viz_scaling - INFO - ✅ Visualization generation completed successfully. Files processed: 1
+2026-01-07 06:51:02,747 - test_viz_caching - INFO - 🚀 Starting step: Generating visualizations for GNN files in: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp6vvgkbbw/input
+2026-01-07 06:51:02,747 - test_viz_caching - INFO - ✅ Found 1 GNN files to visualize
+2026-01-07 06:51:02,747 - test_viz_caching - INFO - ✅ Generated visualization for test_model_medium.md: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp6vvgkbbw/output/8_visualization_output/test_model_medium
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Matrix visualizations completed
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Ontology visualizations completed
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Visualization generation completed successfully. Files processed: 1
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - 🚀 Starting step: Generating visualizations for GNN files in: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp6vvgkbbw/input
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Found 1 GNN files to visualize
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Generated visualization for test_model_medium.md: /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmp6vvgkbbw/output/8_visualization_output/test_model_medium
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Matrix visualizations completed
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Ontology visualizations completed
+2026-01-07 06:51:02,748 - test_viz_caching - INFO - ✅ Visualization generation completed successfully. Files processed: 1
+2026-01-07 06:51:07,503 - llm.llm_processor - INFO - Loaded API keys for providers: []
+2026-01-07 06:51:07,504 - llm.llm_operations - INFO - Created new LLM processor
+2026-01-07 06:51:07,506 - gnn.schema_validator - INFO - Enhanced multi-format parsing system initialized
+2026-01-07 06:51:07,506 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2026-01-07 06:51:07,506 - gnn.cross_format_validator - INFO - Enhanced parsing system initialized for cross-format validation
+2026-01-07 06:51:07,506 - gnn.core_processor.wrapper - INFO - Starting GNN processing pipeline
+2026-01-07 06:51:07,506 - gnn.core_processor.wrapper - INFO - Phase 1: File discovery and basic analysis
+2026-01-07 06:51:07,507 - gnn.discovery - INFO - Starting file discovery in /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpsyui2obn/input
+2026-01-07 06:51:07,507 - gnn.discovery - INFO - Discovery completed: 0/1 potential GNN files in 0.000s
+2026-01-07 06:51:07,507 - gnn.core_processor.wrapper - INFO - Discovered 0 GNN files
+2026-01-07 06:51:07,513 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.
+INFO:2026-01-07 06:51:07,586:jax._src.xla_bridge:830: Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)
+2026-01-07 06:51:07,586 - jax._src.xla_bridge - INFO - Unable to initialize backend 'tpu': INTERNAL: Failed to open libtpu.so: dlopen(libtpu.so, 0x0001): tried: 'libtpu.so' (no such file), '/System/Volumes/Preboot/Cryptexes/OSlibtpu.so' (no such file), '/usr/lib/libtpu.so' (no such file, not in dyld cache), 'libtpu.so' (no such file)
+DEBUG:2026-01-07 06:51:25,067:jax._src.xla_bridge:886: Clearing JAX backend caches.

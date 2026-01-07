@@ -1,38 +1,28 @@
 # EXPLAIN_MODEL
 
-Here's a summary of the key components:
+Based on the documentation, I have a comprehensive explanation of the Active Inference POMDP agent and its components:
 
-1. **Model Purpose**: This is the purpose of this analysis and description. Explain what real-world phenomenon or problem this model represents. 
-   - **StateFidelity**: The goal of this analysis will provide predictions on how to update beliefs over time based on observations, actions (policy), policies (prior probabilities), etc., and preferences are encoded as log-probabilities between observed outcomes.
+1. **Model Purpose**: This is about how to represent this POMDP agent that can learn from an unbounded time horizon with planning horizon and no precision modulation. Specifically, it represents the agent's goal as "go ahead and explore" - action 0 = learning new state in next observation (observable), action 1 = exploring new state in previous observation (hidden) and actions 2-4 are actions that can be taken from policy, exploration, or planning based on prior probability. It also includes an initial policy prior with preferences of LQE as inferred via the hidden states and Actions are learned using GNN.
 
-2. **Core Components**:
-   - **hidden states** : These represent hidden states with 3 possible values for each observation:
-   
-      - A[observation_outcomes] represents current observable space,
-      - A[observation_next] represents past observations in the same time step where that observation is present,
-      - A[history_path:] represents history of observed outcomes from previous time steps.
+2. **Core Components**: This model represents the input space (states), output space (actions/hidden state distributions) and parameters (num_observation, num_action1). Each component is represented by a dictionary entry that maps to its corresponding action or policy transition based on the current state. There are no explicit computations within these components but they can be described using the following key relationships:
+   - **Action selection**: Actions(state=0) and actions(state=4)=ActionsSelectionModel(action, probability = True),
+   - **Observation**: Observations with observed = action == Action[1] then action is learned from policy.
+   - **Learning**: The algorithm learns to select next observation based on the probabilities of each state in previous states for each sequence of actions taken (actions selected) and explored among observations as input parameters,
+   - **Planning**: Planning model involves learning from policies chosen by actions selected but it has no explicit computations within these models.
+3. **Model Dynamics**: This is about how to implement Active Inference principles using GNN: 
+   - **Initialization**: Initialization of learned state variables (s[n]), observed states, and learned policy probabilities are established based on the current time horizon and prior probability distribution over actions selected.
+   - **Learning**: The algorithm learns to select next observation by learning from previous observations as inputs for each sequence of policies taken with actions chosen and explored among observations in output space.
 
-3. **Key Relationships**:
-   - **state transition matrix** : This maps observed actions to states (states_f0 and state_observation) based on their probabilities; policy updates are implemented as log-probabilities over states and actions that map past observation's probability distributions to new observable space, while actions have uniform prior over beliefs.
-    - **policy vector**: These represent the policy prior distribution across action selections for a given state ("x"). Actions can be represented by vector representing input probabilities of different choices/actions in an input-output network (IoU). This represents current observable space and is updated via decision-making process based on available actions.
-    - **observable spaces**: These represent observed outcomes, so that they have learned from previous observations or observations made during the simulation period.
-      - "observation_next" : Initial observation of state x; this is a vector representing input probabilities (probability distributions) for next observation.
-      - "observation_" : This vector represents observable space now and has also learned actions on observed outcomes, allowing to update beliefs as well based on current observations/actions made during the simulation period.
+4. **Active Inference Context**: This is about how to learn Active Inference principles using GNN: 
+   - **Initialization**: Initializing learned state variables (s[n]) based on a learning process implemented as an agent interface,
+   - **Learning**: The algorithm learns to select next observation by updating observed and observable states in output space based on prior probabilities of actions taken.
 
-4. **Model Dynamics**:
-   - Actions are implemented as log-probabilities over observations (policy).
-   - **beliefs** represent the updated belief about next observation given a policy prior distribution for action "x" and actions taken by the agent, along with their probability distributions of observed outcomes.
-   
-   - Policy can be represented using a decision tree type decision boundary matrix (D), where states are input-output pairs from input into actions; this represents all possible choices/actions within one observation in which there's a policy prior distribution for action "x" and now we update beliefs based on the data that follows current observed observations.
-   
-   - **state transition matrix**: This is used to define actions, so it maps observed observations into observable space where they have learned from previous observations or made predictions about them, allowing to make decisions accordingly in simulation period. For example for "action x" and "observation_" (observable spaces), this can be represented as state transitions over policy transition matrix.
-   
-   - **policy update**: This is performed by updating policies based on the updated beliefs of current observation/actions made during the simulated time step; it's denoted as action_forward() method in Python implementation, for example using function from scikit-learn.
-   
-   - **belief updates** can be done via actions selected at a given state ("x") and are computed by updating beliefs based on observed observations or actions taken (policy) during current observation phase with updated belief probabilities over next states.
-   
-Now let's move to the practical implications of this model:
+5. **Practical Implications**: This is about how to learn from Active Inference principles using GNN:
+  - **Action Selection**: Actions selection model can learn the learning context (observable state) or policy parameters for each action selected as input through its initial policy distribution, where a change in policy will involve a corresponding change of actions. 
 
-1. **Actions**: What actions do you perform? What policies/actions can be performed in order to make decisions while taking into account beliefs and preferences of individuals that are already informed through simulations or analyses?
+  - **Planning**: The algorithm learns to select next observation based on learned policies and explored sequences using PolicyOptimization from PolicyGraphs.
 
-2. **Policies**: What policy performs actions, given current observations, what policies should be performed for other observed outcomes?
+6. **Decision**: This is about how to learn from Active Inference principles using GNN:
+  - **Initializing Policy**: Initialized learning parameters are initialized as initial policy distribution for each action selected, where the new value of actions[k] would be used as a policy transition when given new state[n]. For instance, for actions(h) = next states=0 and h={{1}}. This is also shown by actions([action]) = {{2},{4}], 3-step sequence where action(s)=[1] are observed and visited from previous observation to observe new state[n+1].
+
+Please summarize the key points in your response.

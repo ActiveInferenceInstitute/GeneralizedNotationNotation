@@ -28,7 +28,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced GNN modeling techniques
 - **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
 - **[DSPy Integration](../dspy/gnn_dspy.md)**: Program synthesis integration
-- **[Research Tools](../research/README.md)**: Research workflow tools
+- **[Research Tools](../../src/research/README.md)**: Research workflow tools
 
 ### Pipeline Integration
 - **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide

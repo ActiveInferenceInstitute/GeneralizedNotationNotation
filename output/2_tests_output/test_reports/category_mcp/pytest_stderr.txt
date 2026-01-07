@@ -1,0 +1,19 @@
+2026-01-07 06:48:17,207 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,207 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,207 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,208 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,211 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,216 - export.mcp - INFO - Export module MCP tools registered.
+/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+2026-01-07 06:48:17,227 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,241 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2026-01-07 06:48:17,241 - gnn.mcp - INFO - Enhanced capabilities available: True
+2026-01-07 06:48:17,244 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2026-01-07 06:48:17,245 - gnn.mcp - INFO - Enhanced capabilities available: True
+2026-01-07 06:48:17,249 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 06:48:17,251 - gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2026-01-07 06:48:17,251 - gnn.mcp - INFO - Enhanced capabilities available: True
+2026-01-07 06:48:17,254 - utils.mcp - INFO - Registering utils MCP tools
+2026-01-07 06:48:17,254 - utils.mcp - INFO - Successfully registered utils MCP tools
+2026-01-07 06:48:17,256 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)

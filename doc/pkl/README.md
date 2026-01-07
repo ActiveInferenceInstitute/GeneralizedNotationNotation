@@ -26,7 +26,7 @@ This directory contains documentation, resources, and implementation guides for 
 
 ### Related Directories
 - **[Configuration Management](../configuration/README.md)**: Configuration systems
-- **[Export Formats](../export/README.md)**: Multi-format export
+- **[Export Formats](../../src/export/README.md)**: Multi-format export
 - **[Type Checking](../../src/type_checker/AGENTS.md)**: Type validation
 
 ### Pipeline Integration

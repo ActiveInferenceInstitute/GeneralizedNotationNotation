@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T05:47:57.562555",
+  "timestamp": "2026-01-07T06:29:46.953533",
   "total_attempts": 8,
   "successful": 8,
   "failed": 0,
@@ -33,7 +33,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 153.6870002746582,
+      "duration_ms": 175.02999305725098,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -44,7 +44,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 240.45586585998535,
+      "duration_ms": 243.3784008026123,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],
@@ -55,7 +55,7 @@
       "viz_type": "matrix_correlations",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 291.4559841156006,
+      "duration_ms": 315.6089782714844,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png"
       ],
@@ -66,7 +66,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 293.43318939208984,
+      "duration_ms": 282.1779251098633,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png"
       ],
@@ -77,7 +77,7 @@
       "viz_type": "policy",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 157.42826461791992,
+      "duration_ms": 161.51976585388184,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
       ],
@@ -88,7 +88,7 @@
       "viz_type": "network_metrics",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 203.9189338684082,
+      "duration_ms": 177.92415618896484,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
       ],
@@ -99,7 +99,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Classic Active Inference POMDP Agent v1",
       "status": "success",
-      "duration_ms": 1998.1181621551514,
+      "duration_ms": 2168.9491271972656,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.svg",
         "output/9_advanced_viz_output/d2_diagrams/Classic Active Inference POMDP Agent v1/classic_active_inference_pomdp_agent_v1_structure.png"
@@ -111,7 +111,7 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "success",
-      "duration_ms": 3775.4969596862793,
+      "duration_ms": 4358.301162719727,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",

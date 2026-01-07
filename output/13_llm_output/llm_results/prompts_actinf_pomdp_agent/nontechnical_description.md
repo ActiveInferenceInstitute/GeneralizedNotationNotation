@@ -6,12 +6,65 @@ Prompt:
 
 Response:
 
-You are correct that the GNN model I provided earlier does not have any explicit connection between state inference and action selection. However, you can use other models like a sequential neural network (SNN) or even an adjacency list representation to make similar predictions. 
+Here's a comprehensive analysis on how to implement the Active Inference POMDP agent in C++:
 
-To implement more advanced predictions using these models:
+1. **Initialization**:
+   - Initialize actions and parameters with predefined initial settings (`[0]`, `[3],` etc.).
+- Initialize hidden states, action distributions for each policy (`π`).
 
-1. **Action Selection**: The GNN model uses a recursive descent descent (RDS) algorithm to evaluate the action selection problem, and if successful, it updates the belief distribution based on the next state. This can be done with the following graph structure:
+2. **Optimization**
+  - Use backpropagation to update state probability matrix (P) based on the observed data (`A`) from left to right and vice versa (`B` and `C`, respectively), followed by gradient descent with a learning rate of 10-fold, and/or using a learning rate scheduler.
+   - Use GNN annotations to define an action space for each state.
 
-2. **State inference** is performed using an adversarial network or a random distributed layer, which will not provide any meaningful information about the actions/beliefs of states but still allow you to compute action selections for future states (e.g., see `action_selection(state)`.
+3. **Optimization**
+  - Use gradient descent with forward direction (gradient descent) as in your implementation:
+    - Initialize values of hidden states (`H[π]`) based on actions (`b`). Then use iterated backpropagation using `GNNAnnotations`:
+    - The output probability for each state is computed by multiplying the previous input state and action probabilities.
+    - Use forward direction to compute final state distribution (P), next state distribution, and so forth, followed by gradient descent with a learning rate of 10-fold, until stopping in any case).
 
-3. **Policy inference**: The state and actions can be predicted using a GNN model (i.e., applying the rules described in my previous post). This enables predictions of the actions/beliefs of subsequent states, which could potentially provide more accurate predictions.
+4. **Model estimation**
+  - Use POMDP estimation methods based on the learned actions (`A`) from left to right:
+    - Expected free energy (F) updates for each state according to the current probability distribution and policy prior.
+    - Forward direction forward momentum update with a learning rate of 10-fold, stopping in any case.
+
+5. **Model inference**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state based on the last learned action probabilities and values (with respect to the previous input state).
+
+    - Initialize the initial action distribution `(1,0)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next action is chosen or an incorrect choice takes place.
+
+6. **Model estimation**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state according to the last learned policy probabilities and values (with respect to the previous input state).
+
+    - Initialize the initial action distribution `(0,1)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next action is chosen or an incorrect choice takes place.
+
+7. **Model inference**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state according to the last learned policy probabilities and values (with respect to the previous input state).
+
+    - Initialize the action distribution `(0,1)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next actions are chosen or an incorrect choice takes place.
+
+8. **Model estimation**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state according to the last learned policy probabilities and values (with respect to the previous input state).
+
+    - Initialize the action distribution `(0,1)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next actions are chosen or an incorrect choice takes place.
+
+9. **Model estimation**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state according to the last learned policy probabilities and values (with respect to the previous input state).
+
+    - Initialize the action distribution `(0,1)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next actions are chosen or an incorrect choice takes place.
+
+10. **Model estimation**
+  - Use GNN annotations based on actions (`B`) from left to right:
+    - Initialization and step updates for each state according to the last learned policy probabilities and values (with respect to the previous input state).
+
+    - Initialize the action distribution `(0,1)`. Then use forward direction forward momentum update with a learning rate of 10-fold. Stop in any case if no next actions are chosen or an incorrect choice takes place.
+
+Please note that these steps can be customized by specifying different types of annotations (e.g., action probabilities), and/or using more efficient algorithms for initialization and step updates (more on this later).
+
+Note: This implementation will not perform forward direction iteration in case the actions are not well-defined and do not follow a fixed path between states (see section 10.5 of ). It only executes forward direction forward momentum updates with a learning rate of 10-fold, stopping in any case if no next action is chosen or an incorrect choice takes place.
+
+To get the current state distribution for each observation as well as future actions based on it (which will not be directly correlated to previous states), you can use the `GNNAnnotations()` class from the C++ Standard Library.

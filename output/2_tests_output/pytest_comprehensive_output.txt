@@ -9,16 +9,16 @@ STDOUT:
 .......................................................................s [ 89%]
 ..............................ss.................................        [100%]
 ============================= slowest 10 durations =============================
-40.17s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
-2.92s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
-2.40s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
-2.28s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
-2.21s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
-2.07s call     src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_sync_wrapper_recovery
-1.97s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
-1.79s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
-1.71s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_executes_real[8_visualization.py-<lambda>]
-1.66s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+61.50s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+45.12s call     src/tests/test_pipeline_main.py::TestPipelineMain::test_pipeline_step_11_12_produce_reports
+4.16s call     src/tests/test_pipeline_recovery.py::TestAsyncAwaitRecovery::test_llm_analysis_recovery
+2.66s call     src/tests/test_pipeline_improvements_validation.py::test_specific_pipeline_steps_improvements[step_numbers1]
+2.36s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptImports::test_script_executes_help[1_setup.py]
+2.11s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+2.08s call     src/tests/test_llm_ollama.py::test_processor_uses_ollama_when_no_keys
+2.02s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+1.82s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+1.72s call     src/tests/test_pipeline_scripts.py::TestPipelineScriptExecution::test_script_executes_real[8_visualization.py-<lambda>]
 =========================== short test summary info ============================
 SKIPPED [1] src/tests/test_advanced_visualization_overall.py:480: MCP integration not available
 SKIPPED [1] src/tests/test_audio_sapf.py:30: SAPF validation not available
@@ -75,8 +75,8 @@ SKIPPED [1] src/tests/test_pipeline_infrastructure.py:579: Utils modules not ava
 SKIPPED [1] src/tests/test_pipeline_scripts.py:528: SAPF audio backend unavailable: cannot import name 'generate_wav_from_sapf' from 'src.audio.sapf.generator' (/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/audio/sapf/generator.py)
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:32: Testing internal implementation - backend auto-configured
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:39: Testing internal implementation - backend auto-configured
-587 passed, 54 skipped, 25 deselected in 78.63s (0:01:18)
+587 passed, 54 skipped, 25 deselected in 143.99s (0:02:23)
 
 
 STDERR:
-DEBUG:2026-01-07 05:47:49,303:jax._src.xla_bridge:886: Clearing JAX backend caches.
+DEBUG:2026-01-07 06:29:37,769:jax._src.xla_bridge:886: Clearing JAX backend caches.

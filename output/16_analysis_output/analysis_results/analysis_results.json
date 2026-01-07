@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T05:50:08.178498",
+  "timestamp": "2026-01-07T06:32:06.678543",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -633,7 +633,7 @@
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-01-07T05:50:08.181387"
+      "analysis_timestamp": "2026-01-07T06:32:06.681411"
     }
   ],
   "complexity_metrics": [
@@ -645,7 +645,7 @@
       "structural_complexity": 21.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.2,
-      "analysis_timestamp": "2026-01-07T05:50:08.182809"
+      "analysis_timestamp": "2026-01-07T06:32:06.682952"
     }
   ],
   "performance_benchmarks": [
@@ -656,7 +656,7 @@
       "memory_usage": 423.6,
       "complexity_score": 72,
       "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-01-07T05:50:08.184259"
+      "benchmark_timestamp": "2026-01-07T06:32:06.684484"
     }
   ],
   "model_comparisons": [],
@@ -672,10 +672,10 @@
     }
   ],
   "framework_comparison": {
-    "timestamp": "2026-01-07T05:50:08.188277",
+    "timestamp": "2026-01-07T06:32:06.688271",
     "frameworks": {
       "pymdp": {
-        "success_count": 0,
+        "success_count": 1,
         "total_count": 1,
         "execution_times": [],
         "output_files": [
@@ -690,7 +690,7 @@
         "free_energy": []
       },
       "jax": {
-        "success_count": 1,
+        "success_count": 0,
         "total_count": 1,
         "execution_times": [],
         "output_files": [
@@ -752,8 +752,8 @@
     },
     "comparisons": {
       "success_rates": {
-        "pymdp": 0.0,
-        "jax": 1.0,
+        "pymdp": 1.0,
+        "jax": 0.0,
         "discopy": 1.0,
         "rxinfer": 1.0,
         "activeinference_jl": 1.0

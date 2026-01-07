@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 21.53245,
-  "timestamp": "2026-01-07T05:47:59.631259",
+  "execution_time": 19.94029,
+  "timestamp": "2026-01-07T06:57:46.806552",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -15,20 +15,20 @@
     "actions": [],
     "policy": [],
     "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 1)\nD vector size: (3,)\nObservation sequence: [2, 3, 3, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 1, 3]\nObservation sequence (one-hot) prepared.\nInference complete.\n\u2705 Standardized results saved to simulation_results.json\nSaved plot to rxinfer_results.png\n\u2705 RxInfer simulation successful\n",
-    "raw_error": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n"
+    "raw_error": "\u001b[32m\u001b[1m   Resolving\u001b[22m\u001b[39m package versions...\n\u001b[36m\u001b[1m     Project\u001b[22m\u001b[39m No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n\u001b[36m\u001b[1m    Manifest\u001b[22m\u001b[39m No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n"
   },
   "execution_metadata": {
     "executor": "julia",
     "stdout_length": 379,
-    "stderr_length": 220,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/rxinfer"
+    "stderr_length": 277,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [
-      "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png"
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png"
     ],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
     ],
     "traces": [],
     "other": []
