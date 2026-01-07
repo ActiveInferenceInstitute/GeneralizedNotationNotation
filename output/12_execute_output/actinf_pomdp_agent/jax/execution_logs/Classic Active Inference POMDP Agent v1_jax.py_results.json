@@ -1,0 +1,37 @@
+{
+  "framework": "jax",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_jax.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 5.011966,
+  "timestamp": "2026-01-07T13:16:44.404183",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      0.0099,
+      0.002
+    ],
+    "states": [],
+    "observations": [],
+    "actions": [
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 1)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 1\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33333 0.33333 0.33333]\n   Updated belief: [1. 0. 0.]\n   Selected action: 0\n   Expected free energy: 0.0099\n   EFE for all actions: [0.00986223]\n\n\ud83d\udd04 Running 5-step simulation...\n   Actions taken: [0 0 0 0 0]\n   Final belief: [0. 0. 0.]\n   Average EFE: 0.0020\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": ""
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 1157,
+    "stderr_length": 0,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [],
+    "traces": [],
+    "other": []
+  }
+}

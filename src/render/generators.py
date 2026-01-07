@@ -79,8 +79,8 @@ def _matrix_to_julia(matrix_data) -> str:
 def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
     """Generate Enhanced PyMDP simulation code with comprehensive visualizations."""
     try:
-        # Import the enhanced template
-        from .pymdp_enhanced import ENHANCED_PYMDP_TEMPLATE
+        # Import the template
+        from .pymdp_template import PYMDP_TEMPLATE
         
         # Get model name and sanitize identifiers
         model_name = model_data.get('model_name', 'GNN Model')
@@ -96,8 +96,8 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
         c_vector = state_space.get('C', [0.1, 0.1, 1.0, 0.0])
         d_vector = state_space.get('D', [0.333, 0.333, 0.333])
         
-        # Generate Enhanced PyMDP code using template
-        code = ENHANCED_PYMDP_TEMPLATE.format(
+        # Generate PyMDP code using template
+        code = PYMDP_TEMPLATE.format(
             model_name=model_name,
             model_snake=model_snake, 
             gnn_file=gnn_file,
@@ -135,7 +135,7 @@ def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Uni
 
         code = f'''#!/usr/bin/env julia
 """
-Enhanced ActiveInference.jl simulation for {model_name}
+ActiveInference.jl simulation for {model_name}
 Generated from GNN specification: {gnn_file}
 Features comprehensive visualizations and data export
 """
@@ -146,7 +146,7 @@ using Random
 using JSON
 using Plots
 
-# Enhanced utilities and logging
+# Utilities and logging
 function log_success(name, message)
     println("✅ $name: $message")
 end
@@ -161,8 +161,8 @@ function enhanced_softmax(x::AbstractVector)
     return exp_x ./ sum(exp_x)
 end
 
-# Enhanced POMDP agent structure
-mutable struct Enhanced{model_pascal}Agent
+# POMDP agent structure
+mutable struct {model_pascal}Agent
     A::Array{{Float64,2}}
     B::Array{{Float64,3}}
     C::Vector{{Float64}}
@@ -175,8 +175,8 @@ mutable struct Enhanced{model_pascal}Agent
     simulation_history::Vector{{Dict{{String,Any}}}}
 end
 
-function create_enhanced_agent()
-    log_success("Agent Creation", "Creating Enhanced ActiveInference.jl agent")
+function create_agent()
+    log_success("Agent Creation", "Creating ActiveInference.jl agent")
     
     num_states = 3
     num_obs = 4
@@ -204,20 +204,20 @@ function create_enhanced_agent()
     D = {_matrix_to_julia(d_vector)}
     D = D ./ sum(D)
     
-    agent = Enhanced{model_pascal}Agent(
+    agent = {model_pascal}Agent(
         A, B, C, D, copy(D), 
         num_states, num_obs, num_actions,
         Dict{{String,Any}}(), Vector{{Dict{{String,Any}}}}()
     )
     
-    log_success("Agent Creation", "Enhanced agent created with comprehensive tracking")
+    log_success("Agent Creation", "Agent created with comprehensive tracking")
     println("  A column sums: ", [sum(A[:, s]) for s in 1:num_states])
     
     return agent
 end
 
-function run_enhanced_simulation(agent::Enhanced{model_pascal}Agent, num_steps::Int = 15)
-    log_success("Simulation", "Running Enhanced ActiveInference.jl simulation ($num_steps steps)")
+function run_simulation(agent::{model_pascal}Agent, num_steps::Int = 15)
+    log_success("Simulation", "Running ActiveInference.jl simulation ($num_steps steps)")
     
     # Enhanced data collection
     belief_history = Vector{{Float64}}[]
@@ -309,7 +309,7 @@ function run_enhanced_simulation(agent::Enhanced{model_pascal}Agent, num_steps::
         )
         push!(agent.simulation_history, step_data)
         
-        log_step("Enhanced ActiveInference", step, Dict(
+        log_step("ActiveInference", step, Dict(
             "FE" => round(free_energy, digits=3),
             "action" => action,
             "obs" => observation,
@@ -364,7 +364,7 @@ function run_enhanced_simulation(agent::Enhanced{model_pascal}Agent, num_steps::
         "simulation_history" => agent.simulation_history
     )
     
-    log_success("Simulation Complete", "Enhanced simulation completed successfully")
+    log_success("Simulation Complete", "Simulation completed successfully")
     println("  📊 Total reward: $(round(total_reward, digits=3))")
     println("  🧠 Final entropy: $(round(final_entropy, digits=3))")
     println("  ⚡ Final free energy: $(round(final_fe, digits=3))")
@@ -373,8 +373,8 @@ function run_enhanced_simulation(agent::Enhanced{model_pascal}Agent, num_steps::
     return results
 end
 
-function create_enhanced_visualizations(results, output_dir)
-    log_success("Visualization", "Generating Enhanced ActiveInference.jl visualizations")
+function create_visualization_suite(results, output_dir)
+    log_success("Visualization", "Generating ActiveInference.jl visualizations")
     
     viz_dir = joinpath(output_dir, "visualizations")
     mkpath(viz_dir)
@@ -389,7 +389,7 @@ function create_enhanced_visualizations(results, output_dir)
     
     # 1. Free Energy Evolution
     p1 = plot(free_energy, 
-             title="ENHANCED Free Energy Evolution - ActiveInference.jl",
+             title="Free Energy Evolution - ActiveInference.jl",
              xlabel="Time Step", 
              ylabel="Free Energy",
              linewidth=3,
@@ -399,12 +399,12 @@ function create_enhanced_visualizations(results, output_dir)
              marker=:circle,
              markersize=4)
     
-    fe_file = joinpath(viz_dir, "ENHANCED_free_energy_evolution.png")
+    fe_file = joinpath(viz_dir, "free_energy_evolution.png")
     savefig(p1, fe_file)
     push!(viz_files, fe_file)
     
     # 2. Belief Evolution
-    p2 = plot(title="ENHANCED Belief Evolution - ActiveInference.jl",
+    p2 = plot(title="Belief Evolution - ActiveInference.jl",
              xlabel="Time Step",
              ylabel="Belief Probability", 
              grid=true,
@@ -418,7 +418,7 @@ function create_enhanced_visualizations(results, output_dir)
               markersize=3)
     end
     
-    belief_file = joinpath(viz_dir, "ENHANCED_belief_evolution.png")
+    belief_file = joinpath(viz_dir, "belief_evolution.png")
     savefig(p2, belief_file)
     push!(viz_files, belief_file)
     
@@ -439,18 +439,18 @@ function create_enhanced_visualizations(results, output_dir)
     dashboard = plot(p3, p4, p5, p6, 
                     layout=(2, 2),
                     size=(800, 600),
-                    plot_title="ENHANCED ActiveInference.jl Dashboard")
+                    plot_title="ActiveInference.jl Dashboard")
     
-    dashboard_file = joinpath(viz_dir, "ENHANCED_activeinference_dashboard.png")
+    dashboard_file = joinpath(viz_dir, "activeinference_dashboard.png")
     savefig(dashboard, dashboard_file)
     push!(viz_files, dashboard_file)
     
-    log_success("Visualization", "Generated $(length(viz_files)) enhanced visualization files")
+    log_success("Visualization", "Generated $(length(viz_files)) visualization files")
     
     return viz_files
 end
 
-function export_enhanced_data(results, output_dir)
+function export_data(results, output_dir)
     log_success("Data Export", "Exporting comprehensive data")
     
     data_dir = joinpath(output_dir, "data_exports")
@@ -458,18 +458,18 @@ function export_enhanced_data(results, output_dir)
     
     # JSON export with timestamp
     timestamp = string(now())
-    json_file = joinpath(data_dir, "activeinference_jl_enhanced_$(replace(timestamp, ":" => "_")).json")
+    json_file = joinpath(data_dir, "activeinference_jl_$(replace(timestamp, ":" => "_")).json")
     
     open(json_file, "w") do f
         JSON.print(f, results, 2)
     end
     
     # Metadata export
-    meta_file = joinpath(data_dir, "ENHANCED_metadata.json")
+    meta_file = joinpath(data_dir, "metadata.json")
     metadata = Dict(
         "export_timestamp" => timestamp,
         "model_name" => "{model_name}",
-        "framework" => "ActiveInference.jl Enhanced",
+        "framework" => "ActiveInference.jl",
         "data_files" => [json_file],
         "summary" => results["summary"]
     )
@@ -478,27 +478,27 @@ function export_enhanced_data(results, output_dir)
         JSON.print(f, metadata, 2)
     end
     
-    log_success("Data Export", "Enhanced data exported successfully")
+    log_success("Data Export", "Data exported successfully")
     
     return [json_file, meta_file]
 end
 
 function main()
     try
-        println("🚀 ENHANCED ActiveInference.jl Simulation")
+        println("🚀 ActiveInference.jl Simulation")
         println("=" ^ 70)
         
-        agent = create_enhanced_agent()
-        results = run_enhanced_simulation(agent, 15)
+        agent = create_agent()
+        results = run_simulation(agent, 15)
         
         # Generate visualizations
-        viz_files = create_enhanced_visualizations(results, ".")
+        viz_files = create_visualization_suite(results, ".")
         
         # Export data
-        data_files = export_enhanced_data(results, ".")
+        data_files = export_data(results, ".")
         
         println("=" ^ 70)
-        println("✅ ENHANCED ActiveInference.jl simulation completed!")
+        println("✅ ActiveInference.jl simulation completed!")
         println("📊 Performance: $(round(results["summary"]["total_reward"], digits=2)) total reward")
         println("🎨 Visualizations: $(length(viz_files)) files created")
         println("💾 Data exports: $(length(data_files)) files created")
@@ -507,7 +507,7 @@ function main()
         return results
         
     catch e
-        println("❌ Enhanced ActiveInference.jl simulation failed: $e")
+        println("❌ ActiveInference.jl simulation failed: $e")
         rethrow(e)
     end
 end

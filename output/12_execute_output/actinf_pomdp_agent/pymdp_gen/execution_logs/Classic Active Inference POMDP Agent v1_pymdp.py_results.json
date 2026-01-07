@@ -1,0 +1,26 @@
+{
+  "framework": "pymdp_gen",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_pymdp.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.026436,
+  "timestamp": "2026-01-07T13:16:52.663502",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u26a0\ufe0f  PyMDP package found, but it appears to be the wrong version (missing Agent).\n\ud83d\udce6 PyMDP not found or wrong version - installing inferactively-pymdp...\n\u26a0\ufe0f  UV install failed, trying pip...\n\u274c Failed to install PyMDP: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python: No module named pip\n\n\ud83d\udca1 Install manually with: uv pip install inferactively-pymdp\n",
+    "raw_error": ""
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 372,
+    "stderr_length": 0,
+    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp_gen"
+  }
+}

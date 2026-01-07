@@ -377,7 +377,7 @@ class TestLoggingImprovements:
         """Test diagnostic logger functionality."""
         
         try:
-            from utils.enhanced_logging import DiagnosticLogger
+            from utils.diagnostic_logging import DiagnosticLogger
             
             with tempfile.TemporaryDirectory() as temp_dir:
                 logger = DiagnosticLogger("test_step", Path(temp_dir))
@@ -413,7 +413,7 @@ class TestLoggingImprovements:
                 assert "correlation_id" in report_data.get("step_start", {}).get("system_info", {})
                 
         except ImportError:
-            pytest.skip("Enhanced logging not available")
+            pytest.skip("Diagnostic logging not available")
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
@@ -421,7 +421,7 @@ class TestLoggingImprovements:
         """Test correlation context functionality."""
         
         try:
-            from utils.enhanced_logging import CorrelationContext
+            from utils.diagnostic_logging import CorrelationContext
             
             # Test correlation ID generation
             correlation_id = CorrelationContext.new_correlation_id()

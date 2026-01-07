@@ -188,22 +188,22 @@ def demonstrate_utility_patterns(context: Dict[str, Any], logger) -> Dict[str, A
     
     # Demonstrate enhanced logging
     try:
-        logger.info("🎯 Demonstrating enhanced logging patterns")
+        logger.info("🎯 Demonstrating diagnostic logging patterns")
         logger.debug("Debug level logging for detailed troubleshooting")
         logger.info("Info level logging for general progress")
         logger.warning("Warning level logging for potential issues")
         
-        demonstration_results["patterns_demonstrated"].append("enhanced_logging")
-        demonstration_results["infrastructure_status"]["enhanced_logging"] = {
+        demonstration_results["patterns_demonstrated"].append("diagnostic_logging")
+        demonstration_results["infrastructure_status"]["diagnostic_logging"] = {
             "available": True,
             "levels_supported": ["DEBUG", "INFO", "WARNING", "ERROR"]
         }
         
-        logger.info("✅ Enhanced logging system demonstrated")
+        logger.info("✅ Diagnostic logging system demonstrated")
         
     except Exception as e:
-        logger.warning(f"⚠️ Enhanced logging demonstration failed: {e}")
-        demonstration_results["infrastructure_status"]["enhanced_logging"] = {
+        logger.warning(f"⚠️ Diagnostic logging demonstration failed: {e}")
+        demonstration_results["infrastructure_status"]["diagnostic_logging"] = {
             "available": False,
             "error": str(e)
         }

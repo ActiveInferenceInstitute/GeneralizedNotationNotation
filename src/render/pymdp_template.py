@@ -1,17 +1,17 @@
 #!/usr/bin/env python3
 """
-Enhanced PyMDP Implementation Template with Comprehensive Visualizations
+PyMDP Implementation Template with Comprehensive Visualizations
 Creates PyMDP simulations with extensive real data exports and visualizations
 """
 
-ENHANCED_PYMDP_TEMPLATE = '''#!/usr/bin/env python3
+PYMDP_TEMPLATE = '''#!/usr/bin/env python3
 """
-Enhanced PyMDP Active Inference POMDP Agent with Comprehensive Analysis
+PyMDP Active Inference POMDP Agent with Comprehensive Analysis
 Generated from GNN specification: {gnn_file}
 Model: {model_name}
 
 Features:
-- Real Active Inference computation with PyMDP
+- Active Inference computation with PyMDP
 - Comprehensive visualization suite (15+ chart types)
 - Multi-format data export (JSON, CSV, HDF5)
 - Statistical analysis and performance metrics
@@ -36,15 +36,15 @@ try:
     
     if src_path.exists():
         sys.path.insert(0, str(src_path))
-        from render.enhanced_visualizations import EnhancedVisualizationSuite, ComprehensiveDataExporter
-        ENHANCED_VIZ_AVAILABLE = True
+        from render.visualization_suite import VisualizationSuite, ComprehensiveDataExporter
+        VIZ_SUITE_AVAILABLE = True
     else:
-        ENHANCED_VIZ_AVAILABLE = False
-        print("⚠️  Enhanced visualizations not available - using basic plotting")
+        VIZ_SUITE_AVAILABLE = False
+        print("⚠️  Visualization suite not available - using basic plotting")
         
 except ImportError as e:
-    ENHANCED_VIZ_AVAILABLE = False
-    print(f"⚠️  Enhanced visualizations not available: {{e}} - using basic plotting")
+    VIZ_SUITE_AVAILABLE = False
+    print(f"⚠️  Visualization suite not available: {{e}} - using basic plotting")
 
 import matplotlib.pyplot as plt
 
@@ -57,8 +57,8 @@ def log_step(name, step, data):
 def log_error(name, message):
     print(f"❌ {{name}}: {{message}}")
 
-class EnhancedPOMDPAgent:
-    """Enhanced POMDP Agent with comprehensive data tracking"""
+class POMDPAgent:
+    """POMDP Agent with comprehensive data tracking"""
     
     def __init__(self, num_states=3, num_obs=4, num_actions=2):
         self.num_states = num_states
@@ -77,7 +77,7 @@ class EnhancedPOMDPAgent:
             "step_count": 0
         }}
         
-        log_success("Enhanced Agent", f"POMDP Agent initialized: {{self.num_states}} states, {{self.num_obs}} obs, {{self.num_actions}} actions")
+        log_success("Agent", f"POMDP Agent initialized: {{self.num_states}} states, {{self.num_obs}} obs, {{self.num_actions}} actions")
         
     def _initialize_matrices(self):
         """Initialize POMDP matrices with GNN-specified values"""
@@ -106,10 +106,10 @@ class EnhancedPOMDPAgent:
         
         return A, B, C, D
     
-    def run_enhanced_simulation(self, num_steps=15):
+    def run_simulation(self, num_steps=15):
         """Run comprehensive Active Inference simulation with full data collection"""
         
-        log_success("Simulation", f"Starting Enhanced Active Inference simulation - {{num_steps}} steps")
+        log_success("Simulation", f"Starting Active Inference simulation - {{num_steps}} steps")
         
         # Initialize tracking
         belief_history = []
@@ -229,8 +229,8 @@ class EnhancedPOMDPAgent:
             
             self.simulation_history.append(step_data)
             
-            # Log step with enhanced info
-            log_step("Enhanced Active Inference", step + 1, {{
+            # Log step with detailed info
+            log_step("Active Inference", step + 1, {{
                 "action": selected_action,
                 "obs": observation,
                 "reward": round(reward, 3),
@@ -271,7 +271,7 @@ class EnhancedPOMDPAgent:
         results = {{
             "metadata": {{
                 "model_name": "{model_name}",
-                "framework": "pymdp_enhanced",
+                "framework": "pymdp_template",
                 "gnn_source": "{gnn_file}",
                 "timestamp": datetime.now().isoformat(),
                 "num_steps": num_steps,
@@ -322,18 +322,18 @@ def create_comprehensive_visualizations(results, output_dir):
     
     viz_files = []
     
-    if ENHANCED_VIZ_AVAILABLE:
-        # Use enhanced visualization suite
-        log_success("Visualization", "Using Enhanced Visualization Suite")
+    if VIZ_SUITE_AVAILABLE:
+        # Use comprehensive visualization suite
+        log_success("Visualization", "Using Visualization Suite")
         
-        viz_suite = EnhancedVisualizationSuite(output_dir, "pymdp_{model_snake}")
+        viz_suite = VisualizationSuite(output_dir, "pymdp_{model_snake}")
         viz_files.extend(viz_suite.create_comprehensive_suite(results))
         
-        log_success("Enhanced Visualizations", f"Generated {{len(viz_files)}} comprehensive visualization files")
+        log_success("Visualizations", f"Generated {{len(viz_files)}} comprehensive visualization files")
         
     else:
         # Fallback to basic visualizations
-        log_success("Visualization", "Using Basic Visualization (Enhanced not available)")
+        log_success("Visualization", "Using Basic Visualization (Suite not available)")
         
         viz_dir = Path(output_dir) / "visualizations"
         viz_dir.mkdir(parents=True, exist_ok=True)
@@ -413,8 +413,8 @@ def export_comprehensive_data(results, output_dir):
     
     exported_files = []
     
-    if ENHANCED_VIZ_AVAILABLE:
-        # Use enhanced data exporter
+    if VIZ_SUITE_AVAILABLE:
+        # Use comprehensive data exporter
         log_success("Data Export", "Using Comprehensive Data Exporter")
         
         exporter = ComprehensiveDataExporter(output_dir, "pymdp_{model_snake}")

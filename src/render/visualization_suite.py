@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Real Visualizations and Data Exports
+Visualization Suite and Data Exports
 Provides comprehensive visualization and data export utilities for all frameworks
 """
 
@@ -133,7 +133,7 @@ class ComprehensiveDataExporter:
             else:
                 hdf5_group.create_dataset(key, data=str(value))
 
-class EnhancedVisualizationSuite:
+class VisualizationSuite:
     """Comprehensive visualization suite with multiple chart types"""
     
     def __init__(self, output_dir: Path, simulation_name: str):

@@ -427,7 +427,7 @@ def main():
             step_stats = {
                 "Status": status_for_logging,
                 "Duration": f"{step_duration:.2f}s",
-                "Memory": f"{step_result.get('memory_delta_mb', 0):.1f}MB",
+                "Memory": f"{step_result.get('peak_memory_mb', 0):.1f}MB",
                 "Exit Code": step_result.get("exit_code", 0)
             }
 

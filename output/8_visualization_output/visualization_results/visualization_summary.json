@@ -1,0 +1,13 @@
+{
+  "processed_files": 1,
+  "total_visualizations": 6,
+  "visualization_files": [
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_network_stats.json",
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_0_heatmap.png",
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_1_heatmap.png",
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_matrix_2_heatmap.png",
+    "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/visualization_results/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png"
+  ],
+  "success": true
+}

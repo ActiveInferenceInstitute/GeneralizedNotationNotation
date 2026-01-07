@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 """
-Enhanced Integration Suite for ActiveInference.jl - Maximum POMDP Understanding
+Integration Suite for ActiveInference.jl - Maximum POMDP Understanding
 
 This script provides a comprehensive analysis pipeline integrating both existing and new capabilities:
 
@@ -30,7 +30,7 @@ using Printf
 # Include existing analysis modules
 const SCRIPT_DIR = @__DIR__
 include(joinpath(SCRIPT_DIR, "advanced_pomdp_analysis.jl"))
-include(joinpath(SCRIPT_DIR, "enhanced_visualization.jl"))
+include(joinpath(SCRIPT_DIR, "visualization_suite.jl"))
 include(joinpath(SCRIPT_DIR, "statistical_analysis.jl"))
 include(joinpath(SCRIPT_DIR, "export_enhancement.jl"))
 
@@ -41,13 +41,13 @@ include(joinpath(SCRIPT_DIR, "counterfactual_reasoning.jl"))
 include(joinpath(SCRIPT_DIR, "multi_scale_temporal_analysis.jl"))
 include(joinpath(SCRIPT_DIR, "uncertainty_quantification.jl"))
 
-"""Run the complete enhanced integration suite with maximum POMDP understanding."""
-function run_enhanced_integration_suite(output_dir::String)
+"""Run the complete integration suite with maximum POMDP understanding."""
+function run_integration_suite(output_dir::String)
     if !isdir(output_dir)
         error("❌ Output directory not found: $output_dir")
     end
     
-    println("🚀 ActiveInference.jl Enhanced Integration Suite - Maximum POMDP Understanding")
+    println("🚀 ActiveInference.jl Integration Suite - Maximum POMDP Understanding")
     println("="^80)
     println("📁 Analyzing data in: $output_dir")
     println("⏰ Started at: $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))")
@@ -80,21 +80,21 @@ function run_enhanced_integration_suite(output_dir::String)
     end
     println("Status: $status | Duration: $(step_duration)")
     
-    # Step 2: Enhanced Visualizations
-    println("🎨 Step 2: Enhanced Visualizations")
+    # Step 2: Visualization Suite
+    println("🎨 Step 2: Visualization Suite")
     step_start = now()
     status = "❌ FAILED: Unknown error"
     step_duration = Millisecond(0)
     try
-        create_enhanced_visualizations(output_dir)
+        create_visualization_suite(output_dir)
         step_duration = now() - step_start
         status = "✅ COMPLETED"
-        push!(analysis_log, "Enhanced Visualizations: $status ($(step_duration))")
+        push!(analysis_log, "Visualization Suite: $status ($(step_duration))")
     catch e
         step_duration = now() - step_start
         status = "❌ FAILED: $e"
-        push!(analysis_log, "Enhanced Visualizations: $status ($(step_duration))")
-        @warn "Enhanced visualizations failed" exception=e
+        push!(analysis_log, "Visualization Suite: $status ($(step_duration))")
+        @warn "Visualization suite failed" exception=e
     end
     println("Status: $status | Duration: $(step_duration)")
     
@@ -298,7 +298,7 @@ function run_enhanced_integration_suite(output_dir::String)
     # ====================================
     total_duration = now() - start_time
     
-    println("🎉 ENHANCED INTEGRATION SUITE - MAXIMUM POMDP UNDERSTANDING COMPLETED")
+    println("🎉 INTEGRATION SUITE - MAXIMUM POMDP UNDERSTANDING COMPLETED")
     println("="^80)
     println("⏱️  Total Duration: $total_duration")
     println("📁 Results saved to: $output_dir")
@@ -316,7 +316,7 @@ function run_enhanced_integration_suite(output_dir::String)
     # Check which directories were created
     output_dirs = [
         ("advanced_analysis", "🔬 Advanced POMDP Analysis"),
-        ("enhanced_visualizations", "🎨 Enhanced Visualizations"),
+        ("visualizations", "🎨 Visualization Suite"),
         ("statistical_analysis", "📊 Statistical Analysis"),
         ("metacognitive_analysis", "🧠 Meta-Cognitive Analysis"),
         ("adaptive_precision_attention", "🎯 Adaptive Precision & Attention"),
@@ -340,7 +340,7 @@ function run_enhanced_integration_suite(output_dir::String)
     println("🌐 Enhanced Results Access:")
     
     # Check for main dashboard and reports
-    dashboard_path = joinpath(output_dir, "enhanced_visualizations", "dashboard.html")
+    dashboard_path = joinpath(output_dir, "visualizations", "dashboard.html")
     if isfile(dashboard_path)
         println("  • Interactive Dashboard: $dashboard_path")
     end
@@ -506,7 +506,7 @@ function write_analysis_sections(f::IOStream, output_dir::String)
     # Define analysis modules with their descriptions
     modules = [
         ("advanced_analysis", "🔬 Advanced POMDP Analysis", "Information-theoretic measures, convergence analysis, and theoretical bounds"),
-        ("enhanced_visualizations", "🎨 Enhanced Visualizations", "Interactive plots, 3D visualizations, and comprehensive dashboards"),
+        ("visualizations", "🎨 Visualization Suite", "Interactive plots, 3D visualizations, and comprehensive dashboards"),
         ("statistical_analysis", "📊 Statistical Analysis", "Hypothesis testing, Bayesian comparison, and model validation"),
         ("metacognitive_analysis", "🧠 Meta-Cognitive Analysis", "Hierarchical reasoning, meta-awareness, and higher-order beliefs"),
         ("adaptive_precision_attention", "🎯 Adaptive Precision & Attention", "Dynamic precision modulation and attention mechanisms"),
@@ -639,18 +639,18 @@ export run_enhanced_integration_suite
 function main()
     if length(ARGS) >= 1
         output_directory = ARGS[1]
-        println("🚀 Starting Enhanced Integration Suite")
+        println("🚀 Starting Integration Suite")
         println("Output directory: $output_directory")
         
         try
-            run_enhanced_integration_suite(output_directory)
+            run_integration_suite(output_directory)
         catch e
-            @error "Enhanced integration suite failed" exception=e
+            @error "Integration suite failed" exception=e
             exit(1)
         end
     else
-        println("Usage: julia enhanced_integration_suite.jl <output_directory>")
-        println("Example: julia enhanced_integration_suite.jl /path/to/activeinference/output")
+        println("Usage: julia integration_suite.jl <output_directory>")
+        println("Example: julia integration_suite.jl /path/to/activeinference/output")
         exit(1)
     end
 end
@@ -660,4 +660,4 @@ if abspath(PROGRAM_FILE) == @__FILE__
     main()
 end
 
-println("🚀 Enhanced Integration Suite for Maximum POMDP Understanding Loaded Successfully") 
+println("🚀 Integration Suite for Maximum POMDP Understanding Loaded Successfully") 

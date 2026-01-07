@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Enhanced Logging Configuration for GNN Pipeline
+Diagnostic Logging Configuration for GNN Pipeline
 
-This module provides enhanced logging capabilities with correlation IDs,
+This module provides diagnostic logging capabilities with correlation IDs,
 performance tracking, and comprehensive diagnostic information.
 """
 

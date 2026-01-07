@@ -342,18 +342,29 @@ class PyMDPRenderer:
         import numpy as np
         
         # Convert matrices to JSON-serializable format for embedding
+        # Convert matrices to JSON-serializable format for embedding
         def format_matrix_for_code(matrix):
             """Convert matrix to string representation for code embedding."""
             if matrix is None:
                 return "None"
+            
+            # recursive helper to ensure everything is a list or primitive
+            def to_clean_list(obj):
+                if isinstance(obj, (np.ndarray, list, tuple)):
+                    return [to_clean_list(x) for x in obj]
+                if isinstance(obj, (int, float, str, bool, type(None))):
+                    return obj
+                if hasattr(obj, 'tolist'):
+                    return to_clean_list(obj.tolist())
+                return str(obj) # Fallback
+
             try:
-                # Convert to numpy array if not already
-                if not isinstance(matrix, np.ndarray):
-                    matrix = np.array(matrix)
-                # Convert to list and format
-                return json_module.dumps(matrix.tolist())
-            except Exception:
+                # Ensure it's a clean list structure (handles jagged lists naturally)
+                clean_data = to_clean_list(matrix)
+                return json_module.dumps(clean_data)
+            except Exception as e:
                 # Fallback to string representation
+                logger.warning(f"Failed to cleanly format matrix: {e}. using raw dumps.")
                 return json_module.dumps(matrix)
         
         A_matrix_str = format_matrix_for_code(A_matrix)
@@ -405,9 +416,19 @@ import numpy as np
 # Note: The correct package name is 'inferactively-pymdp', not 'pymdp'
 try:
     import pymdp
-    print("✅ PyMDP is available")
+    # Verify it is the CORRECT pymdp (inferactively-pymdp)
+    try:
+        from pymdp.agent import Agent
+        print("✅ PyMDP (inferactively-pymdp) is available")
+    except ImportError:
+        # Check if it might be the flat structure (unlikely for modern, but possible)
+        if hasattr(pymdp, "Agent"):
+             print("✅ PyMDP (flat structure) is available")
+        else:
+             print("⚠️  PyMDP package found, but it appears to be the wrong version (missing Agent).")
+             raise ImportError("Wrong PyMDP package detected")
 except ImportError:
-    print("📦 PyMDP not found - installing inferactively-pymdp...")
+    print("📦 PyMDP not found or wrong version - installing inferactively-pymdp...")
     try:
         # Try UV first (as per project rules)
         result = subprocess.run(

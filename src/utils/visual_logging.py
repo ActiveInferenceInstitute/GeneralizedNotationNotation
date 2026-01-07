@@ -101,15 +101,16 @@ class VisualLogger:
 
         # Setup standard logger
         self.logger = logging.getLogger(name)
-        if not self.logger.handlers:
-            handler = logging.StreamHandler(sys.stdout)
-            formatter = logging.Formatter(
-                '%(asctime)s [%(name)s] %(levelname)s: %(message)s',
-                datefmt='%H:%M:%S'
-            )
-            handler.setFormatter(formatter)
-            self.logger.addHandler(handler)
-            self.logger.setLevel(logging.INFO)
+        # removed automatic handler setup to prevent double logging
+        # if not self.logger.handlers:
+        #     handler = logging.StreamHandler(sys.stdout)
+        #     formatter = logging.Formatter(
+        #         '%(asctime)s [%(name)s] %(levelname)s: %(message)s',
+        #         datefmt='%H:%M:%S'
+        #     )
+        #     handler.setFormatter(formatter)
+        #     self.logger.addHandler(handler)
+        #     self.logger.setLevel(logging.INFO)
 
     def set_correlation_id(self, correlation_id: str):
         """Set correlation ID for tracking across pipeline steps."""

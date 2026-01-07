@@ -49,11 +49,14 @@ def detect_pymdp_installation() -> Dict[str, Any]:
         # Check what's available in the package
         available_attrs = dir(pymdp)
         
-        # Check for correct package indicators
+        # Check for correct package indicators - PRIORITIZE THIS
         # Modern inferactively-pymdp has Agent in pymdp.agent submodule
+        agent_found = False
+        
         if "Agent" in available_attrs or hasattr(pymdp, "Agent"):
             result["has_agent"] = True
             result["correct_package"] = True
+            agent_found = True
             logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent class")
         elif "agent" in available_attrs:
             # Check if pymdp.agent submodule has Agent class
@@ -61,17 +64,24 @@ def detect_pymdp_installation() -> Dict[str, Any]:
                 from pymdp.agent import Agent
                 result["has_agent"] = True
                 result["correct_package"] = True
+                agent_found = True
                 logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule")
             except ImportError:
                 pass
         
-        # Check for wrong package indicators
+        # Check for legacy/wrong package indicators ONLY if Agent was not found
+        # Or just note it as a warning but don't fail if Agent is present
         if "MDP" in available_attrs or "MDPSolver" in available_attrs:
             result["has_mdp_solver"] = True
-            if not result["has_agent"]:
+            
+            if not agent_found:
+                # Only mark as wrong if we DIDN'T find the agent
                 result["wrong_package"] = True
                 logger.warning("Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)")
-        
+            else:
+                # If we found Agent but also MDP, it's weird but usable
+                logger.warning("Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.")
+                
         # If neither Agent nor MDP found, it's unclear
         if not result["has_agent"] and not result["has_mdp_solver"]:
             logger.warning("PyMDP package found but cannot determine variant")

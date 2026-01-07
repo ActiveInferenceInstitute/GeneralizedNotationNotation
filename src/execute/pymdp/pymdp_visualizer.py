@@ -214,6 +214,9 @@ class PyMDPVisualizer:
         if not MATPLOTLIB_AVAILABLE or plt is None:
             return None
         beliefs_array = np.array(beliefs)
+        # Ensure it's 2D (timesteps, states)
+        if beliefs_array.ndim == 1:
+            beliefs_array = beliefs_array.reshape(1, -1)
         num_states = beliefs_array.shape[1]
         
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=self.figsize)
@@ -226,7 +229,10 @@ class PyMDPVisualizer:
         plt.colorbar(im, ax=ax1, label='Belief Probability')
         
         # Plot belief entropy over time
-        entropies = [-np.sum(b * np.log(b + 1e-10)) for b in beliefs]
+        entropies = []
+        for b in beliefs:
+            b_arr = np.asarray(b)
+            entropies.append(-np.sum(b_arr * np.log(b_arr + 1e-10)))
         ax2.plot(entropies, 'o-', color=self.colors['path'], linewidth=2)
         ax2.set_xlabel('Time Step')
         ax2.set_ylabel('Entropy (nats)')
@@ -269,8 +275,9 @@ class PyMDPVisualizer:
             axes[0, 0].grid(True, alpha=0.3)
         
         # Action distribution
-        if 'actions' in metrics:
-            action_counts = np.bincount(metrics['actions'])
+        if 'actions' in metrics and len(metrics['actions']) > 0:
+            actions_arr = np.asarray(metrics['actions'])
+            action_counts = np.bincount(actions_arr.astype(int))
             axes[0, 1].bar(range(len(action_counts)), action_counts, 
                           color=self.colors['visited'], alpha=0.7)
             axes[0, 1].set_xlabel('Action Index')

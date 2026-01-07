@@ -1,11 +1,11 @@
 #!/usr/bin/env julia
 
 """
-Enhanced Analysis Suite for ActiveInference.jl
+Analysis Suite for ActiveInference.jl
 
 This script provides a comprehensive analysis pipeline that integrates:
 - Advanced POMDP analysis (information theory, convergence, bounds)
-- Enhanced visualizations (interactive plots, 3D, networks, animations)
+- visualization suite (interactive plots, 3D, networks, animations)
 - Statistical analysis (hypothesis testing, Bayesian comparison)
 - Multi-format export (MATLAB, R, Python, JSON, LaTeX)
 - Theoretical analysis and model validation
@@ -20,17 +20,17 @@ using Printf
 # Include our analysis modules
 const SCRIPT_DIR = @__DIR__
 include(joinpath(SCRIPT_DIR, "advanced_pomdp_analysis.jl"))
-include(joinpath(SCRIPT_DIR, "enhanced_visualization.jl"))
+include(joinpath(SCRIPT_DIR, "visualization_suite.jl"))
 include(joinpath(SCRIPT_DIR, "statistical_analysis.jl"))
 include(joinpath(SCRIPT_DIR, "export_enhancement.jl"))
 
-"""Run the complete enhanced analysis suite."""
-function run_enhanced_analysis_suite(output_dir::String)
+"""Run the complete analysis suite."""
+function run_analysis_suite(output_dir::String)
     if !isdir(output_dir)
         error("❌ Output directory not found: $output_dir")
     end
     
-    println("🚀 ActiveInference.jl Enhanced Analysis Suite")
+    println("🚀 ActiveInference.jl Analysis Suite")
     println("="^60)
     println("📁 Analyzing data in: $output_dir")
     println("⏰ Started at: $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))")
@@ -63,22 +63,22 @@ function run_enhanced_analysis_suite(output_dir::String)
     println()
     
     # ====================================
-    # STEP 2: ENHANCED VISUALIZATIONS
+    # STEP 2: VISUALIZATION SUITE
     # ====================================
-    println("🎨 STEP 2: Enhanced Visualizations")
+    println("🎨 STEP 2: Visualization Suite")
     println("-"^40)
     
     step_start = now()
     try
-        create_enhanced_visualizations(output_dir)
+        create_visualization_suite(output_dir)
         step_duration = now() - step_start
         status = "✅ COMPLETED"
-        push!(analysis_log, "Enhanced Visualizations: $status ($(step_duration))")
+        push!(analysis_log, "Visualization Suite: $status ($(step_duration))")
     catch e
         step_duration = now() - step_start
         status = "❌ FAILED: $e"
-        push!(analysis_log, "Enhanced Visualizations: $status ($(step_duration))")
-        @warn "Enhanced visualizations failed" exception=e
+        push!(analysis_log, "Visualization Suite: $status ($(step_duration))")
+        @warn "Visualization suite failed" exception=e
     end
     
     println("Status: $status")
@@ -159,7 +159,7 @@ function run_enhanced_analysis_suite(output_dir::String)
     # ====================================
     total_duration = now() - start_time
     
-    println("🎉 ENHANCED ANALYSIS SUITE COMPLETED")
+    println("🎉 ANALYSIS SUITE COMPLETED")
     println("="^60)
     println("⏱️  Total Duration: $total_duration")
     println("📁 Results saved to: $output_dir")
@@ -176,9 +176,9 @@ function run_enhanced_analysis_suite(output_dir::String)
     # Check which directories were created
     output_dirs = [
         ("advanced_analysis", "🔬 Advanced POMDP Analysis"),
-        ("enhanced_visualizations", "🎨 Enhanced Visualizations"),
+        ("visualizations", "🎨 Visualization Suite"),
         ("statistical_analysis", "📊 Statistical Analysis"),
-        ("enhanced_exports", "📦 Multi-Format Exports"),
+        ("exports", "📦 Multi-Format Exports"),
         ("comprehensive_report", "📋 Comprehensive Report")
     ]
     
@@ -195,7 +195,7 @@ function run_enhanced_analysis_suite(output_dir::String)
     println("🌐 View Results:")
     
     # Check for main dashboard
-    dashboard_path = joinpath(output_dir, "enhanced_visualizations", "dashboard.html")
+    dashboard_path = joinpath(output_dir, "visualizations", "dashboard.html")
     if isfile(dashboard_path)
         println("  • Interactive Dashboard: $dashboard_path")
     end
@@ -263,7 +263,7 @@ function collect_analysis_results(output_dir::String)
     end
     
     # Visualization results
-    viz_dir = joinpath(output_dir, "enhanced_visualizations")
+    viz_dir = joinpath(output_dir, "visualizations")
     if isdir(viz_dir)
         results["visualizations"] = Dict(
             "files" => readdir(viz_dir),
@@ -272,7 +272,7 @@ function collect_analysis_results(output_dir::String)
     end
     
     # Export results
-    export_dir = joinpath(output_dir, "enhanced_exports")
+    export_dir = joinpath(output_dir, "exports")
     if isdir(export_dir)
         results["exports"] = Dict(
             "files" => readdir(export_dir),
@@ -370,7 +370,7 @@ function generate_html_report(output_dir::String, results_summary::Dict, analysi
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 ActiveInference.jl Enhanced Analysis Report</h1>
+            <h1>🚀 ActiveInference.jl Analysis Report</h1>
             <p class="timestamp">Generated: $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))</p>
             <p class="timestamp">Analysis Duration: $(now() - start_time)</p>
         </div>
@@ -447,7 +447,7 @@ function generate_html_report(output_dir::String, results_summary::Dict, analysi
             <div class="grid">
                 <div class="card">
                     <h3>📊 Interactive Dashboard</h3>
-                    <p><a href="../enhanced_visualizations/dashboard.html">Open Visualization Dashboard</a></p>
+                    <p><a href="../visualizations/dashboard.html">Open Visualization Dashboard</a></p>
                 </div>
                 <div class="card">
                     <h3>📈 Statistical Reports</h3>
@@ -459,7 +459,7 @@ function generate_html_report(output_dir::String, results_summary::Dict, analysi
                 </div>
                 <div class="card">
                     <h3>📦 Data Exports</h3>
-                    <p><a href="../enhanced_exports/README.md">Export Usage Guide</a></p>
+                    <p><a href="../exports/README.md">Export Usage Guide</a></p>
                 </div>
             </div>
         </div>
@@ -491,7 +491,7 @@ function generate_html_report(output_dir::String, results_summary::Dict, analysi
         </div>
 
         <div class="header">
-            <p><em>Enhanced Analysis Suite for ActiveInference.jl</em></p>
+            <p><em>Analysis Suite for ActiveInference.jl</em></p>
             <p class="timestamp">Maximum POMDP Understanding Achieved ✨</p>
         </div>
     </div>
@@ -505,14 +505,14 @@ end
 """Generate executive summary text."""
 function generate_executive_summary(results_summary::Dict)
     summary = """
-ACTIVEINFERENCE.JL ENHANCED ANALYSIS - EXECUTIVE SUMMARY
+ACTIVEINFERENCE.JL ANALYSIS - EXECUTIVE SUMMARY
 ======================================================
 
 Generated: $(Dates.format(now(), "yyyy-mm-dd HH:MM:SS"))
 
 OVERVIEW
 --------
-The Enhanced Analysis Suite has successfully analyzed the ActiveInference.jl 
+The Analysis Suite has successfully analyzed the ActiveInference.jl 
 simulation results, providing comprehensive insights into POMDP model behavior 
 through advanced mathematical, statistical, and visualization techniques.
 
@@ -533,7 +533,7 @@ KEY CAPABILITIES DELIVERED
 • Convergence Analysis: Belief stability, parameter learning efficiency
 • Statistical Validation: Hypothesis testing, normality checks, model comparison
 • Theoretical Bounds: Sample complexity, computational complexity analysis
-• Enhanced Visualizations: Interactive plots, 3D trajectories, network diagrams
+• Visualization Suite: Interactive plots, 3D trajectories, network diagrams
 • Multi-Format Export: MATLAB, R, Python, JSON, LaTeX compatibility
 • Performance Metrics: Regret analysis, optimality measures, efficiency calculations
 
@@ -562,7 +562,7 @@ and validation. Results are saved in structured directories with clear
 documentation and usage examples.
 
 ---
-Enhanced Analysis Suite for ActiveInference.jl
+Analysis Suite for ActiveInference.jl
 Maximum POMDP Understanding Achieved
 """
     
@@ -571,7 +571,7 @@ end
 
 """Copy key visualizations to report directory."""
 function copy_key_visualizations(output_dir::String, report_dir::String)
-    viz_dir = joinpath(output_dir, "enhanced_visualizations")
+    viz_dir = joinpath(output_dir, "visualizations")
     
     # Key files to copy
     key_files = [
@@ -596,12 +596,14 @@ end
 function main()
     if length(ARGS) > 0
         output_dir = ARGS[1]
-        run_enhanced_analysis_suite(output_dir)
+    if length(ARGS) > 0
+        output_dir = ARGS[1]
+        run_analysis_suite(output_dir)
     else
-        println("Usage: julia enhanced_analysis_suite.jl <output_directory>")
-        println("Example: julia enhanced_analysis_suite.jl activeinference_outputs_YYYY-MM-DD_HH-MM-SS")
+        println("Usage: julia analysis_suite.jl <output_directory>")
+        println("Example: julia analysis_suite.jl activeinference_outputs_YYYY-MM-DD_HH-MM-SS")
         println()
-        println("This will run the complete enhanced analysis suite including:")
+        println("This will run the complete analysis suite including:")
         println("  🔬 Advanced POMDP analysis")
         println("  🎨 Enhanced visualizations")
         println("  📊 Statistical analysis")

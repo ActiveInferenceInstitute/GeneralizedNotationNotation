@@ -445,7 +445,7 @@ class TestErrorReportingAndDiagnostics:
         """Test that diagnostic loggers can be created and used."""
         
         try:
-            from utils.enhanced_logging import create_diagnostic_logger
+            from utils.diagnostic_logging import create_diagnostic_logger
             
             with tempfile.TemporaryDirectory() as temp_dir:
                 logger = create_diagnostic_logger("test_step", Path(temp_dir))

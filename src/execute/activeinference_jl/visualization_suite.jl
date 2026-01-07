@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 
 """
-Enhanced Visualization Module for ActiveInference.jl
+Visualization Suite for ActiveInference.jl
 
 This module provides comprehensive visualization capabilities beyond basic plotting:
 - Interactive time series plots with zoom and pan capabilities
@@ -36,18 +36,19 @@ end
 using Plots
 plotlyjs()  # Use PlotlyJS backend for interactivity
 
-# Initialize enhanced plotting availability
-ENHANCED_PLOTTING_AVAILABLE = false
+# Initialize plotting suite availability
+PLOTTING_SUITE_AVAILABLE = false
 
 try
     using StatsPlots
     using GraphPlot
     using NetworkLayout
     using LightGraphs
-    ENHANCED_PLOTTING_AVAILABLE = true
+    using LightGraphs
+    PLOTTING_SUITE_AVAILABLE = true
 catch
-    @warn "Enhanced plotting packages not available, using basic functionality"
-    ENHANCED_PLOTTING_AVAILABLE = false
+    @warn "Plotting suite packages not available, using basic functionality"
+    PLOTTING_SUITE_AVAILABLE = false
 end
 
 # ====================================
@@ -97,7 +98,7 @@ end
 
 """Create output directory with timestamp."""
 function setup_viz_output_dir(base_dir::String)
-    viz_dir = joinpath(base_dir, "enhanced_visualizations")
+    viz_dir = joinpath(base_dir, "visualizations")
     mkpath(viz_dir)
     
     # Create subdirectories
@@ -299,8 +300,8 @@ function create_transition_network(B_matrix::Array{Float64, 3},
     
     networks_dir = joinpath(output_dir, "networks")
     
-    if !ENHANCED_PLOTTING_AVAILABLE
-        @warn "Enhanced plotting not available, skipping network diagrams"
+    if !PLOTTING_SUITE_AVAILABLE
+        @warn "Plotting suite not available, skipping network diagrams"
         return
     end
     
@@ -752,14 +753,14 @@ function create_belief_animation(beliefs_trace::Matrix{Float64},
 end
 
 # ====================================
-# MAIN ENHANCED VISUALIZATION FUNCTION
+# MAIN VISUALIZATION SUITE FUNCTION
 # ====================================
 
-"""Comprehensive enhanced visualization suite."""
-function create_enhanced_visualizations(output_dir::String)
+"""Comprehensive visualization suite."""
+function create_visualization_suite(output_dir::String)
     viz_dir = setup_viz_output_dir(output_dir)
     
-    println("\n🎨 Enhanced Visualization Suite")
+    println("\n🎨 Visualization Suite")
     println("="^50)
     
     data_traces_dir = joinpath(output_dir, "data_traces")

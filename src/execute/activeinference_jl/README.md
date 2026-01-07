@@ -10,7 +10,7 @@ This module provides comprehensive execution and analysis capabilities for Activ
 
 ### Julia Analysis Suite
 - `activeinference_runner.jl` - Main ActiveInference.jl runner script
-- `enhanced_analysis_suite.jl` - Comprehensive analysis suite
+- `analysis_suite.jl` - Analysis suite
 - `statistical_analysis.jl` - Statistical analysis tools
 - `uncertainty_quantification.jl` - Uncertainty quantification methods
 - `meta_cognitive_analysis.jl` - Meta-cognitive analysis tools
@@ -18,9 +18,9 @@ This module provides comprehensive execution and analysis capabilities for Activ
 - `counterfactual_reasoning.jl` - Counterfactual reasoning analysis
 - `multi_scale_temporal_analysis.jl` - Multi-scale temporal analysis
 - `advanced_pomdp_analysis.jl` - Advanced POMDP analysis
-- `enhanced_visualization.jl` - Visualization utilities
-- `enhanced_integration_suite.jl` - Integration testing suite
-- `export_enhancement.jl` - Enhanced export capabilities
+- `visualization_suite.jl` - Visualization utilities
+- `integration_suite.jl` - Integration testing suite
+- `export_enhancement.jl` - Export capabilities
 - `visualization_utils.jl` - Visualization utility functions
 
 ## ActiveInference.jl Execution Pipeline

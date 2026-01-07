@@ -17,9 +17,9 @@ import importlib
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from utils.enhanced_dependency_manager import get_enhanced_dependency_manager
+    from utils.pipeline_dependencies import get_pipeline_dependency_manager
 except ImportError:
-    print("Warning: Could not import enhanced dependency manager")
+    print("Warning: Could not import pipeline dependency manager")
 
 
 class DependencyInstaller:
@@ -29,7 +29,7 @@ class DependencyInstaller:
         self.use_uv = use_uv
         self.verbose = verbose
         self.logger = self._setup_logging()
-        self.dependency_manager = get_enhanced_dependency_manager()
+        self.dependency_manager = get_pipeline_dependency_manager()
         
         # Define optional dependencies that should be installed to eliminate warnings
         self.install_targets = {

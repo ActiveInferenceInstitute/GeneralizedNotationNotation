@@ -1,12 +1,12 @@
-# ActiveInference.jl Enhanced Analysis Documentation
+# ActiveInference.jl Analysis Documentation
 
-## Maximum POMDP Understanding & Flexibility Framework
+## Analysis Framework
 
-This documentation describes the strategic enhancements implemented to provide maximum POMDP understanding and flexibility in your ActiveInference.jl implementation.
+This documentation describes the analysis modules available in the ActiveInference.jl implementation.
 
 ## Overview
 
-Your ActiveInference.jl implementation has been enhanced with cutting-edge analysis capabilities that go far beyond traditional POMDP analysis. These enhancements provide unprecedented insight into:
+Your ActiveInference.jl implementation includes analysis capabilities for:
 
 1. **Meta-cognitive processes** - How agents think about their own thinking
 2. **Adaptive precision mechanisms** - Dynamic attention and resource allocation
@@ -14,7 +14,7 @@ Your ActiveInference.jl implementation has been enhanced with cutting-edge analy
 4. **Multi-scale temporal understanding** - Hierarchical time reasoning
 5. **Advanced uncertainty quantification** - Epistemic vs aleatoric decomposition
 
-## Strategic Enhancement Modules
+## Analysis Modules
 
 ### 🧠 Meta-Cognitive Analysis Module
 
@@ -201,22 +201,22 @@ mutual_information(joint_dist)
 - Information gain measurements
 - Risk preference characterization
 
-## Enhanced Integration Suite
+## Integration Suite
 
-**File:** `enhanced_integration_suite.jl`
+**File:** `integration_suite.jl`
 
-**Purpose:** Orchestrates all analysis modules in a comprehensive pipeline providing maximum POMDP understanding.
+**Purpose:** Orchestrates all analysis modules in a pipeline.
 
 **Usage:**
 ```bash
-julia enhanced_integration_suite.jl /path/to/output/directory
+julia integration_suite.jl /path/to/output/directory
 ```
 
 **Integration Features:**
-- **Phased execution** with existing and new analysis modules
-- **Comprehensive error handling** and progress tracking
-- **Enhanced reporting** with HTML and Markdown summaries
-- **Cross-module integration** combining insights from different analyses
+- **Phased execution** with analysis modules
+- **Error handling** and progress tracking
+- **Reporting** with HTML and Markdown summaries
+- **Cross-module integration**
 - **Multi-format export** for research integration
 
 ## Usage Examples
@@ -245,11 +245,11 @@ include("uncertainty_quantification.jl")
 results = comprehensive_uncertainty_analysis("/path/to/output")
 ```
 
-### Running Complete Enhanced Suite
+### Running Complete Suite
 
 ```julia
-include("enhanced_integration_suite.jl")
-analysis_log = run_enhanced_integration_suite("/path/to/output")
+include("integration_suite.jl")
+analysis_log = run_integration_suite("/path/to/output")
 ```
 
 ### Working with Analysis Results
@@ -424,6 +424,6 @@ When using these enhanced analysis capabilities, please cite:
 
 ## Conclusion
 
-This enhanced ActiveInference.jl implementation provides unprecedented insight into POMDP reasoning processes through comprehensive analysis of meta-cognitive, temporal, uncertainty, and counterfactual aspects of agent behavior. The modular design allows for flexible research applications while the integrated suite provides maximum understanding of complex cognitive processes.
+This ActiveInference.jl implementation provides insight into POMDP reasoning processes through analysis of meta-cognitive, temporal, uncertainty, and counterfactual aspects of agent behavior. The modular design allows for flexible research applications while the integrated suite provides understanding of complex cognitive processes.
 
-The framework bridges theoretical active inference with practical computational analysis, enabling researchers to explore the deepest aspects of how intelligent agents reason, plan, and adapt in uncertain environments. 
+The framework bridges theoretical active inference with practical computational analysis, enabling researchers to explore how intelligent agents reason, plan, and adapt in uncertain environments. 

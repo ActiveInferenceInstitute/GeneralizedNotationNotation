@@ -2,7 +2,7 @@
 
 ## Overview
 
-Successfully integrated comprehensive D2 (Declarative Diagramming) visualization capabilities into the GNN Pipeline's advanced visualization module (step 9). This implementation provides professional diagram generation for Active Inference models, pipeline architecture, and framework integrations.
+Successfully integrated D2 (Declarative Diagramming) visualization capabilities into the GNN Pipeline's visualization module (step 9). This implementation provides diagram generation for Active Inference models, pipeline architecture, and framework integrations.
 
 ## Files Created/Modified
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Enhanced Dependency Manager for GNN Pipeline
+Pipeline Dependency Manager for GNN Pipeline
 
 This module provides comprehensive dependency management and graceful degradation
 for pipeline steps when dependencies are missing or incompatible.
@@ -35,15 +35,20 @@ class StepDependencyInfo:
     validators: Dict[str, Callable] = field(default_factory=dict)
 
 
-class EnhancedDependencyManager:
+
+class PipelineDependencyManager:
     """
-    Enhanced dependency manager with graceful degradation support.
+    Pipeline dependency manager with graceful degradation support.
     """
     
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.dependency_cache = {}
         self.step_configs = self._initialize_step_configs()
+
+# ... (omitting middle lines for brevity in thought process, but tool needs exact match. 
+# Actually, replace_file_content needs exact match. I should use multi_replace for this file since changes are scattered.)
+
         
     def _initialize_step_configs(self) -> Dict[str, StepDependencyInfo]:
         """Initialize dependency configurations for each pipeline step."""
@@ -358,8 +363,8 @@ class EnhancedDependencyManager:
         return installation_results
 
 
-def get_enhanced_dependency_manager() -> EnhancedDependencyManager:
-    """Get singleton instance of enhanced dependency manager."""
-    if not hasattr(get_enhanced_dependency_manager, '_instance'):
-        get_enhanced_dependency_manager._instance = EnhancedDependencyManager()
-    return get_enhanced_dependency_manager._instance
+def get_pipeline_dependency_manager() -> PipelineDependencyManager:
+    """Get singleton instance of pipeline dependency manager."""
+    if not hasattr(get_pipeline_dependency_manager, '_instance'):
+        get_pipeline_dependency_manager._instance = PipelineDependencyManager()
+    return get_pipeline_dependency_manager._instance

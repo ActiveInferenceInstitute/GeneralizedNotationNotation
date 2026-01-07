@@ -18,7 +18,7 @@ from datetime import datetime
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
-    from utils.enhanced_dependency_manager import get_enhanced_dependency_manager
+    from utils.pipeline_dependencies import get_pipeline_dependency_manager
     from utils.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
     from utils.pipeline import get_output_dir_for_script
 except ImportError as e:
@@ -31,7 +31,7 @@ class PipelineValidator:
     def __init__(self, verbose: bool = True):
         self.verbose = verbose
         self.logger = self._setup_logging()
-        self.dependency_manager = get_enhanced_dependency_manager()
+        self.dependency_manager = get_pipeline_dependency_manager()
         self.validation_results = {}
         
     def _setup_logging(self) -> logging.Logger:
@@ -92,13 +92,13 @@ class PipelineValidator:
                 else:
                     self.logger.warning("⚠️ Julia matrix fix not applied")
             
-            # Test enhanced dependency manager
-            dep_manager_path = Path("src/utils/enhanced_dependency_manager.py")
+            # Test pipeline dependency manager
+            dep_manager_path = Path("src/utils/pipeline_dependencies.py")
             if dep_manager_path.exists():
                 fixes_validation["dependency_handling"] = True
-                self.logger.info("✅ Enhanced dependency manager created")
+                self.logger.info("✅ Pipeline dependency manager created")
             else:
-                self.logger.warning("⚠️ Enhanced dependency manager missing")
+                self.logger.warning("⚠️ Pipeline dependency manager missing")
             
         except Exception as e:
             self.logger.error(f"❌ Error validating code generation fixes: {e}")
