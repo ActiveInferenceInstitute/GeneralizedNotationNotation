@@ -38,6 +38,15 @@ from .validator import (
     get_pymdp_health_status
 )
 
+# Import package detection functions
+from .package_detector import (
+    detect_pymdp_installation,
+    is_correct_pymdp_package,
+    get_pymdp_installation_instructions,
+    attempt_pymdp_auto_install,
+    validate_pymdp_for_execution
+)
+
 # Import context functions
 from .context import (
     create_enhanced_pymdp_context
@@ -55,6 +64,13 @@ __all__ = [
     # Validation functions
     'validate_pymdp_environment',
     'get_pymdp_health_status',
+    
+    # Package detection functions
+    'detect_pymdp_installation',
+    'is_correct_pymdp_package',
+    'get_pymdp_installation_instructions',
+    'attempt_pymdp_auto_install',
+    'validate_pymdp_for_execution',
     
     # Context functions
     'create_enhanced_pymdp_context',

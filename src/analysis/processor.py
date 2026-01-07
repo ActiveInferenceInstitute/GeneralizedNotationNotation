@@ -27,6 +27,77 @@ from .analyzer import (
     visualize_simulation_results,
 )
 
+
+def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str, Any]:
+    """
+    Aggregate results from multiple simulations.
+    
+    Args:
+        results_list: List of simulation result dictionaries
+        
+    Returns:
+        Aggregated results dictionary
+    """
+    aggregated = {
+        "count": len(results_list),
+        "metrics": {},
+        "frameworks_used": set()
+    }
+    
+    # Extract common metrics
+    metrics_to_gather = ["execution_time", "free_energy_final", "steps_completed"]
+    
+    for res in results_list:
+        if "framework" in res:
+            aggregated["frameworks_used"].add(res["framework"])
+            
+        for metric in metrics_to_gather:
+            if metric not in aggregated["metrics"]:
+                aggregated["metrics"][metric] = []
+            
+            if metric in res:
+                aggregated["metrics"][metric].append(res[metric])
+            elif "metrics" in res and metric in res["metrics"]:
+                aggregated["metrics"][metric].append(res["metrics"][metric])
+                
+    # Convert sets to lists
+    aggregated["frameworks_used"] = list(aggregated["frameworks_used"])
+    
+    return aggregated
+
+
+def generate_summary_statistics(aggregated_data: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Generate summary statistics from aggregated data.
+    
+    Args:
+        aggregated_data: Aggregated data dictionary
+        
+    Returns:
+        Dictionary with statistical summaries (mean, std, min, max)
+    """
+    stats = {}
+    
+    for metric, values in aggregated_data.get("metrics", {}).items():
+        if not values:
+            continue
+            
+        # Filter out None values
+        valid_values = [v for v in values if v is not None and isinstance(v, (int, float))]
+        
+        if not valid_values:
+            continue
+            
+        stats[metric] = {
+            "mean": float(np.mean(valid_values)),
+            "std": float(np.std(valid_values)),
+            "min": float(np.min(valid_values)),
+            "max": float(np.max(valid_values)),
+            "count": len(valid_values)
+        }
+        
+    return stats
+
 def process_analysis(
     target_dir: Path,
     output_dir: Path,
@@ -141,6 +212,13 @@ def process_analysis(
                             })
                             
                             logger.info(f"Post-simulation analysis completed for {model_name}")
+                            
+                    # Aggregate results and generate statistics
+                    if results.get("post_simulation_analysis"):
+                        aggregated = aggregate_simulation_results(results["post_simulation_analysis"])
+                        stats = generate_summary_statistics(aggregated)
+                        results["overall_statistics"] = stats
+                        logger.info("Generated overall summary statistics")
                     
                     # Also try to load execution summary for visualization
                     execution_summary_file = execution_results_dir / "execution_summary.json"

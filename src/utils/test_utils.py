@@ -519,12 +519,14 @@ s[3,1,type=int]
 ## Connections
 s -> o
 """,
-        "simple_model": """# Simple Active Inference Model
+        "simple_model": """## GNNVersionAndFlags
+Version: 1.0.0
 
-## Model Metadata
-- **Name**: Simple Active Inference Model
-- **Version**: 1.0.0
-- **Description**: A basic active inference model for testing
+## ModelName
+Simple Active Inference Model
+
+## Description
+A basic active inference model for testing
 
 ## State Space
 - **States**: [s1, s2, s3]
@@ -560,12 +562,14 @@ s -> o
 - **Control**: Active Inference
 """,
         
-        "complex_model": """# Complex Active Inference Model
+        "complex_model": """## GNNVersionAndFlags
+Version: 2.0.0
 
-## Model Metadata
-- **Name**: Complex Active Inference Model
-- **Version**: 2.0.0
-- **Description**: A complex active inference model with multiple modalities
+## ModelName
+Complex Active Inference Model
+
+## Description
+A complex active inference model with multiple modalities
 
 ## State Space
 - **Visual States**: [v1, v2, v3, v4, v5]
@@ -608,12 +612,14 @@ s -> o
 - **Control**: Hierarchical Active Inference
 """,
         
-        "minimal_model": """# Minimal Active Inference Model
+        "minimal_model": """## GNNVersionAndFlags
+Version: 0.1.0
 
-## Model Metadata
-- **Name**: Minimal Model
-- **Version**: 0.1.0
-- **Description**: Minimal active inference model
+## ModelName
+Minimal Model
+
+## Description
+Minimal active inference model
 
 ## State Space
 - **States**: [s1]

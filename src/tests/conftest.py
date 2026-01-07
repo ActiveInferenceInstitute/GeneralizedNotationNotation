@@ -138,12 +138,10 @@ def pytest_sessionstart(session):
         output_dir = project_root / "output"
         # Expected artifacts used by functionality tests
         expected_paths = [
-            output_dir / "gnn_processing_step/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
-            output_dir / "type_check/type_check_results.json",
-            output_dir / "gnn_exports/actinf_pomdp_agent",
-            output_dir / "visualization/actinf_pomdp_agent",
-            output_dir / "execution_results/execution_results.json",
-            output_dir / "audio_processing_step/audio_results",
+            output_dir / "3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+            output_dir / "5_type_checker_output/type_check_results.json",
+            output_dir / "7_export_output/actinf_pomdp_agent",
+            output_dir / "8_visualization_output/visualization_results/actinf_pomdp_agent",
         ]
 
         if not all(p.exists() for p in expected_paths):
@@ -371,16 +369,16 @@ def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
     content = """
 # Test GNN Model
 
-## Model Name
+## ModelName
 test_model
 
-## State Space
+## StateSpaceBlock
 s[3,1,type=int]
 
 ## Connections
 s -> o
 
-## Parameters
+## InitialParameterization
 A = [[0.5, 0.3, 0.2]]
 """
     

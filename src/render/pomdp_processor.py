@@ -41,7 +41,7 @@ class POMDPRenderProcessor:
         # Framework-specific configurations
         self.framework_configs = {
             'pymdp': {
-                'output_subdir': 'pymdp',
+                'output_subdir': 'pymdp_gen',
                 'file_extension': '.py',
                 'requires_matrices': ['A', 'B', 'C', 'D'],
                 'optional_matrices': ['E'],

@@ -9,6 +9,12 @@ import logging
 from typing import Dict, Any, Optional
 from pathlib import Path
 
+from .package_detector import (
+    detect_pymdp_installation,
+    get_pymdp_installation_instructions,
+    is_correct_pymdp_package
+)
+
 logger = logging.getLogger(__name__)
 
 def validate_pymdp_environment() -> Dict[str, Any]:
@@ -26,29 +32,61 @@ def validate_pymdp_environment() -> Dict[str, Any]:
         "recommendations": []
     }
     
-    # Check PyMDP availability
-    try:
-        import pymdp
+    # Check PyMDP availability using package detector
+    detection = detect_pymdp_installation()
+    
+    if detection.get("correct_package"):
         validation_results["pymdp_available"] = True
         validation_results["dependencies"]["pymdp"] = {
             "available": True,
-            "version": getattr(pymdp, "__version__", "unknown")
+            "version": detection.get("version", "unknown"),
+            "package_name": "inferactively-pymdp",
+            "correct_variant": True
         }
-        logger.info(f"PyMDP available: version {validation_results['dependencies']['pymdp']['version']}")
-    except ImportError as e:
+        logger.info(f"PyMDP (inferactively-pymdp) available: version {detection.get('version', 'unknown')}")
+    elif detection.get("wrong_package"):
         validation_results["pymdp_available"] = False
         validation_results["dependencies"]["pymdp"] = {
             "available": False,
-            "error": str(e)
+            "error": "Wrong PyMDP package variant installed",
+            "wrong_variant": True,
+            "has_mdp_solver": detection.get("has_mdp_solver", False)
         }
+        instructions = get_pymdp_installation_instructions()
+        validation_results["errors"].append(instructions)
         validation_results["errors"].append(
-            "PyMDP framework not available - this is expected if PyMDP is not installed. "
-            "To enable PyMDP: install via pip (pip install pymdp) or uv (uv pip install pymdp). "
             "Alternative frameworks still available: RxInfer.jl, ActiveInference.jl, JAX, DisCoPy."
         )
         logger.error(
+            "Wrong PyMDP package detected - install inferactively-pymdp instead. "
+            f"Instructions: {instructions}"
+        )
+    elif detection.get("installed"):
+        # Package installed but variant unclear
+        validation_results["pymdp_available"] = False
+        validation_results["dependencies"]["pymdp"] = {
+            "available": False,
+            "error": "PyMDP package variant unclear",
+            "version": detection.get("version", "unknown")
+        }
+        instructions = get_pymdp_installation_instructions()
+        validation_results["warnings"].append(instructions)
+        logger.warning(f"PyMDP package status unclear: {instructions}")
+    else:
+        # Not installed
+        validation_results["pymdp_available"] = False
+        validation_results["dependencies"]["pymdp"] = {
+            "available": False,
+            "error": detection.get("error", "PyMDP not installed")
+        }
+        instructions = get_pymdp_installation_instructions()
+        validation_results["errors"].append(instructions)
+        validation_results["errors"].append(
+            "Alternative frameworks still available: RxInfer.jl, ActiveInference.jl, JAX, DisCoPy."
+        )
+        logger.info(
             "PyMDP not available for execution - using fallback analysis. "
-            "Install PyMDP if you want to run PyMDP-based simulations: pip install pymdp"
+            f"Install with: {instructions}"
         )
     
     # Check numpy availability
@@ -98,8 +136,17 @@ def validate_pymdp_environment() -> Dict[str, Any]:
         validation_results["overall_health"] = "healthy"
         validation_results["recommendations"].append("Environment ready for PyMDP simulations")
     else:
-        validation_results["overall_health"] = "unhealthy"
-        validation_results["recommendations"].append("Install PyMDP to enable simulations")
+        pymdp_dep = validation_results["dependencies"].get("pymdp", {})
+        if pymdp_dep.get("wrong_variant"):
+            validation_results["overall_health"] = "unhealthy"
+            validation_results["recommendations"].append(
+                "Uninstall wrong PyMDP package and install inferactively-pymdp"
+            )
+        else:
+            validation_results["overall_health"] = "unhealthy"
+            validation_results["recommendations"].append(
+                "Install inferactively-pymdp to enable PyMDP simulations"
+            )
     
     return validation_results
 

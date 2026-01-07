@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 
 ---
 
@@ -371,7 +371,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 
 ---
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.0.0

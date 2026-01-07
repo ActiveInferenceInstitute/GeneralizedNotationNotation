@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T06:32:06.678543",
+  "timestamp": "2026-01-07T11:31:30.764076",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -633,7 +633,7 @@
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-01-07T06:32:06.681411"
+      "analysis_timestamp": "2026-01-07T11:31:30.768509"
     }
   ],
   "complexity_metrics": [
@@ -645,7 +645,7 @@
       "structural_complexity": 21.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.2,
-      "analysis_timestamp": "2026-01-07T06:32:06.682952"
+      "analysis_timestamp": "2026-01-07T11:31:30.770607"
     }
   ],
   "performance_benchmarks": [
@@ -656,7 +656,7 @@
       "memory_usage": 423.6,
       "complexity_score": 72,
       "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-01-07T06:32:06.684484"
+      "benchmark_timestamp": "2026-01-07T11:31:30.772252"
     }
   ],
   "model_comparisons": [],
@@ -671,26 +671,12 @@
       "has_comparison": true
     }
   ],
+  "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-01-07T06:32:06.688271",
+    "timestamp": "2026-01-07T11:31:30.776633",
     "frameworks": {
-      "pymdp": {
-        "success_count": 1,
-        "total_count": 1,
-        "execution_times": [],
-        "output_files": [
-          "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log"
-        ],
-        "implementation_dirs": [
-          "output/12_execute_output/actinf_pomdp_agent/pymdp"
-        ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": []
-      },
       "jax": {
-        "success_count": 0,
+        "success_count": 1,
         "total_count": 1,
         "execution_times": [],
         "output_files": [
@@ -713,6 +699,21 @@
         ],
         "implementation_dirs": [
           "output/12_execute_output/actinf_pomdp_agent/discopy"
+        ],
+        "beliefs": [],
+        "actions": [],
+        "observations": [],
+        "free_energy": []
+      },
+      "pymdp_gen": {
+        "success_count": 0,
+        "total_count": 1,
+        "execution_times": [],
+        "output_files": [
+          "output/12_execute_output/actinf_pomdp_agent/pymdp_gen/execution_logs/Classic Active Inference POMDP Agent v1_pymdp.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/12_execute_output/actinf_pomdp_agent/pymdp_gen"
         ],
         "beliefs": [],
         "actions": [],
@@ -752,9 +753,9 @@
     },
     "comparisons": {
       "success_rates": {
-        "pymdp": 1.0,
-        "jax": 0.0,
+        "jax": 1.0,
         "discopy": 1.0,
+        "pymdp_gen": 0.0,
         "rxinfer": 1.0,
         "activeinference_jl": 1.0
       },

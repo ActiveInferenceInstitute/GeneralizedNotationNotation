@@ -413,7 +413,7 @@ def run_pymdp_scripts(
     
     # Find all PyMDP scripts - look directly in the PyMDP subdirectory
     base_path = Path(rendered_simulators_dir)
-    pymdp_dir = base_path / "pymdp"
+    pymdp_dir = base_path / "pymdp_gen"
     
     if not pymdp_dir.exists():
         logger.info(f"PyMDP directory not found: {pymdp_dir}")

@@ -1,28 +1,22 @@
 # EXPLAIN_MODEL
 
-Based on the documentation, I have a comprehensive explanation of the Active Inference POMDP agent and its components:
+Based on the doc's description, I'll provide a comprehensive explanation of GNNs for Active Inference models:
 
-1. **Model Purpose**: This is about how to represent this POMDP agent that can learn from an unbounded time horizon with planning horizon and no precision modulation. Specifically, it represents the agent's goal as "go ahead and explore" - action 0 = learning new state in next observation (observable), action 1 = exploring new state in previous observation (hidden) and actions 2-4 are actions that can be taken from policy, exploration, or planning based on prior probability. It also includes an initial policy prior with preferences of LQE as inferred via the hidden states and Actions are learned using GNN.
+1. **Definition**: This model represents a classic Active Inference agent used to learn from probability distributions with two observation modalities (`observation_outcomes` and `hidden_states`) with an initial policy (`habit`) based on action choices (`actions`). It learns through the following steps:
+- The agent maps each observed state and actions onto new hidden states. Each time, it updates its prior over these shared observations and biases in probability distributions over actions to predict future ones.
 
-2. **Core Components**: This model represents the input space (states), output space (actions/hidden state distributions) and parameters (num_observation, num_action1). Each component is represented by a dictionary entry that maps to its corresponding action or policy transition based on the current state. There are no explicit computations within these components but they can be described using the following key relationships:
-   - **Action selection**: Actions(state=0) and actions(state=4)=ActionsSelectionModel(action, probability = True),
-   - **Observation**: Observations with observed = action == Action[1] then action is learned from policy.
-   - **Learning**: The algorithm learns to select next observation based on the probabilities of each state in previous states for each sequence of actions taken (actions selected) and explored among observations as input parameters,
-   - **Planning**: Planning model involves learning from policies chosen by actions selected but it has no explicit computations within these models.
-3. **Model Dynamics**: This is about how to implement Active Inference principles using GNN: 
-   - **Initialization**: Initialization of learned state variables (s[n]), observed states, and learned policy probabilities are established based on the current time horizon and prior probability distribution over actions selected.
-   - **Learning**: The algorithm learns to select next observation by learning from previous observations as inputs for each sequence of policies taken with actions chosen and explored among observations in output space.
+2. **Model Purpose**: This model represents a class of Active Inference POMDP agents that learn to infer the probability distribution of each observation based on their associated state transitions (`states`) and action choices (`actions`). It uses Variational Free Energy (VFE) as its goal, with initial policies acting as actions.
 
-4. **Active Inference Context**: This is about how to learn Active Inference principles using GNN: 
-   - **Initialization**: Initializing learned state variables (s[n]) based on a learning process implemented as an agent interface,
-   - **Learning**: The algorithm learns to select next observation by updating observed and observable states in output space based on prior probabilities of actions taken.
+3. **Core Components**: The models represent:
+   - `hidden_state`: The probability distribution over states for each of the observed states in the agent's set-up; it encodes both belief and action biases during inference.
+   - `observations`: A 2D numpy array representing the observations, which capture a sequence of random actions taken by the agent. These actions are mapped onto the hidden states for later learning based on the probability distribution over actions across observed states.
+   - `actions**: A list of sequences that represent an action chosen from each of the available actions (action choices) to be learned from by the agent, with a corresponding reward and return state whenever they're chosen. These are initialized in sequence order according to their action choice probabilities (`pi_c0`), allowing for inference based on initial beliefs without prior knowledge or predictions about future outcomes given actions choices.
+   - `states`: A 2D numpy array representing the sequence of observed states, with each step being a state transition followed by subsequent actions chosen from available actions (action choices). These are initialized in sequence order according to their action choices (`actions`), allowing for inference based on current beliefs before they're updated towards new learned probability distributions.
 
-5. **Practical Implications**: This is about how to learn from Active Inference principles using GNN:
-  - **Action Selection**: Actions selection model can learn the learning context (observable state) or policy parameters for each action selected as input through its initial policy distribution, where a change in policy will involve a corresponding change of actions. 
+4. **Active Inference Context**: The POMDP agent learns by sequentially updating its beliefs over the entire history of observed states and actions, until there's no longer an incentive to continue learning. During this process:
+   - The `belief_updates` function is used to update a belief from prior probabilities across all observed states (`π[states]`) based on posterior probability distributions within each observation (actions) for that state (`σ[state][action]) and then backout towards the beginning of the history, choosing actions after initial beliefs are updated.
+   - The `belief_update` function is used to update an action's belief into a new observable under the assumption it will be later chosen from subsequent observations (`u`) as the agent learns through action choices across observed states (policy posterior).
 
-  - **Planning**: The algorithm learns to select next observation based on learned policies and explored sequences using PolicyOptimization from PolicyGraphs.
+5. **Active Inference**: When predictions converge towards uncertain actions, the hypothesis of future actions and beliefs are updated using Bayesian inference to update our beliefs about future actions and biases based on probabilities within each observable space (`σ[observation][action])`), allowing for active inference through prediction updates after initial belief updates back out once more observations are observed in a given observation.
 
-6. **Decision**: This is about how to learn from Active Inference principles using GNN:
-  - **Initializing Policy**: Initialized learning parameters are initialized as initial policy distribution for each action selected, where the new value of actions[k] would be used as a policy transition when given new state[n]. For instance, for actions(h) = next states=0 and h={{1}}. This is also shown by actions([action]) = {{2},{4}], 3-step sequence where action(s)=[1] are observed and visited from previous observation to observe new state[n+1].
-
-Please summarize the key points in your response.
+Please provide more details or context specific to your question, such as the types of actions used (actions taken by the agent) and where action choices were made across available actions when using Bayesian inference methods, if applicable.

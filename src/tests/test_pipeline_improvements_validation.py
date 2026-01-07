@@ -329,11 +329,13 @@ class TestDependencyValidationImprovements:
             pymdp_deps = validator.dependencies["pymdp"]
             dep_names = [dep.name for dep in pymdp_deps]
             
-            # Should include PyMDP dependency
-            assert "pymdp" in dep_names
+            # Should include PyMDP dependency (package name is inferactively-pymdp)
+            # Check for either 'pymdp' or 'inferactively-pymdp' in dep names
+            has_pymdp = any("pymdp" in name.lower() for name in dep_names)
+            assert has_pymdp, f"Expected pymdp dependency, got: {dep_names}"
             
             # PyMDP should be optional
-            pymdp_dep = next(dep for dep in pymdp_deps if dep.name == "pymdp")
+            pymdp_dep = next(dep for dep in pymdp_deps if "pymdp" in dep.name.lower())
             assert pymdp_dep.is_optional
             
         except ImportError:

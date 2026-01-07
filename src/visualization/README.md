@@ -39,6 +39,86 @@ graph TD
     Interactive --> Output[HTML/Images]
 ```
 
+### Visualization Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFile[GNN Files]
+        Processor[processor.py]
+        Parser[parse_gnn_content]
+    end
+    
+    subgraph "Data Extraction"
+        MatrixExtract[parse_matrix_data]
+        NetworkExtract[Network Data Extraction]
+        GraphExtract[Graph Data Extraction]
+    end
+    
+    subgraph "Visualization Components"
+        MatrixViz[MatrixVisualizer]
+        GraphViz[GNNVisualizer]
+        NetworkViz[Network Visualizer]
+        OntologyViz[OntologyVisualizer]
+    end
+    
+    subgraph "Output Generation"
+        MatrixOut[Matrix Heatmaps]
+        GraphOut[Graph Diagrams]
+        NetworkOut[Network Topology]
+        CombinedOut[Combined Analysis]
+    end
+    
+    GNNFile --> Processor
+    Processor --> Parser
+    Parser --> MatrixExtract
+    Parser --> NetworkExtract
+    Parser --> GraphExtract
+    
+    MatrixExtract --> MatrixViz
+    NetworkExtract --> NetworkViz
+    GraphExtract --> GraphViz
+    Parser --> OntologyViz
+    
+    MatrixViz --> MatrixOut
+    GraphViz --> GraphOut
+    NetworkViz --> NetworkOut
+    MatrixViz --> CombinedOut
+    GraphViz --> CombinedOut
+    NetworkViz --> CombinedOut
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 8"
+        Step8[8_visualization.py Orchestrator]
+    end
+    
+    subgraph "Visualization Module"
+        Processor[processor.py]
+        MatrixViz[matrix_visualizer.py]
+        GraphViz[visualizer.py]
+        NetworkViz[network_visualizer.py]
+    end
+    
+    subgraph "Downstream Steps"
+        Step9[Step 9: Advanced Viz]
+        Step16[Step 16: Analysis]
+        Step20[Step 20: Website]
+    end
+    
+    Step8 --> Processor
+    Processor --> MatrixViz
+    Processor --> GraphViz
+    Processor --> NetworkViz
+    
+    Processor -->|Visualizations| Step9
+    Processor -->|Visualization Data| Step16
+    Processor -->|Visualization Assets| Step20
+```
+
 ## Core Components
 
 ### Visualization Functions

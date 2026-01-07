@@ -289,7 +289,7 @@ python output/pymdp/fast_agent.py
 ```python
 # output/pymdp/simple_agent.py
 import numpy as np
-from pymdp.agent import Agent
+from pymdp import Agent
 from pymdp import utils
 
 # A matrix (observations given states)

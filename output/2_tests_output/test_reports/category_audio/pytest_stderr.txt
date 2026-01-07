@@ -1,4 +1,0 @@
-/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
-  self._warn("No data was collected.", slug="no-data-collected")
-/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
-  self._warn("No data was collected.", slug="no-data-collected")

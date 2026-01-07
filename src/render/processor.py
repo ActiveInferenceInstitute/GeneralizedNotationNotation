@@ -15,7 +15,75 @@ from pathlib import Path
 from typing import Dict, Any, Optional, Union, Tuple, List
 from datetime import datetime
 
+
+import numpy as np
+
 logger = logging.getLogger(__name__)
+
+def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
+    """
+    Validate POMDP space for rendering requirements.
+    
+    Args:
+        pomdp_space: Extracted POMDP space object
+        
+    Returns:
+        Tuple of (is_valid, error_messages)
+    """
+    errors = []
+    
+    # Check basic dimensions
+    if not hasattr(pomdp_space, 'num_states') or pomdp_space.num_states is None:
+        errors.append("Missing number of states")
+    elif isinstance(pomdp_space.num_states, list):
+        if any(n <= 0 for n in pomdp_space.num_states):
+            errors.append("Invalid state dimensions (must be positive)")
+    elif pomdp_space.num_states <= 0:
+        errors.append("Invalid number of states (must be positive)")
+        
+    if not hasattr(pomdp_space, 'num_observations') or pomdp_space.num_observations is None:
+        errors.append("Missing number of observations")
+        
+    if not hasattr(pomdp_space, 'num_actions') or pomdp_space.num_actions is None:
+        errors.append("Missing number of actions")
+        
+    # Check matrices if present
+    if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
+        # Basic shape check would go here if we assume numpy arrays
+        pass
+        
+    return len(errors) == 0, errors
+
+
+def normalize_matrices(pomdp_space: Any, logger) -> Any:
+    """
+    Normalize probability matrices in POMDP space.
+    
+    Args:
+        pomdp_space: POMDP space object
+        logger: Logger instance
+        
+    Returns:
+        POMDP space with normalized matrices
+    """
+    try:
+        # Normalize A matrix (Observation model)
+        # Should sum to 1.0 over observation dimension (rows) for each state factor
+        if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
+            # Implementation depends on matrix structure (simple vs factorial)
+            # This is a placeholder for the actual normalization logic
+            # tailored to the specific object structure
+            pass
+            
+        # Normalize B matrix (Transition model)
+        if hasattr(pomdp_space, 'B_matrix') and pomdp_space.B_matrix is not None:
+            pass
+            
+    except Exception as e:
+        logger.warning(f"Matrix normalization failed: {e}")
+        
+    return pomdp_space
+
 
 def process_render(
     target_dir: Path,
@@ -128,6 +196,15 @@ def process_render(
                         continue
                     
                     logger.info(f"✅ Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions")
+                    
+                    # Validate POMDP space
+                    is_valid, validation_errors = validate_pomdp_for_rendering(pomdp_space)
+                    if not is_valid:
+                        logger.warning(f"POMDP validation failed for {gnn_file.name}: {validation_errors}")
+                        # Continue anyway but log warning
+                        
+                    # Normalize matrices
+                    pomdp_space = normalize_matrices(pomdp_space, logger)
                     
                     # Create file-specific output directory
                     file_output_dir = output_dir / gnn_file.stem

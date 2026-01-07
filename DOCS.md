@@ -1,5 +1,7 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
+**Last Updated**: 2026-01-07
+
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
 ## What is GNN?
@@ -127,8 +129,9 @@ flowchart TD
   O17 --> O18[output/18_security_output/]
   O18 --> O19[output/19_research_output/]
   O19 --> O20[output/20_website_output/]
-  O20 --> O21[output/23_report_output/]
-  O21 --> O22[output/21_mcp_output/]
+  O20 --> O21[output/21_mcp_output/]
+  O21 --> O22[output/22_gui_output/]
+  O22 --> O23[output/23_report_output/]
 ```
 
 ## Module Interaction Map

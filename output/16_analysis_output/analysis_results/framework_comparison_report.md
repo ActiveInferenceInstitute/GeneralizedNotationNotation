@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-01-07T06:32:06.688271
+Generated: 2026-01-07T11:31:30.776633
 
 ## Summary
 
@@ -11,19 +11,19 @@ Generated: 2026-01-07T06:32:06.688271
 
 ## Framework Details
 
-### PYMDP
-
-- Success Rate: 100.0% (1/1)
-- Execution Times: 0 recorded
-
 ### JAX
 
-- Success Rate: 0.0% (0/1)
+- Success Rate: 100.0% (1/1)
 - Execution Times: 0 recorded
 
 ### DISCOPY
 
 - Success Rate: 100.0% (1/1)
+- Execution Times: 0 recorded
+
+### PYMDP_GEN
+
+- Success Rate: 0.0% (0/1)
 - Execution Times: 0 recorded
 
 ### RXINFER

@@ -117,14 +117,14 @@ if os.getenv("SKIP_TESTS_IN_PIPELINE"):
 **Solution**:
 ```bash
 # Install missing PyMDP sub-modules with uv
-uv pip install pymdp[full]  # or
+uv pip install inferactively-pymdp  # or
 uv pip install git+https://github.com/infer-actively/pymdp.git
 
 # Install JAX with Flax
 uv pip install jax[cpu] flax optax
 
 # Verify installation
-python3 -c "from pymdp.agent import Agent; print('PyMDP OK')"
+python3 -c "from pymdp import Agent; print('PyMDP OK')"
 python3 -c "import flax.linen; print('Flax OK')"
 ```
 
@@ -147,7 +147,7 @@ python src/1_setup.py --install_optional --optional_groups "all"
 **Frameworks**:
 - ✅ DisCoPy: No additional install (included)
 - ✅ ActiveInference.jl: Auto-installs via Julia
-- ⚠️ PyMDP: Requires `uv pip install pymdp[full]`
+- ⚠️ PyMDP: Requires `uv pip install inferactively-pymdp`
 - ⚠️ JAX: Requires `uv pip install jax[cpu] flax`
 - ⚠️ RxInfer.jl: Requires model generation fix (see above)
 ```
@@ -284,7 +284,7 @@ def detect_framework_availability():
 
 def check_pymdp_available():
     try:
-        from pymdp.agent import Agent
+        from pymdp import Agent
         return True
     except ImportError:
         return False
@@ -320,7 +320,7 @@ python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 ### Individual Framework Install
 ```bash
 # PyMDP
-uv pip install pymdp[full]
+uv pip install inferactively-pymdp
 
 # JAX + Flax
 uv pip install jax[cpu] flax optax
@@ -458,7 +458,7 @@ time python src/main.py
 ### Test #3: Optional Dependencies
 ```bash
 # Install optional frameworks with uv
-uv pip install pymdp[full] jax[cpu] flax
+uv pip install inferactively-pymdp jax[cpu] flax
 
 # Run execution step
 python src/12_execute.py --frameworks "all"

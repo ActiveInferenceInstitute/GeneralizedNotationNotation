@@ -410,10 +410,10 @@ def process_llm(
 
                             # Log progress
                             logger.info(f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}")
-                            
-                            # Get max prompt timeout from kwargs
-                            max_prompt_timeout = kwargs.get('max_prompt_timeout', 120)
-                            
+
+                            # Get max prompt timeout from kwargs - default to 300s (5m) to allow for provider fallbacks
+                            max_prompt_timeout = kwargs.get('max_prompt_timeout', 300)
+
                             # Run generation with simple timeout handling
                             def _run_prompt():
                                 async def _inner():

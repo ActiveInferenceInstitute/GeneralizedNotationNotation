@@ -489,12 +489,12 @@ class TestStep11LLMComprehensive:
         except Exception as e:
             logging.warning(f"Description generation test failed: {e}")
 
-class TestStep12AudioComprehensive:
-    """Comprehensive tests for Step 12: Website Generation."""
+class TestStep20WebsiteComprehensive:
+    """Comprehensive tests for Step 20: Website Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step12_audio_generation(self, isolated_temp_dir):
+    def test_step20_website_generation(self, isolated_temp_dir):
         """Test website generation functionality."""
         from src.website import generate_website, generate_html_report
         # Test website generation
@@ -512,18 +512,29 @@ class TestStep12AudioComprehensive:
         except Exception as e:
             logging.warning(f"HTML report creation test failed: {e}")
 
-class TestStep13WebsiteComprehensive:
-    """Comprehensive tests for Step 13: SAPF Audio Generation."""
+class TestStep15AudioComprehensive:
+    """Comprehensive tests for Step 15: SAPF Audio Generation."""
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step13_website_generation(self, sample_gnn_files, isolated_temp_dir):
+    def test_step15_audio_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test SAPF audio generation."""
         try:
-            from src.audio.sapf.generator import generate_wav_from_sapf
+            from src.audio.sapf.audio_generators import generate_oscillator_audio, SyntheticAudioGenerator
+            
+            # Test oscillator generation directly
+            audio_data = generate_oscillator_audio(440.0, 0.5, 1.0)
+            assert len(audio_data) > 0
+            
+            # Test generator class
+            generator = SyntheticAudioGenerator()
             audio_path = isolated_temp_dir / "test_audio.wav"
-            generate_wav_from_sapf("tempo=120; scale=C_major; notes=C4,D4,E4", audio_path)
+            # Simple SAPF code for testing
+            sapf_code = "440.0 = base_freq" 
+            success = generator.generate_from_sapf(sapf_code, audio_path, duration=1.0)
+            assert success
             assert audio_path.exists()
+            
         except Exception as e:
             pytest.skip(f"SAPF audio backend unavailable: {e}")
 

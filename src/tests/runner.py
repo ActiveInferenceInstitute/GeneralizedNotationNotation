@@ -287,6 +287,15 @@ MODULAR_TEST_CATEGORIES = {
         "max_failures": 8,
         "parallel": True
     },
+    "gui": {
+        "name": "GUI Module Tests",
+        "description": "GUI functionality and widget tests",
+        "files": ["test_gui_overall.py", "test_gui_functionality.py"],
+        "markers": [],
+        "timeout_seconds": 90,
+        "max_failures": 6,
+        "parallel": True
+    },
     "comprehensive": {
         "name": "Comprehensive API Tests",
         "description": "Comprehensive API and integration tests",

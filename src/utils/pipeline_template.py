@@ -106,11 +106,11 @@ def create_standard_pipeline_script(
             if target_dir_raw is None:
                 # Set default based on step type
                 if step_name == "11_render.py":
-                    # Step 9 should process exports from step 5 by default
-                    target_dir = Path('output/gnn_exports/gnn_exports')
+                    # Step 11 usually processes GNN files directly
+                    target_dir = Path('input/gnn_files')
                 elif step_name == "12_execute.py":
-                    # Step 10 should process rendered simulators from step 9 by default
-                    target_dir = Path('output/gnn_rendered_simulators')
+                    # Step 12 processes rendered simulators from step 11 by default
+                    target_dir = Path('output/11_render_output')
                 else:
                     # Default for other steps
                     target_dir = Path('input/gnn_files')
@@ -439,11 +439,11 @@ def create_standardized_pipeline_script(
             if target_dir_raw is None:
                 # Set default based on step type
                 if step_name == "11_render.py":
-                    # Step 9 should process exports from step 5 by default
-                    target_dir = Path('output/gnn_exports/gnn_exports')
+                    # Step 11 usually processes GNN files directly
+                    target_dir = Path('input/gnn_files')
                 elif step_name == "12_execute.py":
-                    # Step 10 should process rendered simulators from step 9 by default
-                    target_dir = Path('output/gnn_rendered_simulators')
+                    # Step 12 processes rendered simulators from step 11 by default
+                    target_dir = Path('output/11_render_output')
                 else:
                     # Default for other steps
                     target_dir = Path('input/gnn_files')
@@ -527,42 +527,51 @@ CommonModuleParams = {
 
 # Standardized naming conventions for module functions
 STANDARD_MODULE_FUNCTION_NAMES = {
-    "1_gnn": "process_gnn_files",
-    "2_setup": "perform_setup", 
-    "3_tests": "run_tests",
-    "4_type_checker": "process_type_checking",
-    "5_export": "process_export",
-    "6_visualization": "process_visualization", 
-    "7_mcp": "process_mcp_operations",
-    "8_ontology": "process_ontology_operations",
-    "9_render": "process_rendering",
-    "10_execute": "process_execution",
-    "11_llm": "process_llm_analysis",
-    "12_website": "process_website_generation",
-    "13_website": "process_website_generation",
-"14_report": "process_report_generation"
+    "1_setup": "process_setup",
+    "2_tests": "run_tests",
+    "3_gnn": "process_gnn_files",
+    "4_model_registry": "process_model_registry",
+    "5_type_checker": "process_type_checking",
+    "6_validation": "process_validation",
+    "7_export": "process_export",
+    "8_visualization": "process_visualization",
+    "9_advanced_viz": "process_advanced_viz",
+    "10_ontology": "process_ontology",
+    "11_render": "process_render",
+    "12_execute": "process_execute",
+    "13_llm": "process_llm",
+    "14_ml_integration": "process_ml_integration",
+    "15_audio": "process_audio",
+    "16_analysis": "process_analysis",
+    "17_integration": "process_integration",
+    "18_security": "process_security",
+    "19_research": "process_research",
+    "20_website": "process_website",
+    "21_mcp": "process_mcp",
+    "22_gui": "process_gui",
+    "23_report": "process_report"
 }
 
 # Standard additional arguments for each step
 STEP_ADDITIONAL_ARGUMENTS = {
-    "4_type_checker": {
+    "5_type_checker": {
         "strict": {"type": bool, "help": "Enable strict validation mode"},
         "estimate_resources": {"type": bool, "help": "Estimate computational resources"}
     },
-    "11_llm": {
+    "13_llm": {
         "llm_tasks": {"type": str, "default": "all", "help": "Comma-separated list of LLM tasks"},
         "llm_timeout": {"type": int, "default": 360, "help": "Timeout for LLM operations in seconds"}
     },
-    "13_website": {
+    "20_website": {
         "website_html_filename": {"type": str, "default": "gnn_pipeline_summary_website.html", "help": "Filename for generated HTML website"}
     },
-    "14_report": {
+    "23_report": {
         # No additional arguments for report generation
     },
-    "8_ontology": {
+    "10_ontology": {
         "ontology_terms_file": {"type": Path, "help": "Path to ontology terms JSON file", "flag": "--ontology-terms-file"}
     },
-    "2_setup": {
+    "1_setup": {
         "recreate_venv": {"type": bool, "help": "Recreate virtual environment"},
         "dev": {"type": bool, "help": "Install development dependencies"}
     },
@@ -575,4 +584,4 @@ STEP_ADDITIONAL_ARGUMENTS = {
             "flag": "--performance-mode"
         }
     }
-} 
+}

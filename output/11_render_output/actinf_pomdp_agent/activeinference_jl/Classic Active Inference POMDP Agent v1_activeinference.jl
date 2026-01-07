@@ -14,7 +14,7 @@ This model describes a classic Active Inference agent for a discrete POMDP:
 Model Dimensions:
 - States: 3
 - Observations: 3  
-- Actions: 1
+- Actions: 3
 """
 
 # Ensure required packages are installed
@@ -48,7 +48,7 @@ const SCRIPT_VERSION = "1.0.0"
 const MODEL_NAME = "Classic Active Inference POMDP Agent v1"
 const N_STATES = 3
 const N_OBSERVATIONS = 3
-const N_CONTROLS = 1
+const N_CONTROLS = 3
 const POLICY_LENGTH = 1
 
 println("="^70)

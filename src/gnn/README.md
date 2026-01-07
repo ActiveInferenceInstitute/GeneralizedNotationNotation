@@ -50,6 +50,156 @@ graph TD
     end
 ```
 
+### Format Conversion Architecture
+
+```mermaid
+graph LR
+    subgraph "Input Formats"
+        MD[Markdown]
+        JSON_IN[JSON]
+        XML_IN[XML]
+        YAML_IN[YAML]
+    end
+    
+    subgraph "Unified Parser"
+        Parser[GNNParsingSystem]
+        IR[Internal Representation]
+    end
+    
+    subgraph "Format Serializers"
+        Serializer[Format Serializers]
+    end
+    
+    subgraph "Output Formats"
+        SCALA[Scala]
+        LEAN[Lean]
+        COQ[Coq]
+        PYTHON[Python]
+        HASKELL[Haskell]
+        PROTOBUF[Protobuf]
+        XSD[XSD]
+        ASN1[ASN.1]
+        OTHERS[18+ More Formats]
+    end
+    
+    MD --> Parser
+    JSON_IN --> Parser
+    XML_IN --> Parser
+    YAML_IN --> Parser
+    
+    Parser --> IR
+    IR --> Serializer
+    
+    Serializer --> SCALA
+    Serializer --> LEAN
+    Serializer --> COQ
+    Serializer --> PYTHON
+    Serializer --> HASKELL
+    Serializer --> PROTOBUF
+    Serializer --> XSD
+    Serializer --> ASN1
+    Serializer --> OTHERS
+```
+
+### Parser Architecture
+
+```mermaid
+graph TB
+    subgraph "Parser Registry"
+        Registry[GNNParsingSystem]
+    end
+    
+    subgraph "Format Parsers"
+        MarkdownP[Markdown Parser]
+        JSONP[JSON Parser]
+        XMLP[XML Parser]
+        YAMLP[YAML Parser]
+        SchemaP[Schema Parsers]
+        GrammarP[Grammar Parsers]
+        BinaryP[Binary Parser]
+    end
+    
+    subgraph "Format Serializers"
+        MarkdownS[Markdown Serializer]
+        JSONS[JSON Serializer]
+        XMLS[XML Serializer]
+        YAMLS[YAML Serializer]
+        ScalaS[Scala Serializer]
+        LeanS[Lean Serializer]
+        CoqS[Coq Serializer]
+        PythonS[Python Serializer]
+        OthersS[18+ More Serializers]
+    end
+    
+    subgraph "Validation"
+        SchemaV[Schema Validator]
+        CrossV[Cross-Format Validator]
+        RoundTrip[Round-Trip Tester]
+    end
+    
+    Registry --> MarkdownP
+    Registry --> JSONP
+    Registry --> XMLP
+    Registry --> YAMLP
+    Registry --> SchemaP
+    Registry --> GrammarP
+    Registry --> BinaryP
+    
+    MarkdownP --> SchemaV
+    JSONP --> SchemaV
+    XMLP --> SchemaV
+    
+    SchemaV --> CrossV
+    CrossV --> RoundTrip
+    
+    Registry --> MarkdownS
+    Registry --> JSONS
+    Registry --> XMLS
+    Registry --> YAMLS
+    Registry --> ScalaS
+    Registry --> LeanS
+    Registry --> CoqS
+    Registry --> PythonS
+    Registry --> OthersS
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 3"
+        Step3[3_gnn.py Orchestrator]
+    end
+    
+    subgraph "GNN Module"
+        MultiFormat[multi_format_processor.py]
+        Processor[processor.py]
+        Parser[parser.py]
+        ParsingSystem[parsers/GNNParsingSystem]
+    end
+    
+    subgraph "Downstream Steps"
+        Step5[Step 5: Type Checker]
+        Step6[Step 6: Validation]
+        Step7[Step 7: Export]
+        Step8[Step 8: Visualization]
+        Step10[Step 10: Ontology]
+        Step11[Step 11: Render]
+    end
+    
+    Step3 --> MultiFormat
+    MultiFormat --> Processor
+    MultiFormat --> ParsingSystem
+    Processor --> Parser
+    
+    MultiFormat -->|Parsed Models| Step5
+    MultiFormat -->|Parsed Models| Step6
+    MultiFormat -->|Parsed Models| Step7
+    MultiFormat -->|Parsed Models| Step8
+    MultiFormat -->|Parsed Models| Step10
+    MultiFormat -->|Parsed Models| Step11
+```
+
 ## Module Structure
 
 ```

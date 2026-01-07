@@ -1,3 +1,0 @@
-Category: model_registry
-Success: True
-Duration: 0.00s

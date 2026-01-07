@@ -6,49 +6,71 @@ Prompt:
 
 Response:
 
-This section contains the signature for the Advanced Neural Network (ANN) version of Active Inference POMDP agent model. The signature is described in more detail below:
+A:  
 ```python
-@staticmethod @classmethod
-def BaseClass(base_classes=[]):
-    super().__init__()
+import numpy as np
+from scipy import stats
+def gNN(state_observation):
+    states = state_observation[:,:-1]
+    actions = state_observation[:num_hidden_states], state_observation[num_hidden_states:]
+    
+    # Actions and their probabilities
+    probability_actions=stats.pois("Probabilities over actions:")
+    
+ 
+    hidden_probabilities=[
+        [
+            (state_observation) 
+            .shape([n,1]) 
+        ]
+      , 
+ 
+       ([
+         {
+           "probs":
+             [ 
+                states[0:num_hidden_states],
+                state_observation[:num_hidden_states]
+                
+              ],
+              probes={"prop:", probabilities}
+     ])
+    )
+ 
+    
+    # Hidden and observed actions
+    hidden_actions=[
+        {
+            "probabilities":
+                   [{
+                     "idx":
+                         :,
+                  ","
+               },
+                       {"state":
+                             [
+                                 states[0:n],
+                             state_observation[:num]
+                 ]
+              ],
+                probes={"prop:", probabilities}
+     ])
+ 
+    
+    # Probability of a new observation and its hidden actions
+    prev_action = states[:, 1:-2, :] 
+    action=" " + ", ".join(states[:-1])
 
-    class Action(BaseA):
-        pass
+    # Random choice on the previous state (in case you want to choose one more time)
+    next_state=[]
+    for i in range(num_hidden_states):
+        if np.random.randint(low=0).astype('int'):
+            next_state.append((i, states[1:2**i]))
 
-        def __init__(self, state=None, actions=np.empty((len(state),)), *args):
-            BaseA.__init__(*args)
-
-            self._actions = actions[:]
-
-    class Policy(BaseA):
-        pass
-
-        def __init__(self):
-           super().__init__()
-
-   def initialize_hidden_states(*args):
-     def forward(x: np.ndarray, x2: np.ndarray)=
-      state=x[len([i for i in range(num_hidden_states)]),0]
-
-                 # Initialize hidden states
-                   # = prev_history+prev_obs
-           self._actions,_next=_infer_histo()
-             # Forward pass
-                  #  # forward step
-       self.forward: callable
-      def return_state(*args):
-          state=x[len([i for i in range(num_hidden_states)]),0]
-
-                 # Backward pass
-                   # backward step
-           #   ----------------------------------------
-              if isinstance(prev_,np.ndarray) and
-                  is_supervised('Forward'):
-                    self._forward = (base_classes$nextstep)(x, x2, *args)
-                else: 
-                    self._forward = base_classes$currentframe(*x**3)**0
-                    
-        @staticmethod
-    return policy
+        # Set the previous state to be a random index (in case you want to choose one more time)
+    hidden_actions[:] = [[", ".join([states[next_index]]) for i in range(num_hidden_states)]],
+     """{"prop:", probabilities}"""
+ 
+    
+    return [], [action]
 ```
-The signature defines the action, state and hidden states of the POMDP agent. The `__init__` method is used to initialize all parameters after activation.

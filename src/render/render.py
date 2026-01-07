@@ -20,7 +20,7 @@ try:
 except ImportError as e:
     logging.warning(
         f"PyMDP renderer not available - this is normal if PyMDP is not installed. "
-        f"Details: {e}. To enable PyMDP rendering: pip install pymdp. "
+        f"Details: {e}. To enable PyMDP rendering: uv pip install inferactively-pymdp. "
         f"Alternative frameworks available: RxInfer.jl, ActiveInference.jl, DisCoPy, JAX."
     )
     render_gnn_to_pymdp = None
@@ -70,112 +70,7 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 
-def render_gnn_spec(
-    gnn_spec: Dict[str, Any],
-    target: str,
-    output_directory: Union[str, Path],
-    options: Optional[Dict[str, Any]] = None
-) -> Tuple[bool, str, List[str]]:
-    """
-    Render a GNN specification to a target format.
-    
-    Args:
-        gnn_spec: Dictionary containing the GNN specification
-        target: Target platform ("pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", etc.)
-        output_directory: Directory for output files
-        options: Additional options for the renderer
-        
-    Returns:
-        Tuple of (success flag, message, list of artifact URIs)
-    """
-    output_directory = Path(output_directory) if isinstance(output_directory, str) else output_directory
-    options = options or {}
-    
-    # Create output directory if it doesn't exist
-    output_directory.mkdir(parents=True, exist_ok=True)
-    
-    if target.lower() == "pymdp":
-        if not PYMDP_AVAILABLE or render_gnn_to_pymdp is None:
-            return False, (
-                "PyMDP renderer not available. "
-                "To enable: pip install pymdp. "
-                "Try alternative frameworks: rxinfer, activeinference_jl, discopy, or jax."
-            ), []
-        # Render to PyMDP
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_pymdp.py"
-        return render_gnn_to_pymdp(gnn_spec, script_path, options)
-        
-    elif target.lower() == "rxinfer_toml":
-        if not RXINFER_AVAILABLE or render_gnn_to_rxinfer_toml is None:
-            return False, "RxInfer renderer not available", []
-        # Render to RxInfer TOML config
-        model_name = gnn_spec.get("name", "model")
-        config_path = output_directory / f"{model_name}_config.toml"
-        return render_gnn_to_rxinfer_toml(gnn_spec, config_path, options)
-        
-    elif target.lower() == "discopy":
-        if not DISCOPY_AVAILABLE or render_gnn_to_discopy is None:
-            return False, "DisCoPy renderer not available", []
-        # Render to DisCoPy categorical diagram
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_discopy.py"
-        return render_gnn_to_discopy(gnn_spec, script_path, options)
-        
-    elif target.lower() == "discopy_jax":
-        if not DISCOPY_AVAILABLE or render_gnn_to_discopy_jax is None:
-            return False, "DisCoPy JAX renderer not available", []
-        # Render to DisCoPy matrix diagram with JAX evaluation
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_discopy_jax.py"
-        return render_gnn_to_discopy_jax(gnn_spec, script_path, options)
-        
-    elif target.lower() == "discopy_combined":
-        if not DISCOPY_AVAILABLE:
-            return False, "DisCoPy renderer not available", []
-        # Render to both DisCoPy diagram and JAX evaluation
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_discopy_combined.py"
-        
-        # Use the combined renderer from discopy module
-        try:
-            from .discopy.discopy_renderer import render_gnn_to_discopy_combined
-            return render_gnn_to_discopy_combined(gnn_spec, script_path, options)
-        except ImportError:
-            return False, "DisCoPy combined renderer not available", []
-        
-    elif target.lower() == "activeinference_jl":
-        if not ACTIVEINFERENCE_JL_AVAILABLE or render_gnn_to_activeinference_jl is None:
-            return False, "ActiveInference.jl renderer not available", []
-        # Render to ActiveInference.jl script
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_activeinference.jl"
-        return render_gnn_to_activeinference_jl(gnn_spec, script_path, options)
-        
-    elif target.lower() == "activeinference_combined":
-        if not ACTIVEINFERENCE_JL_AVAILABLE or render_gnn_to_activeinference_combined is None:
-            return False, "ActiveInference.jl combined renderer not available", []
-        # Render to multiple ActiveInference.jl scripts with analysis suite
-        return render_gnn_to_activeinference_combined(gnn_spec, output_directory, options)
-        
-    elif target == "jax":
-        if not JAX_AVAILABLE or render_gnn_to_jax is None:
-            return False, "JAX renderer not available", []
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_jax.py"
-        return render_gnn_to_jax(gnn_spec, script_path, options)
-        
-    elif target == "jax_pomdp":
-        if not JAX_AVAILABLE or render_gnn_to_jax_pomdp is None:
-            return False, "JAX POMDP renderer not available", []
-        model_name = gnn_spec.get("name", "model")
-        script_path = output_directory / f"{model_name}_jax_pomdp.py"
-        return render_gnn_to_jax_pomdp(gnn_spec, script_path, options)
-        
-    else:
-        error_msg = f"Unsupported target platform: {target}"
-        logger.error(error_msg)
-        return False, error_msg, []
+from .processor import render_gnn_spec
 
 def main(cli_args=None):
     """Command-line entry point for the renderer."""

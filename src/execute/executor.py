@@ -493,7 +493,7 @@ def execute_rendered_simulators(
                     logger.info("🚀 Executing PyMDP scripts...")
                     
                     # Use target_dir to find rendered simulators
-                    pymdp_dir = target_dir / "pymdp"
+                    pymdp_dir = target_dir / "pymdp_gen"
                     
                     # Pre-validate PyMDP scripts for syntax errors
                     if pymdp_dir.exists():
@@ -540,7 +540,7 @@ def execute_rendered_simulators(
                 log_step_warning(logger, f"PyMDP script execution failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ PyMDP framework not available - skipping PyMDP execution (install with: pip install pymdp)")
+            logger.info("ℹ️ PyMDP framework not available - skipping PyMDP execution (install with: uv pip install inferactively-pymdp)")
             execution_results["pymdp_executions"].append({
                 "status": "SKIPPED",
                 "message": "PyMDP framework not installed (optional dependency)",

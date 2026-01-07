@@ -99,7 +99,7 @@ class TestErrorRecoveryFramework:
             operation="Module Loading",
             message="Required module not found",
             details={"module": "pymdp", "available": False},
-            suggestions=["Install with: pip install pymdp"]
+            suggestions=["Install with: uv pip install inferactively-pymdp"]
         )
         
         assert "[E001]" in message

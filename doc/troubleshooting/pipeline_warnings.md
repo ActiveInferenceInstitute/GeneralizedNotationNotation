@@ -57,18 +57,18 @@ warnings.filterwarnings('ignore', category=UserWarning, module='matplotlib')
 ##### PyMDP Failure
 **Error Message**: `ModuleNotFoundError: No module named 'pymdp.agent'`
 
-**Root Cause**: PyMDP base package installed without full modules
+**Root Cause**: Wrong PyMDP package installed or package not installed
 
 **Solution**:
 ```bash
-# Install full PyMDP package with uv
-uv pip install pymdp[full]
+# Install correct PyMDP package (inferactively-pymdp) with uv
+uv pip install inferactively-pymdp
 
 # Or install from source
 uv pip install git+https://github.com/infer-actively/pymdp.git
 
-# Verify installation
-python3 -c "from pymdp.agent import Agent; print('✅ PyMDP OK')"
+# Verify installation using modern API
+python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"
 ```
 
 ##### JAX/Flax Failure
@@ -109,7 +109,7 @@ python src/12_execute.py --frameworks "rxinfer"
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 
 # Or install everything with uv
-uv pip install pymdp[full] jax[cpu] flax optax
+uv pip install inferactively-pymdp jax[cpu] flax optax
 ```
 
 #### Framework Availability Check
@@ -286,7 +286,7 @@ cat output/[STEP_NUMBER]_*_output/*.json | python3 -m json.tool
 ```bash
 # Test each framework
 python3 -c "import discopy; print('✅ DisCoPy')"
-python3 -c "from pymdp.agent import Agent; print('✅ PyMDP')"
+python3 -c "from pymdp import Agent; print('✅ PyMDP')"
 python3 -c "import jax; import flax.linen; print('✅ JAX')"
 julia -e 'using ActiveInference; println("✅ ActiveInference.jl")'
 julia -e 'using RxInfer; println("✅ RxInfer.jl")'

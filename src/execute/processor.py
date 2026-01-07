@@ -11,6 +11,7 @@ import logging
 import subprocess
 import json
 import os
+import sys
 import stat
 from datetime import datetime
 from shutil import copy2
@@ -23,13 +24,50 @@ try:
         log_step_error,
         log_step_warning
     )
-except Exception:
+    from utils.logging_utils import PipelineLogger
+except ImportError:
+    # Use fallback if imports fail
+    PipelineLogger = None
     def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
     def log_step_success(logger, msg): logger.info(f"✅ {msg}")
     def log_step_error(logger, msg): logger.error(f"❌ {msg}")
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
 
 logger = logging.getLogger(__name__)
+
+
+
+def check_julia_dependencies(verbose: bool, logger) -> bool:
+    """
+    Check if required Julia packages are available.
+    
+    Args:
+        verbose: Enable verbose logging
+        logger: Logger instance
+        
+    Returns:
+        True if dependencies ok, False otherwise
+    """
+    try:
+        # check basic julia availability
+        subprocess.run(['julia', '--version'], capture_output=True, check=True)
+        
+        # Check for key packages
+        check_script = 'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
+        result = subprocess.run(
+            ['julia', '-e', check_script],
+            capture_output=True,
+            text=True
+        )
+        
+        if result.returncode != 0:
+            if verbose:
+                logger.warning(f"Julia package check failed: {result.stderr}")
+            return False
+            
+        return True
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        return False
 
 
 def determine_script_framework(script_path: Path, render_output_dir: Path, framework_dirs: Dict[str, str]) -> str:
@@ -265,7 +303,7 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
     
     # Define supported script types and their executors
     script_types = {
-        '*.py': {'executor': 'python3', 'framework': 'python'},
+        '*.py': {'executor': sys.executable, 'framework': 'python'},
         '*.jl': {'executor': 'julia', 'framework': 'julia'},
     }
 
@@ -356,6 +394,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
     }
     
     try:
+
         if verbose:
             logger.info(f"Executing {script_info['framework']} script: {script_info['name']}")
         
@@ -370,8 +409,29 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                              text=True,
                              timeout=5,
                              check=True)
-            # For Julia scripts, check if julia is available
+                             
+                # For PyMDP, specifically check if it's importable
+                if framework == "pymdp":
+                    try:
+                        import_check = subprocess.run(
+                            [executor, '-c', 'import pymdp; print("ok")'],
+                            capture_output=True,
+                            text=True,
+                            timeout=5
+                        )
+                        if import_check.returncode != 0:
+                            logger.warning(f"PyMDP package appears missing or broken: {import_check.stderr}")
+                            exec_result['error'] = f"PyMDP dependency missing: {import_check.stderr}"
+                            # Continue anyway as it might be a local import, but log warning
+                    except Exception:
+                        pass
+                        
+            # For Julia scripts, check availability and dependencies
             elif executor == 'julia':
+                if not check_julia_dependencies(verbose, logger):
+                    logger.warning("Julia dependencies (RxInfer/ActiveInference) may be missing")
+                    # Don't fail here, let the script try to run, but log warning
+                    
                 subprocess.run([executor, '--version'],
                              capture_output=True,
                              text=True,
@@ -393,12 +453,18 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         script_name = script_path.name
         result = None
         try:
+            # Set environment variables if needed
+            env = os.environ.copy()
+            if framework == "pymdp":
+                env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
+                
             result = subprocess.run(
                 [executor, script_name],
                 capture_output=True,
                 text=True,
-                timeout=60,  # Reduced timeout for better responsiveness
-                cwd=script_path.parent  # Run in the script's directory
+                timeout=300,  # Increased timeout to 5 minutes for complex simulations
+                cwd=script_path.parent,  # Run in the script's directory
+                env=env
             )
 
             end_time = datetime.now()
@@ -414,18 +480,29 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                     logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
             else:
                 exec_result['error'] = f"Script failed with return code {result.returncode}"
+                
+                # Analyze stderr for common errors
+                if "ModuleNotFoundError" in result.stderr:
+                    exec_result['error_type'] = "DependencyError"
+                    logger.error(f"Missing dependency in {script_info['name']}: {result.stderr.splitlines()[-1]}")
+                elif "SyntaxError" in result.stderr:
+                    exec_result['error_type'] = "SyntaxError"
+                    logger.error(f"Syntax error in {script_info['name']}")
+                else:
+                    exec_result['error_type'] = "RuntimeError"
+                    
                 logger.warning(f"⚠️ Script {script_info['name']} failed with return code {result.returncode}")
                 if result.stderr:
-                    logger.warning(f"Error output: {result.stderr[:200]}...")  # Show first 200 chars
+                    logger.warning(f"Error output: {result.stderr[:500]}...")  # Show first 500 chars
 
         except subprocess.TimeoutExpired:
             end_time = datetime.now()
             exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution timed out after 60 seconds"
+            exec_result['error'] = f"Script execution timed out after 300 seconds"
             exec_result['return_code'] = -1
             exec_result['stdout'] = ""
             exec_result['stderr'] = "Timeout"
-            logger.warning(f"⏰ Script {script_info['name']} timed out after 60 seconds")
+            logger.warning(f"⏰ Script {script_info['name']} timed out after 300 seconds")
             # Create dummy result for consistency
             class DummyResult:
                 returncode = -1
@@ -601,6 +678,73 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
     return exec_result
 
 
+def _normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Path]:
+    """
+    Normalize paths and remove duplicates/nested paths.
+    
+    Args:
+        found_files: List of file paths to normalize
+        logger: Logger instance for logging
+        
+    Returns:
+        Deduplicated list of normalized paths
+    """
+    if not found_files:
+        return []
+    
+    # Resolve all paths to absolute and remove duplicates
+    normalized = {}
+    for file_path in found_files:
+        try:
+            abs_path = file_path.resolve()
+            # Use absolute path as key to detect duplicates
+            if abs_path not in normalized:
+                normalized[abs_path] = file_path
+        except (OSError, RuntimeError) as e:
+            logger.debug(f"Skipping invalid path {file_path}: {e}")
+            continue
+    
+    # Filter out nested paths (if file in subdir is already found in parent)
+    # Sort by path depth (shallow first) to process parent directories first
+    sorted_paths = sorted(normalized.values(), key=lambda p: len(p.parts))
+    deduplicated = []
+    seen_names = set()
+    
+    for file_path in sorted_paths:
+        file_name = file_path.name
+        file_parent = file_path.parent
+        
+        # Check if we've already seen this filename from a parent directory
+        # This prevents collecting files from nested visualizations/visualizations/ directories
+        is_nested_duplicate = False
+        for seen_path in deduplicated:
+            seen_parent = seen_path.parent
+            # Check if current file is in a nested subdirectory of an already-seen file
+            try:
+                if file_parent.is_relative_to(seen_parent) and file_name == seen_path.name:
+                    is_nested_duplicate = True
+                    logger.debug(f"Skipping nested duplicate: {file_path} (already have {seen_path})")
+                    break
+            except (ValueError, AttributeError):
+                # Python < 3.9 doesn't have is_relative_to, use string comparison
+                try:
+                    if str(file_parent).startswith(str(seen_parent)) and file_name == seen_path.name:
+                        is_nested_duplicate = True
+                        logger.debug(f"Skipping nested duplicate: {file_path} (already have {seen_path})")
+                        break
+                except Exception:
+                    pass
+        
+        if not is_nested_duplicate:
+            deduplicated.append(file_path)
+            seen_names.add(file_name)
+    
+    if len(found_files) != len(deduplicated):
+        logger.info(f"Deduplicated paths: {len(found_files)} → {len(deduplicated)} files")
+    
+    return deduplicated
+
+
 def collect_execution_outputs(
     script_path: Path,
     output_dir: Path,
@@ -650,11 +794,24 @@ def collect_execution_outputs(
                 found_files.extend(discopy_dir.rglob("*.json"))
         elif framework == "activeinference_jl":
             # ActiveInference.jl saves to activeinference_outputs_*/
+            # Use specific directory patterns to avoid nested visualizations/ directories
             for output_dir in script_dir.glob("activeinference_outputs_*"):
                 if output_dir.is_dir():
-                    found_files.extend(output_dir.rglob("*.png"))
-                    found_files.extend(output_dir.rglob("*.json"))
-                    found_files.extend(output_dir.rglob("*.csv"))
+                    # Look directly in visualizations/ directory (not recursively)
+                    viz_dir = output_dir / "visualizations"
+                    if viz_dir.exists() and viz_dir.is_dir():
+                        found_files.extend(viz_dir.glob("*.png"))
+                        found_files.extend(viz_dir.glob("*.svg"))
+                    # Look in simulation_data/ directory
+                    sim_data_dir = output_dir / "simulation_data"
+                    if sim_data_dir.exists() and sim_data_dir.is_dir():
+                        found_files.extend(sim_data_dir.glob("*.json"))
+                        found_files.extend(sim_data_dir.glob("*.csv"))
+                    # Look in free_energy_traces/ directory
+                    traces_dir = output_dir / "free_energy_traces"
+                    if traces_dir.exists() and traces_dir.is_dir():
+                        found_files.extend(traces_dir.glob("*.json"))
+                        found_files.extend(traces_dir.glob("*.csv"))
         elif framework == "rxinfer":
             # RxInfer saves to rxinfer_outputs/
             rxinfer_dir = script_dir / "rxinfer_outputs"
@@ -677,8 +834,11 @@ def collect_execution_outputs(
             found_files.extend(script_dir.rglob("*.pkl"))
             found_files.extend(script_dir.rglob("*.csv"))
         
-        # Remove duplicates and filter out the script itself
-        found_files = list(set([f for f in found_files if f != script_path and f.exists()]))
+        # Filter out the script itself and non-existent files
+        found_files = [f for f in found_files if f != script_path and f.exists() and f.is_file()]
+        
+        # Normalize and deduplicate paths
+        found_files = _normalize_and_deduplicate_paths(found_files, logger)
         
         if not found_files:
             logger.debug(f"No output files found for {framework} script {script_path.name}")
@@ -711,10 +871,35 @@ def collect_execution_outputs(
                 
                 # Copy file (handle name conflicts)
                 dest_file = dest_dir / source_file.name
+                
+                # Check if file already exists (avoid duplicate copies)
                 if dest_file.exists():
-                    # Add parent directory name to avoid conflicts
+                    # Check if it's the same file (by size and modification time)
+                    try:
+                        source_stat = source_file.stat()
+                        dest_stat = dest_file.stat()
+                        if (source_stat.st_size == dest_stat.st_size and 
+                            abs(source_stat.st_mtime - dest_stat.st_mtime) < 1.0):
+                            # Same file, skip copy
+                            logger.debug(f"Skipping duplicate: {dest_file.name} already exists")
+                            collected[category].append(str(dest_file))
+                            continue
+                    except OSError:
+                        pass
+                    
+                    # Different file or can't compare - add parent directory name to avoid conflicts
                     parent_name = source_file.parent.name
-                    dest_file = dest_dir / f"{parent_name}_{source_file.name}"
+                    # Avoid adding parent name if it's already in the filename
+                    if not source_file.name.startswith(f"{parent_name}_"):
+                        dest_file = dest_dir / f"{parent_name}_{source_file.name}"
+                    else:
+                        # Already has parent name, try adding a counter
+                        counter = 1
+                        base_name = source_file.stem
+                        ext = source_file.suffix
+                        while dest_file.exists():
+                            dest_file = dest_dir / f"{base_name}_{counter}{ext}"
+                            counter += 1
                 
                 copy2(source_file, dest_file)
                 

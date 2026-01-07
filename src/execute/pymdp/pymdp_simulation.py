@@ -41,6 +41,7 @@ from .pymdp_utils import (
 )
 
 # Import real PyMDP components - will be available when executed
+# Using modern API: from pymdp import Agent (inferactively-pymdp package)
 try:
     from pymdp import utils
     from pymdp.agent import Agent
@@ -49,7 +50,7 @@ except ImportError:
     PYMDP_AVAILABLE = False
     logging.warning(
         "PyMDP not available - this is normal if not installed. "
-        "To enable PyMDP simulations, install with: pip install pymdp. "
+        "To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. "
         "Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. "
         "Continuing with fallback mode and informative output."
     )

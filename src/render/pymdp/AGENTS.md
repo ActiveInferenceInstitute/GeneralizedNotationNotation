@@ -30,10 +30,43 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Function from `__init__.py`
+
+#### `render_gnn_to_pymdp(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Main function exported from the module. Renders GNN specification to PyMDP simulation code.
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_path` (Path): Output file path for generated PyMDP code
+- `**kwargs`: Additional PyMDP generation options:
+  - `optimize` (bool): Enable PyMDP-specific optimizations (default: True)
+  - `include_examples` (bool): Include example usage code (default: True)
+
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/pymdp/pymdp_renderer.py`
+
+**Example**:
+```python
+from render.pymdp import render_gnn_to_pymdp
+from pathlib import Path
+
+# Render GNN file to PyMDP code
+success, message, files = render_gnn_to_pymdp(
+    gnn_spec=Path("input/model.md"),
+    output_path=Path("output/simulation.py"),
+    optimize=True,
+    include_examples=True
+)
+```
+
+### Internal Functions (Used by render_gnn_to_pymdp)
 
 #### `generate_pymdp_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
-**Description**: Generate PyMDP simulation code from GNN model data.
+**Description**: Internal function used by renderer to generate PyMDP simulation code from GNN model data.
 
 **Parameters**:
 - `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
@@ -44,21 +77,7 @@
 
 **Returns**: `str` - Generated PyMDP code as string
 
-**Example**:
-```python
-from render.pymdp import generate_pymdp_code
-from pathlib import Path
-
-# Generate PyMDP code
-pymdp_code = generate_pymdp_code(
-    model_data=parsed_gnn_model,
-    output_path=Path("output/simulation.py"),
-    optimize=True,
-    include_examples=True
-)
-
-# Code is also saved to file if output_path provided
-```
+**Location**: `src/render/pymdp/pymdp_renderer.py` (internal implementation)
 
 #### `convert_gnn_to_pymdp(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
 **Description**: Convert GNN model data to PyMDP-compatible format.
@@ -502,7 +521,7 @@ result = generate_pymdp_code(model_data, debug=True, verbose=True)
 
 ---
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 **Maintainer**: Render Module Team
 **Status**: ✅ Production Ready
 

@@ -389,21 +389,29 @@ State Space Matrices (from GNN):
 
 import sys
 from pathlib import Path
+import os
+
+# Prevent import conflict with local 'pymdp' folder which contains this script
+# sys.path[0] is the script directory. If it's named 'pymdp', it masks the installed library.
+if sys.path[0] and sys.path[0].endswith("pymdp"):
+    print(f"⚠️  Detected namespace conflict with script directory '{{sys.path[0]}}', removing from sys.path")
+    sys.path.pop(0)
 import logging
 import subprocess
 import json
 import numpy as np
 
 # Ensure PyMDP is installed before importing
+# Note: The correct package name is 'inferactively-pymdp', not 'pymdp'
 try:
     import pymdp
     print("✅ PyMDP is available")
 except ImportError:
-    print("📦 PyMDP not found - installing...")
+    print("📦 PyMDP not found - installing inferactively-pymdp...")
     try:
         # Try UV first (as per project rules)
         result = subprocess.run(
-            [sys.executable, "-m", "uv", "pip", "install", "pymdp"],
+            [sys.executable, "-m", "uv", "pip", "install", "inferactively-pymdp"],
             capture_output=True,
             text=True,
             timeout=120
@@ -412,22 +420,24 @@ except ImportError:
             # Fallback to pip if UV fails
             print("⚠️  UV install failed, trying pip...")
             result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "pymdp"],
+                [sys.executable, "-m", "pip", "install", "inferactively-pymdp"],
                 capture_output=True,
                 text=True,
                 timeout=120
             )
         if result.returncode == 0:
-            print("✅ PyMDP installed successfully")
+            print("✅ PyMDP (inferactively-pymdp) installed successfully")
             import pymdp
         else:
             print(f"❌ Failed to install PyMDP: {{result.stderr}}")
+            print("💡 Install manually with: uv pip install inferactively-pymdp")
             sys.exit(1)
     except subprocess.TimeoutExpired:
         print("❌ PyMDP installation timed out")
         sys.exit(1)
     except Exception as e:
         print(f"❌ Error installing PyMDP: {{e}}")
+        print("💡 Install manually with: uv pip install inferactively-pymdp")
         sys.exit(1)
 
 # Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)

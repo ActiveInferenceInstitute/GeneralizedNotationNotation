@@ -21,10 +21,77 @@ The GNN processing pipeline follows a **thin orchestrator pattern** for maintain
 
 ### 🏗️ Architectural Pattern
 
+```mermaid
+graph TB
+    subgraph "Orchestrator Layer"
+        Script[N_Module.py<br/>Thin Orchestrator]
+    end
+    
+    subgraph "Module Layer"
+        Init[__init__.py<br/>Public API]
+        Processor[processor.py<br/>Core Logic]
+        Framework[framework/<br/>Framework Code]
+        MCP[mcp.py<br/>MCP Tools]
+    end
+    
+    Script -->|Calls| Init
+    Init -->|Delegates| Processor
+    Processor -->|Uses| Framework
+    Processor -->|Registers| MCP
+    
+    style Script fill:#e3f2fd
+    style Init fill:#f3e5f5
+    style Processor fill:#fff3e0
+```
+
 - **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation
 - **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder  
 - **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
 - **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
+
+### Module Dependency Graph
+
+```mermaid
+graph LR
+    subgraph "Infrastructure Layer"
+        Utils[utils/]
+        Pipeline[pipeline/]
+    end
+    
+    subgraph "Core Processing"
+        GNN[gnn/]
+        TypeChecker[type_checker/]
+        Validation[validation/]
+        Export[export/]
+    end
+    
+    subgraph "Code Generation"
+        Render[render/]
+        Execute[execute/]
+    end
+    
+    subgraph "Analysis & Output"
+        LLM[llm/]
+        Analysis[analysis/]
+        Report[report/]
+    end
+    
+    Utils --> GNN
+    Utils --> TypeChecker
+    Utils --> Render
+    Pipeline --> GNN
+    Pipeline --> Render
+    
+    GNN --> TypeChecker
+    GNN --> Validation
+    GNN --> Export
+    GNN --> Render
+    
+    Render --> Execute
+    Execute --> Analysis
+    LLM --> Analysis
+    Analysis --> Report
+```
 
 ### 📁 File Organization Example
 
@@ -102,6 +169,15 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Warning-Based Error Reporting**: Failed operations logged with clear severity to avoid unnecessary termination
 - **Graceful Degradation**: Each step provides maximum functionality possible given available dependencies
 - **Comprehensive Logging**: All failures tracked with detailed context; continuation policy controlled via config
+- **Structured JSON Logging**: Machine-readable logs (JSON-L) with performance metrics and correlation IDs for advanced analysis
+- **Log Rotation**: Automatic log rotation and cleanup to manage disk usage for long-running pipelines
+
+#### 5. **Method Robustness Improvements**
+- **Model Registry**: Enhanced metadata extraction (author, license, version) for comprehensive model tracking
+- **Execute Processor**: Robust PyMDP error recovery, Julia dependency validation, and improved timeout handling
+- **Render Processor**: Pre-render validation of POMDP structures and matrix normalization
+- **Analysis Module**: Cross-simulation result aggregation, statistical summarization, and improved visualizations
+- **LLM Module**: Enhanced provider fallback logic (Ollama → OpenAI → etc.) with configurable timeouts
 
 ### 📊 Pipeline Execution Analysis
 

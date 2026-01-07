@@ -251,6 +251,12 @@ class ModelRegistry:
             metadata = self._extract_metadata(content)
             model_version.metadata = metadata
             
+            # Also store metadata at the model level for direct access
+            # Merge with existing model metadata (version-specific metadata takes precedence for updates)
+            for key, value in metadata.items():
+                if key not in model.metadata or model.metadata[key] != value:
+                    model.metadata[key] = value
+            
             # Add version to model
             model.add_version(model_version)
             

@@ -23,7 +23,9 @@ class TestGNNIntegration:
         """Test that GNN module can be imported."""
         try:
             from gnn import GNNProcessor
-            assert True
+            # Verify the imported class is actually usable
+            assert GNNProcessor is not None, "GNNProcessor should be importable"
+            assert callable(getattr(GNNProcessor, '__init__', None)) or hasattr(GNNProcessor, '__call__'), "GNNProcessor should be a class or callable"
         except ImportError:
             pytest.skip("GNN module not available")
     
@@ -82,7 +84,9 @@ A = [[0.5, 0.3, 0.2]]
         # Test that format conversion is available
         try:
             from gnn.parsers import GNNParser
-            assert True
+            # Verify the parser class is actually usable
+            assert GNNParser is not None, "GNNParser should be importable"
+            assert hasattr(GNNParser, '__init__') or callable(GNNParser), "GNNParser should be a class or callable"
         except ImportError:
             pytest.skip("GNN parsers not available")
     

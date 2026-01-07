@@ -90,41 +90,65 @@ src/
 
 ## Pipeline Execution Flow
 
-```
-main.py
-  ↓
-[Steps 0-23 executed sequentially]
-  ↓
-output/
-  ├── 0_template_output/
-  ├── 1_setup_output/
-  ├── ... (24 step outputs)
-  └── pipeline_execution_summary.json
+```mermaid
+flowchart TD
+    Main[main.py Orchestrator] --> Step0[Step 0: Template]
+    Step0 --> Step1[Step 1: Setup]
+    Step1 --> Step2[Step 2: Tests]
+    Step2 --> Step3[Step 3: GNN]
+    Step3 --> Step4[Step 4: Registry]
+    Step4 --> Step5[Step 5: Type Check]
+    Step5 --> Step6[Step 6: Validation]
+    Step6 --> Step7[Step 7: Export]
+    Step7 --> Step8[Step 8: Visualization]
+    Step8 --> Step9[Step 9: Advanced Viz]
+    Step9 --> Step10[Step 10: Ontology]
+    Step10 --> Step11[Step 11: Render]
+    Step11 --> Step12[Step 12: Execute]
+    Step12 --> Step13[Step 13: LLM]
+    Step13 --> Step14[Step 14: ML Integration]
+    Step14 --> Step15[Step 15: Audio]
+    Step15 --> Step16[Step 16: Analysis]
+    Step16 --> Step17[Step 17: Integration]
+    Step17 --> Step18[Step 18: Security]
+    Step18 --> Step19[Step 19: Research]
+    Step19 --> Step20[Step 20: Website]
+    Step20 --> Step21[Step 21: MCP]
+    Step21 --> Step22[Step 22: GUI]
+    Step22 --> Step23[Step 23: Report]
+    
+    Step23 --> Output[output/ Directory]
+    Output --> Summary[pipeline_execution_summary.json]
 ```
 
 ### Data Dependencies
 
-```
-3_gnn.py → [parses GNN files]
-  ↓
-  ├→ 5_type_checker.py
-  ├→ 6_validation.py
-  ├→ 7_export.py
-  ├→ 8_visualization.py
-  ├→ 10_ontology.py
-  ├→ 11_render.py
-  └→ 13_llm.py
-        ↓
-11_render.py → [generates code]
-  ↓
-12_execute.py → [runs simulations]
+```mermaid
+graph TD
+    Step3[Step 3: GNN Parse] -->|Parsed Models| Step5[Step 5: Type Check]
+    Step3 -->|Parsed Models| Step6[Step 6: Validation]
+    Step3 -->|Parsed Models| Step7[Step 7: Export]
+    Step3 -->|Parsed Models| Step8[Step 8: Visualization]
+    Step3 -->|Parsed Models| Step10[Step 10: Ontology]
+    Step3 -->|Parsed Models| Step11[Step 11: Render]
+    Step3 -->|Parsed Models| Step13[Step 13: LLM]
+    
+    Step11 -->|Generated Code| Step12[Step 12: Execute]
+    Step12 -->|Execution Results| Step16[Step 16: Analysis]
+    
+    Step5 -->|Type Info| Step6
+    Step6 -->|Validation Results| Step7
+    Step7 -->|Exported Data| Step8
+    Step8 -->|Visualizations| Step16
+    Step13 -->|LLM Insights| Step16
+    Step16 -->|Analysis Results| Step23[Step 23: Report]
 ```
 
 ---
 
 ## Performance Characteristics
 
-### Latest Status (November 30, 2025)
+### Latest Status (2026-01-07)
 - **Total Steps**: 24 (all steps 0-23)
 - **Execution Time**: 2m53s (172.7 seconds total)
 - **Memory Usage**: 36.3MB peak
@@ -150,6 +174,12 @@ output/
 - **Verified**: 24-step pipeline structure alignment
 - **All modules**: Have complete AGENTS.md and README documentation
 - **Subdirectories**: Framework-specific subdirectories now have comprehensive documentation
+
+### Recent Updates (January 2026)
+- **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
+- **Observability**: Added JSON logging, log rotation, and performance metrics
+- **Analysis**: Cross-simulation aggregation and statistical summaries
+- **LLM**: Improved provider fallback chain and timeout handling
 
 ---
 
@@ -306,7 +336,7 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 **Pipeline Version**: 2.1.0
 **Total Modules**: 28
 **Total Steps**: 24 (0-23)

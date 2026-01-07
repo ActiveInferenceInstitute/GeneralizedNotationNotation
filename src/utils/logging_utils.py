@@ -18,6 +18,8 @@ import time
 from contextlib import contextmanager
 import os
 import shutil
+import glob
+import gzip
 
 # Thread-local storage for correlation context
 _correlation_context = threading.local()
@@ -251,7 +253,91 @@ class StructuredFormatter(CorrelationFormatter):
                     record.msg = f"{record.msg} [{structured_str}]"
         
         # Continue with correlation formatting
+        # Continue with correlation formatting
         return super().format(record)
+
+class JSONFormatter(logging.Formatter):
+    """Formatter that outputs JSON lines for structured logging."""
+    
+    def format(self, record):
+        """Format the log record as a valid JSON object."""
+        log_entry = {
+            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+            "correlation_id": getattr(record, 'correlation_id', getattr(_correlation_context, 'correlation_id', 'MAIN')),
+            "step_name": getattr(record, 'step_name', getattr(_correlation_context, 'step_name', 'pipeline')),
+            "module": record.module,
+            "function": record.funcName,
+            "line": record.lineno,
+            "process": record.process,
+            "thread": record.threadName
+        }
+        
+        # Add structured data if present
+        if hasattr(record, 'structured_data'):
+            log_entry["data"] = record.structured_data
+            
+        # Add performance context if present
+        if hasattr(record, 'performance_context'):
+            log_entry["performance"] = record.performance_context
+            
+        # Add exception info if present
+        if record.exc_info:
+            log_entry["exception"] = self.formatException(record.exc_info)
+            
+        return json.dumps(log_entry)
+
+
+def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
+    """
+    Rotate log files in the specified directory.
+    
+    Args:
+        log_dir: Directory containing log files
+        max_files: Maximum number of rotated files to keep (including current)
+        compress: Whether to compress rotated files
+    """
+    try:
+        log_file = log_dir / "pipeline.log"
+        if not log_file.exists():
+            return
+            
+        # Rotate existing logs
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        rotated_name = f"pipeline_{timestamp}.log"
+        rotated_path = log_dir / rotated_name
+        
+        # Rename current log
+        shutil.move(str(log_file), str(rotated_path))
+        
+        # Compress if requested
+        if compress:
+            with open(rotated_path, 'rb') as f_in:
+                compressed_path = rotated_path.with_suffix('.log.gz')
+                with gzip.open(compressed_path, 'wb') as f_out:
+                    shutil.copyfileobj(f_in, f_out)
+            rotated_path.unlink() # Remove uncompressed file
+            
+        # Cleanup old logs
+        pattern = "pipeline_*.log.gz" if compress else "pipeline_*.log"
+        log_files = sorted(list(log_dir.glob(pattern)), key=lambda x: x.stat().st_mtime)
+        
+        # Keep only max_files (subtract 1 for the new current log that will be created)
+        to_delete_count = len(log_files) - (max_files - 1)
+        if to_delete_count > 0:
+            for i in range(to_delete_count):
+                try:
+                    log_files[i].unlink()
+                except OSError:
+                    pass
+                    
+    except Exception as e:
+        # Don't fail pipeline on log rotation issues
+        print(f"Warning: Log rotation failed: {e}")
+
+
 
 class PipelineLogger(BasicPipelineLogger):
     """Pipeline logger with structured logging support."""
@@ -321,8 +407,30 @@ class PipelineLogger(BasicPipelineLogger):
         )
         record.structured_data = structured_data
         logger.handle(record)
-    
+
     @classmethod
+    def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG):
+        """Enable dedicated JSON-formatted log file."""
+        if not cls._initialized:
+            # Fallback to initialize first if not ready
+            cls.initialize(log_dir=log_dir)
+            return
+
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            json_log_file = log_dir / "pipeline.jsonl"
+            
+            # Create handler
+            json_handler = logging.FileHandler(json_log_file, mode='a')
+            json_handler.setLevel(level)
+            json_handler.setFormatter(JSONFormatter())
+            
+            logging.getLogger().addHandler(json_handler)
+        except Exception as e:
+            print(f"Failed to enable JSON logging: {e}")
+
+    @classmethod
+
     @contextmanager
     def timed_operation(cls, operation_name: str, logger: Optional[logging.Logger] = None, 
                        metadata: Optional[Dict[str, Any]] = None):

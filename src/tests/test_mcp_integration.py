@@ -23,7 +23,9 @@ class TestMCPIntegration:
         """Test that MCP module can be imported."""
         try:
             from mcp import MCPProcessor
-            assert True
+            # Verify the imported class is actually usable
+            assert MCPProcessor is not None, "MCPProcessor should be importable"
+            assert callable(getattr(MCPProcessor, '__init__', None)) or hasattr(MCPProcessor, '__call__'), "MCPProcessor should be a class or callable"
         except ImportError:
             pytest.skip("MCP module not available")
     

@@ -613,7 +613,8 @@ C: [0.7, 0.3; 0.4, 0.6]
 			pytest.skip("SAPF module not available")
 		
 		try:
-			sapf_code = convert_gnn_to_sapf(sample_gnn_files)
+			# Pass required model_name argument
+			sapf_code = convert_gnn_to_sapf(sample_gnn_files, model_name="TestActiveInferenceModel")
 			
 			assert isinstance(sapf_code, str), "SAPF code should be a string"
 			assert len(sapf_code) > 0, "SAPF code should not be empty"

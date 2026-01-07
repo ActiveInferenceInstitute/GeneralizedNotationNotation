@@ -559,10 +559,11 @@ If issues persist:
 
 ### Test Execution Statistics
 - **Fast Tests**: ~1-3 minutes (default for pipeline)
-- **Comprehensive Tests**: ~5-15 minutes (all tests including slow/performance)
-- **Test Categories**: 20+ organized categories
+- **Comprehensive Tests**: ~12.9 minutes (all tests including slow/performance)
+- **Test Categories**: 23 organized categories
 - **Test Markers**: 25+ markers for selective execution
-- **Success Rate**: 100% in latest pipeline execution (24/24 steps successful)
+- **Success Rate**: 89.6% (405/452 passed, 0 failed, 47 skipped)
+- **Latest Execution**: 452 tests run, 0 failures, ~13 minutes duration
 
 ### Test Quality Metrics
 - **No Mock Usage**: All tests use real implementations per testing policy
@@ -594,14 +595,8 @@ If issues persist:
 | Report | 4 files | ~40 functions | ✅ Complete |
 | Environment | 3 files | ~30 functions | ✅ Complete |
 | GUI | 2 files | ~20 functions | ✅ Complete |
-| Advanced Viz | 1 file | ~17 functions | ✅ Complete |
-| Core Modules | 1 file | ~30 functions | ✅ Complete |
-| Fast Suite | 1 file | ~22 functions | ✅ Complete |
-| Coverage | 2 files | ~10 functions | ✅ Complete |
-| Performance | 2 files | ~20 functions | ✅ Complete |
-| Integration | 1 file | ~8 functions | ✅ Complete |
-| Error Recovery | 1 file | ~13 functions | ✅ Complete |
-| **Total** | **54 files** | **652 functions** | **✅ Complete** |
+| Infrastructure | 1 file | ~4 functions | ✅ Complete |
+| **Total** | **55 files** | **656 functions** | **✅ Complete** |
 
 ## Test Execution Results
 

@@ -1,5 +1,0 @@
-Category: audio
-Success: True
-Duration: 54.19s
-Peak Memory: 17.69 MB
-CPU Usage: 0.0%

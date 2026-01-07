@@ -1,0 +1,26 @@
+{
+  "framework": "pymdp_gen",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Classic Active Inference POMDP Agent v1_pymdp.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 0.464205,
+  "timestamp": "2026-01-07T11:27:48.299958",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u2705 PyMDP is available\n",
+    "raw_error": "WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\nWARNING:src.execute.pymdp.package_detector:Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)\nWARNING:src.execute.pymdp.package_detector:Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)\nERROR:src.execute.pymdp.simple_simulation:Wrong PyMDP package installed. Wrong PyMDP package detected. The installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class.\nInstall the correct package with:\n  uv pip install inferactively-pymdp\nOr using the setup module:\n  python src/1_setup.py --install_optional --optional_groups pymdp\nThe installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class required for this simulation.\nERROR:src.execute.pymdp.executor:PyMDP simulation failed: Wrong PyMDP package installed. Wrong PyMDP package detected. The installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class.\nInstall the correct package with:\n  uv pip install inferactively-pymdp\nOr using the setup module:\n  python src/1_setup.py --install_optional --optional_groups pymdp\nThe installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class required for this simulation.\nERROR:__main__:\u2717 Simulation failed!\nERROR:__main__:Error: Wrong PyMDP package installed. Wrong PyMDP package detected. The installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class.\nInstall the correct package with:\n  uv pip install inferactively-pymdp\nOr using the setup module:\n  python src/1_setup.py --install_optional --optional_groups pymdp\nThe installed 'pymdp' package contains MDP/MDPSolver but not the Active Inference Agent class required for this simulation.\n"
+  },
+  "execution_metadata": {
+    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "stdout_length": 21,
+    "stderr_length": 1985,
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/pymdp_gen"
+  }
+}

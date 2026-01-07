@@ -159,6 +159,7 @@ from .pymdp_templates import (
 logger = logging.getLogger(__name__)
 
 # Optional import of pymdp for validation if available
+# Using modern API: from pymdp import Agent (inferactively-pymdp package)
 _PYMDP_AVAILABLE = False
 try:
     from pymdp import utils as pymdp_utils

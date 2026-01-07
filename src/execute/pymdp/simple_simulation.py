@@ -284,48 +284,49 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         Tuple of (success, results_dict)
     """
     try:
-        # Import PyMDP components - try multiple import paths for compatibility
-        # The correct package is 'inferactively-pymdp' (pip install inferactively-pymdp)
-        Agent = None
-        utils = None
-        
+        # Import PyMDP components using modern API
+        # The correct package is 'inferactively-pymdp' (uv pip install inferactively-pymdp)
         try:
-            # Modern inferactively-pymdp API
-            from pymdp import Agent as PyMDPAgent
+            from pymdp.agent import Agent
             from pymdp import utils
-            Agent = PyMDPAgent
-            logger.info("Using pymdp modern API")
+            logger.info("Using PyMDP (inferactively-pymdp) API")
         except ImportError:
-            pass
+            Agent = None
+            utils = None
         
         if Agent is None:
-            try:
-                # Legacy import path
-                from pymdp.agent import Agent as PyMDPAgent
-                from pymdp import utils
-                Agent = PyMDPAgent
-                logger.info("Using pymdp.agent API")
-            except ImportError:
-                pass
-        
-        if Agent is None:
-            # Check if we have the WRONG pymdp package installed
-            try:
-                import pymdp
-                available = dir(pymdp)
-                if 'MDP' in available and 'Agent' not in available:
-                    msg = ("Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver "
-                           "but this is not the Active Inference library. "
-                           "Install the correct package with: pip install inferactively-pymdp")
-                    logger.error(msg)
-                    return False, {"success": False, "error": msg}
-            except ImportError:
-                pass
+            # Use package detector to identify the issue
+            from .package_detector import (
+                detect_pymdp_installation,
+                get_pymdp_installation_instructions
+            )
             
-            msg = ("PyMDP Agent class not found. Install with: pip install inferactively-pymdp")
-            logger.error(msg)
-            return False, {"success": False, "error": msg, 
-                          "suggestion": "Install with: pip install inferactively-pymdp"}
+            detection = detect_pymdp_installation()
+            instructions = get_pymdp_installation_instructions()
+            
+            if detection.get("wrong_package"):
+                msg = (
+                    f"Wrong PyMDP package installed. {instructions}\n"
+                    "The installed 'pymdp' package contains MDP/MDPSolver but not the "
+                    "Active Inference Agent class required for this simulation."
+                )
+                logger.error(msg)
+                return False, {
+                    "success": False,
+                    "error": msg,
+                    "wrong_package": True,
+                    "suggestion": "Uninstall 'pymdp' and install 'inferactively-pymdp'",
+                    "install_command": "uv pip install inferactively-pymdp"
+                }
+            else:
+                msg = f"PyMDP Agent class not found. {instructions}"
+                logger.error(msg)
+                return False, {
+                    "success": False,
+                    "error": msg,
+                    "suggestion": instructions,
+                    "install_command": "uv pip install inferactively-pymdp"
+                }
         
         logger.info("Starting simple PyMDP simulation")
         
@@ -349,27 +350,16 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             B = np.eye(A.shape[1], dtype=np.float64)[:, :, np.newaxis]
         else:
             B_raw = np.array(B_data, dtype=np.float64)
-            # GNN format for B often is (action, prev_state, next_state) or (action, next_state, prev_state)
+            # GNN format for B is typically (action, prev_state, next_state)
             # PyMDP expects (next_state, prev_state, action)
-            # Let's check dimensions and transpose if necessary
-            num_states = A.shape[1]
-            if B_raw.shape == (3, 3, 3): # Most common for our examples
-                # If it's (action, prev_state, next_state), we need to move action to the last axis
-                # and maybe transpose states
-                # In GNN actinf_pomdp_agent.md: B[3,3,3] is states_next, states_previous, actions
-                # So it's already (next, prev, action) if parsed as B[next][prev][action]
-                # But wait, InitialParameterization says:
-                # B={ ( (1,0,0), (0,1,0), (0,0,1) ), ... }
-                # This is B[action][prev][next]
-                if B_raw.shape[0] == B_raw.shape[1] == B_raw.shape[2]:
-                    # Assume (action, prev, next) and transpose to (next, prev, action)
-                    B = B_raw.transpose(2, 1, 0)
-                else:
-                    # Best guess based on dimensions
-                    # Action is often the dimension that matches num_actions, if specified
-                    B = B_raw 
+            # Transpose any 3D array from (action, prev, next) to (next, prev, action)
+            if B_raw.ndim == 3:
+                # Transpose (0, 1, 2) -> (2, 1, 0) means action,prev,next -> next,prev,action
+                B = B_raw.transpose(2, 1, 0)
+                logger.info(f"Transposed B from {B_raw.shape} to {B.shape}")
             else:
                 B = B_raw
+                logger.warning(f"B matrix has unexpected dimensions: {B_raw.ndim}D, expected 3D")
         
         # 3. Get C vector (preferences)
         C_data = init_params.get('C')

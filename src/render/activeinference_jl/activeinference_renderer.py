@@ -275,22 +275,20 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     A_matrix = model_info["A"]
     B_matrix = model_info["B"]
     
-    # Fix n_actions from actual B matrix if mismatch
-    # B matrix shape is (states, states, actions) after fixing
-    if isinstance(B_matrix, list) and len(B_matrix) > 0:
-        actual_n_actions = len(B_matrix)
-        if actual_n_actions != n_actions:
-            logger.info(f"Correcting n_actions from {n_actions} to {actual_n_actions} based on B matrix")
-            n_actions = actual_n_actions
-    C_vector = model_info["C"]
-    D_vector = model_info["D"]
-    E_vector = model_info["E"]
+    if isinstance(B_matrix, list):
+        logger.info(f"DEBUG: B_matrix is list with len {len(B_matrix)}")
+        if len(B_matrix) > 0 and isinstance(B_matrix[0], list):
+             logger.info(f"DEBUG: B_matrix[0] is list with len {len(B_matrix[0])}")
+    else:
+        logger.info(f"DEBUG: B_matrix type is {type(B_matrix)}")
+
+    logger.info(f"DEBUG: Initial n_actions={n_actions}")
     
     # Fix mangled B matrix from GNN parser
     # The parser sometimes splits tuples incorrectly, leaving strings like '(1.0' instead of tuples
-    if isinstance(B_matrix, list) and len(B_matrix) > 0:
+    if isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
         if isinstance(B_matrix[0], list) and len(B_matrix[0]) > 0:
-            if isinstance(B_matrix[0][0], str) and '(' in B_matrix[0][0]:
+            if len(B_matrix[0]) > 0 and isinstance(B_matrix[0][0], str) and '(' in B_matrix[0][0]:
                 # Reconstruct B matrix from mangled format
                 fixed_B = []
                 for slice_data in B_matrix:
@@ -324,6 +322,18 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
                 if fixed_B:
                     B_matrix = fixed_B
                     logger.info(f"Fixed mangled B matrix: {len(B_matrix)} slices of {len(B_matrix[0])}x{len(B_matrix[0][0])}")
+
+    # Fix n_actions from actual B matrix if mismatch
+    # B matrix shape is (states, states, actions) after fixing
+    if isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
+        actual_n_actions = len(B_matrix)
+        if actual_n_actions != n_actions:
+            logger.info(f"Correcting n_actions from {n_actions} to {actual_n_actions} based on B matrix")
+            n_actions = actual_n_actions
+
+    C_vector = model_info["C"]
+    D_vector = model_info["D"]
+    E_vector = model_info["E"]
     
     julia_A = _matrix_to_julia(A_matrix)
     julia_B = _matrix_to_julia(B_matrix)

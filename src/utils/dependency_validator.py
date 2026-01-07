@@ -139,11 +139,11 @@ class DependencyValidator:
             ],
             "pymdp": [
                 DependencySpec(
-                    name="pymdp",
+                    name="inferactively-pymdp",
                     version_min="0.0.1",
-                    install_command="uv pip install pymdp",
+                    install_command="uv pip install inferactively-pymdp",
                     is_optional=True,
-                    description="PyMDP Active Inference library"
+                    description="PyMDP Active Inference library (package name: inferactively-pymdp)"
                 ),
                 DependencySpec(
                     name="scipy",

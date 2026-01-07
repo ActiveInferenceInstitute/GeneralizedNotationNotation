@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-01-07T06:32:19.037490",
+  "report_generation_time": "2026-01-07T11:31:47.434570",
   "pipeline_output_directory": "output",
   "steps": {
     "setup_artifacts": {
@@ -115,26 +115,12 @@
     },
     "website": {
       "directory": "output/website",
-      "exists": true,
-      "file_count": 1,
+      "exists": false,
+      "file_count": 0,
       "total_size_mb": 0.0,
-      "file_types": {
-        ".html": {
-          "count": 1,
-          "total_size_mb": 0.0012025833129882812
-        }
-      },
-      "last_modified": "2026-01-07T06:29:37.414308",
-      "status": "success",
-      "performance_metrics": {},
-      "error_logs": [],
-      "key_files": [
-        {
-          "name": "index.html",
-          "size_mb": 0.0,
-          "type": ".html"
-        }
-      ]
+      "file_types": {},
+      "last_modified": null,
+      "status": "missing"
     },
     "report_processing_step": {
       "directory": "output/report_processing_step",
@@ -147,31 +133,19 @@
     }
   },
   "summary": {
-    "total_files_processed": 1,
+    "total_files_processed": 0,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
     "total_size_mb": 0.0,
-    "success_rate": 14.285714285714285
+    "success_rate": 7.142857142857142
   },
   "performance_metrics": {},
   "error_analysis": {},
   "file_type_analysis": {
-    "total_by_type": {
-      ".html": {
-        "count": 1,
-        "total_size_mb": 0.0
-      }
-    },
+    "total_by_type": {},
     "largest_files_by_type": {},
-    "step_distribution": {
-      ".html": {
-        "website": {
-          "count": 1,
-          "size_mb": 0.0012025833129882812
-        }
-      }
-    }
+    "step_distribution": {}
   },
   "step_dependencies": {
     "step_order": [
@@ -199,17 +173,6 @@
           "gnn_rendered_simulators"
         ],
         "status": "incomplete"
-      },
-      "website": {
-        "prerequisites": [
-          "visualization",
-          "ontology_processing"
-        ],
-        "missing_prerequisites": [
-          "visualization",
-          "ontology_processing"
-        ],
-        "status": "incomplete"
       }
     },
     "missing_prerequisites": [
@@ -218,18 +181,11 @@
         "missing": [
           "gnn_rendered_simulators"
         ]
-      },
-      {
-        "step": "website",
-        "missing": [
-          "visualization",
-          "ontology_processing"
-        ]
       }
     ]
   },
   "pipeline_summary": {
-    "start_time": "2026-01-07T06:26:09.414633",
+    "start_time": "2026-01-07T11:23:10.157508",
     "arguments": {
       "target_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
       "output_dir": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output",
@@ -262,10 +218,10 @@
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:09,474 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-07 06:26:09,491 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-07 06:26:09,491 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-07 06:26:09,492 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-07 06:26:09,492 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-07 06:26:09,494 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-07 06:26:09,494 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-07 06:26:09,494 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-07 06:26:09,494 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-07 06:26:09,494 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-07 06:26:09,495 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-07 06:26:09,495 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-07 06:26:09,495 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-07 06:26:09,495 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-07 06:26:09,496 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-07 06:26:09,497 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-07 06:26:09,497 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-07 06:26:09,500 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-07 06:26:09,500 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-07 06:26:09,500 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-07 06:26:09,501 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-07 06:26:09,502 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-07 06:26:09,502 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-07 06:26:09,502 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
-        "memory_usage_mb": 36.171875,
-        "peak_memory_mb": 36.171875,
-        "memory_delta_mb": 0.078125,
+        "stderr": "2026-01-07 11:23:10,222 - 3_gnn.py - INFO - \ud83d\ude80 Processing GNN files with full multi-format generation\n2026-01-07 11:23:10,250 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats\n2026-01-07 11:23:10,250 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]\n2026-01-07 11:23:10,254 - 3_gnn.py - INFO - Found 1 potential GNN files\n2026-01-07 11:23:10,254 - 3_gnn.py - INFO - Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-07 11:23:10,260 - 3_gnn.py - INFO -   Generated markdown: 1759 bytes\n2026-01-07 11:23:10,260 - 3_gnn.py - INFO -   Generated scala: 5106 bytes\n2026-01-07 11:23:10,261 - 3_gnn.py - INFO -   Generated lean: 5504 bytes\n2026-01-07 11:23:10,261 - 3_gnn.py - INFO -   Generated coq: 5255 bytes\n2026-01-07 11:23:10,262 - 3_gnn.py - INFO -   Generated python: 9113 bytes\n2026-01-07 11:23:10,262 - 3_gnn.py - INFO -   Generated bnf: 5486 bytes\n2026-01-07 11:23:10,262 - 3_gnn.py - INFO -   Generated ebnf: 5486 bytes\n2026-01-07 11:23:10,263 - 3_gnn.py - INFO -   Generated isabelle: 5282 bytes\n2026-01-07 11:23:10,263 - 3_gnn.py - INFO -   Generated maxima: 5759 bytes\n2026-01-07 11:23:10,266 - 3_gnn.py - INFO -   Generated xml: 9536 bytes\n2026-01-07 11:23:10,266 - 3_gnn.py - INFO -   Generated json: 9413 bytes\n2026-01-07 11:23:10,266 - 3_gnn.py - INFO -   Generated protobuf: 7237 bytes\n2026-01-07 11:23:10,270 - 3_gnn.py - INFO -   Generated yaml: 5736 bytes\n2026-01-07 11:23:10,271 - 3_gnn.py - INFO -   Generated xsd: 6224 bytes\n2026-01-07 11:23:10,271 - 3_gnn.py - INFO -   Generated asn1: 8138 bytes\n2026-01-07 11:23:10,271 - 3_gnn.py - INFO -   Generated pkl: 11946 bytes\n2026-01-07 11:23:10,272 - 3_gnn.py - INFO -   Generated alloy: 8220 bytes\n2026-01-07 11:23:10,272 - 3_gnn.py - INFO -   Generated z_notation: 5838 bytes\n2026-01-07 11:23:10,272 - 3_gnn.py - INFO -   Generated tla_plus: 4729 bytes\n2026-01-07 11:23:10,272 - 3_gnn.py - INFO -   Generated agda: 4736 bytes\n2026-01-07 11:23:10,273 - 3_gnn.py - INFO -   Generated haskell: 5520 bytes\n2026-01-07 11:23:10,273 - 3_gnn.py - INFO -   Generated pickle: 3888 bytes\n2026-01-07 11:23:10,273 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md\n2026-01-07 11:23:10,273 - 3_gnn.py - INFO - \u2705 Processed 1 files, generated 22 format instances across 22 formats\n",
+        "memory_usage_mb": 36.296875,
+        "peak_memory_mb": 36.296875,
+        "memory_delta_mb": 0.09375,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -274,17 +230,17 @@
         "step_number": 1,
         "script_name": "3_gnn.py",
         "description": "GNN file processing",
-        "start_time": "2026-01-07T06:26:09.415698",
-        "end_time": "2026-01-07T06:26:09.512929",
-        "duration_seconds": 0.0972292423248291
+        "start_time": "2026-01-07T11:23:10.158739",
+        "end_time": "2026-01-07T11:23:10.290483",
+        "duration_seconds": 0.1317439079284668
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:09,578 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-07 06:26:09,580 - type_checker - INFO - \u2705 Type checking completed successfully\n",
-        "memory_usage_mb": 36.296875,
-        "peak_memory_mb": 36.296875,
-        "memory_delta_mb": 0.0,
+        "stderr": "2026-01-07 11:23:10,349 - type_checker - INFO - \ud83d\ude80 Processing type checker\n2026-01-07 11:23:10,352 - type_checker - INFO - \u2705 Type checking completed successfully\n",
+        "memory_usage_mb": 36.421875,
+        "peak_memory_mb": 36.421875,
+        "memory_delta_mb": 0.015625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -293,17 +249,17 @@
         "step_number": 2,
         "script_name": "5_type_checker.py",
         "description": "Type checking",
-        "start_time": "2026-01-07T06:26:09.513927",
-        "end_time": "2026-01-07T06:26:09.597304",
-        "duration_seconds": 0.0833749771118164
+        "start_time": "2026-01-07T11:23:10.291795",
+        "end_time": "2026-01-07T11:23:10.365289",
+        "duration_seconds": 0.07349181175231934
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:09,687 - export - INFO - Loaded 1 parsed GNN files\n2026-01-07 06:26:09,687 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-07 06:26:09,687 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-07 06:26:09,688 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-07 06:26:09,689 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-07 06:26:09,690 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-07 06:26:09,690 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-07 06:26:09,690 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-07 06:26:09,691 - export - INFO - Export processing completed:\n2026-01-07 06:26:09,691 - export - INFO -   Total files: 1\n2026-01-07 06:26:09,691 - export - INFO -   Successful exports: 1\n2026-01-07 06:26:09,691 - export - INFO -   Failed exports: 0\n2026-01-07 06:26:09,691 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
-        "memory_usage_mb": 36.34375,
-        "peak_memory_mb": 36.34375,
-        "memory_delta_mb": 0.03125,
+        "stderr": "2026-01-07 11:23:10,481 - export - INFO - Loaded 1 parsed GNN files\n2026-01-07 11:23:10,481 - export - INFO - Exporting: actinf_pomdp_agent.md\n2026-01-07 11:23:10,482 - export - INFO - Loaded parsed GNN specification from /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json\n2026-01-07 11:23:10,484 - export - INFO - Generated json export for actinf_pomdp_agent.md\n2026-01-07 11:23:10,498 - export - INFO - Generated xml export for actinf_pomdp_agent.md\n2026-01-07 11:23:10,501 - export - INFO - Generated graphml export for actinf_pomdp_agent.md\n2026-01-07 11:23:10,502 - export - INFO - Generated gexf export for actinf_pomdp_agent.md\n2026-01-07 11:23:10,503 - export - INFO - Generated pickle export for actinf_pomdp_agent.md\n2026-01-07 11:23:10,505 - export - INFO - Export processing completed:\n2026-01-07 11:23:10,506 - export - INFO -   Total files: 1\n2026-01-07 11:23:10,506 - export - INFO -   Successful exports: 1\n2026-01-07 11:23:10,506 - export - INFO -   Failed exports: 0\n2026-01-07 11:23:10,506 - export - INFO -   Formats generated: {'json': 1, 'xml': 1, 'graphml': 1, 'gexf': 1, 'pickle': 1}\n",
+        "memory_usage_mb": 31.421875,
+        "peak_memory_mb": 36.484375,
+        "memory_delta_mb": -5.0625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -312,17 +268,17 @@
         "step_number": 3,
         "script_name": "7_export.py",
         "description": "Multi-format export",
-        "start_time": "2026-01-07T06:26:09.597930",
-        "end_time": "2026-01-07T06:26:09.703927",
-        "duration_seconds": 0.10599303245544434
+        "start_time": "2026-01-07T11:23:10.366087",
+        "end_time": "2026-01-07T11:23:10.602552",
+        "duration_seconds": 0.23646187782287598
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:10,551 - visualization - INFO - \ud83d\ude80 Processing visualizations\n2026-01-07 06:26:11,810 - visualization.processor - INFO - Generated 3 matrix visualizations for actinf_pomdp_agent\n2026-01-07 06:26:12,248 - visualization - INFO - \u2705 Generated 6 visualizations\n",
-        "memory_usage_mb": 15.171875,
-        "peak_memory_mb": 36.390625,
-        "memory_delta_mb": -21.21875,
+        "stderr": "2026-01-07 11:23:12,660 - visualization - INFO - \ud83d\ude80 Processing visualizations\n2026-01-07 11:23:13,972 - visualization.processor - INFO - Generated 3 matrix visualizations for actinf_pomdp_agent\n2026-01-07 11:23:14,803 - visualization - INFO - \u2705 Generated 6 visualizations\n",
+        "memory_usage_mb": 15.28125,
+        "peak_memory_mb": 31.421875,
+        "memory_delta_mb": -16.140625,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -331,17 +287,17 @@
         "step_number": 4,
         "script_name": "8_visualization.py",
         "description": "Visualization",
-        "start_time": "2026-01-07T06:26:09.704725",
-        "end_time": "2026-01-07T06:26:12.342999",
-        "duration_seconds": 2.6382617950439453
+        "start_time": "2026-01-07T11:23:10.605317",
+        "end_time": "2026-01-07T11:23:14.877526",
+        "duration_seconds": 4.272202968597412
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:12,479 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-07 06:26:12,479 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-07 06:26:12,479 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-07 06:26:12,480 - render.processor - INFO - Found 1 GNN files to process\n2026-01-07 06:26:12,480 - render.processor - INFO - Target frameworks: all available\n2026-01-07 06:26:12,480 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-07 06:26:12,481 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-07 06:26:12,481 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-07 06:26:12,481 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-07 06:26:12,481 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/README.md\n2026-01-07 06:26:12,481 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 06:26:12,481 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-07 06:26:12,481 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-07 06:26:12,482 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-07 06:26:12,482 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 06:26:12,482 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-07 06:26:12,482 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-07 06:26:12,482 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-07 06:26:12,483 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-07 06:26:12,483 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-07 06:26:12,484 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-07 06:26:12,484 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 06:26:12,484 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-07 06:26:12,484 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-07 06:26:12,484 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-07 06:26:12,484 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-07 06:26:12,484 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-07 06:26:12,484 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
-        "memory_usage_mb": 25.046875,
-        "peak_memory_mb": 25.046875,
-        "memory_delta_mb": 1.90625,
+        "stderr": "2026-01-07 11:23:14,968 - render.processor - INFO - \ud83d\ude80 Starting POMDP-aware render processing\n2026-01-07 11:23:14,968 - render.processor - INFO - Processing GNN files in: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-07 11:23:14,968 - render.processor - INFO - Output directory: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output\n2026-01-07 11:23:14,969 - render.processor - INFO - Found 1 GNN files to process\n2026-01-07 11:23:14,969 - render.processor - INFO - Target frameworks: all available\n2026-01-07 11:23:14,969 - render.processor - INFO - \ud83d\udcc1 Processing: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md\n2026-01-07 11:23:14,970 - render.processor - INFO - \u2705 Extracted POMDP 'Classic Active Inference POMDP Agent v1' with 3 states, 3 observations, 1 actions\n2026-01-07 11:23:14,970 - render.pomdp_processor - INFO - Processing POMDP 'Classic Active Inference POMDP Agent v1' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']\n2026-01-07 11:23:14,970 - render.pomdp_processor - INFO - Processing framework: pymdp\n2026-01-07 11:23:14,970 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/README.md\n2026-01-07 11:23:14,970 - render.pomdp_processor - INFO - \u2705 pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 11:23:14,970 - render.pomdp_processor - INFO - Processing framework: rxinfer\n2026-01-07 11:23:14,970 - render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for Classic Active Inference POMDP Agent v1\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/README.md\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - \u2705 rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Processing framework: activeinference_jl\n2026-01-07 11:23:14,971 - render.activeinference_jl.activeinference_renderer - INFO - Rendering GNN specification to ActiveInference.jl script for model: Classic Active Inference POMDP Agent v1\n2026-01-07 11:23:14,971 - render.activeinference_jl.activeinference_renderer - INFO - DEBUG: B_matrix type is <class 'tuple'>\n2026-01-07 11:23:14,971 - render.activeinference_jl.activeinference_renderer - INFO - DEBUG: Initial n_actions=1\n2026-01-07 11:23:14,971 - render.activeinference_jl.activeinference_renderer - INFO - Correcting n_actions from 1 to 3 based on B matrix\n2026-01-07 11:23:14,971 - render.activeinference_jl.activeinference_renderer - INFO - Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/README.md\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - \u2705 activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Processing framework: jax\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Extracting matrices from POMDP processor format\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Extracted variable dimensions: {n_states: 3, n_obs: 3, n_actions: 1}\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Created default matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Found initialparameterization, extracting actual matrix values\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Successfully extracted C vector: shape (3,)\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - Successfully extracted D vector: shape (3,)\n2026-01-07 11:23:14,971 - render.jax.jax_renderer - INFO - JAX model code written to /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/README.md\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - \u2705 jax: JAX model code generated successfully.\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Processing framework: discopy\n2026-01-07 11:23:14,971 - render.pomdp_processor - INFO - Created documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/README.md\n2026-01-07 11:23:14,972 - render.pomdp_processor - INFO - \u2705 discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 11:23:14,972 - render.processor - INFO - \u2705 Successfully processed actinf_pomdp_agent.md\n2026-01-07 11:23:14,972 - render.processor - INFO - Created overview documentation: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/README.md\n2026-01-07 11:23:14,972 - render.processor - INFO - \ud83c\udf89 Render processing completed!\n2026-01-07 11:23:14,972 - render.processor - INFO - \ud83d\udcca Files: 1/1 successful\n2026-01-07 11:23:14,972 - render.processor - INFO - \ud83e\udde0 Framework renderings: 5/5 successful (100.0%)\n2026-01-07 11:23:14,972 - render.processor - INFO - \ud83d\udcc4 Summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/render_processing_summary.json\n",
+        "memory_usage_mb": 24.921875,
+        "peak_memory_mb": 24.921875,
+        "memory_delta_mb": 1.921875,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -350,17 +306,17 @@
         "step_number": 5,
         "script_name": "11_render.py",
         "description": "Code rendering",
-        "start_time": "2026-01-07T06:26:12.344221",
-        "end_time": "2026-01-07T06:26:12.499247",
-        "duration_seconds": 0.15502405166625977
+        "start_time": "2026-01-07T11:23:14.878646",
+        "end_time": "2026-01-07T11:23:14.985285",
+        "duration_seconds": 0.10663509368896484
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:26:12,694 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: pip install pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-07 06:26:13,004 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-07 06:26:13,005 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-07 06:26:13,006 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-07 06:26:13,006 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-07 06:26:13,007 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 06:26:13,007 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 06:26:13,007 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 06:26:13,007 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 06:26:13,008 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:26:13,008 - execute - INFO - Found 5 executable scripts to run\n2026-01-07 06:26:13,008 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 06:26:21,341 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 06:26:21,341 - execute - INFO - Script output: \u2705 PyMDP is available\n...\n2026-01-07 06:26:21,347 - execute - INFO - Collecting execution outputs for pymdp script Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 06:26:21,348 - execute - INFO - Found 7 output files to collect for pymdp\n2026-01-07 06:26:21,350 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_dashboard.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_dashboard.png\n2026-01-07 06:26:21,351 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_A_matrix.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png\n2026-01-07 06:26:21,352 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_action_analysis.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png\n2026-01-07 06:26:21,353 - execute - INFO - Copied simulation_results.json \u2192 simulation_data/simulation_results.json\n2026-01-07 06:26:21,354 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png\n2026-01-07 06:26:21,355 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_preferences_prior.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png\n2026-01-07 06:26:21,355 - execute - INFO - Copied Classic Active Inference POMDP Agent v1_belief_evolution.png \u2192 visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png\n2026-01-07 06:26:21,356 - execute - INFO - Collected 7 output files: 6 visualizations, 1 data files, 0 traces\n2026-01-07 06:26:21,356 - execute - INFO - Extracting simulation data from collected files for pymdp\n2026-01-07 06:26:21,357 - execute - INFO - Extracted PyMDP data from simulation_results.json\n2026-01-07 06:26:21,357 - execute - INFO - Extracted 6 data fields from files\n2026-01-07 06:26:21,358 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 06:26:21,455 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_jax.py failed with return code 1\n2026-01-07 06:26:21,455 - execute - WARNING - Error output: Traceback (most recent call last):\n  File \"/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\", line...\n2026-01-07 06:26:21,457 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 06:26:23,188 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 06:26:23,188 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-07 06:26:23,196 - execute - INFO - Collecting execution outputs for discopy script Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 06:26:23,197 - execute - INFO - Found 5 output files to collect for discopy\n2026-01-07 06:26:23,198 - execute - INFO - Copied generative_model.png \u2192 visualizations/generative_model.png\n2026-01-07 06:26:23,198 - execute - INFO - Copied perception_action_loop.png \u2192 visualizations/perception_action_loop.png\n2026-01-07 06:26:23,199 - execute - INFO - Copied model_components.png \u2192 visualizations/model_components.png\n2026-01-07 06:26:23,222 - execute - INFO - Copied circuit_analysis.json \u2192 simulation_data/circuit_analysis.json\n2026-01-07 06:26:23,223 - execute - INFO - Copied circuit_info.json \u2192 simulation_data/circuit_info.json\n2026-01-07 06:26:23,223 - execute - INFO - Collected 5 output files: 3 visualizations, 2 data files, 0 traces\n2026-01-07 06:26:23,224 - execute - INFO - Extracting simulation data from collected files for discopy\n2026-01-07 06:26:23,224 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 06:26:52,336 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 06:26:52,336 - execute - INFO - Script output: \ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 1)\nD vector size: (3,)\nObservation sequence: [2, 3, 3, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 1, 3]\nObse...\n2026-01-07 06:26:52,338 - execute - INFO - Collecting execution outputs for rxinfer script Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 06:26:52,339 - execute - INFO - Found 2 output files to collect for rxinfer\n2026-01-07 06:26:52,339 - execute - INFO - Copied rxinfer_results.png \u2192 visualizations/rxinfer_results.png\n2026-01-07 06:26:52,340 - execute - INFO - Copied simulation_results.json \u2192 simulation_data/simulation_results.json\n2026-01-07 06:26:52,340 - execute - INFO - Collected 2 output files: 1 visualizations, 1 data files, 0 traces\n2026-01-07 06:26:52,340 - execute - INFO - Extracting simulation data from collected files for rxinfer\n2026-01-07 06:26:52,340 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:27:12,915 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:27:12,916 - execute - INFO - Script output: \ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Classic Ac...\n2026-01-07 06:27:12,917 - execute - INFO - Collecting execution outputs for activeinference_jl script Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 06:27:12,918 - execute - INFO - Extracting simulation data from collected files for activeinference_jl\n2026-01-07 06:27:12,919 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-07 06:27:12,919 - execute - WARNING - \u26a0\ufe0f Execute processing completed with 1/5 failures (partial success)\n",
-        "memory_usage_mb": 15.28125,
-        "peak_memory_mb": 25.15625,
-        "memory_delta_mb": -9.875,
+        "stderr": "2026-01-07 11:23:15,208 - root - WARNING - PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\n2026-01-07 11:23:15,726 - execute - INFO - \ud83d\ude80 Processing execute - searching for rendered implementations\n2026-01-07 11:23:15,726 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']\n2026-01-07 11:23:15,727 - execute - INFO - Found render output directory: output/11_render_output\n2026-01-07 11:23:15,727 - execute - INFO - Searching for executable scripts in: output/11_render_output\n2026-01-07 11:23:15,727 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 11:23:15,727 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 11:23:15,728 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 11:23:15,728 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 11:23:15,728 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:23:15,728 - execute - INFO - Found 5 executable scripts to run\n2026-01-07 11:23:15,728 - execute - INFO - Executing jax script: Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 11:23:16,524 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 11:23:16,524 - execute - INFO - Script output: ============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix s...\n2026-01-07 11:23:16,525 - execute - INFO - Collecting execution outputs for jax script Classic Active Inference POMDP Agent v1_jax.py\n2026-01-07 11:23:16,526 - execute - INFO - Extracting simulation data from collected files for jax\n2026-01-07 11:23:16,526 - execute - INFO - Executing discopy script: Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 11:23:17,193 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 11:23:17,193 - execute - INFO - Script output: \u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diag...\n2026-01-07 11:23:17,194 - execute - INFO - Collecting execution outputs for discopy script Classic Active Inference POMDP Agent v1_discopy.py\n2026-01-07 11:23:17,195 - execute - INFO - Found 5 output files to collect for discopy\n2026-01-07 11:23:17,195 - execute - INFO - Copied model_components.png \u2192 visualizations/model_components.png\n2026-01-07 11:23:17,196 - execute - INFO - Copied generative_model.png \u2192 visualizations/generative_model.png\n2026-01-07 11:23:17,196 - execute - INFO - Copied perception_action_loop.png \u2192 visualizations/perception_action_loop.png\n2026-01-07 11:23:17,197 - execute - INFO - Copied circuit_analysis.json \u2192 simulation_data/circuit_analysis.json\n2026-01-07 11:23:17,197 - execute - INFO - Copied circuit_info.json \u2192 simulation_data/circuit_info.json\n2026-01-07 11:23:17,197 - execute - INFO - Collected 5 output files: 3 visualizations, 2 data files, 0 traces\n2026-01-07 11:23:17,197 - execute - INFO - Extracting simulation data from collected files for discopy\n2026-01-07 11:23:17,198 - execute - INFO - Executing pymdp script: Classic Active Inference POMDP Agent v1_pymdp.py\n2026-01-07 11:23:18,371 - execute - WARNING - \u26a0\ufe0f Script Classic Active Inference POMDP Agent v1_pymdp.py failed with return code 1\n2026-01-07 11:23:18,372 - execute - WARNING - Error output: WARNING:root:PyMDP not available - this is normal if not installed. To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. Continuing with fallback mode and informative output.\nWARNING:src.execute.pymdp.package_detector:Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)\nWARNING:src.execute.pymdp.package_detector:Detected wrong PyMDP package variant (pymdp with MDP/MDPSolver)\nERROR:sr...\n2026-01-07 11:23:18,378 - execute - INFO - Executing rxinfer script: Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 11:24:44,404 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 11:24:44,502 - execute - INFO - Script output: \ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 1)\nD vector size: (3,)\nObservation sequence: [2, 3, 3, 2, 1, 1, 2, 1, 1, 1, 1, 1, 2, 2, 1, 2, 2, 2, 1, 3]\nObse...\n2026-01-07 11:24:44,695 - execute - INFO - Collecting execution outputs for rxinfer script Classic Active Inference POMDP Agent v1_rxinfer.jl\n2026-01-07 11:24:44,742 - execute - INFO - Found 2 output files to collect for rxinfer\n2026-01-07 11:24:44,749 - execute - INFO - Copied rxinfer_results.png \u2192 visualizations/rxinfer_results.png\n2026-01-07 11:24:44,751 - execute - INFO - Copied simulation_results.json \u2192 simulation_data/simulation_results.json\n2026-01-07 11:24:44,751 - execute - INFO - Collected 2 output files: 1 visualizations, 1 data files, 0 traces\n2026-01-07 11:24:44,752 - execute - INFO - Extracting simulation data from collected files for rxinfer\n2026-01-07 11:24:44,753 - execute - INFO - Executing activeinference_jl script: Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:25:24,740 - execute - INFO - \u2705 Successfully executed Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:25:24,741 - execute - INFO - Script output: \ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Classic Ac...\n2026-01-07 11:25:24,750 - execute - INFO - Collecting execution outputs for activeinference_jl script Classic Active Inference POMDP Agent v1_activeinference.jl\n2026-01-07 11:25:24,756 - execute - INFO - Found 6 output files to collect for activeinference_jl\n2026-01-07 11:25:24,756 - execute - INFO - Collected 6 output files: 6 visualizations, 0 data files, 0 traces\n2026-01-07 11:25:24,757 - execute - INFO - Extracting simulation data from collected files for activeinference_jl\n2026-01-07 11:25:24,773 - execute - INFO - Generated execution report: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/execution_results/execution_report.md\n2026-01-07 11:25:24,775 - execute - WARNING - \u26a0\ufe0f Execute processing completed with 1/5 failures (partial success)\n",
+        "memory_usage_mb": 11.28125,
+        "peak_memory_mb": 25.09375,
+        "memory_delta_mb": -13.8125,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -369,17 +325,17 @@
         "step_number": 6,
         "script_name": "12_execute.py",
         "description": "Execution",
-        "start_time": "2026-01-07T06:26:12.500089",
-        "end_time": "2026-01-07T06:27:13.035808",
-        "duration_seconds": 60.535712003707886
+        "start_time": "2026-01-07T11:23:14.985952",
+        "end_time": "2026-01-07T11:25:26.158938",
+        "duration_seconds": 131.17297315597534
       },
       {
         "status": "SUCCESS",
         "stdout": "",
-        "stderr": "2026-01-07 06:27:13,155 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-07 06:27:13,156 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-07 06:27:13,156 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-07 06:27:13,156 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
-        "memory_usage_mb": 25.75,
-        "peak_memory_mb": 25.75,
-        "memory_delta_mb": 1.453125,
+        "stderr": "2026-01-07 11:25:26,382 - 15_audio.py - INFO - Processing audio for files in /Users/mini/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files\n2026-01-07 11:25:26,382 - 15_audio.py - INFO - \ud83c\udfb5 Audio processing summary saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_processing_summary.json\n2026-01-07 11:25:26,382 - 15_audio.py - INFO - \ud83d\udd27 Audio backends status saved to: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/audio_backends_status.json\n2026-01-07 11:25:26,382 - 15_audio.py - INFO - \u2705 Audio processing completed\n",
+        "memory_usage_mb": 21.4375,
+        "peak_memory_mb": 21.4375,
+        "memory_delta_mb": 1.84375,
         "exit_code": 0,
         "retry_count": 0,
         "prerequisite_check": true,
@@ -388,14 +344,14 @@
         "step_number": 7,
         "script_name": "15_audio.py",
         "description": "Audio processing",
-        "start_time": "2026-01-07T06:27:13.036796",
-        "end_time": "2026-01-07T06:27:13.165327",
-        "duration_seconds": 0.12853026390075684
+        "start_time": "2026-01-07T11:25:26.181919",
+        "end_time": "2026-01-07T11:25:26.394329",
+        "duration_seconds": 0.21240711212158203
       }
     ],
-    "end_time": "2026-01-07T06:27:13.165827",
+    "end_time": "2026-01-07T11:25:26.394993",
     "overall_status": "SUCCESS",
-    "total_duration_seconds": 63.751194,
+    "total_duration_seconds": 136.237485,
     "environment_info": {
       "python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]",
       "platform": "darwin",
@@ -403,10 +359,10 @@
       "working_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation",
       "user": "mini",
       "memory_total_gb": "16.0",
-      "disk_free_gb": "113.4"
+      "disk_free_gb": "103.2"
     },
     "performance_summary": {
-      "peak_memory_mb": 36.390625,
+      "peak_memory_mb": 36.484375,
       "total_steps": 7,
       "failed_steps": 0,
       "critical_failures": 0,
@@ -621,7 +577,7 @@
       },
       "11_render_output": {
         "step": "11_render_output",
-        "count": 10,
+        "count": 22,
         "files": [
           {
             "name": "rxinfer_results.png",
@@ -639,7 +595,7 @@
             "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 35562,
+            "size_bytes": 35583,
             "size_mb": 0.03,
             "step": "11_render_output"
           },
@@ -649,7 +605,7 @@
             "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 76978,
+            "size_bytes": 77056,
             "size_mb": 0.07,
             "step": "11_render_output"
           },
@@ -659,75 +615,195 @@
             "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 59924,
+            "size_bytes": 60037,
             "size_mb": 0.06,
             "step": "11_render_output"
           },
           {
-            "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 316454,
-            "size_mb": 0.3,
+            "size_bytes": 178917,
+            "size_mb": 0.17,
             "step": "11_render_output"
           },
           {
-            "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 413757,
+            "size_bytes": 407708,
             "size_mb": 0.39,
             "step": "11_render_output"
           },
           {
-            "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 105769,
-            "size_mb": 0.1,
+            "size_bytes": 291504,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 294294,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 291504,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 178917,
+            "size_mb": 0.17,
+            "step": "11_render_output"
+          },
+          {
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 146149,
+            "size_mb": 0.14,
             "step": "11_render_output"
           },
           {
             "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 111885,
-            "size_mb": 0.11,
+            "size_bytes": 146149,
+            "size_mb": 0.14,
             "step": "11_render_output"
           },
           {
             "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 193810,
-            "size_mb": 0.18,
+            "size_bytes": 294294,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 407708,
+            "size_mb": 0.39,
+            "step": "11_render_output"
+          },
+          {
+            "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 144679,
+            "size_mb": 0.14,
             "step": "11_render_output"
           },
           {
             "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 115684,
-            "size_mb": 0.11,
+            "size_bytes": 144679,
+            "size_mb": 0.14,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 407708,
+            "size_mb": 0.39,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 291504,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 178917,
+            "size_mb": 0.17,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 146149,
+            "size_mb": 0.14,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 294294,
+            "size_mb": 0.28,
+            "step": "11_render_output"
+          },
+          {
+            "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+            "type": "image",
+            "extension": ".png",
+            "size_bytes": 144679,
+            "size_mb": 0.14,
             "step": "11_render_output"
           }
         ]
       },
       "12_execute_output": {
         "step": "12_execute_output",
-        "count": 20,
+        "count": 8,
         "files": [
           {
             "name": "discopy_diagrams_perception_action_loop.png",
@@ -735,7 +811,7 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 59924,
+            "size_bytes": 60037,
             "size_mb": 0.06,
             "step": "12_execute_output"
           },
@@ -745,7 +821,7 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 35562,
+            "size_bytes": 35583,
             "size_mb": 0.03,
             "step": "12_execute_output"
           },
@@ -755,7 +831,7 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 76978,
+            "size_bytes": 77056,
             "size_mb": 0.07,
             "step": "12_execute_output"
           },
@@ -765,7 +841,7 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 35562,
+            "size_bytes": 35583,
             "size_mb": 0.03,
             "step": "12_execute_output"
           },
@@ -775,7 +851,7 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 76978,
+            "size_bytes": 77056,
             "size_mb": 0.07,
             "step": "12_execute_output"
           },
@@ -785,128 +861,8 @@
             "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 59924,
+            "size_bytes": 60037,
             "size_mb": 0.06,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 105769,
-            "size_mb": 0.1,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 316522,
-            "size_mb": 0.3,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 428478,
-            "size_mb": 0.41,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 193810,
-            "size_mb": 0.18,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 413757,
-            "size_mb": 0.39,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 91301,
-            "size_mb": 0.09,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 111885,
-            "size_mb": 0.11,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 111885,
-            "size_mb": 0.11,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 179576,
-            "size_mb": 0.17,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 316454,
-            "size_mb": 0.3,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 115684,
-            "size_mb": 0.11,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 115684,
-            "size_mb": 0.11,
             "step": "12_execute_output"
           },
           {
@@ -920,9 +876,9 @@
             "step": "12_execute_output"
           },
           {
-            "name": "rxinfer_rxinfer_results.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
+            "name": "rxinfer_results_1.png",
+            "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
+            "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
             "type": "image",
             "extension": ".png",
             "size_bytes": 20071,
@@ -1156,7 +1112,7 @@
           "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 35562,
+          "size_bytes": 35583,
           "size_mb": 0.03,
           "step": "11_render_output"
         },
@@ -1166,7 +1122,7 @@
           "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 76978,
+          "size_bytes": 77056,
           "size_mb": 0.07,
           "step": "11_render_output"
         },
@@ -1176,68 +1132,188 @@
           "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 59924,
+          "size_bytes": 60037,
           "size_mb": 0.06,
           "step": "11_render_output"
         },
         {
-          "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 316454,
-          "size_mb": 0.3,
+          "size_bytes": 178917,
+          "size_mb": 0.17,
           "step": "11_render_output"
         },
         {
-          "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 413757,
+          "size_bytes": 407708,
           "size_mb": 0.39,
           "step": "11_render_output"
         },
         {
-          "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 105769,
-          "size_mb": 0.1,
+          "size_bytes": 291504,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 294294,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 291504,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 178917,
+          "size_mb": 0.17,
+          "step": "11_render_output"
+        },
+        {
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 146149,
+          "size_mb": 0.14,
           "step": "11_render_output"
         },
         {
           "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 111885,
-          "size_mb": 0.11,
+          "size_bytes": 146149,
+          "size_mb": 0.14,
           "step": "11_render_output"
         },
         {
           "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 193810,
-          "size_mb": 0.18,
+          "size_bytes": 294294,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 407708,
+          "size_mb": 0.39,
+          "step": "11_render_output"
+        },
+        {
+          "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 144679,
+          "size_mb": 0.14,
           "step": "11_render_output"
         },
         {
           "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 115684,
-          "size_mb": 0.11,
+          "size_bytes": 144679,
+          "size_mb": 0.14,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 407708,
+          "size_mb": 0.39,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 291504,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 178917,
+          "size_mb": 0.17,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 146149,
+          "size_mb": 0.14,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 294294,
+          "size_mb": 0.28,
+          "step": "11_render_output"
+        },
+        {
+          "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+          "type": "image",
+          "extension": ".png",
+          "size_bytes": 144679,
+          "size_mb": 0.14,
           "step": "11_render_output"
         },
         {
@@ -1246,7 +1322,7 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 59924,
+          "size_bytes": 60037,
           "size_mb": 0.06,
           "step": "12_execute_output"
         },
@@ -1256,7 +1332,7 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 35562,
+          "size_bytes": 35583,
           "size_mb": 0.03,
           "step": "12_execute_output"
         },
@@ -1266,7 +1342,7 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 76978,
+          "size_bytes": 77056,
           "size_mb": 0.07,
           "step": "12_execute_output"
         },
@@ -1276,7 +1352,7 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 35562,
+          "size_bytes": 35583,
           "size_mb": 0.03,
           "step": "12_execute_output"
         },
@@ -1286,7 +1362,7 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 76978,
+          "size_bytes": 77056,
           "size_mb": 0.07,
           "step": "12_execute_output"
         },
@@ -1296,128 +1372,8 @@
           "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 59924,
+          "size_bytes": 60037,
           "size_mb": 0.06,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 105769,
-          "size_mb": 0.1,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 316522,
-          "size_mb": 0.3,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 428478,
-          "size_mb": 0.41,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 193810,
-          "size_mb": 0.18,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 413757,
-          "size_mb": 0.39,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 91301,
-          "size_mb": 0.09,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 111885,
-          "size_mb": 0.11,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 111885,
-          "size_mb": 0.11,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 179576,
-          "size_mb": 0.17,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 316454,
-          "size_mb": 0.3,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 115684,
-          "size_mb": 0.11,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 115684,
-          "size_mb": 0.11,
           "step": "12_execute_output"
         },
         {
@@ -1431,9 +1387,9 @@
           "step": "12_execute_output"
         },
         {
-          "name": "rxinfer_rxinfer_results.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
+          "name": "rxinfer_results_1.png",
+          "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
+          "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
           "type": "image",
           "extension": ".png",
           "size_bytes": 20071,
@@ -1661,7 +1617,7 @@
         "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 35562,
+        "size_bytes": 35583,
         "size_mb": 0.03,
         "step": "11_render_output"
       },
@@ -1671,7 +1627,7 @@
         "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 76978,
+        "size_bytes": 77056,
         "size_mb": 0.07,
         "step": "11_render_output"
       },
@@ -1681,68 +1637,188 @@
         "relative_path": "11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 59924,
+        "size_bytes": 60037,
         "size_mb": 0.06,
         "step": "11_render_output"
       },
       {
-        "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 316454,
-        "size_mb": 0.3,
+        "size_bytes": 178917,
+        "size_mb": 0.17,
         "step": "11_render_output"
       },
       {
-        "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 413757,
+        "size_bytes": 407708,
         "size_mb": 0.39,
         "step": "11_render_output"
       },
       {
-        "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 105769,
-        "size_mb": 0.1,
+        "size_bytes": 291504,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 294294,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 291504,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 178917,
+        "size_mb": 0.17,
+        "step": "11_render_output"
+      },
+      {
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 146149,
+        "size_mb": 0.14,
         "step": "11_render_output"
       },
       {
         "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 111885,
-        "size_mb": 0.11,
+        "size_bytes": 146149,
+        "size_mb": 0.14,
         "step": "11_render_output"
       },
       {
         "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 193810,
-        "size_mb": 0.18,
+        "size_bytes": 294294,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 407708,
+        "size_mb": 0.39,
+        "step": "11_render_output"
+      },
+      {
+        "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 144679,
+        "size_mb": 0.14,
         "step": "11_render_output"
       },
       {
         "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 115684,
-        "size_mb": 0.11,
+        "size_bytes": 144679,
+        "size_mb": 0.14,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 407708,
+        "size_mb": 0.39,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 291504,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 178917,
+        "size_mb": 0.17,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 146149,
+        "size_mb": 0.14,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 294294,
+        "size_mb": 0.28,
+        "step": "11_render_output"
+      },
+      {
+        "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-25-10/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
+        "type": "image",
+        "extension": ".png",
+        "size_bytes": 144679,
+        "size_mb": 0.14,
         "step": "11_render_output"
       },
       {
@@ -1751,7 +1827,7 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 59924,
+        "size_bytes": 60037,
         "size_mb": 0.06,
         "step": "12_execute_output"
       },
@@ -1761,7 +1837,7 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 35562,
+        "size_bytes": 35583,
         "size_mb": 0.03,
         "step": "12_execute_output"
       },
@@ -1771,7 +1847,7 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 76978,
+        "size_bytes": 77056,
         "size_mb": 0.07,
         "step": "12_execute_output"
       },
@@ -1781,7 +1857,7 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 35562,
+        "size_bytes": 35583,
         "size_mb": 0.03,
         "step": "12_execute_output"
       },
@@ -1791,7 +1867,7 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 76978,
+        "size_bytes": 77056,
         "size_mb": 0.07,
         "step": "12_execute_output"
       },
@@ -1801,128 +1877,8 @@
         "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 59924,
+        "size_bytes": 60037,
         "size_mb": 0.06,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 105769,
-        "size_mb": 0.1,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_dashboard.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 316522,
-        "size_mb": 0.3,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 428478,
-        "size_mb": 0.41,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 193810,
-        "size_mb": 0.18,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 413757,
-        "size_mb": 0.39,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 91301,
-        "size_mb": 0.09,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 111885,
-        "size_mb": 0.11,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 111885,
-        "size_mb": 0.11,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 179576,
-        "size_mb": 0.17,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_dashboard.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 316454,
-        "size_mb": 0.3,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 115684,
-        "size_mb": 0.11,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 115684,
-        "size_mb": 0.11,
         "step": "12_execute_output"
       },
       {
@@ -1936,9 +1892,9 @@
         "step": "12_execute_output"
       },
       {
-        "name": "rxinfer_rxinfer_results.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_rxinfer_results.png",
+        "name": "rxinfer_results_1.png",
+        "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
+        "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
         "type": "image",
         "extension": ".png",
         "size_bytes": 20071,
@@ -1957,9 +1913,9 @@
       }
     ]
   },
-  "health_score": 35.0,
+  "health_score": 30.0,
   "report_metadata": {
-    "generation_time": "2026-01-07T06:32:19.048974",
+    "generation_time": "2026-01-07T11:31:47.446286",
     "formats_generated": [
       "html",
       "markdown",

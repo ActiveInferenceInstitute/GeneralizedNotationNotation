@@ -156,7 +156,7 @@ flowchart LR
 | Warning | Quick Fix |
 |---------|-----------|
 | **Step 10** (Advanced Viz) | ✅ False positive - no action needed |
-| **Step 13** (Execute) | `uv pip install pymdp[full] jax[cpu] flax` |
+| **Step 13** (Execute) | `uv pip install inferactively-pymdp jax[cpu] flax` |
 | **Step 14** (LLM) | `ollama pull llama2:7b` or set `OPENAI_API_KEY` |
 | **Step 3** (Tests) | ✅ Fixed - now completes in <5 minutes |
 
@@ -167,10 +167,10 @@ flowchart LR
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 
 # Full installation with uv
-uv pip install pymdp[full] jax[cpu] flax optax
+uv pip install inferactively-pymdp jax[cpu] flax optax
 
 # Verify
-python3 -c "from pymdp.agent import Agent; print('✅ PyMDP OK')"
+python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"
 python3 -c "import jax; import flax.linen; print('✅ JAX OK')"
 ```
 

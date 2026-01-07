@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_rxinfer.jl
-Timestamp: 2026-01-07T06:57:46.806552
+Timestamp: 2026-01-07T11:27:48.765069
 Return Code: 0
-Execution Time: 19.94 seconds
+Execution Time: 33.90 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -17,6 +17,6 @@ Saved plot to rxinfer_results.png
 
 
 STDERR:
-[32m[1m   Resolving[22m[39m package versions...
-[36m[1m     Project[22m[39m No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
-[36m[1m    Manifest[22m[39m No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`
+   Resolving package versions...
+     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
+    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`

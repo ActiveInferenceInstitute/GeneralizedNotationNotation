@@ -1,15 +1,15 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-07T06:32:19.037490  
+**Generated:** 2026-01-07T11:31:47.434570  
 **Pipeline Output Directory:** output  
-**Health Score:** 35.0/100
+**Health Score:** 30.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 14
-- **Total Files Processed:** 1
+- **Total Files Processed:** 0
 - **Total Size:** 0.0 MB
-- **Success Rate:** 14.3%
+- **Success Rate:** 7.1%
 
 ## ⚡ Performance Metrics
 
@@ -70,28 +70,14 @@
 
 *Step directory not found or empty*
 
-### ✅ Website
+### ❌ Website
 
-- **Files:** 1
-- **Size:** 0.0 MB
-- **Last Modified:** 2026-01-07T06:29:37.414308
-- **Status:** success
-
-- **File Types:** .html: 1
-- **Key Files:**
-  - index.html (0.0 MB)
-- **Missing Dependencies:** visualization, ontology_processing
+*Step directory not found or empty*
 
 ### ❌ Report Processing Step
 
 *Step directory not found or empty*
 
-
-## 📁 File Type Analysis
-
-| File Type | Count | Total Size (MB) |
-|-----------|-------|-----------------|
-| .html | 1 | 0.0 |
 
 ## 🎨 Visualizations
 
@@ -127,23 +113,24 @@
 
 ### 11 Render
 
-**Count:** 10
+**Count:** 22
 
 **Files:**
 - [rxinfer_results.png](../11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png) (0.02 MB)
 - [model_components.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/model_components.png) (0.03 MB)
 - [generative_model.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/generative_model.png) (0.07 MB)
 - [perception_action_loop.png](../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/perception_action_loop.png) (0.06 MB)
-- [Classic Active Inference POMDP Agent v1_dashboard.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png) (0.3 MB)
-- [Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png) (0.39 MB)
-- [Classic Active Inference POMDP Agent v1_action_analysis.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png) (0.1 MB)
-- [Classic Active Inference POMDP Agent v1_preferences_prior.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png) (0.11 MB)
-- [Classic Active Inference POMDP Agent v1_belief_evolution.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png) (0.18 MB)
-- [Classic Active Inference POMDP Agent v1_A_matrix.png](../11_render_output/actinf_pomdp_agent/pymdp/output/pymdp_simulations/Classic Active Inference POMDP Agent v1/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png) (0.11 MB)
+- [visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png) (0.17 MB)
+- [Classic Active Inference POMDP Agent v1_dashboard.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png) (0.39 MB)
+- [Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png) (0.28 MB)
+- [visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png) (0.28 MB)
+- [visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png) (0.28 MB)
+- [Classic Active Inference POMDP Agent v1_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png) (0.17 MB)
+- ... and 12 more
 
 ### 12 Execute
 
-**Count:** 20
+**Count:** 8
 
 **Files:**
 - [discopy_diagrams_perception_action_loop.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png) (0.06 MB)
@@ -152,11 +139,8 @@
 - [discopy_diagrams_model_components.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png) (0.03 MB)
 - [generative_model.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png) (0.07 MB)
 - [perception_action_loop.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png) (0.06 MB)
-- [visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png](../12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_action_analysis.png) (0.1 MB)
-- [Classic Active Inference POMDP Agent v1_dashboard.png](../12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png) (0.3 MB)
-- [Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png](../12_execute_output/actinf_pomdp_agent/pymdp/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png) (0.41 MB)
-- [visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png](../12_execute_output/actinf_pomdp_agent/pymdp/visualizations/visualizations_Classic Active Inference POMDP Agent v1_belief_evolution.png) (0.18 MB)
-- ... and 10 more
+- [rxinfer_results.png](../12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png) (0.02 MB)
+- [rxinfer_results_1.png](../12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png) (0.02 MB)
 
 ### 20 Website
 
@@ -170,12 +154,11 @@
 
 ### Missing Prerequisites:
 - **execution_results** missing: gnn_rendered_simulators
-- **website** missing: visualization, ontology_processing
 
 ## 📈 Pipeline Execution Summary
 
-- **Start Time:** 2026-01-07T06:26:09.414633
-- **End Time:** 2026-01-07T06:27:13.165827
+- **Start Time:** 2026-01-07T11:23:10.157508
+- **End Time:** 2026-01-07T11:25:26.394993
 - **Overall Status:** SUCCESS
 - **Total Steps:** 7
 

@@ -1,3 +1,0 @@
-Category: type_checker
-Success: True
-Duration: 0.00s

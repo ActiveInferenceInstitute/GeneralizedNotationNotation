@@ -1,5 +1,7 @@
 # GeneralizedNotationNotation (GNN)
 
+**Last Updated**: 2026-01-07
+
 <div align="center">
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](./LICENSE.md)
@@ -556,10 +558,10 @@ The **GNN Type Checker** (pipeline step 5) helps validate GNN files and estimate
 
 ```bash
 # Run only type checker
-python src/main.py --only-steps 4 --target-dir path/to/gnn_files
+python src/main.py --only-steps 5 --target-dir path/to/gnn_files
 
 # Include resource estimation
-python src/main.py --only-steps 4 --estimate-resources --target-dir path/to/gnn_files
+python src/main.py --only-steps 5 --estimate-resources --target-dir path/to/gnn_files
 
 # Run full pipeline
 python src/main.py --target-dir path/to/gnn_files
@@ -592,7 +594,7 @@ GNN files can be visualized to create comprehensive graphical representations of
 
 ```bash
 # Generate visualizations
-python src/main.py --only-steps 6 --target-dir path/to/gnn_file.md
+python src/main.py --only-steps 8 --target-dir path/to/gnn_file.md
 ```
 
 #### 🖼️ Visualization Types
@@ -786,7 +788,7 @@ uv run python src/main.py --only-steps 2 --recreate-uv-env --dev
 # Run with verbose logging
 python src/main.py --verbose
 # Check specific step
-python src/main.py --only-steps 4 --verbose
+python src/main.py --only-steps 5 --verbose
 ```
 
 **💾 Disk Space Issues**
@@ -907,10 +909,10 @@ python src/main.py --target-dir src/gnn/gnn_examples --estimate-resources --verb
 python src/main.py --verbose --estimate-resources --dev
 
 # Type check only (fastest validation)  
-python src/main.py --only-steps 4 --strict
+python src/main.py --only-steps 5 --strict
 
 # Visualization only (quick preview)
-python src/main.py --only-steps 6
+python src/main.py --only-steps 8
 
 # Complete analysis for single file
 python src/main.py --target-dir path/to/file.md --verbose

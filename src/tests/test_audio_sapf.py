@@ -10,6 +10,7 @@ import sys
 import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional, Tuple
+import numpy as np
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -25,7 +26,7 @@ class TestSAPFCodeValidation:
     def test_validate_sapf_code_valid(self):
         """Test validation of valid SAPF code."""
         try:
-            from sapf.sapf_gnn_processor import validate_sapf_code
+            from audio.sapf.sapf_gnn_processor import validate_sapf_code
         except ImportError:
             pytest.skip("SAPF validation not available")
         
@@ -46,7 +47,7 @@ final_audio play
     def test_validate_sapf_code_invalid(self):
         """Test validation of invalid SAPF code."""
         try:
-            from sapf.sapf_gnn_processor import validate_sapf_code
+            from audio.sapf.sapf_gnn_processor import validate_sapf_code
         except ImportError:
             pytest.skip("SAPF validation not available")
         
@@ -85,7 +86,7 @@ class TestSAPFStandaloneFunctions:
     def test_convert_gnn_to_sapf_function(self):
         """Test standalone convert_gnn_to_sapf function."""
         try:
-            from sapf.sapf_gnn_processor import convert_gnn_to_sapf
+            from audio.sapf.sapf_gnn_processor import convert_gnn_to_sapf
         except ImportError:
             pytest.skip("SAPF conversion function not available")
         
@@ -114,7 +115,7 @@ Static
     def test_generate_oscillator_audio_function(self):
         """Test standalone generate_oscillator_audio function."""
         try:
-            from sapf.audio_generators import generate_oscillator_audio
+            from audio.sapf.audio_generators import generate_oscillator_audio
         except ImportError:
             pytest.skip("SAPF oscillator function not available")
         
@@ -129,7 +130,7 @@ Static
     def test_apply_envelope_function(self):
         """Test standalone apply_envelope function."""
         try:
-            from sapf.audio_generators import apply_envelope
+            from audio.sapf.audio_generators import apply_envelope
         except ImportError:
             pytest.skip("SAPF envelope function not available")
         
@@ -148,7 +149,7 @@ Static
     def test_mix_audio_channels_function(self):
         """Test standalone mix_audio_channels function."""
         try:
-            from sapf.audio_generators import mix_audio_channels
+            from audio.sapf.audio_generators import mix_audio_channels
         except ImportError:
             pytest.skip("SAPF mixing function not available")
         

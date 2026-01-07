@@ -90,9 +90,11 @@ try:
         PipelineProgressTracker,
         VisualLoggingEnhancer,
         PipelineLogger,
+        PipelineLogger,
         log_pipeline_summary,
         reset_progress_tracker,
-        setup_step_logging
+        setup_step_logging,
+        rotate_logs
     )
     from utils.visual_logging import (
         VisualLogger,
@@ -137,6 +139,16 @@ def main():
 
     # Setup logging (use structured if available, fallback to standard)
     if STRUCTURED_LOGGING_AVAILABLE:
+        # Prepare log directory
+        log_dir = args.output_dir / "logs"
+        log_dir.mkdir(parents=True, exist_ok=True)
+
+        # Rotate existing logs
+        rotate_logs(log_dir)
+
+        # Enable JSON logging
+        PipelineLogger.enable_json_logging(log_dir)
+
         logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
         # Reset progress tracker for new pipeline run
         reset_progress_tracker()

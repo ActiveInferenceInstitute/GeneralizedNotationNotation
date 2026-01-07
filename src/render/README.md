@@ -16,8 +16,6 @@ This module provides comprehensive **POMDP-aware code generation** capabilities 
 
 ## POMDP Processing Pipeline
 
-## POMDP Processing Pipeline
-
 ```mermaid
 graph TD
     GNN[GNN File] --> Extract[POMDP Extraction]
@@ -37,6 +35,104 @@ graph TD
     ActInf --> Code3[Julia Code]
     JAX --> Code4[Python Code]
     DisCoPy --> Code5[Python Code]
+```
+
+### Framework Rendering Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFile[GNN Specification]
+        POMDPExtract[POMDP State Space Extraction]
+        Validate[POMDP Validation]
+    end
+    
+    subgraph "Framework Renderers"
+        PyMDPRenderer[PyMDP Renderer]
+        RxInferRenderer[RxInfer.jl Renderer]
+        ActInfRenderer[ActiveInference.jl Renderer]
+        JAXRenderer[JAX Renderer]
+        DisCoPyRenderer[DisCoPy Renderer]
+    end
+    
+    subgraph "Code Generation"
+        PyMDPCode[Python Simulation Code]
+        RxInferCode[Julia + TOML Config]
+        ActInfCode[Julia Simulation Code]
+        JAXCode[JAX Optimized Code]
+        DisCoPyCode[DisCoPy Diagram Code]
+    end
+    
+    subgraph "Output Organization"
+        PyMDPOut[pymdp_gen/]
+        RxInferOut[rxinfer/]
+        ActInfOut[activeinference_jl/]
+        JAXOut[jax/]
+        DisCoPyOut[discopy/]
+    end
+    
+    GNNFile --> POMDPExtract
+    POMDPExtract --> Validate
+    Validate --> PyMDPRenderer
+    Validate --> RxInferRenderer
+    Validate --> ActInfRenderer
+    Validate --> JAXRenderer
+    Validate --> DisCoPyRenderer
+    
+    PyMDPRenderer --> PyMDPCode
+    RxInferRenderer --> RxInferCode
+    ActInfRenderer --> ActInfCode
+    JAXRenderer --> JAXCode
+    DisCoPyRenderer --> DisCoPyCode
+    
+    PyMDPCode --> PyMDPOut
+    RxInferCode --> RxInferOut
+    ActInfCode --> ActInfOut
+    JAXCode --> JAXOut
+    DisCoPyCode --> DisCoPyOut
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 11"
+        Step11[11_render.py Orchestrator]
+    end
+    
+    subgraph "Render Module"
+        Processor[processor.py]
+        POMDPProc[pomdp_processor.py]
+        Generators[generators.py]
+    end
+    
+    subgraph "Framework Renderers"
+        PyMDP[pymdp/]
+        RxInfer[rxinfer/]
+        ActInf[activeinference_jl/]
+        JAX[jax/]
+        DisCoPy[discopy/]
+    end
+    
+    subgraph "Downstream Step"
+        Step12[Step 12: Execute]
+    end
+    
+    Step11 --> Processor
+    Processor --> POMDPProc
+    Processor --> Generators
+    
+    POMDPProc --> PyMDP
+    POMDPProc --> RxInfer
+    POMDPProc --> ActInf
+    POMDPProc --> JAX
+    POMDPProc --> DisCoPy
+    
+    PyMDP -->|Generated Code| Step12
+    RxInfer -->|Generated Code| Step12
+    ActInf -->|Generated Code| Step12
+    JAX -->|Generated Code| Step12
+    DisCoPy -->|Generated Code| Step12
 ```
 
 ## Module Structure

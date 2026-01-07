@@ -12,7 +12,7 @@
 
 **Version**: 2.0.0
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 
 ---
 
@@ -34,101 +34,202 @@
 
 ## API Reference
 
-### Public Functions
+### Pipeline Processing Function
 
-#### `process_gnn_directory(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = True, validation_level: str = "standard", **kwargs) -> bool`
-**Description**: Main processing function that discovers, parses, and serializes GNN files. This is the primary entry point for GNN processing.
+#### `process_gnn_multi_format(target_dir: Path, output_dir: Path, logger: logging.Logger, recursive: bool = True, verbose: bool = False, **kwargs: Any) -> bool`
+**Description**: Main processing function used by pipeline orchestrator (3_gnn.py). Discovers, parses, and serializes GNN files to all supported formats.
 
 **Parameters**:
-- `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for processed files
-- `logger` (logging.Logger): Logger instance for logging
-- `recursive` (bool): Whether to search subdirectories recursively (default: True)
-- `validation_level` (str): Validation level ("basic", "standard", "strict", "research") (default: "standard")
-- `**kwargs`: Additional options:
-  - `enable_round_trip` (bool): Enable round-trip testing (default: False)
-  - `enable_cross_format` (bool): Enable cross-format validation (default: False)
-  - `formats` (List[str]): Specific formats to serialize (default: all formats)
+- `target_dir` (Path): Directory containing GNN files to process
+- `output_dir` (Path): Base output directory (step-specific directory will be created)
+- `logger` (logging.Logger): Logger instance
+- `recursive` (bool): Whether to recurse into subdirectories (default: True)
+- `verbose` (bool): Enable verbose logs (default: False)
+- `**kwargs` (Any): Additional processing options
 
-**Returns**: `bool` - True if processing succeeded, False otherwise
+**Returns**: `bool` - True on success, False otherwise
+
+**Location**: `src/gnn/multi_format_processor.py`
 
 **Example**:
 ```python
-from gnn import process_gnn_directory
+from gnn.multi_format_processor import process_gnn_multi_format
 from pathlib import Path
 import logging
 
 logger = logging.getLogger(__name__)
-success = process_gnn_directory(
+success = process_gnn_multi_format(
     target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/3_gnn_output"),
+    output_dir=Path("output"),
     logger=logger,
     recursive=True,
-    validation_level="standard",
-    enable_round_trip=False
+    verbose=True
 )
 ```
 
-#### `process_gnn_directory_lightweight(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> bool`
-**Description**: Lightweight GNN processing function with minimal dependencies and faster execution.
+### Exported Functions from `__init__.py`
+
+#### `process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Path, None] = None, recursive: bool = True, parallel: bool = False) -> Dict[str, Any]`
+**Description**: Process all GNN files in a directory. Returns processing results dictionary.
+
+**Parameters**:
+- `directory` (Union[str, Path]): Directory to process
+- `output_dir` (Union[str, Path, None]): Optional output directory for results (default: None)
+- `recursive` (bool): Whether to process subdirectories (default: True)
+- `parallel` (bool): Whether to use parallel processing (not implemented, default: False)
+
+**Returns**: `Dict[str, Any]` - Dictionary with processing results containing:
+- `status` (str): Processing status ("SUCCESS" or "FAILED")
+- `files` (List[str]): List of processed file paths
+- `processed_files` (List[str]): List of successfully processed files
+
+**Location**: `src/gnn/processor.py`
+
+#### `process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None, recursive: bool = False) -> Dict[str, Any]`
+**Description**: Lightweight GNN directory processing without heavy dependencies and faster execution.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files
-- `output_dir` (Path): Output directory for processed files
-- `logger` (logging.Logger): Logger instance
-- `**kwargs`: Additional lightweight processing options
+- `output_dir` (Path, optional): Directory to save results (default: None)
+- `recursive` (bool): Whether to process subdirectories (default: False)
 
-**Returns**: `bool` - True if processing succeeded, False otherwise
+**Returns**: `Dict[str, Any]` - Dictionary with processing results containing:
+- `timestamp` (str): Processing timestamp
+- `target_directory` (str): Source directory path
+- `files_found` (int): Number of files discovered
+- `files_processed` (int): Number of files successfully processed
+- `success` (bool): Overall success status
+- `errors` (List[Dict]): List of error information
+- `parsed_files` (List[Dict]): List of parsed file information
+- `validation_results` (List[Dict]): List of validation results
 
-#### `discover_gnn_files(target_dir: Path, recursive: bool = True) -> List[Path]`
+**Location**: `src/gnn/processor.py`
+
+#### `discover_gnn_files(directory: Union[str, Path], recursive: bool = True) -> List[Path]`
 **Description**: Discovers all GNN specification files in target directory with support for multiple formats.
 
 **Parameters**:
-- `target_dir` (Path): Directory to search
+- `directory` (Union[str, Path]): Directory to search
 - `recursive` (bool): Whether to search subdirectories (default: True)
 
 **Returns**: `List[Path]` - List of Path objects for discovered GNN files
 
-**Supported Extensions**: `.md`, `.gnn`, `.json`, `.yaml`, `.xml`, and other GNN-compatible formats
+**Supported Extensions**: `.md`, `.markdown`, `.json`, `.xml`, `.yaml`, `.yml`, `.py`, `.jl`, `.hs`, `.lean`, `.v`, `.thy`, `.max`, `.proto`, `.xsd`, `.asn1`, `.pkl`, `.als`, `.z`, `.tla`, `.agda`, `.bnf`, `.ebnf`
 
-#### `parse_gnn_file(file_path: Path, validation_level: str = "standard") -> ParsedGNN`
-**Description**: Parse a single GNN file into structured representation.
+**Location**: `src/gnn/processor.py`
 
-**Parameters**:
-- `file_path` (Path): Path to GNN file to parse
-- `validation_level` (str): Validation level to apply during parsing (default: "standard")
-
-**Returns**: `ParsedGNN` - Parsed GNN model object with:
-- `model_name` (str): Name of the model
-- `variables` (List[Variable]): List of variable definitions
-- `connections` (List[Connection]): List of connections
-- `parameters` (Dict[str, Any]): Initial parameterization
-- `metadata` (Dict[str, Any]): Model metadata
-
-**Raises**: `ParseError` if file cannot be parsed
-
-#### `validate_gnn_structure(parsed_gnn: ParsedGNN, validation_level: str = "standard") -> ValidationResult`
-**Description**: Validate GNN structure for correctness and consistency.
+#### `parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]`
+**Description**: Parse a single GNN file and extract basic information.
 
 **Parameters**:
-- `parsed_gnn` (ParsedGNN): Parsed GNN model to validate
-- `validation_level` (str): Validation level ("basic", "standard", "strict", "research")
+- `file_path` (Union[str, Path]): Path to the GNN file
 
-**Returns**: `ValidationResult` - Validation result with:
-- `is_valid` (bool): Whether structure is valid
+**Returns**: `Dict[str, Any]` - Dictionary with parsed information containing:
+- `file_path` (str): Path to the file
+- `file_name` (str): Name of the file
+- `file_size` (int): Size of the file in bytes
+- `sections` (List[str]): List of extracted sections
+- `variables` (List[str]): List of extracted variables
+- `structure_info` (Dict): Structure analysis information
+- `parse_timestamp` (str): Timestamp of parsing
+
+**Location**: `src/gnn/processor.py`
+
+#### `validate_gnn_structure(file_path: Union[str, Path]) -> Dict[str, Any]`
+**Description**: Validate the structure of a GNN file.
+
+**Parameters**:
+- `file_path` (Union[str, Path]): Path to the GNN file
+
+**Returns**: `Dict[str, Any]` - Dictionary with validation results containing:
+- `file_path` (str): Path to the file
+- `file_name` (str): Name of the file
+- `valid` (bool): Whether the file structure is valid
 - `errors` (List[str]): List of validation errors
 - `warnings` (List[str]): List of validation warnings
-- `suggestions` (List[str]): Improvement suggestions
+- `validation_timestamp` (str): Timestamp of validation
 
-#### `generate_gnn_report(parsed_gnn: ParsedGNN, output_dir: Path, format: str = "json") -> Path`
-**Description**: Generate comprehensive report for parsed GNN model.
+**Location**: `src/gnn/processor.py`
+
+#### `generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[str, Path] = None) -> str`
+**Description**: Generate a report from GNN processing results.
 
 **Parameters**:
-- `parsed_gnn` (ParsedGNN): Parsed GNN model
-- `output_dir` (Path): Output directory for report
-- `format` (str): Report format ("json", "markdown", "html") (default: "json")
+- `processing_results` (Dict[str, Any]): Results from GNN processing
+- `output_path` (Union[str, Path, None]): Optional path to save the report (default: None)
 
-**Returns**: `Path` - Path to generated report file
+**Returns**: `str` - Report content as markdown string
+
+**Location**: `src/gnn/processor.py`
+
+#### `get_module_info() -> Dict[str, Any]`
+**Description**: Get information about the GNN module.
+
+**Returns**: `Dict[str, Any]` - Dictionary with module information containing:
+- `name` (str): Module name
+- `version` (str): Module version
+- `description` (str): Module description
+- `features` (List[str]): List of available features
+- `available_validators` (List[str]): List of available validators
+- `available_parsers` (List[str]): List of available parsers
+- `schema_formats` (List[str]): List of supported schema formats
+- `supported_formats` (List[str]): List of supported file formats
+- `capabilities` (Dict): Dictionary of capability flags
+
+**Location**: `src/gnn/processor.py`
+
+#### `process_gnn(*args, **kwargs) -> Dict[str, Any]`
+**Description**: Alias for `process_gnn_directory`. Provides backward compatibility.
+
+**Parameters**: Same as `process_gnn_directory`
+
+**Returns**: Same as `process_gnn_directory`
+
+**Location**: `src/gnn/__init__.py`
+
+#### `validate_gnn_file(content: str) -> Dict[str, Any]`
+**Description**: Validate GNN file content string.
+
+**Parameters**:
+- `content` (str): GNN file content as string
+
+**Returns**: `Dict[str, Any]` - Dictionary with validation results:
+- `is_valid` (bool): Whether content is valid
+- `errors` (List[str]): List of validation errors
+
+**Location**: `src/gnn/__init__.py`
+
+#### `validate_gnn(content: str) -> Dict[str, Any]`
+**Description**: Validate GNN content (string or other types).
+
+**Parameters**:
+- `content` (str): GNN content to validate
+
+**Returns**: `Dict[str, Any]` - Validation result dictionary
+
+**Location**: `src/gnn/__init__.py`
+
+### Helper Functions (Internal but Exported)
+
+#### `_extract_sections_lightweight(content: str) -> List[str]`
+**Description**: Extract sections from GNN content using lightweight parsing.
+
+**Parameters**:
+- `content` (str): GNN file content
+
+**Returns**: `List[str]` - List of extracted section names
+
+**Location**: `src/gnn/processor.py`
+
+#### `_extract_variables_lightweight(content: str) -> List[str]`
+**Description**: Extract variables from GNN content using lightweight parsing.
+
+**Parameters**:
+- `content` (str): GNN file content
+
+**Returns**: `List[str]` - List of extracted variable names
+
+**Location**: `src/gnn/processor.py`
 
 ---
 

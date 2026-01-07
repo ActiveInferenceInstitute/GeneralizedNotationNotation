@@ -1,7 +1,7 @@
 Execution Results for Classic Active Inference POMDP Agent v1_activeinference.jl
-Timestamp: 2026-01-07T06:58:06.751071
+Timestamp: 2026-01-07T11:28:22.666568
 Return Code: 0
-Execution Time: 13.58 seconds
+Execution Time: 36.91 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -10,44 +10,51 @@ STDOUT:
 ActiveInference.jl Script for GNN Model: Classic Active Inference POMDP Agent v1
 ======================================================================
 Julia version: 1.12.2
-Date: 2026-01-07T06:58:17.485
-Model dimensions: States=3, Observations=3, Actions=1
+Date: 2026-01-07T11:28:39.721
+Model dimensions: States=3, Observations=3, Actions=3
 
-📁 Output directory: activeinference_outputs_2026-01-07_06-58-17
+📁 Output directory: activeinference_outputs_2026-01-07_11-28-39
 🔧 Creating model matrices from GNN specification...
 ✅ A matrix created: (3, 3)
 ✅ B matrix created: (3, 3, 3)
 ✅ C vector created: 3
 ✅ D vector created: 3
-⚠️  Adjusting E-vector from 3 to 1 elements
-✅ E vector created: 1 (matches 1 policies)
+✅ E vector created: 3 (matches 3 policies)
 🔧 Normalizing matrices...
 ✅ All matrices normalized
 🤖 Creating ActiveInference.jl agent...
-❌ Error during simulation: ErrorException("Length of E-vector must match the number of policies.")
-Stack trace:
-Length of E-vector must match the number of policies.
-Stacktrace:
- [1] [0m[1merror[22m[0m[1m([22m[90ms[39m::[0mString[0m[1m)[22m
-[90m   @[39m [90mBase[39m [90m./[39m[90m[4merror.jl:44[24m[39m
- [2] [0m[1mcreate_aif[22m[0m[1m([22m[90mA[39m::[0mVector[90m{Matrix{Float64}}[39m, [90mB[39m::[0mVector[90m{Array{Float64, 3}}[39m; [90mC[39m::[0mVector[90m{Vector{Float64}}[39m, [90mD[39m::[0mVector[90m{Vector{Float64}}[39m, [90mE[39m::[0mVector[90m{Float64}[39m, [90mpA[39m::[0mNothing, [90mpB[39m::[0mNothing, [90mpD[39m::[0mNothing, [90mlr_pA[39m::[0mFloat64, [90mfr_pA[39m::[0mFloat64, [90mlr_pB[39m::[0mFloat64, [90mfr_pB[39m::[0mFloat64, [90mlr_pD[39m::[0mFloat64, [90mfr_pD[39m::[0mFloat64, [90mmodalities_to_learn[39m::[0mString, [90mfactors_to_learn[39m::[0mString, [90mgamma[39m::[0mFloat64, [90malpha[39m::[0mFloat64, [90mpolicy_len[39m::[0mInt64, [90mnum_controls[39m::[0mNothing, [90mcontrol_fac_idx[39m::[0mNothing, [90muse_utility[39m::[0mBool, [90muse_states_info_gain[39m::[0mBool, [90muse_param_info_gain[39m::[0mBool, [90maction_selection[39m::[0mString, [90mFPI_num_iter[39m::[0mInt64, [90mFPI_dF_tol[39m::[0mFloat64, [90msave_history[39m::[0mBool[0m[1m)[22m
-[90m   @[39m [35mActiveInference[39m [90m~/.julia/packages/ActiveInference/MXKFO/src/pomdp/[39m[90m[4mstruct.jl:106[24m[39m
- [3] [0m[1minit_aif[22m[0m[1m([22m[90mA[39m::[0mVector[90m{Matrix{Float64}}[39m, [90mB[39m::[0mVector[90m{Array{Float64, 3}}[39m; [90mC[39m::[0mVector[90m{Vector{Float64}}[39m, [90mD[39m::[0mVector[90m{Vector{Float64}}[39m, [90mE[39m::[0mVector[90m{Float64}[39m, [90mpA[39m::[0mNothing, [90mpB[39m::[0mNothing, [90mpD[39m::[0mNothing, [90mparameters[39m::[0mDict[90m{String, Float64}[39m, [90msettings[39m::[0mDict[90m{String, Any}[39m, [90msave_history[39m::[0mBool, [90mverbose[39m::[0mBool[0m[1m)[22m
-[90m   @[39m [35mActiveInference[39m [90m~/.julia/packages/ActiveInference/MXKFO/src/pomdp/[39m[90m[4mstruct.jl:339[24m[39m
- [4] top-level scope
-[90m   @[39m [90m~/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/[39m[90m[4mClassic Active Inference POMDP Agent v1_activeinference.jl:168[24m[39m
- [5] [0m[1minclude[22m[0m[1m([22m[90mmod[39m::[0mModule, [90m_path[39m::[0mString[0m[1m)[22m
-[90m   @[39m [90mBase[39m [90m./[39m[90m[4mBase.jl:306[24m[39m
- [6] [0m[1mexec_options[22m[0m[1m([22m[90mopts[39m::[0mBase.JLOptions[0m[1m)[22m
-[90m   @[39m [90mBase[39m [90m./[39m[90m[4mclient.jl:317[24m[39m
- [7] [0m[1m_start[22m[0m[1m([22m[0m[1m)[22m
-[90m   @[39m [90mBase[39m [90m./[39m[90m[4mclient.jl:550[24m[39m
+✅ Agent initialized successfully
+🚀 Running simulation...
+Step 5: obs=3, action=2, belief=0.052
+Step 10: obs=3, action=2, belief=0.0
+Step 15: obs=3, action=2, belief=0.0
+Step 20: obs=3, action=2, belief=0.0
+✅ Simulation completed: 20 timesteps
+📊 Generating comprehensive visualizations...
+✅ Generated belief evolution plot: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_evolution.png
+✅ Generated action analysis plot: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_action_analysis.png
+✅ Generated A matrix heatmap: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_A_matrix.png
+✅ Generated preferences/prior plot: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_preferences_prior.png
+✅ Generated 3D belief trajectory: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_belief_trajectory_3d.png
+✅ Generated summary dashboard: activeinference_outputs_2026-01-07_11-28-39/visualizations/Classic Active Inference POMDP Agent v1_dashboard.png
+✅ Visualization generation complete!
+💾 Saving results...
+🔍 Running validation checks...
+✅ Validation: beliefs_valid=true, sum_to_one=true, actions_valid=true
+======================================================================
+✅ Simulation completed successfully!
+======================================================================
+📊 Results saved to: activeinference_outputs_2026-01-07_11-28-39
+📈 Final belief: 0.0
+🎯 Action distribution: Dict{Any, Int64}(2 => 9, 3 => 2, 1 => 9)
+🎨 Visualizations: 6 files in activeinference_outputs_2026-01-07_11-28-39/visualizations
+✅ Validation: ALL CHECKS PASSED
 
 ActiveInference.jl script completed!
 Model: Classic Active Inference POMDP Agent v1
 
 
 STDERR:
-[32m[1m   Resolving[22m[39m package versions...
-[36m[1m     Project[22m[39m No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
-[36m[1m    Manifest[22m[39m No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`
+   Resolving package versions...
+     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
+    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`

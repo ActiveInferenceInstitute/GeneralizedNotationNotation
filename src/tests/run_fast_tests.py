@@ -30,11 +30,8 @@ def run_fast_tests():
     ]
     
     # Add timeout plugin if available
-    try:
-        import pytest_timeout
-        pytest_cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])
-    except ImportError:
-        pass
+    # Timeout configuration is handled by pytest.ini or defaults
+    pytest_cmd.extend(["--timeout=10"])
     
     try:
         # Run pytest with 60 second timeout

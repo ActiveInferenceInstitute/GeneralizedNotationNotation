@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 
 ---
 
@@ -28,6 +28,8 @@
 ### Key Capabilities
 - Multi-framework execution support
 - Graceful degradation when frameworks unavailable
+- Automatic PyMDP package detection (distinguishes correct vs wrong package variants)
+- Path collection with deduplication (prevents nested directory issues)
 - Comprehensive error logging
 - Result capture and validation
 - Execution timeout handling
@@ -104,6 +106,28 @@ success = process_execute(
 - `python_version` (str): Python version
 - `julia_version` (Optional[str]): Julia version if available
 
+#### PyMDP Package Detection Functions
+**Module**: `execute.pymdp.package_detector`
+
+**Functions**:
+- `detect_pymdp_installation() -> Dict[str, Any]`: Detect which PyMDP package variant is installed
+  - Returns detection results including `correct_package`, `wrong_package`, `has_agent`, `has_mdp_solver`
+- `is_correct_pymdp_package() -> bool`: Check if correct package (inferactively-pymdp) is installed
+- `get_pymdp_installation_instructions() -> str`: Get actionable installation instructions
+- `validate_pymdp_for_execution() -> Dict[str, Any]`: Validate PyMDP is ready for execution
+  - Returns `ready` status, detection results, and installation instructions
+
+**Usage**:
+```python
+from execute.pymdp.package_detector import detect_pymdp_installation, is_correct_pymdp_package
+
+detection = detect_pymdp_installation()
+if detection.get("wrong_package"):
+    print("Wrong PyMDP package installed - install inferactively-pymdp")
+elif not detection.get("correct_package"):
+    print("PyMDP not installed - install inferactively-pymdp")
+```
+
 ---
 
 ## Configuration
@@ -139,7 +163,9 @@ success = process_execute(
 - `json` - Result serialization
 
 ### Optional Dependencies
-- `pymdp` - PyMDP simulation engine (fallback: skip PyMDP)
+- `inferactively-pymdp` - PyMDP simulation engine (package name: `inferactively-pymdp`, fallback: skip PyMDP)
+  - **Note**: The correct package name is `inferactively-pymdp`, not `pymdp`
+  - The execute module automatically detects wrong package variants
 - `julia` - Julia runtime (fallback: skip Julia scripts)
 - `jax` - JAX framework (fallback: skip JAX)
 
@@ -308,9 +334,19 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 **Symptom**: Execution fails with import errors  
 **Cause**: Required packages not installed in environment  
 **Solution**:
-- Install framework dependencies: `uv pip install pymdp jax`
+- Install framework dependencies: `uv pip install inferactively-pymdp jax`
+- **Note**: The correct PyMDP package name is `inferactively-pymdp`, not `pymdp`
 - For Julia: Install packages via `julia -e 'using Pkg; Pkg.add("RxInfer")'`
 - Check framework-specific requirements in documentation
+
+#### Issue 2a: Wrong PyMDP package installed
+**Symptom**: Error message "Wrong pymdp package installed. Found 'pymdp' with MDP/MDPSolver"  
+**Cause**: The wrong `pymdp` package (with MDP/MDPSolver) is installed instead of `inferactively-pymdp`  
+**Solution**:
+- Uninstall wrong package: `uv pip uninstall pymdp`
+- Install correct package: `uv pip install inferactively-pymdp`
+- Or use setup module: `python src/1_setup.py --install_optional --optional_groups pymdp`
+- The execute module automatically detects wrong package variants and provides clear error messages
 
 #### Issue 3: Execution timeout
 **Symptom**: Scripts timeout before completion  
@@ -359,7 +395,7 @@ def run_simulation_tool(script_path: str, framework: str) -> Dict[str, Any]:
 
 ---
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.0.0

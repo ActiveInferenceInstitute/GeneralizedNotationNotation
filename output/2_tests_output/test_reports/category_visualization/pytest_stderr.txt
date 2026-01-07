@@ -1,2 +1,0 @@
-2026-01-07 06:50:06,387 - visualization.ontology_visualizer - INFO - Ontology visualization saved to /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpc8xmoq1g/viz_output/ontology_annotations.png
-2026-01-07 06:50:06,446 - visualization.ontology_visualizer - INFO - Ontology visualization saved to /var/folders/l5/5t5z6z8d0tn3pth_0f7970q40000gn/T/tmpf165h54i/viz_output/actinf_pomdp_agent/ontology_annotations.png

@@ -23,7 +23,9 @@ class TestAudioGeneration:
         """Test that audio module can be imported."""
         try:
             from audio import AudioGenerator
-            assert True
+            # Verify the imported class is actually usable
+            assert AudioGenerator is not None, "AudioGenerator should be importable"
+            assert callable(getattr(AudioGenerator, '__init__', None)) or hasattr(AudioGenerator, '__call__'), "AudioGenerator should be a class or callable"
         except ImportError:
             pytest.skip("Audio module not available")
     

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T06:51:10.503460",
+  "timestamp": "2026-01-07T11:23:08.176748",
   "validation": {
     "system_requirements": true,
     "uv_environment": true,
@@ -10,7 +10,7 @@
   },
   "configuration": {
     "extras_installed": [],
-    "dev_dependencies": false,
+    "dev_dependencies": null,
     "venv_path": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv",
     "python_version": "3.13.11 (main, Dec  5 2025, 21:16:49) [Clang 21.1.4 ]"
   },

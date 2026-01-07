@@ -12,7 +12,7 @@
 
 **Version**: 2.0.0
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 
 ---
 
@@ -100,19 +100,21 @@ success = process_render(
 )
 ```
 
-#### `render_gnn_spec(gnn_spec: str, target: str, output_directory: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
-**Description**: Render a GNN specification to a target framework.
+#### `render_gnn_spec(gnn_spec: Dict[str, Any], target: str, output_directory: Union[str, Path], options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
+**Description**: Render a GNN specification dictionary to a target framework.
 
 **Parameters**:
-- `gnn_spec` (str): GNN specification content as string
+- `gnn_spec` (Dict[str, Any]): Parsed GNN specification dictionary
 - `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "jax", "discopy")
-- `output_directory` (Path): Output directory for generated code
-- `options` (Optional[Dict[str, Any]]): Rendering options dictionary
+- `output_directory` (Union[str, Path]): Output directory for generated code
+- `options` (Optional[Dict[str, Any]]): Framework-specific options (default: None)
 
 **Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
 - `success` (bool): Whether rendering succeeded
-- `main_script` (str): Path to main generated script
-- `generated_files` (List[str]): List of all generated file paths
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/processor.py`
 
 #### `generate_pymdp_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
 **Description**: Generate PyMDP simulation code from GNN content.
@@ -167,54 +169,76 @@ success = process_render(
 - `success` (bool): Whether generation succeeded
 - `diagram_script` (str): Path to diagram script
 - `files` (List[str]): List of generated files
-**Description**: Render a single GNN specification to a target framework
+
+#### `render_gnn_spec(gnn_spec: Dict[str, Any], target: str, output_directory: Union[str, Path], options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
+**Description**: Render a GNN specification dictionary to a target framework.
 
 **Parameters**:
-- `gnn_spec`: Parsed GNN specification dictionary
-- `target`: Target framework ("pymdp", "rxinfer", "activeinference_jl", "discopy", "jax")
-- `output_directory`: Output directory for generated code
-- `options`: Framework-specific options
+- `gnn_spec` (Dict[str, Any]): Parsed GNN specification dictionary
+- `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "discopy", "jax")
+- `output_directory` (Union[str, Path]): Output directory for generated code
+- `options` (Optional[Dict[str, Any]]): Framework-specific options (default: None)
 
-**Returns**: Tuple of (success, message, generated_files)
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
 
-#### `generate_pymdp_code(model_data, output_path=None) -> str`
-**Description**: Generate PyMDP simulation code
+**Location**: `src/render/processor.py`
+
+#### `get_module_info() -> Dict[str, Any]`
+**Description**: Get information about the enhanced render module.
+
+**Returns**: `Dict[str, Any]` - Dictionary with module information containing:
+- `name` (str): Module name
+- `version` (str): Module version
+- `description` (str): Module description
+- `supported_targets` (List[str]): List of supported target frameworks
+- `available_targets` (List[str]): List of currently available targets
+- `features` (List[str]): List of available features
+- `supported_formats` (List[str]): List of supported output formats
+- `processing_modes` (List[str]): List of available processing modes
+
+**Location**: `src/render/processor.py`
+
+#### `get_available_renderers() -> Dict[str, Dict[str, Any]]`
+**Description**: Get information about available renderers for each framework.
+
+**Returns**: `Dict[str, Dict[str, Any]]` - Dictionary mapping framework names to renderer information:
+- Each framework entry contains:
+  - `name` (str): Framework name
+  - `description` (str): Framework description
+  - `language` (str): Target language
+  - `file_extension` (str): Output file extension
+  - `supported_features` (List[str]): List of supported features
+  - `function` (str): Function name for rendering
+  - `output_format` (str): Output format type
+  - `pomdp_compatible` (bool): Whether POMDP-aware processing is supported
+
+**Location**: `src/render/processor.py`
+
+#### `validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]`
+**Description**: Validate POMDP state space structure for rendering compatibility.
 
 **Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
+- `pomdp_space` (Any): POMDP state space object to validate
 
-**Returns**: Generated PyMDP code as string
+**Returns**: `Tuple[bool, List[str]]` - Tuple containing:
+- `is_valid` (bool): Whether POMDP structure is valid
+- `errors` (List[str]): List of validation error messages
 
-#### `generate_rxinfer_code(model_data, output_path=None) -> str`
-**Description**: Generate RxInfer.jl simulation code
+**Location**: `src/render/processor.py`
 
-**Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
-
-**Returns**: Generated RxInfer.jl code as string
-
-#### `generate_activeinference_jl_code(model_data, output_path=None) -> str`
-**Description**: Generate ActiveInference.jl simulation code
+#### `normalize_matrices(pomdp_space: Any, logger) -> Any`
+**Description**: Normalize POMDP matrices for consistent rendering.
 
 **Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
+- `pomdp_space` (Any): POMDP state space object
+- `logger`: Logger instance for logging
 
-**Returns**: Generated ActiveInference.jl code as string
+**Returns**: `Any` - Normalized POMDP state space object
 
-#### `generate_discopy_code(model_data, output_path=None) -> str`
-**Description**: Generate DisCoPy diagram code
-
-**Parameters**:
-- `model_data`: GNN model data
-- `output_path`: Optional output file path
-
-**Returns**: Generated DisCoPy code as string
-
-#### `generate_jax_code(model_data, output_path=None) -> str`
-**Description**: Generate JAX simulation code
+**Location**: `src/render/processor.py`
 
 **Parameters**:
 - `model_data`: GNN model data
@@ -517,7 +541,7 @@ def generate_pymdp_tool(model_data, options=None):
 
 ---
 
-**Last Updated**: 2025-12-30
+**Last Updated**: 2026-01-07
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 2.0.0

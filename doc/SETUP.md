@@ -240,12 +240,17 @@ PyMDP provides Python-based Active Inference for POMDPs.
 
 **Installation**:
 ```bash
-# Full PyMDP installation
-uv pip install pymdp[full]
+# Correct package name is inferactively-pymdp
+uv pip install inferactively-pymdp
+
+# Or using the setup module
+python src/1_setup.py --install_optional --optional_groups pymdp
 
 # Or from source for latest features
 uv pip install git+https://github.com/infer-actively/pymdp.git
 ```
+
+**Important**: The correct package name is `inferactively-pymdp`, not `pymdp`. The `pymdp` package on PyPI contains MDP/MDPSolver but not the Active Inference Agent class.
 
 **Capabilities**:
 - POMDP agent implementation
@@ -253,12 +258,13 @@ uv pip install git+https://github.com/infer-actively/pymdp.git
 - Policy inference and learning
 
 **Common Issues**:
-- **Missing sub-modules**: Install `pymdp[full]` not just `pymdp`
-- **Import errors**: Try `uv pip install --force-reinstall pymdp[full]`
+- **Wrong package installed**: If you have `pymdp` installed, uninstall it and install `inferactively-pymdp`
+- **Import errors**: Verify correct package: `python -c "from pymdp import Agent; print('PyMDP OK')"`
+- **Package detection**: The execute module automatically detects wrong package variants
 
 **Verification**:
 ```bash
-python3 -c "from pymdp.agent import Agent; print('PyMDP OK')"
+python3 -c "from pymdp import Agent; print('PyMDP OK')"
 ```
 
 #### JAX (⚠️ Optional - Recommended)
@@ -386,8 +392,8 @@ python src/12_execute.py --frameworks "all" --dry-run
 
 **Solution**:
 ```bash
-pip install pymdp[full]  # Install full package, not just base
-python3 -c "from pymdp.agent import Agent"  # Verify
+uv pip install inferactively-pymdp  # Install correct package
+python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using modern API
 ```
 
 #### JAX Issues
@@ -463,7 +469,7 @@ Some versions of PyMDP depend on specific NumPy ranges that can conflict with th
 - **Symptom**: `ImportError: numpy.core.multiarray failed to import`
 - **Solution**:
     ```bash
-    uv pip install --upgrade "numpy>=1.24,<1.27" "jax[cpu]" "pymdp[full]"
+    uv pip install --upgrade "numpy>=1.24,<1.27" "jax[cpu]" "inferactively-pymdp"
     ```
 
 ### **Julia Environment Issues**
@@ -503,7 +509,7 @@ If you see errors related to DisCoPy's matrix functionality:
 If you encounter issues importing PyMDP:
 
 1. Check that PyMDP is installed: `uv pip list | grep pymdp`
-2. Try reinstalling: `uv pip install --force-reinstall pymdp[full]`
+2. Try reinstalling: `uv pip install --force-reinstall inferactively-pymdp`
 
 ## Dependency Version Compatibility
 

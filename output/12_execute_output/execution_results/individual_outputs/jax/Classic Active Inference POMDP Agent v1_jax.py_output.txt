@@ -1,13 +1,49 @@
 Execution Results for Classic Active Inference POMDP Agent v1_jax.py
-Timestamp: 2026-01-07T06:57:45.937107
-Return Code: 1
-Execution Time: 0.04 seconds
+Timestamp: 2026-01-07T11:27:47.040642
+Return Code: 0
+Execution Time: 0.72 seconds
 
 STDOUT:
+============================================================
+JAX Active Inference Model: GNNModel
+============================================================
+
+✅ Model parameters created
+   A matrix shape: (3, 3)
+   B matrix shape: (3, 3, 1)
+   C vector shape: (3,)
+   D vector shape: (3,)
+
+GNNModel Model Summary (Pure JAX Implementation):
+- Number of states: 3
+- Number of observations: 3
+- Number of actions: 1
+- Parameters: A matrix, B matrix, C vector, D vector
+
+Key Functions:
+- create_params(): Create model parameters
+- belief_update(): Bayesian belief update
+- compute_expected_free_energy(): Compute EFE for action
+- select_action(): Select action with minimum EFE
+- simulate_step(): One step of Active Inference
+- run_simulation(): Full simulation over observations
+
+
+🧪 Running test simulation...
+
+📊 Simulation Results:
+   Initial belief: [0.33333 0.33333 0.33333]
+   Updated belief: [1. 0. 0.]
+   Selected action: 0
+   Expected free energy: 0.0099
+   EFE for all actions: [0.00986223]
+
+🔄 Running 5-step simulation...
+   Actions taken: [0 0 0 0 0]
+   Final belief: [0. 0. 0.]
+   Average EFE: 0.0020
+
+✅ JAX Active Inference model test successful!
 
 
 STDERR:
-Traceback (most recent call last):
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py", line 13, in <module>
-    import jax
-ModuleNotFoundError: No module named 'jax'
