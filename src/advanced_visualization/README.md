@@ -14,6 +14,79 @@ src/advanced_visualization/
 └── visualizer.py                  # Main visualization orchestrator
 ```
 
+### Advanced Visualization Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        ExecResults[Execution Results]
+        DataExtractor[data_extractor.py]
+    end
+    
+    subgraph "Visualization Components"
+        DashboardGen[dashboard.py]
+        HTMLGen[html_generator.py]
+        Visualizer[visualizer.py]
+    end
+    
+    subgraph "Output Generation"
+        Dashboards[Interactive Dashboards]
+        HTMLViz[HTML Visualizations]
+        D2Diagrams[D2 Diagrams]
+    end
+    
+    GNNFiles --> DataExtractor
+    ExecResults --> DataExtractor
+    
+    DataExtractor --> DashboardGen
+    DataExtractor --> HTMLGen
+    DataExtractor --> Visualizer
+    
+    DashboardGen --> Dashboards
+    HTMLGen --> HTMLViz
+    Visualizer --> D2Diagrams
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 9"
+        Step9[9_advanced_viz.py Orchestrator]
+    end
+    
+    subgraph "Advanced Visualization Module"
+        Processor[processor.py]
+        Dashboard[dashboard.py]
+        HTMLGen[html_generator.py]
+        Visualizer[visualizer.py]
+    end
+    
+    subgraph "Input Sources"
+        Step3[Step 3: GNN]
+        Step8[Step 8: Visualization]
+        Step12[Step 12: Execute]
+    end
+    
+    subgraph "Downstream Steps"
+        Step20[Step 20: Website]
+        Step23[Step 23: Report]
+    end
+    
+    Step9 --> Processor
+    Processor --> Dashboard
+    Processor --> HTMLGen
+    Processor --> Visualizer
+    
+    Step3 -->|Model Data| Processor
+    Step8 -->|Basic Visualizations| Processor
+    Step12 -->|Execution Results| Processor
+    
+    Processor -->|Advanced Visualizations| Step20
+    Processor -->|Advanced Visualizations| Step23
+```
+
 ## Core Components
 
 ### DashboardGenerator (`dashboard.py`)

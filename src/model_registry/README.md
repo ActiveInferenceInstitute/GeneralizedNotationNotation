@@ -12,6 +12,80 @@ src/model_registry/
 └── registry.py                    # Core registry functionality
 ```
 
+### Registry Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        Processor[process_model_registry]
+    end
+    
+    subgraph "Registry Operations"
+        Register[Model Registration]
+        Version[Version Management]
+        Metadata[Metadata Extraction]
+        Search[Model Search]
+    end
+    
+    subgraph "Registry Storage"
+        RegistryFile[Registry JSON]
+        MetadataDB[Metadata Index]
+    end
+    
+    subgraph "Output Generation"
+        RegistryReports[Registry Reports]
+        ModelList[Model Listings]
+    end
+    
+    GNNFiles --> Processor
+    Processor --> Register
+    Processor --> Version
+    Processor --> Metadata
+    Processor --> Search
+    
+    Register --> RegistryFile
+    Version --> RegistryFile
+    Metadata --> MetadataDB
+    Search --> RegistryFile
+    
+    RegistryFile --> RegistryReports
+    MetadataDB --> ModelList
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 4"
+        Step4[4_model_registry.py Orchestrator]
+    end
+    
+    subgraph "Model Registry Module"
+        Processor[registry.py]
+        Registry[ModelRegistry Class]
+    end
+    
+    subgraph "Input Source"
+        Step3[Step 3: GNN]
+    end
+    
+    subgraph "Downstream Steps"
+        Step5[Step 5: Type Checker]
+        Step6[Step 6: Validation]
+        Step11[Step 11: Render]
+    end
+    
+    Step4 --> Processor
+    Processor --> Registry
+    
+    Step3 -->|Parsed Models| Processor
+    
+    Processor -->|Registry Data| Step5
+    Processor -->|Registry Data| Step6
+    Processor -->|Registry Data| Step11
+```
+
 ## Core Components
 
 ### Model Registry Functions

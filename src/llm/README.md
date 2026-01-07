@@ -23,6 +23,110 @@ src/llm/
     └── ollama_provider.py       # Ollama (local) provider
 ```
 
+## LLM Processing Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFile[GNN Files]
+        Processor[processor.py]
+        ProviderSelect[Provider Selection]
+    end
+    
+    subgraph "LLM Providers"
+        OpenAI[OpenAI Provider]
+        Anthropic[Anthropic Provider]
+        Ollama[Ollama Provider]
+        OpenRouter[OpenRouter Provider]
+    end
+    
+    subgraph "Analysis Components"
+        Analyzer[analyzer.py]
+        Generator[generator.py]
+        Prompts[prompts.py]
+    end
+    
+    subgraph "Output Generation"
+        Analysis[Analysis Results]
+        Insights[Model Insights]
+        Documentation[Generated Docs]
+        Summary[LLM Summary]
+    end
+    
+    GNNFile --> Processor
+    Processor --> ProviderSelect
+    
+    ProviderSelect -->|API Key Available| OpenAI
+    ProviderSelect -->|API Key Available| Anthropic
+    ProviderSelect -->|Local Fallback| Ollama
+    ProviderSelect -->|Alternative| OpenRouter
+    
+    OpenAI --> Analyzer
+    Anthropic --> Analyzer
+    Ollama --> Analyzer
+    OpenRouter --> Analyzer
+    
+    Analyzer --> Generator
+    Generator --> Prompts
+    
+    Analyzer --> Analysis
+    Generator --> Insights
+    Generator --> Documentation
+    Generator --> Summary
+```
+
+### Provider Selection Flow
+
+```mermaid
+flowchart TD
+    Start[Start LLM Processing] --> CheckKeys{API Keys<br/>Available?}
+    
+    CheckKeys -->|OpenAI Key| UseOpenAI[Use OpenAI]
+    CheckKeys -->|Anthropic Key| UseAnthropic[Use Anthropic]
+    CheckKeys -->|No Keys| CheckOllama{Ollama<br/>Available?}
+    
+    CheckOllama -->|Yes| UseOllama[Use Ollama]
+    CheckOllama -->|No| Fallback[Fallback Analysis]
+    
+    UseOpenAI --> Process[Process with LLM]
+    UseAnthropic --> Process
+    UseOllama --> Process
+    Fallback --> Process
+    
+    Process --> Results[Analysis Results]
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 13"
+        Step13[13_llm.py Orchestrator]
+    end
+    
+    subgraph "LLM Module"
+        Processor[processor.py]
+        Analyzer[analyzer.py]
+        Generator[generator.py]
+        Providers[providers/]
+    end
+    
+    subgraph "Downstream Steps"
+        Step16[Step 16: Analysis]
+        Step20[Step 20: Website]
+        Step23[Step 23: Report]
+    end
+    
+    Step13 --> Processor
+    Processor --> Analyzer
+    Processor --> Generator
+    Processor --> Providers
+    
+    Processor -->|LLM Insights| Step16
+    Processor -->|LLM Summaries| Step20
+    Processor -->|LLM Analysis| Step23
+```
+
 ## Core Components
 
 ### LLM Analysis System (`analyzer.py`)

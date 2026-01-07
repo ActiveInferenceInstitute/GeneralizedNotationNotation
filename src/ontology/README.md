@@ -10,7 +10,78 @@ src/ontology/
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
 ├── processor.py                   # Core ontology processing
+├── utils.py                       # Ontology utility functions
 └── act_inf_ontology_terms.json   # Active Inference ontology terms
+```
+
+### Ontology Processing Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        OntologyTerms[Ontology Terms JSON]
+        Processor[processor.py]
+    end
+    
+    subgraph "Ontology Processing"
+        Extract[Term Extraction]
+        Validate[Term Validation]
+        Map[Term Mapping]
+        Enhance[Model Enhancement]
+    end
+    
+    subgraph "Output Generation"
+        OntologyReports[Ontology Reports]
+        MappingReports[Mapping Reports]
+        ValidationResults[Validation Results]
+    end
+    
+    GNNFiles --> Processor
+    OntologyTerms --> Processor
+    
+    Processor --> Extract
+    Extract --> Validate
+    Validate --> Map
+    Map --> Enhance
+    
+    Extract --> OntologyReports
+    Validate --> ValidationResults
+    Map --> MappingReports
+    Enhance --> OntologyReports
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 10"
+        Step10[10_ontology.py Orchestrator]
+    end
+    
+    subgraph "Ontology Module"
+        Processor[processor.py]
+        Utils[utils.py]
+    end
+    
+    subgraph "Input Source"
+        Step3[Step 3: GNN]
+    end
+    
+    subgraph "Downstream Steps"
+        Step11[Step 11: Render]
+        Step13[Step 13: LLM]
+        Step16[Step 16: Analysis]
+    end
+    
+    Step10 --> Processor
+    Processor --> Utils
+    
+    Step3 -->|Parsed Models| Processor
+    
+    Processor -->|Ontology Mappings| Step11
+    Processor -->|Ontology Terms| Step13
+    Processor -->|Ontology Analysis| Step16
 ```
 
 ## Core Components

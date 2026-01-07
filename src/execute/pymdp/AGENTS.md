@@ -31,7 +31,36 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Functions from `__init__.py`
+
+#### `execute_pymdp_simulation_from_gnn(gnn_file: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
+**Description**: Main function exported from the module. Execute PyMDP simulation from GNN file.
+
+**Parameters**:
+- `gnn_file` (Path): Path to GNN specification file
+- `output_dir` (Path): Output directory for simulation results
+- `**kwargs`: Additional execution options:
+  - `num_trials` (int): Number of simulation trials (default: 100)
+  - `trial_length` (int): Length of each trial (default: 50)
+  - `timeout` (int): Execution timeout in seconds (default: 300)
+  - `visualization` (bool): Enable visualization (default: True)
+
+**Returns**: `Dict[str, Any]` - Simulation results dictionary
+
+**Location**: `src/execute/pymdp/executor.py`
+
+**Example**:
+```python
+from execute.pymdp import execute_pymdp_simulation_from_gnn
+from pathlib import Path
+
+results = execute_pymdp_simulation_from_gnn(
+    gnn_file=Path("input/model.md"),
+    output_dir=Path("output/pymdp_results"),
+    num_trials=100,
+    trial_length=50
+)
+```
 
 #### `execute_pymdp_simulation(model_path: Union[str, Path], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
 **Description**: Execute a complete PyMDP simulation from model file.
@@ -52,25 +81,21 @@
 - `execution_time` (float): Total execution time
 - `output_files` (List[Path]): Generated output files
 
-**Example**:
-```python
-from execute.pymdp import execute_pymdp_simulation
-from pathlib import Path
+**Location**: `src/execute/pymdp/executor.py`
 
-config = {
-    'num_trials': 100,
-    'trial_length': 50,
-    'inference_params': {'iterations': 10, 'threshold': 1e-4},
-    'visualization': True,
-    'save_results': True
-}
+#### `validate_pymdp_environment() -> Dict[str, Any]`
+**Description**: Validate PyMDP environment and dependencies.
 
-results = execute_pymdp_simulation(
-    Path("output/11_render_output/model_pymdp_simulation.py"),
-    config=config
-)
-print(f"Simulation completed: {results['trials_completed']} trials")
-```
+**Returns**: `Dict[str, Any]` - Validation results
+
+**Location**: `src/execute/pymdp/validator.py`
+
+#### `detect_pymdp_installation() -> Dict[str, Any]`
+**Description**: Detect PyMDP package installation and version.
+
+**Returns**: `Dict[str, Any]` - Installation information
+
+**Location**: `src/execute/pymdp/package_detector.py`
 
 #### `run_pymdp_inference(agent: Any, observations: Union[List, np.ndarray], config: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]`
 **Description**: Run PyMDP inference on observation sequence.

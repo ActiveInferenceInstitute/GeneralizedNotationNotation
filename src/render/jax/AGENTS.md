@@ -31,37 +31,64 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Functions from `__init__.py`
 
-#### `generate_jax_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
-**Description**: Generate JAX simulation code from GNN model data with JIT compilation and optimization.
+#### `render_gnn_to_jax(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Main function exported from the module. Renders GNN specification to JAX simulation code with JIT compilation and optimization.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
-- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
-- `optimize` (bool, optional): Enable JAX optimizations (default: True)
-- `jit_compile` (bool, optional): Enable JIT compilation (default: True)
-- `device` (str, optional): Target device ("cpu", "gpu", "tpu", "auto") (default: "auto")
-- `**kwargs`: Additional JAX generation options
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_path` (Path): Output file path for generated JAX code
+- `**kwargs`: Additional JAX generation options:
+  - `optimize` (bool): Enable JAX optimizations (default: True)
+  - `jit_compile` (bool): Enable JIT compilation (default: True)
+  - `device` (str): Target device ("cpu", "gpu", "tpu", "auto") (default: "auto")
 
-**Returns**: `str` - Generated JAX code as string
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/jax/jax_renderer.py`
 
 **Example**:
 ```python
-from render.jax import generate_jax_code
+from render.jax import render_gnn_to_jax
 from pathlib import Path
 
-# Generate JAX code
-jax_code = generate_jax_code(
-    model_data=parsed_gnn_model,
+# Render GNN file to JAX code
+success, message, files = render_gnn_to_jax(
+    gnn_spec=Path("input/model.md"),
     output_path=Path("output/jax_simulation.py"),
     optimize=True,
     jit_compile=True,
     device="gpu"
 )
-
-# Code is also saved to file if output_path provided
 ```
+
+#### `render_gnn_to_jax_pomdp(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Render GNN specification to JAX code specifically for POMDP models.
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
+- `output_path` (Path): Output file path
+- `**kwargs`: Additional POMDP-specific options
+
+**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+
+**Location**: `src/render/jax/jax_renderer.py`
+
+#### `render_gnn_to_jax_combined(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Render GNN specification to JAX code with combined features and optimizations.
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
+- `output_path` (Path): Output file path
+- `**kwargs`: Additional options
+
+**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+
+**Location**: `src/render/jax/jax_renderer.py`
 
 #### `convert_gnn_to_jax(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
 **Description**: Convert GNN model data to JAX-compatible format with automatic differentiation support.

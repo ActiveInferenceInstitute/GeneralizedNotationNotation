@@ -31,35 +31,52 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Functions from `__init__.py`
 
-#### `generate_discopy_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
-**Description**: Generate DisCoPy categorical diagram code from GNN model data.
+#### `render_gnn_to_discopy(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Main function exported from the module. Renders GNN specification to DisCoPy categorical diagram code.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, categorical structures
-- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
-- `diagram_type` (str, optional): Diagram type ("string", "quantum", "nlp") (default: "string")
-- `include_visualization` (bool, optional): Include visualization code (default: True)
-- `**kwargs`: Additional DisCoPy generation options
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_path` (Path): Output file path for generated DisCoPy code
+- `**kwargs`: Additional DisCoPy generation options:
+  - `diagram_type` (str): Diagram type ("string", "quantum", "nlp") (default: "string")
+  - `include_visualization` (bool): Include visualization code (default: True)
 
-**Returns**: `str` - Generated DisCoPy code as string
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/discopy/discopy_renderer.py`
 
 **Example**:
 ```python
-from render.discopy import generate_discopy_code
+from render.discopy import render_gnn_to_discopy
 from pathlib import Path
 
-# Generate DisCoPy code
-discopy_code = generate_discopy_code(
-    model_data=parsed_gnn_model,
+# Render GNN file to DisCoPy code
+success, message, files = render_gnn_to_discopy(
+    gnn_spec=Path("input/model.md"),
     output_path=Path("output/categorical_diagram.py"),
     diagram_type="string",
     include_visualization=True
 )
-
-# Code is also saved to file if output_path provided
 ```
+
+#### `render_gnn_to_discopy_jax(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Render GNN specification to DisCoPy code with JAX-evaluatable matrix diagrams (optional, requires JAX).
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
+- `output_path` (Path): Output file path
+- `**kwargs`: Additional options
+
+**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+
+**Location**: `src/render/discopy/discopy_renderer.py`
+
+**Note**: This function may not be available if JAX dependencies are not installed. The module falls back to `render_gnn_to_discopy` in that case.
 
 #### `convert_gnn_to_discopy(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
 **Description**: Convert GNN model data to DisCoPy-compatible categorical format.

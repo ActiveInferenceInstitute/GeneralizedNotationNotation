@@ -33,6 +33,80 @@ graph TD
     Structure --> Report[Validation Report]
 ```
 
+### Validation Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        ParsedData[Parsed GNN Data]
+        Processor[processor.py]
+    end
+    
+    subgraph "Validation Components"
+        SemanticV[SemanticValidator]
+        PerformanceP[PerformanceProfiler]
+        ConsistencyC[ConsistencyChecker]
+    end
+    
+    subgraph "Output Generation"
+        ValidationResults[Validation Results]
+        QualityScores[Quality Scores]
+        Reports[Validation Reports]
+    end
+    
+    GNNFiles --> Processor
+    ParsedData --> Processor
+    
+    Processor --> SemanticV
+    Processor --> PerformanceP
+    Processor --> ConsistencyC
+    
+    SemanticV --> ValidationResults
+    PerformanceP --> QualityScores
+    ConsistencyC --> ValidationResults
+    
+    ValidationResults --> Reports
+    QualityScores --> Reports
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 6"
+        Step6[6_validation.py Orchestrator]
+    end
+    
+    subgraph "Validation Module"
+        Processor[processor.py]
+        SemanticV[semantic_validator.py]
+        PerformanceP[performance_profiler.py]
+        ConsistencyC[consistency_checker.py]
+    end
+    
+    subgraph "Input Source"
+        Step3[Step 3: GNN]
+        Step5[Step 5: Type Checker]
+    end
+    
+    subgraph "Downstream Steps"
+        Step7[Step 7: Export]
+        Step8[Step 8: Visualization]
+    end
+    
+    Step6 --> Processor
+    Processor --> SemanticV
+    Processor --> PerformanceP
+    Processor --> ConsistencyC
+    
+    Step3 -->|Parsed Models| Processor
+    Step5 -->|Type Info| Processor
+    
+    Processor -->|Validation Results| Step7
+    Processor -->|Validation Results| Step8
+```
+
 ## Core Components
 
 ### Validation Functions

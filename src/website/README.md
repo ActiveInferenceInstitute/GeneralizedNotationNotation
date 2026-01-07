@@ -22,6 +22,76 @@ src/website/
 └── mcp.py                         # Model Context Protocol integration
 ```
 
+### Website Generation Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Sources"
+        Visualizations[Visualizations]
+        Reports[Reports]
+        Analysis[Analysis Results]
+        ExecResults[Execution Results]
+    end
+    
+    subgraph "Website Generator"
+        Generator[generator.py]
+        Templates[Templates]
+        StaticAssets[Static Assets]
+    end
+    
+    subgraph "Output Website"
+        HTMLPages[HTML Pages]
+        Navigation[Navigation]
+        EmbeddedContent[Embedded Content]
+    end
+    
+    Visualizations --> Generator
+    Reports --> Generator
+    Analysis --> Generator
+    ExecResults --> Generator
+    
+    Generator --> Templates
+    Generator --> StaticAssets
+    
+    Templates --> HTMLPages
+    StaticAssets --> HTMLPages
+    Generator --> Navigation
+    Generator --> EmbeddedContent
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 20"
+        Step20[20_website.py Orchestrator]
+    end
+    
+    subgraph "Website Module"
+        Generator[generator.py]
+        Templates[templates/]
+        Static[static/]
+    end
+    
+    subgraph "Input Sources"
+        Step8[Step 8: Visualization]
+        Step9[Step 9: Advanced Viz]
+        Step13[Step 13: LLM]
+        Step16[Step 16: Analysis]
+        Step23[Step 23: Report]
+    end
+    
+    Step20 --> Generator
+    Generator --> Templates
+    Generator --> Static
+    
+    Step8 -->|Visualizations| Generator
+    Step9 -->|Advanced Visualizations| Generator
+    Step13 -->|LLM Summaries| Generator
+    Step16 -->|Analysis Results| Generator
+    Step23 -->|Reports| Generator
+```
+
 ## Core Components
 
 ### Website Generation Functions

@@ -8,7 +8,99 @@ This module provides comprehensive statistical analysis, performance profiling, 
 src/analysis/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
+├── processor.py                   # Main analysis processor
+├── analyzer.py                    # Statistical analysis functions
+├── post_simulation.py             # Post-simulation analysis
 └── mcp.py                         # Model Context Protocol integration
+```
+
+### Analysis Processing Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        ExecResults[Execution Results]
+        Processor[processor.py]
+    end
+    
+    subgraph "Analysis Components"
+        Statistical[Statistical Analysis]
+        Complexity[Complexity Metrics]
+        Performance[Performance Benchmarks]
+        Comparison[Model Comparison]
+    end
+    
+    subgraph "Post-Simulation Analysis"
+        Traces[Simulation Traces]
+        FreeEnergy[Free Energy Analysis]
+        Policy[Policy Convergence]
+        StateDist[State Distributions]
+    end
+    
+    subgraph "Output Generation"
+        Summary[Analysis Summary]
+        Reports[Comparison Reports]
+        Metrics[Performance Metrics]
+        Visualizations[Visualizations]
+    end
+    
+    GNNFiles --> Processor
+    ExecResults --> Processor
+    
+    Processor --> Statistical
+    Processor --> Complexity
+    Processor --> Performance
+    Processor --> Comparison
+    
+    ExecResults --> Traces
+    Traces --> FreeEnergy
+    Traces --> Policy
+    Traces --> StateDist
+    
+    Statistical --> Summary
+    Complexity --> Summary
+    Performance --> Metrics
+    Comparison --> Reports
+    FreeEnergy --> Visualizations
+    Policy --> Visualizations
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 16"
+        Step16[16_analysis.py Orchestrator]
+    end
+    
+    subgraph "Analysis Module"
+        Processor[processor.py]
+        Analyzer[analyzer.py]
+        PostSim[post_simulation.py]
+    end
+    
+    subgraph "Input Sources"
+        Step3[Step 3: GNN]
+        Step12[Step 12: Execute]
+        Step13[Step 13: LLM]
+    end
+    
+    subgraph "Downstream Steps"
+        Step20[Step 20: Website]
+        Step23[Step 23: Report]
+    end
+    
+    Step16 --> Processor
+    Processor --> Analyzer
+    Processor --> PostSim
+    
+    Step3 -->|Model Data| Processor
+    Step12 -->|Execution Results| Processor
+    Step13 -->|LLM Insights| Processor
+    
+    Processor -->|Analysis Results| Step20
+    Processor -->|Analysis Results| Step23
 ```
 
 ## Core Components

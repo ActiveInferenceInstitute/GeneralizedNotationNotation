@@ -38,13 +38,13 @@
 
 ### Public Functions
 
-#### `process_llm(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> bool`
+#### `process_llm(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
 **Description**: Main LLM processing function with automatic Ollama fallback. Processes GNN files using LLM analysis with multi-provider support.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to analyze
 - `output_dir` (Path): Output directory for LLM analyses
-- `logger` (logging.Logger): Logger instance for logging
+- `verbose` (bool): Enable verbose logging (default: False)
 - `analysis_type` (str, optional): Type of analysis ("comprehensive", "summary", "explain", "optimize") (default: "comprehensive")
 - `provider` (str, optional): LLM provider ("auto", "openai", "anthropic", "ollama") (default: "auto")
   - `"auto"`: Automatically select best available provider (checks API keys, then Ollama)
@@ -65,11 +65,10 @@ from llm import process_llm
 from pathlib import Path
 import logging
 
-logger = logging.getLogger(__name__)
 success = process_llm(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/13_llm_output"),
-    logger=logger,
+    verbose=True,
     analysis_type="comprehensive",
     provider="auto",
     llm_tasks="all"

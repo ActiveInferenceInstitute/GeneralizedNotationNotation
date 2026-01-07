@@ -31,35 +31,72 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Functions from `__init__.py`
 
-#### `generate_activeinference_jl_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
-**Description**: Generate ActiveInference.jl simulation code from GNN model data.
+#### `render_gnn_to_activeinference_jl(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Main function exported from the module. Renders GNN specification to ActiveInference.jl simulation code.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
-- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
-- `hierarchical` (bool, optional): Enable hierarchical model support (default: False)
-- `temporal` (bool, optional): Enable temporal dynamics (default: True)
-- `**kwargs`: Additional ActiveInference.jl generation options
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_path` (Path): Output file path for generated ActiveInference.jl code
+- `**kwargs`: Additional ActiveInference.jl generation options:
+  - `hierarchical` (bool): Enable hierarchical model support (default: False)
+  - `temporal` (bool): Enable temporal dynamics (default: True)
 
-**Returns**: `str` - Generated ActiveInference.jl code as string
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/activeinference_jl/activeinference_renderer.py`
 
 **Example**:
 ```python
-from render.activeinference_jl import generate_activeinference_jl_code
+from render.activeinference_jl import render_gnn_to_activeinference_jl
 from pathlib import Path
 
-# Generate ActiveInference.jl code
-ai_code = generate_activeinference_jl_code(
-    model_data=parsed_gnn_model,
-    output_path=Path("output/active_inference_simulation.jl"),
+# Render GNN file to ActiveInference.jl code
+success, message, files = render_gnn_to_activeinference_jl(
+    gnn_spec=Path("input/model.md"),
+    output_path=Path("output/simulation.jl"),
     hierarchical=True,
     temporal=True
 )
-
-# Code is also saved to file if output_path provided
 ```
+
+#### `render_gnn_to_activeinference_combined(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Render GNN specification to ActiveInference.jl code with combined features.
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
+- `output_path` (Path): Output file path
+- `**kwargs`: Additional options
+
+**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+
+**Location**: `src/render/activeinference_jl/activeinference_renderer.py`
+
+#### `extract_model_info(gnn_spec: Union[str, Path, Dict[str, Any]]) -> Dict[str, Any]`
+**Description**: Extract model information from GNN specification for ActiveInference.jl.
+
+**Parameters**:
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
+
+**Returns**: `Dict[str, Any]` - Extracted model information
+
+**Location**: `src/render/activeinference_jl/activeinference_renderer.py`
+
+#### `generate_activeinference_script(model_info: Dict[str, Any], output_path: Path, **kwargs) -> Tuple[bool, str]`
+**Description**: Generate ActiveInference.jl script from model information.
+
+**Parameters**:
+- `model_info` (Dict[str, Any]): Model information dictionary
+- `output_path` (Path): Output file path
+- `**kwargs`: Additional generation options
+
+**Returns**: `Tuple[bool, str]` - Generation result tuple
+
+**Location**: `src/render/activeinference_jl/activeinference_renderer.py`
 
 #### `convert_gnn_to_activeinference(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
 **Description**: Convert GNN model data to ActiveInference.jl-compatible format.

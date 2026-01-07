@@ -87,6 +87,55 @@ flowchart LR
     Results --> Reports
 ```
 
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 12"
+        Step12[12_execute.py Orchestrator]
+    end
+    
+    subgraph "Execute Module"
+        Processor[processor.py]
+        Executor[executor.py]
+        Validator[validator.py]
+    end
+    
+    subgraph "Framework Executors"
+        PyMDPExec[pymdp/]
+        RxInferExec[rxinfer/]
+        ActInfExec[activeinference_jl/]
+        JAXExec[jax/]
+        DisCoPyExec[discopy/]
+    end
+    
+    subgraph "Downstream Steps"
+        Step13[Step 13: LLM]
+        Step16[Step 16: Analysis]
+    end
+    
+    Step12 --> Processor
+    Processor --> Executor
+    Processor --> Validator
+    
+    Executor --> PyMDPExec
+    Executor --> RxInferExec
+    Executor --> ActInfExec
+    Executor --> JAXExec
+    Executor --> DisCoPyExec
+    
+    Processor -->|Execution Results| Step13
+    Processor -->|Execution Results| Step16
+```
+    RxInferExec --> Results
+    ActInfExec --> Results
+    JAXExec --> Results
+    DisCoPyExec --> Results
+    
+    Results --> Logs
+    Results --> Reports
+```
+
 ### Execution Sequence Flow
 
 ```mermaid

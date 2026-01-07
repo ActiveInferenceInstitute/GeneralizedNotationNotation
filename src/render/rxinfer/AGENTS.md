@@ -31,46 +31,57 @@
 
 ## API Reference
 
-### Public Functions
+### Exported Functions from `__init__.py`
 
-#### `generate_rxinfer_code(model_data: Dict[str, Any], output_path: Optional[Union[str, Path]] = None, **kwargs) -> str`
-**Description**: Generate RxInfer.jl simulation code from GNN model data.
+#### `render_gnn_to_rxinfer(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Main function exported from the module. Renders GNN specification to RxInfer.jl simulation code.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data dictionary with variables, connections, matrices
-- `output_path` (Optional[Union[str, Path]]): Output file path (optional, if provided code is also written to file)
-- `include_toml` (bool, optional): Generate TOML configuration file (default: True)
-- `template_type` (str, optional): Template type ("minimal", "simple", "full") (default: "simple")
-- `**kwargs`: Additional RxInfer.jl generation options
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_path` (Path): Output file path for generated RxInfer.jl code
+- `**kwargs`: Additional RxInfer.jl generation options:
+  - `include_toml` (bool): Generate TOML configuration file (default: True)
+  - `template_type` (str): Template type ("minimal", "simple", "full") (default: "simple")
 
-**Returns**: `str` - Generated RxInfer.jl code as string
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths
+
+**Location**: `src/render/rxinfer/rxinfer_renderer.py`
 
 **Example**:
 ```python
-from render.rxinfer import generate_rxinfer_code
+from render.rxinfer import render_gnn_to_rxinfer
 from pathlib import Path
 
-# Generate RxInfer.jl code
-rxinfer_code = generate_rxinfer_code(
-    model_data=parsed_gnn_model,
+# Render GNN file to RxInfer.jl code
+success, message, files = render_gnn_to_rxinfer(
+    gnn_spec=Path("input/model.md"),
     output_path=Path("output/simulation.jl"),
     include_toml=True,
     template_type="simple"
 )
-
-# Code is also saved to file if output_path provided
 ```
 
-#### `generate_rxinfer_toml_config(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
-**Description**: Generate TOML configuration for RxInfer.jl simulation.
+#### `render_gnn_to_rxinfer_toml(gnn_spec: Union[str, Path, Dict[str, Any]], output_dir: Path, **kwargs) -> Tuple[bool, str, List[str]]`
+**Description**: Render GNN specification to RxInfer.jl code with TOML configuration file.
 
 **Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data
-- `config` (Dict[str, Any], optional): Simulation configuration (default: {})
-- `project_name` (str, optional): Julia project name (default: "GNN_Model")
-- `**kwargs`: Additional TOML generation options
+- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
+- `output_dir` (Path): Output directory for generated files
+- `**kwargs`: Additional options:
+  - `project_name` (str): Julia project name (default: "GNN_Model")
+  - `config` (Dict[str, Any]): Additional TOML configuration options
 
-**Returns**: `str` - TOML configuration as string
+**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
+- `success` (bool): Whether rendering succeeded
+- `message` (str): Status message
+- `generated_files` (List[str]): List of generated file paths (includes .jl and .toml files)
+
+**Location**: `src/render/rxinfer/toml_generator.py`
+
+**Note**: This function may not be available if TOML dependencies are not installed. The module falls back to `render_gnn_to_rxinfer` in that case.
 
 #### `convert_gnn_to_rxinfer(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
 **Description**: Convert GNN model data to RxInfer.jl-compatible format.

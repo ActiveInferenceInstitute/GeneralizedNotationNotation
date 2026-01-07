@@ -24,11 +24,93 @@ graph LR
     Valid -->|Yes| JSON[JSON Exporter]
     Valid -->|Yes| XML[XML Exporter]
     Valid -->|Yes| GraphML[GraphML Exporter]
-    Valid -->|Yes| Others[...]
+    Valid -->|Yes| GEXF[GEXF Exporter]
+    Valid -->|Yes| Pickle[Pickle Exporter]
     
     JSON --> File1[model.json]
     XML --> File2[model.xml]
     GraphML --> File3[model.graphml]
+    GEXF --> File4[model.gexf]
+    Pickle --> File5[model.pkl]
+```
+
+### Export Architecture
+
+```mermaid
+graph TB
+    subgraph "Input Processing"
+        GNNFiles[GNN Files]
+        ParsedData[Parsed GNN Data]
+        Processor[processor.py]
+    end
+    
+    subgraph "Format Exporters"
+        JSONExp[export_to_json]
+        XMLExp[export_to_xml]
+        GraphMLExp[export_to_graphml]
+        GEXFExp[export_to_gexf]
+        PickleExp[export_to_pickle]
+        TextExp[export_to_plaintext]
+    end
+    
+    subgraph "Output Files"
+        JSONFile[JSON Files]
+        XMLFile[XML Files]
+        GraphMLFile[GraphML Files]
+        GEXFFile[GEXF Files]
+        PickleFile[Pickle Files]
+        TextFile[Text Files]
+    end
+    
+    GNNFiles --> Processor
+    ParsedData --> Processor
+    
+    Processor --> JSONExp
+    Processor --> XMLExp
+    Processor --> GraphMLExp
+    Processor --> GEXFExp
+    Processor --> PickleExp
+    Processor --> TextExp
+    
+    JSONExp --> JSONFile
+    XMLExp --> XMLFile
+    GraphMLExp --> GraphMLFile
+    GEXFExp --> GEXFFile
+    PickleExp --> PickleFile
+    TextExp --> TextFile
+```
+
+### Module Integration Flow
+
+```mermaid
+flowchart LR
+    subgraph "Pipeline Step 7"
+        Step7[7_export.py Orchestrator]
+    end
+    
+    subgraph "Export Module"
+        Processor[processor.py]
+        Core[core.py]
+        Formatters[formatters.py]
+    end
+    
+    subgraph "Input Source"
+        Step3[Step 3: GNN]
+    end
+    
+    subgraph "Downstream Steps"
+        Step8[Step 8: Visualization]
+        Step11[Step 11: Render]
+    end
+    
+    Step7 --> Processor
+    Processor --> Core
+    Processor --> Formatters
+    
+    Step3 -->|Parsed Models| Processor
+    
+    Processor -->|Exported Data| Step8
+    Processor -->|Exported Data| Step11
 ```
 
 ## Core Components
