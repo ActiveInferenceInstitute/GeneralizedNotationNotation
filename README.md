@@ -5,7 +5,7 @@
 <div align="center">
 
 [![License: CC BY-NC-SA 4.0](https://img.shields.io/badge/License-CC%20BY--NC--SA%204.0-lightgrey.svg)](./LICENSE.md)
-[![Python 3.9+](https://img.shields.io/badge/python-3.9+-blue.svg)](https://www.python.org/downloads/)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
@@ -61,6 +61,39 @@ GNN provides a structured and standardized way to describe complex cognitive mod
 - **🔬 Reproducible**: Enables precise replication of model specifications
 
 GNN addresses the challenge of communicating Active Inference models, which are often described using a mix of natural language, mathematical equations, diagrams, and code. By offering a unified notation, GNN aims to streamline collaboration, improve model understanding, and accelerate research.
+
+---
+
+## 🧩 Modules & Agents
+
+The GNN pipeline is composed of **24 specialized modules**, each acting as an agent with specific responsibilities. This "Thin Orchestrator" architecture ensures modularity and testability.
+
+| Step | Agent / Module | Description | Links |
+| :--- | :--- | :--- | :--- |
+| **0** | **[Template](src/template/)** | Initial project scaffolding and configuration. | [🤖 Agent](src/template/AGENTS.md) • [📝 Code](src/0_template.py) |
+| **1** | **[Setup](src/setup/)** | Environment, dependencies, and UV package management. | [🤖 Agent](src/setup/AGENTS.md) • [📝 Code](src/1_setup.py) |
+| **2** | **[Tests](src/tests/)** | Comprehensive suite orchestration and coverage analysis. | [🤖 Agent](src/tests/AGENTS.md) • [📝 Code](src/2_tests.py) |
+| **3** | **[GNN](src/gnn/)** | Core parsing, discovery, and semantic object model. | [🤖 Agent](src/gnn/AGENTS.md) • [📝 Code](src/3_gnn.py) |
+| **4** | **[Registry](src/model_registry/)** | Validation and versioning of model artifacts. | [🤖 Agent](src/model_registry/AGENTS.md) • [📝 Code](src/4_model_registry.py) |
+| **5** | **[TypeCheck](src/type_checker/)** | Static analysis, dimension validation, resource estimation. | [🤖 Agent](src/type_checker/AGENTS.md) • [📝 Code](src/5_type_checker.py) |
+| **6** | **[Validate](src/validation/)** | Logical consistency and ontology compliance. | [🤖 Agent](src/validation/AGENTS.md) • [📝 Code](src/6_validation.py) |
+| **7** | **[Export](src/export/)** | Serialization to JSON, XML, GraphML, etc. | [🤖 Agent](src/export/AGENTS.md) • [📝 Code](src/7_export.py) |
+| **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
+| **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/advanced_visualization/AGENTS.md) |
+| **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
+| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, JAX, etc. | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
+| **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
+| **13** | **[LLM](src/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/llm/AGENTS.md) • [📝 Code](src/13_llm.py) |
+| **14** | **[ML](src/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/ml_integration/AGENTS.md) • [📝 Code](src/14_ml_integration.py) |
+| **15** | **[Audio](src/audio/)** | Sonification of model dynamics. | [🤖 Agent](src/audio/AGENTS.md) • [📝 Code](src/15_audio.py) |
+| **16** | **[Analysis](src/analysis/)** | Statistical post-processing of simulation results. | [🤖 Agent](src/analysis/AGENTS.md) • [📝 Code](src/16_analysis.py) |
+| **17** | **[Integrate](src/integration/)** | Cross-module synthesis and coordination. | [🤖 Agent](src/integration/AGENTS.md) • [📝 Code](src/17_integration.py) |
+| **18** | **[Security](src/security/)** | Safety checks and sandboxing. | [🤖 Agent](src/security/AGENTS.md) • [📝 Code](src/18_security.py) |
+| **19** | **[Research](src/research/)** | Experimental features and benchmarking. | [🤖 Agent](src/research/AGENTS.md) • [📝 Code](src/19_research.py) |
+| **20** | **[Website](src/website/)** | Static site generation for reports/docs. | [🤖 Agent](src/website/AGENTS.md) • [📝 Code](src/20_website.py) |
+| **21** | **[MCP](src/mcp/)** | Model Context Protocol server and tools. | [🤖 Agent](src/mcp/AGENTS.md) • [📝 Code](src/21_mcp.py) |
+| **22** | **[GUI](src/gui/)** | Interactive visual editors (Web & Local). | [🤖 Agent](src/gui/AGENTS.md) • [📝 Code](src/22_gui.py) |
+| **23** | **[Report](src/report/)** | Final comprehensive report assembly. | [🤖 Agent](src/report/AGENTS.md) • [📝 Code](src/23_report.py) |
 
 ---
 
@@ -449,19 +482,72 @@ flowchart LR
     Step16 --> Step23
 ```
 
+### 🧠 Modules & Agents
+
+The GNN framework is built around a modular architecture, where each pipeline step corresponds to a dedicated module. These modules encapsulate specific functionalities and interact with various "agents" (e.g., LLMs, external APIs) to perform their tasks.
+
+| Module Name | Pipeline Step | Description | Key Agents/Integrations |
+| :---------- | :------------ | :---------- | :---------------------- |
+| `template` | 0 | Initializes pipeline, sets up environment, and loads configuration. | Configuration Manager, Environment Setup |
+| `setup` | 1 | Manages dependencies, virtual environments, and system checks. | `uv`, `pip`, System Utilities |
+| `tests` | 2 | Executes unit, integration, and end-to-end tests. | `pytest`, `coverage.py` |
+| `gnn` | 3 | Discovers, parses, and validates GNN markdown files. | Markdown Parser, Schema Validator |
+| `model_registry` | 4 | Manages a central registry of GNN models and their metadata. | Database (SQLite), Model Metadata |
+| `type_checker` | 5 | Performs static analysis, type checking, and resource estimation. | Type Inference Engine, Resource Estimator |
+| `validation` | 6 | Validates GNN models against predefined rules and constraints. | Constraint Solver, Logic Validator |
+| `export` | 7 | Exports GNN models to various formats (JSON, XML, GraphML). | JSON/XML/GraphML Serializers |
+| `visualization` | 8 | Generates graphical representations of GNN models. | `matplotlib`, `plotly`, `graphviz` |
+| `advanced_visualization` | 9 | Provides advanced, interactive 3D and dynamic visualizations. | `vedo`, `pyvista`, `dash` |
+| `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
+| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, ActInf.jl) |
+| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl |
+| `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | OpenAI GPT, Anthropic Claude, Local LLMs |
+| `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
+| `audio` | 15 | Generates audio representations of GNN model dynamics. | `SAPF`, `Pedalboard`, Audio Synthesis Engines |
+| `analysis` | 16 | Performs statistical and qualitative analysis of execution results. | `pandas`, `scipy`, Statistical Models |
+| `integration` | 17 | Manages external system integrations and data exchange. | REST APIs, Message Queues |
+| `security` | 18 | Implements security checks, vulnerability scanning, and access control. | SAST Tools, Security Scanners |
+| `research` | 19 | Supports research-specific tasks like hypothesis testing and data collection. | Experimentation Frameworks |
+| `website` | 20 | Generates static websites or documentation portals from GNN outputs. | Static Site Generators (e.g., MkDocs) |
+| `mcp` | 21 | Implements the Model Context Protocol for inter-model communication. | Protocol Handlers, Message Brokers |
+| `gui` | 22 | Provides interactive graphical user interfaces for model creation and editing. | `gradio`, `streamlit`, `dash` |
+| `report` | 23 | Generates comprehensive reports summarizing the pipeline execution. | Report Generators (PDF, HTML) |
+
 ### 🏗️ Pipeline Architecture: Three-Tier Pattern
 
-The pipeline follows a **three-tier architectural pattern** for maintainability and modularity:
+The pipeline follows a **three-tier architectural pattern** (`Script -> Interface -> Processor`) for high maintainability and testability.
 
-```
-main.py → Numbered Scripts (Thin Orchestrators) → Modular Scripts in Folders
+```mermaid
+graph TB
+    subgraph "Tier 1: Orchestrator Layer"
+        Script[N_Module.py<br/>Thin Orchestrator]
+    end
+    
+    subgraph "Tier 2: Interface Layer"
+        Init[__init__.py<br/>Public API]
+    end
+    
+    subgraph "Tier 3: Implementation Layer"
+        Processor[processor.py<br/>Core Logic]
+        Framework[framework/<br/>Adapters]
+        MCP[mcp.py<br/>Tools]
+    end
+    
+    Script -->|Calls| Init
+    Init -->|Delegates| Processor
+    Processor -->|Uses| Framework
+    Processor -->|Registers| MCP
+    
+    style Script fill:#e3f2fd,stroke:#1565c0
+    style Init fill:#f3e5f5,stroke:#7b1fa2
+    style Processor fill:#fff3e0,stroke:#e65100
 ```
 
 #### 🏛️ Architectural Components
 
-1. **Main Pipeline Orchestrator** (`src/main.py`): Central coordinator that executes numbered scripts in sequence
-2. **Thin Orchestrators** (`src/0_template.py`, `src/1_setup.py`, etc.): Minimal scripts that delegate to modules
-3. **Modular Scripts** (`src/template/`, `src/setup/`, etc.): Core functionality implementation
+1.  **Main Pipeline Orchestrator** (`src/main.py`): Central coordinator that executes numbered scripts in sequence.
+2.  **Thin Orchestrators** (`src/0_template.py`, `src/1_setup.py`, etc.): Minimal scripts (<150 lines) that handle CLI args and logging, then delegate immediately.
+3.  **Modular Scripts** (`src/template/`, `src/setup/`, etc.): The actual "brains" of the operation, containing `processor.py`, logic, and specialized tests.
 
 #### 📋 Current Status
 
@@ -688,10 +774,10 @@ output/22_gui_output/
 
 **1️⃣ Prerequisites**
 
-Ensure you have **Python 3.9+** installed:
+Ensure you have **Python 3.11+** installed:
 
 ```bash
-python --version  # Should show 3.9 or higher
+python --version  # Should show 3.11 or higher
 ```
 
 **2️⃣ Clone Repository**
@@ -811,19 +897,25 @@ rm -rf output/*
 
 ## 📖 Documentation
 
-Comprehensive documentation is organized in the `doc/` directory. Here are the key resources:
+Comprehensive documentation is organized in the `doc/` directory.
+
+> [!TIP]
+> **Start Here for Architecture**:
+> *   **[AGENTS.md](./AGENTS.md)**: **Master Agent Scaffolding** - Detailed breakdown of every pipeline module and its agentic responsibilities.
+> *   **[DOCS.md](./DOCS.md)**: **Comprehensive Project Docs** - Full architecture, high-level diagrams, and integration points.
 
 ### 📚 Core Documentation
 
 | Document | Description |
 |----------|-------------|
-| [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to GNN |
-| [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification |
-| [**File Structure**](./doc/gnn/gnn_file_structure_doc.md) | GNN file organization guide |
-| [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide |
-| [**Comprehensive Project Docs**](./DOCS.md) | Full architecture, pipeline, and dataflow diagrams |
-| [**Architecture Guide**](./ARCHITECTURE.md) | Implementation-oriented architecture and extension patterns |
-| [**Machine-Readable Indices**](./doc/api/README.md) | API index and generator |
+| [**AGENTS.md**](./AGENTS.md) | **MUST READ**: The master guide to all pipeline agents and modules. |
+| [**DOCS.md**](./DOCS.md) | High-level system architecture and comprehensive documentation index. |
+| [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
+| [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification. |
+| [**File Structure**](./doc/gnn/gnn_file_structure_doc.md) | Guide to GNN file organization. |
+| [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide. |
+| [**Architecture Guide**](./ARCHITECTURE.md) | Implementation, extension patterns, and system design. |
+| [**Machine-Readable Indices**](./doc/api/README.md) | API index and generator. |
 
 ### 🎯 Specialized Guides
 

@@ -1,0 +1,139 @@
+STDOUT:
+....................s................................................... [  9%]
+........................................................................ [ 19%]
+.........................................................+++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Captured stderr ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-01-07 16:02:17,324 - execute - INFO - 🚀 Processing execute - searching for rendered implementations
+2026-01-07 16:02:17,324 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']
+2026-01-07 16:02:17,328 - execute - INFO - Found render output directory: output/11_render_output
+2026-01-07 16:02:17,329 - execute - INFO - Searching for executable scripts in: output/11_render_output
+2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py
+2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py
+2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
+2026-01-07 16:02:17,343 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
+2026-01-07 16:02:17,343 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl
+2026-01-07 16:02:17,343 - execute - INFO - Found 5 executable scripts to run
+2026-01-07 16:02:17,343 - execute - INFO - Executing jax script: Active Inference POMDP Agent_jax.py
+2026-01-07 16:02:27,482 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_jax.py
+2026-01-07 16:02:27,485 - execute - INFO - Script output: ============================================================
+JAX Active Inference Model: GNNModel
+============================================================
+
+✅ Model parameters created
+   A matrix s...
+2026-01-07 16:02:27,530 - execute - INFO - Collecting execution outputs for jax script Active Inference POMDP Agent_jax.py
+2026-01-07 16:02:27,571 - execute - INFO - Extracting simulation data from collected files for jax
+2026-01-07 16:02:27,581 - execute - INFO - Executing discopy script: Active Inference POMDP Agent_discopy.py
+2026-01-07 16:02:36,682 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_discopy.py
+2026-01-07 16:02:36,697 - execute - INFO - Script output: ✅ DisCoPy is available
+🔬 DisCoPy Categorical Diagram Generation
+📊 State Space: 3 states, 3 observations, 3 actions
+============================================================
+DisCoPy Categorical Diag...
+2026-01-07 16:02:36,738 - execute - INFO - Collecting execution outputs for discopy script Active Inference POMDP Agent_discopy.py
+2026-01-07 16:02:36,784 - execute - INFO - Found 5 output files to collect for discopy
+2026-01-07 16:02:36,837 - execute - INFO - Copied model_components.png → visualizations/model_components.png
+2026-01-07 16:02:36,846 - execute - INFO - Copied generative_model.png → visualizations/generative_model.png
+2026-01-07 16:02:36,848 - execute - INFO - Copied perception_action_loop.png → visualizations/perception_action_loop.png
+2026-01-07 16:02:36,851 - execute - INFO - Copied circuit_analysis.json → simulation_data/circuit_analysis.json
+2026-01-07 16:02:36,851 - execute - INFO - Copied circuit_info.json → simulation_data/circuit_info.json
+2026-01-07 16:02:36,851 - execute - INFO - Collected 5 output files: 3 visualizations, 2 data files, 0 traces
+2026-01-07 16:02:36,856 - execute - INFO - Extracting simulation data from collected files for discopy
+2026-01-07 16:02:36,876 - execute - INFO - Executing pymdp script: Active Inference POMDP Agent_pymdp.py
+2026-01-07 16:02:57,873 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_pymdp.py
+2026-01-07 16:02:59,142 - execute - INFO - Script output: ✅ PyMDP (inferactively-pymdp) is available
+...
+2026-01-07 16:03:00,162 - execute - INFO - Collecting execution outputs for pymdp_gen script Active Inference POMDP Agent_pymdp.py
+2026-01-07 16:03:00,483 - execute - INFO - Found 4 output files to collect for pymdp_gen
+2026-01-07 16:03:00,561 - execute - INFO - Copied simulation_results.json → simulation_data/simulation_results.json
+2026-01-07 16:03:00,583 - execute - INFO - Copied belief_evolution_1.png → visualizations/belief_evolution_1.png
+2026-01-07 16:03:00,607 - execute - INFO - Copied performance_2.png → visualizations/performance_2.png
+2026-01-07 16:03:00,616 - execute - INFO - Copied discrete_states_0.png → visualizations/discrete_states_0.png
+2026-01-07 16:03:00,624 - execute - INFO - Collected 4 output files: 3 visualizations, 1 data files, 0 traces
+2026-01-07 16:03:00,627 - execute - INFO - Extracting simulation data from collected files for pymdp_gen
+2026-01-07 16:03:00,644 - execute - INFO - Executing rxinfer script: Active Inference POMDP Agent_rxinfer.jl
+python(50050) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+python(50061) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+python(50121) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+python(50147) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8315464768) ~~~~~~~~~~~~~~~~~~~~~~~
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pytest/__main__.py", line 9, in <module>
+    raise SystemExit(pytest.console_main())
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 201, in console_main
+    code = main()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 175, in main
+    ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 289, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 343, in _main
+    config.hook.pytest_runtestloop(session=session)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 136, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 245, in call_and_report
+    call = CallInfo.from_call(
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 344, in from_call
+    result: TResult | None = func()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 246, in <lambda>
+    lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
+    item.runtest()
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 1671, in runtest
+    self.ihook.pytest_pyfunc_call(pyfuncitem=self)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
+    result = testfunction(**testargs)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_execute_overall.py", line 32, in test_process_execution_flow
+    success = process_execute(input_dir, output_dir, verbose=True)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/execute/processor.py", line 241, in process_execute
+    exec_result = execute_single_script(script_info, results_dir, verbose, logger)
+  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/execute/processor.py", line 461, in execute_single_script
+    result = subprocess.run(
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 556, in run
+    stdout, stderr = process.communicate(input, timeout=timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 1222, in communicate
+    stdout, stderr = self._communicate(input, endtime, timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 2154, in _communicate
+    ready = selector.select(timeout)
+  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/selectors.py", line 398, in select
+    fd_event_list = self._selector.poll(timeout)
++++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
+
+
+STDERR:

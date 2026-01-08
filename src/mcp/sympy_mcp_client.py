@@ -396,16 +396,48 @@ class GNNSymPyIntegration:
             # Create matrix in SymPy
             matrix_key = await self.sympy_client.create_matrix(matrix_data)
             
-            # For now, we'll implement basic checks
-            # Future enhancement: Add actual stochasticity validation
+            # Calculate determinant
             determinant = await self.sympy_client.matrix_determinant(matrix_key)
+            
+            # Check stochasticity: rows should sum to 1 (for row-stochastic)
+            # or columns should sum to 1 (for column-stochastic transition matrices)
+            is_stochastic = True
+            stochasticity_details = {"row_sums": [], "column_sums": []}
+            
+            for row in matrix_data:
+                row_sum = sum(float(x) if isinstance(x, (int, float)) else 0 for x in row)
+                stochasticity_details["row_sums"].append(row_sum)
+                if abs(row_sum - 1.0) > 0.01:  # Allow small numerical tolerance
+                    is_stochastic = False
+            
+            # Also check column sums for column-stochastic matrices
+            if matrix_data and matrix_data[0]:
+                num_cols = len(matrix_data[0])
+                for col_idx in range(num_cols):
+                    col_sum = sum(float(row[col_idx]) if isinstance(row[col_idx], (int, float)) else 0 
+                                  for row in matrix_data)
+                    stochasticity_details["column_sums"].append(col_sum)
+            
+            # Determine type of stochasticity
+            row_stochastic = all(abs(s - 1.0) < 0.01 for s in stochasticity_details["row_sums"])
+            col_stochastic = all(abs(s - 1.0) < 0.01 for s in stochasticity_details["column_sums"])
+            
+            stochasticity_type = "none"
+            if row_stochastic and col_stochastic:
+                stochasticity_type = "doubly_stochastic"
+            elif row_stochastic:
+                stochasticity_type = "row_stochastic"
+            elif col_stochastic:
+                stochasticity_type = "column_stochastic"
             
             return {
                 "valid": True,
                 "matrix_key": matrix_key,
                 "determinant": determinant,
                 "matrix_type": matrix_type,
-                "stochastic": None,  # TODO: Implement actual stochasticity check
+                "stochastic": row_stochastic or col_stochastic,
+                "stochasticity_type": stochasticity_type,
+                "stochasticity_details": stochasticity_details,
                 "error": None
             }
         except Exception as e:
@@ -433,12 +465,21 @@ class GNNSymPyIntegration:
                 eigenvals_key = await self.sympy_client.matrix_eigenvalues(matrix_key)
                 eigenvecs_key = await self.sympy_client.matrix_eigenvectors(matrix_key)
                 
+                # Analyze stability from eigenvalues
+                # For discrete-time systems: stable if all |eigenvalue| < 1
+                # For continuous-time systems: stable if all real(eigenvalue) < 0
+                # We assume discrete-time for transition matrices
+                stability_analysis = self._analyze_eigenvalue_stability(matrix_data)
+                
                 stability_results.append({
                     "matrix_index": i,
                     "matrix_key": matrix_key,
                     "eigenvalues": eigenvals_key,
                     "eigenvectors": eigenvecs_key,
-                    "stable": None  # TODO: Implement stability analysis from eigenvalues
+                    "stable": stability_analysis["stable"],
+                    "stability_type": stability_analysis["stability_type"],
+                    "max_eigenvalue_magnitude": stability_analysis["max_magnitude"],
+                    "analysis_notes": stability_analysis["notes"]
                 })
             except Exception as e:
                 logger.error(f"Failed to analyze matrix {i}: {e}")
@@ -451,6 +492,74 @@ class GNNSymPyIntegration:
             "matrices_analyzed": len(transition_matrices),
             "results": stability_results
         }
+    
+    def _analyze_eigenvalue_stability(self, matrix_data: List[List[Any]]) -> Dict[str, Any]:
+        """
+        Analyze stability from eigenvalues using numpy.
+        
+        For discrete-time systems (transition matrices): stable if |λ| < 1 for all eigenvalues.
+        
+        Args:
+            matrix_data: Matrix data as list of lists
+            
+        Returns:
+            Stability analysis results
+        """
+        try:
+            import numpy as np
+            
+            # Convert to numpy array
+            matrix = np.array([[float(x) if isinstance(x, (int, float)) else 0 for x in row] 
+                               for row in matrix_data])
+            
+            # Calculate eigenvalues
+            eigenvalues = np.linalg.eigvals(matrix)
+            
+            # Calculate magnitudes
+            magnitudes = np.abs(eigenvalues)
+            max_magnitude = float(np.max(magnitudes))
+            
+            # Stability analysis for discrete-time systems
+            # Stable if all eigenvalues have magnitude < 1
+            # Marginally stable if largest magnitude == 1
+            # Unstable if any eigenvalue has magnitude > 1
+            stability_threshold = 1.0
+            
+            if max_magnitude < stability_threshold - 0.001:
+                stability_type = "asymptotically_stable"
+                stable = True
+                notes = "All eigenvalues inside unit circle"
+            elif abs(max_magnitude - stability_threshold) < 0.001:
+                stability_type = "marginally_stable"
+                stable = True
+                notes = "Eigenvalues on unit circle boundary"
+            else:
+                stability_type = "unstable"
+                stable = False
+                notes = f"Eigenvalue magnitude {max_magnitude:.4f} exceeds 1"
+            
+            return {
+                "stable": stable,
+                "stability_type": stability_type,
+                "max_magnitude": max_magnitude,
+                "eigenvalue_magnitudes": magnitudes.tolist(),
+                "notes": notes
+            }
+            
+        except ImportError:
+            return {
+                "stable": None,
+                "stability_type": "unknown",
+                "max_magnitude": None,
+                "notes": "numpy not available for eigenvalue analysis"
+            }
+        except Exception as e:
+            return {
+                "stable": None,
+                "stability_type": "error",
+                "max_magnitude": None,
+                "notes": f"Analysis failed: {str(e)}"
+            }
     
     def _convert_gnn_to_sympy_syntax(self, gnn_expr: str) -> str:
         """

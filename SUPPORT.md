@@ -30,7 +30,7 @@ Before seeking direct support, please check the extensive documentation provided
 ```bash
 # Check Python version
 python --version
-# If < 3.9, install Python 3.9+ from python.org
+# If < 3.11, install Python 3.11+ from python.org
 ```
 
 **📦 Dependency Issues**

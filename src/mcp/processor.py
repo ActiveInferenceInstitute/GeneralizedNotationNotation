@@ -213,18 +213,13 @@ def process_mcp(
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
         
         # Register tools for all modules that provide MCP adapters
-        modules = [
-            "gnn", "ontology", "audio", "visualization", "export", "execute", "render",
-            "llm", "website", "report", "template", "validation", "setup", "model_registry",
-            "integration", "security", "research", "pipeline", "tests", "type_checker", "utils"
-        ]
-        registered_count = 0
-        registered_modules = []
+        # Modules are already discovered and registered by initialize() -> discover_modules()
+        # We don't need to manually register them again, which causes double-registration warnings.
+        # But we can retrieve the list of registered modules for reporting.
+        registered_modules = list(mcp_instance.modules.keys())
+        registered_count = len(registered_modules)
         
-        for module in modules:
-            if register_module_tools(module):
-                registered_count += 1
-                registered_modules.append(module)
+        logger.info(f"Auto-discovered {registered_count} modules via initialize()")
         
         # Get available tools after registration
         available_tools = get_available_tools()

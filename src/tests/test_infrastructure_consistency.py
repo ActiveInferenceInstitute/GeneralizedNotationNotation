@@ -109,7 +109,7 @@ class TestInfrastructureConsistency:
         allowed_non_test_files = {
             '__init__.py', 'conftest.py', 'runner.py', 'run_fast_tests.py',
             'test_runner_helper.py', 'mcp.py', 'README.md', 'TEST_SUITE_SUMMARY.md',
-            'AGENTS.md'
+            'AGENTS.md', 'categories.py'
         }
         
         invalid_files = []

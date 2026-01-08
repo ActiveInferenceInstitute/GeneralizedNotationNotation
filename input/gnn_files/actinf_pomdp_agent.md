@@ -9,7 +9,7 @@ ActInfPOMDP
 GNN v1
 
 ## ModelName
-Classic Active Inference POMDP Agent v1
+Active Inference POMDP Agent
 
 ## ModelAnnotation
 This model describes a classic Active Inference agent for a discrete POMDP:

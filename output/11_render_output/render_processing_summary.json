@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-07T13:16:36.443423",
+  "timestamp": "2026-01-07T15:55:03.538292",
   "processing_type": "POMDP-aware rendering",
   "total_files": 1,
   "successful_files": 1,
@@ -19,18 +19,18 @@
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py",
           "output_files": [
-            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py"
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py"
           ],
           "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen",
           "warnings": []
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
           "output_files": [
-            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl"
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl"
           ],
           "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer",
           "warnings": [
@@ -39,9 +39,9 @@
         },
         "activeinference_jl": {
           "success": true,
-          "message": "Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl",
+          "message": "Successfully rendered ActiveInference.jl script to Active Inference POMDP Agent_activeinference.jl",
           "output_files": [
-            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Classic Active Inference POMDP Agent v1_activeinference.jl"
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl"
           ],
           "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl",
           "warnings": []
@@ -50,16 +50,16 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Classic Active Inference POMDP Agent v1_jax.py"
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py"
           ],
           "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax",
           "warnings": []
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
           "output_files": [
-            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py"
+            "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py"
           ],
           "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy",
           "warnings": []

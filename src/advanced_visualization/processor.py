@@ -473,7 +473,23 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
                         except Exception as e:
                             logger.warning(f"Failed to load model {model_name} from {parsed_file}: {e}")
                     else:
-                        logger.warning(f"Parsed model file not found: {parsed_file}")
+                        # Try to resolve relative to gnn_output_dir
+                        # The JSON contains "output_directory" which is the root for these files usually
+                        json_out_dir = processing_results.get("output_directory")
+                        if json_out_dir and str(parsed_model_file).startswith(str(json_out_dir)):
+                            rel_path = str(parsed_model_file)[len(str(json_out_dir)):].lstrip("/")
+                            parsed_file = gnn_output_dir / rel_path
+                            
+                        if parsed_file.exists():
+                            try:
+                                with open(parsed_file) as f:
+                                    model_data = json.load(f)
+                                models[model_name] = model_data
+                                logger.info(f"Loaded parsed model (path resolved): {model_name}")
+                            except Exception as e:
+                                logger.warning(f"Failed to load model {model_name} from {parsed_file}: {e}")
+                        else:
+                            logger.warning(f"Parsed model file not found: {parsed_file}")
             else:
                 logger.warning(f"Skipping failed parse result: {result.get('file_name', 'unknown')}")
 

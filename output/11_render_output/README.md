@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2026-01-07T13:16:36.443423
+Generated: 2026-01-07T15:55:03.538292
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -20,11 +20,11 @@ Processing Type: **POMDP-aware rendering**
 ## File Results
 
 - ✅ **actinf_pomdp_agent.md** - Successfully processed
-  - ✅ pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Classic Active Inference POMDP Agent v1_pymdp.py
-  - ✅ rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Classic Active Inference POMDP Agent v1_rxinfer.jl
-  - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Classic Active Inference POMDP Agent v1_activeinference.jl
+  - ✅ pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
+  - ✅ rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
+  - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Active Inference POMDP Agent_activeinference.jl
   - ✅ jax: JAX model code generated successfully.
-  - ✅ discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Classic Active Inference POMDP Agent v1_discopy.py
+  - ✅ discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py
 
 
 ## Output Structure

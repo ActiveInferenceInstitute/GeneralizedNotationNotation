@@ -253,7 +253,40 @@ class SemanticValidator:
                     # Check if mapping is specified
                     if mapping_match:
                         mapping = mapping_match.group(1).strip()
-                        # TODO: Implement mapping validation
+                        # Validate mapping specification
+                        valid_mappings = ['identity', 'transpose', 'reshape', 'broadcast', 'reduce']
+                        mapping_lower = mapping.lower()
+                        
+                        if mapping_lower == 'identity':
+                            # Identity mapping: dimensions must match exactly
+                            if from_dims != to_dims:
+                                errors.append(f"Connection {i} uses 'identity' mapping but dimensions don't match: {from_dims} -> {to_dims}")
+                        elif mapping_lower == 'transpose':
+                            # Transpose mapping: must be 2D and dimensions reversed
+                            if len(from_dims) != 2 or len(to_dims) != 2:
+                                errors.append(f"Connection {i} uses 'transpose' mapping on non-2D tensors")
+                            elif from_dims != list(reversed(to_dims)):
+                                errors.append(f"Connection {i} uses 'transpose' but dimensions are not reversed: {from_dims} -> {to_dims}")
+                        elif mapping_lower == 'reshape':
+                            # Reshape mapping: total elements must match
+                            from_total = 1
+                            to_total = 1
+                            for d in from_dims:
+                                from_total *= d
+                            for d in to_dims:
+                                to_total *= d
+                            if from_total != to_total:
+                                errors.append(f"Connection {i} uses 'reshape' but total elements differ: {from_total} vs {to_total}")
+                        elif mapping_lower == 'broadcast':
+                            # Broadcast mapping: target dimensions must be >= source
+                            for j, (from_dim, to_dim) in enumerate(zip(from_dims, to_dims)):
+                                if to_dim < from_dim:
+                                    warnings.append(f"Connection {i} uses 'broadcast' but dimension {j} shrinks: {from_dim} -> {to_dim}")
+                        elif mapping_lower == 'reduce':
+                            # Reduce mapping: source dimensions can be larger
+                            pass  # Any dimension reduction is valid
+                        elif mapping_lower not in valid_mappings:
+                            warnings.append(f"Connection {i} uses unknown mapping type: '{mapping}' (supported: {valid_mappings})")
                     else:
                         # Default mapping: check if dimensions match
                         if len(from_dims) != len(to_dims):

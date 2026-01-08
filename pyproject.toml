@@ -60,7 +60,7 @@ dependencies = [
     # GNN processing
     "markdown>=3.0.0",
     # Active Inference ecosystem
-    "pymdp==0.0.1",  # Pinned to available version
+    "inferactively-pymdp>=0.0.7",  # Active Inference agent framework
     # High-performance computing
     "jax[cpu]>=0.4.0",
     "jaxlib>=0.4.0",

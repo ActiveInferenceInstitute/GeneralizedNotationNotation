@@ -266,6 +266,22 @@ def process_analysis(
                 logger.warning(f"Cross-framework analysis failed: {e}")
                 import traceback
                 logger.debug(traceback.format_exc())
+            
+            # 3. Comprehensive visualization of all execution outputs
+            logger.info("Generating comprehensive visualizations for all execution outputs...")
+            try:
+                from .post_simulation import visualize_all_framework_outputs
+                
+                viz_output_dir = results_dir / "comprehensive_visualizations"
+                comprehensive_viz = visualize_all_framework_outputs(execution_dir, viz_output_dir, logger)
+                results["comprehensive_visualizations"] = comprehensive_viz
+                results["visualization_files"] = results.get("visualization_files", []) + comprehensive_viz
+                
+                logger.info(f"Generated {len(comprehensive_viz)} comprehensive visualization files")
+            except Exception as e:
+                logger.warning(f"Comprehensive visualization generation failed: {e}")
+                import traceback
+                logger.debug(traceback.format_exc())
         
         # Save detailed results
         results_file = results_dir / "analysis_results.json"

@@ -1,5 +1,5 @@
 {
-  "model_name": "Classic Active Inference POMDP Agent v1",
+  "model_name": "Active Inference POMDP Agent",
   "version": "1.0",
   "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
   "variables": [
@@ -7,7 +7,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "08d17322-3620-4b69-9ce1-c6d7ae4a4def",
+      "id": "792c2e8e-7801-4310-a8a1-42d61469befc",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
@@ -22,7 +22,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "e3cb928b-0c88-4c51-a78a-8e623d2491e5",
+      "id": "a8ca7f92-51f0-4c44-8db8-c88da5a89783",
       "name": "B",
       "var_type": "transition_matrix",
       "dimensions": [
@@ -38,7 +38,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "17673665-d56f-4f76-be55-b405dedbf265",
+      "id": "afcad9b4-d1c2-4f0c-9068-440e62af4336",
       "name": "C",
       "var_type": "preference_vector",
       "dimensions": [
@@ -52,7 +52,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "aa5c5aee-10d2-4633-8c79-c08425efc2ab",
+      "id": "113d73bf-1fc0-4f04-8100-9ce75d0e8e4a",
       "name": "D",
       "var_type": "prior_vector",
       "dimensions": [
@@ -66,7 +66,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "ee0d36d7-a4b8-445c-a395-30b702246c57",
+      "id": "9dc74fe4-cf26-480d-85d6-3d55c1c2a3b8",
       "name": "E",
       "var_type": "policy",
       "dimensions": [
@@ -80,7 +80,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "b62b5ddb-28bd-4159-80dd-797a6e66ebc4",
+      "id": "f935b180-4db5-4087-a428-1253eaea14ea",
       "name": "s",
       "var_type": "hidden_state",
       "dimensions": [
@@ -95,7 +95,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "af1e26ea-4ca7-4a4e-9b7f-430ce28ffd9d",
+      "id": "29726779-bc4d-4375-a316-536cd95dbcbf",
       "name": "s_prime",
       "var_type": "hidden_state",
       "dimensions": [
@@ -110,7 +110,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "c164a7f9-d819-4585-a3d7-990aca792fb3",
+      "id": "b239eb8c-3ebc-49b1-8ba3-b675e5a59ebc",
       "name": "F",
       "var_type": "hidden_state",
       "dimensions": [
@@ -124,7 +124,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "3d094105-c2d4-4f3b-a97a-ca5fe9d3d18d",
+      "id": "93a6ddbb-c5d1-4108-b7ec-97fb7a650112",
       "name": "o",
       "var_type": "observation",
       "dimensions": [
@@ -139,7 +139,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "8a29eb39-87dd-46f2-b617-856ea86f70e8",
+      "id": "be8807ec-c3ef-4d0c-9984-d0ba313d006b",
       "name": "π",
       "var_type": "policy",
       "dimensions": [
@@ -153,7 +153,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "952db22a-6c2f-435f-bb8c-6182abb4d858",
+      "id": "e5cc2bf8-3ab5-4670-afd4-4971812793dd",
       "name": "u",
       "var_type": "action",
       "dimensions": [
@@ -167,7 +167,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "e7f21faf-3f24-4a49-8944-70c83cbab697",
+      "id": "d0c5403e-bd47-4074-98d5-c1a61a19e0ad",
       "name": "G",
       "var_type": "policy",
       "dimensions": [
@@ -181,7 +181,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "559345ec-1792-4f83-af3e-719513ff2229",
+      "id": "4bff1000-52af-4ada-b5f2-d7a1c3611ba3",
       "name": "t",
       "var_type": "hidden_state",
       "dimensions": [
@@ -197,7 +197,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "ec056565-5e65-45c4-8623-9fad43839a59",
+      "id": "cab0f3f3-1a9c-4947-9315-50e93052b4ea",
       "source_variables": [
         "D"
       ],
@@ -212,7 +212,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "5cb84949-c7ce-431c-b9d7-1ecf8a33c529",
+      "id": "af260a5b-1dc6-475b-bb83-e8cb4dc408ba",
       "source_variables": [
         "s"
       ],
@@ -227,7 +227,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "883e5933-e082-4ed5-8601-e68e1115f2b1",
+      "id": "79b6dd1a-a212-4d7f-aab3-bc8ccd4ee198",
       "source_variables": [
         "s"
       ],
@@ -242,7 +242,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "29509392-81c5-4bc9-8bed-5ae33542a72a",
+      "id": "30853f84-303b-42e0-8b8a-9f9f3f1dcd77",
       "source_variables": [
         "A"
       ],
@@ -257,7 +257,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "f006ff65-9fe0-43a7-aaa1-71d0abf5f4c0",
+      "id": "d9f8bf75-b759-4060-a1f7-3d38c01caed0",
       "source_variables": [
         "s"
       ],
@@ -272,7 +272,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "faf4ad84-bd66-46ed-8255-84b326c0b8d8",
+      "id": "2c91539a-ff02-450a-8c25-b2fd4f267c04",
       "source_variables": [
         "C"
       ],
@@ -287,7 +287,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "7e577b75-70c7-4a94-859f-5f82d5089a9b",
+      "id": "08dcf1b5-f629-4d8e-93d7-6962e312c919",
       "source_variables": [
         "E"
       ],
@@ -302,7 +302,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "ee9247c7-11b4-428c-99ff-6f0a6df0dfe6",
+      "id": "92c70d97-5232-4753-91c2-f3ecfe647dc6",
       "source_variables": [
         "G"
       ],
@@ -317,7 +317,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "f9e1cebe-3c0e-4f57-b015-08b5e0cec395",
+      "id": "1a893c89-6874-4437-b69d-b377b6d617f2",
       "source_variables": [
         "π"
       ],
@@ -332,7 +332,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "86762181-e89f-4a3d-9ad9-6d98db15459c",
+      "id": "41795c3d-32dd-4600-8274-e0932fb764a5",
       "source_variables": [
         "B"
       ],
@@ -347,7 +347,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "27ef52ce-67f2-4f0d-9b32-2bc16f6e0555",
+      "id": "e3eea563-c984-4148-9e36-2ccf3dd9fb67",
       "source_variables": [
         "u"
       ],
@@ -364,7 +364,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "01f901df-dc0a-44ea-a985-72b8b1e52809",
+      "id": "3f921b3f-a27f-4cc1-9946-f6a4d5b0bab6",
       "name": "A",
       "value": [
         [
@@ -390,7 +390,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "5376aea9-b51e-4e3f-9399-586cfe82dceb",
+      "id": "2ae5d2e3-410d-47d1-a926-8690fd4ffaa2",
       "name": "B",
       "value": [
         [
@@ -452,7 +452,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "27e6a2f5-bbf3-4b1d-807f-dccb26cb5022",
+      "id": "bbc4f05b-21fe-4e84-bfc4-c78794f5ab36",
       "name": "C",
       "value": [
         [
@@ -468,7 +468,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "5ba96543-bd92-4f33-bf63-1da4d2eca54f",
+      "id": "711cd36b-0475-4646-a3ba-feb2faaa13a6",
       "name": "D",
       "value": [
         [
@@ -484,7 +484,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "96d07217-92c3-4a7e-b4d8-2bc5d7ea3d80",
+      "id": "7bae70fd-cdf7-4c43-936e-9ce7ca38a46b",
       "name": "E",
       "value": [
         [
@@ -500,7 +500,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "37a61eb8-2bcc-421c-bd50-78514f9dfb49",
+      "id": "6c195cc3-4f55-44f8-93a8-9b58a0c54d48",
       "name": "num_actions: 3       # B actions_dim",
       "value": "3 (controlled by π)",
       "type_hint": null,
@@ -512,7 +512,7 @@
     "node_type": "TimeSpecification",
     "source_location": null,
     "metadata": {},
-    "id": "c92012ed-7cdf-4733-b072-154fa25248c6",
+    "id": "3f5e4b31-51c7-4c54-b5ee-5b26c310251f",
     "time_type": "Dynamic",
     "discretization": null,
     "horizon": "Unbounded # The agent is defined for an unbounded time horizon; simulation runs may specify a finite horizon.",
@@ -523,7 +523,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "b8ef7ec3-390c-41e0-87a0-ce5f585d766e",
+      "id": "dda22fdb-3865-490e-8fc4-1b2c574399d0",
       "variable_name": "A",
       "ontology_term": "LikelihoodMatrix",
       "description": null
@@ -532,7 +532,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "eadcc9b5-8309-4a7a-a083-80fb827eeb39",
+      "id": "339f18f5-a0b3-4c56-8121-305ecc19f3ee",
       "variable_name": "B",
       "ontology_term": "TransitionMatrix",
       "description": null
@@ -541,7 +541,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "8af06e9c-ca25-47a3-b9a2-ed23e5c2f9a3",
+      "id": "818e6b60-7b19-4aae-a018-0c142ee31903",
       "variable_name": "C",
       "ontology_term": "LogPreferenceVector",
       "description": null
@@ -550,7 +550,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "6a9c4c26-df9d-44bf-8356-129a8aad7f6b",
+      "id": "3c83d711-d5d8-471d-a4e6-6de0fa849ed7",
       "variable_name": "D",
       "ontology_term": "PriorOverHiddenStates",
       "description": null
@@ -559,7 +559,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "01676c8b-2b4b-4e1d-9071-5b3f73bcc725",
+      "id": "ec910b85-75d1-4cff-9cd9-9b1e36820742",
       "variable_name": "E",
       "ontology_term": "Habit",
       "description": null
@@ -568,7 +568,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "3ad4b589-5d31-4a8f-9f49-a8f0099675c1",
+      "id": "5d840c90-23c7-41cc-90c2-f9a19fdba498",
       "variable_name": "F",
       "ontology_term": "VariationalFreeEnergy",
       "description": null
@@ -577,7 +577,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "6921f059-4946-4701-a429-51cb01299a2e",
+      "id": "d22e4e7f-acb0-4668-a462-1f6082e50c60",
       "variable_name": "G",
       "ontology_term": "ExpectedFreeEnergy",
       "description": null
@@ -586,7 +586,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "9122046b-d9f8-4290-aa2a-16cb61a7e076",
+      "id": "1e3b90ff-9d03-40fc-978f-0174c94326ed",
       "variable_name": "s",
       "ontology_term": "HiddenState",
       "description": null
@@ -595,7 +595,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "d4e30924-f95f-4871-ae53-5fd989a81a46",
+      "id": "fc39a164-3335-48ce-974b-b8e2686b7a84",
       "variable_name": "s_prime",
       "ontology_term": "NextHiddenState",
       "description": null
@@ -604,7 +604,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "92d642d8-51b3-4185-b32e-91b28b83f77e",
+      "id": "e2a10b0f-674b-4f18-b596-b3f9b3510725",
       "variable_name": "o",
       "ontology_term": "Observation",
       "description": null
@@ -613,7 +613,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "bd252397-8a56-4092-af0f-727186c8dd65",
+      "id": "d3795bcb-a6a4-4768-8d5a-62c286015ee6",
       "variable_name": "π",
       "ontology_term": "PolicyVector # Distribution over actions",
       "description": null
@@ -622,7 +622,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "ff7f1153-2af2-4c4d-b53d-f3bd2b1347ec",
+      "id": "829e5f0f-3133-48af-919f-514842b18656",
       "variable_name": "u",
       "ontology_term": "Action       # Chosen action",
       "description": null
@@ -631,15 +631,15 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "897d2157-23aa-4550-877e-fad7af658d85",
+      "id": "17ecb4b9-dece-4f9b-8596-043e8643e8c5",
       "variable_name": "t",
       "ontology_term": "Time",
       "description": null
     }
   ],
   "source_format": null,
-  "created_at": "2026-01-07T13:16:12.502062",
-  "modified_at": "2026-01-07T13:16:12.502064",
+  "created_at": "2026-01-07T16:04:22.957498",
+  "modified_at": "2026-01-07T16:04:22.957500",
   "checksum": null,
   "extensions": {
     "gnn_section": "ActInfPOMDP",
@@ -649,7 +649,7 @@
   "raw_sections": {
     "GNNSection": "ActInfPOMDP",
     "GNNVersionAndFlags": "GNN v1",
-    "ModelName": "Classic Active Inference POMDP Agent v1",
+    "ModelName": "Active Inference POMDP Agent",
     "ModelAnnotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
     "StateSpaceBlock": "# Likelihood matrix: A[observation_outcomes, hidden_states]\nA[3,3,type=float]   # Likelihood mapping hidden states to observations\n\n# Transition matrix: B[states_next, states_previous, actions]\nB[3,3,3,type=float]   # State transitions given previous state and action\n\n# Preference vector: C[observation_outcomes]\nC[3,type=float]       # Log-preferences over observations\n\n# Prior vector: D[states]\nD[3,type=float]       # Prior over initial hidden states\n\n# Habit vector: E[actions]\nE[3,type=float]       # Initial policy prior (habit) over actions\n\n# Hidden State\ns[3,1,type=float]     # Current hidden state distribution\ns_prime[3,1,type=float] # Next hidden state distribution\nF[π,type=float]       # Variational Free Energy for belief updating from observations\n\n# Observation\no[3,1,type=int]     # Current observation (integer index)\n\n# Policy and Control\nπ[3,type=float]       # Policy (distribution over actions), no planning\nu[1,type=int]         # Action taken\nG[π,type=float]       # Expected Free Energy (per policy)\n\n# Time\nt[1,type=int]         # Discrete time step",
     "Connections": "D>s\ns-A\ns>s_prime\nA-o\ns-B\nC>G\nE>π\nG>π\nπ>u\nB>u\nu>s_prime",

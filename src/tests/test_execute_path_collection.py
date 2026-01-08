@@ -202,3 +202,4 @@ class TestPathCollectionDeduplication:
         # Should have at most one copy
         assert len(copied_files) <= 1
 
+

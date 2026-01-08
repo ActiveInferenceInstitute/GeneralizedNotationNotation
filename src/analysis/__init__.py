@@ -41,7 +41,16 @@ from .post_simulation import (
     extract_activeinference_jl_data,
     extract_jax_data,
     extract_discopy_data,
-    analyze_execution_results
+    analyze_execution_results,
+    # New comprehensive visualization functions
+    visualize_all_framework_outputs,
+    generate_belief_heatmaps,
+    generate_action_analysis,
+    generate_free_energy_plots,
+    generate_observation_analysis,
+    generate_cross_framework_comparison,
+    plot_belief_evolution,
+    animate_belief_evolution
 )
 
 
@@ -132,5 +141,14 @@ __all__ = [
     'extract_activeinference_jl_data',
     'extract_jax_data',
     'extract_discopy_data',
-    'analyze_execution_results'
+    'analyze_execution_results',
+    # Comprehensive visualization functions
+    'visualize_all_framework_outputs',
+    'generate_belief_heatmaps',
+    'generate_action_analysis',
+    'generate_free_energy_plots',
+    'generate_observation_analysis',
+    'generate_cross_framework_comparison',
+    'plot_belief_evolution',
+    'animate_belief_evolution'
 ]

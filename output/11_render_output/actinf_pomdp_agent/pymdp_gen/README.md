@@ -1,17 +1,17 @@
 # PYMDP Rendering Results
 
-Generated from GNN POMDP Model: **Classic Active Inference POMDP Agent v1**
+Generated from GNN POMDP Model: **Active Inference POMDP Agent**
 
 ## Model Information
 
-- **Model Name**: Classic Active Inference POMDP Agent v1
+- **Model Name**: Active Inference POMDP Agent
 - **Model Description**: This model describes a classic Active Inference agent for a discrete POMDP:
 - One observation modality ("state_observation") with 3 possible outcomes.
 - One hidden state factor ("location") with 3 possible states.
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
-- **Generation Date**: 2026-01-07 13:16:36
+- **Generation Date**: 2026-01-07 15:55:03
 
 ## POMDP Dimensions
 
@@ -31,7 +31,7 @@ Generated from GNN POMDP Model: **Classic Active Inference POMDP Agent v1**
 
 ## Generated Files
 
-- `Classic Active Inference POMDP Agent v1_pymdp.py` - pymdp simulation script
+- `Active Inference POMDP Agent_pymdp.py` - pymdp simulation script
 
 
 ## Warnings

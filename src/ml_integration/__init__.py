@@ -78,14 +78,25 @@ def check_ml_frameworks():
     frameworks = {}
     
     # Check PyTorch
+    # Check PyTorch
     try:
         import torch
-        frameworks['pytorch'] = {
-            'available': True,
-            'version': torch.__version__,
-            'cuda_available': torch.cuda.is_available() if hasattr(torch, 'cuda') else False
-        }
+        # Check if it's the real torch or a shadowed one
+        if not hasattr(torch, '__version__'):
+            logging.getLogger(__name__).warning(
+                f"Imported 'torch' module has no '__version__'. Path: {getattr(torch, '__file__', 'unknown')}"
+            )
+            frameworks['pytorch'] = {'available': False, 'version': None}
+        else:
+            frameworks['pytorch'] = {
+                'available': True,
+                'version': torch.__version__,
+                'cuda_available': torch.cuda.is_available() if hasattr(torch, 'cuda') else False
+            }
     except ImportError:
+        frameworks['pytorch'] = {'available': False, 'version': None}
+    except Exception as e:
+        logging.getLogger(__name__).warning(f"Error checking PyTorch: {e}")
         frameworks['pytorch'] = {'available': False, 'version': None}
     
     # Check TensorFlow

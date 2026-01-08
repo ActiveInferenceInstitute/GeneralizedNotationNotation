@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/actinf_pomdp_agent.md
-# Processed on: 2026-01-07T13:15:53.384318
+# Processed on: 2026-01-07T15:54:52.059011
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Active Inference POMDP Agent
@@ -15,7 +15,7 @@ ActInfPOMDP
 GNN v1
 
 ## ModelName
-Classic Active Inference POMDP Agent v1
+Active Inference POMDP Agent
 
 ## ModelAnnotation
 This model describes a classic Active Inference agent for a discrete POMDP:

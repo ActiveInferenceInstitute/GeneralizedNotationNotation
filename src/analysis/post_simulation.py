@@ -554,6 +554,574 @@ def animate_belief_evolution(
     plt.close()
     return str(output_path)
 
+
+def visualize_all_framework_outputs(
+    execution_dir: Path,
+    output_dir: Path,
+    logger_instance: Optional[logging.Logger] = None
+) -> List[str]:
+    """
+    Generate comprehensive visualizations for all raw execution outputs.
+    
+    This function creates a complete visualization suite for POMDP simulation outputs:
+    - Belief trajectory plots per framework
+    - Action selection histograms
+    - Free energy evolution curves
+    - State distribution heatmaps
+    - Cross-framework metric comparisons
+    
+    Args:
+        execution_dir: Directory containing execution results (e.g., output/12_execute_output)
+        output_dir: Directory to save visualizations
+        logger_instance: Optional logger instance
+        
+    Returns:
+        List of generated visualization file paths
+    """
+    log = logger_instance or logger
+    generated_files: List[str] = []
+    
+    output_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Collect all execution data
+    framework_data: Dict[str, Dict[str, Any]] = {}
+    
+    # Search for execution result files
+    for result_file in execution_dir.rglob("*_results.json"):
+        try:
+            with open(result_file, 'r') as f:
+                data = json.load(f)
+            
+            framework = data.get("framework", "unknown")
+            model_name = data.get("model_name", result_file.parent.name)
+            
+            key = f"{framework}_{model_name}"
+            if key not in framework_data:
+                framework_data[key] = {
+                    "framework": framework,
+                    "model_name": model_name,
+                    "results": []
+                }
+            framework_data[key]["results"].append(data)
+            
+        except Exception as e:
+            log.warning(f"Failed to load {result_file}: {e}")
+    
+    # Also search for simulation_results.json files
+    for sim_file in execution_dir.rglob("*simulation_results.json"):
+        try:
+            with open(sim_file, 'r') as f:
+                data = json.load(f)
+            
+            # Determine framework from path
+            path_parts = sim_file.parts
+            framework = "unknown"
+            for part in path_parts:
+                if part in ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"]:
+                    framework = part
+                    break
+            
+            model_name = sim_file.parent.parent.name if len(sim_file.parts) > 2 else "unknown"
+            
+            key = f"{framework}_{model_name}_sim"
+            if key not in framework_data:
+                framework_data[key] = {
+                    "framework": framework,
+                    "model_name": model_name,
+                    "simulation_data": data
+                }
+            else:
+                framework_data[key]["simulation_data"] = data
+                
+        except Exception as e:
+            log.warning(f"Failed to load simulation file {sim_file}: {e}")
+    
+    if not framework_data:
+        log.warning("No execution data found for visualization")
+        return generated_files
+    
+    log.info(f"Found {len(framework_data)} framework/model combinations for visualization")
+    
+    # Generate visualizations for each framework/model
+    for key, data in framework_data.items():
+        framework = data["framework"]
+        model_name = data["model_name"]
+        
+        try:
+            # Extract simulation data
+            sim_data = data.get("simulation_data", {})
+            if not sim_data and data.get("results"):
+                # Try to extract from first result
+                result = data["results"][0]
+                sim_data = result.get("simulation_data", {})
+                
+                # Also check implementation directory for files
+                impl_dir = result.get("implementation_directory")
+                if impl_dir:
+                    impl_path = Path(impl_dir)
+                    sim_data_dir = impl_path / "simulation_data"
+                    if sim_data_dir.exists():
+                        for json_file in sim_data_dir.glob("*.json"):
+                            try:
+                                with open(json_file, 'r') as f:
+                                    file_data = json.load(f)
+                                if isinstance(file_data, dict):
+                                    sim_data.update(file_data)
+                            except Exception:
+                                pass
+            
+            # Generate belief heatmap
+            beliefs = sim_data.get("beliefs", [])
+            if beliefs and len(beliefs) > 1:
+                heatmap_file = output_dir / f"{model_name}_{framework}_belief_heatmap.png"
+                try:
+                    generate_belief_heatmaps(beliefs, heatmap_file, f"Belief Evolution - {model_name} ({framework})")
+                    generated_files.append(str(heatmap_file))
+                    log.info(f"Generated belief heatmap: {heatmap_file.name}")
+                except Exception as e:
+                    log.warning(f"Failed to generate belief heatmap for {key}: {e}")
+            
+            # Generate action analysis
+            actions = sim_data.get("actions", [])
+            if actions:
+                action_file = output_dir / f"{model_name}_{framework}_action_analysis.png"
+                try:
+                    generate_action_analysis(actions, action_file, f"Action Selection - {model_name} ({framework})")
+                    generated_files.append(str(action_file))
+                    log.info(f"Generated action analysis: {action_file.name}")
+                except Exception as e:
+                    log.warning(f"Failed to generate action analysis for {key}: {e}")
+            
+            # Generate free energy plot
+            free_energy = sim_data.get("free_energy", [])
+            if free_energy:
+                fe_file = output_dir / f"{model_name}_{framework}_free_energy.png"
+                try:
+                    generate_free_energy_plots(free_energy, fe_file, f"Free Energy - {model_name} ({framework})")
+                    generated_files.append(str(fe_file))
+                    log.info(f"Generated free energy plot: {fe_file.name}")
+                except Exception as e:
+                    log.warning(f"Failed to generate free energy plot for {key}: {e}")
+            
+            # Generate observation analysis
+            observations = sim_data.get("observations", [])
+            if observations:
+                obs_file = output_dir / f"{model_name}_{framework}_observations.png"
+                try:
+                    generate_observation_analysis(observations, obs_file, f"Observations - {model_name} ({framework})")
+                    generated_files.append(str(obs_file))
+                    log.info(f"Generated observation analysis: {obs_file.name}")
+                except Exception as e:
+                    log.warning(f"Failed to generate observation analysis for {key}: {e}")
+                    
+        except Exception as e:
+            log.error(f"Failed to generate visualizations for {key}: {e}")
+    
+    # Generate cross-framework comparison if multiple frameworks
+    frameworks = set(d["framework"] for d in framework_data.values())
+    if len(frameworks) > 1:
+        try:
+            comparison_file = output_dir / "cross_framework_comparison.png"
+            generate_cross_framework_comparison(framework_data, comparison_file)
+            generated_files.append(str(comparison_file))
+            log.info(f"Generated cross-framework comparison: {comparison_file.name}")
+        except Exception as e:
+            log.warning(f"Failed to generate cross-framework comparison: {e}")
+    
+    log.info(f"Generated {len(generated_files)} visualization files")
+    return generated_files
+
+
+def generate_belief_heatmaps(
+    beliefs: List[List[float]],
+    output_path: Path,
+    title: str = "Belief State Evolution Heatmap"
+) -> str:
+    """
+    Generate a heatmap visualization of belief state evolution over time.
+    
+    Args:
+        beliefs: List of belief distributions at each timestep [[p1, p2, ...], ...]
+        output_path: Path to save the visualization
+        title: Title for the plot
+        
+    Returns:
+        Path to the generated file
+    """
+    if not beliefs or len(beliefs) < 2:
+        raise ValueError("Need at least 2 timesteps for heatmap")
+    
+    belief_array = np.array(beliefs)
+    n_steps, n_states = belief_array.shape
+    
+    fig, axes = plt.subplots(1, 2, figsize=(14, 6))
+    
+    # Heatmap
+    ax1 = axes[0]
+    im = ax1.imshow(belief_array.T, aspect='auto', cmap='viridis', origin='lower')
+    ax1.set_xlabel("Time Step")
+    ax1.set_ylabel("State")
+    ax1.set_title(f"{title}\n(Heatmap)")
+    ax1.set_yticks(range(n_states))
+    ax1.set_yticklabels([f"S{i+1}" for i in range(n_states)])
+    plt.colorbar(im, ax=ax1, label="Probability")
+    
+    # Line plot
+    ax2 = axes[1]
+    colors = plt.cm.tab10(np.linspace(0, 1, n_states))
+    for i in range(n_states):
+        ax2.plot(range(n_steps), belief_array[:, i], label=f"State {i+1}", 
+                 color=colors[i], linewidth=2)
+    ax2.set_xlabel("Time Step")
+    ax2.set_ylabel("Probability")
+    ax2.set_title(f"{title}\n(Trajectories)")
+    ax2.legend(loc='best')
+    ax2.grid(True, alpha=0.3)
+    ax2.set_ylim(0, 1.05)
+    
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return str(output_path)
+
+
+def generate_action_analysis(
+    actions: List[int],
+    output_path: Path,
+    title: str = "Action Selection Analysis"
+) -> str:
+    """
+    Generate visualization of action selection patterns.
+    
+    Args:
+        actions: List of action indices taken at each timestep
+        output_path: Path to save the visualization
+        title: Title for the plot
+        
+    Returns:
+        Path to the generated file
+    """
+    if not actions:
+        raise ValueError("No actions provided")
+    
+    actions_array = np.array(actions)
+    unique_actions = sorted(set(actions))
+    n_actions = len(unique_actions)
+    
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    # Action histogram
+    ax1 = axes[0]
+    action_counts = [np.sum(actions_array == a) for a in unique_actions]
+    colors = plt.cm.Set2(np.linspace(0, 1, n_actions))
+    bars = ax1.bar(unique_actions, action_counts, color=colors)
+    ax1.set_xlabel("Action")
+    ax1.set_ylabel("Count")
+    ax1.set_title("Action Frequency Distribution")
+    ax1.set_xticks(unique_actions)
+    ax1.set_xticklabels([f"A{a}" for a in unique_actions])
+    
+    # Add count labels on bars
+    for bar, count in zip(bars, action_counts):
+        ax1.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
+                 str(count), ha='center', va='bottom', fontsize=10)
+    
+    # Action sequence plot
+    ax2 = axes[1]
+    ax2.plot(range(len(actions)), actions, 'o-', markersize=4, linewidth=1, alpha=0.7)
+    ax2.set_xlabel("Time Step")
+    ax2.set_ylabel("Action")
+    ax2.set_title("Action Sequence Over Time")
+    ax2.set_yticks(unique_actions)
+    ax2.set_yticklabels([f"A{a}" for a in unique_actions])
+    ax2.grid(True, alpha=0.3)
+    
+    # Action transition matrix
+    ax3 = axes[2]
+    if len(actions) > 1:
+        transition_matrix = np.zeros((n_actions, n_actions))
+        action_to_idx = {a: i for i, a in enumerate(unique_actions)}
+        for i in range(len(actions) - 1):
+            from_idx = action_to_idx[actions[i]]
+            to_idx = action_to_idx[actions[i + 1]]
+            transition_matrix[from_idx, to_idx] += 1
+        
+        # Normalize rows
+        row_sums = transition_matrix.sum(axis=1, keepdims=True)
+        transition_matrix = np.divide(transition_matrix, row_sums, 
+                                       where=row_sums != 0, 
+                                       out=np.zeros_like(transition_matrix))
+        
+        im = ax3.imshow(transition_matrix, cmap='Blues', vmin=0, vmax=1)
+        ax3.set_xlabel("Next Action")
+        ax3.set_ylabel("Current Action")
+        ax3.set_title("Action Transition Probabilities")
+        ax3.set_xticks(range(n_actions))
+        ax3.set_yticks(range(n_actions))
+        ax3.set_xticklabels([f"A{a}" for a in unique_actions])
+        ax3.set_yticklabels([f"A{a}" for a in unique_actions])
+        
+        # Add text annotations
+        for i in range(n_actions):
+            for j in range(n_actions):
+                text = ax3.text(j, i, f"{transition_matrix[i, j]:.2f}",
+                               ha="center", va="center", color="black" if transition_matrix[i, j] < 0.5 else "white")
+        
+        plt.colorbar(im, ax=ax3, label="Probability")
+    else:
+        ax3.text(0.5, 0.5, "Need > 1 action\nfor transitions", 
+                 ha='center', va='center', transform=ax3.transAxes)
+        ax3.set_title("Action Transition Probabilities")
+    
+    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return str(output_path)
+
+
+def generate_free_energy_plots(
+    free_energy: List[float],
+    output_path: Path,
+    title: str = "Free Energy Dynamics"
+) -> str:
+    """
+    Generate visualization of free energy evolution.
+    
+    Includes:
+    - Free energy over time
+    - Moving average trend
+    - Convergence analysis
+    
+    Args:
+        free_energy: List of free energy values over time
+        output_path: Path to save the visualization
+        title: Title for the plot
+        
+    Returns:
+        Path to the generated file
+    """
+    if not free_energy:
+        raise ValueError("No free energy values provided")
+    
+    fe_array = np.array(free_energy)
+    n_steps = len(fe_array)
+    
+    fig, axes = plt.subplots(2, 2, figsize=(12, 10))
+    
+    # Main free energy plot
+    ax1 = axes[0, 0]
+    ax1.plot(range(n_steps), fe_array, 'b-', linewidth=1.5, label='Free Energy')
+    
+    # Add moving average if enough points
+    if n_steps > 5:
+        window = min(5, n_steps // 3)
+        moving_avg = np.convolve(fe_array, np.ones(window)/window, mode='valid')
+        ax1.plot(range(window-1, n_steps), moving_avg, 'r--', linewidth=2, 
+                 label=f'{window}-step Moving Average')
+    
+    ax1.set_xlabel("Time Step")
+    ax1.set_ylabel("Free Energy")
+    ax1.set_title("Free Energy Evolution")
+    ax1.legend()
+    ax1.grid(True, alpha=0.3)
+    
+    # Distribution of free energy values
+    ax2 = axes[0, 1]
+    ax2.hist(fe_array, bins=min(20, n_steps), color='steelblue', edgecolor='white', alpha=0.7)
+    ax2.axvline(np.mean(fe_array), color='red', linestyle='--', linewidth=2, label=f'Mean: {np.mean(fe_array):.3f}')
+    ax2.axvline(np.median(fe_array), color='green', linestyle='--', linewidth=2, label=f'Median: {np.median(fe_array):.3f}')
+    ax2.set_xlabel("Free Energy")
+    ax2.set_ylabel("Frequency")
+    ax2.set_title("Free Energy Distribution")
+    ax2.legend()
+    
+    # Rate of change
+    ax3 = axes[1, 0]
+    if n_steps > 1:
+        fe_diff = np.diff(fe_array)
+        ax3.bar(range(len(fe_diff)), fe_diff, color=['green' if d < 0 else 'red' for d in fe_diff], alpha=0.7)
+        ax3.axhline(0, color='black', linestyle='-', linewidth=0.5)
+        ax3.set_xlabel("Time Step")
+        ax3.set_ylabel("ΔFE")
+        ax3.set_title("Free Energy Change per Step")
+        
+        # Add summary statistics
+        positive_changes = np.sum(fe_diff > 0)
+        negative_changes = np.sum(fe_diff < 0)
+        ax3.text(0.02, 0.98, f"↑ Increases: {positive_changes}\n↓ Decreases: {negative_changes}", 
+                 transform=ax3.transAxes, verticalalignment='top', fontsize=10,
+                 bbox=dict(boxstyle='round', facecolor='wheat', alpha=0.5))
+    
+    # Convergence analysis
+    ax4 = axes[1, 1]
+    if n_steps > 10:
+        # Calculate rolling variance
+        window = max(3, n_steps // 10)
+        rolling_var = []
+        for i in range(window, n_steps + 1):
+            rolling_var.append(np.var(fe_array[i-window:i]))
+        
+        ax4.plot(range(window, n_steps + 1), rolling_var, 'purple', linewidth=1.5)
+        ax4.set_xlabel("Time Step")
+        ax4.set_ylabel("Rolling Variance")
+        ax4.set_title(f"Convergence Analysis ({window}-step variance)")
+        ax4.grid(True, alpha=0.3)
+        
+        # Determine convergence status
+        if rolling_var:
+            final_var = rolling_var[-1]
+            converged = final_var < 0.1
+            status = "✓ Converged" if converged else "⚠ Not Converged"
+            ax4.text(0.98, 0.98, f"{status}\nFinal Variance: {final_var:.4f}", 
+                     transform=ax4.transAxes, verticalalignment='top', horizontalalignment='right',
+                     fontsize=10, bbox=dict(boxstyle='round', 
+                                            facecolor='lightgreen' if converged else 'lightyellow', alpha=0.7))
+    else:
+        ax4.text(0.5, 0.5, "Need > 10 steps\nfor convergence analysis", 
+                 ha='center', va='center', transform=ax4.transAxes)
+        ax4.set_title("Convergence Analysis")
+    
+    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return str(output_path)
+
+
+def generate_observation_analysis(
+    observations: List[int],
+    output_path: Path,
+    title: str = "Observation Analysis"
+) -> str:
+    """
+    Generate visualization of observation patterns.
+    
+    Args:
+        observations: List of observation indices
+        output_path: Path to save the visualization
+        title: Title for the plot
+        
+    Returns:
+        Path to the generated file
+    """
+    if not observations:
+        raise ValueError("No observations provided")
+    
+    obs_array = np.array(observations)
+    unique_obs = sorted(set(observations))
+    n_obs = len(unique_obs)
+    
+    fig, axes = plt.subplots(1, 2, figsize=(12, 5))
+    
+    # Observation frequency
+    ax1 = axes[0]
+    obs_counts = [np.sum(obs_array == o) for o in unique_obs]
+    colors = plt.cm.Pastel1(np.linspace(0, 1, n_obs))
+    ax1.bar(unique_obs, obs_counts, color=colors, edgecolor='black')
+    ax1.set_xlabel("Observation")
+    ax1.set_ylabel("Count")
+    ax1.set_title("Observation Frequency")
+    ax1.set_xticks(unique_obs)
+    ax1.set_xticklabels([f"O{o}" for o in unique_obs])
+    
+    # Observation sequence
+    ax2 = axes[1]
+    ax2.scatter(range(len(observations)), observations, c=observations, cmap='tab10', s=30, alpha=0.7)
+    ax2.plot(range(len(observations)), observations, 'gray', alpha=0.3, linewidth=0.5)
+    ax2.set_xlabel("Time Step")
+    ax2.set_ylabel("Observation")
+    ax2.set_title("Observation Sequence")
+    ax2.set_yticks(unique_obs)
+    ax2.set_yticklabels([f"O{o}" for o in unique_obs])
+    ax2.grid(True, alpha=0.3)
+    
+    plt.suptitle(title, fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return str(output_path)
+
+
+def generate_cross_framework_comparison(
+    framework_data: Dict[str, Dict[str, Any]],
+    output_path: Path
+) -> str:
+    """
+    Generate cross-framework comparison visualization.
+    
+    Args:
+        framework_data: Dictionary mapping framework keys to their data
+        output_path: Path to save the visualization
+        
+    Returns:
+        Path to the generated file
+    """
+    frameworks = []
+    metrics = {"execution_time": [], "steps_completed": [], "success_rate": []}
+    
+    for key, data in framework_data.items():
+        framework = data.get("framework", "unknown")
+        frameworks.append(framework)
+        
+        results = data.get("results", [])
+        if results:
+            result = results[0]
+            metrics["execution_time"].append(result.get("execution_time", 0))
+            metrics["steps_completed"].append(result.get("steps_completed", 0))
+            metrics["success_rate"].append(1 if result.get("success", False) else 0)
+        else:
+            for m in metrics:
+                metrics[m].append(0)
+    
+    if not frameworks:
+        raise ValueError("No framework data for comparison")
+    
+    fig, axes = plt.subplots(1, 3, figsize=(15, 5))
+    
+    colors = plt.cm.Set3(np.linspace(0, 1, len(frameworks)))
+    
+    # Execution time comparison
+    ax1 = axes[0]
+    bars = ax1.bar(range(len(frameworks)), metrics["execution_time"], color=colors)
+    ax1.set_xlabel("Framework")
+    ax1.set_ylabel("Execution Time (s)")
+    ax1.set_title("Execution Time Comparison")
+    ax1.set_xticks(range(len(frameworks)))
+    ax1.set_xticklabels(frameworks, rotation=45, ha='right')
+    
+    # Steps completed comparison
+    ax2 = axes[1]
+    ax2.bar(range(len(frameworks)), metrics["steps_completed"], color=colors)
+    ax2.set_xlabel("Framework")
+    ax2.set_ylabel("Steps Completed")
+    ax2.set_title("Simulation Steps Comparison")
+    ax2.set_xticks(range(len(frameworks)))
+    ax2.set_xticklabels(frameworks, rotation=45, ha='right')
+    
+    # Success rate comparison
+    ax3 = axes[2]
+    success_colors = ['green' if s == 1 else 'red' for s in metrics["success_rate"]]
+    ax3.bar(range(len(frameworks)), metrics["success_rate"], color=success_colors, alpha=0.7)
+    ax3.set_xlabel("Framework")
+    ax3.set_ylabel("Success (1=Yes, 0=No)")
+    ax3.set_title("Execution Success Comparison")
+    ax3.set_xticks(range(len(frameworks)))
+    ax3.set_xticklabels(frameworks, rotation=45, ha='right')
+    ax3.set_ylim(-0.1, 1.1)
+    
+    plt.suptitle("Cross-Framework Comparison", fontsize=14, fontweight='bold')
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    
+    return str(output_path)
+
+
 def analyze_execution_results(
     execution_results_dir: Path,
     model_name: Optional[str] = None

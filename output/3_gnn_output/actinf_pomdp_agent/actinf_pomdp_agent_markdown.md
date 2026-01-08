@@ -2,7 +2,7 @@
 Version: 1.0
 
 ## ModelName
-Classic Active Inference POMDP Agent v1
+Active Inference POMDP Agent
 
 ## ModelAnnotation
 This model describes a classic Active Inference agent for a discrete POMDP:
@@ -68,6 +68,6 @@ u = Action       # Chosen action
 t = Time
 
 ## Footer
-Generated: 2026-01-07T13:16:12.504656
+Generated: 2026-01-07T16:04:22.964327
 
 ## Signature

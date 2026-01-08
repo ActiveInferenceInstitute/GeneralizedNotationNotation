@@ -3,7 +3,7 @@
 ## Quick Start (Cold Start Installation)
 
 ### Prerequisites
-- **Python 3.9+** installed
+- **Python 3.11+** installed
 - **UV** package manager installed
   ```bash
   curl -LsSf https://astral.sh/uv/install.sh | sh

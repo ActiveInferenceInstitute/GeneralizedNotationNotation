@@ -41,7 +41,7 @@ python3 main.py --only-steps 1 --dev
 
 ## System Requirements
 
-- **Python**: 3.9 or newer
+- **Python**: 3.11 or newer (up to 3.13)
 - **Operating System**: Linux (primary support)
 - **Disk Space**: At least 2GB free for dependencies
 - **System Packages**: 
@@ -119,7 +119,7 @@ The GNN project uses the following environment variables:
 |----------|---------|----------|---------|
 | `OPENAI_API_KEY` | API key for OpenAI services (for LLM step) | For `11_llm.py` only | `sk-abcd1234...` |
 | `GNN_CACHE_DIR` | Directory for caching intermediate results | No | `/path/to/cache` |
-| `PYTHONPATH` | Ensures Python can find project modules | Auto-set by scripts | `src:src/.venv/lib/python3.9/site-packages` |
+| `PYTHONPATH` | Ensures Python can find project modules | Auto-set by scripts | `src:src/.venv/lib/python3.11/site-packages` |
 
 You can set these variables in a `.env` file in the project root, or set them directly in your shell:
 
@@ -517,7 +517,7 @@ The GNN project has been tested with the following key dependency versions:
 
 | Dependency | Tested Versions | Notes |
 |------------|----------------|-------|
-| Python | 3.9, 3.10, 3.11 | 3.10 recommended |
+| Python | 3.11, 3.12, 3.13 | 3.11 recommended |
 | NumPy | 1.24.x - 1.26.x | Required by JAX |
 | JAX | 0.4.20+ | Required for DisCoPy matrix backend |
 | DisCoPy | 1.0.0+ | With matrix extras |
@@ -580,7 +580,7 @@ recommended_specs:
   memory: ">= 8GB RAM"
   storage: ">= 5GB SSD space"
   cpu: "Multi-core processor (4+ cores recommended)"
-  python: "3.10 or 3.11 (optimal performance)"
+  python: "3.11, 3.12, or 3.13 (optimal performance)"
 ```
 
 ### **Large Model Processing**
@@ -663,7 +663,7 @@ When upgrading GNN versions:
 ## Need Help?
 
 ### **Common Setup Issues**
-- **Python Version**: Ensure Python 3.9+ is installed and active
+- **Python Version**: Ensure Python 3.11+ is installed and active
 - **Virtual Environment**: Always use virtual environments for isolation
 - **Dependencies**: Check [Common Errors](troubleshooting/common_errors.md) for dependency issues
 - **Permissions**: Ensure write access to project directory
