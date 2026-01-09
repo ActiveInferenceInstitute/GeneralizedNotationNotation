@@ -177,6 +177,7 @@ class TestStepExecution:
             assert result.returncode in [0,1]
 
 class TestPipelineCoordination:
+    @pytest.mark.slow
     @pytest.mark.integration
     def test_minimal_pipeline_execution(self):
         main_py = SRC_DIR / "main.py"
@@ -195,6 +196,7 @@ class TestPipelineCoordination:
         assert "python_version" in info
 
 class TestEndToEndIntegration:
+    @pytest.mark.slow
     @pytest.mark.integration
     def test_run_pipeline_subset(self):
         main_py = SRC_DIR / "main.py"

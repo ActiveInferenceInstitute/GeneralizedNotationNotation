@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 4.466645,
-  "timestamp": "2026-01-07T15:55:06.444000",
+  "execution_time": 6.159573,
+  "timestamp": "2026-01-09T09:43:12.024199",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -15,7 +15,7 @@
     "actions": [],
     "policy": [],
     "raw_output": "\u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Active Inference POMDP Agent\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u2713 Created perception-action loop\n\u2713 Created generative model with priors\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n  - A_matrix: S \u2192 O @ P\n  - B_matrix: S @ A \u2192 S @ P\n  - C_vector: Ty() \u2192 O @ P\n  - D_vector: Ty() \u2192 S @ P\n  - E_vector: Ty() \u2192 A @ P\n  - state_inference: O \u2192 S @ P\n  - policy_inference: S @ P \u2192 A @ P\n  - action_selection: A @ P \u2192 A\n\n\ud83d\udd17 Compositional Structure:\n  - Loop composition depth: 3\n  - Model composition depth: 3\n\n\ud83d\udcca Creating visualizations in discopy_diagrams/...\n\ud83d\udcbe Saved perception-action loop: discopy_diagrams/perception_action_loop.png\n\ud83d\udcbe Saved generative model: discopy_diagrams/generative_model.png\n\ud83d\udcbe Saved model components: discopy_diagrams/model_components.png\n\n\ud83d\udcbe Exporting circuit data to discopy_diagrams/...\n\u2713 Exported analysis: discopy_diagrams/circuit_analysis.json\n\u2713 Exported circuit info: discopy_diagrams/circuit_info.json\n\n\u2705 DisCoPy categorical diagram generation completed successfully!\n\ud83c\udfa8 Visualizations created and saved\n\n\ud83c\udf89 Categorical representation of Active Inference model complete!\n",
-    "raw_error": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/discopy/drawing/backend.py:560: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown\n  plt.show()\n",
+    "raw_error": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/discopy/drawing/backend.py:560: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown\n  plt.show()\n",
     "diagrams": [
       "Generation",
       "structure",
@@ -26,20 +26,20 @@
     ]
   },
   "execution_metadata": {
-    "executor": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
+    "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1715,
-    "stderr_length": 211,
-    "output_directory": "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy"
+    "stderr_length": 209,
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
   },
   "collected_outputs": {
     "visualizations": [
-      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png"
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png"
     ],
     "simulation_data": [
-      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_analysis.json",
-      "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json"
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

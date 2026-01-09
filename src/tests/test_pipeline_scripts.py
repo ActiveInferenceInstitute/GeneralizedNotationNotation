@@ -149,6 +149,7 @@ class TestPipelineScriptImports:
     """Test import capabilities of pipeline scripts."""
     
     @pytest.mark.unit
+    @pytest.mark.slow
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py", "5_type_checker.py"
     ])
@@ -164,6 +165,7 @@ class TestPipelineScriptExecution:
     """Execute real scripts and assert on real artifacts."""
 
     @pytest.mark.integration
+    @pytest.mark.slow
     @pytest.mark.parametrize("script_name,artifact_checker", [
         ("3_gnn.py", lambda outdir: (outdir / "3_gnn_output").exists()),
         ("5_type_checker.py", lambda outdir: (outdir / "5_type_checker_output").exists() or 
@@ -573,6 +575,7 @@ class TestPipelineScriptIntegration:
     """Integration tests for pipeline script coordination."""
 
     @pytest.mark.integration
+    @pytest.mark.slow
     def test_pipeline_core_sequence(self):
         scripts = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
         with tempfile.TemporaryDirectory() as td:
@@ -588,6 +591,7 @@ class TestPipelineScriptIntegration:
                 assert result.returncode in [0, 1]
     
     @pytest.mark.integration
+    @pytest.mark.slow
     @pytest.mark.safe_to_fail
     def test_pipeline_argument_consistency(self):
         """Test that scripts handle common arguments consistently."""

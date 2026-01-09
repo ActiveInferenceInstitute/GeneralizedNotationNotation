@@ -1,0 +1,18 @@
+{
+  "pytorch": {
+    "available": false,
+    "version": null
+  },
+  "tensorflow": {
+    "available": false,
+    "version": null
+  },
+  "jax": {
+    "available": true,
+    "version": "0.7.0"
+  },
+  "sklearn": {
+    "available": true,
+    "version": "1.7.1"
+  }
+}

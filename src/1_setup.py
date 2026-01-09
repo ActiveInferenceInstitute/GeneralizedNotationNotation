@@ -3,12 +3,24 @@
 Step 1: Project Setup and Environment Validation with UV (Thin Orchestrator)
 
 This step handles project initialization, UV environment setup,
-dependency installation, and environment validation using modern
+
+dependency installation, and environment validation using
 Python packaging standards.
 
 How to run:
+  # Basic setup (core dependencies only)
   python src/1_setup.py --target-dir input/gnn_files --output-dir output --verbose
-  python src/main.py  # (runs as part of the pipeline)
+  
+  # Install with LLM support (OpenAI, Anthropic, Ollama)
+  python src/1_setup.py --install-optional --optional-groups=llm --verbose
+  
+  # Install all optional dependencies
+  python src/1_setup.py --install-optional --verbose
+  
+  # Alternative: Use uv directly for specific extras
+  uv sync --extra llm              # Install LLM packages (openai, anthropic, etc.)
+  uv sync --extra visualization    # Install visualization packages
+  uv sync --extra all              # Install all optional packages
 
 Expected outputs:
   - Environment setup results in the specified output directory
@@ -44,7 +56,7 @@ except ImportError:
         return True
     
     def setup_complete_environment(verbose=False, recreate=False, install_optional=False, optional_groups=None, output_dir=None):
-        """Fallback complete setup function."""
+        """Fallback full setup function."""
         return setup_uv_environment(verbose=verbose, recreate=recreate, output_dir=output_dir)
     
     def install_optional_package_group(group_name, verbose=False):
@@ -66,7 +78,12 @@ def setup_orchestrator(target_dir, output_dir, logger, **kwargs):
     if optional_groups_str:
         optional_groups = [g.strip() for g in optional_groups_str.split(',')]
     
-    # Use complete setup if optional packages requested
+    # Handle dev argument default (ArgumentParser may return None for defaults not in argv)
+    dev = kwargs.get('dev')
+    if dev is None:
+        dev = True
+    
+    # Use full setup if optional packages requested
     if install_optional or optional_groups:
         return setup_complete_environment(
             verbose=verbose,
@@ -80,7 +97,7 @@ def setup_orchestrator(target_dir, output_dir, logger, **kwargs):
         return setup_uv_environment(
             verbose=verbose,
             recreate=recreate,
-            dev=kwargs.get('dev', True),
+            dev=dev,
             extras=[],
             skip_jax_test=False,  # Test JAX functionality
             output_dir=output_dir

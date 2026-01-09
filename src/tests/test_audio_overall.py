@@ -132,12 +132,17 @@ class TestAudioProcessing:
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_audio_generation(self):
+    def test_audio_generation(self, safe_filesystem):
         """Test audio generation functionality."""
         try:
             from audio import generate_audio_from_gnn
-            result = generate_audio_from_gnn("test GNN content")
+            
+            # Create test GNN content and output directory
+            output_dir = safe_filesystem.create_dir("audio_output")
+            
+            result = generate_audio_from_gnn("test GNN content\nwith variables", output_dir=output_dir)
             assert result is not None
+            assert "audio_files" in result
         except ImportError:
             pytest.skip("Audio generation not available")
 

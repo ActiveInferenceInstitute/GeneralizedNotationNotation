@@ -318,35 +318,53 @@ class TestNetworkOperationTiming:
     def test_api_request_timing(self, mock_environment):
         """Test API request timing and performance."""
         from src.utils.network_utils import timed_request
+        from unittest.mock import patch, MagicMock
         
-        # Mock API endpoint
-        test_url = "https://httpbin.org/delay/1"
+        # Mock URL
+        test_url = "https://mock.example.com/delay/1"
         
-        with performance_tracker() as tracker:
-            result = timed_request(test_url, timeout=5)
+        # Mock response setup
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b"Mock content"
+        mock_response.headers = {"Content-Type": "text/plain"}
+        
+        # Mock requests.request to simulate delay
+        with patch('src.utils.network_utils.requests.request') as mock_request:
+            def side_effect(*args, **kwargs):
+                time.sleep(1.0)  # Simulate 1s delay
+                return mock_response
             
-        # Handle both success and error cases gracefully
-        if "status" in result:
-            assert result["status"] in ["SUCCESS", "ERROR"]  # Allow for offline testing
-        else:
-            # If no status field, check for other indicators
-            assert "response_time" in result or "error" in result
+            mock_request.side_effect = side_effect
             
-        assert tracker.duration < 10.0  # Should complete within timeout
+            with performance_tracker() as tracker:
+                result = timed_request(test_url, timeout=5)
+            
+        assert result["status_code"] == 200
+        assert result["success"] == True
+        # Verify timing - allow buffer for overhead
+        assert result["response_time"] >= 1.0
+        assert tracker.duration >= 1.0
             
     def test_batch_request_performance(self, mock_environment):
         """Test batch request performance."""
         from src.utils.network_utils import batch_request
+        from unittest.mock import patch, MagicMock
         
-        urls = [f"https://api.example.com/test/{i}" for i in range(5)]
+        urls = [f"https://mock.example.com/test/{i}" for i in range(5)]
         
-        with performance_tracker() as tracker:
-            results = batch_request(urls)
+        # Mock response
+        mock_response = MagicMock()
+        mock_response.status_code = 200
+        mock_response.content = b"success"
+        
+        with patch('src.utils.network_utils.requests.request', return_value=mock_response):
+            with performance_tracker() as tracker:
+                results = batch_request(urls)
             
         assert isinstance(results, list)
         assert len(results) == 5
-        # Batch should be faster than sequential
-        assert tracker.duration < 5.0  # Allow 1 second per request
+        assert all(r["success"] for r in results)
 
 class TestResourceScaling:
     """Test suite for resource scaling characteristics."""

@@ -43,11 +43,12 @@ A = [0.5, 0.5; 0.3, 0.7]
         ok = process_visualization(gnn_dir, out_root, verbose=False)
         assert ok is True
 
-        results_dir = out_root / "visualization_results"
-        assert results_dir.exists()
+        # Processor creates model-specific subdirectories and files directly in output_dir
+        # Check for the visualization summary and/or PNG files
+        assert (out_root / "visualization_summary.json").exists() or list(out_root.glob("**/*.png"))
 
-        # ensure at least one image exists in any model subdir
-        png_files = list(results_dir.glob("**/*.png"))
+        # ensure at least one image exists in any subdirectory
+        png_files = list(out_root.glob("**/*.png"))
         assert len(png_files) > 0
         for png in png_files:
             assert png.stat().st_size > 100
@@ -109,7 +110,7 @@ x -> y
         process_visualization(gnn_dir, out_root)
         generate_exports(gnn_dir, out_root)
 
-        viz_summary = out_root / "visualization_results" / "visualization_summary.json"
+        viz_summary = out_root / "visualization_summary.json"
         exp_summary = out_root / "exports" / "export_results.json"
         for fpath in [viz_summary, exp_summary]:
             assert fpath.exists(), f"Missing summary: {fpath}"
@@ -125,7 +126,7 @@ x -> y
         out_root.mkdir(parents=True, exist_ok=True)
 
         process_visualization(gnn_dir, out_root)
-        png_count = len(list((out_root / "visualization_results").glob("**/*.png")))
+        png_count = len(list(out_root.glob("**/*.png")))
         assert png_count >= 1
 
 

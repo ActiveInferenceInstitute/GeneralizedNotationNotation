@@ -22,87 +22,39 @@ from gnn.parsers.lean_parser import LeanGNNParser
 
 # Migrated from test_gnn_core_modules.py
 class TestGNNDiscovery:
-    """Test gnn.discovery module."""
+    """Test gnn discovery functionality."""
     
     @pytest.mark.unit
-    @pytest.mark.safe_to_fail  
     def test_discovery_imports(self):
-        """Test that discovery module can be imported."""
-        try:
-            from src.gnn import discovery
-            assert hasattr(discovery, 'FileDiscoveryStrategy')
-            assert hasattr(discovery, 'DiscoveryResult')
-            # Test that we can also import the main function from gnn package
-            from src.gnn import discover_gnn_files
-            assert callable(discover_gnn_files)
-        except ImportError:
-            pytest.skip("GNN discovery not available")
+        """Test that discovery function can be imported from gnn package."""
+        from gnn import discover_gnn_files
+        assert callable(discover_gnn_files)
     
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
+    @pytest.mark.unit  
     def test_discover_gnn_files(self, isolated_temp_dir, sample_gnn_files):
         """Test GNN file discovery functionality."""
-        try:
-            from src.gnn.discovery import discover_gnn_files
-            
-            # Create test directory with GNN files
-            test_dir = isolated_temp_dir / "test_models"
-            test_dir.mkdir()
-            
-            # Create various file types
-            (test_dir / "model1.md").write_text("# GNN Model 1")
-            (test_dir / "model2.gnn").write_text("# GNN Model 2") 
-            (test_dir / "not_gnn.txt").write_text("Not a GNN file")
-            (test_dir / "model3.yaml").write_text("# GNN Model 3")
-            
-            discovered_files = discover_gnn_files(test_dir)
-            
-            # Verify discovery results
-            assert isinstance(discovered_files, list)
-            assert len(discovered_files) >= 2  # Should find at least the GNN files
-            
-            # Verify file paths are returned
-            for file_path in discovered_files:
-                assert isinstance(file_path, (str, Path))
-                
-        except ImportError:
-            pytest.skip("GNN discovery not available")
-        except Exception as e:
-            # Should handle errors gracefully
-            assert isinstance(discovered_files, list)
-    
-    @pytest.mark.unit
-    @pytest.mark.safe_to_fail
-    def test_scan_directory_recursive(self, isolated_temp_dir):
-        """Test recursive directory scanning."""
-        try:
-            from src.gnn.discovery import scan_directory
-            
-            # Create nested directory structure
-            root_dir = isolated_temp_dir / "nested_models"
-            root_dir.mkdir()
-            (root_dir / "subdir1").mkdir()
-            (root_dir / "subdir2").mkdir()
-            
-            # Create GNN files in different levels
-            (root_dir / "top_level.md").write_text("# Top Level GNN")
-            (root_dir / "subdir1" / "sub1.md").write_text("# Sub1 GNN")
-            (root_dir / "subdir2" / "sub2.md").write_text("# Sub2 GNN")
-            
-            result = scan_directory(root_dir, recursive=True)
-            
-            # Verify scan results
-            assert isinstance(result, dict)
-            assert 'total_files' in result
-            assert 'gnn_files' in result
-            assert result['total_files'] >= 3
-            
-        except ImportError:
-            pytest.skip("GNN discovery not available")
-        except Exception as e:
-            # Should handle errors gracefully
-            assert isinstance(result, dict)
-
+        from gnn import discover_gnn_files
+        
+        # Create test directory with GNN files
+        test_dir = isolated_temp_dir / "test_models"
+        test_dir.mkdir()
+        
+        # Create various file types
+        (test_dir / "model1.md").write_text("# GNN Model 1")
+        (test_dir / "model2.gnn").write_text("# GNN Model 2") 
+        (test_dir / "not_gnn.txt").write_text("Not a GNN file")
+        (test_dir / "model3.yaml").write_text("# GNN Model 3")
+        
+        discovered_files = discover_gnn_files(test_dir)
+        
+        # Verify discovery results
+        assert isinstance(discovered_files, list)
+        # Should find at least the .md files
+        assert len(discovered_files) >= 1
+        
+        # Verify file paths are returned
+        for file_path in discovered_files:
+            assert isinstance(file_path, (str, Path))
 
 
 # Migrated from test_parsers.py

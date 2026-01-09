@@ -50,7 +50,7 @@ class OllamaProvider(BaseLLMProvider):
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
         self.default_max_tokens = kwargs.get("default_max_tokens", 256)
-        self.default_timeout = kwargs.get("timeout", 60.0)
+        self.default_timeout = kwargs.get("timeout", 120.0)  # 120s for complex prompts
         self._ollama = None
         self._use_cli = False
 

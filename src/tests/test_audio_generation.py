@@ -182,7 +182,7 @@ class TestAudioGeneration:
         assert test_file.stem == "test_audio"
         
         # Test directory creation
-        output_dir = Path("output/audio")
+        output_dir = Path("output/15_audio_output")
         output_dir.mkdir(parents=True, exist_ok=True)
         assert output_dir.exists()
     

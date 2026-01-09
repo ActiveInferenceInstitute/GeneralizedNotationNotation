@@ -114,11 +114,13 @@ class POMDPExtractor:
             # Parse state space block
             state_space_info = self._parse_state_space_block(sections.get('StateSpaceBlock', ''))
             
-            # Extract dimensions
-            num_states, num_observations, num_actions = self._extract_dimensions(state_space_info)
-            
-            # Parse initial parameterization
+            # Parse initial parameterization FIRST (needed for dimension inference)
             initial_params = self._parse_initial_parameterization(sections.get('InitialParameterization', ''))
+            
+            # Extract dimensions (now with access to sections and initial_params for better inference)
+            num_states, num_observations, num_actions = self._extract_dimensions(
+                state_space_info, sections=sections, initial_params=initial_params
+            )
             
             # Parse connections
             connections = self._parse_connections(sections.get('Connections', ''))
@@ -277,29 +279,76 @@ class POMDPExtractor:
         
         return variables
     
-    def _extract_dimensions(self, state_space_info: Dict[str, Any]) -> Tuple[int, int, int]:
-        """Extract core dimensions from state space information."""
+    def _extract_dimensions(self, state_space_info: Dict[str, Any], 
+                            sections: Optional[Dict[str, str]] = None,
+                            initial_params: Optional[Dict[str, Any]] = None) -> Tuple[int, int, int]:
+        """
+        Extract core dimensions from state space information.
+        
+        Priority for num_actions:
+        1. ModelParameters section (num_actions, num_controls)  
+        2. B matrix dimensions (inferred from shape)
+        3. Action variables (u, π)
+        4. Default (3)
+        """
         num_states = 3  # Default
         num_observations = 3  # Default  
-        num_actions = 3  # Default
+        num_actions = None  # Will be determined by priority
         
-        # Try to extract from state variables
+        # Priority 1: Check ModelParameters section
+        if sections:
+            model_params_content = sections.get('ModelParameters', '')
+            for line in model_params_content.split('\n'):
+                line = line.strip()
+                if ':' in line:
+                    key, value = line.split(':', 1)
+                    key = key.strip().lower()
+                    try:
+                        value = int(value.strip().split('#')[0].strip())  # Remove comments
+                        if key in ['num_actions', 'num_controls', 'n_actions']:
+                            num_actions = value
+                        elif key in ['num_hidden_states', 'num_states', 'n_states']:
+                            num_states = value
+                        elif key in ['num_obs', 'num_observations', 'n_obs']:
+                            num_observations = value
+                    except (ValueError, IndexError):
+                        pass
+        
+        # Priority 2: Infer from B matrix dimensions if still None
+        if num_actions is None and initial_params:
+            B_matrix = initial_params.get('B')
+            if B_matrix and isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
+                # B is typically [action][next_state][prev_state] or [action][row][col]
+                num_actions = len(B_matrix)
+                self.logger.info(f"Inferred num_actions={num_actions} from B matrix dimensions")
+        
+        # Priority 3: Try to extract from state variables
         for var in state_space_info.get('state_variables', []):
             if var['name'].lower() == 's':
                 if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
-                    num_states = var['dimensions'][0]
+                    if num_states == 3:  # Only override default
+                        num_states = var['dimensions'][0]
         
         # Try to extract from observation variables
         for var in state_space_info.get('observation_variables', []):
             if var['name'].lower() == 'o':
                 if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
-                    num_observations = var['dimensions'][0]
+                    if num_observations == 3:  # Only override default
+                        num_observations = var['dimensions'][0]
         
-        # Try to extract from action variables
-        for var in state_space_info.get('action_variables', []):
-            if var['name'].lower() in ['u', 'π']:
-                if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
-                    num_actions = var['dimensions'][0]
+        # Priority 4: Try to extract from action variables (if still None)
+        if num_actions is None:
+            for var in state_space_info.get('action_variables', []):
+                if var['name'].lower() in ['u', 'π']:
+                    if len(var['dimensions']) > 0 and isinstance(var['dimensions'][0], int):
+                        # Only use if > 1 (u[1] means single action, not 1 possible action)
+                        dim = var['dimensions'][0]
+                        if dim > 1:
+                            num_actions = dim
+        
+        # Final default
+        if num_actions is None:
+            num_actions = 3
         
         return num_states, num_observations, num_actions
     

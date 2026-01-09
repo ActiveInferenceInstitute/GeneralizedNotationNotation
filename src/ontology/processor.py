@@ -44,7 +44,7 @@ def process_ontology(
         log_step_start(logger, "Processing ontology")
         
         # Create results directory
-        results_dir = output_dir / "ontology_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Process each .md file and generate a per-file ontology report
@@ -193,91 +193,147 @@ def process_gnn_ontology(gnn_file: str) -> Dict[str, Any]:
             "error": str(e)
         }
 
-def load_defined_ontology_terms() -> Dict[str, List[str]]:
+def load_defined_ontology_terms() -> Dict[str, Any]:
     """
-    Load defined ontology terms from the ontology terms file.
+    Load defined ontology terms from the Active Inference ontology terms file.
     
     Returns:
-        Dictionary mapping categories to lists of terms
+        Dictionary mapping term names to their definitions (including description and URI)
     """
-    try:
-        # Try to load from the ontology terms file
-        ontology_file = Path("input/ontology_terms.json")
-        
+    logger = logging.getLogger("ontology")
+    
+    # Priority order for ontology files
+    search_paths = [
+        Path(__file__).parent / "act_inf_ontology_terms.json",  # Module dir
+        Path("src/ontology/act_inf_ontology_terms.json"),        # From project root
+        Path("input/ontology_terms.json"),                        # Legacy location
+    ]
+    
+    for ontology_file in search_paths:
         if ontology_file.exists():
-            with open(ontology_file, 'r', encoding='utf-8') as f:
-                return json.load(f)
-        else:
-            # Return default ontology terms
-            return {
-                "cognitive_processes": [
-                    "attention", "memory", "learning", "reasoning", "decision_making",
-                    "perception", "language", "emotion", "consciousness"
-                ],
-                "neural_mechanisms": [
-                    "synaptic_plasticity", "neurotransmission", "neural_oscillations",
-                    "cortical_columns", "neural_networks", "brain_regions"
-                ],
-                "active_inference": [
-                    "free_energy", "variational_inference", "generative_models",
-                    "predictive_coding", "belief_propagation", "precision_weighting"
-                ],
-                "mathematical_concepts": [
-                    "probability", "information_theory", "optimization", "dynamics",
-                    "geometry", "topology", "category_theory"
-                ]
-            }
-            
-    except Exception as e:
-        # Return minimal default terms on error
-        return {
-            "cognitive_processes": ["attention", "memory", "learning"],
-            "neural_mechanisms": ["synaptic_plasticity", "neural_networks"],
-            "active_inference": ["free_energy", "predictive_coding"],
-            "mathematical_concepts": ["probability", "optimization"]
-        }
+            try:
+                with open(ontology_file, 'r', encoding='utf-8') as f:
+                    data = json.load(f)
+                    
+                # Handle both formats:
+                # New format: {"TermName": {"description": "...", "uri": "..."}}
+                # Old format: {"terms": {...}} or {"category": ["term1", "term2"]}
+                if "terms" in data:
+                    # Legacy format with "terms" wrapper
+                    return data["terms"]
+                elif isinstance(data, dict) and data:
+                    # Check if it's the ActInf format (term -> {description, uri})
+                    first_value = next(iter(data.values()))
+                    if isinstance(first_value, dict) and "description" in first_value:
+                        logger.info(f"Loaded {len(data)} Active Inference ontology terms from {ontology_file}")
+                        return data
+                    # Category-based format
+                    return data
+                    
+            except Exception as e:
+                logger.warning(f"Failed to load ontology from {ontology_file}: {e}")
+                continue
+    
+    # Return default Active Inference terms if no file found
+    logger.warning("No ontology terms file found, using defaults")
+    return {
+        "HiddenState": {"description": "A state of the environment or agent that is not directly observable.", "uri": "obo:ACTO_000001"},
+        "Observation": {"description": "Data received from the environment through sensory input.", "uri": "obo:ACTO_000003"},
+        "Action": {"description": "An output of the agent that can affect the environment.", "uri": "obo:ACTO_000004"},
+        "LikelihoodMatrix": {"description": "A probabilistic mapping from hidden states to observations.", "uri": "obo:TEMP_000061"},
+        "TransitionMatrix": {"description": "A probabilistic mapping defining the dynamics of hidden states.", "uri": "obo:ACTO_000009"},
+        "VariationalFreeEnergy": {"description": "A bound on Bayesian model evidence.", "uri": "obo:ACTO_000012"},
+        "ExpectedFreeEnergy": {"description": "A quantity minimized by the agent to select policies.", "uri": "obo:ACTO_000011"}
+    }
 
-def validate_annotations(annotations: List[str], ontology_terms: Dict[str, List[str]] = None) -> Dict[str, Any]:
+def parse_annotation(annotation: str) -> tuple:
+    """
+    Parse a KEY=VALUE annotation into its components.
+    
+    Args:
+        annotation: Raw annotation string (e.g., "A=LikelihoodMatrix")
+        
+    Returns:
+        Tuple of (key, value, comment) where any can be None
+    """
+    comment = None
+    if '#' in annotation:
+        annotation, comment = annotation.split('#', 1)
+        comment = comment.strip()
+        annotation = annotation.strip()
+    
+    if '=' in annotation:
+        key, value = annotation.split('=', 1)
+        return key.strip(), value.strip(), comment
+    
+    return None, annotation.strip(), comment
+
+
+def validate_annotations(annotations: List[str], ontology_terms: Dict[str, Any] = None) -> Dict[str, Any]:
     """
     Validate annotations against ontology terms.
     
+    Supports KEY=VALUE format where VALUE is matched against ontology term names.
+    
     Args:
-        annotations: List of annotations to validate
+        annotations: List of annotations to validate (e.g., ["A=LikelihoodMatrix"])
         ontology_terms: Dictionary of ontology terms (loaded if not provided)
         
     Returns:
-        Dictionary with validation results
+        Dictionary with validation results including matched term details
     """
+    logger = logging.getLogger("ontology")
+    
     try:
         if ontology_terms is None:
             ontology_terms = load_defined_ontology_terms()
         
-        # Flatten all ontology terms
-        all_terms = []
-        for category, terms in ontology_terms.items():
-            all_terms.extend(terms)
+        # Build lookup set of all term names (case-insensitive)
+        term_lookup = {}
+        for term_name, term_data in ontology_terms.items():
+            term_lookup[term_name.lower()] = {
+                "name": term_name,
+                "data": term_data if isinstance(term_data, dict) else {"description": str(term_data)}
+            }
         
         validation_result = {
             "valid_annotations": [],
             "invalid_annotations": [],
+            "matched_terms": {},  # key -> {term_name, description, uri}
             "suggestions": [],
             "coverage_score": 0.0
         }
         
         for annotation in annotations:
-            annotation_lower = annotation.lower().replace(' ', '_')
+            key, value, comment = parse_annotation(annotation)
             
-            if annotation_lower in all_terms:
+            # Check if value matches any ontology term
+            value_lower = value.lower() if value else ""
+            
+            if value_lower in term_lookup:
+                matched = term_lookup[value_lower]
                 validation_result["valid_annotations"].append(annotation)
+                validation_result["matched_terms"][key or value] = {
+                    "annotation": annotation,
+                    "term_name": matched["name"],
+                    "description": matched["data"].get("description", ""),
+                    "uri": matched["data"].get("uri", ""),
+                    "key": key,
+                    "value": value,
+                    "comment": comment
+                }
             else:
                 validation_result["invalid_annotations"].append(annotation)
                 
                 # Find similar terms for suggestions
-                for term in all_terms:
-                    if annotation_lower in term or term in annotation_lower:
+                for term_name_lower, term_info in term_lookup.items():
+                    if (value_lower in term_name_lower or 
+                        term_name_lower in value_lower or
+                        _levenshtein_distance(value_lower, term_name_lower) <= 3):
                         validation_result["suggestions"].append({
                             "annotation": annotation,
-                            "suggested_term": term
+                            "suggested_term": term_info["name"],
+                            "description": term_info["data"].get("description", "")
                         })
         
         # Calculate coverage score
@@ -285,16 +341,39 @@ def validate_annotations(annotations: List[str], ontology_terms: Dict[str, List[
         if total_annotations > 0:
             validation_result["coverage_score"] = len(validation_result["valid_annotations"]) / total_annotations
         
+        logger.info(f"Validated {len(annotations)} annotations: {len(validation_result['valid_annotations'])} valid, {len(validation_result['invalid_annotations'])} invalid")
+        
         return validation_result
         
     except Exception as e:
+        logger.error(f"Validation failed: {e}")
         return {
             "error": str(e),
             "valid_annotations": [],
             "invalid_annotations": annotations,
+            "matched_terms": {},
             "suggestions": [],
             "coverage_score": 0.0
         }
+
+
+def _levenshtein_distance(s1: str, s2: str) -> int:
+    """Calculate the Levenshtein distance between two strings."""
+    if len(s1) < len(s2):
+        return _levenshtein_distance(s2, s1)
+    if len(s2) == 0:
+        return len(s1)
+    
+    previous_row = range(len(s2) + 1)
+    for i, c1 in enumerate(s1):
+        current_row = [i + 1]
+        for j, c2 in enumerate(s2):
+            insertions = previous_row[j + 1] + 1
+            deletions = current_row[j] + 1
+            substitutions = previous_row[j] + (c1 != c2)
+            current_row.append(min(insertions, deletions, substitutions))
+        previous_row = current_row
+    return previous_row[-1]
 
 def generate_ontology_report_for_file(gnn_file: Path, output_dir: Path) -> Dict[str, Any]:
     """

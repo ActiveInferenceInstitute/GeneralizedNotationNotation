@@ -505,7 +505,7 @@ def render_gnn_spec(
                 from src.gnn.pomdp_extractor import POMDPExtractor
                 from src.render.pomdp_processor import POMDPRenderProcessor
             
-            # Create a dummy POMDP space from GNN spec
+            # Create a synthetic POMDP space from GNN spec
             # This is a simplified conversion - real usage should use proper extraction
             pomdp_extractor = POMDPExtractor()
             

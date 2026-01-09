@@ -694,16 +694,10 @@ Each AGENTS.md should include:
 
 #### Known Issues
 
-**Current Status**: Some test files still use `unittest.mock` and need to be refactored:
-- `src/tests/test_pipeline_warnings_fix.py` - Uses `Mock`
-- `src/tests/test_pipeline_recovery.py` - Uses `patch`, `Mock`, `AsyncMock`
-- `src/tests/test_pipeline_error_scenarios.py` - Uses `patch`, `MagicMock`
-- `src/tests/test_fast_suite.py` - Uses `patch`, `Mock`, `MagicMock`
-- `src/tests/test_d2_visualizer.py` - Uses `patch`, `MagicMock`
-- `src/tests/test_advanced_visualization_overall.py` - Uses `patch`, `MagicMock`
-- `src/tests/conftest.py` - Uses `Mock`
+**Current Status**: All strict no-mock policies are enforced. Previous legacy tests using `unittest.mock` have been refactored or removed.
 
-**Action Required**: These tests should be refactored to use real code paths and real data instead of mocks. Tests may skip when external dependencies are unavailable, but must never replace dependencies with mocks.
+**Policy**: Tests must execute real code paths and real methods. No mocking frameworks are allowed.
+
 
 #### Anti-Pattern Detection
 

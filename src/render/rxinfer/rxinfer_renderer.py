@@ -110,14 +110,32 @@ class RxInferRenderer:
         try:
             # Get model parameters with defaults
             model_display_name = gnn_spec.get('model_name', model_name)
-            num_states = gnn_spec.get('model_parameters', {}).get('num_hidden_states', 3)
-            num_observations = gnn_spec.get('model_parameters', {}).get('num_obs', 3)
+            model_params = gnn_spec.get('model_parameters', {})
+            num_states = model_params.get('num_hidden_states', 3)
+            num_observations = model_params.get('num_obs', 3)
+            
+            # Extract num_actions from multiple possible sources
+            initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
+            B_data = initial_params.get('B', [])
+            
+            # Infer from B matrix dimensions if available
+            inferred_actions = len(B_data) if B_data and isinstance(B_data, list) else None
+            
+            num_actions = (
+                model_params.get('num_actions') or 
+                model_params.get('num_controls') or 
+                model_params.get('n_actions') or
+                inferred_actions or
+                3  # Default to 3 for proper POMDP
+            )
             
             # Validate parameters
             if not isinstance(num_states, int) or num_states < 1:
                 num_states = 3
             if not isinstance(num_observations, int) or num_observations < 1:
                 num_observations = 3
+            if not isinstance(num_actions, int) or num_actions < 1:
+                num_actions = 3
             
             # Read the minimal working template (no deprecated APIs)
             template_path = Path(__file__).parent / 'minimal_template.jl'
@@ -134,6 +152,7 @@ class RxInferRenderer:
             code = code.replace('{timestamp}', datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             code = code.replace('{num_states}', str(num_states))
             code = code.replace('{num_observations}', str(num_observations))
+            code = code.replace('{num_actions}', str(num_actions))
             
             return code
         except Exception as e:
@@ -157,10 +176,25 @@ class RxInferRenderer:
         model_params = gnn_spec.get('model_parameters', {})
         num_states = model_params.get('num_hidden_states', 3)
         num_observations = model_params.get('num_obs', 3)
-        num_actions = model_params.get('num_actions', 3) # Make sure this is correct key
         
-        # Get initial parameterization if available
-        initial_params = gnn_spec.get('initial_parameterization', {})
+        # Extract num_actions from multiple possible sources (GNN specs vary)
+        # Priority: explicit model param > B matrix dimensions > default
+        initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
+        B_data = initial_params.get('B', [])
+        
+        # Try to infer num_actions from B matrix if available
+        inferred_actions = None
+        if B_data and isinstance(B_data, list) and len(B_data) > 0:
+            # B is typically [action][next_state][prev_state] or similar
+            inferred_actions = len(B_data)
+        
+        num_actions = (
+            model_params.get('num_actions') or 
+            model_params.get('num_controls') or 
+            model_params.get('n_actions') or
+            inferred_actions or
+            3  # Default to 3 for proper POMDP simulation
+        )
         A_data = initial_params.get('A', [])
         B_data = initial_params.get('B', [])
         C_data = initial_params.get('C', [])
@@ -208,48 +242,64 @@ function to_matrix(raw)
     try
         if raw isa Matrix
             return raw
-        elseif raw isa Vector && raw[1] isa Vector
-            return hcat(raw...)
         end
-    catch
+        # Handle Tuple or Vector of Tuples/Vectors
+        arr = collect(raw)
+        if !isempty(arr) && (arr[1] isa Tuple || arr[1] isa Vector)
+            rows = [collect(r) for r in arr]
+            return hcat(rows...)'
+        end
+    catch e
+        println("to_matrix warning: $e")
     end
     return raw
 end
 
 function to_tensor(raw)
     try
-        # B is [actions][prev][next] or similar. 
-        # GNN Standard: B[action][next_state][prev_state] usually?
-        # Let's assume input matches expected dimensions or is list of lists of lists
         if raw isa Array{{Float64, 3}}
             return raw
-        elseif raw isa Vector && raw[1] isa Vector && raw[1][1] isa Vector
-            # Dimensions: Action x Next x Prev ?
-            # RxInfer expects: Next x Prev x Action (or similar, checking dims)
-            # Let's construct generic 3D array
-            n_actions = length(raw)
-            n_next = length(raw[1])
-            n_prev = length(raw[1][1])
-            
-            # Create tensor
-            tensor = zeros(n_next, n_prev, n_actions)
-            for a in 1:n_actions
-                for n in 1:n_next
-                    for p in 1:n_prev
-                        tensor[n, p, a] = raw[a][n][p]
+        end
+        # Handle Tuple or Vector structure for B[action][row][col]
+        arr = collect(raw)
+        if !isempty(arr)
+            first_action = collect(arr[1])
+            if !isempty(first_action) && (first_action[1] isa Tuple || first_action[1] isa Vector)
+                n_actions = length(arr)
+                n_rows = length(first_action)
+                first_row = collect(first_action[1])
+                n_cols = length(first_row)
+                
+                tensor = zeros(n_rows, n_cols, n_actions)
+                for a in 1:n_actions
+                    action_data = collect(arr[a])
+                    for r in 1:n_rows
+                        row_data = collect(action_data[r])
+                        for c in 1:n_cols
+                            tensor[r, c, a] = row_data[c]
+                        end
                     end
                 end
+                return tensor
             end
-            return tensor
         end
-    catch
+    catch e
+        println("to_tensor warning: $e")
     end
     return raw
 end
 
 A_matrix = to_matrix(A_raw)
 B_matrix = to_tensor(B_raw) # Handling GNN B format
-D_vector = Vector{{Float64}}(D_raw)
+D_vector = Vector{{Float64}}(collect(D_raw))
+
+# Normalize D_vector to ensure it sums exactly to 1.0 (required for Categorical)
+D_vector = D_vector ./ sum(D_vector)
+
+# Normalize A_matrix columns (each column should sum to 1)
+for j in 1:size(A_matrix, 2)
+    A_matrix[:, j] = A_matrix[:, j] ./ sum(A_matrix[:, j])
+end
 
 println("A matrix size: $(size(A_matrix))")
 println("B matrix size: $(size(B_matrix))")

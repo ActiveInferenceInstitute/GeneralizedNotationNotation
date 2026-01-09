@@ -166,7 +166,7 @@ def process_execute(
         logger.info(f"Requested frameworks: {requested_frameworks}")
 
         # Create results directory
-        results_dir = output_dir / "execution_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize execution results
@@ -503,12 +503,12 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = "Timeout"
             logger.warning(f"⏰ Script {script_info['name']} timed out after 300 seconds")
-            # Create dummy result for consistency
-            class DummyResult:
+            # Create error result for consistency
+            class ErrorResult:
                 returncode = -1
                 stdout = ""
                 stderr = "Timeout"
-            result = DummyResult()
+            result = ErrorResult()
 
         except Exception as e:
             end_time = datetime.now()
@@ -518,43 +518,30 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
-            # Create dummy result for consistency
-            class DummyResult:
+            # Create error result for consistency
+            class ErrorResult:
                 returncode = -2
                 stdout = ""
                 stderr = str(e)
-            result = DummyResult()
+            result = ErrorResult()
         
         # Ensure result is defined before using it
         if result is None:
-            class DummyResult:
+            class ErrorResult:
                 returncode = -3
                 stdout = ""
                 stderr = "Unknown error"
-            result = DummyResult()
+            result = ErrorResult()
         
         # Save individual script output in implementation-specific subdirectory
         # Create the implementation-specific directory structure
-        impl_specific_dir = results_dir.parent / model_name / framework / "execution_logs"
+        impl_specific_dir = results_dir / model_name / framework / "execution_logs"
         impl_specific_dir.mkdir(parents=True, exist_ok=True)
         
-        # Also create other expected subdirectories for this framework
-        if framework == "pymdp":
-            (results_dir.parent / model_name / framework / "simulation_data").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "traces").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "visualizations").mkdir(parents=True, exist_ok=True)
-        elif framework == "discopy":
-            (results_dir.parent / model_name / framework / "diagram_outputs").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "analysis").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "visualizations").mkdir(parents=True, exist_ok=True)
-        elif framework == "activeinference_jl":
-            (results_dir.parent / model_name / framework / "simulation_data").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "free_energy_traces").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "visualizations").mkdir(parents=True, exist_ok=True)
-        elif framework == "rxinfer":
-            (results_dir.parent / model_name / framework / "inference_data").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "posterior_traces").mkdir(parents=True, exist_ok=True)
-            (results_dir.parent / model_name / framework / "visualizations").mkdir(parents=True, exist_ok=True)
+        # Note: Framework-specific subdirectories (visualizations, simulation_data, etc.)
+        # are created on-demand by collect_execution_outputs() only when actual content
+        # is copied to them, avoiding empty folder creation.
+
         
         # Extract simulation data from stdout/stderr
         simulation_data = _extract_simulation_data(result.stdout, result.stderr, framework, logger)

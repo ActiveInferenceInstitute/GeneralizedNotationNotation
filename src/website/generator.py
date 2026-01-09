@@ -38,10 +38,10 @@ class WebsiteGenerator:
             output_dir.mkdir(parents=True, exist_ok=True)
             
             # Collect artifacts from pipeline for richer website content
-            analysis_dir = pipeline_root / "16_analysis_output" / "16_analysis_output" / "analysis_results"
-            visualization_dir = pipeline_root / "visualization"
-            advanced_viz_dir = pipeline_root / "9_advanced_viz_output" / "actinf_pomdp_agent"
-            execution_dir = pipeline_root / "execution_results"
+            analysis_dir = pipeline_root / "16_analysis_output" / "analysis_results"
+            visualization_dir = pipeline_root / "16_analysis_output" / "visualizations"
+            advanced_viz_dir = pipeline_root / "09_advanced_viz_output" / "actinf_pomdp_agent"
+            execution_dir = pipeline_root / "12_execute_output"
 
             if not website_data.get("analysis_results") and analysis_dir.exists():
                 try:
@@ -99,7 +99,7 @@ class WebsiteGenerator:
             if execution_dir.exists():
                 try:
                     import json as _json
-                    exec_file = execution_dir / "execution_results.json"
+                    exec_file = execution_dir / "execution_summary.json"
                     if exec_file.exists():
                         with open(exec_file, 'r') as f:
                             exec_json = _json.load(f)

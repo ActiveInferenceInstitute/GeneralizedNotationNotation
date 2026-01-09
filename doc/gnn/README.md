@@ -212,7 +212,7 @@ All GNN documentation follows these principles:
 ---
 
 **GNN Version**: 1.0  
-**Pipeline Version**: 2.1.0  
+**Pipeline Version**: 1.1.1  
 **Total Pipeline Steps**: 24 (0-23)  
 **Status**: ✅ All Documentation Complete
 

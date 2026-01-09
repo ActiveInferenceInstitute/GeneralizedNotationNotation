@@ -70,7 +70,7 @@ s-A                         # State relates to likelihood
 A-o                         # Likelihood relates to observation
 ```
 
-**Output:** `output/3_gnn_output/parsed_actinf_pomdp_agent.json`
+**Output:** `output/3_gnn_output/Classic Active Inference POMDP Agent v1/actinf_pomdp_agent_parsed.json`
 ```json
 {
   "model_name": "Classic Active Inference POMDP Agent v1",

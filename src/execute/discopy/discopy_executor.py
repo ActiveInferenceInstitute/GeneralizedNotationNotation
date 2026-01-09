@@ -16,13 +16,13 @@ logger = logging.getLogger(__name__)
 
 # Import DisCoPy functionality
 try:
-    from ..discopy_translator_module.translator import (
+    from execute.discopy_translator_module.translator import (
         JAX_FULLY_OPERATIONAL,
         MATPLOTLIB_AVAILABLE,
         gnn_file_to_discopy_diagram,
         gnn_file_to_discopy_matrix_diagram
     )
-    from ..discopy_translator_module.visualize_jax_output import plot_tensor_output
+    from execute.discopy_translator_module.visualize_jax_output import plot_tensor_output
     DISCOPY_AVAILABLE = True
 except ImportError as e:
     logger.warning(f"DisCoPy translator module not available: {e}")

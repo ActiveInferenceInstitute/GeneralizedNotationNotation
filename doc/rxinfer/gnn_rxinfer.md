@@ -864,7 +864,7 @@ end
         # Likelihood of current observation
         obs ~ Categorical(params[:A][new_belief, :])
         
-        # Update for next iteration
+        # Placeholder node for initialization
         current_belief = new_belief
     end
     

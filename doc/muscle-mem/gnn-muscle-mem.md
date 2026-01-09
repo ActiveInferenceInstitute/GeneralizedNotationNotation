@@ -283,11 +283,13 @@ Let's combine these ideas for a GNN tool. Imagine a function that renders a GNN 
 # cache_hit = engine(DUMMY_GNN_FILE)
 # assert not cache_hit
 
-# # Clean up dummy file
+# # Clean up default file
 # # import os
 # # os.remove(DUMMY_GNN_FILE)
 ```
 *(The Python code above is illustrative and simplified. A full GNN parser and specific section extraction would be needed for `capture_render_context` in a real implementation.)*
+
+### Fallback Implementation
 
 ## Use Cases for Muscle-Mem in GNN
 

@@ -21,14 +21,14 @@ import numpy as np
 # Model configuration
 NUM_STATES = 3
 NUM_OBSERVATIONS = 3
-NUM_ACTIONS = 1
+NUM_ACTIONS = 3
 
 
 def create_params() -> Dict[str, jnp.ndarray]:
     """Create model parameters from GNN specification."""
     return {
         'A_matrix': jnp.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),  # Observation model P(o|s)
-        'B_matrix': jnp.array([[[1.0], [0.0], [0.0]], [[0.0], [1.0], [0.0]], [[0.0], [0.0], [1.0]]]),  # Transition model P(s'|s,a)
+        'B_matrix': jnp.array([[[1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]]]),  # Transition model P(s'|s,a)
         'C_vector': jnp.array([0.1, 0.1, 1.0]),  # Preferences over observations
         'D_vector': jnp.array([0.33333, 0.33333, 0.33333]),  # Prior over initial states
     }

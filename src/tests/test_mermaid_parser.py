@@ -56,17 +56,7 @@ class TestMetadataExtraction:
         assert "variables" in metadata
         assert "connections" in metadata
     
-    @pytest.mark.skip(reason="Legacy single-line format deprecated in GNN v2.0 - use multiline format instead")
-    def test_extract_metadata_legacy_format(self):
-        """Test extraction of legacy single-line format."""
-        legacy_mermaid = """flowchart TD
-        %% GNN_METADATA: {"model_name":"Legacy","version":"1.0","variables":{},"connections":[]}
-        """
-        
-        metadata = extract_gnn_metadata(legacy_mermaid)
-        
-        assert isinstance(metadata, dict)
-        assert metadata["model_name"] == "Legacy"
+
     
     def test_extract_metadata_not_found(self):
         """Test handling when no metadata present."""
@@ -134,14 +124,7 @@ class TestNodeExtraction:
         assert "π" in nodes
         assert nodes["π"]["shape"] == "diamond"
     
-    @pytest.mark.skip(reason="Trapezoid node shape not in current GNN v2.0 specification")
-    def test_extract_trapezoid_nodes(self):
-        """Test extraction of trapezoid nodes."""
-        mermaid = "F[/Label\\]"
-        nodes = _extract_nodes(mermaid)
-        
-        assert "F" in nodes
-        assert nodes["F"]["shape"] == "trapezoid"
+
     
     def test_extract_nodes_with_multipart_labels(self):
         """Test nodes with complex labels."""

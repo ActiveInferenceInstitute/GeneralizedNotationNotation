@@ -143,7 +143,7 @@ def get_setup_options() -> dict:
     """
     return {
         'environment_types': ['uv', 'venv', 'conda', 'pip'],
-        'python_versions': ['3.8', '3.9', '3.10', '3.11', '3.12'],
+        'python_versions': ['3.11', '3.12', '3.13'],  # Per pyproject.toml requires-python
         'dependency_sources': ['pyproject.toml', 'uv.lock', 'poetry.lock'],
         'setup_modes': ['minimal', 'standard', 'full', 'development'],
         'validation_levels': ['basic', 'comprehensive', 'strict'],

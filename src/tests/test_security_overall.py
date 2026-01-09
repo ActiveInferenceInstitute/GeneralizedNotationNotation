@@ -49,6 +49,8 @@ os.system("rm -rf /")
         # Expecting 'OS command injection risk' due to 'import os'
         assert any("OS command injection risk" in t for t in types)
 
+    @pytest.mark.integration
+    @pytest.mark.slow
     def test_process_security_integration(self, safe_filesystem, sample_gnn_file):
         """Test the full process_security flow."""
         target_dir = sample_gnn_file.parent
@@ -59,7 +61,7 @@ os.system("rm -rf /")
         assert success is True
         
         # Check output artifacts
-        results_dir = output_dir / "security_results"
+        results_dir = output_dir
         assert results_dir.exists()
         assert (results_dir / "security_results.json").exists()
         assert (results_dir / "security_summary.md").exists()

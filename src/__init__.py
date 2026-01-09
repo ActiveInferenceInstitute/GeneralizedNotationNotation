@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 # Package-level metadata expected by tests
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 FEATURES = {
     "pipeline_orchestration": True,
     "mcp_integration": True,
@@ -60,31 +60,12 @@ def get_module_info() -> dict[str, object]:
 # Use lazy/guarded import to avoid import-time failures when optional deps are missing in test isolation
 import importlib
 
+# Import SAPF module directly now that it is fully implemented and robust
 try:
-    # Attempt to import the top-level `src.sapf` package. If this fails for
-    # any reason (missing optional deps, import errors), provide a minimal
-    # placeholder object that still exposes the attributes the tests expect.
     sapf = importlib.import_module('src.sapf')
-except Exception:
-    class _SapfPlaceholder:
-        __version__ = "1.0.0"
-        FEATURES = {
-            'convert_gnn_to_sapf': True,
-            'generate_audio_from_sapf': True,
-            'validate_sapf_code': True,
-            'process_gnn_to_audio': True,
-            'mcp_integration': True,
-        }
-
-        @staticmethod
-        def get_module_info() -> dict:
-            return {
-                'version': _SapfPlaceholder.__version__,
-                'description': 'SAPF compatibility shim',
-                'features': _SapfPlaceholder.FEATURES,
-            }
-
-    sapf = _SapfPlaceholder()
+except ImportError:
+    # Fallback to relative import if package context differs
+    from . import sapf
 
 __all__ = [
     'get_module_info',

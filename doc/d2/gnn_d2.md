@@ -853,5 +853,5 @@ The combination of GNN's formal model specifications with D2's professional diag
 ---
 
 **D2 Version**: 0.6.0  
-**GNN Pipeline Version**: 2.1.0  
+**GNN Pipeline Version**: 1.1.1  
 **Integration Status**: ✅ Ready for Implementation

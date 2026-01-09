@@ -185,10 +185,33 @@ def main() -> int:
                 summary = json.loads(summary_file.read_text())
                 tests_run = summary.get("execution_summary", {}).get("tests_run", 0)
                 if tests_run == 0:
-                    logger.error("❌ Test execution failed: No tests were collected")
-                    logger.error("💡 Check that test files exist and follow pytest naming conventions (test_*.py)")
-                    logger.error("💡 Ensure test functions are named with 'test_' prefix")
-                    return 1
+                    if not comprehensive:
+                        logger.warning("⚠️ Fast test suite yielded 0 tests. This may be due to strict marking.")
+                        logger.warning("🔄 Automatically falling back to COMPREHENSIVE test suite execution...")
+                        
+                        # Fallback to comprehensive suite
+                        visual_logger.print_header(
+                            "🧪 GNN Pipeline Test Suite",
+                            f"Falling back to COMPREHENSIVE mode | Output: {step_output_dir}"
+                        )
+                        
+                        success = run_tests(
+                            logger=logger,
+                            output_dir=step_output_dir,
+                            verbose=args.verbose,
+                            fast_only=False,
+                            comprehensive=True,
+                            generate_coverage=False
+                        )
+                        
+                        if success:
+                            return 0
+
+                    if not success:
+                        logger.error("❌ Test execution failed: No tests were collected")
+                        logger.error("💡 Check that test files exist and follow pytest naming conventions (test_*.py)")
+                        logger.error("💡 Ensure test functions are named with 'test_' prefix")
+                        return 1
 
         return 0 if success else 1
 

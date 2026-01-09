@@ -44,7 +44,7 @@ def process_integration(
     try:
         log_step_start(logger, "Processing integration")
         
-        # Create results directory
+        # Create results directory (with integration_results subdirectory)
         results_dir = output_dir / "integration_results"
         results_dir.mkdir(parents=True, exist_ok=True)
         

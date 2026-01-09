@@ -24,7 +24,10 @@ from .setup import (
     install_optional_package_group,
     install_all_optional_packages,
     setup_complete_environment,
-    # New native UV functions
+    check_environment_health,
+    # Constants
+    OPTIONAL_GROUPS,
+    # Native UV functions
     add_uv_dependency,
     remove_uv_dependency,
     update_uv_dependencies,
@@ -47,7 +50,7 @@ from .utils import (
 )
 
 # Module metadata and lightweight API expected by tests
-__version__ = "2.0.0"
+__version__ = "1.1.1"
 __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 
@@ -91,6 +94,7 @@ __all__ = [
     'install_optional_package_group',
     'install_all_optional_packages',
     'setup_complete_environment',
+    'check_environment_health',
     
     # Native UV dependency management functions
     'add_uv_dependency',
@@ -109,7 +113,8 @@ __all__ = [
     'setup_environment',
     'install_dependencies',
     
-    # Metadata
+    # Constants and Metadata
+    'OPTIONAL_GROUPS',
     'FEATURES',
     '__version__'
 ] 

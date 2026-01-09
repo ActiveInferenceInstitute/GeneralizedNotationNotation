@@ -92,7 +92,7 @@ def process_gnn_to_audio(gnn_content: str, model_name: str | None = None, output
             }
         
         # Determine output directory if provided
-        output_path = Path(output_dir) if output_dir else Path("output/audio")
+        output_path = Path(output_dir) if output_dir else Path("output/15_audio_output")
         output_path.mkdir(parents=True, exist_ok=True)
         
         # Create processor

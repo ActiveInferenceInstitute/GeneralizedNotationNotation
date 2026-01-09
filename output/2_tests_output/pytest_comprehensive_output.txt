@@ -1,137 +1,262 @@
 STDOUT:
-....................s................................................... [  9%]
-........................................................................ [ 19%]
-.........................................................+++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Captured stderr ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-2026-01-07 16:02:17,324 - execute - INFO - 🚀 Processing execute - searching for rendered implementations
-2026-01-07 16:02:17,324 - execute - INFO - Requested frameworks: ['pymdp', 'jax', 'discopy', 'rxinfer', 'activeinference_jl']
-2026-01-07 16:02:17,328 - execute - INFO - Found render output directory: output/11_render_output
-2026-01-07 16:02:17,329 - execute - INFO - Searching for executable scripts in: output/11_render_output
-2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py
-2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py
-2026-01-07 16:02:17,337 - execute - INFO - Found python script: actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
-2026-01-07 16:02:17,343 - execute - INFO - Found julia script: actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
-2026-01-07 16:02:17,343 - execute - INFO - Found julia script: actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl
-2026-01-07 16:02:17,343 - execute - INFO - Found 5 executable scripts to run
-2026-01-07 16:02:17,343 - execute - INFO - Executing jax script: Active Inference POMDP Agent_jax.py
-2026-01-07 16:02:27,482 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_jax.py
-2026-01-07 16:02:27,485 - execute - INFO - Script output: ============================================================
-JAX Active Inference Model: GNNModel
-============================================================
+============================= test session starts ==============================
+platform darwin -- Python 3.12.11, pytest-8.4.1, pluggy-1.6.0 -- /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
+cachedir: .pytest_cache
+metadata: {'Python': '3.12.11', 'Platform': 'macOS-26.2-arm64-arm-64bit', 'Packages': {'pytest': '8.4.1', 'pluggy': '1.6.0'}, 'Plugins': {'sugar': '1.0.0', 'asyncio': '1.1.0', 'xdist': '3.8.0', 'json-report': '1.5.0', 'timeout': '2.4.0', 'metadata': '3.1.1', 'anyio': '4.10.0', 'dash': '3.2.0', 'cov': '6.2.1', 'mock': '3.14.1', 'benchmark': '5.1.0'}}
+benchmark: 5.1.0 (defaults: timer=time.perf_counter disable_gc=False min_rounds=5 min_time=0.000005 max_time=1.0 calibration_precision=10 warmup=False warmup_iterations=100000)
+rootdir: /Users/4d/Documents/GitHub/GeneralizedNotationNotation
+configfile: pytest.ini
+plugins: sugar-1.0.0, asyncio-1.1.0, xdist-3.8.0, json-report-1.5.0, timeout-2.4.0, metadata-3.1.1, anyio-4.10.0, dash-3.2.0, cov-6.2.1, mock-3.14.1, benchmark-5.1.0
+asyncio: mode=Mode.STRICT, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+timeout: 2.0s
+timeout method: thread
+timeout func_only: False
+collecting ... collected 763 items / 53 deselected / 710 selected
 
-✅ Model parameters created
-   A matrix s...
-2026-01-07 16:02:27,530 - execute - INFO - Collecting execution outputs for jax script Active Inference POMDP Agent_jax.py
-2026-01-07 16:02:27,571 - execute - INFO - Extracting simulation data from collected files for jax
-2026-01-07 16:02:27,581 - execute - INFO - Executing discopy script: Active Inference POMDP Agent_discopy.py
-2026-01-07 16:02:36,682 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_discopy.py
-2026-01-07 16:02:36,697 - execute - INFO - Script output: ✅ DisCoPy is available
-🔬 DisCoPy Categorical Diagram Generation
-📊 State Space: 3 states, 3 observations, 3 actions
-============================================================
-DisCoPy Categorical Diag...
-2026-01-07 16:02:36,738 - execute - INFO - Collecting execution outputs for discopy script Active Inference POMDP Agent_discopy.py
-2026-01-07 16:02:36,784 - execute - INFO - Found 5 output files to collect for discopy
-2026-01-07 16:02:36,837 - execute - INFO - Copied model_components.png → visualizations/model_components.png
-2026-01-07 16:02:36,846 - execute - INFO - Copied generative_model.png → visualizations/generative_model.png
-2026-01-07 16:02:36,848 - execute - INFO - Copied perception_action_loop.png → visualizations/perception_action_loop.png
-2026-01-07 16:02:36,851 - execute - INFO - Copied circuit_analysis.json → simulation_data/circuit_analysis.json
-2026-01-07 16:02:36,851 - execute - INFO - Copied circuit_info.json → simulation_data/circuit_info.json
-2026-01-07 16:02:36,851 - execute - INFO - Collected 5 output files: 3 visualizations, 2 data files, 0 traces
-2026-01-07 16:02:36,856 - execute - INFO - Extracting simulation data from collected files for discopy
-2026-01-07 16:02:36,876 - execute - INFO - Executing pymdp script: Active Inference POMDP Agent_pymdp.py
-2026-01-07 16:02:57,873 - execute - INFO - ✅ Successfully executed Active Inference POMDP Agent_pymdp.py
-2026-01-07 16:02:59,142 - execute - INFO - Script output: ✅ PyMDP (inferactively-pymdp) is available
-...
-2026-01-07 16:03:00,162 - execute - INFO - Collecting execution outputs for pymdp_gen script Active Inference POMDP Agent_pymdp.py
-2026-01-07 16:03:00,483 - execute - INFO - Found 4 output files to collect for pymdp_gen
-2026-01-07 16:03:00,561 - execute - INFO - Copied simulation_results.json → simulation_data/simulation_results.json
-2026-01-07 16:03:00,583 - execute - INFO - Copied belief_evolution_1.png → visualizations/belief_evolution_1.png
-2026-01-07 16:03:00,607 - execute - INFO - Copied performance_2.png → visualizations/performance_2.png
-2026-01-07 16:03:00,616 - execute - INFO - Copied discrete_states_0.png → visualizations/discrete_states_0.png
-2026-01-07 16:03:00,624 - execute - INFO - Collected 4 output files: 3 visualizations, 1 data files, 0 traces
-2026-01-07 16:03:00,627 - execute - INFO - Extracting simulation data from collected files for pymdp_gen
-2026-01-07 16:03:00,644 - execute - INFO - Executing rxinfer script: Active Inference POMDP Agent_rxinfer.jl
-python(50050) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
-python(50061) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
-python(50121) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
-python(50147) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
-~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8315464768) ~~~~~~~~~~~~~~~~~~~~~~~
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_basic_vector PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_2d_matrix_list_of_lists PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_2d_matrix_tuple_of_lists PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_2d_matrix_tuple_of_tuples PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_3d_matrix_list_of_list_of_lists PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_3d_matrix_nested_tuples PASSED [  0%]
+src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_string_input PASSED [  0%]
+src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_flow PASSED [  1%]
+src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_no_files PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_belief_heatmaps PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_action_analysis PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_free_energy_plots PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_observation_analysis PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_analyze_free_energy PASSED [  1%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_analyze_simulation_traces PASSED [  2%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_analyze_policy_convergence PASSED [  2%]
+src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_compare_framework_results PASSED [  2%]
+src/tests/test_analysis_overall.py::TestAnalysisModuleImports::test_visualization_function_exports PASSED [  2%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_import_available PASSED [  2%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_sapf_audio_generation PASSED [  2%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_pedalboard_audio_generation PASSED [  2%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_format_conversion PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_parameter_validation PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_error_handling PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_performance PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_memory_usage PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_quality_metrics PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_file_operations PASSED [  3%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_backend_selection PASSED [  4%]
+src/tests/test_audio_generation.py::TestAudioGeneration::test_audio_concurrent_generation PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_imports PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generator_instantiation PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_sapf_processor_instantiation PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_pedalboard_processor_instantiation PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_module_info PASSED [  4%]
+src/tests/test_audio_overall.py::TestAudioModuleComprehensive::test_audio_generation_options PASSED [  5%]
+src/tests/test_audio_overall.py::TestAudioProcessing::test_gnn_to_audio_conversion PASSED [  5%]
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_validation PASSED [  5%]
+src/tests/test_audio_overall.py::TestAudioProcessing::test_audio_generation PASSED [  5%]
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_pipeline_integration PASSED [  5%]
+src/tests/test_audio_overall.py::TestAudioIntegration::test_audio_mcp_integration PASSED [  5%]
+src/tests/test_audio_overall.py::test_audio_module_completeness PASSED   [  5%]
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_valid PASSED [  6%]
+src/tests/test_audio_sapf.py::TestSAPFCodeValidation::test_validate_sapf_code_invalid PASSED [  6%]
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_convert_gnn_to_sapf_function PASSED [  6%]
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_generate_oscillator_audio_function PASSED [  6%]
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_apply_envelope_function PASSED [  6%]
+src/tests/test_audio_sapf.py::TestSAPFStandaloneFunctions::test_mix_audio_channels_function PASSED [  6%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_module_imports PASSED [  6%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_get_module_info PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_validate_gnn_function PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestGNNModule::test_feature_flags PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_module_imports PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_module_info PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_get_supported_formats PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestExportModule::test_export_gnn_model_invalid_format PASSED [  7%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_module_imports PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_module_info PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_get_available_renderers PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestRenderModule::test_feature_flags PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_module_imports PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_module_info PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_get_supported_file_types PASSED [  8%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_generate_website_from_pipeline_output_nonexistent PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestWebsiteModule::test_validate_website_config PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_module_imports PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_module_info PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_get_audio_generation_options PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestSAPFModule::test_process_gnn_to_audio_invalid_input PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_module_imports PASSED [  9%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_module_info PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_get_ontology_processing_options PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_process_gnn_ontology_nonexistent_file PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology_section_empty PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED [ 10%]
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_module_imports PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestExecuteModule::test_executor_instantiation PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestLLMModule::test_module_imports PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestLLMModule::test_llm_processor_instantiation PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestMCPModule::test_module_imports PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestMCPModule::test_mcp_server_instantiation PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestSetupModule::test_module_imports PASSED [ 11%]
+src/tests/test_comprehensive_api.py::TestSetupModule::test_setup_functions_exist PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_module_imports PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestUtilsModule::test_utils_classes_instantiation PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_module_imports PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestPipelineModule::test_pipeline_config PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_mcp_availability_flags PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestMCPIntegration::test_register_tools_functions PASSED [ 12%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_version_consistency PASSED [ 13%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_consistency PASSED [ 13%]
+src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED [ 13%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports PASSED [ 13%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery PASSED [ 13%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing PASSED [ 13%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation PASSED [ 13%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports PASSED [ 14%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering PASSED [ 14%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering PASSED [ 14%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED [ 14%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED [ 14%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation PASSED [ 14%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED [ 14%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports PASSED [ 15%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED [ 15%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports PASSED [ 15%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration PASSED [ 15%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling PASSED [ 15%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED [ 15%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation PASSED [ 15%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED [ 16%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation PASSED [ 16%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation PASSED [ 16%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports PASSED [ 16%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion PASSED [ 16%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation PASSED [ 16%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation PASSED [ 16%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination PASSED [ 17%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow PASSED [ 17%]
+src/tests/test_core_modules.py::test_core_module_completeness PASSED     [ 17%]
+src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_critical_module_coverage_strategy PASSED [ 17%]
+src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_performance_regression_test_framework PASSED [ 17%]
+src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_error_scenario_coverage PASSED [ 17%]
+src/tests/test_coverage_assessment.py::TestCoverageImprovementPriorities::test_priority_1_critical_apis PASSED [ 17%]
+src/tests/test_coverage_assessment.py::TestCoverageImprovementPriorities::test_priority_2_integration_scenarios PASSED [ 18%]
+src/tests/test_coverage_assessment.py::TestCoverageImprovementPriorities::test_priority_3_edge_cases_and_recovery PASSED [ 18%]
+src/tests/test_coverage_assessment.py::test_coverage_improvement_action_plan PASSED [ 18%]
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_gnn_core_imports PASSED [ 18%]
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_audio_imports PASSED [ 18%]
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_export_imports PASSED [ 18%]
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_visualization_imports PASSED [ 18%]
+src/tests/test_coverage_overall.py::TestCoverageOverall::test_llm_imports PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2VisualizerImport::test_d2_classes_available PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2VisualizerImport::test_d2_visualizer_module_available PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2VisualizerInitialization::test_d2_availability_check PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2VisualizerInitialization::test_d2_visualizer_init PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2VisualizerInitialization::test_d2_visualizer_with_logger PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_active_inference_concepts_diagram PASSED [ 19%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_framework_mapping_custom_frameworks PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_framework_mapping_diagram PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_model_structure_diagram PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_pipeline_flow_diagram PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_pipeline_flow_diagram_no_frameworks PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_pomdp_diagram PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_no_cli PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_with_cli PASSED [ 20%]
+src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_write_d2_file PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_get_d2_arrow PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_get_d2_shape_for_variable PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_is_pomdp_model PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_sanitize_name PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2EndToEndProcessing::test_generate_all_diagrams_for_model PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2ProcessorIntegration::test_init_exports_d2_components PASSED [ 21%]
+src/tests/test_d2_visualizer.py::TestD2ProcessorIntegration::test_processor_has_d2_methods PASSED [ 22%]
+src/tests/test_d2_visualizer.py::TestD2Documentation::test_d2_diagram_spec_has_fields PASSED [ 22%]
+src/tests/test_d2_visualizer.py::TestD2Documentation::test_d2_visualizer_has_docstrings PASSED [ 22%]
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_imports PASSED [ 22%]
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_manager_instantiation PASSED [ 22%]
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_virtual_environment_instantiation PASSED [ 22%]
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info PASSED [ 22%]
+src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation PASSED [ 23%]
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED [ 23%]
+src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation +++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Captured stderr ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2026-01-09 09:41:59,910 - setup.setup - INFO - 📦 Installing dependencies from pyproject.toml using UV sync
+~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8509877312) ~~~~~~~~~~~~~~~~~~~~~~~
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pytest/__main__.py", line 9, in <module>
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pytest/__main__.py", line 9, in <module>
     raise SystemExit(pytest.console_main())
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 201, in console_main
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 201, in console_main
     code = main()
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/config/__init__.py", line 175, in main
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 175, in main
     ret: ExitCode | int = config.hook.pytest_cmdline_main(config=config)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
     res = hook_impl.function(*args)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/main.py", line 336, in pytest_cmdline_main
     return wrap_session(config, _main)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 289, in wrap_session
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/main.py", line 289, in wrap_session
     session.exitstatus = doit(config, session) or 0
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 343, in _main
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/main.py", line 343, in _main
     config.hook.pytest_runtestloop(session=session)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
     res = hook_impl.function(*args)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/main.py", line 367, in pytest_runtestloop
     item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
     res = hook_impl.function(*args)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 117, in pytest_runtest_protocol
     runtestprotocol(item, nextitem=nextitem)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 136, in runtestprotocol
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 136, in runtestprotocol
     reports.append(call_and_report(item, "call", log))
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 245, in call_and_report
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 245, in call_and_report
     call = CallInfo.from_call(
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 344, in from_call
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 344, in from_call
     result: TResult | None = func()
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 246, in <lambda>
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 246, in <lambda>
     lambda: runtest_hook(item=item, **kwds), when=when, reraise=reraise
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
     res = hook_impl.function(*args)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/runner.py", line 178, in pytest_runtest_call
     item.runtest()
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 1671, in runtest
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/python.py", line 1671, in runtest
     self.ihook.pytest_pyfunc_call(pyfuncitem=self)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_hooks.py", line 512, in __call__
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_manager.py", line 120, in _hookexec
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/pluggy/_callers.py", line 121, in _multicall
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
     res = hook_impl.function(*args)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.13/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/_pytest/python.py", line 157, in pytest_pyfunc_call
     result = testfunction(**testargs)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_execute_overall.py", line 32, in test_process_execution_flow
-    success = process_execute(input_dir, output_dir, verbose=True)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/execute/processor.py", line 241, in process_execute
-    exec_result = execute_single_script(script_info, results_dir, verbose, logger)
-  File "/Users/mini/Documents/GitHub/GeneralizedNotationNotation/src/execute/processor.py", line 461, in execute_single_script
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/tests/test_environment_overall.py", line 113, in test_dependency_installation
+    result = install_dependencies(['pytest', 'numpy'])
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/setup/utils.py", line 186, in install_dependencies
+    return install_uv_dependencies(*args, **kwargs)
+  File "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/setup/setup.py", line 315, in install_uv_dependencies
     result = subprocess.run(
-  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 556, in run
+  File "/Users/4d/miniforge3/lib/python3.12/subprocess.py", line 550, in run
     stdout, stderr = process.communicate(input, timeout=timeout)
-  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 1222, in communicate
+  File "/Users/4d/miniforge3/lib/python3.12/subprocess.py", line 1209, in communicate
     stdout, stderr = self._communicate(input, endtime, timeout)
-  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/subprocess.py", line 2154, in _communicate
+  File "/Users/4d/miniforge3/lib/python3.12/subprocess.py", line 2115, in _communicate
     ready = selector.select(timeout)
-  File "/Users/mini/.local/share/uv/python/cpython-3.13.11-macos-aarch64-none/lib/python3.13/selectors.py", line 398, in select
+  File "/Users/4d/miniforge3/lib/python3.12/selectors.py", line 415, in select
     fd_event_list = self._selector.poll(timeout)
 +++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
 

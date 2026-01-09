@@ -76,7 +76,7 @@ from .processor import (
     generate_combined_visualizations
 )
 
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 
 def get_module_info() -> dict:
     return {

@@ -278,7 +278,7 @@ def process_llm(
             logger.info("ℹ️ Proceeding with fallback LLM analysis (no live model interaction)")
         
         # Create results directory
-        results_dir = output_dir / "llm_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize results

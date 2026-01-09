@@ -24,6 +24,7 @@
 3. Generate performance benchmarks and comparison reports
 4. Extract and analyze variable distributions and correlations
 5. Provide technical debt assessment and optimization recommendations
+6. **Generate ALL PyMDP visualizations** from execution raw data (moved from Execute step)
 
 ### Key Capabilities
 - Statistical analysis of model variables and connections
@@ -31,6 +32,7 @@
 - Performance benchmarking and profiling
 - Model comparison and differential analysis
 - Distribution analysis and correlation studies
+- **PyMDP Visualization** - belief evolution, state sequences, performance metrics plots
 
 ---
 
@@ -191,7 +193,14 @@ output/16_analysis_output/
 ├── model_name_complexity_metrics.json
 ├── model_name_performance_benchmarks.json
 ├── model_name_analysis_summary.md
-└── analysis_processing_summary.json
+├── analysis_processing_summary.json
+├── pymdp_visualizations/              # NEW: All PyMDP visualizations
+│   └── {model_name}/
+│       ├── discrete_states.png
+│       ├── belief_evolution.png
+│       ├── performance_metrics.png
+│       └── action_sequence.png
+└── comprehensive_visualizations/
 ```
 
 ---

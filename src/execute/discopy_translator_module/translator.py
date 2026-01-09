@@ -202,17 +202,30 @@ def evaluate_diagram_with_jax(
         return False, "DisCoPy library not installed", None
     
     try:
-        # This would contain the actual JAX evaluation logic
-        # For now, provide a placeholder implementation
+        # Real JAX evaluation
         logger.info("Evaluating diagram with JAX backend")
         
-        # Placeholder evaluation
-        evaluation_result = {
-            'status': 'evaluated',
-            'backend': 'jax',
-            'diagram_type': str(type(diagram)),
-            'timestamp': datetime.now().isoformat()
-        }
+        if hasattr(diagram, 'eval'):
+            # Evaluate using DisCoPy's JAX backend
+            # We assume the diagram is already constructed with JAX-compatible types or free tensors
+            result_tensor = diagram.eval()
+            
+            # Convert to standard python types for JSON serialization
+            if hasattr(result_tensor, 'tolist'):
+                result_data = result_tensor.tolist()
+            else:
+                result_data = str(result_tensor)
+                
+            evaluation_result = {
+                'status': 'evaluated',
+                'backend': 'jax',
+                'diagram_type': str(type(diagram)),
+                'timestamp': datetime.now().isoformat(),
+                'result': result_data,
+                'shape': str(result_tensor.shape) if hasattr(result_tensor, 'shape') else 'scalar'
+            }
+        else:
+            raise ValueError(f"Diagram object {type(diagram)} does not support .eval()")
         
         logger.info("Successfully evaluated diagram with JAX")
         return True, "Diagram evaluated successfully", evaluation_result

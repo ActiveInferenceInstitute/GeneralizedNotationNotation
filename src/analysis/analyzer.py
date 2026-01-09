@@ -593,8 +593,8 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
         "metrics": {}
     }
     
-    # Read execution summary
-    execution_summary_file = execution_output_dir / "execution_results" / "execution_summary.json"
+    # Read execution summary - it's at the ROOT of execution output dir, not nested
+    execution_summary_file = execution_output_dir / "execution_summary.json"
     if not execution_summary_file.exists():
         logger.warning(f"Execution summary not found at {execution_summary_file}")
         return results

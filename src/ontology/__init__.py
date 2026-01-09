@@ -22,7 +22,8 @@ from .processor import (
     process_gnn_ontology,
     load_defined_ontology_terms,
     validate_annotations,
-    generate_ontology_report_for_file
+    generate_ontology_report_for_file,
+    parse_annotation
 )
 
 # Import utility functions
@@ -38,7 +39,7 @@ def validate_ontology_terms(terms: List[str] | str = None) -> bool:
 
 # Feature flags expected by tests
 FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True, "mcp_integration": True}
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 
 # Minimal classes expected by tests
 class OntologyProcessor:
@@ -99,6 +100,7 @@ __all__ = [
     'load_defined_ontology_terms',
     'validate_annotations',
     'generate_ontology_report_for_file',
+    'parse_annotation',
     
     # Utility functions
     'get_module_info',

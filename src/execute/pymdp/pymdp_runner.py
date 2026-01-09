@@ -12,7 +12,6 @@ import subprocess
 import sys
 import json
 import traceback
-import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 from typing import List, Optional, Union, Dict, Any, Tuple
@@ -127,7 +126,17 @@ def execute_pymdp_script_with_outputs(
         
         # Prepare environment for enhanced execution
         env = os.environ.copy()
-        env['PYTHONPATH'] = str(abs_script_path.parent.parent.parent)  # Add src to path
+        # Prepare environment for enhanced execution
+        env = os.environ.copy()
+        
+        # Calculate paths relative to this runner file, not the target script
+        # This runner is in src/execute/pymdp/pymdp_runner.py
+        runner_path = Path(__file__).resolve()
+        src_path = runner_path.parent.parent.parent
+        project_root = src_path.parent
+        
+        # Add both project root (for 'src.x') and src (for 'utils.x') to PYTHONPATH
+        env['PYTHONPATH'] = f"{project_root}:{src_path}:{env.get('PYTHONPATH', '')}"
         env['PYMDP_OUTPUT_DIR'] = str(script_output_dir)  # Let script know where to save files
         
         logger.info(f"Running PyMDP script: {script_path.name}")
@@ -242,10 +251,10 @@ def generate_pymdp_analysis(script_path: Path, stdout_content: str, output_dir: 
             analysis_results["agent_instantiated"] = True
             logger.info(f"PyMDP Agent successfully instantiated in {script_path.name}")
         
-        # Generate matrix visualization if matrices were found
-        if analysis_results["matrices_extracted"]:
-            viz_count = create_matrix_visualizations(stdout_content, output_dir, script_path.stem)
-            analysis_results["visualizations_created"] = viz_count
+        # Visualization is now handled in the analysis step (16_analysis.py)
+        # if analysis_results["matrices_extracted"]:
+        #    viz_count = create_matrix_visualizations(stdout_content, output_dir, script_path.stem)
+        #    analysis_results["visualizations_created"] = viz_count
         
         # Create analysis summary
         summary_file = output_dir / f"{script_path.stem}_analysis_summary.json"
@@ -265,79 +274,7 @@ def generate_pymdp_analysis(script_path: Path, stdout_content: str, output_dir: 
     
     return analysis_results
 
-def create_matrix_visualizations(stdout_content: str, output_dir: Path, script_name: str) -> int:
-    """
-    Create visualizations of PyMDP matrices from stdout content.
-    
-    Returns:
-        Number of visualizations created
-    """
-    viz_count = 0
-    
-    try:
-        # Look for matrix content in stdout
-        lines = stdout_content.split('\n')
-        
-        # Simple visualization of matrix structure
-        plt.figure(figsize=(12, 8))
-        
-        # Create a summary plot showing matrix information
-        plt.subplot(2, 2, 1)
-        plt.text(0.1, 0.5, f"PyMDP Script Analysis\n{script_name}", 
-                fontsize=14, ha='left', va='center')
-        plt.axis('off')
-        plt.title("Execution Summary")
-        
-        # Matrix extraction status
-        plt.subplot(2, 2, 2)
-        matrix_info = []
-        for line in lines:
-            if "A = " in line or "B = " in line or "C = " in line or "D = " in line:
-                matrix_info.append(line.strip()[:50] + "..." if len(line.strip()) > 50 else line.strip())
-        
-        if matrix_info:
-            plt.text(0.1, 0.8, "Extracted Matrices:", fontsize=12, weight='bold')
-            for i, info in enumerate(matrix_info[:5]):  # Show first 5 matrix lines
-                plt.text(0.1, 0.7 - i*0.1, info, fontsize=10, family='monospace')
-        else:
-            plt.text(0.1, 0.5, "No matrices found in output", fontsize=12)
-        plt.axis('off')
-        plt.title("Matrix Information")
-        
-        # Execution status
-        plt.subplot(2, 2, 3)
-        status_lines = [line for line in lines if "AGENT_SCRIPT:" in line or "SUCCESS" in line or "ERROR" in line]
-        if status_lines:
-            plt.text(0.1, 0.8, "Execution Status:", fontsize=12, weight='bold')
-            for i, status in enumerate(status_lines[-3:]):  # Show last 3 status lines
-                plt.text(0.1, 0.6 - i*0.15, status[:60] + "..." if len(status) > 60 else status, 
-                        fontsize=9, family='monospace')
-        plt.axis('off')
-        plt.title("Execution Trace")
-        
-        # Script metadata
-        plt.subplot(2, 2, 4)
-        plt.text(0.1, 0.8, "Script Details:", fontsize=12, weight='bold')
-        plt.text(0.1, 0.6, f"Name: {script_name}", fontsize=10)
-        plt.text(0.1, 0.4, f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}", fontsize=10)
-        plt.text(0.1, 0.2, f"Output Lines: {len(lines)}", fontsize=10)
-        plt.axis('off')
-        plt.title("Metadata")
-        
-        plt.tight_layout()
-        
-        # Save the visualization
-        viz_file = output_dir / f"{script_name}_analysis_visualization.png"
-        plt.savefig(viz_file, dpi=150, bbox_inches='tight')
-        plt.close()
-        
-        viz_count += 1
-        logger.info(f"Created analysis visualization: {viz_file.name}")
-        
-    except Exception as e:
-        logger.warning(f"Error creating visualizations: {e}")
-    
-    return viz_count
+
 
 def generate_simulation_trace(stdout_content: str, output_dir: Path, script_name: str) -> Optional[Path]:
     """

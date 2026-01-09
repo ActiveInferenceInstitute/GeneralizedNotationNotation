@@ -66,11 +66,7 @@ except Exception:
             yield T()
         return _cm()
 
-try:
-    from pipeline import get_output_dir_for_script
-except ImportError:
-    # Fallback for test environment
-    from ..pipeline import get_output_dir_for_script
+from utils.pipeline_template import get_output_dir_for_script
 
 logger = logging.getLogger(__name__)
 
@@ -99,7 +95,7 @@ class GNNExecutor:
             self.output_dir = Path(output_dir)
         else:
             # Default to a subdirectory within the project root
-            self.output_dir = Path(__file__).parent.parent.parent / "output" / "execution_results"
+            self.output_dir = Path(__file__).parent.parent.parent / "output" / "12_execute_output"
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log = []
     

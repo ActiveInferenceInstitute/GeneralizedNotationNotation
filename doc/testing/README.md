@@ -650,6 +650,10 @@ src/tests/fixtures/
 - **Fast**: Unit tests should run quickly
 - **Clear**: Test names and assertions should be descriptive
 
+## Testing Philosophy
+- **No Mocks Policy**: We use real data and real code paths.
+- **Integration Tests**: Focus on end-to-end flows.
+
 ### 2. Coverage Goals
 - **Unit Tests**: 90%+ coverage for core modules
 - **Integration Tests**: Cover all pipeline step interactions

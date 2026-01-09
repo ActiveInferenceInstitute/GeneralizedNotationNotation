@@ -389,7 +389,9 @@ Each module provides specialized agent capabilities for different aspects of Act
 - Performance-tuned implementations
 
 ### 🚀 **Execute Agent** - Simulation Runner
-- Multi-environment execution
+- **ActiveInferenceAgent**: Primary full-fidelity execution engine
+- **FallbackAgent**: Robust recovery mechanism (non-mock safe degradation)
+- Multi-environment execution (PyMDP, RxInfer, JAX)
 - Resource monitoring and optimization
 - Error recovery and retry logic
 - Cross-platform compatibility
@@ -472,7 +474,7 @@ Each module provides specialized agent capabilities for different aspects of Act
 ---
 
 **Last Updated**: 2026-01-07
-**Pipeline Version**: 2.1.0
+**Pipeline Version**: 1.1.1
 **Total Modules**: 28
 **Total Steps**: 24 (0-23)
 **Latest Run**: 100% Success (2m53s)

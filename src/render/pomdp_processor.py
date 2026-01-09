@@ -13,7 +13,7 @@ from typing import Dict, List, Optional, Any, Union, Tuple, TYPE_CHECKING
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from ..gnn.pomdp_extractor import POMDPStateSpace
+    from gnn.pomdp_extractor import POMDPStateSpace
 
 logger = logging.getLogger(__name__)
 

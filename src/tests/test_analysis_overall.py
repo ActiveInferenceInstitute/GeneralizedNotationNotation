@@ -37,8 +37,8 @@ Dynamic
             success = process_analysis(target_dir, output_dir, verbose=True)
             assert success is True
             
-            # Check results
-            results_dir = output_dir / "analysis_results"
+            # Check results - processor writes directly to output_dir, not a nested subdirectory
+            results_dir = output_dir
             assert results_dir.exists()
             assert (results_dir / "analysis_results.json").exists()
             assert (results_dir / "analysis_summary.md").exists()

@@ -120,7 +120,7 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         from .pipeline_config import STEP_METADATA
-        from ..utils.validate_pipeline_dependencies import validate_pipeline_dependencies as validate_deps
+        from utils.validate_pipeline_dependencies import validate_pipeline_dependencies as validate_deps
         
         validation_result = validate_deps()
         

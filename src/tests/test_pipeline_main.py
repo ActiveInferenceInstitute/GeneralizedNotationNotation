@@ -67,6 +67,7 @@ D: 0.6 0.4
             shutil.rmtree(self.test_input_dir)
 
     @pytest.mark.integration
+    @pytest.mark.slow
     def test_pipeline_steps_3_7_8_produce_artifacts(self):
         """Test that steps 3,7,8 run and produce expected output artifacts."""
         # Create temporary output directory
@@ -119,6 +120,7 @@ D: 0.6 0.4
             assert "test_model.md" in gnn_result_content, "Test model not processed"
 
     @pytest.mark.integration
+    @pytest.mark.slow
     def test_pipeline_step_11_12_produce_reports(self):
         """Test that steps 11,12 run and produce execution reports."""
         # Create temporary output directory
@@ -171,7 +173,7 @@ D: 0.6 0.4
             result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=600)
 
             # Check that pipeline produced expected outputs
-            pipeline_summary = output_dir / "pipeline_execution_summary.json"
+            pipeline_summary = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
             assert pipeline_summary.exists(), "Pipeline summary not found"
 
             # Verify summary has expected structure

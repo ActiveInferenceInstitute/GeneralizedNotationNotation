@@ -96,7 +96,7 @@ def main(cli_args=None):
     # Parse the GNN file using proper parsing
     try:
         # Try to import and use the GNN parser
-        from ..gnn.parser import parse_gnn_file
+        from gnn.parser import parse_gnn_file
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
     except (ImportError, ModuleNotFoundError) as e:

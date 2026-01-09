@@ -1,8 +1,8 @@
 """
-Main setup script for the GNN project with UV support.
+Setup script for the GNN project with UV support.
 
 This script handles the creation of a UV environment and the installation
-of project dependencies using modern Python packaging standards.
+of project dependencies using Python packaging standards.
 """
 
 import os
@@ -43,7 +43,23 @@ else:
     VENV_PYTHON = VENV_PATH / "bin" / "python"
 
 # Minimum required versions of system packages
-MIN_PYTHON_VERSION = (3, 9)  # Python 3.9 or higher
+MIN_PYTHON_VERSION = (3, 11)  # Python 3.11 or higher per pyproject.toml
+
+# Optional dependency groups (matching pyproject.toml [project.optional-dependencies])
+OPTIONAL_GROUPS = {
+    'dev': 'Development tools (pytest-mock, black, isort, sphinx, jupyterlab, etc.)',
+    'active-inference': 'Active Inference ecosystem (pymdp, jax, flax, optax)',
+    'ml-ai': 'Machine Learning (torch, transformers, accelerate)',
+    'llm': 'LLM providers (openai, anthropic, cohere, ollama)',
+    'visualization': 'Visualization (plotly, altair, seaborn, bokeh, holoviews, dash)',
+    'audio': 'Audio processing (librosa, soundfile, pedalboard, pydub)',
+    'gui': 'GUI frameworks (gradio, streamlit)',
+    'graphs': 'Graph analysis (igraph, graphviz, discopy[categorical])',
+    'research': 'Research tools (jupyterlab, sympy, numba, cython)',
+    'scaling': 'Scaling (dask, distributed, joblib, fsspec)',
+    'database': 'Database (sqlalchemy, alembic)',
+    'all': 'All optional dependencies combined',
+}
 
 # --- Helper Functions ---
 
@@ -764,11 +780,11 @@ print("POMDP operations test passed")
         
         # Try to install JAX using UV
         try:
-            logger.info("Attempting to install JAX using UV...")
+            logger.info("Attempting to repair JAX installation using UV sync...")
             
-            # Install JAX using UV add command (native approach)
-            # For now, still using pip interface for JAX since it needs special handling
-            install_cmd = ["uv", "pip", "install", "jax[cpu]", "optax", "flax", "--python", str(VENV_PYTHON)]
+            # Use UV sync to ensure dependencies match lockfile (better practice than pip install)
+            # This ensures jax[cpu], optax, and flax are installed if they are in dependencies
+            install_cmd = ["uv", "sync", "--verbose"]
             
             if verbose:
                 logger.info(f"Running: {' '.join(install_cmd)}")
@@ -776,7 +792,7 @@ print("POMDP operations test passed")
             result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
             
             if result.returncode == 0:
-                logger.info("JAX, Optax, and Flax installed successfully using UV")
+                logger.info("UV sync completed successfully")
                 
                 # Test again (but don't call this function recursively)
                 try:
@@ -966,7 +982,7 @@ def setup_uv_environment(
         True if setup successful, False otherwise
     """
     try:
-        logger.info("🔧 Starting comprehensive UV environment setup...")
+        logger.info("🔧 Starting UV environment setup...")
         
         # Check system requirements
         if not check_system_requirements(verbose):
@@ -1107,6 +1123,168 @@ def get_uv_setup_info() -> Dict[str, Any]:
     
     return info
 
+def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
+    """
+    Health check of the GNN environment.
+    
+    Validates UV installation, virtual environment, core packages,
+    optional packages, and provides suggestions for issues.
+    
+    Args:
+        verbose: Enable verbose logging
+        
+    Returns:
+        Dictionary with health check results including:
+        - overall_healthy: bool - True if environment is fully functional
+        - uv_available: bool - UV CLI is accessible
+        - venv_exists: bool - Virtual environment exists
+        - venv_python_works: bool - Python in venv is functional
+        - core_packages: dict - Status of essential packages
+        - optional_packages: dict - Status of optional package groups
+        - issues: list - List of identified issues
+        - suggestions: list - Suggestions for fixing issues
+    """
+    health = {
+        'overall_healthy': False,
+        'uv_available': False,
+        'uv_version': None,
+        'venv_exists': False,
+        'venv_python_works': False,
+        'lock_file_exists': False,
+        'pyproject_exists': False,
+        'core_packages': {},
+        'optional_packages': {},
+        'issues': [],
+        'suggestions': []
+    }
+    
+    logger.info("🏥 Running GNN environment health check...")
+    
+    # Check UV availability
+    try:
+        uv_result = subprocess.run(
+            ["uv", "--version"],
+            capture_output=True,
+            text=True,
+            timeout=5
+        )
+        if uv_result.returncode == 0:
+            health['uv_available'] = True
+            health['uv_version'] = uv_result.stdout.strip()
+            if verbose:
+                logger.info(f"✅ UV: {health['uv_version']}")
+        else:
+            health['issues'].append("UV CLI not responding correctly")
+            health['suggestions'].append("Reinstall UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
+    except FileNotFoundError:
+        health['issues'].append("UV not found in PATH")
+        health['suggestions'].append("Install UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
+    except Exception as e:
+        health['issues'].append(f"UV check failed: {e}")
+    
+    # Check pyproject.toml
+    health['pyproject_exists'] = PYPROJECT_PATH.exists()
+    if not health['pyproject_exists']:
+        health['issues'].append("pyproject.toml not found")
+        health['suggestions'].append("Run 'uv init' to create project configuration")
+    elif verbose:
+        logger.info("✅ pyproject.toml exists")
+    
+    # Check lock file
+    health['lock_file_exists'] = LOCK_PATH.exists()
+    if not health['lock_file_exists']:
+        health['issues'].append("uv.lock not found")
+        health['suggestions'].append("Run 'uv lock' to generate lock file")
+    elif verbose:
+        logger.info("✅ uv.lock exists")
+    
+    # Check virtual environment
+    health['venv_exists'] = VENV_PATH.exists()
+    if not health['venv_exists']:
+        health['issues'].append("Virtual environment not found")
+        health['suggestions'].append("Run 'uv sync' to create environment and install dependencies")
+    elif verbose:
+        logger.info(f"✅ Virtual environment exists at {VENV_PATH}")
+    
+    # Check venv Python
+    if health['venv_exists'] and VENV_PYTHON.exists():
+        try:
+            py_result = subprocess.run(
+                [str(VENV_PYTHON), "--version"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if py_result.returncode == 0:
+                health['venv_python_works'] = True
+                if verbose:
+                    logger.info(f"✅ Venv Python: {py_result.stdout.strip()}")
+            else:
+                health['issues'].append("Venv Python not responding")
+                health['suggestions'].append("Recreate environment: uv sync --reinstall")
+        except Exception as e:
+            health['issues'].append(f"Venv Python check failed: {e}")
+    
+    # Check core packages
+    core_packages = ['numpy', 'matplotlib', 'networkx', 'pandas', 'scipy', 'pytest']
+    for pkg in core_packages:
+        try:
+            result = subprocess.run(
+                [str(VENV_PYTHON), "-c", f"import {pkg}; print({pkg}.__version__)"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            if result.returncode == 0:
+                health['core_packages'][pkg] = result.stdout.strip()
+            else:
+                health['core_packages'][pkg] = None
+                health['issues'].append(f"Core package '{pkg}' not available")
+        except Exception:
+            health['core_packages'][pkg] = None
+    
+    # Check optional package groups
+    optional_checks = {
+        'llm': {'packages': ['openai'], 'extra': 'llm'},
+        'visualization': {'packages': ['plotly'], 'extra': 'visualization'},
+        'ml': {'packages': ['torch'], 'extra': 'ml-ai'},
+        'audio': {'packages': ['librosa'], 'extra': 'audio'},
+    }
+    
+    for group, config in optional_checks.items():
+        try:
+            pkg = config['packages'][0]
+            result = subprocess.run(
+                [str(VENV_PYTHON), "-c", f"import {pkg}"],
+                capture_output=True,
+                text=True,
+                timeout=5
+            )
+            health['optional_packages'][group] = (result.returncode == 0)
+            if result.returncode == 0 and verbose:
+                logger.info(f"✅ Optional group '{group}' is available")
+        except Exception:
+            health['optional_packages'][group] = False
+    
+    # Determine overall health
+    critical_checks = [
+        health['uv_available'],
+        health['pyproject_exists'],
+        health['venv_exists'],
+        health['venv_python_works']
+    ]
+    health['overall_healthy'] = all(critical_checks)
+    
+    # Summary logging
+    if health['overall_healthy']:
+        logger.info("✅ Environment health check PASSED")
+    else:
+        logger.warning(f"⚠️ Environment health check found {len(health['issues'])} issue(s)")
+        for issue in health['issues']:
+            logger.warning(f"  - {issue}")
+    
+    return health
+
 def cleanup_uv_setup() -> bool:
     """
     Clean up the UV setup (remove virtual environment).
@@ -1176,7 +1354,7 @@ def save_setup_results(output_dir: Path, validation_results: Dict, extras: list 
         logger.warning(f"⚠️ Failed to save setup results: {e}")
 
 def log_system_info(logger: logging.Logger) -> Dict[str, Any]:
-    """Log comprehensive system information."""
+    """Log system information."""
     try:
         logger.info("Logging system information")
         
@@ -1390,94 +1568,126 @@ def setup_julia_environment(verbose: bool = False) -> bool:
 def install_optional_package_group(group_name: str, verbose: bool = False) -> bool:
     """
     Install a specific optional package group using UV sync with extras.
+    
+    This function uses `uv sync --extra <group>` to install optional dependencies
+    defined in pyproject.toml, ensuring proper lock file integration.
 
     Args:
-        group_name: Name of the package group ('jax', 'pymdp', 'visualization', 'audio', 'llm', 'ml', 'julia')
+        group_name: Name of the package group (see OPTIONAL_GROUPS constant)
         verbose: Enable verbose logging
 
     Returns:
         True if installation succeeded, False otherwise
     """
-    # Handle Julia setup separately
+    # Handle Julia setup separately (not a Python package)
     if group_name.lower() == 'julia':
         return setup_julia_environment(verbose=verbose)
 
-    # Handle Python packages
-    package_groups = {
-        'jax': ['jax[cpu]', 'jaxlib', 'optax', 'flax'],
-        'pymdp': ['inferactively-pymdp'],  # Correct package name for pymdp
-        'visualization': ['plotly', 'altair', 'seaborn'],
-        'audio': ['librosa', 'soundfile', 'pedalboard'],
-        'llm': ['openai', 'anthropic'],
-        'ml': ['torch', 'torchvision', 'transformers']
+    # Normalize group name (allow 'ml' as alias for 'ml-ai')
+    group_aliases = {
+        'ml': 'ml-ai',
+        'jax': 'active-inference',
+        'pymdp': 'active-inference',
     }
+    normalized_name = group_aliases.get(group_name.lower(), group_name.lower())
     
-    if group_name not in package_groups:
-        logger.error(f"Unknown package group: {group_name}")
-        logger.info(f"Available groups: {', '.join(package_groups.keys())}")
+    # Validate group name against pyproject.toml extras
+    if normalized_name not in OPTIONAL_GROUPS:
+        logger.error(f"❌ Unknown package group: {group_name}")
+        logger.info(f"ℹ️ Available groups: {', '.join(OPTIONAL_GROUPS.keys())}")
         return False
     
-    packages = package_groups[group_name]
-    logger.info(f"📦 Installing {group_name} package group: {', '.join(packages)}")
+    group_description = OPTIONAL_GROUPS[normalized_name]
+    logger.info(f"📦 Installing '{normalized_name}' package group: {group_description}")
     
     try:
-        install_cmd = ["uv", "pip", "install"] + packages + ["--python", str(VENV_PYTHON)]
+        # Use uv sync --extra for proper pyproject.toml and lock file integration
+        sync_cmd = ["uv", "sync", "--extra", normalized_name]
         
         if verbose:
-            logger.debug(f"Running: {' '.join(install_cmd)}")
+            sync_cmd.append("--verbose")
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
         
         result = subprocess.run(
-            install_cmd,
+            sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=600  # 10 minute timeout for large package groups
         )
         
         if result.returncode == 0:
-            logger.info(f"✅ Successfully installed {group_name} package group")
+            logger.info(f"✅ Successfully installed '{normalized_name}' package group")
+            if verbose and result.stdout:
+                # Log package changes
+                for line in result.stdout.strip().split('\n'):
+                    if line.strip():
+                        logger.debug(f"  {line}")
             return True
         else:
-            logger.error(f"❌ Failed to install {group_name} package group")
+            logger.error(f"❌ Failed to install '{normalized_name}' package group")
+            logger.error(f"STDERR: {result.stderr}")
             if verbose:
                 logger.error(f"STDOUT: {result.stdout}")
-                logger.error(f"STDERR: {result.stderr}")
             return False
             
+    except subprocess.TimeoutExpired:
+        logger.error(f"⏰ Installation timed out for '{normalized_name}' package group")
+        return False
     except Exception as e:
-        logger.error(f"❌ Error installing {group_name} package group: {e}")
+        logger.error(f"❌ Error installing '{normalized_name}' package group: {e}")
         return False
 
 def install_all_optional_packages(verbose: bool = False) -> dict:
     """
-    Install all optional package groups using UV sync with all extras.
+    Install all optional package groups using UV sync with 'all' extra.
+    
+    This is more efficient than installing groups individually as it uses
+    the 'all' extra from pyproject.toml which includes all optional dependencies.
     
     Args:
         verbose: Enable verbose logging
         
     Returns:
-        Dictionary with installation status for each group
+        Dictionary with installation status
     """
-    results = {}
-    groups = ['jax', 'pymdp', 'visualization', 'audio', 'llm', 'ml']
+    logger.info("🚀 Installing ALL optional package groups via 'uv sync --extra all'...")
     
-    logger.info("🚀 Installing all optional package groups...")
-    
-    for group in groups:
-        logger.info(f"\n📦 Installing {group}...")
-        results[group] = install_optional_package_group(group, verbose=verbose)
+    try:
+        sync_cmd = ["uv", "sync", "--extra", "all"]
         
-        if results[group]:
-            logger.info(f"✅ {group} installed successfully")
+        if verbose:
+            sync_cmd.append("--verbose")
+            logger.debug(f"Running: {' '.join(sync_cmd)}")
+        
+        result = subprocess.run(
+            sync_cmd,
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+            timeout=1800  # 30 minute timeout for all packages
+        )
+        
+        if result.returncode == 0:
+            logger.info("✅ All optional packages installed successfully")
+            if verbose and result.stdout:
+                for line in result.stdout.strip().split('\n'):
+                    if line.strip():
+                        logger.debug(f"  {line}")
+            return {"all": True, "success": True}
         else:
-            logger.warning(f"⚠️ {group} installation failed (non-critical)")
-    
-    # Summary
-    successful = sum(1 for v in results.values() if v)
-    total = len(results)
-    logger.info(f"\n📊 Installation Summary: {successful}/{total} package groups installed successfully")
-    
-    return results
+            logger.error("❌ Failed to install all optional packages")
+            logger.error(f"STDERR: {result.stderr}")
+            return {"all": False, "success": False, "error": result.stderr}
+            
+    except subprocess.TimeoutExpired:
+        logger.error("⏰ Installation timed out for all optional packages")
+        return {"all": False, "success": False, "error": "timeout"}
+    except Exception as e:
+        logger.error(f"❌ Error installing all optional packages: {e}")
+        return {"all": False, "success": False, "error": str(e)}
 
 def setup_complete_environment(
     verbose: bool = False,

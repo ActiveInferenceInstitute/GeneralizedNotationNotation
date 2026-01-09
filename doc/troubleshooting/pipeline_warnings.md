@@ -426,5 +426,5 @@ When reporting warnings/errors, include:
 ---
 
 **Guide Version**: 1.0  
-**Compatible Pipeline Version**: 2.1.0+  
+**Compatible Pipeline Version**: 1.1.1+  
 

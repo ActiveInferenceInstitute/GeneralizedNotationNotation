@@ -36,7 +36,7 @@ from .utils import (
 
 # MCP integration
 try:
-    from ..mcp import (
+    from mcp import (
         register_sapf_tools,
         handle_convert_gnn_to_sapf_audio,
         handle_generate_sapf_code,
@@ -49,7 +49,7 @@ except ImportError:
     MCP_AVAILABLE = False
 
 # Module metadata
-__version__ = "1.1.0"
+__version__ = "1.1.1"
 __author__ = "Active Inference Institute"
 __description__ = "SAPF audio generation from GNN models"
 

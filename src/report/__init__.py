@@ -86,7 +86,7 @@ def validate_report(data: Dict[str, Any]) -> bool:
 def generate_report(target_dir: Path, output_dir: Path, format: str = "json") -> Dict[str, Any]:
     return generate_comprehensive_report(target_dir, output_dir, format=format)
 
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 
 
 def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs):

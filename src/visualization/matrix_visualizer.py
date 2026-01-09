@@ -35,8 +35,25 @@ except (ImportError, RecursionError) as e:
     sns = None
     SEABORN_AVAILABLE = False
 
+import warnings
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple, Union
+
+
+def _safe_tight_layout():
+    """Apply tight_layout with warning suppression.
+    
+    Tight layout may fail for complex figures - this is not critical.
+    """
+    if not MATPLOTLIB_AVAILABLE or plt is None:
+        return
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', category=UserWarning, 
+                                  message='.*[Tt]ight.?layout.*')
+            _safe_tight_layout()
+    except Exception:
+        pass
 
 class MatrixVisualizer:
     """
@@ -288,7 +305,7 @@ class MatrixVisualizer:
             plt.xticks(range(matrix.shape[1]))
             plt.yticks(range(matrix.shape[0]))
             
-            plt.tight_layout()
+            _safe_tight_layout()
             # Ensure parent directory exists
             try:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -406,7 +423,7 @@ class MatrixVisualizer:
             # Set main title
             fig.suptitle(main_title, fontsize=16, fontweight='bold', y=0.95)
             
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
             return True
@@ -480,7 +497,6 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 return False
             
             dim1, dim2, dim3 = tensor.shape
-            print(f"DEBUG: Creating POMDP analysis for tensor shape: ({dim1}, {dim2}, {dim3})")
             
             # Create comprehensive analysis figure with safe dimensions
             try:
@@ -495,13 +511,10 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 # Set DPI early and ensure it's safe
                 safe_dpi = 96  # Use a very safe, low DPI to prevent overflow
                 fig.set_dpi(safe_dpi)
-                print("DEBUG: Figure created successfully")
             except Exception as e:
-                print(f"DEBUG: Error creating figure: {e}")
                 return False
             
             # Use a simpler approach without gridspec
-            print("DEBUG: Using simple subplot layout")
             
             # 1. Main transition matrices (top row)
             for i in range(dim3):
@@ -636,24 +649,18 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 # Don't change figure size - keep what we set during creation
                 safe_dpi = _safe_dpi_value(96)
                 plt.savefig(output_path, dpi=safe_dpi, bbox_inches='tight')
-                print("DEBUG: POMDP analysis saved successfully (safe mode)")
             except Exception as e:
-                print(f"DEBUG: Error saving POMDP analysis: {e}")
                 try:
                     # Fallback with smaller figure and very safe DPI
                     fig.set_size_inches(8, 6)
                     fallback_dpi = 72  # Extremely safe DPI
                     plt.savefig(output_path, dpi=fallback_dpi)
-                    print("DEBUG: POMDP analysis saved with fallback DPI")
                 except Exception as e2:
-                    print(f"DEBUG: Error saving with fallback DPI: {e2}")
                     try:
                         # Final fallback - no DPI specified, minimal figure
                         fig.set_size_inches(6, 4)
                         plt.savefig(output_path)
-                        print("DEBUG: POMDP analysis saved with minimal settings")
                     except Exception as e3:
-                        print(f"DEBUG: All save attempts failed: {e3}")
                         return False
             plt.close()
             return True
@@ -767,7 +774,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             for i in range(n_matrices, len(axes)):
                 axes[i].set_visible(False)
             
-            plt.tight_layout()
+            _safe_tight_layout()
             try:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
             except Exception:
@@ -897,7 +904,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             for i in range(plot_idx, len(axes_flat)):
                 axes_flat[i].set_visible(False)
             
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
             return True
@@ -1001,7 +1008,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             for i, shape in enumerate(shapes):
                 ax4.text(i, 0.5, shape, ha='center', va='center', fontweight='bold')
             
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
             return True
@@ -1144,7 +1151,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.title(f'Matrix: {matrix_name}', fontsize=14, fontweight='bold')
             plt.xlabel('Columns', fontsize=12)
             plt.ylabel('Rows', fontsize=12)
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 
@@ -1188,7 +1195,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.title(f'Correlation Matrix: {matrix_name}', fontsize=14, fontweight='bold')
             plt.xlabel('Variables', fontsize=12)
             plt.ylabel('Variables', fontsize=12)
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 
@@ -1223,7 +1230,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             plt.xlabel('Value', fontsize=12)
             plt.ylabel('Density', fontsize=12)
             plt.grid(True, alpha=0.3)
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 
@@ -1286,7 +1293,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 axes[i].set_visible(False)
 
             plt.suptitle('Matrix Overview', fontsize=16, fontweight='bold')
-            plt.tight_layout()
+            _safe_tight_layout()
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 

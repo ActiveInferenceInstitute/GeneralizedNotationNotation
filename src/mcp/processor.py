@@ -203,7 +203,7 @@ def process_mcp(
         output_dir.mkdir(parents=True, exist_ok=True)
         
         # Create results subdirectory for detailed reports
-        results_dir = output_dir / "mcp_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize MCP

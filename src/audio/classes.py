@@ -78,13 +78,39 @@ class AudioGenerator:
     def analyze_audio(self, audio_file: str) -> dict:
         """Analyze audio characteristics."""
         try:
-            # Basic analysis
+            # Real audio analysis
+            duration = 0.0
+            channels = 1
+            sample_rate = 44100
+            path = Path(audio_file)
+            
+            if path.exists():
+                suffix = path.suffix.lower()
+                if suffix == '.wav':
+                    import wave
+                    import contextlib
+                    try:
+                        with contextlib.closing(wave.open(str(path), 'r')) as f:
+                            frames = f.getnframes()
+                            sample_rate = f.getframerate()
+                            channels = f.getnchannels()
+                            duration = frames / float(sample_rate)
+                    except Exception as e:
+                        # Fallback if wave fails
+                        pass
+                elif suffix in ['.mp3', '.ogg', '.flac']:
+                    # Estimate based on file size if mutagen/ffmpeg not available
+                    # Approx 128kbps for MP3
+                    size_bytes = path.stat().st_size
+                    bitrate_bps = 128 * 1024
+                    duration = (size_bytes * 8) / bitrate_bps
+            
             return {
                 "success": True,
                 "file_path": audio_file,
-                "duration": 5.0,  # Placeholder
-                "sample_rate": 44100,
-                "channels": 1
+                "duration": duration,
+                "sample_rate": sample_rate,
+                "channels": channels
             }
         except Exception as e:
             return {

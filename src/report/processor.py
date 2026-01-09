@@ -42,7 +42,7 @@ def process_report(
         log_step_start(logger, "Processing report")
         
         # Create results directory
-        results_dir = output_dir / "report_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Basic report processing
@@ -98,7 +98,7 @@ def generate_comprehensive_report(
         log_step_start(logger, "Generating comprehensive report")
         
         # Create report directory
-        report_dir = output_dir / "comprehensive_report"
+        report_dir = output_dir
         report_dir.mkdir(parents=True, exist_ok=True)
         
         # Analyze GNN files

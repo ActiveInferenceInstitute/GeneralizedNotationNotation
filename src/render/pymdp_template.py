@@ -99,7 +99,7 @@ class POMDPAgent:
         D = D / D.sum()  # Normalize
         
         log_success("Matrix Initialization", "All POMDP matrices loaded and normalized")
-        print(f"  A matrix shape: {{A.shape}}, row sums: {{[A[i,:].sum():.3f for i in range(min(3, A.shape[0]))]}}")
+        print(f"  A matrix shape: {{A.shape}}, row sums: {{[f'{{x:.3f}}' for x in A.sum(axis=1)[:3]]}}")
         print(f"  B tensor shape: {{B.shape}}")
         print(f"  C vector: {{C}}")  
         print(f"  D prior: {{[f'{{d:.3f}}' for d in D]}}")

@@ -220,7 +220,7 @@ class TestRunner:
             self.resource_monitor.start_monitoring()
             
             # Build pytest command
-            cmd = self._build_pytest_command(test_paths)
+            cmd = self._build_pytest_command(test_paths, output_dir)
             
             # Execute tests
             result = self._execute_pytest(cmd, output_dir)
@@ -262,7 +262,7 @@ class TestRunner:
                 error_message=str(e)
             )
     
-    def _build_pytest_command(self, test_paths: List[Path]) -> List[str]:
+    def _build_pytest_command(self, test_paths: List[Path], output_dir: Path) -> List[str]:
         """Build pytest command with appropriate options."""
         cmd = [
             sys.executable, "-m", "pytest",
@@ -280,10 +280,12 @@ class TestRunner:
         
         # Add coverage if enabled
         if self.config.coverage:
+            cov_json = output_dir / "coverage.json"
+            cov_html = output_dir / "htmlcov"
             cmd.extend([
                 "--cov=src",
-                "--cov-report=json",
-                "--cov-report=html",
+                f"--cov-report=json:{cov_json}",
+                f"--cov-report=html:{cov_html}",
                 "--cov-report=term-missing"
             ])
         
@@ -307,36 +309,38 @@ class TestRunner:
             stdout_file = output_dir / "pytest_stdout.txt"
             stderr_file = output_dir / "pytest_stderr.txt"
             
-            # Execute command
-            process = subprocess.Popen(
+            # Execute command with streaming
+            from utils.execution_utils import execute_command_streaming
+            
+            result = execute_command_streaming(
                 cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
-                cwd=project_root
+                cwd=project_root,
+                timeout=self.config.timeout_seconds,
+                print_stdout=True,
+                print_stderr=True,
+                capture_output=True
             )
             
-            # Capture output with timeout
-            try:
-                stdout, stderr = process.communicate(timeout=self.config.timeout_seconds)
-            except subprocess.TimeoutExpired:
-                process.kill()
-                return {
-                    "success": False,
-                    "tests_run": 0,
-                    "tests_passed": 0,
-                    "tests_failed": 0,
-                    "tests_skipped": 0,
-                    "error_message": f"Test execution timed out after {self.config.timeout_seconds} seconds",
-                    "stdout": "",
-                    "stderr": ""
-                }
+            stdout = result.get("stdout", "")
+            stderr = result.get("stderr", "")
             
             # Save output to files
             with open(stdout_file, 'w') as f:
                 f.write(stdout)
             with open(stderr_file, 'w') as f:
                 f.write(stderr)
+                
+            if result["status"] == "TIMEOUT":
+                 return {
+                    "success": False,
+                    "tests_run": 0,
+                    "tests_passed": 0,
+                    "tests_failed": 0,
+                    "tests_skipped": 0,
+                    "error_message": f"Test execution timed out after {self.config.timeout_seconds} seconds",
+                    "stdout": stdout,
+                    "stderr": stderr
+                }
             
             # Parse results
             results = self._parse_pytest_output(stdout, stderr)
@@ -710,13 +714,14 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     # Add timeout flags only if pytest-timeout is available
     if has_timeout:
         cmd.extend([
-            "--timeout=120",  # 2-minute per-test timeout (critical fix!)
+            "--timeout=2",  # 2-second per-test timeout for fast feedback
             "--timeout-method=thread",  # Use thread-based timeout
         ])
     
+    # Always use verbose mode (-v) for test-by-test logging visibility
     cmd.extend([
         "-m", "not slow",  # Skip slow tests
-        "-v" if verbose else "-q"
+        "-v",  # Always verbose for test-by-test logging
     ])
 
     # Add the entire test directory to run ALL tests
@@ -726,7 +731,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     logger.info(f"🚀 Executing fast test suite: {' '.join(cmd)}")
     logger.info("💡 Skipping slow tests (-m 'not slow')")
     if has_timeout:
-        logger.info("⏱️  Per-test timeout: 120s (pytest-timeout enabled)")
+        logger.info("⏱️  Per-test timeout: 2s (pytest-timeout enabled)")
     else:
         logger.info("⚠️  pytest-timeout not available - no per-test timeout enforcement")
 
@@ -736,18 +741,21 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         
         logger.info(f"⏱️  Total timeout: {timeout_seconds} seconds ({timeout_seconds // 60}m)")
         
-        # Run with strict timeout for pipeline integration
-        result = subprocess.run(
+        # Run with strict timeout for pipeline integration and streaming
+        from utils.execution_utils import execute_command_streaming
+        
+        result_dict = execute_command_streaming(
             cmd,
             cwd=Path(__file__).parent.parent.parent,
-            capture_output=True,
-            text=True,
-            timeout=timeout_seconds
+            timeout=timeout_seconds,
+            print_stdout=True,
+            print_stderr=True,
+            capture_output=True
         )
 
         # Parse results
-        stdout = result.stdout
-        stderr = result.stderr
+        stdout = result_dict.get("stdout", "")
+        stderr = result_dict.get("stderr", "")
 
         # Save output with improved logging
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -768,6 +776,24 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
 
         # Parse test statistics from output
         test_stats = _parse_test_statistics(stdout)
+
+        # Generate JSON report for orchestrator compatibility and fallback logic
+        report = {
+            "execution_summary": {
+                "success": test_stats.get('tests_failed', 0) == 0 and test_stats.get('tests_run', 0) > 0,
+                "tests_run": test_stats.get('tests_run', 0),
+                "tests_passed": test_stats.get('tests_passed', 0),
+                "tests_failed": test_stats.get('tests_failed', 0),
+                "tests_skipped": test_stats.get('tests_skipped', 0),
+                "execution_time": 0.0,  # Not tracked in fast mode
+                "error_message": "No tests executed" if test_stats.get('tests_run', 0) == 0 else None
+            }
+        }
+        try:
+            with open(output_dir / "test_execution_report.json", "w") as f:
+                json.dump(report, f, indent=2)
+        except Exception as e:
+            logger.warning(f"Failed to write test report JSON: {e}")
 
         # Log comprehensive results
         logger.info("📊 Test Results Summary:")
@@ -1065,6 +1091,7 @@ def _parse_test_statistics(pytest_output: str) -> Dict[str, int]:
 
     try:
         lines = pytest_output.split('\n')
+        import re
 
         # Look for the summary line at the end (e.g., "534 passed, 12 skipped in 3.45s")
         for line in reversed(lines):
@@ -1073,7 +1100,6 @@ def _parse_test_statistics(pytest_output: str) -> Dict[str, int]:
             if (" passed" in line or " failed" in line or " skipped" in line) and " in " in line:
                 # Parse patterns like: "534 passed, 12 skipped in 3.45s"
                 # or "22 passed, 5 failed, 3 skipped in 1.23s"
-                import re
                 
                 # Extract passed count
                 passed_match = re.search(r'(\d+)\s+passed', line)
@@ -1097,11 +1123,27 @@ def _parse_test_statistics(pytest_output: str) -> Dict[str, int]:
                 if stats["tests_run"] > 0:
                     break
 
+        # Fallback: count individual test results if summary line not found
+        # Look for lines like "test_foo.py::test_bar PASSED [  1%]"
+        if stats["tests_passed"] == 0 and stats["tests_failed"] == 0:
+            for line in lines:
+                line_stripped = line.strip()
+                # Match pytest verbose output format: "test_file.py::TestClass::test_method PASSED"
+                if " PASSED" in line_stripped:
+                    stats["tests_passed"] += 1
+                elif " FAILED" in line_stripped:
+                    stats["tests_failed"] += 1
+                elif " SKIPPED" in line_stripped:
+                    stats["tests_skipped"] += 1
+            
+            # Update tests_run from counted results
+            if stats["tests_passed"] > 0 or stats["tests_failed"] > 0 or stats["tests_skipped"] > 0:
+                stats["tests_run"] = stats["tests_passed"] + stats["tests_failed"] + stats["tests_skipped"]
+
         # Also look for collected items line if no results found yet
         if stats["tests_run"] == 0:
             for line in lines:
                 if "collected" in line and ("item" in line or "test" in line):
-                    import re
                     # Extract number before "collected"
                     match = re.search(r'(\d+)\s+(?:item|test)', line)
                     if match:

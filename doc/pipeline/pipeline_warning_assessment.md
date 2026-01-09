@@ -1,7 +1,7 @@
 # Pipeline Warning Assessment & Improvement Plan
 
 **Date**: October 29, 2025  
-**Pipeline Version**: 2.1.0  
+**Pipeline Version**: 1.1.1  
 **Execution Time**: 19m23s (1163.2s)  
 **Overall Status**: ✅ SUCCESS_WITH_WARNINGS (95.8% success rate)
 

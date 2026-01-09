@@ -52,7 +52,7 @@ class GNNTypeChecker:
             output_dir.mkdir(parents=True, exist_ok=True)
             
             # Create results directory
-            results_dir = output_dir / "type_check_results"
+            results_dir = output_dir
             results_dir.mkdir(parents=True, exist_ok=True)
             
             # Initialize results

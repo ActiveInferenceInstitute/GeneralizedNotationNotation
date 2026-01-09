@@ -1,0 +1,10 @@
+{
+  "timestamp": "2026-01-09T09:45:42.988914",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/18_security_output",
+  "processing_status": "completed",
+  "security_level": "standard",
+  "vulnerabilities_found": 0,
+  "security_score": 100,
+  "message": "Security module ready for vulnerability assessment"
+}

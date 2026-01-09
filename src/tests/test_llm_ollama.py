@@ -81,13 +81,16 @@ def test_ollama_provider_initialize(monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.safe_to_fail
-def test_ollama_simple_chat(monkeypatch):
+@pytest.mark.unit
+@pytest.mark.safe_to_fail
+@pytest.mark.timeout(30)  # Prevent hanging if Ollama is slow
+@pytest.mark.asyncio
+async def test_ollama_simple_chat(monkeypatch):
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
 
     from llm.providers.ollama_provider import OllamaProvider
     from llm.providers.base_provider import LLMMessage, LLMConfig
-    import asyncio
 
     provider = OllamaProvider()
     assert provider.initialize() is True
@@ -98,11 +101,7 @@ def test_ollama_simple_chat(monkeypatch):
     ]
     config = LLMConfig(model=OLLAMA_TEST_MODEL, max_tokens=32, temperature=0.0)
 
-    async def _run():
-        res = await provider.generate_response(messages, config)
-        return res
-
-    result = asyncio.run(_run())
+    result = await provider.generate_response(messages, config)
     assert isinstance(result.content, str)
     assert len(result.content) > 0
     assert result.provider == "ollama"
@@ -110,13 +109,14 @@ def test_ollama_simple_chat(monkeypatch):
 
 @pytest.mark.unit
 @pytest.mark.safe_to_fail
-def test_ollama_streaming(monkeypatch):
+@pytest.mark.timeout(30)  # Prevent hanging if Ollama is slow
+@pytest.mark.asyncio
+async def test_ollama_streaming(monkeypatch):
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
 
     from llm.providers.ollama_provider import OllamaProvider
     from llm.providers.base_provider import LLMMessage, LLMConfig
-    import asyncio
 
     provider = OllamaProvider()
     assert provider.initialize() is True
@@ -126,22 +126,23 @@ def test_ollama_streaming(monkeypatch):
     ]
     config = LLMConfig(model=OLLAMA_TEST_MODEL, max_tokens=64, temperature=0.2, stream=True)
 
-    async def _run():
-        chunks = []
-        async for chunk in provider.generate_stream(messages, config):
-            chunks.append(chunk)
-            if len("".join(chunks)) > 20:
-                break
-        return "".join(chunks)
-
-    text = asyncio.run(_run())
+    chunks = []
+    async for chunk in provider.generate_stream(messages, config):
+        chunks.append(chunk)
+        if len("".join(chunks)) > 20:
+            break
+    
+    text = "".join(chunks)
     assert isinstance(text, str)
     assert len(text) > 0
 
 
 @pytest.mark.integration
+@pytest.mark.slow  # This test makes real LLM calls which can be slow
 @pytest.mark.safe_to_fail
-def test_processor_uses_ollama_when_no_keys(monkeypatch):
+@pytest.mark.timeout(30)  # Prevent hanging during pipeline runs
+@pytest.mark.asyncio
+async def test_processor_uses_ollama_when_no_keys(monkeypatch):
     # Clear cloud keys to force local provider preference
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
     monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
@@ -153,12 +154,7 @@ def test_processor_uses_ollama_when_no_keys(monkeypatch):
     processor = LLMProcessor()
     initialized = False
     try:
-        import asyncio
-
-        async def _init():
-            return await processor.initialize()
-
-        initialized = asyncio.run(_init())
+        initialized = await processor.initialize()
     except Exception:
         initialized = False
 
@@ -181,10 +177,7 @@ def test_processor_uses_ollama_when_no_keys(monkeypatch):
     # Try a short analysis
     content = "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n"
 
-    async def _run():
-        return await processor.analyze_gnn(content, AnalysisType.SUMMARY, config=LLMConfig(model=OLLAMA_TEST_MODEL))
-
-    result = asyncio.run(_run())
+    result = await processor.analyze_gnn(content, AnalysisType.SUMMARY, config=LLMConfig(model=OLLAMA_TEST_MODEL))
     assert isinstance(result.content, str)
     assert len(result.content) > 0
 

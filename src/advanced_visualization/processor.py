@@ -103,7 +103,7 @@ def process_advanced_viz_standardized_impl(
     output_dir: Path,
     logger: logging.Logger,
     viz_type: str = "all",
-    interactive: bool = False,
+    interactive: bool = True,
     export_formats: Optional[List[str]] = None,
     **kwargs
 ) -> bool:
@@ -696,9 +696,145 @@ def _generate_interactive_dashboard(
             attempt.status = "success"
             attempt.output_files.append(str(output_dir / f"{model_name}_dashboard_fallback.html"))
         else:
-            # TODO: Implement actual dashboard
-            logger.info(f"Interactive dashboard for {model_name} not yet implemented")
-            attempt.status = "skipped"
+            # Implement comprehensive interactive dashboard
+            import plotly.graph_objects as go
+            from plotly.subplots import make_subplots
+            import plotly.express as px
+            import pandas as pd
+            
+            # Create subplots structure for a dashboard layout
+            # We'll creating a single HTML file with dropdowns/buttons to switch views
+            # or a vertical scrolling dashboard
+            
+            # 1. Network Metrics Overview
+            variables = model_data.get("variables", [])
+            connections = model_data.get("connections", [])
+            
+            # Calculate metrics
+            num_vars = len(variables)
+            num_conns = len(connections)
+            var_types = {}
+            for v in variables:
+                v_type = v.get("var_type", "unknown")
+                var_types[v_type] = var_types.get(v_type, 0) + 1
+            
+            # Create breakdown chart
+            fig_types = px.pie(
+                values=list(var_types.values()), 
+                names=list(var_types.keys()),
+                title="Variable Type Distribution"
+            )
+            
+            # 2. Adjacency Matrix
+            adj_matrix = np.zeros((num_vars, num_vars)) if np is not None else []
+            var_names = [v.get("name", f"v{i}") for i, v in enumerate(variables)]
+            
+            if np is not None:
+                for idx, v in enumerate(variables):
+                    # Check internal connections or properties
+                    pass
+                
+                # Fill adjacency from connections
+                for conn in connections:
+                    # Normalize connection format
+                    normalized_conn = _normalize_connection_format(conn)
+                    source_vars = normalized_conn.get("source_variables", [])
+                    target_vars = normalized_conn.get("target_variables", [])
+                    
+                    for s in source_vars:
+                        for t in target_vars:
+                            if s in var_names and t in var_names:
+                                s_idx = var_names.index(s)
+                                t_idx = var_names.index(t)
+                                adj_matrix[s_idx, t_idx] = 1
+            
+                fig_adj = px.imshow(
+                    adj_matrix,
+                    x=var_names,
+                    y=var_names,
+                    title="Adjacency Matrix",
+                    color_continuous_scale="Viridis"
+                )
+            else:
+                fig_adj = go.Figure().add_annotation(text="NumPy not available")
+
+            # 3. 3D Structure (Interactive)
+            # Use the positions calculated earlier
+            positions = _calculate_semantic_positions(variables, connections)
+            
+            if np is not None and len(positions) > 0:
+                x, y, z = positions[:, 0], positions[:, 1], positions[:, 2]
+                
+                # Map colors
+                colors = []
+                type_color_map = {
+                    'likelihood_matrix': 1, 'transition_matrix': 2,
+                    'preference_vector': 3, 'prior_vector': 4,
+                    'hidden_state': 5, 'observation': 6,
+                    'policy': 7, 'action': 8
+                }
+                for v in variables:
+                    colors.append(type_color_map.get(v.get("var_type"), 0))
+
+                fig_3d = go.Figure(data=[go.Scatter3d(
+                    x=x, y=y, z=z,
+                    mode='markers+text',
+                    marker=dict(
+                        size=8,
+                        color=colors,
+                        colorscale='Viridis',
+                        opacity=0.8
+                    ),
+                    text=var_names,
+                    hoverinfo='text'
+                )])
+                
+                # Add connections to 3D plot
+                for conn in connections:
+                    normalized_conn = _normalize_connection_format(conn)
+                    source_vars = normalized_conn.get("source_variables", [])
+                    target_vars = normalized_conn.get("target_variables", [])
+                    
+                    for s in source_vars:
+                        for t in target_vars:
+                            if s in var_names and t in var_names:
+                                s_idx = var_names.index(s)
+                                t_idx = var_names.index(t)
+                                
+                                fig_3d.add_trace(go.Scatter3d(
+                                    x=[positions[s_idx, 0], positions[t_idx, 0]],
+                                    y=[positions[s_idx, 1], positions[t_idx, 1]],
+                                    z=[positions[s_idx, 2], positions[t_idx, 2]],
+                                    mode='lines',
+                                    line=dict(color='gray', width=1),
+                                    opacity=0.5,
+                                    showlegend=False
+                                ))
+                fig_3d.update_layout(title="Interactive 3D Structure")
+            else:
+                fig_3d = go.Figure().add_annotation(text="Cannot generate 3D plot")
+
+            # Combine into a dashboard HTML
+            # We'll save individual HTML components and create a master index or save a single big HTML
+            
+            # Ensure unique filename to avoid overwriting
+            output_file = output_dir / f"{model_name}_interactive_dashboard.html"
+            
+            with open(output_file, 'w') as f:
+                f.write(f"<html><head><title>GNN Dashboard: {model_name}</title></head><body>")
+                f.write(f"<h1>GNN Model Dashboard: {model_name}</h1>")
+                f.write("<hr>")
+                f.write("<h2>Variable Distribution</h2>")
+                f.write(fig_types.to_html(full_html=False, include_plotlyjs='cdn'))
+                f.write("<h2>Adjacency Matrix</h2>")
+                f.write(fig_adj.to_html(full_html=False, include_plotlyjs=False))
+                f.write("<h2>3D Network Structure</h2>")
+                f.write(fig_3d.to_html(full_html=False, include_plotlyjs=False))
+                f.write("</body></html>")
+
+            attempt.status = "success"
+            attempt.output_files.append(str(output_file))
+            logger.info(f"Generated interactive dashboard: {output_file}")
         
     except Exception as e:
         logger.error(f"Failed to generate dashboard for {model_name}: {e}")
@@ -1494,7 +1630,7 @@ def _generate_interactive_plotly_dashboard(
         parameters = model_data.get("parameters", [])
         connections = model_data.get("connections", [])
         
-        from ..visualization.matrix_visualizer import MatrixVisualizer
+        from visualization.matrix_visualizer import MatrixVisualizer
         mv = MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
         

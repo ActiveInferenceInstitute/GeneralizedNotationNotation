@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Active Inference POMDP Agent
-# Generated: 2026-01-07 15:55:03
+# Generated: 2026-01-09 09:42:57
 
 using Pkg
 
@@ -25,62 +25,78 @@ Random.seed!(42)
 # --- Model Parameters ---
 const NUM_STATES = 3
 const NUM_OBSERVATIONS = 3
-const NUM_ACTIONS = 1
+const NUM_ACTIONS = 3
 const TIME_STEPS = 20
 
 # Parameter Matrices (from GNN)
 # We use raw Vector of Vectors and convert to Matrix/Tensor for RxInfer
-A_raw = fill(1.0/NUM_OBSERVATIONS, NUM_OBSERVATIONS, NUM_STATES)
-B_raw = fill(1.0/NUM_STATES, NUM_STATES, NUM_STATES, NUM_ACTIONS)
-D_raw = fill(1.0/NUM_STATES, NUM_STATES)
+A_raw = ([0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9])
+B_raw = ([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 0.0, 1.0], [0.0, 1.0, 0.0], [1.0, 0.0, 0.0]])
+D_raw = [0.33333, 0.33333, 0.33333]
 
 # Convert to Julia Matrices
 function to_matrix(raw)
     try
         if raw isa Matrix
             return raw
-        elseif raw isa Vector && raw[1] isa Vector
-            return hcat(raw...)
         end
-    catch
+        # Handle Tuple or Vector of Tuples/Vectors
+        arr = collect(raw)
+        if !isempty(arr) && (arr[1] isa Tuple || arr[1] isa Vector)
+            rows = [collect(r) for r in arr]
+            return hcat(rows...)'
+        end
+    catch e
+        println("to_matrix warning: $e")
     end
     return raw
 end
 
 function to_tensor(raw)
     try
-        # B is [actions][prev][next] or similar. 
-        # GNN Standard: B[action][next_state][prev_state] usually?
-        # Let's assume input matches expected dimensions or is list of lists of lists
         if raw isa Array{Float64, 3}
             return raw
-        elseif raw isa Vector && raw[1] isa Vector && raw[1][1] isa Vector
-            # Dimensions: Action x Next x Prev ?
-            # RxInfer expects: Next x Prev x Action (or similar, checking dims)
-            # Let's construct generic 3D array
-            n_actions = length(raw)
-            n_next = length(raw[1])
-            n_prev = length(raw[1][1])
-            
-            # Create tensor
-            tensor = zeros(n_next, n_prev, n_actions)
-            for a in 1:n_actions
-                for n in 1:n_next
-                    for p in 1:n_prev
-                        tensor[n, p, a] = raw[a][n][p]
+        end
+        # Handle Tuple or Vector structure for B[action][row][col]
+        arr = collect(raw)
+        if !isempty(arr)
+            first_action = collect(arr[1])
+            if !isempty(first_action) && (first_action[1] isa Tuple || first_action[1] isa Vector)
+                n_actions = length(arr)
+                n_rows = length(first_action)
+                first_row = collect(first_action[1])
+                n_cols = length(first_row)
+                
+                tensor = zeros(n_rows, n_cols, n_actions)
+                for a in 1:n_actions
+                    action_data = collect(arr[a])
+                    for r in 1:n_rows
+                        row_data = collect(action_data[r])
+                        for c in 1:n_cols
+                            tensor[r, c, a] = row_data[c]
+                        end
                     end
                 end
+                return tensor
             end
-            return tensor
         end
-    catch
+    catch e
+        println("to_tensor warning: $e")
     end
     return raw
 end
 
 A_matrix = to_matrix(A_raw)
 B_matrix = to_tensor(B_raw) # Handling GNN B format
-D_vector = Vector{Float64}(D_raw)
+D_vector = Vector{Float64}(collect(D_raw))
+
+# Normalize D_vector to ensure it sums exactly to 1.0 (required for Categorical)
+D_vector = D_vector ./ sum(D_vector)
+
+# Normalize A_matrix columns (each column should sum to 1)
+for j in 1:size(A_matrix, 2)
+    A_matrix[:, j] = A_matrix[:, j] ./ sum(A_matrix[:, j])
+end
 
 println("A matrix size: $(size(A_matrix))")
 println("B matrix size: $(size(B_matrix))")

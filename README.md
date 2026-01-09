@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-09
 
 <div align="center">
 
@@ -10,6 +10,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
+[![Tests](https://img.shields.io/badge/Tests-579%20Passed-brightgreen.svg)](#-repository-health)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -28,6 +29,7 @@
 ## 📋 Table of Contents
 
 - [🌟 Overview](#-overview)
+- [📁 Key Files](#-key-files)
 - [🎯 Motivation and Goals](#-motivation-and-goals)
 - [✨ Key Features](#-key-features)
 - [🏗️ Project Architecture](#%EF%B8%8F-project-architecture)
@@ -36,6 +38,7 @@
 - [🚀 Quick Start](#-quick-start)
 - [📖 Documentation](#-documentation)
 - [🎯 Examples](#-examples)
+- [💚 Repository Health](#-repository-health)
 - [🤝 Contributing](#-contributing)
 - [📄 License](#-license)
 
@@ -61,6 +64,46 @@ GNN provides a structured and standardized way to describe complex cognitive mod
 - **🔬 Reproducible**: Enables precise replication of model specifications
 
 GNN addresses the challenge of communicating Active Inference models, which are often described using a mix of natural language, mathematical equations, diagrams, and code. By offering a unified notation, GNN aims to streamline collaboration, improve model understanding, and accelerate research.
+
+---
+
+## 📁 Key Files
+
+> **🚀 Start here** to understand the repository structure and find what you need quickly.
+
+| File | Purpose | Start Here If... |
+|------|---------|------------------|
+| **[README.md](./README.md)** | Main entry point and overview | You're new to GNN |
+| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 24 modules documented | You want to understand the pipeline architecture |
+| **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
+| **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
+| **[doc/quickstart.md](./doc/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
+| **[doc/gnn/gnn_syntax.md](./doc/gnn/gnn_syntax.md)** | Complete GNN syntax specification | You're writing GNN model files |
+| **[pyproject.toml](./pyproject.toml)** | Project dependencies and configuration | You're setting up the environment |
+| **[SETUP_GUIDE.md](./SETUP_GUIDE.md)** | Detailed installation instructions | You're having setup issues |
+| **[SECURITY.md](./SECURITY.md)** | Security policy and vulnerability reporting | You found a security issue |
+| **[SUPPORT.md](./SUPPORT.md)** | Getting help and community resources | You need assistance |
+| **[CITATION.cff](./CITATION.cff)** | Citation information for academic use | You're citing GNN in research |
+
+### 📂 Directory Overview
+
+```
+GeneralizedNotationNotation/
+├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
+├── 📁 src/                    # 24-step pipeline + 28 agent modules
+│   ├── main.py               # 🎯 Main orchestrator - run this!
+│   ├── 0_template.py → 23_report.py  # Numbered pipeline scripts
+│   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
+│   └── tests/                # Comprehensive test suite
+├── 📁 doc/                    # 580+ documentation files
+│   ├── gnn/                  # GNN language specification
+│   ├── pymdp/, rxinfer/      # Framework integration guides
+│   └── cognitive_phenomena/  # Example cognitive models
+├── 📁 input/                  # Input GNN files and configuration
+│   └── gnn_files/            # Sample GNN model files
+├── 📁 output/                 # Generated outputs (24 step-specific folders)
+└── 📄 pyproject.toml, pytest.ini  # Configuration files
+```
 
 ---
 
@@ -165,6 +208,64 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 - 📐 Equations
 - ⏰ Time settings (for dynamic models)
 - 🧠 Mapping to Active Inference Ontology terms
+
+### 📝 GNN Syntax Preview
+
+Here's a glimpse of what a GNN model file looks like (from [`input/gnn_files/actinf_pomdp_agent.md`](./input/gnn_files/actinf_pomdp_agent.md)):
+
+<details>
+<summary><strong>📄 View GNN File Example</strong></summary>
+
+```markdown
+# GNN Example: Active Inference POMDP Agent
+# GNN Version: 1.0
+
+## GNNSection
+ActInfPOMDP
+
+## ModelName
+Active Inference POMDP Agent
+
+## StateSpaceBlock
+# Likelihood matrix: A[observation_outcomes, hidden_states]
+A[3,3,type=float]   # Likelihood mapping hidden states to observations
+
+# Transition matrix: B[states_next, states_previous, actions]
+B[3,3,3,type=float]   # State transitions given previous state and action
+
+# Preference vector: C[observation_outcomes]
+C[3,type=float]       # Log-preferences over observations
+
+# Hidden State
+s[3,1,type=float]     # Current hidden state distribution
+
+## Connections
+D>s
+s-A
+s>s_prime
+A-o
+π>u
+
+## InitialParameterization
+A={(0.9,0.05,0.05), (0.05,0.9,0.05), (0.05,0.05,0.9)}
+C={(0.1, 0.1, 1.0)}
+D={(0.33333, 0.33333, 0.33333)}
+
+## ActInfOntologyAnnotation
+A=LikelihoodMatrix
+B=TransitionMatrix
+s=HiddenState
+o=Observation
+```
+
+</details>
+
+**Connection Syntax:**
+- `D>s` — D feeds into s (directed)
+- `s-A` — s connects to A (undirected/bidirectional)
+- `π>u` — Policy determines action
+
+📖 **Full syntax reference**: [doc/gnn/gnn_syntax.md](./doc/gnn/gnn_syntax.md)
 
 ---
 
@@ -1032,6 +1133,56 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 ```
 
 </details>
+
+---
+
+## 💚 Repository Health
+
+The GNN project maintains high standards for code quality, testing, and documentation.
+
+### 📊 Current Metrics (2026-01-08)
+
+| Metric | Status | Details |
+|--------|--------|---------|
+| **Pipeline Success** | ✅ 100% | 24/24 steps passing |
+| **Tests Passing** | ✅ 579/579 | 3 skipped (service-dependent), 56 skipped (optional deps) |
+| **Execution Time** | ⏱️ ~3 min | Full pipeline in under 3 minutes |
+| **Memory Usage** | 💾 36 MB peak | Efficient resource consumption |
+| **Module Coverage** | 📊 74-95% | Median ~82% test coverage |
+| **Documentation** | 📖 100% | All 28 modules have AGENTS.md |
+
+### 🧪 Testing Infrastructure
+
+```bash
+# Run comprehensive test suite
+python src/2_tests.py --comprehensive
+
+# Run fast pipeline tests (default)
+python src/2_tests.py
+
+# Check test coverage
+pytest --cov=src --cov-report=term-missing
+
+# Run specific module tests
+pytest src/tests/test_[module]*.py -v
+```
+
+**Test Configuration:** See [pytest.ini](./pytest.ini) for complete test settings.
+
+### 📋 Configuration Files
+
+| File | Purpose |
+|------|---------|
+| **[pyproject.toml](./pyproject.toml)** | Project metadata, dependencies, and build configuration |
+| **[pytest.ini](./pytest.ini)** | Test suite configuration with markers and coverage settings |
+| **[input/config.yaml](./input/config.yaml)** | Pipeline default configuration |
+| **[Dockerfile](./Dockerfile)** | Container image definition |
+
+### 🔒 Security & Quality
+
+- **Security Policy**: See [SECURITY.md](./SECURITY.md) for vulnerability reporting
+- **Code of Conduct**: See [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- **Contributing Guidelines**: See [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ---
 

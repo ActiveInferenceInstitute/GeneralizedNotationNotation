@@ -28,7 +28,7 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-from .pymdp_visualizer import PyMDPVisualizer
+from analysis.pymdp_visualizer import PyMDPVisualizer
 from .pymdp_utils import (
     convert_numpy_for_json,
     safe_json_dump,
@@ -62,7 +62,8 @@ except ImportError:
     class _FallbackUtils:
         @staticmethod
         def obj_array(n):
-            return [None] * n
+            """Return a numpy object array of size n (mimics pymdp.utils.obj_array)."""
+            return np.empty(n, dtype=object)
 
         @staticmethod
         def norm_dist(arr):
@@ -93,14 +94,43 @@ except ImportError:
             self.C_obj = C
             self.D_obj = D
 
-            self.A = A[0] if isinstance(A, (list, tuple)) and len(A) > 0 else A
-            self.B = B[0] if isinstance(B, (list, tuple)) and len(B) > 0 else B
-            self.C = C[0] if isinstance(C, (list, tuple)) and len(C) > 0 else C
-            self.D = D[0] if isinstance(D, (list, tuple)) and len(D) > 0 else D
+            # Extract first element from object arrays (list, tuple, or numpy object array)
+            def extract_first(arr):
+                if arr is None:
+                    return None
+                # Handle numpy object arrays
+                if isinstance(arr, np.ndarray) and arr.dtype == object and arr.size > 0:
+                    return arr[0]
+                # Handle lists and tuples
+                if isinstance(arr, (list, tuple)) and len(arr) > 0:
+                    return arr[0]
+                return arr
+            
+            self.A = extract_first(A)
+            self.B = extract_first(B)
+            self.C = extract_first(C)
+            self.D = extract_first(D)
+            
+            # Ensure numpy arrays for B and D (needed for .shape access)
+            if self.B is not None and not isinstance(self.B, np.ndarray):
+                try:
+                    self.B = np.array(self.B)
+                except Exception:
+                    pass
+            if self.D is not None and not isinstance(self.D, np.ndarray):
+                try:
+                    self.D = np.array(self.D)
+                except Exception:
+                    pass
 
             # Derive num_actions from B if possible
             try:
-                self.num_actions = int(self.B.shape[2]) if hasattr(self.B, 'shape') and len(self.B.shape) >= 3 else (len(policies[0]) if policies else 1)
+                if self.B is not None and hasattr(self.B, 'shape') and len(self.B.shape) >= 3:
+                    self.num_actions = int(self.B.shape[2])
+                elif policies:
+                    self.num_actions = len(policies[0])
+                else:
+                    self.num_actions = 1
             except Exception:
                 self.num_actions = 1
 
@@ -111,7 +141,10 @@ except ImportError:
 
         def infer_states(self, observation):
             # Return a simple uniform belief over states
-            num_states = int(self.D.shape[0]) if self.D is not None else 1
+            try:
+                num_states = int(self.D.shape[0]) if self.D is not None and hasattr(self.D, 'shape') else 4
+            except Exception:
+                num_states = 4
             qs = np.ones((1, num_states)) / float(max(num_states, 1))
             return [qs]
 
@@ -123,7 +156,7 @@ except ImportError:
             return q_pi, G
 
         def sample_action(self):
-            return int(random.randrange(self.num_actions))
+            return int(random.randrange(max(1, self.num_actions)))
 
     # Expose fallback names used later in the module
     utils = _FallbackUtils()
@@ -680,14 +713,29 @@ class PyMDPSimulation:
             
         return utils.norm_dist(prior)
 
-    def _generate_policies(self) -> List[List[int]]:
-        """Generate policy space for planning."""
-        # Simple policy generation - can be enhanced based on GNN specs
+    def _generate_policies(self) -> List[np.ndarray]:
+        """Generate policy space for planning (List of NumPy arrays)."""
+        # Simple policy generation - return list of numpy arrays for real PyMDP compatibility
         policies = []
-        for a1 in range(self.num_actions):
-            for a2 in range(self.num_actions):
-                for a3 in range(self.num_actions):
-                    policies.append([a1, a2, a3])
+        
+        # Policy shape: (policy_len, num_control_factors)
+        # We assume 1 control factor (states) and policy_len=3 (as used in Agent creation)
+        policy_len = 3 
+        
+        # 1. Ensure full action coverage for consistency checks
+        for action_idx in range(self.num_actions):
+            # Create a constant policy for this action
+            policy = np.full((policy_len, 1), action_idx, dtype=int)
+            policies.append(policy)
+            
+        # 2. Add some additional random/mixed policies 
+        # (up to a limit to avoid performance issues)
+        num_additional = min(20, self.num_actions * 2)
+        if self.num_actions > 0:
+            for _ in range(num_additional):
+                policy = np.random.randint(0, self.num_actions, (policy_len, 1))
+                policies.append(policy)
+                
         return policies
 
     def run_simulation(self, output_dir: Optional[Path] = None, num_timesteps: Optional[int] = None, **kwargs) -> Dict[str, Any]:
@@ -723,12 +771,17 @@ class PyMDPSimulation:
                 obs_probs = self.model_matrices['A'][:, current_state]
                 observation = utils.sample(obs_probs)
                 
-                # Agent inference
-                qs = self.agent.infer_states(observation)
+                # Agent inference - PyMDP expects list of observations
+                qs = self.agent.infer_states([observation])
                 q_pi, G = self.agent.infer_policies()
                 
                 # Sample action
-                action = self.agent.sample_action()
+                action_raw = self.agent.sample_action()
+                # Handle both scalar (fallback) and array (real PyMDP) returns
+                if hasattr(action_raw, '__len__'):
+                    action = int(action_raw[0])
+                else:
+                    action = int(action_raw)
                 
                 # Update environment state
                 next_state_probs = self.model_matrices['B'][:, current_state, action]

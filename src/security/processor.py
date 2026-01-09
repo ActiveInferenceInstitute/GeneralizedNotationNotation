@@ -42,7 +42,7 @@ def process_security(
         log_step_start(logger, "Processing security")
         
         # Create results directory
-        results_dir = output_dir / "security_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize results

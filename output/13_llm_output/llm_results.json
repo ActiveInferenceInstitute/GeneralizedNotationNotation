@@ -1,0 +1,1073 @@
+{
+  "timestamp": "2026-01-09T09:45:00.060716",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "provider_matrix": {
+    "ollama": {
+      "available": false,
+      "models": [],
+      "selected_model": null
+    },
+    "openai": {
+      "available": true,
+      "models": [
+        "gpt-4",
+        "gpt-3.5-turbo"
+      ],
+      "selected_model": null
+    },
+    "anthropic": {
+      "available": false,
+      "models": [],
+      "selected_model": null
+    }
+  },
+  "analysis_results": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 4233,
+      "line_count": 129,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35
+        },
+        {
+          "name": "A",
+          "definition": "A: 3",
+          "line": 68
+        },
+        {
+          "name": "B",
+          "definition": "B: 3",
+          "line": 75
+        },
+        {
+          "name": "C",
+          "definition": "C: 3",
+          "line": 82
+        },
+        {
+          "name": "D",
+          "definition": "D: 3",
+          "line": 85
+        },
+        {
+          "name": "E",
+          "definition": "E: 3",
+          "line": 88
+        },
+        {
+          "name": "posterior",
+          "definition": "posterior: action",
+          "line": 95
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 3",
+          "line": 120
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 3",
+          "line": 121
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 122
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Likelihood mapping hidden states to observations",
+          "line": 24
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # State transitions given previous state and action",
+          "line": 27
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Log-preferences over observations",
+          "line": 30
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Prior over initial hidden states",
+          "line": 33
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Initial policy prior (habit) over actions",
+          "line": 36
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Current hidden state distribution",
+          "line": 39
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Next hidden state distribution",
+          "line": 40
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Variational Free Energy for belief updating from observations",
+          "line": 41
+        },
+        {
+          "name": "type",
+          "definition": "type=int]     # Current observation (integer index)",
+          "line": 44
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Policy (distribution over actions), no planning",
+          "line": 47
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Action taken",
+          "line": 48
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Expected Free Energy (per policy)",
+          "line": 49
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Discrete time step",
+          "line": 52
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 69
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 76
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.1, 0.1, 1.0)}",
+          "line": 83
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.33333, 0.33333, 0.33333)}",
+          "line": 86
+        },
+        {
+          "name": "E",
+          "definition": "E={(0.33333, 0.33333, 0.33333)}",
+          "line": 89
+        },
+        {
+          "name": "Energy",
+          "definition": "Energy = with infer_policies()",
+          "line": 94
+        },
+        {
+          "name": "action",
+          "definition": "action = sample_action()",
+          "line": 95
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 99
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon",
+          "line": 102
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 105
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 106
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 107
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 108
+        },
+        {
+          "name": "E",
+          "definition": "E=Habit",
+          "line": 109
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 110
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 111
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 112
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime=NextHiddenState",
+          "line": 113
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 114
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0=PolicyVector # Distribution over actions",
+          "line": 115
+        },
+        {
+          "name": "u",
+          "definition": "u=Action       # Chosen action",
+          "line": 116
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 117
+        },
+        {
+          "name": "actions_dim",
+          "definition": "actions_dim=3 (controlled by \u03c0)",
+          "line": 122
+        },
+        {
+          "name": "A",
+          "definition": "A[observation_outcomes, hidden_states]",
+          "line": 23
+        },
+        {
+          "name": "A",
+          "definition": "A[3,3,type=float]",
+          "line": 24
+        },
+        {
+          "name": "B",
+          "definition": "B[states_next, states_previous, actions]",
+          "line": 26
+        },
+        {
+          "name": "B",
+          "definition": "B[3,3,3,type=float]",
+          "line": 27
+        },
+        {
+          "name": "C",
+          "definition": "C[observation_outcomes]",
+          "line": 29
+        },
+        {
+          "name": "C",
+          "definition": "C[3,type=float]",
+          "line": 30
+        },
+        {
+          "name": "D",
+          "definition": "D[states]",
+          "line": 32
+        },
+        {
+          "name": "D",
+          "definition": "D[3,type=float]",
+          "line": 33
+        },
+        {
+          "name": "E",
+          "definition": "E[actions]",
+          "line": 35
+        },
+        {
+          "name": "E",
+          "definition": "E[3,type=float]",
+          "line": 36
+        },
+        {
+          "name": "s",
+          "definition": "s[3,1,type=float]",
+          "line": 39
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime[3,1,type=float]",
+          "line": 40
+        },
+        {
+          "name": "F",
+          "definition": "F[\u03c0,type=float]",
+          "line": 41
+        },
+        {
+          "name": "o",
+          "definition": "o[3,1,type=int]",
+          "line": 44
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0[3,type=float]",
+          "line": 47
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 48
+        },
+        {
+          "name": "G",
+          "definition": "G[\u03c0,type=float]",
+          "line": 49
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 52
+        },
+        {
+          "name": "s",
+          "definition": "s[3]",
+          "line": 120
+        },
+        {
+          "name": "o",
+          "definition": "o[3]",
+          "line": 121
+        }
+      ],
+      "connections": [],
+      "sections": [
+        {
+          "name": "GNN Example: Active Inference POMDP Agent",
+          "line": 1
+        },
+        {
+          "name": "GNN Version: 1.0",
+          "line": 2
+        },
+        {
+          "name": "This file is machine-readable and specifies a classic Active Inference agent for a discrete POMDP with one observation modality and one hidden state factor. The model is suitable for rendering into various simulation or inference backends.",
+          "line": 3
+        },
+        {
+          "name": "GNNSection",
+          "line": 5
+        },
+        {
+          "name": "GNNVersionAndFlags",
+          "line": 8
+        },
+        {
+          "name": "ModelName",
+          "line": 11
+        },
+        {
+          "name": "ModelAnnotation",
+          "line": 14
+        },
+        {
+          "name": "StateSpaceBlock",
+          "line": 22
+        },
+        {
+          "name": "Likelihood matrix: A[observation_outcomes, hidden_states]",
+          "line": 23
+        },
+        {
+          "name": "Transition matrix: B[states_next, states_previous, actions]",
+          "line": 26
+        },
+        {
+          "name": "Preference vector: C[observation_outcomes]",
+          "line": 29
+        },
+        {
+          "name": "Prior vector: D[states]",
+          "line": 32
+        },
+        {
+          "name": "Habit vector: E[actions]",
+          "line": 35
+        },
+        {
+          "name": "Hidden State",
+          "line": 38
+        },
+        {
+          "name": "Observation",
+          "line": 43
+        },
+        {
+          "name": "Policy and Control",
+          "line": 46
+        },
+        {
+          "name": "Time",
+          "line": 51
+        },
+        {
+          "name": "Connections",
+          "line": 54
+        },
+        {
+          "name": "InitialParameterization",
+          "line": 67
+        },
+        {
+          "name": "A: 3 observations x 3 hidden states. Identity mapping (each state deterministically produces a unique observation). Rows are observations, columns are hidden states.",
+          "line": 68
+        },
+        {
+          "name": "B: 3 states x 3 previous states x 3 actions. Each action deterministically moves to a state. For each slice, rows are previous states, columns are next states. Each slice is a transition matrix corresponding to a different action selection.",
+          "line": 75
+        },
+        {
+          "name": "C: 3 observations. Preference in terms of log-probabilities over observations.",
+          "line": 82
+        },
+        {
+          "name": "D: 3 states. Uniform prior over hidden states. Rows are hidden states, columns are prior probabilities.",
+          "line": 85
+        },
+        {
+          "name": "E: 3 actions. Uniform habit used as initial policy prior.",
+          "line": 88
+        },
+        {
+          "name": "Equations",
+          "line": 91
+        },
+        {
+          "name": "Standard Active Inference update equations for POMDPs:",
+          "line": 92
+        },
+        {
+          "name": "- State inference using Variational Free Energy with infer_states()",
+          "line": 93
+        },
+        {
+          "name": "- Policy inference using Expected Free Energy = with infer_policies()",
+          "line": 94
+        },
+        {
+          "name": "- Action selection from policy posterior: action = sample_action()",
+          "line": 95
+        },
+        {
+          "name": "- Belief updating using Variational Free Energy with update_beliefs()",
+          "line": 96
+        },
+        {
+          "name": "Time",
+          "line": 98
+        },
+        {
+          "name": "ActInfOntologyAnnotation",
+          "line": 104
+        },
+        {
+          "name": "ModelParameters",
+          "line": 119
+        },
+        {
+          "name": "Footer",
+          "line": 124
+        },
+        {
+          "name": "Signature",
+          "line": 128
+        }
+      ],
+      "semantic_analysis": {
+        "variable_count": 72,
+        "connection_count": 0,
+        "complexity_score": 72,
+        "semantic_patterns": [],
+        "variable_types": {
+          "Active": 1,
+          "1": 1,
+          "A": 1,
+          "B": 1,
+          "C": 1,
+          "D": 1,
+          "E": 1,
+          "3": 8,
+          "action": 1,
+          "unknown": 56
+        },
+        "connection_types": {}
+      },
+      "complexity_metrics": {
+        "total_elements": 72,
+        "variable_complexity": 72,
+        "connection_complexity": 0,
+        "density": 0.0,
+        "cyclomatic_complexity": -70
+      },
+      "patterns": {
+        "patterns": [
+          "High variable count - complex model"
+        ],
+        "anti_patterns": [
+          "No connections defined"
+        ],
+        "suggestions": [
+          "Consider breaking down into smaller modules"
+        ]
+      },
+      "analysis_timestamp": "2026-01-09T09:45:00.067097",
+      "llm_summary": "Based on the document:\n\n1. The `gnn_agent` class has an argument called `mode`, which represents whether to use a `GNN` model or a general-purpose neural network (`CNN`. If it's not specified, assume `passive`, and set `enabled=True`)\n\n2. The `modelannotations` attribute contains information about the GNN agent that can be used for inference prediction. Here are some key points:\n   - `gnn_agent`: A 40x40 RGB tensor representing the predicted distribution of actions across different environments, such as from one environment to another (see the document). It's a PyTorch tensor with shape [number of observations * number of states] and type `torch.Tensor`. It maps each observation x 3 to a state x 2 so that the predicted probabilities can be used for inference prediction.\n   - `predicted_probabilities`: A tensor representing the log-probability distribution over actions across all possible actions from each history (represented as [states], represented as [observations] in the document). It maps each observation x 3 to a set of initial guesses at actions based on hypothesis probabilities over those observations.\n\n3. The `hidden_state` attribute is used by the `gnn_agent.__init__()` function for inference prediction, which is initialized with values of `num_observations`, `num_actions`. For example, `(0.956127348501176e-15 * 0.956127348501176 + 0.056127348501176 - 0)`. This allows the `gnn_agent.__init__()` function to initialize a dictionary of input and output values:\n   ```python\ndef gNN(x):\n    \"\"\"\n    Get inference predictions for actions based on hypothesis probabilities.\n\n    Args:\n        x (torch.Tensor): Action-based inference prediction from previous states,\n                in this case, to the current state.\n\n    Returns:\n        dict[str]: Dictionary of action and reward values.\n    \"\"\"\n    output = {}\n    for history_statexidxi=0\n    for i in range(num_actions+1)\n    if hasattr(history_statesix)=True:\n       # ...\n      else:\n       input = x\n   ```\n\n4. The `hidden_states` attribute is initialized with a value of 3 at each observation and action, so that the actions can be predicted using the probability distributions in previous histories over those observations. This allows for inference predictions on all possible actions across environments based upon their probabilities.\n5. When an action selection from policy posterior occurs (see the document), it uses this initial guess to initialize a Bayesian distribution of beliefs over actions at each observation x_historyxidxi=1, i = 0,...num_actions+1. This allows for inference predictions on all possible actions across environments based upon their probabilities and forward-propagating action selection as well as backward propagation into previous histories if the policy has been changed in the agent's preferences over observed observations and is initialized with a probability value of x[x] = {y}.\n6. When an initial guess for action selection occurs (see the document), it uses this guess to initialize a Bayesian distribution of actions across environments, as well as forward-propagating inference prediction towards actions in all previous histories by applying backpropagation into them along with backward propagation through the network and update predictions based on beliefs computed from previous histories.\n7. After initialization for each action selection, an initial choice is made to select a specific sequence of values within those sequences across environments for that particular action selection and then forward-propagate towards all observed actions in each environment until end_actions=1. When the network has been initialized with a policy prior (habit) in the last state x(lasthistory), there are two methods used to infer predictions: \n\n  - `action`, which involves updating hypothesis probabilities across previous histories, based on belief values of all observed actions across them; this updates probability distribution over actions. The inference is done by using the beliefs computed at each history and applying backpropagation towards new observable outcomes for that particular action selection in previous histories. \n\n  - `observation_outcomes`, which involves initializing a Bayesian distribution of beliefs on observation x(yhistoryxidxi), based on observed observations across all possible actions, including forward-propagating inference into the next history and backward propagation backwards through the network to compute new values for action selection and their subsequent predictions.\n8. In each of these methods, belief updates are performed using update_beliefs() which allows for inference prediction on all possible actions at each previous observation x(yhistoryxidxi). \n9. The last time frame is then reset to the state when ending a reward sequence in GNN based on policy prior (habit) and action selection from history posterior. Then, there are also updates back towards observed observations across epochs by forward-propagation into each previous history of observation x(yhistoryxidxi), along with backward propagation through all possible histories to compute new values for actions across environments as well as predictions based on belief updating in the network using posterior beliefs over policies and actions. \n10. In this particular scenario, there are 3 different scenarios defined that enable inference prediction of action selection:\n   - `action_selected` case where a policy prior is applied to each observation x(yhistoryxidxi) with hypothesis probabilities on all previous histories.\n   - `observation_chosen`, which has an initial guess for the actions based on previously observed observations and their probability distributions across that history, along with forward-propagating inference into future states (using posterior beliefs from policy).\n   - `action_selected2` where a policy prior is applied to each observation x(yhistoryxidxi) in a different order of preference from one previous history.\n11. In addition to these cases for action selection and the first case for forward-propagation into histories, there are also two cases for hypothesis probabilities:\n   - `action_selected3`, which has an initial guess for the actions based on previously observed observations x(yhistoryxidxi) with probability distribution across all previous histories.\n   - `observation_chosen4` where a policy prior is applied to each observation x(yhistoryxidxi), and forward-propagation into history posterior updates are performed in order of preference (by updating hypothesis probabilities from the top 3 previous histories).\n12. All of these cases allow for inference prediction of action selection across environments based upon actions taken over time, as well as predictions towards observed observations with different biases in belief update functions and their subsequent forward-propagation into new observables at each observation x(yhistoryxidxi) to compute reward sequences towards the desired observable (by updating beliefs or backpropagating forward/backward through network).\n13. In addition, there is a case where one of these actions selection scenarios will result in an action being selected from policy posterior based on new observed observations x(yhistoryxidxi), along with prediction across all environments for that specific action using belief updating function and subsequent inference predictions towards next observables at each observation: \n   - `observation_selected3`, where the hypothesis probability distribution of actions over last history is applied in order of preference.\n  - `action_selected4` when the policy prior has been changed to have a new optimal policy for action selection across environment, and forward-propagation into histories can be performed to compute prediction towards observed observable x(yhistoryxidxi) based on observation x(yhistoryxidxi).\n14. However, there are cases where one of these actions selection scenarios will not result in an inference prediction towards the desired observable (by acting backward through the network), and thus do not enable inference prediction within a specific direction across environments: \n   - `action_selected5`, which is applied to action from policy prior with probability distribution across all previous histories.\n   - `observation_chosen` where there are no actions selected from policy posterior, or when an initial guess for the actions was obtained in this case.",
+      "status": "SUCCESS",
+      "analysis": "LLM-assisted analysis complete",
+      "documentation": {
+        "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+        "model_overview": ""
+      },
+      "llm_prompt_outputs": {
+        "summarize_content": "Your description is clear and concise, presenting your GNN architecture in a structured format that guides readers through the analysis of the model. Here are some additions to enhance readability:\n\n1. **Model Overview**: Add brief descriptions of the key variables (Hidden states, Observations, Actions/Controls) and their roles. This should make sense after reading through my previous response.\n\n2. **Key Variables**: Include short descriptions of what each variable represents in your explanation. For example:\n   - HIDDEN_STATES\n   - OBSERVE\n   - BIOLOGY\n   - KINDEY_LOSS\n\n**Use Cases** are provided for you as additional context, and these should be elaborated upon to help readers understand the specific scenarios that fit within this specific model. You can expand on these later with more text:\n\n3. **Notable Features**: Add brief descriptions of what each feature is meant for in your explanation. For example:\n   - Hidden states represent decision trees (decision tree approach) where it's clear which are the ones to explore first based on action choices and policy prior distributions. These can be explored early in the model using these variables, without needing a specific choice of actions like actions_dim=3 or \u03c0=.\n\n4. **Use Cases** include additional context that could help readers understand the specific scenarios where this model is applied:\n   - It's common for models to have multiple decision trees (decision tree approach) with different levels of exploration and learning, which can fit within a particular agent implementation like active inference pomdp or Bayesian inference POMDP. This gives more insight into how the model chooses actions based on action selection from policy posterior distributions and probability updating from previous state transitions.\n   - It might also be useful to provide specific applications of this model in data science, such as predictive modeling, decision trees-based machine learning, or even research on exploratory data analysis (for instance, see [research]).\n\nFeel free to add the relevant sentences when you're ready for a more detailed and refined explanation with associated context.",
+        "explain_model": "Your answer is well-structured with clear explanations of key concepts and practical implications:\n\n**Constraints:**\n\n1. **Model Purpose**: Clearly describe the purpose behind this particular active inference agent model for a discrete probability probability POMDP (Pomdp). It's essential to understand how this specific model represents real-world phenomena and problem types, which in turn enables better understanding of these models' capabilities.\n2. **Core Components**: Understand what the hidden states represent: s_f0-s_prime are representations of observed actions based on preferences (\u03c0), O_m1 is a distribution representing expected beliefs about actions (u) and \u03c0 represents the action preference map (G).\n3. **Model Dynamics**: Identify key relationships between different components to understand how they evolve over time:\n\n4. **Active Inference Context**: Clearly describe what this model achieves in terms of modeling active inference principles, including its ability to represent real-world phenomena and problem types through ActInfPOMDP's representation and dynamics.\n5. **Key Relationships**: Describe what can be learned or predicted using the model from various aspects:\n\n6. **Conclusion**: Explain how this model implements Active Inference principles by representing real-world data, processing actions based on preferences, and updating beliefs in response to action selection changes over time.",
+        "identify_components": "I've reviewed the documentation of the GNN specification, including the model annotation and code description:\n\n- The `GNN` section provides a comprehensive overview of the model structure and functionality:\n  - Section 1\n    - Generalized Notation (GNN): A generalization of Inference Graphs that allows for more complex inference scenarios.\n  - Model Annotations: Listing inputs, outputs, and actions types in a hierarchical form\n- The `ModelAnnotation` section provides information on the model annotation structure such as input parameters, state space boundaries, and policy prior distributions:\n    - Input Parameters (Gaussian)\n  - StateSpaceBlock\n    - Description of the KC (Kernel Cancellation Block): A type of state inference system that can handle a wide range of actions and their inputs.\n    - Functionalities:\n      - Initialization/Initialization Phase\n      - Policy Behavior\n      - Action-based Decision Making\n    - Examples\n  - Transition Matrix\n    - Description of each action\n    - Type (action is represented as state transition matrix)\n\nAs for the equations mentioned in the doc, they represent a generalizable version of Inference Graphs. The parameters and hyperparameters are more specific to each section:\n  1. **State Variables**:\n     - Variable names and dimensions\n      - State variables\n      \n  * For example, **state variable** can be `[...]` for unknown input state or an action vector (represented as a matrix). It's easier to understand by considering the role of each value in the equations.\n  2. **Observation Variables**:\n    - Input parameters (`x`):\n    - Action Parameters\n      - Type: For actions, specifying type and name are more specific but not exhaustive. The choice depends on the action types specified by the input parameter values.\n3. **Action/Control Variables**\n     - Variable names (variables)\n       - Actions variable\n  4. **Model Matrices**:\n    - A matrix representing observation variables\n    - B matrices: Transition dynamics, prior beliefs over actions\n  5. **Parameters and Hyperparameters**\n      - Value of learning rate for each model component\n\n6. **Temporal Structure**\n     - Time-based parameterization based on the specified timestamps\n\nI'll continue to provide more detailed information as the documentation evolves!",
+        "analyze_structure": "Based on the documentation, here is a detailed structural analysis of the GNN specification:\n\n1. **Graph Structure**: The graph represents the POMDP agent. Each observation and its corresponding hidden state (hidden states) can be represented as a set of edges in the graph. The vertex structure allows for accessing elements from each level of abstraction within the graph, allowing for efficient exploration across different levels of abstraction.\n\n2. **Variable Analysis**: Variables are defined by using a collection of linked variables that represent the agent's actions (policy and decision), their preferences based on input probabilities (belief updating), or other relevant variables. The variable space is structured in a way that allows each layer within the graph to have its own set of connected components, allowing for efficient exploration across different levels of abstraction.\n\n3. **Mathematical Structure**: The mathematical structure of the GNN specification reflects that it follows the traditional Active Inference formulation:\n   - Each action has an initial probability distribution over possible actions (policy prior), and\n   - each state is represented as a unique transition matrix associated with each action, with entries set to 1 for action-action transitions.\n\n4. **Complexity Assessment**: The GNN specification exhibits a degree of complexity, which can be evaluated using various metrics:\n   - **Computational Complexity Indicator (CCI)**: This metric is used to quantify the computational effort required to simulate an agent with this specific structure and representation. It measures how much information or data is wasted when doing so.\n\n5. **Design Patterns**: The structure of the GNN specification can be designed using design patterns that prioritize simplicity, flexibility, and ease-of-use over scalability considerations. This could include:\n   - Simplistic algebraic models for representing agents and their actions (e.g., using binary graph traversal or Dijkstra's algorithm) with a simple set of edges to represent the agent's preferences/actions/beliefs;\n   - Simple model representation schemes, such as using nested graphs instead of deep networks and having fewer \"dumb\" variables for simplicity purposes;\n   - A simpler pattern-based approach that uses smaller, more straightforward parameters.",
+        "extract_parameters": "Here is the structure of the GNN Abstract Syntax:\n\n1. **Contextualization and Instantiation**: This is a type of inference where one knows about the probability distribution over actions, hidden states, observed observations, etc., in order to define new models or actions based on these distributions.\n\n2. **Randomization**: One can generate beliefs by observing data from different directions (observation), adjusting the policy using prior knowledge/beliefs, and combining preferences across the entire universe of possible behaviors at a given time step. This is done through action selection from habit distribution over policies, preference over actions in the history that leads to an observation location change.\n\n3. **Model-based Actions**: There are two types of action decisions: \"probability\" or \"action probability\", with probabilities represented as likelihood matrices within each dimension (i.e., ${\\boldsymbol{g}}_t$). The \"bias-variance tradeoff parameterization\" also provides the interpretation for this decision, with the policy updating in line with it and learning from previous decisions to fit a better model at that time step.\n\n4. **Action Selection**: There are three actions: \"action probability\", \"policy prior\", and \"prior bias\". The action's choice determines which action is used (i.e., when), but also decides the direction of information flow through other variables, such as beliefs about what behavior has been chosen for a subsequent observation location change.\n\n5. **Initialization**: A set of initial parameters are defined based on predictions from previous actions and actions selection from habit distributions over policies, preferences across available behaviors at each time step. This provides the context for inference to future observations. The initializing order is also determined by prior belief beliefs about behavior probabilities over policy decisions taken in that phase.\n\n6. **Initialization strategies**: There are three approaches:\n   - \"regularized\" initialization, where the probability distribution over actions and histories becomes more uniform, with each action taking precedence over its predecessor until a new observation location change occurs.\n   - \"random initialization\", where random parameters are chosen based on prior belief beliefs about behavior probabilities from previous actions followed by policy decisions taken after initialization of biases/prior beliefs to maximize their information flow through the other variables and optimal updating order is established in terms of preferences over observed observations at each time step, with new observables being initialized based on posterior beliefs.",
+        "practical_applications": "In summary, here are key points about GNN models:\n1. The model is designed to provide a structured representation of an FPM (Functional Predictive Model) with various actions and histories on the state space (states). Each action has 3 possible outcomes (`observation`, `hidden state`), each history contains probabilities over the next states, and so forth. These are represented as matrix-vector multiplies from the layers to form the model structure.\n2. The model provides a graphical description of actions used in FPMs, with an initial policy distribution (policy vector) that has information on available resources for action selection ($\\phi$), and also prior distributions over observed states (\"preference\" vectors). These are represented as matrices. For each observation $x$, the history contains probabilities for each possible next state $(b_{u(n)}_i)$ given previous policy (policy vector), and also an initial preference distribution over observable paths ($\\phi_{a(n)})$ from which each action can be chosen).\n3. The model is flexible, allowing for exploration of a wide range of data points using both sequential and multi-step reasoning approaches. It is capable to detect certain types of patterns in the observed outcomes, including:\n    - Regularities (similarity among actions across observations)\n    - Patterns related to prior distributions over observable paths \n    - Patterns indicating that an observation may not be used by previous agents\n4. The model provides a graphical representation for FPMs with specific actions and histories on states, allowing for optimization of action selection based on the available information from the history (`actions`) plus inference of future observations (observation) based solely upon the history (`prior`). \n5. It can handle different data types simultaneously, as well as varying degrees of complexity in representing FPMs or other models using various graph structures and symbolic representations.\n6. The model is able to provide insights into specific problems such as identifying patterns in data when actions are not used by previous agents ($\\phi_{a(n)})$), predicting the likelihood of an action's occurrence based on prior distributions over observed states, etc.\n7. It can be implemented using various methods for representing models and providing visualizations, including tabular representations (sequences to columns from layers), vectorized representation, graph structures and graphical notation, etc. \n8. These models are scalable and adaptable to changing data types and configurations across different domains using an appropriate framework or library.\n9. They can be effectively integrated with other systems that require a structured representation of FPMs including machine learning based frameworks for modeling FPM-based decision trees (MID), neural networks, Bayesian models etc.",
+        "technical_description": "In this document:\n\n1. The main content and code for the GNN agent implementation.\n   - ModelName: Active Inference POMDP Agent\n   - ModelAnnotation: Likelihood mapping hidden states to actions, no planning or decision-making based on policy and prior knowledge of action choices, no planning history in order to initialize initial hypothesis probability distribution (H)\n\n2. ModelInfo for the GNN agent implementation with 1 observation modality (\"state_observation\") and one observable state factor (\"location\").\n   - Information: Likelihood map, transition matrix, preference vector, policy parameters.\n 3. ModelAnnotation: Initialization of Actionspace.\n   - Instruction: A set of actions is initialized based on the given action selection (action=), policy prior probabilities are computed using Variational Inference and learned from observed actions/states.\n\n4. ModelInfo for the GNN agent implementation with 1 observation modality (\"state_observation\") and one observable state factor (\"location\").\n   - Information: Likelihood mapping hidden states to observations, policy map information is learned based on observed actions/states using Variational Inference.\n\n5. ModelAnnotation: Initialization of Hidden State distribution and Prior Distribution for Policy Estimation.\n   - Instruction: A set of Actionspace's history is initialized based on the action selection given an observation (observations).\n\n6. ModelInfo for the GNN agent implementation with 1 observation modality (\"state_observation\") with identity mapping, prior over actions and habit usage as initial policy prior.\n   - Information: Actions are initialized by applying a single action to each observed observation/policy space, and subsequent actions selection is based on history of past actions and policies.\n\n7. ModelAnnotation: Initialization of Belief distribution for Agent Policy estimation.\n   - Instruction: A set of actions is initialized using the history established in modelInfo#InitializingHabitDistributionSet() which has been learned from observed actions/states and can be used to initialize a belief based on policy prior probabilities and action selection histories.\n\n8. ModelAnnotation: Initialization of History of Actionspace's history of all available actions (state_observation).\n   - Instruction: A set of Actions are initialized by applying an action with respect to each observed observation/policy space, and subsequent actions selections have been learned from observing observations based on the policy prior probabilities that were trained using Variational Inference.\n\n9. ModelInfo for the GNN agent implementation with 1 observation modality (\"state_observation\") with identity mapping, prior over all observable states and habit usage as initial policies prior.\n   - Information: History of Actionspace's history is initialized by applying a single action to each observed observation/policy space, then subsequent actions selection are based on state of the art and policy previews.\n\n10. ModelAnnotation: Initialization of History of Actionspace's history of all observable states (i.e. all actions).\n   - Instruction: A set of Actions is initialized by applying an action with respect to each observed observation/policy space, then subsequent actions selection are based on state and policy histories that have been learned using Variational Inference and habit usage as initial policies prior.",
+        "nontechnical_description": "A:\nHere's how the model performs in terms of the number and types of states used for inference, as well as the type of actions inferred by the agent:\n\n1. `NumHistoryCount`: A binary variable representing an integer (0 or 1) that represents the number of histories to be generated from a sequence of observations and hidden state sequences. It is not used in this model except when it's explicitly included, which can happen if `num_historycounts` = 2:\n\n\n```python\nimport tensorflow as tf\nfrom tensorflow import keras\n\nmodel=keras.models.Sequential([\n    keras.layers.Dense(4), # Initial state embedding layer\n    keras.layers.InputLayer([[], []]),\n    keras.layers.Linear(3)], \n    keras.layers.Dense((2,), [1])\n  ])\n```\n\n2. `NumActivations`: A binary variable representing the number of actions (actions_dim=4). It is used only in some instances when applying an action-based inference mechanism that can handle actions as input to the action sequence generation layers:\n\n\n```python\nfrom tensorflow import keras\nimport numpy as np\nfrom tensorflow.keras import backend, model_from_file\n# This line has been omitted from the current model implementation\nmodel = keras.models.Sequential([\n    keras.layers.Dense(4), # Initial state embedding layer\n    keras.layers.InputLayer([[], []]),\n    keras.layers.Linear(3)], \n    keras.layers.Dense((2,), [1])\n  ])\n```\n\n3. `NumActions`: A binary variable representing the number of actions in a sequence (sequences are created by applying action sequences and/or actions as input to the actions layer). This is used only when using an action-based inference mechanism:\n\n\n```python\nfrom tensorflow import keras\nimport numpy as np\nfrom tensorflow.keras import backend, model_from_file\n# This line has been omitted from the current model implementation\nmodel = keras.models.Sequential([\n    keras.layers.Dense(4), # Initial state embedding layer\n    keras.layers.InputLayer([[], []]),\n    keras.layers.Linear(3)], \n    keras.layers.Dense((2,), [1])\n  ])\n```\n\n4. `NumHistoryCount`: A binary variable representing the number of histories to be generated from a sequence of observations (observations) and hidden state sequences, which are initialized using actions_dim=5 for action-based inference:\n\n\n```python\nfrom tensorflow import keras\nimport numpy as np\n# This line has been omitted from the current model implementation\nmodel = keras.models.Sequential([\n    keras.layers.Dense(4), # Initial state embedding layer\n    keras.layers.InputLayer([[], []]),\n    keras.layers.Linear(3)], \n    keras.layers.Dense((2,), [1])\n  ])\n```",
+        "runtime_behavior": "You can validate this model and understand the behavior by validating its structure:\n\n1. Validate that it has been trained on the whole domain space. For example, a simple validation script with `torchvision` will work (see doc) to verify that all supported values are represented in the training data set.\n\n2. Verify the activation functions used for the states and actions. They must be able to map input tensor sequences to output tensors representing the same state and action. Check if they can handle inputs from different channels or have some type of constraint imposed upon them, such as a \"weight\" assigned by the training data set to each dimension in the input sequence prior to activation.\n\n3. Validate that all the activations are correctly applied and that the parameters (Likelihood Matrix, Action Vector) do not suffer from loss when overfitting or collapsing into sub-populations of similar values if an \"unbounded horizon\" is observed at one time step in a sequence being trained with multiple data sets.\n\n4. Validate that no activation has been over-specified and/or collapsed to zero, even though the model outputs all actions correctly as inputs (because they will be reweighted) - this indicates loss of \"learning\". You may want to perform more advanced validation checks such as checking for continuity across input sequences or evaluating if there is an observable bias that affects certain activation values.\n\n5. Validate that the reward/penalty distribution has been trained on all data sets and not biased towards specific actions (although this will depend on which data set you are using) - it cannot be a uniform distribution between actions in each iteration step because it would lead to an overfitting of the training data to those actions, instead fitting values directly within the policy distribution.\n\n6. Validate that the agent does not have loss while learning for every possible action when all inputs are pasted into outputs from prior sequences - unlike `torchvision`, you cannot use `torchvision` as a validation script because it is unable to learn and predict actions/actions based on predictions made by other data sets, even though all input sequences contain the same inputs.\n\n7. Validate that there are no bias introduced due to overfitting (although this will depend on which data set you are using) - unlike `torchvision`, you cannot use `torchvision` as a validation script because it is unable to learn and predict actions/actions based on predictions made by other data sets, even though all input sequences contain the same inputs.\n```python\n  # TODO: Validate this line of code\n\n    x = torch.randn(num_hidden_states)\n    x[x < 0] -= delta * num_actions[:, i][:, 0].data\n    \n    ys = x + [action for action in action_permutations if action == 1 and action!=2][:i+len('outputs')]\n\n    x, zt = torch.from_iterable(ys)\n    ys = x[yts] - (zx**3/(zw**4)) * num_actions[:, i].data\n\n\n```"
+      }
+    }
+  ],
+  "model_insights": [
+    {
+      "model_complexity": "high",
+      "recommendations": [
+        "Consider breaking down into smaller modules",
+        "High variable count - consider grouping related variables",
+        "Consider breaking down into smaller modules"
+      ],
+      "strengths": [],
+      "weaknesses": [
+        "Complex model may be difficult to understand",
+        "No connections defined"
+      ],
+      "generation_timestamp": "2026-01-09T09:45:09.509768"
+    }
+  ],
+  "code_suggestions": [
+    {
+      "optimizations": [],
+      "improvements": [
+        "Many variables lack type annotations - consider adding explicit types"
+      ],
+      "best_practices": [
+        "Use descriptive variable names",
+        "Group related variables together"
+      ],
+      "generation_timestamp": "2026-01-09T09:45:09.509806"
+    }
+  ],
+  "documentation_generated": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "model_overview": "\n# actinf_pomdp_agent.md Model Documentation\n\nThis GNN model contains 72 variables and 0 connections.\n\n## Model Structure\n- **Variables**: 72 defined\n- **Connections**: 0 defined\n- **Complexity**: 72 total elements\n\n## Key Components\n",
+      "variable_documentation": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1,
+          "description": "Variable defined at line 1"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2,
+          "description": "Variable defined at line 2"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23,
+          "description": "Variable defined at line 23"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26,
+          "description": "Variable defined at line 26"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29,
+          "description": "Variable defined at line 29"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32,
+          "description": "Variable defined at line 32"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35,
+          "description": "Variable defined at line 35"
+        },
+        {
+          "name": "A",
+          "definition": "A: 3",
+          "line": 68,
+          "description": "Variable defined at line 68"
+        },
+        {
+          "name": "B",
+          "definition": "B: 3",
+          "line": 75,
+          "description": "Variable defined at line 75"
+        },
+        {
+          "name": "C",
+          "definition": "C: 3",
+          "line": 82,
+          "description": "Variable defined at line 82"
+        },
+        {
+          "name": "D",
+          "definition": "D: 3",
+          "line": 85,
+          "description": "Variable defined at line 85"
+        },
+        {
+          "name": "E",
+          "definition": "E: 3",
+          "line": 88,
+          "description": "Variable defined at line 88"
+        },
+        {
+          "name": "posterior",
+          "definition": "posterior: action",
+          "line": 95,
+          "description": "Variable defined at line 95"
+        },
+        {
+          "name": "num_hidden_states",
+          "definition": "num_hidden_states: 3",
+          "line": 120,
+          "description": "Variable defined at line 120"
+        },
+        {
+          "name": "num_obs",
+          "definition": "num_obs: 3",
+          "line": 121,
+          "description": "Variable defined at line 121"
+        },
+        {
+          "name": "num_actions",
+          "definition": "num_actions: 3",
+          "line": 122,
+          "description": "Variable defined at line 122"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # Likelihood mapping hidden states to observations",
+          "line": 24,
+          "description": "Variable defined at line 24"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]   # State transitions given previous state and action",
+          "line": 27,
+          "description": "Variable defined at line 27"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Log-preferences over observations",
+          "line": 30,
+          "description": "Variable defined at line 30"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Prior over initial hidden states",
+          "line": 33,
+          "description": "Variable defined at line 33"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Initial policy prior (habit) over actions",
+          "line": 36,
+          "description": "Variable defined at line 36"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]     # Current hidden state distribution",
+          "line": 39,
+          "description": "Variable defined at line 39"
+        },
+        {
+          "name": "type",
+          "definition": "type=float] # Next hidden state distribution",
+          "line": 40,
+          "description": "Variable defined at line 40"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Variational Free Energy for belief updating from observations",
+          "line": 41,
+          "description": "Variable defined at line 41"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]     # Current observation (integer index)",
+          "line": 44,
+          "description": "Variable defined at line 44"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Policy (distribution over actions), no planning",
+          "line": 47,
+          "description": "Variable defined at line 47"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Action taken",
+          "line": 48,
+          "description": "Variable defined at line 48"
+        },
+        {
+          "name": "type",
+          "definition": "type=float]       # Expected Free Energy (per policy)",
+          "line": 49,
+          "description": "Variable defined at line 49"
+        },
+        {
+          "name": "type",
+          "definition": "type=int]         # Discrete time step",
+          "line": 52,
+          "description": "Variable defined at line 52"
+        },
+        {
+          "name": "A",
+          "definition": "A={",
+          "line": 69,
+          "description": "Variable defined at line 69"
+        },
+        {
+          "name": "B",
+          "definition": "B={",
+          "line": 76,
+          "description": "Variable defined at line 76"
+        },
+        {
+          "name": "C",
+          "definition": "C={(0.1, 0.1, 1.0)}",
+          "line": 83,
+          "description": "Variable defined at line 83"
+        },
+        {
+          "name": "D",
+          "definition": "D={(0.33333, 0.33333, 0.33333)}",
+          "line": 86,
+          "description": "Variable defined at line 86"
+        },
+        {
+          "name": "E",
+          "definition": "E={(0.33333, 0.33333, 0.33333)}",
+          "line": 89,
+          "description": "Variable defined at line 89"
+        },
+        {
+          "name": "Energy",
+          "definition": "Energy = with infer_policies()",
+          "line": 94,
+          "description": "Variable defined at line 94"
+        },
+        {
+          "name": "action",
+          "definition": "action = sample_action()",
+          "line": 95,
+          "description": "Variable defined at line 95"
+        },
+        {
+          "name": "Time",
+          "definition": "Time=t",
+          "line": 99,
+          "description": "Variable defined at line 99"
+        },
+        {
+          "name": "ModelTimeHorizon",
+          "definition": "ModelTimeHorizon=Unbounded # The agent is defined for an unbounded time horizon",
+          "line": 102,
+          "description": "Variable defined at line 102"
+        },
+        {
+          "name": "A",
+          "definition": "A=LikelihoodMatrix",
+          "line": 105,
+          "description": "Variable defined at line 105"
+        },
+        {
+          "name": "B",
+          "definition": "B=TransitionMatrix",
+          "line": 106,
+          "description": "Variable defined at line 106"
+        },
+        {
+          "name": "C",
+          "definition": "C=LogPreferenceVector",
+          "line": 107,
+          "description": "Variable defined at line 107"
+        },
+        {
+          "name": "D",
+          "definition": "D=PriorOverHiddenStates",
+          "line": 108,
+          "description": "Variable defined at line 108"
+        },
+        {
+          "name": "E",
+          "definition": "E=Habit",
+          "line": 109,
+          "description": "Variable defined at line 109"
+        },
+        {
+          "name": "F",
+          "definition": "F=VariationalFreeEnergy",
+          "line": 110,
+          "description": "Variable defined at line 110"
+        },
+        {
+          "name": "G",
+          "definition": "G=ExpectedFreeEnergy",
+          "line": 111,
+          "description": "Variable defined at line 111"
+        },
+        {
+          "name": "s",
+          "definition": "s=HiddenState",
+          "line": 112,
+          "description": "Variable defined at line 112"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime=NextHiddenState",
+          "line": 113,
+          "description": "Variable defined at line 113"
+        },
+        {
+          "name": "o",
+          "definition": "o=Observation",
+          "line": 114,
+          "description": "Variable defined at line 114"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0=PolicyVector # Distribution over actions",
+          "line": 115,
+          "description": "Variable defined at line 115"
+        },
+        {
+          "name": "u",
+          "definition": "u=Action       # Chosen action",
+          "line": 116,
+          "description": "Variable defined at line 116"
+        },
+        {
+          "name": "t",
+          "definition": "t=Time",
+          "line": 117,
+          "description": "Variable defined at line 117"
+        },
+        {
+          "name": "actions_dim",
+          "definition": "actions_dim=3 (controlled by \u03c0)",
+          "line": 122,
+          "description": "Variable defined at line 122"
+        },
+        {
+          "name": "A",
+          "definition": "A[observation_outcomes, hidden_states]",
+          "line": 23,
+          "description": "Variable defined at line 23"
+        },
+        {
+          "name": "A",
+          "definition": "A[3,3,type=float]",
+          "line": 24,
+          "description": "Variable defined at line 24"
+        },
+        {
+          "name": "B",
+          "definition": "B[states_next, states_previous, actions]",
+          "line": 26,
+          "description": "Variable defined at line 26"
+        },
+        {
+          "name": "B",
+          "definition": "B[3,3,3,type=float]",
+          "line": 27,
+          "description": "Variable defined at line 27"
+        },
+        {
+          "name": "C",
+          "definition": "C[observation_outcomes]",
+          "line": 29,
+          "description": "Variable defined at line 29"
+        },
+        {
+          "name": "C",
+          "definition": "C[3,type=float]",
+          "line": 30,
+          "description": "Variable defined at line 30"
+        },
+        {
+          "name": "D",
+          "definition": "D[states]",
+          "line": 32,
+          "description": "Variable defined at line 32"
+        },
+        {
+          "name": "D",
+          "definition": "D[3,type=float]",
+          "line": 33,
+          "description": "Variable defined at line 33"
+        },
+        {
+          "name": "E",
+          "definition": "E[actions]",
+          "line": 35,
+          "description": "Variable defined at line 35"
+        },
+        {
+          "name": "E",
+          "definition": "E[3,type=float]",
+          "line": 36,
+          "description": "Variable defined at line 36"
+        },
+        {
+          "name": "s",
+          "definition": "s[3,1,type=float]",
+          "line": 39,
+          "description": "Variable defined at line 39"
+        },
+        {
+          "name": "s_prime",
+          "definition": "s_prime[3,1,type=float]",
+          "line": 40,
+          "description": "Variable defined at line 40"
+        },
+        {
+          "name": "F",
+          "definition": "F[\u03c0,type=float]",
+          "line": 41,
+          "description": "Variable defined at line 41"
+        },
+        {
+          "name": "o",
+          "definition": "o[3,1,type=int]",
+          "line": 44,
+          "description": "Variable defined at line 44"
+        },
+        {
+          "name": "\u03c0",
+          "definition": "\u03c0[3,type=float]",
+          "line": 47,
+          "description": "Variable defined at line 47"
+        },
+        {
+          "name": "u",
+          "definition": "u[1,type=int]",
+          "line": 48,
+          "description": "Variable defined at line 48"
+        },
+        {
+          "name": "G",
+          "definition": "G[\u03c0,type=float]",
+          "line": 49,
+          "description": "Variable defined at line 49"
+        },
+        {
+          "name": "t",
+          "definition": "t[1,type=int]",
+          "line": 52,
+          "description": "Variable defined at line 52"
+        },
+        {
+          "name": "s",
+          "definition": "s[3]",
+          "line": 120,
+          "description": "Variable defined at line 120"
+        },
+        {
+          "name": "o",
+          "definition": "o[3]",
+          "line": 121,
+          "description": "Variable defined at line 121"
+        }
+      ],
+      "connection_documentation": [],
+      "usage_examples": [
+        {
+          "title": "Variable Usage",
+          "description": "Example variables: Example, Version, matrix",
+          "code": "# Example variable usage\nExample = ...\nVersion = ...\nmatrix = ..."
+        }
+      ],
+      "generation_timestamp": "2026-01-09T09:45:09.509831"
+    }
+  ]
+}

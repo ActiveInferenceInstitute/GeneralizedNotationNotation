@@ -19,6 +19,8 @@ StateSpaceBlock {
 """
         return safe_filesystem.create_file("research_model.md", content)
 
+    @pytest.mark.integration
+    @pytest.mark.slow
     def test_process_research_flow(self, safe_filesystem, sample_gnn_file):
         """Test the research processing workflow."""
         target_dir = sample_gnn_file.parent
@@ -32,7 +34,7 @@ StateSpaceBlock {
         # Check expected outputs
         # Based on typical module pattern (verified via looking at other processor.py files)
         # research usually produces a 'research_results' directory
-        results_dir = output_dir / "research_results"
+        results_dir = output_dir
         assert results_dir.exists()
         
         # Should have a summary or json report

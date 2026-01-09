@@ -189,12 +189,14 @@ def demo_processor_modes():
     
     # Test multi-provider mode
     print("\n--- Testing Multi-Provider Mode ---")
+    print("1. Initializing LLM Operations (Multi-provider)...")
     try:
-        multi_ops = LLMOperations(use_legacy=False)
-        info = multi_ops.get_processor_info()
+        ops = LLMOperations()
+        print("   ✅ Initialization successful")
+        info = ops.get_processor_info()
         print(f"✅ Multi-provider processor: {info}")
         
-        providers = multi_ops.get_available_providers()
+        providers = ops.get_available_providers()
         print(f"✅ Available providers: {providers}")
         
     except Exception as e:

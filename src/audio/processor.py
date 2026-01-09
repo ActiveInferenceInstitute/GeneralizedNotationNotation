@@ -14,12 +14,20 @@ import numpy as np
 from datetime import datetime
 import re
 
-from utils.pipeline_template import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
+try:
+    from utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
+except ImportError:
+    from src.utils.pipeline_template import (
+        log_step_start,
+        log_step_success,
+        log_step_error,
+        log_step_warning
+    )
 from .generator import (
     generate_tonal_representation,
     generate_rhythmic_representation,
@@ -51,7 +59,7 @@ def process_audio(
         log_step_start(logger, "Processing audio")
         
         # Create results directory
-        results_dir = output_dir / "audio_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Initialize results
@@ -152,7 +160,7 @@ def generate_audio_from_gnn(file_path_or_content, output_dir: Path | None = None
         # 1. Generate tonal representation
         tonal_audio = generate_tonal_representation(variables, connections)
         if output_dir is None:
-            output_dir = Path("output/audio")
+            raise ValueError("output_dir must be provided")
         output_dir.mkdir(parents=True, exist_ok=True)
         tonal_path = output_dir / f"{file_path.stem}_tonal.wav"
         save_audio_file(tonal_audio, tonal_path, sample_rate=44100)

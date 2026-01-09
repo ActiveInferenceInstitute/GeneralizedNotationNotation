@@ -109,6 +109,7 @@ class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
     
     @pytest.mark.asyncio
+    @pytest.mark.slow
     async def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
         """Test LLM analysis with proper async/await handling."""
         from llm.analyzer import analyze_gnn_file_with_llm
@@ -121,6 +122,7 @@ class TestAsyncAwaitRecovery:
         assert result["status"] == "SUCCESS"
         assert "analysis" in result
         
+    @pytest.mark.slow
     def test_sync_wrapper_recovery(self, test_environment, sample_gnn_file):
         """Test synchronous wrapper for async LLM analysis."""
         from llm.analyzer import analyze_gnn_file_with_llm

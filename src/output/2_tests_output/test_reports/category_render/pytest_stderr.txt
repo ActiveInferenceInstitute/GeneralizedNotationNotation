@@ -1,0 +1,40 @@
+2026-01-07 18:45:17,768 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:11,767 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:11,843 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:11,863 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:11,886 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:11,985 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,120 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,123 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,173 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,217 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,219 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,268 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,272 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,293 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-07 18:46:12,442 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/coverage/control.py:921: CoverageWarning: No data was collected. (no-data-collected)
+  self._warn("No data was collected.", slug="no-data-collected")
+2026-01-07 18:46:15,044 - render.jax.jax_renderer - INFO - Extracting matrices from raw text format
+2026-01-07 18:46:15,044 - render.jax.jax_renderer - WARNING - No InitialParameterization found in GNN spec
+2026-01-07 18:46:15,044 - render.jax.jax_renderer - INFO - Extracting matrices from raw text format
+2026-01-07 18:46:15,044 - render.jax.jax_renderer - WARNING - No InitialParameterization found in GNN spec
+2026-01-07 18:46:15,045 - render.rxinfer.toml_generator - INFO - Generating RxInfer Julia script at /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1544/popen-gw2/test_render_to_rxinfer_toml0.jl
+2026-01-07 18:46:15,045 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ): could not convert string to float: '(1.0'
+2026-01-07 18:46:15,045 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix , ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ): could not convert string to float: ''
+2026-01-07 18:46:15,045 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix , ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ): could not convert string to float: ''
+2026-01-07 18:46:15,049 - render.jax.jax_renderer - INFO - JAX model code written to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1544/popen-gw8/test_render_to_jax0/model_jax.py
+2026-01-07 18:46:15,052 - render.jax.jax_renderer - INFO - JAX model code written to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1544/popen-gw5/test_render_to_jax_pomdp0/model_jax.py
+2026-01-07 18:46:15,052 - render.rxinfer.toml_generator - INFO - Successfully wrote RxInfer Julia script to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1544/popen-gw2/test_render_to_rxinfer_toml0.jl

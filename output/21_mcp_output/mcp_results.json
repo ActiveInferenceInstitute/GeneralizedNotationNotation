@@ -1,0 +1,149 @@
+{
+  "timestamp": "2026-01-09T09:45:53.414049",
+  "mcp_version": "1.1.1",
+  "tools_count": 19,
+  "resources_count": 0,
+  "tools": [
+    {
+      "name": "get_pipeline_config_info",
+      "description": "Get detailed pipeline configuration information and settings.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "get_pipeline_status",
+      "description": "Get current pipeline execution status, recent logs, and execution statistics.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "get_pipeline_steps",
+      "description": "Get information about all available pipeline steps, their metadata, and dependencies.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_llm",
+      "description": "Process llm for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_research",
+      "description": "Process research tasks for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_visualization",
+      "description": "Process visualization for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.llm.call_function",
+      "description": "Call any public function in the module with keyword arguments.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.llm.list_functions",
+      "description": "List callable functions exported by the module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.call_function",
+      "description": "Call any public function in the src.visualization module with keyword arguments.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.list_functions",
+      "description": "List callable functions exported by the src.visualization module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_analyze_stability",
+      "description": "Analyze system stability using eigenvalue analysis",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_cleanup",
+      "description": "Clean up SymPy MCP integration and reset state",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_get_latex",
+      "description": "Convert a mathematical expression to LaTeX format",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_initialize",
+      "description": "Initialize SymPy MCP integration",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_simplify_expression",
+      "description": "Simplify a mathematical expression to canonical form",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_solve_equation",
+      "description": "Solve an equation algebraically for a specified variable",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_validate_equation",
+      "description": "Validate a mathematical equation using SymPy symbolic processing",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "sympy_validate_matrix",
+      "description": "Validate matrix properties including stochasticity constraints",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "validate_pipeline_dependencies",
+      "description": "Validate pipeline step dependencies and identify missing or circular dependencies.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    }
+  ],
+  "resources": [],
+  "status": "healthy",
+  "registered_modules": 1,
+  "registered_module_names": [
+    "sympy_mcp"
+  ],
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/21_mcp_output"
+}

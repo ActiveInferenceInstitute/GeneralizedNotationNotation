@@ -80,12 +80,12 @@ TEST_CONFIG = {
     "skip_steps": [],
     "only_steps": [],
     "timeout_seconds": 300,  # 5 minutes default timeout
-    "temp_output_dir": PROJECT_ROOT / "output" / "test_artifacts",
+    "temp_output_dir": PROJECT_ROOT / "output" / "2_tests_output" / "artifacts",
     "max_test_files": 10,  # Maximum number of test files to process
     # Add missing keys that tests expect
     "sample_gnn_dir": PROJECT_ROOT / "input" / "gnn_files",
     "simulate_external_deps": True,
-    "temp_dir": PROJECT_ROOT / "output" / "test_artifacts",
+    "temp_dir": PROJECT_ROOT / "output" / "2_tests_output" / "artifacts",
     "recursive": True,
     "enable_round_trip": True,
     "enable_cross_format": True,
@@ -403,7 +403,7 @@ def create_missing_test_files() -> None:
     # Create test directories
     test_dirs = [
         PROJECT_ROOT / "input" / "gnn_files",
-        PROJECT_ROOT / "output" / "test_artifacts",
+        PROJECT_ROOT / "output" / "2_tests_output" / "artifacts",
         PROJECT_ROOT / "output" / "test_reports",
         PROJECT_ROOT / "output" / "test_coverage",
     ]

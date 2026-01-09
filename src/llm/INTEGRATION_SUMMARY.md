@@ -118,11 +118,9 @@ info = ops.get_processor_info()
 
 ### Advanced Configuration
 ```python
-# Multi-provider mode (default)
-ops = LLMOperations(use_legacy=False)
-
-# Legacy mode fallback
-legacy_ops = LLMOperations(use_legacy=True)
+# Initialize the new system
+ops = LLMOperations()
+print(ops.get_available_providers())
 
 # Custom API key
 custom_ops = LLMOperations(api_key="custom-key")

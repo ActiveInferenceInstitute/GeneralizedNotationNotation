@@ -96,7 +96,7 @@ class OpenAIProvider(BaseLLMProvider):
             return True
             
         except ImportError:
-            logger.error("OpenAI library not installed. Install with: pip install openai")
+            logger.warning("OpenAI library not installed. Install with: pip install openai")
             return False
         except Exception as e:
             logger.debug(f"OpenAI provider initialization issue (will use other providers if available): {e}")

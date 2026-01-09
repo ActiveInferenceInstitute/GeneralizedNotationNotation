@@ -17,7 +17,8 @@ try:
     )
 except Exception:
     # Fall back to relative import if running as package under `src.` namespace
-    from .audio.sapf import (
+    # We need to go up one level to 'src', then down to 'audio.sapf'
+    from ..audio.sapf import (
         convert_gnn_to_sapf,
         generate_sapf_audio,
         generate_audio_from_sapf,
@@ -35,7 +36,7 @@ try:
 except Exception:
     _audio_sapf = None
 
-__version__ = getattr(_audio_sapf, '__version__', '1.0.0')
+__version__ = getattr(_audio_sapf, '__version__', '1.1.1')
 FEATURES = getattr(_audio_sapf, 'FEATURES', {
     'convert_gnn_to_sapf': True,
     'generate_audio_from_sapf': True,

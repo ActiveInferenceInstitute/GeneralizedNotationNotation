@@ -45,4 +45,18 @@ run_script = create_standardized_pipeline_script(
 
 
 if __name__ == "__main__":
+    # Explicitly handle --help to ensure it doesn't execute the full pipeline
+    if "--help" in sys.argv or "-h" in sys.argv:
+        import argparse
+        parser = argparse.ArgumentParser(description="Advanced visualization and exploration with safe-to-fail patterns")
+        parser.add_argument("--target-dir", type=str, help="Target directory containing files to process")
+        parser.add_argument("--output-dir", type=str, default="output", help="Output directory for generated artifacts")
+        parser.add_argument("--recursive", action="store_true", help="Process files recursively")
+        parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+        parser.add_argument("--viz_type", default="all", help="Type of visualization to generate")
+        parser.add_argument("--interactive", default=True, help="Generate interactive visualizations")
+        parser.add_argument("--export_formats", nargs="+", default=["html", "json"], help="Export formats")
+        parser.print_help()
+        sys.exit(0)
+
     sys.exit(run_script()) 

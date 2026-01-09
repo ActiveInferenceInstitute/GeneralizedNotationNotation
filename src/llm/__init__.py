@@ -109,7 +109,7 @@ except Exception:
     def generate_documentation(*_, **__): return ""
     def generate_llm_summary(*_, **__): return ""
 
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 
 
 class LLMProcessor:

@@ -35,7 +35,7 @@ GNN provides a structured textual format for describing complex probabilistic mo
 
 `AutoGenLib` offers a radical approach to code creation by generating it when needed. Its core features, largely derived from its [GitHub repository](https://github.com/cofob/autogenlib), include:
 
-*   **Dynamic Code Generation:** Intercepts import statements (e.g., `from autogenlib.some_module import some_function`) and, if `some_module` or `some_function` doesn't exist, it calls an LLM (e.g., OpenAI API) to generate it.
+*   **Synthetics**: Synthetic data generation:** Intercepts import statements (e.g., `from autogenlib.some_module import some_function`) and, if `some_module` or `some_function` doesn't exist, it calls an LLM (e.g., OpenAI API) to generate it.
 *   **Context-Awareness:** The LLM prompt includes:
     *   A general description of the library's purpose (if provided during `init`).
     *   The code of the module being imported (if it exists and is being extended).

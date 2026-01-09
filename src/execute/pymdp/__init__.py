@@ -24,7 +24,7 @@ from .pymdp_utils import (
     create_output_directory_with_timestamp,
     format_duration
 )
-from .pymdp_visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
+from analysis.pymdp_visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
 
 # Import execution functions
 from .executor import (

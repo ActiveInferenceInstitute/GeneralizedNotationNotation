@@ -370,5 +370,5 @@ python3 -c "import jax; import flax.linen; print('✅ JAX OK')"
 ---
 
 **Directory Maintained By**: Pipeline Development Team  
-**Pipeline Version**: 2.1.0+  
+**Pipeline Version**: 1.1.1+  
 **Documentation Status**: ✅ Complete & Current

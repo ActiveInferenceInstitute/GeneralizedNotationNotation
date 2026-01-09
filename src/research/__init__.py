@@ -21,7 +21,7 @@ from .processor import (
 )
 
 # Module metadata
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 __author__ = "Active Inference Institute"
 __description__ = "research processing for GNN Processing Pipeline"
 

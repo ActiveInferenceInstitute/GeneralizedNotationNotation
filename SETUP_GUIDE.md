@@ -290,7 +290,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 ---
 
 **Last Updated**: October 14, 2025  
-**Pipeline Version**: 2.1.0  
+**Pipeline Version**: 1.1.1  
 **Status**: ✅ Production Ready (Linux & macOS)
 **Latest Validation**: 100% Success (24/24 steps, 2m8s)
 

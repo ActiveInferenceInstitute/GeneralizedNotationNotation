@@ -58,7 +58,7 @@ from .processor import (
 )
 
 # Module metadata
-__version__ = "2.0.0"
+__version__ = "1.1.1"
 __author__ = "Active Inference Institute"
 __description__ = "Enhanced Model Context Protocol implementation for GNN"
 

@@ -1118,10 +1118,7 @@ class GnnToPyMdpConverter:
                         self.num_actions_per_control_factor[0] = len(self.E_spec)
                     self._add_log(f"Inferred {len(self.E_spec)} actions from E vector")
 
-    def _infer_from_initial_parameterization_legacy(self):
-        """Method to infer dimensions from older raw InitialParameterization text format."""
-        # Original implementation for older format
-        pass
+
 
     def _parse_model_parameters_from_text(self, text: str) -> Dict[str, Any]:
         """Parse ModelParameters from raw text format."""

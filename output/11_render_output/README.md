@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2026-01-07T15:55:03.538292
+Generated: 2026-01-09T09:42:57.436418
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -14,17 +14,17 @@ Processing Type: **POMDP-aware rendering**
 
 - **Frameworks**: all
 - **Strict Validation**: True
-- **Verbose**: True
+- **Verbose**: False
 - **POMDP Processing**: ✅ Available
 
 ## File Results
 
 - ✅ **actinf_pomdp_agent.md** - Successfully processed
-  - ✅ pymdp: Generated PyMDP simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
-  - ✅ rxinfer: Generated RxInfer.jl simulation script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
+  - ✅ pymdp: Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
+  - ✅ rxinfer: Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
   - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Active Inference POMDP Agent_activeinference.jl
   - ✅ jax: JAX model code generated successfully.
-  - ✅ discopy: Generated DisCoPy categorical diagram script: /Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py
+  - ✅ discopy: Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py
 
 
 ## Output Structure
@@ -32,7 +32,7 @@ Processing Type: **POMDP-aware rendering**
 The rendered files are organized in implementation-specific subfolders:
 
 ```
-/Users/mini/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/
+output/11_render_output/
 ├── [model_name]/
 │   ├── pymdp/              # PyMDP Python simulations
 │   ├── rxinfer/            # RxInfer.jl Julia simulations

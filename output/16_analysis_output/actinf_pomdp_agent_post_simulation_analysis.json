@@ -1,0 +1,89 @@
+{
+  "timestamp": "2026-01-09T09:45:39.449688",
+  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "framework_results": {
+    "rxinfer": {
+      "framework": "rxinfer",
+      "result_count": 1,
+      "analyses": []
+    },
+    "activeinference_jl": {
+      "framework": "activeinference_jl",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
+      "analyses": [
+        {
+          "framework": "jax",
+          "model_name": "actinf_pomdp_agent",
+          "free_energy_count": 2,
+          "free_energy_values": [
+            0.0099,
+            0.002
+          ],
+          "mean_free_energy": 0.00595,
+          "std_free_energy": 0.00395,
+          "min_free_energy": 0.002,
+          "max_free_energy": 0.0099,
+          "free_energy_trend": -0.0079,
+          "free_energy_decreasing": "True"
+        }
+      ]
+    },
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pymdp_gen": {
+      "framework": "pymdp_gen",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {
+    "model_name": "actinf_pomdp_agent",
+    "frameworks_compared": [
+      "rxinfer",
+      "activeinference_jl",
+      "jax",
+      "discopy",
+      "pymdp_gen"
+    ],
+    "framework_count": 5,
+    "comparisons": {
+      "free_energy": {
+        "jax": {
+          "mean": 0.00595,
+          "min": 0.002,
+          "max": 0.0099
+        }
+      },
+      "best_free_energy": {
+        "framework": "jax",
+        "mean_fe": 0.00595
+      },
+      "execution_time": {
+        "rxinfer": 59.047601,
+        "activeinference_jl": 34.55453,
+        "jax": 6.014185,
+        "discopy": 6.159573,
+        "pymdp_gen": 7.491792
+      },
+      "fastest_execution": {
+        "framework": "jax",
+        "time": 6.014185
+      },
+      "success_rates": {
+        "rxinfer": true,
+        "activeinference_jl": true,
+        "jax": true,
+        "discopy": true,
+        "pymdp_gen": true
+      }
+    }
+  }
+}

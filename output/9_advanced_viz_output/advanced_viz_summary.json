@@ -1,0 +1,151 @@
+{
+  "timestamp": "2026-01-09T09:42:54.635016",
+  "total_attempts": 10,
+  "successful": 10,
+  "failed": 0,
+  "skipped": 0,
+  "total_duration_ms": 0.0,
+  "output_files": [
+    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+  ],
+  "warnings": [],
+  "errors": [],
+  "skipped_features": {
+    "count": 0,
+    "by_reason": {},
+    "details": []
+  },
+  "attempts": [
+    {
+      "viz_type": "3d",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1709.1689109802246,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "statistical",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1706.8238258361816,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "matrix_correlations",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1765.1989459991455,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "pomdp_transitions",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1637.5513076782227,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "policy",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1369.7938919067383,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "interactive_dashboard",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 185.3811740875244,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "dashboard",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 704.5230865478516,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "network_metrics",
+      "model_name": "actinf_pomdp_agent",
+      "status": "success",
+      "duration_ms": 1461.944818496704,
+      "output_files": [
+        "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "d2_diagrams",
+      "model_name": "Active Inference POMDP Agent",
+      "status": "success",
+      "duration_ms": 6098.861932754517,
+      "output_files": [
+        "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.svg",
+        "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    },
+    {
+      "viz_type": "d2_pipeline_diagrams",
+      "model_name": "gnn_pipeline",
+      "status": "success",
+      "duration_ms": 19428.71117591858,
+      "output_files": [
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+      ],
+      "error_message": null,
+      "fallback_used": false
+    }
+  ]
+}

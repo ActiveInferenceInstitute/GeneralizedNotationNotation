@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Main GNN Processing Pipeline
+GNN Processing Pipeline
 
-This script orchestrates the complete 24-step GNN processing pipeline (steps 0-23).
+This script orchestrates the 24-step GNN processing pipeline (steps 0-23).
 The pipeline transforms GNN specifications into executable simulations, visualizations,
 and advanced representations including audio sonification.
 
@@ -124,7 +124,7 @@ def main():
 
     args = PipelineArguments(**kwargs)
 
-    # Setup enhanced visual logging
+    # Setup visual logging
     visual_config = VisualConfig(
         enable_colors=True,
         enable_progress_bars=True,
@@ -140,7 +140,7 @@ def main():
     # Setup logging (use structured if available, fallback to standard)
     if STRUCTURED_LOGGING_AVAILABLE:
         # Prepare log directory
-        log_dir = args.output_dir / "logs"
+        log_dir = args.output_dir / "00_pipeline_logs"
         log_dir.mkdir(parents=True, exist_ok=True)
 
         # Rotate existing logs
@@ -219,7 +219,13 @@ def main():
     }
 
     try:
-        # Enhanced pipeline start with visual banner
+        # Project identification banner (displayed at very top)
+        print_pipeline_banner(
+            "Generalized Notation Notation (GNN)",
+            "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation | Active Inference Institute"
+        )
+
+        # Pipeline start with visual banner
         print_pipeline_banner(
             "🚀 GNN Processing Pipeline",
             f"Starting execution with {len(steps_to_execute)} steps | Correlation ID: {correlation_id}"
@@ -311,7 +317,7 @@ def main():
             step_start_time = time.time()
             step_start_datetime = datetime.now()
             
-            # Enhanced step start with visual indicators
+            # Step start with visual indicators
             visual_logger.print_step_header(actual_step_number, description, len(steps_to_execute))
 
             # Step start logging with progress tracking
@@ -375,6 +381,7 @@ def main():
                 r"d2 cli.*?install",  # D2 CLI installation instructions
                 r"interactive.*?limited",  # Interactive visualization limitations
                 r"numeric.*?limited",  # Numeric visualization limitations
+                r"warnings: 0",  # Zero warnings count in validation logs
             ]
             
             # Combine safe patterns into single regex
@@ -420,7 +427,7 @@ def main():
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
             
-            # Enhanced step completion with visual indicators
+            # Step completion with visual indicators
             status_for_logging = step_result["status"]
 
             # Visual step completion summary
@@ -488,7 +495,7 @@ def main():
             pipeline_summary["overall_status"] = "SUCCESS"
         
         # Save pipeline summary with validation and error handling
-        summary_path = args.pipeline_summary_file
+        summary_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         logger.info(f"Saving pipeline summary to: {summary_path}")
 
@@ -526,7 +533,7 @@ def main():
             except Exception as fallback_error:
                 logger.error(f"Failed to save even minimal summary: {fallback_error}")
         
-        # Enhanced final completion summary with visual indicators
+        # Final completion summary with visual indicators
         total_duration = pipeline_summary['total_duration_seconds']
         perf_summary = pipeline_summary['performance_summary']
 
@@ -665,39 +672,45 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             # Track memory during execution
             process_start_time = time.time()
             
-            result = subprocess.run(
+            # Use streaming execution for real-time feedback
+            # This is critical for long-running steps like tests
+            from utils.execution_utils import execute_command_streaming
+            
+            # Execute with streaming
+            # For 2_tests.py, we definitely want to see stdout/stderr in real-time
+            # For others, we also benefit from real-time feedback
+            result = execute_command_streaming(
                 cmd,
                 cwd=project_root,
                 env=_env,
-                capture_output=True,
-                text=True,
-                timeout=step_timeout_seconds
+                timeout=step_timeout_seconds,
+                print_stdout=True,  # Always print to stdout so user sees progress
+                print_stderr=True,  # Always print stderr so user sees errors
+                capture_output=True # Capture for logging/summary
             )
             
             # Capture final memory measurements
             end_memory = get_current_memory_usage()
             peak_memory = max(peak_memory, end_memory)
             
-            step_result["stdout"] = result.stdout
-            step_result["stderr"] = result.stderr
-            step_result["exit_code"] = result.returncode
+            step_result["stdout"] = result.get("stdout", "")
+            step_result["stderr"] = result.get("stderr", "")
+            step_result["exit_code"] = result.get("exit_code", -1)
             step_result["memory_usage_mb"] = end_memory
             step_result["peak_memory_mb"] = peak_memory
             step_result["memory_delta_mb"] = end_memory - start_memory
 
-            # Log output if verbose
+            # Log captured output if verbose (it was already printed to console)
             if args.verbose:
-                if result.stdout:
-                    logger.info(f"Step output:\n{result.stdout}")
-                if result.stderr:
-                    logger.warning(f"Step errors:\n{result.stderr}")
+                 logger.info("Command completed with exit code: " + str(step_result["exit_code"]))
 
-        except subprocess.TimeoutExpired:
-            step_result["status"] = "TIMEOUT"
+        except Exception as e:
+            step_result["status"] = "TIMEOUT" if "Timeout" in str(e) else "FAILED"
             step_result["exit_code"] = -1
+            step_result["stderr"] = str(e)
             return step_result
         
-        # Determine status with enhanced logic
+        # Determine status
         if step_result["exit_code"] == 0:
             step_result["status"] = "SUCCESS"
             # Check for any dependency warnings that might affect downstream steps

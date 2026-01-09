@@ -7,12 +7,12 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Active Inference POMDP Agent
 Description: 
-Generated: 2026-01-07 15:55:03
+Generated: 2026-01-09 09:42:57
 
 State Space:
 - Hidden States: 3
 - Observations: 3 
-- Actions: 1
+- Actions: 3
 
 State Space Matrices (from GNN):
 - A (Likelihood): Present
@@ -50,40 +50,13 @@ try:
              print("✅ PyMDP (flat structure) is available")
         else:
              print("⚠️  PyMDP package found, but it appears to be the wrong version (missing Agent).")
-             raise ImportError("Wrong PyMDP package detected")
+             print("💡 Please install the correct package: uv pip install inferactively-pymdp")
+             # Proceeding anyway, might fail later but better than auto-install crash
 except ImportError:
-    print("📦 PyMDP not found or wrong version - installing inferactively-pymdp...")
-    try:
-        # Try UV first (as per project rules)
-        result = subprocess.run(
-            [sys.executable, "-m", "uv", "pip", "install", "inferactively-pymdp"],
-            capture_output=True,
-            text=True,
-            timeout=120
-        )
-        if result.returncode != 0:
-            # Fallback to pip if UV fails
-            print("⚠️  UV install failed, trying pip...")
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", "inferactively-pymdp"],
-                capture_output=True,
-                text=True,
-                timeout=120
-            )
-        if result.returncode == 0:
-            print("✅ PyMDP (inferactively-pymdp) installed successfully")
-            import pymdp
-        else:
-            print(f"❌ Failed to install PyMDP: {result.stderr}")
-            print("💡 Install manually with: uv pip install inferactively-pymdp")
-            sys.exit(1)
-    except subprocess.TimeoutExpired:
-        print("❌ PyMDP installation timed out")
-        sys.exit(1)
-    except Exception as e:
-        print(f"❌ Error installing PyMDP: {e}")
-        print("💡 Install manually with: uv pip install inferactively-pymdp")
-        sys.exit(1)
+    print("❌ PyMDP not found. This script requires 'inferactively-pymdp'.")
+    print("💡 Install with: uv pip install inferactively-pymdp")
+    # We will not attempt auto-install as it is fragile in managed environments
+    sys.exit(1)
 
 # Add project root to path for imports (script is 5 levels deep: output/11_render_output/actinf_pomdp_agent/pymdp/script.py)
 project_root = Path(__file__).parent.parent.parent.parent.parent
@@ -173,7 +146,7 @@ def main():
     "model_parameters": {
         "num_hidden_states": 3,
         "num_obs": 3,
-        "num_actions": 1
+        "num_actions": 3
     },
     "initialparameterization": {
         "A": [

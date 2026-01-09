@@ -128,7 +128,7 @@ def process_website(
     
     try:
         # Create output directory structure expected by tests
-        website_dir = output_dir / "website_results"
+        website_dir = output_dir
         website_dir.mkdir(parents=True, exist_ok=True)
         
         # Generate website; if target_dir missing, return failure
@@ -401,7 +401,7 @@ def get_supported_file_types() -> List[str]:
     ]
 
 def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, Any]:
-    """Validate website configuration. Accepts dict or dummy string for tests.
+    """Validate website configuration. Accepts dict or simple string for tests.
 
     - If a string is provided, some tests expect a bool; return True.
     - If a dict is provided, return a dict with 'valid' field and messages.

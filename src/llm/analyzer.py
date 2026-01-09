@@ -61,7 +61,7 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
         # Attempt LLM-based summary using multi-provider system (with Ollama fallback)
         try:
             # Use async-aware API when available
-            ops = LLMOperations(use_legacy=False)
+            ops = LLMOperations()
             # ops.summarize_gnn may return a coroutine if async available; await if so
             summary_candidate = ops.summarize_gnn(content, max_length=500)
             if hasattr(summary_candidate, '__await__'):

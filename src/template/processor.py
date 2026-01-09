@@ -34,15 +34,15 @@ except ImportError:
     def log_step_error(logger, message): logger.error(f"❌ {message}")
     
     # Create minimal performance tracker
-    class DummyPerformanceTracker:
+    class MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
-            class DummyContext:
+            class NoOpContext:
                 def __enter__(self): return self
                 def __exit__(self, *args): pass
-            return DummyContext()
+            return NoOpContext()
         def get_summary(self): return {}
     
-    performance_tracker = DummyPerformanceTracker()
+    performance_tracker = MinimalPerformanceTracker()
 
 # Initialize logger
 logger = logging.getLogger(__name__)

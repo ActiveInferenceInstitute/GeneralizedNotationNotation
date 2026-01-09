@@ -176,7 +176,7 @@ class TestRenderModuleComprehensive:
 	@pytest.mark.unit
 	@pytest.mark.safe_to_fail
 	def test_rxinfer_rendering(self, sample_gnn_files, isolated_temp_dir):
-		"""Test RxInfer code rendering."""
+		"""Test RxInfer code rendering with POMDP structure validation."""
 		from src.render import render_gnn_to_rxinfer
 		output_path = isolated_temp_dir / "test_rxinfer.jl"
 		try:
@@ -184,7 +184,24 @@ class TestRenderModuleComprehensive:
 			assert output_path.exists(), "RxInfer output file should be created"
 			content = output_path.read_text()
 			assert len(content) > 0, "RxInfer output should not be empty"
-			logging.info("RxInfer rendering validated")
+			
+			# Validate POMDP structure
+			assert "NUM_STATES" in content, "RxInfer should define NUM_STATES"
+			assert "NUM_OBSERVATIONS" in content, "RxInfer should define NUM_OBSERVATIONS"
+			assert "NUM_ACTIONS" in content, "RxInfer should define NUM_ACTIONS for POMDP"
+			
+			# Validate action dimensions are > 1 (proper POMDP)
+			import re
+			actions_match = re.search(r'NUM_ACTIONS\s*=\s*(\d+)', content)
+			if actions_match:
+				num_actions = int(actions_match.group(1))
+				assert num_actions >= 1, f"NUM_ACTIONS should be >= 1, got {num_actions}"
+				logging.info(f"RxInfer POMDP validated: {num_actions} actions")
+			
+			# Validate B matrix has action dimension
+			assert "B_matrix" in content or "B" in content, "RxInfer should define B matrix"
+			
+			logging.info("RxInfer POMDP rendering validated")
 		except Exception as e:
 			logging.warning(f"RxInfer rendering failed: {e}")
 	
@@ -298,6 +315,7 @@ class TestLLMModuleComprehensive:
 			pytest.fail(f"Failed to import LLM module: {e}")
 	
 	@pytest.mark.unit
+	@pytest.mark.slow
 	@pytest.mark.safe_to_fail
 	def test_llm_model_analysis(self, sample_gnn_files):
 		"""Test LLM-based model analysis functionality."""
@@ -455,7 +473,7 @@ TestModel
 			# Test ontology processing
 			result = process_ontology(input_dir, output_dir, verbose=False)
 			assert isinstance(result, bool), "process_ontology should return a boolean"
-			assert (output_dir / "ontology_results").exists(), "Results directory should be created"
+			assert (output_dir / "ontology_results.json").exists(), "Results file should be created"
 			
 		except ImportError as e:
 			pytest.skip(f"Ontology functionality not available: {e}")
@@ -506,7 +524,7 @@ TestModel
 			# Test website processing
 			result = process_website(input_dir, output_dir, verbose=False)
 			assert isinstance(result, bool), "process_website should return a boolean"
-			assert (output_dir / "website_results").exists(), "Results directory should be created"
+			assert (output_dir / "index.html").exists(), "Index file should be created"
 			
 		except ImportError as e:
 			pytest.skip(f"Website functionality not available: {e}")
@@ -543,7 +561,7 @@ TestModel{i}
 			assert isinstance(result, bool), "process_website should return a boolean"
 			
 			# Check that results are created
-			results_dir = output_dir / "website_results"
+			results_dir = output_dir
 			assert results_dir.exists(), "Results directory should be created"
 			
 			results_file = results_dir / "website_results.json"

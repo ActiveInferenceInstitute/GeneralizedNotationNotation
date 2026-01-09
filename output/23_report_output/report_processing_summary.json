@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-01-09T09:45:55.822307",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/23_report_output",
+  "pipeline_output_dir": "output",
+  "processing_status": "completed",
+  "report_format": "comprehensive",
+  "reports_generated": [
+    "comprehensive_analysis_report.html",
+    "comprehensive_analysis_report.md",
+    "report_summary.json"
+  ],
+  "report_count": 3,
+  "visualizations_discovered": 58,
+  "html_reports_generated": 1,
+  "html_validation_status": "valid",
+  "html_validation_errors": [],
+  "formats_generated": [
+    "html",
+    "markdown",
+    "json"
+  ]
+}

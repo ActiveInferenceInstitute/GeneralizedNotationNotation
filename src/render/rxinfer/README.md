@@ -42,6 +42,37 @@ This module integrates with the GNN pipeline in the following ways:
 - **Execution (Step 12)**: The `12_execute.py` script uses the `src/execute/rxinfer_runner.py` to execute the generated RxInfer.jl simulations.
 - **Standalone Usage**: The `src/rxinfer.py` script provides a standalone interface for processing GNN files directly to RxInfer.jl configurations.
 
+## POMDP Implementation
+
+The RxInfer.jl renderer generates full Active Inference POMDP simulations with:
+
+### Matrix Extraction
+- **A matrix**: Observation model P(o|s) - extracted from `initialparameterization.A`
+- **B matrix**: Transition model P(s'|s,a) - 3D tensor with action dimension from `initialparameterization.B`
+- **D vector**: Prior over initial states from `initialparameterization.D`
+
+### Parameter Detection
+The renderer extracts `num_actions` from multiple possible GNN spec keys (in priority order):
+1. `model_parameters.num_actions`
+2. `model_parameters.num_controls`
+3. `model_parameters.n_actions`
+4. Inferred from B matrix dimensions (length of B array)
+5. Default: 3
+
+### Output Structure
+```
+simulation_results.json
+├── framework: "rxinfer"
+├── beliefs: [[p1, p2, p3], ...]  # Non-uniform posteriors
+├── true_states: [...]
+├── observations: [...]
+├── actions: [...]
+├── validation:
+│   ├── beliefs_valid: true
+│   └── beliefs_sum_to_one: true
+└── rxinfer_results.png  # Belief evolution plot
+```
+
 ## Standalone Usage
 
 The `rxinfer.py` script can be used as a standalone tool for processing GNN files to RxInfer.jl configurations:

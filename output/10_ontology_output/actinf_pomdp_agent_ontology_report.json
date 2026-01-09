@@ -1,0 +1,172 @@
+{
+  "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+  "file_name": "actinf_pomdp_agent.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A=LikelihoodMatrix",
+      "B=TransitionMatrix",
+      "C=LogPreferenceVector",
+      "D=PriorOverHiddenStates",
+      "E=Habit",
+      "F=VariationalFreeEnergy",
+      "G=ExpectedFreeEnergy",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "\u03c0=PolicyVector # Distribution over actions",
+      "u=Action       # Chosen action",
+      "t=Time"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "A=LikelihoodMatrix",
+      "B=TransitionMatrix",
+      "C=LogPreferenceVector",
+      "D=PriorOverHiddenStates",
+      "E=Habit",
+      "F=VariationalFreeEnergy",
+      "G=ExpectedFreeEnergy",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "\u03c0=PolicyVector # Distribution over actions",
+      "u=Action       # Chosen action",
+      "t=Time"
+    ],
+    "invalid_annotations": [],
+    "matched_terms": {
+      "A": {
+        "annotation": "A=LikelihoodMatrix",
+        "term_name": "LikelihoodMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
+        "uri": "obo:TEMP_000061",
+        "key": "A",
+        "value": "LikelihoodMatrix",
+        "comment": null
+      },
+      "B": {
+        "annotation": "B=TransitionMatrix",
+        "term_name": "TransitionMatrix",
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix).",
+        "uri": "obo:ACTO_000009",
+        "key": "B",
+        "value": "TransitionMatrix",
+        "comment": null
+      },
+      "C": {
+        "annotation": "C=LogPreferenceVector",
+        "term_name": "LogPreferenceVector",
+        "description": "A vector representing log-preferences over observations or states (e.g., 'C' vector/matrix).",
+        "uri": "obo:TEMP_000062",
+        "key": "C",
+        "value": "LogPreferenceVector",
+        "comment": null
+      },
+      "D": {
+        "annotation": "D=PriorOverHiddenStates",
+        "term_name": "PriorOverHiddenStates",
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000063",
+        "key": "D",
+        "value": "PriorOverHiddenStates",
+        "comment": null
+      },
+      "E": {
+        "annotation": "E=Habit",
+        "term_name": "Habit",
+        "description": "A prior probability distribution over possible actions or policies, representing habitual behavior patterns (e.g., 'E' matrix).",
+        "uri": "obo:TEMP_000064",
+        "key": "E",
+        "value": "Habit",
+        "comment": null
+      },
+      "F": {
+        "annotation": "F=VariationalFreeEnergy",
+        "term_name": "VariationalFreeEnergy",
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:TEMP_000065",
+        "key": "F",
+        "value": "VariationalFreeEnergy",
+        "comment": null
+      },
+      "G": {
+        "annotation": "G=ExpectedFreeEnergy",
+        "term_name": "ExpectedFreeEnergy",
+        "description": "A quantity minimized by the agent to select policies, balancing epistemic value (information gain) and pragmatic value (preference satisfaction).",
+        "uri": "obo:ACTO_000011",
+        "key": "G",
+        "value": "ExpectedFreeEnergy",
+        "comment": null
+      },
+      "s": {
+        "annotation": "s=HiddenState",
+        "term_name": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001",
+        "key": "s",
+        "value": "HiddenState",
+        "comment": null
+      },
+      "s_prime": {
+        "annotation": "s_prime=NextHiddenState",
+        "term_name": "NextHiddenState",
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s').",
+        "uri": "obo:TEMP_000018",
+        "key": "s_prime",
+        "value": "NextHiddenState",
+        "comment": null
+      },
+      "o": {
+        "annotation": "o=Observation",
+        "term_name": "Observation",
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003",
+        "key": "o",
+        "value": "Observation",
+        "comment": null
+      },
+      "\u03c0": {
+        "annotation": "\u03c0=PolicyVector # Distribution over actions",
+        "term_name": "PolicyVector",
+        "description": "A vector representing a specific sequence of actions or a probability distribution over available policies.",
+        "uri": "obo:TEMP_000021",
+        "key": "\u03c0",
+        "value": "PolicyVector",
+        "comment": "Distribution over actions"
+      },
+      "u": {
+        "annotation": "u=Action       # Chosen action",
+        "term_name": "Action",
+        "description": "An output of the agent that can affect the environment or the agent itself.",
+        "uri": "obo:ACTO_000004",
+        "key": "u",
+        "value": "Action",
+        "comment": "Chosen action"
+      },
+      "t": {
+        "annotation": "t=Time",
+        "term_name": "Time",
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066",
+        "key": "t",
+        "value": "Time",
+        "comment": null
+      }
+    },
+    "suggestions": [],
+    "coverage_score": 1.0
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 13,
+    "valid_annotations": 13,
+    "invalid_annotations": 0,
+    "coverage_score": 1.0
+  }
+}

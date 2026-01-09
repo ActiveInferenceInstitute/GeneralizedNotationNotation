@@ -31,7 +31,7 @@ from .parser import (
     _convert_parse_result_to_parsed_gnn
 )
 
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 # Ensure tests see MCP feature presence consistently
 FEATURES = {
     "file_discovery": True,

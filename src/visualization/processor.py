@@ -10,6 +10,7 @@ from typing import Dict, Any, List, Optional, Tuple
 import logging
 import re
 import json
+import warnings
 import numpy as np
 import matplotlib
 # Force non-interactive backend to avoid GUI/dpi hangs in headless environments
@@ -138,6 +139,21 @@ def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool
                 logger.error(f"Failed to save plot {plot_path}: {e3}")
                 return False
 
+
+def _safe_tight_layout():
+    """Apply tight_layout with warning suppression.
+    
+    Tight layout may fail for complex figures - this is not critical.
+    """
+    try:
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore', category=UserWarning, 
+                                  message='.*[Tt]ight.?layout.*')
+            plt.tight_layout()
+    except Exception:
+        # Tight layout is not critical - silently skip if it fails
+        pass
+
 def process_visualization(
     target_dir: Path,
     output_dir: Path,
@@ -162,7 +178,7 @@ def process_visualization(
         log_step_start(logger, "Processing visualizations")
         
         # Create results directory
-        results_dir = output_dir / "visualization_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         # Find GNN files (.md primary; support .gnn for tests)
@@ -352,9 +368,21 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
             # Generate visualizations for extracted matrices
             if matrices:
                 for m_name, m_data in matrices.items():
-                    m_path = model_dir / f"{model_name}_{m_name}_heatmap.png"
-                    if mv.generate_matrix_heatmap(m_name, m_data, m_path):
-                        visualizations.append(str(m_path))
+                    # Check matrix dimensionality and use appropriate visualization
+                    if m_data.ndim == 3:
+                        # Use specialized 3D tensor visualization for POMDP transition matrices
+                        m_path = model_dir / f"{model_name}_{m_name}_tensor.png"
+                        if mv.generate_3d_tensor_visualization(m_name, m_data, m_path, tensor_type="transition"):
+                            visualizations.append(str(m_path))
+                            # Also generate detailed POMDP analysis
+                            analysis_path = model_dir / f"{model_name}_{m_name}_analysis.png"
+                            mv.generate_pomdp_transition_analysis(m_data, analysis_path)
+                            visualizations.append(str(analysis_path))
+                    else:
+                        # Use standard 2D heatmap for 1D/2D matrices
+                        m_path = model_dir / f"{model_name}_{m_name}_heatmap.png"
+                        if mv.generate_matrix_heatmap(m_name, m_data, m_path):
+                            visualizations.append(str(m_path))
                 if verbose:
                     logger.info(f"Generated {len(matrices)} matrix visualizations for {model_name}")
             else:
@@ -401,39 +429,101 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
         content: Raw GNN file content
         
     Returns:
-        Dictionary with parsed GNN data
+        Dictionary with parsed GNN data including:
+        - sections: dict of section name -> list of lines
+        - raw_sections: dict of section name -> raw content string (for length analysis)
+        - variables: list of variable definitions
+        - connections: list of connection definitions
+        - matrices: list of matrix definitions
+        - parameters: list of parameter definitions from InitialParameterization
+        - metadata: dict of metadata
     """
     try:
         parsed = {
             "sections": {},
+            "raw_sections": {},  # Store raw section content for length analysis
             "variables": [],
             "connections": [],
             "matrices": [],
+            "parameters": [],  # Store parsed parameters from InitialParameterization
             "metadata": {}
         }
         
         lines = content.split('\n')
         current_section = None
+        current_param_name = None
+        current_param_lines = []
+        in_multiline_param = False
         
         for line in lines:
-            line = line.strip()
-            if not line:
+            stripped_line = line.strip()
+            if not stripped_line:
                 continue
                 
-            # Check for section headers
-            if line.startswith('#'):
-                current_section = line.lstrip('#').strip()
+            # Check for section headers (only ## headers, not single # comments)
+            # GNN format uses ## for section headers, # for inline comments
+            if stripped_line.startswith('##') and not stripped_line.startswith('###'):
+                # Save previous section's multiline parameter if any
+                if current_param_name and current_param_lines:
+                    _save_parameter(parsed, current_param_name, current_param_lines)
+                    current_param_name = None
+                    current_param_lines = []
+                    in_multiline_param = False
+                
+                current_section = stripped_line.lstrip('#').strip()
                 parsed["sections"][current_section] = []
+                parsed["raw_sections"][current_section] = ""
             elif current_section:
-                parsed["sections"][current_section].append(line)
+                parsed["sections"][current_section].append(stripped_line)
+                # Accumulate raw content with newlines preserved
+                if parsed["raw_sections"][current_section]:
+                    parsed["raw_sections"][current_section] += "\n" + line
+                else:
+                    parsed["raw_sections"][current_section] = line
+                
+                # Handle InitialParameterization section for parameter extraction
+                if current_section == "InitialParameterization":
+                    # Check for parameter definition start (e.g., A={, B={, C=)
+                    if '=' in stripped_line and not stripped_line.startswith('#'):
+                        # Save previous parameter if any
+                        if current_param_name and current_param_lines:
+                            _save_parameter(parsed, current_param_name, current_param_lines)
+                            current_param_lines = []
+                        
+                        # Extract parameter name
+                        eq_pos = stripped_line.find('=')
+                        current_param_name = stripped_line[:eq_pos].strip()
+                        param_value_part = stripped_line[eq_pos+1:].strip()
+                        
+                        # Check if it's a single-line or multi-line definition
+                        if param_value_part:
+                            current_param_lines = [param_value_part]
+                            # Check if it's complete (matching braces)
+                            if _is_complete_parameter(param_value_part):
+                                _save_parameter(parsed, current_param_name, current_param_lines)
+                                current_param_name = None
+                                current_param_lines = []
+                                in_multiline_param = False
+                            else:
+                                in_multiline_param = True
+                    elif in_multiline_param and current_param_name:
+                        # Continue multi-line parameter
+                        current_param_lines.append(stripped_line)
+                        # Check if complete
+                        full_value = ' '.join(current_param_lines)
+                        if _is_complete_parameter(full_value):
+                            _save_parameter(parsed, current_param_name, current_param_lines)
+                            current_param_name = None
+                            current_param_lines = []
+                            in_multiline_param = False
                 
                 # Extract variables and connections
                 # Handle multiple variable definition formats:
                 # 1. GNN format: var[dimensions,type=float]
                 # 2. Standard format: var: type
-                if ':' in line and '=' not in line:
+                if ':' in stripped_line and '=' not in stripped_line:
                     # Standard format: var: type
-                    var_parts = line.split(':', 1)
+                    var_parts = stripped_line.split(':', 1)
                     if len(var_parts) == 2:
                         var_name = var_parts[0].strip()
                         var_type = var_parts[1].strip()
@@ -441,33 +531,33 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                             "name": var_name,
                             "type": var_type
                         })
-                elif '[' in line and 'type=' in line:
+                elif '[' in stripped_line and 'type=' in stripped_line:
                     # GNN format: var[dimensions,type=float]
                     # Extract variable name (everything before [)
-                    bracket_pos = line.find('[')
+                    bracket_pos = stripped_line.find('[')
                     if bracket_pos != -1:
-                        var_name = line[:bracket_pos].strip()
+                        var_name = stripped_line[:bracket_pos].strip()
                         # Extract type information
-                        type_start = line.find('type=', bracket_pos)
+                        type_start = stripped_line.find('type=', bracket_pos)
                         if type_start != -1:
-                            type_end = line.find(',', type_start) if ',' in line[type_start:] else line.find(']', type_start)
+                            type_end = stripped_line.find(',', type_start) if ',' in stripped_line[type_start:] else stripped_line.find(']', type_start)
                             if type_end == -1:
-                                type_end = len(line)
-                            var_type = line[type_start:type_end].strip()
+                                type_end = len(stripped_line)
+                            var_type = stripped_line[type_start:type_end].strip()
                             parsed["variables"].append({
                                 "name": var_name,
                                 "type": var_type
                             })
-                elif ('->' in line or '→' in line or '>' in line or ('-' in line and current_section == 'Connections')):
+                elif ('->' in stripped_line or '→' in stripped_line or '>' in stripped_line or ('-' in stripped_line and current_section == 'Connections')):
                     # Connection definition (supports ->, →, > formats, and - in Connections section)
-                    if '->' in line:
-                        conn_parts = line.split('->', 1)
-                    elif '→' in line:
-                        conn_parts = line.split('→', 1)
-                    elif '>' in line:
-                        conn_parts = line.split('>', 1)
+                    if '->' in stripped_line:
+                        conn_parts = stripped_line.split('->', 1)
+                    elif '→' in stripped_line:
+                        conn_parts = stripped_line.split('→', 1)
+                    elif '>' in stripped_line:
+                        conn_parts = stripped_line.split('>', 1)
                     else:
-                        conn_parts = line.split('-', 1)
+                        conn_parts = stripped_line.split('-', 1)
 
                     if len(conn_parts) == 2:
                         source = conn_parts[0].strip()
@@ -479,17 +569,21 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                                 "source": source,
                                 "target": target
                             })
-                elif ('{' in line and '}' in line) or ('[' in line and ']' in line):
+                elif ('{' in stripped_line and '}' in stripped_line) or ('[' in stripped_line and ']' in stripped_line):
                     # Potential matrix definition (supports both tuple and bracket formats)
                     try:
-                        matrix_data = parse_matrix_data(line)
+                        matrix_data = parse_matrix_data(stripped_line)
                         if matrix_data is not None:
                             parsed["matrices"].append({
                                 "data": matrix_data,
-                                "definition": line
+                                "definition": stripped_line
                             })
                     except:
                         pass
+        
+        # Save any remaining multiline parameter
+        if current_param_name and current_param_lines:
+            _save_parameter(parsed, current_param_name, current_param_lines)
         
         return parsed
         
@@ -497,15 +591,67 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
         return {
             "error": str(e),
             "sections": {},
+            "raw_sections": {},
             "variables": [],
             "connections": [],
             "matrices": [],
+            "parameters": [],
             "metadata": {}
         }
 
-# Removed matrix parsing and visualization logic (moved to analyzer.py)
-    
-    return visualizations
+
+def _is_complete_parameter(value_str: str) -> bool:
+    """Check if a parameter value string has matching braces/parentheses."""
+    open_braces = value_str.count('{')
+    close_braces = value_str.count('}')
+    open_parens = value_str.count('(')
+    close_parens = value_str.count(')')
+    return open_braces == close_braces and open_parens == close_parens and (open_braces > 0 or open_parens > 0)
+
+
+def _save_parameter(parsed: Dict[str, Any], param_name: str, param_lines: List[str]) -> None:
+    """Parse and save a parameter definition."""
+    try:
+        full_value = ' '.join(param_lines)
+        # Parse the tuple/matrix format
+        parsed_value = _parse_parameter_value(full_value)
+        if parsed_value is not None:
+            parsed["parameters"].append({
+                "name": param_name,
+                "value": parsed_value,
+                "raw": full_value
+            })
+    except Exception as e:
+        # Still save as raw if parsing fails
+        parsed["parameters"].append({
+            "name": param_name,
+            "value": None,
+            "raw": ' '.join(param_lines),
+            "parse_error": str(e)
+        })
+
+
+def _parse_parameter_value(value_str: str) -> Any:
+    """
+    Parse a parameter value string like {(0.9, 0.05, 0.05), ...} into a Python structure.
+    """
+    try:
+        # Clean up the string
+        cleaned = value_str.strip()
+        
+        # Replace tuple notation with list notation for easier parsing
+        # Convert {(...), (...)} to [[...], [...]]
+        cleaned = cleaned.replace('{', '[').replace('}', ']')
+        cleaned = cleaned.replace('(', '[').replace(')', ']')
+        
+        # Use ast.literal_eval for safe parsing
+        import ast
+        result = ast.literal_eval(cleaned)
+        return result
+    except Exception:
+        return None
+
+# Matrix parsing and visualization logic moved to analyzer.py
 
 def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
     """
@@ -658,7 +804,7 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
 
             plt.title(f'Bayesian Graphical Model: {model_name}\nPOMDP Active Inference Network', fontsize=16, fontweight='bold')
             plt.axis('off')
-            plt.tight_layout()
+            _safe_tight_layout()
 
             # Save network visualization
             network_path = output_dir / f"{model_name}_network_graph.png"
@@ -972,7 +1118,7 @@ def _generate_3d_surface_plot(matrix: np.ndarray, matrix_name: str, output_path:
         ax.set_ylabel('Y Axis')
         ax.set_zlabel('Value')
 
-        plt.tight_layout()
+        _safe_tight_layout()
         _save_plot_safely(output_path, dpi=300, bbox_inches='tight')
         plt.close()
 
@@ -1176,7 +1322,7 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
             ax4.set_title("Section Content Length (No Data)")
         
         plt.suptitle(f"{model_name} - Combined Analysis", fontsize=16)
-        plt.tight_layout()
+        _safe_tight_layout()
         
         plot_file = output_dir / f"{model_name}_combined_analysis.png"
         _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
@@ -1184,8 +1330,241 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
         
         visualizations.append(str(plot_file))
         
+        # Generate standalone panel visualizations
+        standalone_files = _generate_standalone_panels(parsed_data, output_dir, model_name)
+        visualizations.extend(standalone_files)
+        
+        # Generate generative model diagram
+        gm_files = _generate_generative_model_diagram(parsed_data, output_dir, model_name)
+        visualizations.extend(gm_files)
+        
     except Exception as e:
         print(f"Error generating combined analysis: {e}")
+    
+    return visualizations
+
+
+def _generate_standalone_panels(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
+    """Generate standalone visualization files for each panel in the combined analysis."""
+    visualizations = []
+    
+    if not MATPLOTLIB_AVAILABLE:
+        return visualizations
+    
+    try:
+        # 1. Matrix Size Distribution (standalone)
+        parameters = parsed_data.get("parameters", [])
+        matrix_sizes = []
+        matrix_names = []
+        if parameters:
+            for param in parameters:
+                if isinstance(param, dict) and "value" in param:
+                    value = param["value"]
+                    if isinstance(value, (list, tuple)) and len(value) > 0:
+                        try:
+                            arr = np.array(value)
+                            matrix_sizes.append(arr.size)
+                            matrix_names.append(param.get("name", "Unknown"))
+                        except:
+                            pass
+        
+        if matrix_sizes:
+            fig, ax = plt.subplots(figsize=(10, 6))
+            bars = ax.bar(matrix_names, matrix_sizes, alpha=0.7, color='lightgreen', edgecolor='black')
+            ax.set_title(f"{model_name} - Matrix Size Distribution", fontsize=14, fontweight='bold')
+            ax.set_xlabel("Matrix Parameter")
+            ax.set_ylabel("Size (elements)")
+            
+            # Add value labels on bars
+            for bar, size in zip(bars, matrix_sizes):
+                height = bar.get_height()
+                ax.annotate(f'{size}',
+                           xy=(bar.get_x() + bar.get_width() / 2, height),
+                           xytext=(0, 3), textcoords="offset points",
+                           ha='center', va='bottom', fontsize=10)
+            
+            _safe_tight_layout()
+            plot_file = output_dir / f"{model_name}_matrix_size_distribution.png"
+            _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            visualizations.append(str(plot_file))
+        
+        # 2. Section Content Length (standalone)
+        raw_sections = parsed_data.get("raw_sections", {})
+        if raw_sections:
+            fig, ax = plt.subplots(figsize=(12, 6))
+            section_lengths = [len(str(content)) for content in raw_sections.values()]
+            section_names = list(raw_sections.keys())
+            
+            colors = plt.cm.viridis(np.linspace(0, 1, len(section_names)))
+            bars = ax.bar(range(len(section_names)), section_lengths, alpha=0.7, color=colors, edgecolor='black')
+            ax.set_title(f"{model_name} - Section Content Length", fontsize=14, fontweight='bold')
+            ax.set_xlabel("Sections")
+            ax.set_ylabel("Content Length (characters)")
+            ax.set_xticks(range(len(section_names)))
+            ax.set_xticklabels([name[:15] + "..." if len(name) > 15 else name for name in section_names], 
+                               rotation=45, ha='right', fontsize=9)
+            
+            _safe_tight_layout()
+            plot_file = output_dir / f"{model_name}_section_content_length.png"
+            _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+            plt.close()
+            visualizations.append(str(plot_file))
+        
+        # 3. Variable Type Distribution (standalone pie chart)
+        variables = parsed_data.get("variables", [])
+        if variables:
+            fig, ax = plt.subplots(figsize=(10, 8))
+            var_types = []
+            for var_info in variables:
+                var_type = 'unknown'
+                if isinstance(var_info, dict):
+                    var_type = var_info.get('type', var_info.get('node_type', 'unknown'))
+                var_types.append(var_type)
+            
+            if var_types:
+                type_counts = {}
+                for var_type in var_types:
+                    type_counts[var_type] = type_counts.get(var_type, 0) + 1
+                
+                # Use a vibrant color palette
+                colors = plt.cm.Set3(np.linspace(0, 1, len(type_counts)))
+                wedges, texts, autotexts = ax.pie(type_counts.values(), labels=type_counts.keys(), 
+                                                   autopct='%1.1f%%', colors=colors)
+                ax.set_title(f"{model_name} - Variable Type Distribution", fontsize=14, fontweight='bold')
+                
+                _safe_tight_layout()
+                plot_file = output_dir / f"{model_name}_variable_type_distribution.png"
+                _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+                plt.close()
+                visualizations.append(str(plot_file))
+        
+    except Exception as e:
+        print(f"Error generating standalone panels: {e}")
+    
+    return visualizations
+
+
+def _generate_generative_model_diagram(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
+    """Generate a generative model diagram showing the POMDP structure."""
+    visualizations = []
+    
+    if not MATPLOTLIB_AVAILABLE:
+        return visualizations
+    
+    try:
+        # Create a clean generative model diagram
+        fig, ax = plt.subplots(figsize=(12, 10))
+        ax.set_xlim(0, 10)
+        ax.set_ylim(0, 10)
+        ax.set_aspect('equal')
+        ax.axis('off')
+        
+        # Define node positions for standard POMDP
+        positions = {
+            'D': (2, 8),      # Prior
+            's': (2, 6),      # Hidden state (t)
+            's\'': (5, 6),    # Hidden state (t+1)
+            'A': (2, 4),      # Likelihood
+            'o': (2, 2),      # Observation
+            'B': (3.5, 7.5),  # Transition
+            'C': (8, 4),      # Preferences
+            'E': (8, 7),      # Habit
+            'π': (6, 5),      # Policy
+            'G': (8, 5.5),    # Expected Free Energy
+            'u': (5, 3),      # Action
+        }
+        
+        # Node colors by type
+        node_colors = {
+            'D': '#98D8C8',    # Prior - teal
+            's': '#7EC8E3',    # Hidden state - blue
+            's\'': '#7EC8E3',  # Hidden state - blue
+            'A': '#F7DC6F',    # Likelihood - yellow
+            'o': '#82E0AA',    # Observation - green
+            'B': '#F1948A',    # Transition - pink
+            'C': '#C39BD3',    # Preferences - purple
+            'E': '#F5B7B1',    # Habit - light pink
+            'π': '#FAD7A0',    # Policy - orange
+            'G': '#D2B4DE',    # EFE - lavender
+            'u': '#ABEBC6',    # Action - light green
+        }
+        
+        # Draw nodes
+        for node_name, (x, y) in positions.items():
+            color = node_colors.get(node_name, 'lightgray')
+            circle = plt.Circle((x, y), 0.4, color=color, ec='black', linewidth=2, zorder=2)
+            ax.add_patch(circle)
+            ax.text(x, y, node_name, ha='center', va='center', fontsize=12, fontweight='bold', zorder=3)
+        
+        # Define edges based on parsed connections or standard POMDP
+        edges = [
+            ('D', 's', 'Prior'),
+            ('s', 'A', 'Likelihood'),
+            ('A', 'o', 'Observation'),
+            ('s', 's\'', 'Transition'),
+            ('B', 's\'', 'Control'),
+            ('π', 'u', 'Selection'),
+            ('C', 'G', 'Preferences'),
+            ('E', 'π', 'Habit'),
+            ('G', 'π', 'EFE'),
+            ('u', 's\'', 'Effect'),
+        ]
+        
+        # Draw edges
+        for source, target, label in edges:
+            if source in positions and target in positions:
+                x1, y1 = positions[source]
+                x2, y2 = positions[target]
+                
+                # Calculate arrow position (from edge of source to edge of target)
+                dx, dy = x2 - x1, y2 - y1
+                dist = np.sqrt(dx**2 + dy**2)
+                if dist > 0:
+                    # Start from edge of source node
+                    start_x = x1 + 0.4 * dx / dist
+                    start_y = y1 + 0.4 * dy / dist
+                    # End at edge of target node
+                    end_x = x2 - 0.4 * dx / dist
+                    end_y = y2 - 0.4 * dy / dist
+                    
+                    ax.annotate('', xy=(end_x, end_y), xytext=(start_x, start_y),
+                               arrowprops=dict(arrowstyle='->', color='gray', lw=1.5),
+                               zorder=1)
+        
+        # Add title and legend
+        ax.set_title(f"{model_name}\nGenerative Model Structure (POMDP)", fontsize=16, fontweight='bold', pad=20)
+        
+        # Add legend with node types
+        legend_items = [
+            ('D', 'Prior (Initial State Belief)', '#98D8C8'),
+            ('s/s\'', 'Hidden State', '#7EC8E3'),
+            ('A', 'Likelihood Matrix', '#F7DC6F'),
+            ('o', 'Observation', '#82E0AA'),
+            ('B', 'Transition Matrix', '#F1948A'),
+            ('C', 'Preferences', '#C39BD3'),
+            ('E', 'Habit (Policy Prior)', '#F5B7B1'),
+            ('π', 'Policy', '#FAD7A0'),
+            ('G', 'Expected Free Energy', '#D2B4DE'),
+            ('u', 'Action', '#ABEBC6'),
+        ]
+        
+        legend_y = 1.5
+        for symbol, desc, color in legend_items:
+            ax.add_patch(plt.Rectangle((6.5, legend_y), 0.3, 0.3, color=color, ec='black'))
+            ax.text(6.95, legend_y + 0.15, f"{symbol}: {desc}", fontsize=8, va='center')
+            legend_y -= 0.4
+        
+        _safe_tight_layout()
+        plot_file = output_dir / f"{model_name}_generative_model.png"
+        _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')
+        plt.close()
+        visualizations.append(str(plot_file))
+        
+    except Exception as e:
+        print(f"Error generating generative model diagram: {e}")
+        import traceback
+        traceback.print_exc()
     
     return visualizations
 
@@ -1323,7 +1702,7 @@ def generate_combined_visualizations(gnn_files: List[Path], results_dir: Path, v
                 ax4.set_yticklabels(conn_names)
         
         plt.suptitle("Combined Analysis Across All Files", fontsize=16)
-        plt.tight_layout()
+        _safe_tight_layout()
         
         plot_file = results_dir / "combined_analysis.png"
         _save_plot_safely(plot_file, dpi=300, bbox_inches='tight')

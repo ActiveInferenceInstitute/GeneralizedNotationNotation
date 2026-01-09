@@ -224,6 +224,6 @@ __all__ = [
 ]
 
 # Module metadata
-__version__ = "1.0.0"
+__version__ = "1.1.1"
 __author__ = "Active Inference Institute"
 __description__ = "Comprehensive testing for GNN Processing Pipeline"

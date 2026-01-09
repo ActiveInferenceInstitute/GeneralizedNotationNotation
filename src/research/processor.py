@@ -50,7 +50,7 @@ def process_research(
         log_step_start(logger, "Processing research")
         
         # Create results directory
-        results_dir = output_dir / "research_results"
+        results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
         
         results = {
