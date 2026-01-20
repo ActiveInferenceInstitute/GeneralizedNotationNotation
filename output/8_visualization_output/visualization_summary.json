@@ -2,18 +2,18 @@
   "processed_files": 1,
   "total_visualizations": 12,
   "visualization_files": [
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_tensor.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_generative_model.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_matrix_size_distribution.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
-    "output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png"
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_tensor.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_generative_model.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_matrix_size_distribution.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
+    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png"
   ],
   "success": true
 }

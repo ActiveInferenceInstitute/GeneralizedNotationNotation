@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_jax.py
-Timestamp: 2026-01-09T09:43:06.007406
+Timestamp: 2026-01-20T11:35:10.873035
 Return Code: 0
-Execution Time: 6.01 seconds
+Execution Time: 0.89 seconds
 
 STDOUT:
 ============================================================

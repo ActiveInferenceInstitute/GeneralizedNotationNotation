@@ -334,6 +334,8 @@ markers = [
     "slow: marks tests as slow (deselect with '-m \"not slow\"')",
     "integration: marks tests as integration tests",
     "unit: marks tests as unit tests",
+    "uv: UV package manager environment management tests",
+    "safe_to_fail: Tests that can fail without blocking CI",
 ]
 
 [tool.coverage.run]

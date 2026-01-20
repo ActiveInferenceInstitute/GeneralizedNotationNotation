@@ -1,5 +1,5 @@
 # ActiveInference.jl Simulation Results
-# Generated: 2026-01-09T09:41:50.945
+# Generated: 2026-01-20T09:23:38.791
 # Model: Active Inference POMDP Agent
 # Steps: 20
 # Columns: step, observation, action, belief_state_1

@@ -21,13 +21,6 @@
     "version": "1.0.0"
   },
   {
-    "name": "process_research",
-    "description": "Process research tasks for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
     "name": "sympy_analyze_stability",
     "description": "Analyze system stability using eigenvalue analysis",
     "module": "",

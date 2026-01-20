@@ -1,17 +1,28 @@
 # EXTRACT_PARAMETERS
 
-Here is the structure of the GNN Abstract Syntax:
+You've outlined the main components of your AI model:
+1. **ActInfPOMDP** is a probabilistic graphical representation with two types of layers (observation and hypothesis) for an unbounded time horizon, no deep planning, precision modulation, hierarchical nesting, and Bayesian inference in each modality/action. The initial parameters are represented by matrices `A`, `B` for actions, and `C`. 
+   - The initial parameter matrix represents the agent's preferences over observables.
 
-1. **Contextualization and Instantiation**: This is a type of inference where one knows about the probability distribution over actions, hidden states, observed observations, etc., in order to define new models or actions based on these distributions.
+2. **ModelMatrices**:
+   - A 3 x 3x4 table representing the distribution of probabilities across states/actions when acting with an action type. This is represented as "probability space" instead of "observation space". 
 
-2. **Randomization**: One can generate beliefs by observing data from different directions (observation), adjusting the policy using prior knowledge/beliefs, and combining preferences across the entire universe of possible behaviors at a given time step. This is done through action selection from habit distribution over policies, preference over actions in the history that leads to an observation location change.
+   **A = LikelihoodMatrix** represents a probability map describing what actions would be followed given previous observations and their corresponding preferences based on these beliefs.
+   - B = TransitionMatrix**(probabilities for each observation)** are representing the transition matrix between states/actions with prior probabilities as inputted by the agent (prior)
 
-3. **Model-based Actions**: There are two types of action decisions: "probability" or "action probability", with probabilities represented as likelihood matrices within each dimension (i.e., ${\boldsymbol{g}}_t$). The "bias-variance tradeoff parameterization" also provides the interpretation for this decision, with the policy updating in line with it and learning from previous decisions to fit a better model at that time step.
+3. **ProbabilityVector**:
+   - A 3 x 2x4 table representing the likelihoods of the policy and actions given previous observations. This is represented in the form "probabilities over observation" for each observation. 
 
-4. **Action Selection**: There are three actions: "action probability", "policy prior", and "prior bias". The action's choice determines which action is used (i.e., when), but also decides the direction of information flow through other variables, such as beliefs about what behavior has been chosen for a subsequent observation location change.
+   **B = Probability** are representing the prior probabilities of states/actions based on their probabilities (prior)
 
-5. **Initialization**: A set of initial parameters are defined based on predictions from previous actions and actions selection from habit distributions over policies, preferences across available behaviors at each time step. This provides the context for inference to future observations. The initializing order is also determined by prior belief beliefs about behavior probabilities over policy decisions taken in that phase.
+4. **ProbableVector**:
+   - A 3 x 2x1 table representing the likelihoods of action-wise policies given previous observations and corresponding beliefs. This is represented in the form "likelihood across actions" for each observation. 
 
-6. **Initialization strategies**: There are three approaches:
-   - "regularized" initialization, where the probability distribution over actions and histories becomes more uniform, with each action taking precedence over its predecessor until a new observation location change occurs.
-   - "random initialization", where random parameters are chosen based on prior belief beliefs about behavior probabilities from previous actions followed by policy decisions taken after initialization of biases/prior beliefs to maximize their information flow through the other variables and optimal updating order is established in terms of preferences over observed observations at each time step, with new observables being initialized based on posterior beliefs.
+   **C = Probability** are representing the prior probabilities of states/actions based on their probabilities (prior)
+
+5. **Constraints**:
+   - A matrix `A` representing constraints or restrictions to follow given previous observations and current beliefs within a certain time horizon for action-wise types. This is represented as "constraints" instead of parameters.
+
+6. **InitialParameters** are representing the initial set of values that define each parameter in the model structure (initial biases, initial actions etc.). These can be viewed as a list of values which will affect what actions follow given previous observations and prior beliefs for each action type. 
+
+All these variables have been specified in your AI model specification file.

@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_discopy.py
-Timestamp: 2026-01-09T09:43:12.024199
+Timestamp: 2026-01-20T11:35:11.761429
 Return Code: 0
-Execution Time: 6.16 seconds
+Execution Time: 0.79 seconds
 
 STDOUT:
 ✅ DisCoPy is available

@@ -180,7 +180,7 @@ src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED [ 23%]
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_dependency_installation +++++++++++++++++++++++++++++++++++ Timeout ++++++++++++++++++++++++++++++++++++
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ Captured stderr ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-2026-01-09 09:41:59,910 - setup.setup - INFO - 📦 Installing dependencies from pyproject.toml using UV sync
+2026-01-20 09:23:44,154 - setup.setup - INFO - 📦 Installing dependencies from pyproject.toml using UV sync
 ~~~~~~~~~~~~~~~~~~~~~~~ Stack of MainThread (8509877312) ~~~~~~~~~~~~~~~~~~~~~~~
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code

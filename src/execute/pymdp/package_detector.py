@@ -146,56 +146,57 @@ def get_pymdp_installation_instructions() -> str:
     )
 
 
-def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
+def attempt_pymdp_auto_install() -> Tuple[bool, str]:
     """
-    Attempt to automatically install the correct PyMDP package.
+    Attempt to automatically install the correct PyMDP package using UV.
     
-    Args:
-        use_uv: Whether to use UV package manager (preferred)
-        
+    This function uses UV exclusively for package installation.
+    No legacy pip fallback is used.
+    
     Returns:
         Tuple of (success: bool, message: str)
     """
     package_name = "inferactively-pymdp"
     
     try:
-        if use_uv:
-            logger.info(f"Attempting to install {package_name} using UV...")
-            result = subprocess.run(
-                [sys.executable, "-m", "uv", "pip", "install", package_name],
-                capture_output=True,
-                text=True,
-                timeout=120
-            )
-            
-            if result.returncode == 0:
-                logger.info(f"Successfully installed {package_name} using UV")
-                return True, f"Successfully installed {package_name}"
-            else:
-                logger.warning(f"UV installation failed, trying pip...")
-                # Fall through to pip
-                use_uv = False
+        logger.info(f"Attempting to install {package_name} using UV sync...")
         
-        if not use_uv:
-            logger.info(f"Attempting to install {package_name} using pip...")
-            result = subprocess.run(
-                [sys.executable, "-m", "pip", "install", package_name],
-                capture_output=True,
-                text=True,
-                timeout=120
-            )
-            
-            if result.returncode == 0:
-                logger.info(f"Successfully installed {package_name} using pip")
-                return True, f"Successfully installed {package_name}"
-            else:
-                error_msg = result.stderr or result.stdout or "Unknown error"
-                logger.error(f"Failed to install {package_name}: {error_msg}")
-                return False, f"Installation failed: {error_msg}"
+        # Preferred method: use uv sync with the pymdp extra
+        # This ensures proper lockfile integration
+        result = subprocess.run(
+            ["uv", "sync", "--extra", "active-inference"],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        
+        if result.returncode == 0:
+            logger.info(f"Successfully installed {package_name} using UV sync")
+            return True, f"Successfully installed {package_name} via uv sync"
+        
+        # Fallback: try uv pip install directly
+        logger.info(f"UV sync failed, trying uv pip install...")
+        result = subprocess.run(
+            ["uv", "pip", "install", package_name],
+            capture_output=True,
+            text=True,
+            timeout=120
+        )
+        
+        if result.returncode == 0:
+            logger.info(f"Successfully installed {package_name} using uv pip install")
+            return True, f"Successfully installed {package_name} via uv pip"
+        else:
+            error_msg = result.stderr or result.stdout or "Unknown error"
+            logger.error(f"Failed to install {package_name}: {error_msg}")
+            return False, f"Installation failed: {error_msg}"
                 
     except subprocess.TimeoutExpired:
         logger.error(f"Installation of {package_name} timed out")
         return False, "Installation timed out after 120 seconds"
+    except FileNotFoundError:
+        logger.error("UV not found. Please install UV: curl -LsSf https://astral.sh/uv/install.sh | sh")
+        return False, "UV not installed. Install with: curl -LsSf https://astral.sh/uv/install.sh | sh"
     except Exception as e:
         logger.error(f"Error during {package_name} installation: {e}")
         return False, f"Installation error: {str(e)}"

@@ -6,7 +6,7 @@
 - The hidden state is fully controllable via 3 discrete actions.
 - The agent's preferences are encoded as log-probabilities over observations.
 - The agent has an initial policy prior (habit) encoded as log-probabilities over actions.
-/// Generated: 2026-01-09T09:42:02.904855
+/// Generated: 2026-01-20T11:35:07.404676
 /// Enhanced by GNN PKL Serializer
 ///
 

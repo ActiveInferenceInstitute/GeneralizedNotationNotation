@@ -1,44 +1,32 @@
 # IDENTIFY_COMPONENTS
 
-I've reviewed the documentation of the GNN specification, including the model annotation and code description:
+Here is a step-by-step breakdown of the analysis:
 
-- The `GNN` section provides a comprehensive overview of the model structure and functionality:
-  - Section 1
-    - Generalized Notation (GNN): A generalization of Inference Graphs that allows for more complex inference scenarios.
-  - Model Annotations: Listing inputs, outputs, and actions types in a hierarchical form
-- The `ModelAnnotation` section provides information on the model annotation structure such as input parameters, state space boundaries, and policy prior distributions:
-    - Input Parameters (Gaussian)
-  - StateSpaceBlock
-    - Description of the KC (Kernel Cancellation Block): A type of state inference system that can handle a wide range of actions and their inputs.
-    - Functionalities:
-      - Initialization/Initialization Phase
-      - Policy Behavior
-      - Action-based Decision Making
-    - Examples
-  - Transition Matrix
-    - Description of each action
-    - Type (action is represented as state transition matrix)
+1. **State Variables (Hidden States)**:
+   - Initialization or assumption for state variables: Randomness, identity, etc., depending on the problem domain and specific model parameters.
+   - Note that states are discrete (3 distinct, with 6 possible outcomes), but can be represented in a continuous range via transitions and action selections from policy distributions as well.
 
-As for the equations mentioned in the doc, they represent a generalizable version of Inference Graphs. The parameters and hyperparameters are more specific to each section:
-  1. **State Variables**:
-     - Variable names and dimensions
-      - State variables
-      
-  * For example, **state variable** can be `[...]` for unknown input state or an action vector (represented as a matrix). It's easier to understand by considering the role of each value in the equations.
-  2. **Observation Variables**:
-    - Input parameters (`x`):
-    - Action Parameters
-      - Type: For actions, specifying type and name are more specific but not exhaustive. The choice depends on the action types specified by the input parameter values.
-3. **Action/Control Variables**
-     - Variable names (variables)
-       - Actions variable
-  4. **Model Matrices**:
-    - A matrix representing observation variables
-    - B matrices: Transition dynamics, prior beliefs over actions
-  5. **Parameters and Hyperparameters**
-      - Value of learning rate for each model component
+2. **Observation Variables**:
+   - A matrix representing each observation modifiable by choosing actions for the current state
+    - Now we need to look at the behavior of the agent's beliefs, which is essentially how it chooses actions based on observed observations.
+   
+   **Constraints:**
+   - **Initialization** (1) or **learning rate** and/or **beta_outliers**, where x represents observation and y represent new observation parameters.
+   - **Learning process**: Apply learned states to current state, observing the transition matrix from each observation to future state, etc., leading to a trajectory of actions for the agent's belief based on observed outcomes over time (time horizon).
 
-6. **Temporal Structure**
-     - Time-based parameterization based on the specified timestamps
+3. **Model Parameters**:
+    - **Initialization** and/or **parameter initialization**, where x represents initial observations parameters.
+   
+   **Constraints:**
+   - **Randomness parameter** (γ, α) is not defined when state variables are discrete; instead use a random value.
 
-I'll continue to provide more detailed information as the documentation evolves!
+   **Learning process**: Apply learned states to current observation using learned values from the transition matrix and action probabilities for each observation (observation).
+
+4. **Model Parameters**:
+    - A set of initialization parameters based on parameter initialization as described in the previous section.
+   
+   **Constraints:**
+   - **Initializing** with random values.
+
+   
+  **Learning process**: Apply learning rate, fixed to a certain value or learned from observed observations and then make updates using learned states (state transitions) for each observation over time. This gives an accurate representation of the agent's beliefs at specific points in its trajectory.

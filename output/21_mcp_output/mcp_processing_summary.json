@@ -1,14 +1,14 @@
 {
-  "timestamp": "2026-01-09T09:45:53.415875",
+  "timestamp": "2026-01-20T09:25:31.273143",
   "target_dir": "input/gnn_files",
   "output_dir": "output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "1.1.1",
-  "tools_registered": 13,
+  "tools_registered": 12,
   "registered_modules_count": 1,
   "registered_modules": [
     "sympy_mcp"
   ],
   "resources_count": 0,
-  "message": "MCP processing completed - 13 tools registered from 1 modules"
+  "message": "MCP processing completed - 12 tools registered from 1 modules"
 }
