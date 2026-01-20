@@ -257,12 +257,8 @@ Minimize free energy while maintaining preferred states.
         # Should complete (success or graceful failure)
         assert isinstance(result, bool)
         
-        # Check for results directory
-        results_dir = llm_output_dir / "llm_results"
-        assert results_dir.exists(), "llm_results directory should be created"
-        
-        # Check for results file
-        results_file = results_dir / "llm_results.json"
+        # Check for results file - processor saves directly to output_dir
+        results_file = llm_output_dir / "llm_results.json"
         
         # Test should pass if file exists OR if graceful fallback occurred
         if results_file.exists():
@@ -273,10 +269,10 @@ Minimize free energy while maintaining preferred states.
             assert "timestamp" in results
             # ollama_available key may not exist if using fallback
             assert "processed_files" in results or "analysis_results" in results
-            assert "llm_provider" in results or "errors" in results or "analysis_results" in results
+            assert "provider_matrix" in results or "errors" in results or "analysis_results" in results
         else:
             # If no results file, check for alternative outputs (summary, logs, etc.)
-            summary_file = results_dir / "llm_summary.md"
+            summary_file = llm_output_dir / "llm_summary.md"
             assert summary_file.exists() or result == True, \
                 "Should either create results file or complete gracefully"
         
@@ -332,7 +328,7 @@ Minimize free energy while maintaining preferred states.
         assert "fallback" in log_text or "not found" in log_text or "not available" in log_text
     
     @pytest.mark.slow
-    @pytest.mark.timeout(120)  # 2 minute timeout
+    @pytest.mark.timeout(180)  # 3 minute timeout for LLM processing
     def test_llm_processing_model_selection(self, test_gnn_dir, test_output_dir, caplog):
         """Test that LLM processing selects and uses appropriate model (slow test)."""
         import logging
@@ -350,20 +346,23 @@ Minimize free energy while maintaining preferred states.
             max_prompt_timeout=10  # 10 second timeout per prompt
         )
         
-        # Check results for model selection
-        results_file = llm_output_dir / "llm_results" / "llm_results.json"
+        # Check results for model selection - processor saves directly to output_dir
+        results_file = llm_output_dir / "llm_results.json"
         if results_file.exists():
             with open(results_file) as f:
                 results = json.load(f)
             
-            # Check if ollama is available
-            ollama_available = results.get("ollama_available", False)
+            # Check if ollama is available via provider_matrix
+            provider_matrix = results.get("provider_matrix", {})
+            ollama_info = provider_matrix.get("ollama", {})
+            ollama_available = ollama_info.get("available", False)
             
             if ollama_available:
                 # Should have selected a model
-                if "selected_model" in results:
-                    assert isinstance(results["selected_model"], str)
-                    assert len(results["selected_model"]) > 0
+                selected_model = ollama_info.get("selected_model")
+                if selected_model:
+                    assert isinstance(selected_model, str)
+                    assert len(selected_model) > 0
                     
                     # Check logging mentions the model
                     log_text = caplog.text
@@ -386,17 +385,18 @@ Minimize free energy while maintaining preferred states.
             max_prompt_timeout=10  # 10 second timeout per prompt
         )
         
-        # Check for key output files
-        results_dir = llm_output_dir / "llm_results"
+        # Check for key output files - processor saves directly to output_dir
         
         # Should have results file
-        assert (results_dir / "llm_results.json").exists()
+        assert (llm_output_dir / "llm_results.json").exists(), \
+            f"Expected llm_results.json at {llm_output_dir}"
         
         # Should have summary file
-        assert (results_dir / "llm_summary.md").exists()
+        assert (llm_output_dir / "llm_summary.md").exists(), \
+            f"Expected llm_summary.md at {llm_output_dir}"
         
         # May have prompt-specific directories if Ollama was available
-        prompt_dirs = list(results_dir.glob("prompts_*"))
+        prompt_dirs = list(llm_output_dir.glob("prompts_*"))
         # At least 0 prompt directories (depends on Ollama availability)
         assert len(prompt_dirs) >= 0
     

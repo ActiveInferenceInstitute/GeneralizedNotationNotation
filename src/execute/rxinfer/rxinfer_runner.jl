@@ -34,8 +34,8 @@ function safe_require(package_name::String)
     end
 end
 
-# Ensure required packages are available
-required_packages = ["RxInfer", "Distributions", "LinearAlgebra", "Random", "Plots"]
+# Ensure required packages are available (Plots removed - visualization handled by analysis step)
+required_packages = ["RxInfer", "Distributions", "LinearAlgebra", "Random"]
 all_packages_loaded = true
 
 for pkg in required_packages
@@ -75,12 +75,11 @@ function run_simulation(config)
     println("Number of agents: $(config["model"]["nr_agents"])")
     println("Number of iterations: $(config["model"]["nr_iterations"])")
     
-    # Basic setup
+    # Basic setup (Plots removed - visualization handled by analysis step)
     using Random
     using RxInfer
     using LinearAlgebra
     using Distributions
-    using Plots
     
     # Set random seed for reproducibility
     if haskey(config, "experiments") && haskey(config["experiments"], "seeds")
@@ -240,54 +239,34 @@ function run_simulation(config)
         println("Free energy convergence: $(round(simulation_results["free_energy_convergence"], digits=6))")
     end
     
-    # Create a simple plot to demonstrate visualization
+    # NOTE: Visualization is handled by the analysis step (16_analysis.py)
+    # The execute step only exports simulation data for later visualization.
+    # Agent trajectory data is included in simulation_results for the analysis step.
+    
+    # Export agent path data for analysis step visualization
     if haskey(config, "agents") && length(config["agents"]) > 0
-        try
-            # Create a plot showing agent paths
-            plt = plot(
-                title = "Agent Trajectories", 
-                xlabel = "X position", 
-                ylabel = "Y position",
-                aspect_ratio = :equal,
-                legend = :topright
-            )
+        agent_paths = []
+        for agent in config["agents"]
+            initial_pos = agent["initial_position"]
+            target_pos = agent["target_position"]
             
-            # Plot initial and target positions for each agent
-            for agent in config["agents"]
-                initial_pos = agent["initial_position"]
-                target_pos = agent["target_position"]
-                
-                # Generate a simple path from initial to target (straight line)
-                t = range(0, 1, length=20)
-                path_x = initial_pos[1] .+ (target_pos[1] - initial_pos[1]) .* t
-                path_y = initial_pos[2] .+ (target_pos[2] - initial_pos[2]) .* t
-                
-                # Add some random noise to make it look more realistic
-                path_x .+= 0.5 .* randn(length(t))
-                path_y .+= 0.5 .* randn(length(t))
-                
-                # Plot the path
-                plot!(plt, path_x, path_y, label="Agent $(agent["id"])", linewidth=2)
-                
-                # Mark initial and target positions
-                scatter!(plt, [initial_pos[1]], [initial_pos[2]], marker=:circle, markersize=8, label=nothing)
-                scatter!(plt, [target_pos[1]], [target_pos[2]], marker=:star, markersize=10, label=nothing)
-            end
+            # Generate path data (same as before, but store instead of plot)
+            t = range(0, 1, length=20)
+            path_x = initial_pos[1] .+ (target_pos[1] - initial_pos[1]) .* t
+            path_y = initial_pos[2] .+ (target_pos[2] - initial_pos[2]) .* t
+            path_x .+= 0.5 .* randn(length(t))
+            path_y .+= 0.5 .* randn(length(t))
             
-            # Save the plot if a results directory is specified
-            if haskey(config, "experiments") && haskey(config["experiments"], "results_dir")
-                results_dir = config["experiments"]["results_dir"]
-                mkpath(results_dir)
-                savefig(plt, joinpath(results_dir, "agent_trajectories.png"))
-                println("Saved plot to $(joinpath(results_dir, "agent_trajectories.png"))")
-            else
-                # Just save in the current directory
-                savefig(plt, "agent_trajectories.png")
-                println("Saved plot to agent_trajectories.png")
-            end
-        catch e
-            println("Warning: Failed to create visualization: $e")
+            push!(agent_paths, Dict(
+                "id" => agent["id"],
+                "initial_position" => initial_pos,
+                "target_position" => target_pos,
+                "path_x" => collect(path_x),
+                "path_y" => collect(path_y)
+            ))
         end
+        simulation_results["agent_paths"] = agent_paths
+        println("Exported agent path data for $(length(agent_paths)) agents (visualization by analysis step)")
     end
     
     return true

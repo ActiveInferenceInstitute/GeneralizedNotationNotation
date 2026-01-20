@@ -4,6 +4,10 @@ JAX Output Visualization for DisCoPy Diagrams
 
 This module provides visualization capabilities for JAX evaluation results 
 of DisCoPy diagrams, with graceful degradation when dependencies are unavailable.
+
+NOTE: This visualization utility is intended to be invoked by the analysis step (16_analysis.py),
+NOT during the execute step. The execute step should only export data files (CSV, JSON, pickle),
+and visualization should be performed separately by the analysis pipeline.
 """
 
 import logging

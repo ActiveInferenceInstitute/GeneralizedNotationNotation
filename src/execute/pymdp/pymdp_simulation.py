@@ -201,11 +201,8 @@ class PyMDPSimulation:
         self.simulation_trace = []
         self.results = {}
         
-        # Initialize visualizer (accepts optional save_dir)
-        try:
-            self.visualizer = PyMDPVisualizer(save_dir=output_dir)
-        except Exception:
-            self.visualizer = PyMDPVisualizer()
+        # NOTE: Visualization is handled by the analysis step (16_analysis.py)
+        # The execute step only exports simulation data - no visualizer needed.
 
         # Immediately create PyMDP model so agent and matrices are available
         try:
@@ -902,15 +899,11 @@ class PyMDPSimulation:
             matrices_file = output_dir / f"pymdp_matrices_{self.model_name}.pkl"
             safe_pickle_dump(self.model_matrices, matrices_file)
             
-            # Generate visualizations
-            self.visualizer.save_all_visualizations(
-                self.simulation_trace, 
-                self.model_matrices,
-                output_dir,
-                prefix=f"{self.model_name}_"
-            )
+            # NOTE: Visualization is handled by the analysis step (16_analysis.py)
+            # The execute step only exports simulation data for later visualization.
+            # The saved trace, results, and matrices can be visualized by the analysis module.
             
-            self.logger.info(f"Results saved to {output_dir}")
+            self.logger.info(f"Results saved to {output_dir} (visualization by analysis step)")
             
         except Exception as e:
             self.logger.error(f"Error saving results: {e}")

@@ -12,6 +12,13 @@ This module provides comprehensive visualization capabilities beyond basic plott
 - Comparative analysis plots for model comparison
 - Animation capabilities for temporal dynamics
 - Export to multiple formats (PNG, SVG, PDF, HTML)
+
+NOTE: This visualization suite is intended to be invoked by the analysis step (16_analysis.py),
+NOT during the execute step. The execute step should only export data files (CSV, JSON, pickle),
+and visualization should be performed separately by the analysis pipeline.
+
+Usage:
+    julia visualization_suite.jl <output_directory>
 """
 
 using Pkg

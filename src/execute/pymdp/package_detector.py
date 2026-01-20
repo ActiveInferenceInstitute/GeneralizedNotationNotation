@@ -146,12 +146,16 @@ def get_pymdp_installation_instructions() -> str:
     )
 
 
-def attempt_pymdp_auto_install() -> Tuple[bool, str]:
+def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
     """
     Attempt to automatically install the correct PyMDP package using UV.
     
     This function uses UV exclusively for package installation.
     No legacy pip fallback is used.
+    
+    Args:
+        use_uv: Deprecated parameter, kept for backwards compatibility.
+                UV is always used regardless of this value.
     
     Returns:
         Tuple of (success: bool, message: str)

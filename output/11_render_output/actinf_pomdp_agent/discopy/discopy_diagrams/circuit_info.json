@@ -1,6 +1,6 @@
 {
   "model_name": "Active Inference POMDP Agent",
-  "timestamp": "2026-01-20 11:35:09",
+  "timestamp": "2026-01-20 13:08:34",
   "parameters": {
     "num_states": 3,
     "num_observations": 3,
