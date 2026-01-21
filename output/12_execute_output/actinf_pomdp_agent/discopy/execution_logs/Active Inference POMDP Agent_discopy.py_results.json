@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.550215,
-  "timestamp": "2026-01-21T09:18:53.589998",
+  "execution_time": 0.531566,
+  "timestamp": "2026-01-21T12:52:21.957640",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

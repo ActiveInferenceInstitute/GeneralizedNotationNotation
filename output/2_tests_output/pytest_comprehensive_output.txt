@@ -13,11 +13,11 @@ timeout func_only: False
 asyncio: mode=Mode.AUTO, debug=False, asyncio_default_fixture_loop_scope=function, asyncio_default_test_loop_scope=function
 collecting ... 
 ----------------------------- live log collection ------------------------------
-2026-01-21 09:18:01 [    INFO] src.llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
-2026-01-21 09:18:01 [    INFO] src.llm.llm_operations: Created new LLM processor
-2026-01-21 09:18:01 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
-2026-01-21 09:18:02 [    INFO] llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
-2026-01-21 09:18:02 [    INFO] llm.llm_operations: Created new LLM processor
+2026-01-21 12:51:30 [    INFO] src.llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
+2026-01-21 12:51:30 [    INFO] src.llm.llm_operations: Created new LLM processor
+2026-01-21 12:51:30 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-01-21 12:51:31 [    INFO] llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
+2026-01-21 12:51:31 [    INFO] llm.llm_operations: Created new LLM processor
 collected 798 items / 54 deselected / 744 selected
 
 src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_basic_vector PASSED [  0%]
@@ -29,16 +29,18 @@ src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_3d_
 src/tests/test_activeinference_matrix_formatting.py::TestMatrixToJulia::test_string_input PASSED [  0%]
 src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_flow 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:02 [    INFO] analysis: 🚀 Starting step: Processing analysis
-2026-01-21 09:18:02 [    INFO] analysis: Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmps434tnq2/12_execute_output
-2026-01-21 09:18:02 [ WARNING] analysis: Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmps434tnq2/12_execute_output. Skipping post-simulation analysis.
-2026-01-21 09:18:02 [    INFO] analysis: ✅ Analysis processing completed successfully
+2026-01-21 12:51:31 [    INFO] analysis: 🚀 Starting step: Processing analysis
+2026-01-21 12:51:31 [    INFO] analysis: Looking for execution results in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbjf2gt04/12_execute_output
+2026-01-21 12:51:31 [ WARNING] analysis: Execution directory not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbjf2gt04/12_execute_output. Skipping post-simulation analysis.
+2026-01-21 12:51:31 [    INFO] analysis: Generating ActiveInference.jl visualizations...
+2026-01-21 12:51:31 [    INFO] analysis.activeinference_jl: No ActiveInference.jl output directories found in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbjf2gt04/12_execute_output
+2026-01-21 12:51:31 [    INFO] analysis: ✅ Analysis processing completed successfully
 PASSED                                                                   [  1%]
 src/tests/test_analysis_overall.py::TestAnalysisOverall::test_process_analysis_no_files 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:02 [    INFO] analysis: 🚀 Starting step: Processing analysis
-2026-01-21 09:18:02 [ WARNING] analysis: No GNN files found for analysis
-2026-01-21 09:18:02 [   ERROR] analysis: ❌ Analysis processing failed
+2026-01-21 12:51:31 [    INFO] analysis: 🚀 Starting step: Processing analysis
+2026-01-21 12:51:31 [ WARNING] analysis: No GNN files found for analysis
+2026-01-21 12:51:31 [   ERROR] analysis: ❌ Analysis processing failed
 PASSED                                                                   [  1%]
 src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_belief_heatmaps PASSED [  1%]
 src/tests/test_analysis_overall.py::TestPostSimulationVisualization::test_generate_action_analysis PASSED [  1%]
@@ -108,7 +110,7 @@ src/tests/test_comprehensive_api.py::TestOntologyModule::test_parse_gnn_ontology
 src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_module_imports PASSED [ 10%]
 src/tests/test_comprehensive_api.py::TestTypeCheckerModule::test_type_checker_instantiation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.type_checker.checker: GNNTypeChecker initialized. Strict mode: False
+2026-01-21 12:51:32 [    INFO] src.type_checker.checker: GNNTypeChecker initialized. Strict mode: False
 PASSED                                                                   [ 10%]
 src/tests/test_comprehensive_api.py::TestVisualizationModule::test_module_imports PASSED [ 10%]
 src/tests/test_comprehensive_api.py::TestVisualizationModule::test_visualizer_instantiation PASSED [ 10%]
@@ -131,44 +133,44 @@ src/tests/test_comprehensive_api.py::TestModuleConsistency::test_feature_flags_c
 src/tests/test_comprehensive_api.py::TestModuleConsistency::test_module_info_consistency PASSED [ 12%]
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: GNN module imports validated
+2026-01-21 12:51:32 [    INFO] root: GNN module imports validated
 PASSED                                                                   [ 12%]
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: GNN file discovery validated: 1 files found
+2026-01-21 12:51:32 [    INFO] root: GNN file discovery validated: 1 files found
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] root: Failed to parse simple.gnn: Parsed data should contain ModelName
-assert 'ModelName' in {'file_name': 'simple.gnn', 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1phr0ybz/simple.gnn', 'file_size': 152, 'parse_timestamp': '2026-01-21T09:18:04.024520', ...}
+2026-01-21 12:51:32 [ WARNING] root: Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_name': 'simple.gnn', 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmptn_2t4b1/simple.gnn', 'file_size': 152, 'parse_timestamp': '2026-01-21T12:51:32.976945', ...}
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: Validation result for simple.gnn: True
+2026-01-21 12:51:32 [    INFO] root: Validation result for simple.gnn: True
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: Render module imports validated
+2026-01-21 12:51:32 [    INFO] root: Render module imports validated
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
-2026-01-21 09:18:04 [    INFO] root: PyMDP rendering validated
+2026-01-21 12:51:32 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-01-21 12:51:32 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-01-21 12:51:32 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-01-21 12:51:32 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-01-21 12:51:32 [    INFO] root: PyMDP rendering validated
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.render.rxinfer.rxinfer_renderer: Successfully generated RxInfer.jl script for GNN_Model
-2026-01-21 09:18:04 [    INFO] root: RxInfer POMDP validated: 3 actions
-2026-01-21 09:18:04 [    INFO] root: RxInfer POMDP rendering validated
+2026-01-21 12:51:32 [    INFO] src.render.rxinfer.rxinfer_renderer: Successfully generated RxInfer.jl script for GNN_Model
+2026-01-21 12:51:32 [    INFO] root: RxInfer POMDP validated: 3 actions
+2026-01-21 12:51:32 [    INFO] root: RxInfer POMDP rendering validated
 PASSED                                                                   [ 13%]
 src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED [ 13%]
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED [ 13%]
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] root: Execution environment validation failed: Status should contain python_version
+2026-01-21 12:51:32 [ WARNING] root: Execution environment validation failed: Status should contain python_version
 assert 'python_version' in {'issues': ['validate_execution_environment not available'], 'valid': False}
 PASSED                                                                   [ 14%]
 src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED [ 14%]
@@ -176,63 +178,63 @@ src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_impo
 src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED [ 14%]
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: MCP module imports validated
+2026-01-21 12:51:32 [    INFO] root: MCP module imports validated
 PASSED                                                                   [ 14%]
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] root: MCP tool registration failed: Tools should be a list
+2026-01-21 12:51:32 [ WARNING] root: MCP tool registration failed: Tools should be a list
 assert False
  +  where False = isinstance(True, list)
 PASSED                                                                   [ 14%]
 src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.mcp.processor: Handling MCP request: tools/list
-2026-01-21 09:18:04 [    INFO] root: MCP request handling validated
+2026-01-21 12:51:32 [    INFO] src.mcp.processor: Handling MCP request: tools/list
+2026-01-21 12:51:32 [    INFO] root: MCP request handling validated
 PASSED                                                                   [ 14%]
 src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED [ 15%]
 src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] ontology: 🚀 Starting step: Processing ontology
-2026-01-21 09:18:04 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
-2026-01-21 09:18:04 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
-2026-01-21 09:18:04 [    INFO] ontology: ✅ Ontology processing completed successfully
+2026-01-21 12:51:32 [    INFO] ontology: 🚀 Starting step: Processing ontology
+2026-01-21 12:51:32 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2026-01-21 12:51:32 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-01-21 12:51:32 [    INFO] ontology: ✅ Ontology processing completed successfully
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED [ 15%]
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] website: Website generated successfully with 1 pages
+2026-01-21 12:51:32 [    INFO] website: Website generated successfully with 1 pages
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] website: Website generated successfully with 1 pages
+2026-01-21 12:51:32 [    INFO] website: Website generated successfully with 1 pages
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: SAPF module imports validated successfully
+2026-01-21 12:51:32 [    INFO] root: SAPF module imports validated successfully
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: GNN to SAPF conversion validated
+2026-01-21 12:51:32 [    INFO] root: GNN to SAPF conversion validated
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: SAPF validation functionality confirmed
+2026-01-21 12:51:32 [    INFO] root: SAPF validation functionality confirmed
 PASSED                                                                   [ 15%]
 src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: SAPF audio generation functionality confirmed
+2026-01-21 12:51:32 [    INFO] root: SAPF audio generation functionality confirmed
 PASSED                                                                   [ 16%]
 src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] root: Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
+2026-01-21 12:51:32 [ WARNING] root: Core module coordination failed: cannot import name 'execute_gnn_model' from 'src.execute' (/Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/execute/__init__.py)
 PASSED                                                                   [ 16%]
 src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: Module data flow validated
+2026-01-21 12:51:32 [    INFO] root: Module data flow validated
 PASSED                                                                   [ 16%]
 src/tests/test_core_modules.py::test_core_module_completeness 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] root: Core module completeness test passed
+2026-01-21 12:51:32 [    INFO] root: Core module completeness test passed
 PASSED                                                                   [ 16%]
 src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_critical_module_coverage_strategy PASSED [ 16%]
 src/tests/test_coverage_assessment.py::TestCoverageStrategy::test_performance_regression_test_framework PASSED [ 16%]
@@ -261,7 +263,7 @@ src/tests/test_d2_visualizer.py::TestD2DiagramGeneration::test_generate_pomdp_di
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_no_cli PASSED [ 19%]
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_with_cli 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] advanced_visualization.d2_visualizer: Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp68hncb3_/test_diagram.svg
+2026-01-21 12:51:33 [    INFO] advanced_visualization.d2_visualizer: Generated svg: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpg_gxr5zo/test_diagram.svg
 PASSED                                                                   [ 20%]
 src/tests/test_d2_visualizer.py::TestD2DiagramCompilation::test_compile_d2_diagram_write_d2_file PASSED [ 20%]
 src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_get_d2_arrow PASSED [ 20%]
@@ -270,15 +272,15 @@ src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_is_pomdp_model PASSED
 src/tests/test_d2_visualizer.py::TestD2HelperMethods::test_sanitize_name PASSED [ 20%]
 src/tests/test_d2_visualizer.py::TestD2EndToEndProcessing::test_generate_all_diagrams_for_model 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
+2026-01-21 12:51:33 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_structure.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_structure.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_structure.d2:15:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_structure.d2:19:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_structure.d2:31:1: unexpected map termination character } in file map
 
-2026-01-21 09:18:04 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
-err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpnynxh77r/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
+2026-01-21 12:51:33 [ WARNING] advanced_visualization.d2_visualizer: Failed to generate svg: err: failed to compile /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_pomdp.d2: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_pomdp.d2:11:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_pomdp.d2:16:10: unexpected text after unquoted string
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_pomdp.d2:21:3: unexpected map termination character } in file map
+err: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl8wgo58e/integration_test_model_pomdp.d2:46:1: unexpected map termination character } in file map
 
 PASSED                                                                   [ 20%]
 src/tests/test_d2_visualizer.py::TestD2ProcessorIntegration::test_init_exports_d2_components PASSED [ 20%]
@@ -291,37 +293,37 @@ src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_module_info PASSED [ 21%]
 src/tests/test_environment_overall.py::TestEnvironmentModuleComprehensive::test_environment_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] setup.setup: 🔍 Checking system requirements...
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ Python version check passed: 3.12.11
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ Disk space check passed: 88.50GB free
-2026-01-21 09:18:04 [    INFO] setup.setup: 📋 Getting list of installed packages using UV...
-2026-01-21 09:18:04 [    INFO] setup.setup: 📦 Found 334 installed packages using UV
-2026-01-21 09:18:04 [    INFO] setup.setup: 📋 Key installed packages:
-2026-01-21 09:18:04 [    INFO] setup.setup:   - pytest: 9.0.2
-2026-01-21 09:18:04 [    INFO] setup.setup:   - numpy: 2.3.5
-2026-01-21 09:18:04 [    INFO] setup.setup:   - matplotlib: 3.10.8
-2026-01-21 09:18:04 [    INFO] setup.setup:   - scipy: 1.17.0
-2026-01-21 09:18:04 [    INFO] setup.setup:   - psutil: 7.2.1
-2026-01-21 09:18:04 [    INFO] setup.setup: 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2026-01-21 12:51:33 [    INFO] setup.setup: 🔍 Checking system requirements...
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ Python version check passed: 3.12.11
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ Disk space check passed: 85.59GB free
+2026-01-21 12:51:33 [    INFO] setup.setup: 📋 Getting list of installed packages using UV...
+2026-01-21 12:51:33 [    INFO] setup.setup: 📦 Found 334 installed packages using UV
+2026-01-21 12:51:33 [    INFO] setup.setup: 📋 Key installed packages:
+2026-01-21 12:51:33 [    INFO] setup.setup:   - pytest: 9.0.2
+2026-01-21 12:51:33 [    INFO] setup.setup:   - numpy: 2.3.5
+2026-01-21 12:51:33 [    INFO] setup.setup:   - matplotlib: 3.10.8
+2026-01-21 12:51:33 [    INFO] setup.setup:   - scipy: 1.17.0
+2026-01-21 12:51:33 [    INFO] setup.setup:   - psutil: 7.2.1
+2026-01-21 12:51:33 [    INFO] setup.setup: 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
 PASSED                                                                   [ 22%]
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_environment_setup PASSED [ 22%]
 src/tests/test_environment_overall.py::TestEnvironmentFunctionality::test_python_version_check PASSED [ 22%]
 src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_pipeline_integration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] setup.setup: 🔍 Checking system requirements...
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ Python version check passed: 3.12.11
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
-2026-01-21 09:18:04 [    INFO] setup.setup: ✅ Disk space check passed: 88.50GB free
-2026-01-21 09:18:04 [    INFO] setup.setup: 📋 Getting list of installed packages using UV...
-2026-01-21 09:18:04 [    INFO] setup.setup: 📦 Found 334 installed packages using UV
-2026-01-21 09:18:04 [    INFO] setup.setup: 📋 Key installed packages:
-2026-01-21 09:18:04 [    INFO] setup.setup:   - pytest: 9.0.2
-2026-01-21 09:18:04 [    INFO] setup.setup:   - numpy: 2.3.5
-2026-01-21 09:18:04 [    INFO] setup.setup:   - matplotlib: 3.10.8
-2026-01-21 09:18:04 [    INFO] setup.setup:   - scipy: 1.17.0
-2026-01-21 09:18:04 [    INFO] setup.setup:   - psutil: 7.2.1
-2026-01-21 09:18:04 [    INFO] setup.setup: 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
+2026-01-21 12:51:33 [    INFO] setup.setup: 🔍 Checking system requirements...
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ Python version check passed: 3.12.11
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ UV is available: uv 0.9.18 (0cee76417 2025-12-16)
+2026-01-21 12:51:33 [    INFO] setup.setup: ✅ Disk space check passed: 85.59GB free
+2026-01-21 12:51:33 [    INFO] setup.setup: 📋 Getting list of installed packages using UV...
+2026-01-21 12:51:33 [    INFO] setup.setup: 📦 Found 334 installed packages using UV
+2026-01-21 12:51:33 [    INFO] setup.setup: 📋 Key installed packages:
+2026-01-21 12:51:33 [    INFO] setup.setup:   - pytest: 9.0.2
+2026-01-21 12:51:33 [    INFO] setup.setup:   - numpy: 2.3.5
+2026-01-21 12:51:33 [    INFO] setup.setup:   - matplotlib: 3.10.8
+2026-01-21 12:51:33 [    INFO] setup.setup:   - scipy: 1.17.0
+2026-01-21 12:51:33 [    INFO] setup.setup:   - psutil: 7.2.1
+2026-01-21 12:51:33 [    INFO] setup.setup: 📄 Full package list saved to: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/installed_packages_uv.json
 PASSED                                                                   [ 22%]
 src/tests/test_environment_overall.py::TestEnvironmentIntegration::test_environment_mcp_integration PASSED [ 22%]
 src/tests/test_environment_overall.py::test_environment_module_completeness PASSED [ 22%]
@@ -331,17 +333,17 @@ src/tests/test_error_recovery_framework.py::TestErrorRecoveryFramework::test_err
 src/tests/test_error_recovery_framework.py::TestErrorRecoveryFramework::test_error_message_formatting PASSED [ 23%]
 src/tests/test_error_recovery_framework.py::TestErrorRecoveryFramework::test_error_handling_with_severity_levels 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] test: [I001] Informational
-2026-01-21 09:18:04 [ WARNING] test: [W001] Warning
-2026-01-21 09:18:04 [   ERROR] test: [E001] Error
-2026-01-21 09:18:04 [CRITICAL] test: [CRIT001] Critical
+2026-01-21 12:51:33 [    INFO] test: [I001] Informational
+2026-01-21 12:51:33 [ WARNING] test: [W001] Warning
+2026-01-21 12:51:33 [   ERROR] test: [E001] Error
+2026-01-21 12:51:33 [CRITICAL] test: [CRIT001] Critical
 PASSED                                                                   [ 23%]
 src/tests/test_error_recovery_framework.py::TestErrorRecoveryFramework::test_format_and_log_error_function 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [   ERROR] utils.error_recovery: [E101] File not found
-2026-01-21 09:18:04 [    INFO] utils.error_recovery: Recovery suggestions:
-2026-01-21 09:18:04 [    INFO] utils.error_recovery:   1. Check file path
-2026-01-21 09:18:04 [    INFO] utils.error_recovery:   2. Verify file exists
+2026-01-21 12:51:33 [   ERROR] utils.error_recovery: [E101] File not found
+2026-01-21 12:51:33 [    INFO] utils.error_recovery: Recovery suggestions:
+2026-01-21 12:51:33 [    INFO] utils.error_recovery:   1. Check file path
+2026-01-21 12:51:33 [    INFO] utils.error_recovery:   2. Verify file exists
 PASSED                                                                   [ 23%]
 src/tests/test_error_recovery_framework.py::TestErrorRecoveryStrategies::test_import_error_recovery_suggestions PASSED [ 23%]
 src/tests/test_error_recovery_framework.py::TestErrorRecoveryStrategies::test_file_error_recovery_suggestions PASSED [ 23%]
@@ -359,9 +361,9 @@ src/tests/test_execute_overall.py::TestExecuteOverall::test_find_executable_scri
 src/tests/test_execute_overall.py::TestExecuteOverall::test_find_executable_scripts_with_framework_filter PASSED [ 25%]
 src/tests/test_execute_overall.py::TestExecuteOverall::test_collect_execution_outputs 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] test: Found 1 output files to collect for pymdp
-2026-01-21 09:18:04 [    INFO] test: Copied output.json → simulation_data/output.json
-2026-01-21 09:18:04 [    INFO] test: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
+2026-01-21 12:51:33 [    INFO] test: Found 1 output files to collect for pymdp
+2026-01-21 12:51:33 [    INFO] test: Copied output.json → simulation_data/output.json
+2026-01-21 12:51:33 [    INFO] test: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
 PASSED                                                                   [ 25%]
 src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_success PASSED [ 25%]
 src/tests/test_execute_overall.py::TestExecuteScriptExecution::test_execute_single_script_timeout_handling PASSED [ 25%]
@@ -369,79 +371,79 @@ src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize
 src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize_and_deduplicate_paths_single PASSED [ 26%]
 src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize_and_deduplicate_paths_duplicates 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Deduplicated paths: 3 → 1 files
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Deduplicated paths: 3 → 1 files
 PASSED                                                                   [ 26%]
 src/tests/test_execute_path_collection.py::TestPathDeduplication::test_normalize_and_deduplicate_paths_nested 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Deduplicated paths: 2 → 1 files
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Deduplicated paths: 2 → 1 files
 PASSED                                                                   [ 26%]
 src/tests/test_execute_path_collection.py::TestPathCollection::test_collect_execution_outputs_empty PASSED [ 26%]
 src/tests/test_execute_path_collection.py::TestPathCollection::test_collect_execution_outputs_structure PASSED [ 26%]
 src/tests/test_execute_path_collection.py::TestActiveInferencePathCollection::test_activeinference_jl_path_collection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Found 1 output files to collect for activeinference_jl
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Collected 1 output files: 1 visualizations, 0 data files, 0 traces
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Found 1 output files to collect for activeinference_jl
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Collected 1 output files: 1 visualizations, 0 data files, 0 traces
 PASSED                                                                   [ 26%]
 src/tests/test_execute_path_collection.py::TestPathCollectionDeduplication::test_no_duplicate_copies 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Found 1 output files to collect for jax
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Copied data.json → simulation_data/data.json
-2026-01-21 09:18:04 [    INFO] src.tests.test_execute_path_collection: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Found 1 output files to collect for jax
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Copied data.json → simulation_data/data.json
+2026-01-21 12:51:33 [    INFO] src.tests.test_execute_path_collection: Collected 1 output files: 0 visualizations, 1 data files, 0 traces
 PASSED                                                                   [ 26%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_agent_import PASSED [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_agent_creation PASSED [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_simple_simulation_execution 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Using PyMDP (inferactively-pymdp) API
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Starting simple PyMDP simulation
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Transposed B from (1, 2, 2) to (2, 2, 1)
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Created matrices: A=(2, 2), B=(2, 2, 1), C=(2,), D=(2,)
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Wrapped arrays in obj_array format (except E)
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Successfully created PyMDP agent
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 0: true_s=1, obs=1, belief=[0.1 0.9], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 1: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 2: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 3: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 4: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 5: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 6: true_s=0, obs=0, belief=[0.94 0.06], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 7: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 8: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 9: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 10: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 11: true_s=0, obs=1, belief=[0.28 0.72], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 12: true_s=0, obs=0, belief=[0.84 0.16], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 13: true_s=0, obs=1, belief=[0.21 0.79], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Step 14: true_s=0, obs=0, belief=[0.81 0.19], action=0.0
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: Saving raw simulation data for analysis step...
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: 📊 Validation: beliefs_valid=True, sum_to_one=True
-2026-01-21 09:18:04 [    INFO] execute.pymdp.simple_simulation: 📈 Trace data saved: 15 timesteps, ready for analysis step visualization
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Using PyMDP (inferactively-pymdp) API
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Starting simple PyMDP simulation
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Transposed B from (1, 2, 2) to (2, 2, 1)
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Created matrices: A=(2, 2), B=(2, 2, 1), C=(2,), D=(2,)
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Wrapped arrays in obj_array format (except E)
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Successfully created PyMDP agent
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 0: true_s=1, obs=1, belief=[0.1 0.9], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 1: true_s=1, obs=1, belief=[0.04 0.96], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 2: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 3: true_s=0, obs=1, belief=[0.16 0.84], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 4: true_s=0, obs=0, belief=[0.79 0.21], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 5: true_s=0, obs=0, belief=[0.95 0.05], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 6: true_s=0, obs=0, belief=[0.97 0.03], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 7: true_s=1, obs=1, belief=[0.28 0.72], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 8: true_s=1, obs=1, belief=[0.06 0.94], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 9: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 10: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 11: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 12: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 13: true_s=1, obs=1, belief=[0.03 0.97], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Step 14: true_s=0, obs=0, belief=[0.72 0.28], action=0.0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: Saving raw simulation data for analysis step...
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: 💾 Saved raw simulation data to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_pymdp_simple_simulation_e0/pymdp_output/simulation_results.json
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: 📊 Validation: beliefs_valid=True, sum_to_one=True
+2026-01-21 12:51:33 [    INFO] execute.pymdp.simple_simulation: 📈 Trace data saved: 15 timesteps, ready for analysis step visualization
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_pymdp_package_detection_with_real_installation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_is_correct_pymdp_package_with_real_installation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPRealExecution::test_validate_pymdp_for_execution_with_real_installation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPErrorHandling::test_package_detection_structure 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPErrorHandling::test_validation_structure 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 27%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPModernAPI::test_modern_import_works PASSED [ 28%]
 src/tests/test_execute_pymdp_integration.py::TestPyMDPModernAPI::test_agent_has_required_methods PASSED [ 28%]
@@ -450,143 +452,143 @@ src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::tes
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_renderer_exists PASSED [ 28%]
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_simulation_creation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-01-21 12:51:33 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
 PASSED                                                                   [ 28%]
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_pymdp_simulation_run 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
+2026-01-21 12:51:33 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
 PASSED                                                                   [ 28%]
 src/tests/test_execute_pymdp_integration_module.py::TestGNNPyMDPIntegration::test_full_integration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
-2026-01-21 09:18:04 [    INFO] src.render.pymdp.pymdp_renderer: Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_full_integration0/rendered_pymdp.py
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-01-21 12:51:33 [    INFO] src.render.pymdp.pymdp_renderer: Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_full_integration0/rendered_pymdp.py
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_integration_module.py::test_gnn_parsing PASSED [ 29%]
 src/tests/test_execute_pymdp_integration_module.py::test_pymdp_renderer PASSED [ 29%]
 src/tests/test_execute_pymdp_integration_module.py::test_pymdp_simulation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
-2026-01-21 09:18:04 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
+2026-01-21 12:51:33 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 0 states, 0 actions, 0 observations
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: Error creating PyMDP model: index -1 is out of bounds for axis 0 with size 0
+2026-01-21 12:51:33 [   ERROR] execute.pymdp.pymdp_simulation: No agent available - create model first
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_integration_module.py::test_full_integration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
-2026-01-21 09:18:04 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
-2026-01-21 09:18:04 [    INFO] src.render.pymdp.pymdp_renderer: Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_full_integration1/rendered_pymdp.py
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-01-21 12:51:33 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-01-21 12:51:33 [    INFO] src.render.pymdp.pymdp_renderer: Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_full_integration1/rendered_pymdp.py
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_detect_pymdp_installation_structure 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_is_correct_pymdp_package 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_get_pymdp_installation_instructions 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 29%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_validate_pymdp_for_execution_structure 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:04 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:33 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_attempt_pymdp_auto_install 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:04 [    INFO] execute.pymdp.package_detector: Attempting to install inferactively-pymdp using UV sync...
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Successfully installed inferactively-pymdp using UV sync
+2026-01-21 12:51:33 [    INFO] execute.pymdp.package_detector: Attempting to install inferactively-pymdp using UV sync...
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Successfully installed inferactively-pymdp using UV sync
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_detection_consistency 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_validation_uses_detection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetectionIntegration::test_instructions_are_actionable 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_real_installation_detection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_real_installation_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 30%]
 src/tests/test_execute_pymdp_package.py::TestPyMDPRealInstallation::test_wrong_package_detection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
-2026-01-21 09:18:06 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
+2026-01-21 12:51:35 [    INFO] execute.pymdp.package_detector: Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule
+2026-01-21 12:51:35 [ WARNING] execute.pymdp.package_detector: Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_gnn_parameter_integration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_matrix_construction 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_serialization 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=1
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.01 seconds
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=2
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.01 seconds
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_creation_with_gnn_config 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_creation_with_minimal_config 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_simulation_run 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=0
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=0
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=1
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=1
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPSimulation::test_visualization_creation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=0, action=2
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=2
-2026-01-21 09:18:06 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Initialized from GNN config: 4 states, 4 actions, 2 observations
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 4A, 2O
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Starting PyMDP simulation: GNN_POMDP
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Timestep 0: state=0, obs=1, action=0
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Timestep 5: state=0, obs=0, action=0
+2026-01-21 12:51:35 [    INFO] execute.pymdp.pymdp_simulation: Simulation completed in 0.02 seconds
 PASSED                                                                   [ 31%]
 src/tests/test_execute_pymdp_simulation.py::TestPyMDPUtils::test_numpy_conversion PASSED [ 32%]
 src/tests/test_execute_pymdp_utils.py::TestNumpySerialization::test_convert_numpy_for_json PASSED [ 32%]
@@ -659,7 +661,7 @@ src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASS
 src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED [ 41%]
 src/tests/test_fast_suite.py::test_fast_suite_completeness 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] root: Fast test suite completeness validated
+2026-01-21 12:51:41 [    INFO] root: Fast test suite completeness validated
 PASSED                                                                   [ 41%]
 src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_core_processor_imports PASSED [ 41%]
 src/tests/test_gnn_overall.py::TestGNNCoreProcessor::test_gnn_processor_basic_imports PASSED [ 41%]
@@ -669,7 +671,7 @@ src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discovery_imports PASSED [
 src/tests/test_gnn_parsing.py::TestGNNDiscovery::test_discover_gnn_files PASSED [ 42%]
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_valid_parsing 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
+2026-01-21 12:51:41 [ WARNING] gnn.parsers.markdown_parser: Connection references unknown target variables: ['o']
 PASSED                                                                   [ 42%]
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_invalid_parsing PASSED [ 42%]
 src/tests/test_gnn_parsing.py::TestMarkdownParser::test_empty_string PASSED [ 42%]
@@ -686,22 +688,22 @@ src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validator_
 src/tests/test_gnn_validation.py::TestGNNSimpleValidator::test_simple_validation PASSED [ 44%]
 src/tests/test_gui_functionality.py::TestGUIFunctionality::test_headless_artifacts 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] gui: 📦 Running in HEADLESS mode - generating artifacts only (fast)
-2026-01-21 09:18:11 [    INFO] gui: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmph0oc0_i_/input
-2026-01-21 09:18:11 [    INFO] gui: Running GUI types: ['gui_1', 'gui_2']
-2026-01-21 09:18:11 [    INFO] gui: Mode: HEADLESS
-2026-01-21 09:18:11 [    INFO] gui: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
-2026-01-21 09:18:11 [    INFO] gui: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
-2026-01-21 09:18:11 [    INFO] gui: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmph0oc0_i_/output/22_gui_output/constructed_model_gui1.md
-2026-01-21 09:18:11 [    INFO] gui: ✅ GUI 1 completed successfully
-2026-01-21 09:18:11 [    INFO] gui: 🎯 Starting GUI 2: Visual Matrix Editor
-2026-01-21 09:18:11 [    INFO] gui: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
-2026-01-21 09:18:11 [    INFO] gui: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmph0oc0_i_/output/22_gui_output/visual_model_gui2.md
-2026-01-21 09:18:11 [    INFO] gui: ✅ GUI 2 completed successfully
-2026-01-21 09:18:11 [    INFO] gui: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmph0oc0_i_/output/gui_processing_summary.json
-2026-01-21 09:18:11 [    INFO] gui: Generating HTML navigation page for pipeline outputs
-2026-01-21 09:18:11 [    INFO] gui: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmph0oc0_i_/output/navigation.html
-2026-01-21 09:18:11 [    INFO] gui: ✅ HTML navigation page generated
+2026-01-21 12:51:41 [    INFO] gui: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-01-21 12:51:41 [    INFO] gui: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0r2bvor4/input
+2026-01-21 12:51:41 [    INFO] gui: Running GUI types: ['gui_1', 'gui_2']
+2026-01-21 12:51:41 [    INFO] gui: Mode: HEADLESS
+2026-01-21 12:51:41 [    INFO] gui: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-01-21 12:51:41 [    INFO] gui: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-01-21 12:51:41 [    INFO] gui: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0r2bvor4/output/22_gui_output/constructed_model_gui1.md
+2026-01-21 12:51:41 [    INFO] gui: ✅ GUI 1 completed successfully
+2026-01-21 12:51:41 [    INFO] gui: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-01-21 12:51:41 [    INFO] gui: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-01-21 12:51:41 [    INFO] gui: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0r2bvor4/output/22_gui_output/visual_model_gui2.md
+2026-01-21 12:51:41 [    INFO] gui: ✅ GUI 2 completed successfully
+2026-01-21 12:51:41 [    INFO] gui: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0r2bvor4/output/gui_processing_summary.json
+2026-01-21 12:51:41 [    INFO] gui: Generating HTML navigation page for pipeline outputs
+2026-01-21 12:51:41 [    INFO] gui: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0r2bvor4/output/navigation.html
+2026-01-21 12:51:41 [    INFO] gui: ✅ HTML navigation page generated
 PASSED                                                                   [ 44%]
 src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_gui_markdown_helpers_imports PASSED [ 44%]
 src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_component_and_parse PASSED [ 44%]
@@ -709,102 +711,102 @@ src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_update_states_ap
 src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_component PASSED [ 44%]
 src/tests/test_integration_overall.py::TestIntegrationOverall::test_process_integration_flow 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 44%]
 src/tests/test_integration_overall.py::TestIntegrationOverall::test_process_integration_circular_dependency 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_process_empty_directory 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_process_with_gnn_files 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_process_multiple_files_with_references 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_circular_dependency_detection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_undefined_reference_detection 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegration::test_summary_generation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegrationErrorHandling::test_invalid_file_handling 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 45%]
 src/tests/test_integration_processor.py::TestProcessIntegrationErrorHandling::test_nonexistent_target_returns_gracefully 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] integration: 🚀 Starting step: Processing integration
-2026-01-21 09:18:11 [    INFO] integration: ✅ integration processing completed successfully
+2026-01-21 12:51:41 [    INFO] integration: 🚀 Starting step: Processing integration
+2026-01-21 12:51:41 [    INFO] integration: ✅ integration processing completed successfully
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama.py::test_import_ollama_provider PASSED         [ 46%]
 src/tests/test_llm_ollama.py::test_ollama_provider_initialize 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
+2026-01-21 12:51:41 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama.py::test_ollama_simple_chat 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:11 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
+2026-01-21 12:51:41 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama.py::test_ollama_streaming 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
+2026-01-21 12:51:42 [    INFO] llm.providers.ollama_provider: Ollama provider initialized (CLI fallback)
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_check_returns_tuple 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-01-21 12:51:42 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_detection_logging 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-01-21 12:51:42 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
 PASSED                                                                   [ 46%]
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_model_listing 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-01-21 12:51:42 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaDetection::test_ollama_socket_check 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
-2026-01-21 09:18:12 [    INFO] test_ollama: ⚠️ Port 11434 open but detection returned False - API may be starting up
+2026-01-21 12:51:42 [    INFO] test_ollama: 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-01-21 12:51:42 [    INFO] test_ollama: ⚠️ Port 11434 open but detection returned False - API may be starting up
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_with_empty_list 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [ WARNING] test_model_selection: ⚠️ No models found, defaulting to: ministral-3:3b
-2026-01-21 09:18:12 [    INFO] test_model_selection:    Note: You may need to run: ollama pull ministral-3:3b
+2026-01-21 12:51:42 [ WARNING] test_model_selection: ⚠️ No models found, defaulting to: ministral-3:3b
+2026-01-21 12:51:42 [    INFO] test_model_selection:    Note: You may need to run: ollama pull ministral-3:3b
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_prefers_small_models 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_model_selection: 🎯 Selected model: llama2:7b
-2026-01-21 09:18:12 [    INFO] test_model_selection: 🎯 Selected model: mistral:7b
-2026-01-21 09:18:12 [    INFO] test_model_selection: 🎯 Selected model: gemma2:2b
+2026-01-21 12:51:42 [    INFO] test_model_selection: 🎯 Selected model: llama2:7b
+2026-01-21 12:51:42 [    INFO] test_model_selection: 🎯 Selected model: mistral:7b
+2026-01-21 12:51:42 [    INFO] test_model_selection: 🎯 Selected model: gemma2:2b
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_respects_env_override 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_model_selection: 🎯 Using model from environment: my-custom-model:latest
+2026-01-21 12:51:42 [    INFO] test_model_selection: 🎯 Using model from environment: my-custom-model:latest
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaModelSelection::test_model_selection_logging 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] test_model_selection: 🎯 Selected model: llama2:7b
+2026-01-21 12:51:42 [    INFO] test_model_selection: 🎯 Selected model: llama2:7b
 PASSED                                                                   [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaIntegrationEnd2End::test_ollama_command_exists PASSED [ 47%]
 src/tests/test_llm_ollama_integration.py::TestOllamaIntegrationEnd2End::test_ollama_service_running PASSED [ 47%]
@@ -821,64 +823,64 @@ src/tests/test_llm_overall.py::TestLLMIntegration::test_llm_mcp_integration PASS
 src/tests/test_llm_overall.py::test_llm_module_completeness PASSED       [ 49%]
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] root: Main orchestrator file structure validated
+2026-01-21 12:51:42 [    INFO] root: Main orchestrator file structure validated
 PASSED                                                                   [ 49%]
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes PASSED [ 49%]
 src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] root: All 3 main orchestrator components available
+2026-01-21 12:51:42 [    INFO] root: All 3 main orchestrator components available
 PASSED                                                                   [ 49%]
 src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help PASSED [ 50%]
 src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] root: Pipeline script discovery logic validated
+2026-01-21 12:51:42 [    INFO] root: Pipeline script discovery logic validated
 PASSED                                                                   [ 50%]
 src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] root: Pipeline script sorting logic validated
+2026-01-21 12:51:42 [    INFO] root: Pipeline script sorting logic validated
 PASSED                                                                   [ 50%]
 src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection PASSED [ 50%]
 src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step PASSED [ 50%]
 src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function PASSED [ 50%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: arguments
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: end_time
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: overall_status
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
-2026-01-21 09:18:12 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: overall_status
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-01-21 12:51:42 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
 PASSED                                                                   [ 50%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_warning_detection PASSED [ 50%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_step_numbering PASSED [ 51%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation_comprehensive 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: arguments
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: end_time
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
-2026-01-21 09:18:12 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
-2026-01-21 09:18:12 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-01-21 12:51:42 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-01-21 12:51:42 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
 PASSED                                                                   [ 51%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_step_execution_order PASSED [ 51%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_metadata_completeness PASSED [ 51%]
 src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_pipeline_summary_structure PASSED [ 51%]
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_gnn_validate_tool_execution 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
-2026-01-21 09:18:12 [    INFO] gnn.mcp: Enhanced capabilities available: True
+2026-01-21 12:51:42 [    INFO] gnn.mcp: Enhanced GNN MCP tools and resources registered successfully.
+2026-01-21 12:51:42 [    INFO] gnn.mcp: Enhanced capabilities available: True
 PASSED                                                                   [ 51%]
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_export_tool_execution 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] export.mcp: Export module MCP tools registered.
+2026-01-21 12:51:42 [    INFO] export.mcp: Export module MCP tools registered.
 PASSED                                                                   [ 51%]
 src/tests/test_mcp_tools.py::TestMCPToolExecution::test_utils_system_info_execution 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] utils.mcp: Registering utils MCP tools
-2026-01-21 09:18:12 [    INFO] utils.mcp: Successfully registered utils MCP tools
+2026-01-21 12:51:42 [    INFO] utils.mcp: Registering utils MCP tools
+2026-01-21 12:51:42 [    INFO] utils.mcp: Successfully registered utils MCP tools
 PASSED                                                                   [ 52%]
 src/tests/test_mermaid_converter.py::TestNodeShapeInference::test_matrix_shape PASSED [ 52%]
 src/tests/test_mermaid_converter.py::TestNodeShapeInference::test_state_shape PASSED [ 52%]
@@ -935,12 +937,12 @@ src/tests/test_mermaid_parser.py::TestGNNMarkdownGeneration::test_markdown_gener
 src/tests/test_mermaid_parser.py::TestFullParsing::test_full_parsing PASSED [ 59%]
 src/tests/test_ml_integration_overall.py::TestMLIntegrationOverall::test_process_ml_integration_flow 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:12 [    INFO] ml_integration.processor: Starting ML integration processing
-2026-01-21 09:18:12 [    INFO] ml_integration.processor: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzt1kahd6
-2026-01-21 09:18:12 [    INFO] ml_integration.processor: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzt1kahd6/ml_output
-2026-01-21 09:18:12 [    INFO] ml_integration.processor: Recursive: False
-2026-01-21 09:18:15 [    INFO] ml_integration.processor: ML integration completed successfully
-2026-01-21 09:18:15 [    INFO] ml_integration.processor: Results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpzt1kahd6/ml_output/ml_integration_results.json
+2026-01-21 12:51:42 [    INFO] ml_integration.processor: Starting ML integration processing
+2026-01-21 12:51:42 [    INFO] ml_integration.processor: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwop0kikr
+2026-01-21 12:51:42 [    INFO] ml_integration.processor: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwop0kikr/ml_output
+2026-01-21 12:51:42 [    INFO] ml_integration.processor: Recursive: False
+2026-01-21 12:51:43 [    INFO] ml_integration.processor: ML integration completed successfully
+2026-01-21 12:51:43 [    INFO] ml_integration.processor: Results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwop0kikr/ml_output/ml_integration_results.json
 PASSED                                                                   [ 59%]
 src/tests/test_ml_integration_overall.py::TestMLIntegrationOverall::test_process_ml_integration_no_files PASSED [ 59%]
 src/tests/test_model_registry_overall.py::TestModelRegistryOverall::test_registry_initialization PASSED [ 59%]
@@ -952,10 +954,10 @@ src/tests/test_new_utils.py::TestStepLogging::test_setup_step_logging_returns_lo
 src/tests/test_new_utils.py::TestStepLogging::test_setup_step_logging_verbose PASSED [ 60%]
 src/tests/test_new_utils.py::TestStepLogging::test_log_step_functions_no_exception 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] test_funcs: 🚀 Starting test
-2026-01-21 09:18:15 [    INFO] test_funcs: ✅ Success message
-2026-01-21 09:18:15 [ WARNING] test_funcs: ⚠️ Warning message
-2026-01-21 09:18:15 [   ERROR] test_funcs: ❌ Error message
+2026-01-21 12:51:43 [    INFO] test_funcs: 🚀 Starting test
+2026-01-21 12:51:43 [    INFO] test_funcs: ✅ Success message
+2026-01-21 12:51:43 [ WARNING] test_funcs: ⚠️ Warning message
+2026-01-21 12:51:43 [   ERROR] test_funcs: ❌ Error message
 PASSED                                                                   [ 60%]
 src/tests/test_new_utils.py::TestBaseProcessor::test_base_processor_imports PASSED [ 60%]
 src/tests/test_new_utils.py::TestBaseProcessor::test_processing_result_dataclass PASSED [ 60%]
@@ -971,19 +973,19 @@ src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontolo
 src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options PASSED [ 62%]
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
-2026-01-21 09:18:15 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-01-21 12:51:43 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2026-01-21 12:51:43 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED                                                                   [ 62%]
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
-2026-01-21 09:18:15 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-01-21 12:51:43 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2026-01-21 12:51:43 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED                                                                   [ 62%]
 src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation PASSED [ 62%]
 src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
-2026-01-21 09:18:15 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-01-21 12:51:43 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/GeneralizedNotationNotation/src/ontology/act_inf_ontology_terms.json
+2026-01-21 12:51:43 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
 PASSED                                                                   [ 62%]
 src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration PASSED [ 62%]
 src/tests/test_ontology_overall.py::test_ontology_module_completeness PASSED [ 62%]
@@ -1000,26 +1002,26 @@ src/tests/test_oxdraw_integration.py::TestRoundTripConversion::test_round_trip_p
 src/tests/test_oxdraw_integration.py::TestRoundTripConversion::test_round_trip_preserves_ontology PASSED [ 64%]
 src/tests/test_oxdraw_integration.py::TestProcessOxdraw::test_process_oxdraw_headless 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchmzmyt3
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchmzmyt3/output
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 1 GNN file(s)
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 📝 Phase 1: Converting GNN files to Mermaid format...
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration:   [1/1] Processing: test_model.md
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration:   ✅ Converted: test_model.md → test_model.mmd
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpchmzmyt3/output/oxdraw_processing_results.json
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: ✨ Summary:
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration:    GNN → Mermaid: 1/1 successful
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpptb8nm8t
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpptb8nm8t/output
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 1 GNN file(s)
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 📝 Phase 1: Converting GNN files to Mermaid format...
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration:   [1/1] Processing: test_model.md
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration:   ✅ Converted: test_model.md → test_model.mmd
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 📊 Processing results saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpptb8nm8t/output/oxdraw_processing_results.json
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: ✨ Summary:
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration:    GNN → Mermaid: 1/1 successful
 PASSED                                                                   [ 64%]
 src/tests/test_oxdraw_integration.py::TestProcessOxdraw::test_process_oxdraw_no_files 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpawbt13b0/empty
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpawbt13b0/output
-2026-01-21 09:18:15 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 0 GNN file(s)
-2026-01-21 09:18:15 [ WARNING] src.tests.test_oxdraw_integration: No GNN files found to process
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 🎨 oxdraw Integration - Visual GNN Model Interface
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Mode: headless
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Target directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpu1nthl1f/empty
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpu1nthl1f/output
+2026-01-21 12:51:43 [    INFO] src.tests.test_oxdraw_integration: 📁 Found 0 GNN file(s)
+2026-01-21 12:51:43 [ WARNING] src.tests.test_oxdraw_integration: No GNN files found to process
 PASSED                                                                   [ 64%]
 src/tests/test_oxdraw_integration.py::TestMetadataGeneration::test_generate_mermaid_metadata PASSED [ 64%]
 src/tests/test_performance_overall.py::TestPerformanceBasics::test_import_timing PASSED [ 64%]
@@ -1030,31 +1032,31 @@ src/tests/test_performance_overall.py::TestResourceMonitoring::test_cpu_count_de
 src/tests/test_performance_overall.py::TestResourceMonitoring::test_disk_space_check PASSED [ 65%]
 src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_pymdp_graceful_degradation_with_real_error 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [    INFO] execute.pymdp.pymdp_simulation: Initialized with default gridworld configuration
-2026-01-21 09:18:15 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 5A, 4O
+2026-01-21 12:51:43 [    INFO] execute.pymdp.pymdp_simulation: Initialized with default gridworld configuration
+2026-01-21 12:51:43 [    INFO] execute.pymdp.pymdp_simulation: Created PyMDP model: 4S, 5A, 4O
 PASSED                                                                   [ 65%]
 src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_missing_discopy_graceful_degradation 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:15 [ WARNING] execute.discopy_translator_module.translator: DisCoPy not available - cannot create diagrams
+2026-01-21 12:51:43 [ WARNING] execute.discopy_translator_module.translator: DisCoPy not available - cannot create diagrams
 PASSED                                                                   [ 65%]
 src/tests/test_pipeline_error_scenarios.py::TestDependencyErrorScenarios::test_matplotlib_rendering_fallbacks PASSED [ 65%]
 src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_missing_input_directory 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:16 [    INFO] visualization: 🚀 Starting step: Processing visualizations
-2026-01-21 09:18:16 [ WARNING] visualization: ⚠️ No GNN files found for visualization
+2026-01-21 12:51:43 [    INFO] visualization: 🚀 Starting step: Processing visualizations
+2026-01-21 12:51:43 [ WARNING] visualization: ⚠️ No GNN files found for visualization
 PASSED                                                                   [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_readonly_output_directory PASSED [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestFileOperationErrorScenarios::test_corrupted_gnn_file_handling PASSED [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_large_gnn_file_handling 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:16 [    INFO] gnn.parsers.unified_parser: Detected format: markdown for /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_large_gnn_file_handling0/input/large_model.md
-2026-01-21 09:18:16 [    INFO] gnn.parsers.unified_parser: Parsing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_large_gnn_file_handling0/input/large_model.md as markdown
-2026-01-21 09:18:16 [    INFO] gnn.parsers.unified_parser: Successfully parsed /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1868/test_large_gnn_file_handling0/input/large_model.md in 0.036s
+2026-01-21 12:51:43 [    INFO] gnn.parsers.unified_parser: Detected format: markdown for /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_large_gnn_file_handling0/input/large_model.md
+2026-01-21 12:51:43 [    INFO] gnn.parsers.unified_parser: Parsing /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_large_gnn_file_handling0/input/large_model.md as markdown
+2026-01-21 12:51:43 [    INFO] gnn.parsers.unified_parser: Successfully parsed /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-1869/test_large_gnn_file_handling0/input/large_model.md in 0.040s
 PASSED                                                                   [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution 
 -------------------------------- live log call ---------------------------------
-2026-01-21 09:18:16 [    INFO] visualization: 🚀 Starting step: Processing visualizations
-2026-01-21 09:18:17 [    INFO] visualization: ✅ Generated 7 visualizations
+2026-01-21 12:51:43 [    INFO] visualization: 🚀 Starting step: Processing visualizations
+2026-01-21 12:51:44 [    INFO] visualization: ✅ Generated 7 visualizations
 PASSED                                                                   [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestErrorReportingAndDiagnostics::test_standardized_error_handler_creation PASSED [ 66%]
 src/tests/test_pipeline_error_scenarios.py::TestErrorReportingAndDiagnostics::test_diagnostic_logger_creation PASSED [ 66%]
@@ -1306,22 +1308,22 @@ src/tests/test_website_overall.py::TestWebsiteIntegration::test_website_mcp_inte
 src/tests/test_website_overall.py::test_website_module_completeness PASSED [100%]
 
 ============================= slowest 10 durations =============================
-5.83s call     src/tests/test_uv_environment.py::TestEnvironmentHealth::test_check_environment_health
-2.91s call     src/tests/test_ml_integration_overall.py::TestMLIntegrationOverall::test_process_ml_integration_flow
+5.82s call     src/tests/test_uv_environment.py::TestEnvironmentHealth::test_check_environment_health
+1.64s call     src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_attempt_pymdp_auto_install
 1.61s call     src/tests/test_pipeline_performance.py::TestResourceScaling::test_resource_estimation
-1.40s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
-1.30s call     src/tests/test_execute_pymdp_package.py::TestPyMDPPackageDetection::test_attempt_pymdp_auto_install
-1.11s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_preflight_metrics
-1.09s call     src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution
-1.01s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
+1.58s call     src/tests/test_pipeline_improvements_validation.py::TestDependencyValidationImprovements::test_improved_installation_instructions
+1.38s call     src/tests/test_uv_environment.py::TestUVCacheAndPerformance::test_uv_sync_fast
+1.23s call     src/tests/test_pipeline_error_scenarios.py::TestResourceConstraintScenarios::test_concurrent_pipeline_execution
+1.13s call     src/tests/test_pipeline_functionality.py::TestPipelineFunctionality::test_preflight_metrics
+1.00s call     src/tests/test_pipeline_performance.py::TestNetworkOperationTiming::test_api_request_timing
 1.00s call     src/tests/test_pipeline_infrastructure.py::TestUtilsResourceManager::test_resource_manager_class
 
 (1 durations < 1s hidden.)
 =========================== short test summary info ============================
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:32: Testing internal implementation - backend auto-configured
 SKIPPED [1] src/tests/test_visualization_comprehensive.py:39: Testing internal implementation - backend auto-configured
-================ 742 passed, 2 skipped, 54 deselected in 39.14s ================
+================ 742 passed, 2 skipped, 54 deselected in 39.07s ================
 
 
 STDERR:
-DEBUG:2026-01-21 09:18:01,454:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+DEBUG:2026-01-21 12:51:30,249:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.

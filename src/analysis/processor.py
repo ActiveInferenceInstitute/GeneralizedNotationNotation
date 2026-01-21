@@ -261,6 +261,21 @@ def process_analysis(
             else:
                 logger.warning(f"Execution directory not found at {execution_dir}. Skipping post-simulation analysis.")
             
+             # 2.6: Generate ActiveInference.jl Visualizations
+            try:
+                from .activeinference_jl_analyzer import generate_analysis_from_logs as analyze_actinf
+                logger.info("Generating ActiveInference.jl visualizations...")
+                # We pass output_dir as the destination, but the analyzer might write back to the source dirs 
+                # or a specific subfolder. The implementation handles finding the right inputs.
+                actinf_viz = analyze_actinf(execution_dir, output_dir, verbose)
+                if actinf_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + actinf_viz
+                    logger.info(f"Generated {len(actinf_viz)} ActiveInference.jl visualization files")
+            except ImportError as e:
+                logger.debug(f"activeinference_jl_analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"ActiveInference.jl analysis failed: {e}")
+            
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
                 comparisons = perform_model_comparisons(results["statistical_analysis"], verbose)

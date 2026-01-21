@@ -1,28 +1,21 @@
 [
   {
+    "name": "get_pipeline_config_info",
+    "description": "Get detailed pipeline configuration information and settings.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "get_pipeline_status",
+    "description": "Get current pipeline execution status, recent logs, and execution statistics.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "get_pipeline_steps",
     "description": "Get information about all available pipeline steps, their metadata, and dependencies.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "process_research",
-    "description": "Process research tasks for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.llm.list_functions",
-    "description": "List callable functions exported by the module public API.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.visualization.list_functions",
-    "description": "List callable functions exported by the src.visualization module public API.",
     "module": "",
     "category": "",
     "version": "1.0.0"
@@ -79,6 +72,13 @@
   {
     "name": "sympy_validate_matrix",
     "description": "Validate matrix properties including stochasticity constraints",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "validate_pipeline_dependencies",
+    "description": "Validate pipeline step dependencies and identify missing or circular dependencies.",
     "module": "",
     "category": "",
     "version": "1.0.0"

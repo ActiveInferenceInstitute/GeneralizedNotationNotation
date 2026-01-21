@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-21T09:18:42.110480",
+  "timestamp": "2026-01-21T12:52:10.799112",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -9,7 +9,7 @@
       "file_name": "actinf_pomdp_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: E, D, C, G, s, u, s_prime, F, matrix, vector, o, t, A, type, B, \u03c0"
+        "Duplicate variable names: C, o, E, t, B, matrix, u, D, F, s, vector, A, s_prime, \u03c0, type, G"
       ],
       "warnings": [
         "Type issue: Unknown type 'Active' for variable 'Example'",
@@ -512,7 +512,7 @@
           "type": "3 (controlled by \u03c0)"
         }
       ],
-      "validation_timestamp": "2026-01-21T09:18:42.110617"
+      "validation_timestamp": "2026-01-21T12:52:10.799289"
     }
   ],
   "type_analysis": [
@@ -725,7 +725,7 @@
         "1,type=int": 2
       },
       "total_variables": 36,
-      "analysis_timestamp": "2026-01-21T09:18:42.112607"
+      "analysis_timestamp": "2026-01-21T12:52:10.801453"
     }
   ]
 }

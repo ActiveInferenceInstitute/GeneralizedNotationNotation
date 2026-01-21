@@ -56,7 +56,12 @@ function setup_output_directories(base_dir::String)
         "models",
         "parameters",
         "simulation_results",
-        "analysis"
+    dirs = [
+        "logs",
+        "data_traces", 
+        "models",
+        "parameters",
+        "simulation_results"
     ]
     
     for dir in dirs
@@ -253,8 +258,7 @@ function run_basic_example(output_dir::String)
         save_trace_csv(results_data, joinpath(output_dir, "data_traces", "basic_simulation_trace.csv"), ["step", "observation", "action", "belief_state_1"])
         
         # Create plot data (for visualization utilities to read)
-        plot_dir = joinpath(output_dir, "analysis", "plots")
-        mkpath(plot_dir)
+
         
         # Basic metrics data for plotting (saved to data_traces)
         trace_dir = joinpath(output_dir, "data_traces")
@@ -547,125 +551,10 @@ function run_multi_step_planning_example(output_dir::String)
     end
 end
 
-function create_analysis_summary(output_dir::String)
-    """Create comprehensive analysis of all generated data."""
-    @info "Creating analysis summary"
-    
-    try
-        analysis_file = joinpath(output_dir, "analysis", "comprehensive_analysis.txt")
-        
-        open(analysis_file, "w") do f
-            println(f, "ActiveInference.jl Consolidated Analysis Summary")
-            println(f, "Generated: $(now())")
-            println(f, "Script Version: $SCRIPT_VERSION")
-            println(f, "="^60)
-            println(f)
-            
-            println(f, "EXECUTION OVERVIEW:")
-            println(f, "- Basic POMDP simulation with agent inference")
-            println(f, "- Parameter learning demonstration")  
-            println(f, "- Multi-step planning example")
-            println(f, "- Comprehensive data logging and analysis")
-            println(f)
-            
-            println(f, "DATA FILES GENERATED:")
-            file_count = 0
-            for (root, dirs, files) in walkdir(output_dir)
-                for file in files
-                    if endswith(file, ".csv") || endswith(file, ".txt") || endswith(file, ".log")
-                        rel_path = relpath(joinpath(root, file), output_dir)
-                        println(f, "  $rel_path")
-                        file_count += 1
-                    end
-                end
-            end
-            println(f)
-            println(f, "Total files generated: $file_count")
-            println(f)
-            
-            println(f, "ANALYSIS RECOMMENDATIONS:")
-            println(f, "1. Examine simulation_results/ for agent behavior patterns")
-            println(f, "2. Analyze parameters/learning_progress.csv for learning curves")
-            println(f, "3. Compare learned vs true parameters in parameters/")
-            println(f, "4. Review logs/ for detailed execution information")
-            println(f, "5. Use data for further visualization and statistical analysis")
-            println(f)
-            
-            println(f, "ActiveInference.jl API VERIFICATION:")
-            println(f, "✓ create_matrix_templates() working correctly")
-            println(f, "✓ init_aif() agent initialization successful")
-            println(f, "✓ infer_states!() state inference functional")
-            println(f, "✓ infer_policies!() policy inference working")
-            println(f, "✓ sample_action!() action selection operational")
-            println(f, "✓ update_parameters!() parameter learning active")
-        end
-        
-        @info "Analysis summary created successfully"
-        return true
-        
-    catch e
-        @error "Analysis summary creation failed" exception=e
-        return false
-    end
-end
+    # Analysis summary generation moved to src/16_analysis.py
 
 # Visualization integration
-function run_visualizations(output_dir::String)
-    """Run visualization utilities if available."""
-    @info "Running visualizations"
-    
-    try
-        # Run comprehensive visualization utilities (includes both text analysis and plots)
-        viz_script = joinpath(@__DIR__, "visualization_utils.jl")
-        
-        if isfile(viz_script)
-            # Run visualization script as separate process to avoid namespace conflicts
-            result = run(`julia $viz_script $output_dir`)
-            if result.exitcode == 0
-                @info "Visualization analysis and plots generated successfully"
-                return true
-            else
-                @warn "Visualization failed"
-                return true  # Non-critical failure
-            end
-        else
-            @warn "Visualization utilities not found - skipping visualization"
-            return true  # Non-critical failure
-        end
-    catch e
-        @warn "Visualization failed" exception=e
-        return true  # Non-critical failure
-    end
-end
-
-# Enhanced Analysis Suite Integration
-function run_enhanced_analysis_suite(output_dir::String)
-    """Run the comprehensive enhanced analysis suite for maximum POMDP understanding."""
-    @info "Running Enhanced Analysis Suite"
-    
-    try
-        # Run enhanced integration suite as separate process
-        enhanced_script = joinpath(@__DIR__, "enhanced_integration_suite.jl")
-        
-        if isfile(enhanced_script)
-            @info "Starting enhanced analysis suite for maximum POMDP understanding"
-            result = run(`julia $enhanced_script $output_dir`)
-            if result.exitcode == 0
-                @info "Enhanced analysis suite completed successfully"
-                return true
-            else
-                @warn "Enhanced analysis suite failed"
-                return true  # Non-critical failure
-            end
-        else
-            @warn "Enhanced integration suite not found - skipping enhanced analysis"
-            return true  # Non-critical failure
-        end
-    catch e
-        @warn "Enhanced analysis suite failed" exception=e
-        return true  # Non-critical failure
-    end
-end
+# Visualization and Enhanced Analysis logic moved to src/16_analysis.py
 
 # Main execution function
 function main()
@@ -686,7 +575,7 @@ function main()
     println()
     
     success_count = 0
-    total_examples = 6
+    total_examples = 3
     
     try
         # Environment setup
@@ -703,10 +592,7 @@ function main()
         examples = [
             ("Basic POMDP Simulation", () -> run_basic_example(output_dir)),
             ("Parameter Learning", () -> run_learning_example(output_dir)),
-            ("Multi-Step Planning", () -> run_multi_step_planning_example(output_dir)),
-            ("Analysis Summary", () -> create_analysis_summary(output_dir)),
-            ("Visualizations", () -> run_visualizations(output_dir)),
-            ("Enhanced Analysis Suite", () -> run_enhanced_analysis_suite(output_dir))
+            ("Multi-Step Planning", () -> run_multi_step_planning_example(output_dir))
         ]
         
         println("\n🚀 Running ActiveInference.jl Examples:")
@@ -715,8 +601,8 @@ function main()
         println("-" * "="^30)
         
         for (i, (name, example_func)) in enumerate(examples)
-            if i == 6  # Enhanced Analysis Suite
-                println("\nPhase 2: Enhanced Analysis Suite for Maximum POMDP Understanding")
+            if i == 4
+                println("\nPhase 2: Completed")
                 println("-" * "="^50)
             end
             

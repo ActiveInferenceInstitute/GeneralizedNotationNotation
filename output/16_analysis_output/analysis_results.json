@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-21T09:23:56.244001",
+  "timestamp": "2026-01-21T12:57:37.206133",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -633,7 +633,7 @@
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-01-21T09:23:56.246802"
+      "analysis_timestamp": "2026-01-21T12:57:37.209136"
     }
   ],
   "complexity_metrics": [
@@ -645,7 +645,7 @@
       "structural_complexity": 21.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.2,
-      "analysis_timestamp": "2026-01-21T09:23:56.248905"
+      "analysis_timestamp": "2026-01-21T12:57:37.211091"
     }
   ],
   "performance_benchmarks": [
@@ -656,7 +656,7 @@
       "memory_usage": 422.5,
       "complexity_score": 72,
       "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-01-21T09:23:56.250985"
+      "benchmark_timestamp": "2026-01-21T12:57:37.213017"
     }
   ],
   "model_comparisons": [],
@@ -684,7 +684,7 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-01-21T09:23:56.838929",
+    "timestamp": "2026-01-21T12:57:37.777067",
     "frameworks": {
       "jax": {
         "success_count": 1,

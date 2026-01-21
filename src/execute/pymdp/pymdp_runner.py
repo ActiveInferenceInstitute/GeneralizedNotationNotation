@@ -180,8 +180,8 @@ def execute_pymdp_script_with_outputs(
         if result.returncode == 0:
             logger.info(f"Script executed successfully: {script_path.name}")
             
-            # Generate additional analysis and visualizations
-            analysis_results = generate_pymdp_analysis(script_path, result.stdout, script_output_dir)
+            # Generate execution metadata (no analysis artifacts)
+            metadata = extract_execution_metadata(script_path, result.stdout, script_output_dir)
             
             execution_summary = {
                 "success": True,
@@ -191,7 +191,7 @@ def execute_pymdp_script_with_outputs(
                     str(log_file.relative_to(output_dir)),
                     str(stdout_file.relative_to(output_dir))
                 ],
-                "analysis": analysis_results,
+                "metadata": metadata,
                 "execution_time": execution_log["execution_time"]
             }
             
@@ -221,58 +221,45 @@ def execute_pymdp_script_with_outputs(
             "traceback": traceback.format_exc()
         }
 
-def generate_pymdp_analysis(script_path: Path, stdout_content: str, output_dir: Path) -> Dict[str, Any]:
+def extract_execution_metadata(script_path: Path, stdout_content: str, output_dir: Path) -> Dict[str, Any]:
     """
-    Generate analysis artifacts from PyMDP script execution.
+    Extract metadata from PyMDP script execution for validation purposes.
     
     Args:
         script_path: Path to the executed script
         stdout_content: Captured stdout from script execution
-        output_dir: Directory to save analysis outputs
+        output_dir: Directory where outputs were saved
         
     Returns:
-        Dictionary containing analysis results
+        Dictionary containing execution metadata
     """
-    analysis_results = {
-        "matrices_extracted": False,
+    metadata = {
+        "matrices_found": False,
         "agent_instantiated": False,
-        "visualizations_created": 0,
-        "analysis_files": []
+        "trace_file": None
     }
     
     try:
         # Parse stdout for matrix information
         if "A = " in stdout_content and "B = " in stdout_content:
-            analysis_results["matrices_extracted"] = True
+            metadata["matrices_found"] = True
             logger.info(f"Successfully extracted A and B matrices from {script_path.name}")
         
         # Check if agent was instantiated
         if "agent successfully instantiated" in stdout_content.lower():
-            analysis_results["agent_instantiated"] = True
+            metadata["agent_instantiated"] = True
             logger.info(f"PyMDP Agent successfully instantiated in {script_path.name}")
         
-        # Visualization is now handled in the analysis step (16_analysis.py)
-        # if analysis_results["matrices_extracted"]:
-        #    viz_count = create_matrix_visualizations(stdout_content, output_dir, script_path.stem)
-        #    analysis_results["visualizations_created"] = viz_count
-        
-        # Create analysis summary
-        summary_file = output_dir / f"{script_path.stem}_analysis_summary.json"
-        with open(summary_file, 'w') as f:
-            json.dump(analysis_results, f, indent=2)
-        
-        analysis_results["analysis_files"].append(str(summary_file.name))
-        
-        # Generate simulation trace if possible
+        # Generate simulation trace (raw data for analysis)
         trace_file = generate_simulation_trace(stdout_content, output_dir, script_path.stem)
         if trace_file:
-            analysis_results["analysis_files"].append(str(trace_file.name))
+            metadata["trace_file"] = str(trace_file.name)
         
     except Exception as e:
-        logger.warning(f"Error during analysis generation for {script_path.name}: {e}")
-        analysis_results["error"] = str(e)
+        logger.warning(f"Error during metadata extraction for {script_path.name}: {e}")
+        metadata["error"] = str(e)
     
-    return analysis_results
+    return metadata
 
 
 
@@ -446,11 +433,10 @@ def create_execution_report(output_dir: Path, execution_results: List[Dict],
             
             if result.get("success", False):
                 f.write(f"- **Execution Time:** {result.get('execution_time', 'N/A')}\n")
-                if 'analysis' in result:
-                    analysis = result['analysis']
-                    f.write(f"- **Matrices Extracted:** {'Yes' if analysis.get('matrices_extracted', False) else 'No'}\n")
-                    f.write(f"- **Agent Instantiated:** {'Yes' if analysis.get('agent_instantiated', False) else 'No'}\n")
-                    f.write(f"- **Visualizations Created:** {analysis.get('visualizations_created', 0)}\n")
+                if 'metadata' in result:
+                    meta = result['metadata']
+                    f.write(f"- **Matrices Extracted:** {'Yes' if meta.get('matrices_found', False) else 'No'}\n")
+                    f.write(f"- **Agent Instantiated:** {'Yes' if meta.get('agent_instantiated', False) else 'No'}\n")
             else:
                 f.write(f"- **Error:** {result.get('error', 'Unknown error')}\n")
             

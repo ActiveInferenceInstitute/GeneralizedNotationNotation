@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-21T09:23:55.089864",
+  "timestamp": "2026-01-21T12:57:36.075681",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -14,7 +14,7 @@
       },
       "variables_count": 72,
       "connections_count": 0,
-      "generation_timestamp": "2026-01-21T09:23:55.284904"
+      "generation_timestamp": "2026-01-21T12:57:36.255127"
     }
   ],
   "sonification_results": [
@@ -23,7 +23,7 @@
       "sonification_file": "output/15_audio_output/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-01-21T09:23:55.292591"
+      "generation_timestamp": "2026-01-21T12:57:36.262319"
     }
   ],
   "audio_analysis": [

@@ -2,152 +2,123 @@
 
 ### **Comprehensive Analysis of the Active Inference POMDP Agent (GNN Specification)**
 
-This model represents a **partially observable Markov decision process (POMDP)** agent operating in a discrete environment where the agent must infer its hidden state (e.g., location) based on noisy observations, while optimizing for a reward function defined over observations. It is a foundational example of **Active Inference**, a framework for agents that actively gather information to minimize uncertainty while pursuing goals.
+This model is a **discrete-time, fully observable but partially controllable** probabilistic model designed to simulate an agent navigating a **partially observable Markov decision process (POMDP)** with **active inference** principles. It models decision-making in environments where the agent must infer hidden states (e.g., locations, states of the world) from noisy observations and select actions to maximize expected utility.
 
 ---
 
 ## **1. Model Purpose: What Problem Does It Solve?**
-The agent operates in a **discrete, fully controllable environment** where:
-- The agent’s **hidden state** (e.g., location) is unknown but evolves deterministically based on actions.
-- The agent receives **noisy observations** (e.g., sensor readings) that map to hidden states.
-- The agent must **learn its beliefs about the hidden state** and **select actions** that maximize expected reward (or minimize uncertainty).
+This model represents a **classic Active Inference agent** in a **discrete POMDP setting**, where:
+- The agent must **infer hidden states** (e.g., locations, system states) despite **noisy observations**.
+- It must **select actions** to maximize expected utility (preferences) while accounting for uncertainty.
+- The agent operates in a **finite, bounded state-action space** with **no deep planning** (only one-step lookahead).
 
-This is analogous to:
-- A **robot exploring an unknown environment** (e.g., a maze) while avoiding obstacles.
-- A **financial agent trading stocks** where past prices (observations) must be interpreted to predict future returns.
-- A **medical diagnosis system** inferring disease states from symptoms.
-
-The model is **minimalist**, focusing on **one-step planning** (no deep reasoning), making it tractable for teaching Active Inference principles.
+**Real-world applications include:**
+- **Robotics navigation** (e.g., localizing a robot in an unknown environment).
+- **Game AI** (e.g., a chess engine inferring opponent moves).
+- **Reinforcement learning** (e.g., a policy gradient agent learning from sparse rewards).
+- **Medical diagnosis** (e.g., inferring disease states from symptoms).
 
 ---
 
 ## **2. Core Components**
 
-### **A. Hidden States (s)**
-The hidden state represents the **true, unobserved state of the world**, here modeled as a discrete variable:
-- **3 possible states** (e.g., `Location1`, `Location2`, `Location3`).
-- The agent’s belief over these states evolves as it gathers observations.
+### **(A) Hidden States (s)**
+The hidden states represent **unobserved but controllable aspects of the environment**. In this model:
+- **3 discrete states** (`s[3,1,type=float]`), each with a **probability distribution** over possible values.
+- **Example interpretation:**
+  - If `s` represents a **location** (e.g., "North," "Center," "South"), then the agent must infer which location it is in.
+  - If `s` represents a **system state** (e.g., "Open," "Closed," "Faulty"), the agent must infer the current state.
 
-**Mathematically:**
-- `s ∈ {1, 2, 3}` (current hidden state).
-- `s_prime ∈ {1, 2, 3}` (next hidden state after an action).
+### **(B) Observations (o)**
+The observations are **noisy, discrete signals** that the agent receives but cannot fully trust. In this model:
+- **3 possible outcomes** (`o[3,1,type=int]`), each with a **likelihood** of being generated from a hidden state.
+- **Example interpretation:**
+  - If `o` represents a **sensor reading** (e.g., "Red," "Green," "Blue"), the agent must infer which hidden state produced it.
+  - The **likelihood matrix (A)** defines how likely each observation is given a hidden state.
 
-### **B. Observations (o)**
-The agent receives **noisy observations** that map to hidden states:
-- **3 possible observations** (e.g., `Sensor1`, `Sensor2`, `Sensor3`).
-- The likelihood of an observation given a hidden state is encoded in matrix **A**.
-
-**Mathematically:**
-- `A ∈ ℝ^{3×3}` (likelihood matrix, rows = observations, columns = hidden states).
-- Example: If `A[0,0] = 0.9`, then observation `0` is most likely when hidden state is `1`.
-
-### **C. Actions (u) and Policy (π)**
-The agent can take **3 discrete actions**, each transitioning the hidden state deterministically:
-- **Action 0**: Moves from `s` to `s_prime` (e.g., `s=1 → s_prime=2`).
-- **Action 1**: Moves from `s` to `s_prime` (e.g., `s=2 → s_prime=1`).
-- **Action 2**: Moves from `s` to `s_prime` (e.g., `s=3 → s_prime=3`).
-
-**Policy (π):**
-- A **probability distribution over actions** (e.g., `π = [0.5, 0.3, 0.2]`).
-- Initially, the agent uses a **uniform habit** (`E = [0.33, 0.33, 0.33]`).
-
-**Mathematically:**
-- `π ∈ ℝ^{3}` (policy vector).
-- `u ∈ {0, 1, 2}` (chosen action).
+### **(C) Actions (u) & Policy (π)**
+The agent can **select actions** to influence the hidden state. In this model:
+- **3 discrete actions** (`u[1,type=int]`), each with a **probability distribution** (`π[3,type=float]`).
+- **Example interpretation:**
+  - If `u` represents a **movement command** (e.g., "Left," "Right," "Stay"), the agent must choose which action to take.
+  - The **transition matrix (B)** defines how each action moves the hidden state.
 
 ---
 
 ## **3. Model Dynamics: How Does It Evolve Over Time?**
-The agent operates in discrete time steps (`t`), with the following **key transitions**:
+The model follows a **discrete-time Markov process** with the following key relationships:
 
-### **A. Hidden State Transition (B)**
-The next hidden state depends on the current state and chosen action:
-- `B ∈ ℝ^{3×3×3}` (transition matrix).
-- Example: If `B[1,0,0] = 1.0`, then action `0` moves from state `0` to state `1`.
+### **(A) Transition Dynamics (B Matrix)**
+- The **transition matrix (B)** defines how the hidden state evolves given a previous state and action.
+- Each **action** corresponds to a **slice** of the 3×3×3 matrix:
+  - `B[next_state, prev_state, action]` → Probability of transitioning from `prev_state` to `next_state` when taking `action`.
+- **Example:**
+  - If `action=0` (e.g., "Move North"), then `B[0,1,0]` = 1.0 means the agent **always moves from state 1 to state 0** when taking this action.
 
-### **B. Observation Likelihood (A)**
-Given an observation `o`, the likelihood of a hidden state `s` is:
-- `P(o | s) = A[o, s]`.
+### **(B) Observation Likelihood (A Matrix)**
+- The **likelihood matrix (A)** defines how observations are generated from hidden states.
+- `A[observation, hidden_state]` → Probability of observing `observation` given `hidden_state`.
+- **Example:**
+  - `A[0,0] = 0.9` means if the agent is in **state 0**, it has a **90% chance** of observing **outcome 0**.
 
-### **C. Belief Update (Variational Free Energy)**
-The agent maintains a **belief distribution** over hidden states (`s`), updated using **Variational Free Energy (F)**:
-- `F = -log P(o | s) + log P(s)` (simplified).
-- This balances **likelihood** (from observations) and **prior** (from initial beliefs).
+### **(C) Belief Propagation (Variational Free Energy)**
+- The agent maintains a **belief distribution** (`s[3,1,type=float]`) over hidden states.
+- After observing an outcome (`o`), it updates its belief using **Variational Free Energy (F)**:
+  - `F = -log(p(o|s)) + log(p(s))` (a trade-off between likelihood and prior).
+- This allows the agent to **infer the most likely hidden state** given observations.
 
-### **D. Policy Update (Expected Free Energy)**
-The agent’s policy `π` is updated to minimize **Expected Free Energy (G)**:
-- `G = -E[log P(o | s)] + E[log P(s)]` (expected reward).
-- This encourages actions that maximize expected reward.
-
-### **E. Action Selection**
-After updating beliefs and policies, the agent selects an action:
-- `u = sample_action(π)` (e.g., greedy or stochastic).
-
----
-
-## **4. Active Inference Context: How Does This Model Implement Active Inference?**
-Active Inference is a framework where agents **actively gather information** to minimize uncertainty while pursuing goals. This model implements it via:
-
-### **A. Belief Updating (Inference)**
-- The agent **infers its hidden state distribution** (`s`) using **Variational Free Energy (F)**.
-- This balances:
-  - **Likelihood** (how well observations match hidden states).
-  - **Prior** (initial beliefs about hidden states).
-- Example: If an observation is very unlikely (`A[o, s] = 0.05`), the agent’s belief over `s` will shift away from that state.
-
-### **B. Policy Updating (Optimization)**
-- The agent **optimizes its policy** (`π`) to maximize **Expected Free Energy (G)**.
-- This encourages actions that:
-  - **Reduce uncertainty** (e.g., explore new states).
-  - **Maximize reward** (e.g., stay in high-reward states).
-
-### **C. Active Information Seeking**
-- The agent **adapts its actions** based on uncertainty:
-  - If `P(s)` is high (low uncertainty), it may **stay in place**.
-  - If `P(s)` is low (high uncertainty), it may **explore new actions**.
+### **(D) Policy Selection (Expected Free Energy)**
+- The agent selects an **action** (`u`) based on its **policy distribution** (`π`).
+- The **Expected Free Energy (G)** is computed as:
+  - `G = E[F] = Σ π(a) * F(a)` (weighted average of free energies over actions).
+- The agent chooses the action that **maximizes G** (i.e., the one with the highest expected utility).
 
 ---
 
-## **5. Practical Implications: What Can This Model Predict and Decide?**
-This model can be used to:
-1. **Predict Hidden State Beliefs**
-   - Given observations, it can estimate the **probability distribution over hidden states** (e.g., "What is the likelihood that the robot is in Location2?").
-   - Useful in **robotics, autonomous systems, and medical diagnosis**.
+## **4. Active Inference Context: How Does It Implement AI Principles?**
+Active Inference is a **predictive modeling framework** where the agent:
+1. **Predicts** the most likely hidden state given observations.
+2. **Updates beliefs** using **Variational Free Energy** (a trade-off between likelihood and prior).
+3. **Selects actions** to maximize **expected utility** (preferences).
 
-2. **Optimize Action Selection**
-   - It can **select actions** that maximize expected reward while minimizing uncertainty.
-   - Example: A **financial trading agent** might choose to buy/sell stocks based on past price patterns.
+### **(A) Belief Updating (F)**
+- The agent maintains a **belief distribution** (`s`) over hidden states.
+- After observing `o`, it updates its belief using:
+  - `F = -log(p(o|s)) + log(p(s))` (a weighted sum of likelihood and prior).
+- This ensures the agent **adapts to new information** while respecting prior beliefs.
 
-3. **Improve Exploration vs. Exploitation**
-   - The agent can **balance exploration** (trying new actions) and **exploitation** (staying in high-reward states).
-   - Example: A **game AI** might explore new moves to find better strategies.
+### **(B) Policy Selection (G)**
+- The agent computes the **Expected Free Energy (G)** for each possible action.
+- It selects the action that **maximizes G**, meaning it chooses the one that **best aligns with its preferences and beliefs**.
+- This is equivalent to **maximizing expected utility** in a POMDP.
 
-4. **Adapt to Noisy Observations**
-   - Since observations are noisy (`A` matrix), the agent can **robustly infer hidden states** even with imperfect sensors.
+### **(C) No Deep Planning**
+- Unlike deep RL agents, this model **only looks one step ahead**.
+- It does not consider future consequences of actions, only the **immediate expected utility**.
+
+---
+
+## **5. Practical Implications: What Can This Model Predict?**
+### **(A) What Can It Infer?**
+- The agent can **infer the most likely hidden state** given observations (e.g., "I am in the Center location").
+- It can **update its belief** after each observation, improving accuracy over time.
+
+### **(B) What Decisions Can It Make?**
+- It can **select actions** that maximize expected utility (e.g., "Move Right" if it expects a better observation).
+- It can **adapt its policy** based on new information (e.g., if an observation is rare, it may adjust its actions).
+
+### **(C) Limitations**
+- **No deep planning**: Only one-step lookahead, so it may not handle long-term strategies.
+- **No precision modulation**: Does not adjust belief confidence based on observation strength.
+- **No hierarchical nesting**: Does not model subgoals or multi-level decision-making.
 
 ---
 
-## **Summary Table of Key Concepts**
-| **Concept**               | **Description**                                                                 |
-|---------------------------|---------------------------------------------------------------------------------|
-| **Hidden State (s)**      | True, unobserved state (e.g., location).                                         |
-| **Observation (o)**       | Noisy signal mapping to hidden states (e.g., sensor readings).                  |
-| **Action (u)**            | Discrete control input (e.g., move left/right).                                  |
-| **Policy (π)**            | Probability distribution over actions.                                           |
-| **Likelihood (A)**        | `P(o | s)`: Probability of observation given hidden state.                          |
-| **Transition (B)**        | `P(s_prime | s, u)`: Probability of next state given current state and action.             |
-| **Belief Update (F)**     | Variational Free Energy: balances likelihood and prior.                          |
-| **Policy Update (G)**     | Expected Free Energy: maximizes expected reward.                                  |
-| **Active Inference**      | Agent actively gathers info to minimize uncertainty while pursuing goals.      |
+## **Summary**
+This **Active Inference POMDP Agent** is a **discrete-time, fully observable but partially controllable** model that:
+1. **Infers hidden states** (e.g., locations, system states) from noisy observations.
+2. **Updates beliefs** using **Variational Free Energy**.
+3. **Selects actions** to maximize **expected utility** (preferences).
+4. **Operates in a finite state-action space** with **one-step lookahead**.
 
----
-### **Final Thoughts**
-This model is a **fundamental example of Active Inference in POMDPs**, demonstrating how agents can:
-1. **Infer hidden states** from noisy observations.
-2. **Optimize policies** to maximize reward.
-3. **Adapt their behavior** based on uncertainty.
-
-It is particularly useful in **robotics, autonomous systems, and decision-making under uncertainty**. For deeper exploration, one could extend it with:
-- **Deep learning** (e.g., neural networks for belief and policy updates).
-- **Long-term planning** (beyond one-step decisions).
-- **Reinforcement learning** (for more complex environments).
+It is useful for **robotics, game AI, and reinforcement learning** where the agent must **infer hidden states and make decisions under uncertainty**.
