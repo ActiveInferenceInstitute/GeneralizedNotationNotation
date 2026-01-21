@@ -1,6 +1,6 @@
 # GNN Source Specification
 
-**Version**: 1.1.1  
+**Version**: 1.1.2  
 **Last Updated**: 2026-01-20  
 **Status**: ✅ Production Ready
 

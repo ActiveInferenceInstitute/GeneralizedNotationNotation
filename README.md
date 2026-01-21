@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-01-09
+**Last Updated**: 2026-01-20
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
-[![Tests](https://img.shields.io/badge/Tests-579%20Passed-brightgreen.svg)](#-repository-health)
+[![Tests](https://img.shields.io/badge/Tests-777%20Passed-brightgreen.svg)](#-repository-health)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -1140,16 +1140,16 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 
 The GNN project maintains high standards for code quality, testing, and documentation.
 
-### 📊 Current Metrics (2026-01-08)
+### 📊 Current Metrics (2026-01-20)
 
 | Metric | Status | Details |
 |--------|--------|---------|
 | **Pipeline Success** | ✅ 100% | 24/24 steps passing |
-| **Tests Passing** | ✅ 579/579 | 3 skipped (service-dependent), 56 skipped (optional deps) |
-| **Execution Time** | ⏱️ ~3 min | Full pipeline in under 3 minutes |
+| **Tests Passing** | ✅ 777/798 | 21 skipped (optional deps) |
+| **Execution Time** | ⏱️ ~9 min | Full test suite |
 | **Memory Usage** | 💾 36 MB peak | Efficient resource consumption |
 | **Module Coverage** | 📊 74-95% | Median ~82% test coverage |
-| **Documentation** | 📖 100% | All 28 modules have AGENTS.md |
+| **Documentation** | 📖 100% | All 28 modules have AGENTS.md + README.md + SPEC.md |
 
 ### 🧪 Testing Infrastructure
 

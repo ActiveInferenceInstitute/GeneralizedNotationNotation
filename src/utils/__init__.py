@@ -19,6 +19,9 @@ import logging
 from pathlib import Path
 from typing import Optional, Any, Tuple, Dict, List
 
+# Flag to indicate utils are available (used by pipeline modules)
+UTILS_AVAILABLE = True
+
 # Import and expose the main classes and functions for easy access
 try:
     from .logging_utils import (
@@ -265,6 +268,9 @@ except ImportError as e:
 
 # Export all utilities
 __all__ = [
+    # Utils availability flag
+    'UTILS_AVAILABLE',
+    
     # Logging utilities
     'PipelineLogger',
     'setup_step_logging',

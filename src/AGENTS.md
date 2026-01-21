@@ -148,39 +148,30 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-01-09)
+### Latest Status (2026-01-20)
 - **Total Steps**: 24 (all steps 0-23)
-- **Execution Time**: ~90s (90.1 seconds total)
+- **Execution Time**: ~90s (pipeline) / ~9min (full test suite)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (24/24 steps successful)
-- **Test Suite Status**: ✅ 516/516 tests passed
+- **Test Suite Status**: ✅ 777/798 tests passed (21 skipped - optional deps)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (28/28 modules + 11 subdirectories documented)
+- **AGENTS.md Coverage**: ✅ 100% (28/28 modules + all subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
+- **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready
 
-### Recent Updates (December 2025)
-- **Removed**: All legacy compatibility code and backwards-compatibility wrappers
-  - Deleted 5 legacy.py module files (model_registry, validation, execute, render, visualization)
-  - Removed deprecated function wrappers (execute_pymdp_scripts, run_gui, etc.)
-  - Updated all module __init__.py files to use modern function names directly
-  - Cleaned up compatibility comments and terminology
-- **Fixed**: All documentation gaps and inconsistencies
-- **Created**: Missing AGENTS.md files for all modules
-- **Added**: Comprehensive AGENTS.md documentation for framework-specific subdirectories (render/pymdp, render/rxinfer, render/activeinference_jl, render/discopy, render/jax, audio/sapf, audio/pedalboard, execute/pymdp, execute/rxinfer, execute/activeinference_jl, execute/jax)
-- **Updated**: All README files for completeness and accuracy
-- **Enhanced**: Module status matrix and performance characteristics
-- **Verified**: 24-step pipeline structure alignment
-- **All modules**: Have complete AGENTS.md and README documentation
-- **Subdirectories**: Framework-specific subdirectories now have comprehensive documentation
-
 ### Recent Updates (January 2026)
+- **Visualization Refactoring**: Removed visualization code from execute step (12), consolidated in analysis step (16)
+  - RxInfer.jl: Removed Plots.jl dependencies, exports data only
+  - PyMDP: Removed PyMDPVisualizer from execute, analysis step handles visualization
+- **Test Fixes**: Fixed LLM and pipeline test path expectations (777 tests now pass)
 - **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
 - **Observability**: Added JSON logging, log rotation, and performance metrics
 - **Analysis**: Cross-simulation aggregation and statistical summaries
 - **LLM**: Improved provider fallback chain and timeout handling
+- **Documentation**: Added missing AGENTS.md, README.md, SPEC.md to output/ directory
 
 ---
 
@@ -337,10 +328,10 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-01-09
-**Pipeline Version**: 1.1.1
+**Last Updated**: 2026-01-20
+**Pipeline Version**: 1.1.2
 **Total Modules**: 28
 **Total Steps**: 24 (0-23)
-**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README files for modules and subdirectories)
-**Legacy Code**: ✅ Removed (all backwards-compatibility wrappers and legacy modules eliminated)
+**Test Status**: ✅ 777/798 tests passed
+**Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

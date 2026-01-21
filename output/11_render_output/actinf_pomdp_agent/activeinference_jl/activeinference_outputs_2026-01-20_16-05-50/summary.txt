@@ -1,0 +1,28 @@
+======================================================================
+ActiveInference.jl Simulation Summary
+======================================================================
+Generated: 2026-01-20T16:06:06.873
+Model: Active Inference POMDP Agent
+
+Simulation Parameters:
+  - Timesteps: 20
+  - States: 3
+  - Observations: 3
+  - Actions: 3
+
+Results:
+  - Final belief (State 1): 0.0
+  - Action distribution: Dict{Any, Int64}(2 => 9, 3 => 2, 1 => 9)
+  - Observation distribution: Dict{Any, Int64}(3 => 18, 1 => 2)
+
+Validation:
+  - Beliefs in range [0,1]: true
+  - Beliefs sum to 1: true
+  - Actions in range: true
+  - Overall status: PASS
+
+Outputs:
+  - Visualizations generated: 6
+  - Data files: simulation_results.csv, model_parameters.json
+  - Summary: summary.txt
+======================================================================

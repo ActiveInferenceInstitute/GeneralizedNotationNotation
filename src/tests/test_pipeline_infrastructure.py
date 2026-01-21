@@ -100,58 +100,42 @@ class TestPipelineStepTemplate:
     @pytest.mark.safe_to_fail
     def test_step_template_imports(self):
         """Test that step template can be imported."""
-        try:
-            from src.pipeline import pipeline_step_template
-            assert hasattr(pipeline_step_template, 'validate_step_requirements')
-            assert hasattr(pipeline_step_template, 'process_single_file')
-            assert hasattr(pipeline_step_template, 'main')
-        except ImportError:
-            pytest.skip("Pipeline step template not available")
+        from src.pipeline import pipeline_step_template
+        assert hasattr(pipeline_step_template, 'validate_step_requirements')
+        assert hasattr(pipeline_step_template, 'process_single_file')
+        assert hasattr(pipeline_step_template, 'main')
+        # Verify functions are callable
+        assert callable(pipeline_step_template.validate_step_requirements)
+        assert callable(pipeline_step_template.process_single_file)
+        assert callable(pipeline_step_template.main)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_pipeline_step_class(self):
-        """Test PipelineStep class functionality."""
-        try:
-            from src.pipeline.pipeline_step_template import PipelineStep
-            
-            # Test step instantiation
-            step = PipelineStep("test_step", "Test Step Description")
-            
-            # Verify step properties
-            assert hasattr(step, 'name')
-            assert hasattr(step, 'description')
-            assert hasattr(step, 'execute')
-            assert step.name == "test_step"
-            
-        except ImportError:
-            pytest.skip("Pipeline step template not available")
-        except Exception as e:
-            # Should handle instantiation errors gracefully
-            assert "error" in str(e).lower()
+    def test_validate_step_requirements(self):
+        """Test validate_step_requirements function."""
+        from src.pipeline.pipeline_step_template import validate_step_requirements
+        
+        # Test that it returns a boolean
+        result = validate_step_requirements()
+        assert isinstance(result, bool)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_create_step_template(self, isolated_temp_dir):
-        """Test step template creation."""
-        try:
-            from src.pipeline.pipeline_step_template import create_step_template
-            
-            # Create test step template
-            template_file = isolated_temp_dir / "test_step.py"
-            
-            result = create_step_template("test_step", template_file)
-            
-            # Verify template creation
-            assert isinstance(result, (dict, bool, str))
-            if isinstance(result, dict):
-                assert 'status' in result or 'success' in result
-                
-        except ImportError:
-            pytest.skip("Pipeline step template not available")
-        except Exception as e:
-            # Should handle template creation errors gracefully
-            assert "error" in str(e).lower() or isinstance(result, (dict, bool))
+    def test_process_single_file(self, isolated_temp_dir):
+        """Test process_single_file function."""
+        from src.pipeline.pipeline_step_template import process_single_file
+        
+        # Create test input file
+        input_file = isolated_temp_dir / "test_input.md"
+        input_file.write_text("# Test GNN File\n\nSample content")
+        
+        output_dir = isolated_temp_dir / "output"
+        output_dir.mkdir()
+        options = {"verbose": False}
+        
+        # Test processing
+        result = process_single_file(input_file, output_dir, options)
+        assert isinstance(result, bool)
 
 class TestPipelineValidation:
     """Test pipeline.pipeline_validation module."""
@@ -160,54 +144,38 @@ class TestPipelineValidation:
     @pytest.mark.safe_to_fail
     def test_validation_imports(self):
         """Test that pipeline validation can be imported."""
-        try:
-            from src.pipeline import pipeline_validation
-            assert hasattr(pipeline_validation, 'validate_module_imports')
-            assert hasattr(pipeline_validation, 'validate_dependency_cycles')
-            assert hasattr(pipeline_validation, 'generate_validation_report')
-        except ImportError:
-            pytest.skip("Pipeline validation not available")
+        from src.pipeline import pipeline_validation
+        assert hasattr(pipeline_validation, 'validate_module_imports')
+        assert hasattr(pipeline_validation, 'validate_dependency_cycles')
+        assert hasattr(pipeline_validation, 'generate_validation_report')
+        # Verify functions are callable
+        assert callable(pipeline_validation.validate_module_imports)
+        assert callable(pipeline_validation.validate_dependency_cycles)
+        assert callable(pipeline_validation.generate_validation_report)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_pipeline(self, project_root):
-        """Test pipeline validation functionality."""
-        try:
-            from src.pipeline.pipeline_validation import validate_pipeline
-            
-            src_dir = project_root / "src"
-            result = validate_pipeline(src_dir)
-            
-            # Verify validation result
+    def test_validate_module_imports(self, project_root):
+        """Test validate_module_imports function."""
+        from src.pipeline.pipeline_validation import validate_module_imports
+        from pathlib import Path
+        
+        # Test with a sample module
+        sample_module = project_root / "src" / "3_gnn.py"
+        if sample_module.exists():
+            result = validate_module_imports(sample_module)
             assert isinstance(result, dict)
-            assert 'valid' in result or 'is_valid' in result
-            assert 'errors' in result or 'issues' in result
-            
-        except ImportError:
-            pytest.skip("Pipeline validation not available")
-        except Exception as e:
-            # Should handle validation errors gracefully
-            assert "error" in str(e).lower() or isinstance(result, dict)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_check_step_dependencies(self, project_root):
-        """Test step dependency checking."""
-        try:
-            from src.pipeline.pipeline_validation import check_step_dependencies
-            
-            src_dir = project_root / "src"
-            dependencies = check_step_dependencies(src_dir)
-            
-            # Verify dependency check
-            assert isinstance(dependencies, dict)
-            assert len(dependencies) >= 0  # May have no dependencies
-            
-        except ImportError:
-            pytest.skip("Pipeline validation not available")
-        except Exception as e:
-            # Should handle dependency check errors gracefully
-            assert isinstance(dependencies, dict)
+    def test_validate_dependency_cycles(self):
+        """Test validate_dependency_cycles function."""
+        from src.pipeline.pipeline_validation import validate_dependency_cycles
+        
+        # Test dependency cycle validation
+        result = validate_dependency_cycles()
+        assert isinstance(result, dict)
+        assert 'has_cycles' in result or 'cycles' in result or 'status' in result
 
 class TestVerifyPipeline:
     """Test pipeline.verify_pipeline module."""
@@ -216,55 +184,33 @@ class TestVerifyPipeline:
     @pytest.mark.safe_to_fail
     def test_verify_imports(self):
         """Test that verify pipeline can be imported."""
-        try:
-            from src.pipeline import verify_pipeline
-            assert hasattr(verify_pipeline, 'verify_module_imports')
-            assert hasattr(verify_pipeline, 'verify_pipeline_config')
-            assert hasattr(verify_pipeline, 'verify_step_files')
-        except ImportError:
-            pytest.skip("Pipeline verify not available")
+        from src.pipeline import verify_pipeline
+        # Check for actual functions in verify_pipeline
+        assert hasattr(verify_pipeline, 'verify_module_imports')
+        assert hasattr(verify_pipeline, 'verify_pipeline_config')
+        assert hasattr(verify_pipeline, 'verify_step_files')
+        # Verify functions are callable
+        assert callable(verify_pipeline.verify_module_imports)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_verify_pipeline_integrity(self, project_root):
-        """Test pipeline integrity verification."""
-        try:
-            from src.pipeline.verify_pipeline import verify_pipeline_integrity
-            
-            src_dir = project_root / "src"
-            result = verify_pipeline_integrity(src_dir)
-            
-            # Verify integrity check result
-            assert isinstance(result, dict)
-            assert 'integrity' in result or 'status' in result
-            assert 'checks' in result or 'tests' in result
-            
-        except ImportError:
-            pytest.skip("Pipeline verify not available")
-        except Exception as e:
-            # Should handle verification errors gracefully
-            assert "error" in str(e).lower() or isinstance(result, dict)
+    def test_verify_module_imports(self):
+        """Test verify_module_imports function."""
+        from src.pipeline.verify_pipeline import verify_module_imports
+        
+        result = verify_module_imports()
+        assert isinstance(result, dict)
+        assert 'success' in result or 'results' in result
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_check_pipeline_health(self, project_root):
-        """Test pipeline health checking."""
-        try:
-            from src.pipeline.verify_pipeline import check_pipeline_health
-            
-            src_dir = project_root / "src"
-            health = check_pipeline_health(src_dir)
-            
-            # Verify health check result
-            assert isinstance(health, dict)
-            assert 'health' in health or 'status' in health
-            assert 'score' in health or 'rating' in health
-            
-        except ImportError:
-            pytest.skip("Pipeline verify not available")
-        except Exception as e:
-            # Should handle health check errors gracefully
-            assert isinstance(health, (dict, int, float))
+    def test_verify_step_files(self):
+        """Test verify_step_files function."""
+        from src.pipeline.verify_pipeline import verify_step_files
+        
+        result = verify_step_files()
+        assert isinstance(result, dict)
+        assert 'success' in result or 'existing_files' in result
 
 class TestUtilsMigrationHelper:
     """Test utils.migration_helper module."""
@@ -273,66 +219,38 @@ class TestUtilsMigrationHelper:
     @pytest.mark.safe_to_fail
     def test_migration_imports(self):
         """Test that migration helper can be imported."""
-        try:
-            from src.utils import migration_helper
-            assert hasattr(migration_helper, 'PipelineMigrationHelper')
-            assert hasattr(migration_helper, 'main')
-            # Test that the class is callable
-            assert callable(migration_helper.PipelineMigrationHelper)
-        except ImportError:
-            pytest.skip("Migration helper not available")
+        from src.utils import migration_helper
+        assert hasattr(migration_helper, 'PipelineMigrationHelper')
+        assert hasattr(migration_helper, 'main')
+        # Test that the class is callable
+        assert callable(migration_helper.PipelineMigrationHelper)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_migrate_pipeline(self, isolated_temp_dir):
-        """Test pipeline migration functionality."""
-        try:
-            from src.utils.migration_helper import migrate_pipeline
-            
-            # Create test migration scenario
-            old_dir = isolated_temp_dir / "old_pipeline"
-            new_dir = isolated_temp_dir / "new_pipeline"
-            old_dir.mkdir()
-            new_dir.mkdir()
-            
-            # Create test files to migrate
-            (old_dir / "test_script.py").write_text("# Test script")
-            
-            result = migrate_pipeline(old_dir, new_dir)
-            
-            # Verify migration result
-            assert isinstance(result, dict)
-            assert 'status' in result or 'success' in result
-            assert 'migrated' in result or 'files' in result
-            
-        except ImportError:
-            pytest.skip("Migration helper not available")
-        except Exception as e:
-            # Should handle migration errors gracefully
-            assert "error" in str(e).lower() or isinstance(result, dict)
+    def test_migration_helper_class(self, project_root):
+        """Test PipelineMigrationHelper class functionality."""
+        from src.utils.migration_helper import PipelineMigrationHelper
+        
+        src_dir = project_root / "src"
+        helper = PipelineMigrationHelper(src_dir)
+        
+        # Verify helper has expected methods
+        assert hasattr(helper, 'analyze_module')
+        assert hasattr(helper, 'apply_improvements')
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_upgrade_scripts(self, isolated_temp_dir):
-        """Test script upgrade functionality."""
-        try:
-            from src.utils.migration_helper import upgrade_scripts
-            
-            # Create test scripts to upgrade
-            scripts_dir = isolated_temp_dir / "scripts"
-            scripts_dir.mkdir()
-            (scripts_dir / "old_script.py").write_text("# Old script format")
-            
-            result = upgrade_scripts(scripts_dir)
-            
-            # Verify upgrade result
-            assert isinstance(result, dict)
-            assert 'upgraded' in result or 'status' in result
-            
-        except ImportError:
-            pytest.skip("Migration helper not available")
-        except Exception as e:
-            # Should handle upgrade errors gracefully
+    def test_analyze_module(self, project_root):
+        """Test analyze_module function."""
+        from src.utils.migration_helper import PipelineMigrationHelper
+        
+        src_dir = project_root / "src"
+        helper = PipelineMigrationHelper(src_dir)
+        
+        # Test with a sample module
+        sample_module = src_dir / "3_gnn.py"
+        if sample_module.exists():
+            result = helper.analyze_module(sample_module)
             assert isinstance(result, dict)
 
 class TestUtilsPipelineMonitor:
@@ -342,62 +260,43 @@ class TestUtilsPipelineMonitor:
     @pytest.mark.safe_to_fail
     def test_monitor_imports(self):
         """Test that pipeline monitor can be imported."""
-        try:
-            from src.utils import pipeline_monitor
-            assert hasattr(pipeline_monitor, 'PipelineMonitor')
-            assert hasattr(pipeline_monitor, 'get_pipeline_health_status')
-            assert hasattr(pipeline_monitor, 'start_pipeline_monitoring')
-            assert hasattr(pipeline_monitor, 'stop_pipeline_monitoring')
-        except ImportError:
-            pytest.skip("Pipeline monitor not available")
+        from src.utils import pipeline_monitor
+        assert hasattr(pipeline_monitor, 'PipelineMonitor')
+        assert hasattr(pipeline_monitor, 'HealthStatus')
+        assert hasattr(pipeline_monitor, 'StepMetrics')
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_monitor_class(self):
         """Test PipelineMonitor class functionality."""
-        try:
-            from src.utils.pipeline_monitor import PipelineMonitor
-            
-            monitor = PipelineMonitor()
-            
-            # Verify monitor has expected methods
-            assert hasattr(monitor, 'start_monitoring')
-            assert hasattr(monitor, 'stop_monitoring')
-            assert hasattr(monitor, 'get_all_metrics')
-            assert hasattr(monitor, 'get_pipeline_health')
-            assert hasattr(monitor, 'record_step_start')
-            assert hasattr(monitor, 'record_step_success')
-            
-        except ImportError:
-            pytest.skip("Pipeline monitor not available")
-        except Exception as e:
-            # Should handle instantiation errors gracefully
-            assert "error" in str(e).lower()
+        from src.utils.pipeline_monitor import PipelineMonitor
+        
+        monitor = PipelineMonitor()
+        
+        # Verify monitor has expected methods
+        assert hasattr(monitor, 'start_monitoring')
+        assert hasattr(monitor, 'stop_monitoring')
+        assert hasattr(monitor, 'get_pipeline_health')
+        assert hasattr(monitor, 'record_step_start')
+        assert hasattr(monitor, 'record_step_success')
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_monitor_execution(self):
-        """Test execution monitoring functionality."""
-        try:
-            from src.utils.pipeline_monitor import monitor_execution
-            
-            # Test monitoring a simple function
-            def test_function():
-                time.sleep(0.1)
-                return {"result": "success"}
-            
-            result = monitor_execution(test_function)
-            
-            # Verify monitoring result
-            assert isinstance(result, dict)
-            assert 'execution_time' in result or 'duration' in result
-            assert 'result' in result or 'output' in result
-            
-        except ImportError:
-            pytest.skip("Pipeline monitor not available")
-        except Exception as e:
-            # Should handle monitoring errors gracefully
-            assert isinstance(result, dict)
+    def test_monitor_step_execution(self):
+        """Test step monitoring functionality."""
+        from src.utils.pipeline_monitor import PipelineMonitor
+        
+        monitor = PipelineMonitor()
+        
+        # Test recording a step
+        execution_id = monitor.record_step_start("test_step")
+        assert isinstance(execution_id, str)
+        
+        monitor.record_step_success("test_step", execution_id, 0.1)
+        
+        # Get pipeline health
+        health = monitor.get_pipeline_health()
+        assert health is not None
 
 class TestUtilsResourceManager:
     """Test utils.resource_manager module."""
@@ -423,42 +322,43 @@ class TestUtilsResourceManager:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_resource_manager_class(self):
-        """Test ResourceManager class functionality."""
+        """Test resource management functions."""
         try:
-            from src.utils.resource_manager import ResourceManager
+            from src.utils.resource_manager import get_system_info, get_current_memory_usage
             
-            manager = ResourceManager()
+            # Test get_current_memory_usage
+            memory = get_current_memory_usage()
+            assert isinstance(memory, float)
+            assert memory >= 0
             
-            # Verify manager has expected methods
-            assert hasattr(manager, 'get_memory_usage')
-            assert hasattr(manager, 'get_cpu_usage')
-            assert hasattr(manager, 'cleanup_resources')
+            # Test get_system_info
+            system_info = get_system_info()
+            assert isinstance(system_info, dict)
+            assert 'cpu_count' in system_info
+            assert 'memory_total_gb' in system_info
             
         except ImportError:
             pytest.skip("Resource manager not available")
-        except Exception as e:
-            # Should handle instantiation errors gracefully
-            assert "error" in str(e).lower()
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_monitor_resources(self):
-        """Test resource monitoring functionality."""
-        try:
-            from src.utils.resource_manager import monitor_resources
-            
-            # Test resource monitoring
-            resources = monitor_resources()
-            
-            # Verify resource data
-            assert isinstance(resources, dict)
-            assert 'memory' in resources or 'cpu' in resources
-            
-        except ImportError:
-            pytest.skip("Resource manager not available")
-        except Exception as e:
-            # Should handle monitoring errors gracefully
-            assert isinstance(resources, dict)
+    def test_resource_tracker(self):
+        """Test ResourceTracker class functionality."""
+        from src.utils.resource_manager import ResourceTracker
+        
+        tracker = ResourceTracker()
+        
+        # Verify tracker has expected properties
+        assert hasattr(tracker, 'duration')
+        assert hasattr(tracker, 'memory_used')
+        assert hasattr(tracker, 'to_dict')
+        
+        tracker.update()
+        tracker.stop()
+        
+        metrics = tracker.to_dict()
+        assert isinstance(metrics, dict)
+        assert 'duration_seconds' in metrics
 
 class TestUtilsScriptValidator:
     """Test utils.script_validator module."""
@@ -467,66 +367,39 @@ class TestUtilsScriptValidator:
     @pytest.mark.safe_to_fail
     def test_script_validator_imports(self):
         """Test that script validator can be imported."""
-        try:
-            from src.utils import script_validator
-            assert hasattr(script_validator, 'PipelineScriptValidator')
-            assert hasattr(script_validator, 'validate_pipeline_scripts')
-            assert hasattr(script_validator, 'ScriptValidationResult')
-            # Test that the class is callable
-            assert callable(script_validator.PipelineScriptValidator)
-        except ImportError:
-            pytest.skip("Script validator not available")
+        from src.utils import script_validator
+        assert hasattr(script_validator, 'PipelineScriptValidator')
+        assert hasattr(script_validator, 'validate_pipeline_scripts')
+        assert hasattr(script_validator, 'ScriptValidationResult')
+        # Test that the class is callable
+        assert callable(script_validator.PipelineScriptValidator)
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_script_validator_class(self):
-        """Test ScriptValidator class functionality."""
-        try:
-            from src.utils.script_validator import ScriptValidator
-            
-            validator = ScriptValidator()
-            
-            # Verify validator has expected methods
-            assert hasattr(validator, 'validate')
-            assert hasattr(validator, 'check_syntax')
-            assert hasattr(validator, 'analyze_dependencies')
-            
-        except ImportError:
-            pytest.skip("Script validator not available")
-        except Exception as e:
-            # Should handle instantiation errors gracefully
-            assert "error" in str(e).lower()
+    def test_pipeline_script_validator_class(self, project_root):
+        """Test PipelineScriptValidator class functionality."""
+        from src.utils.script_validator import PipelineScriptValidator
+        
+        src_dir = project_root / "src"
+        validator = PipelineScriptValidator(src_dir)
+        
+        # Verify validator has expected methods 
+        assert hasattr(validator, 'validate_script')
+        assert hasattr(validator, 'validate_all_scripts')
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_script(self, isolated_temp_dir):
-        """Test script validation functionality."""
-        try:
-            from src.utils.script_validator import validate_script
-            
-            # Create test script
-            test_script = isolated_temp_dir / "test_script.py"
-            test_script.write_text("""
-#!/usr/bin/env python3
-import sys
-def main():
-    print("Hello, world!")
-if __name__ == "__main__":
-    main()
-""")
-            
-            result = validate_script(test_script)
-            
-            # Verify validation result
-            assert isinstance(result, dict)
-            assert 'valid' in result or 'is_valid' in result
-            assert 'errors' in result or 'issues' in result
-            
-        except ImportError:
-            pytest.skip("Script validator not available")
-        except Exception as e:
-            # Should handle validation errors gracefully
-            assert "error" in str(e).lower() or isinstance(result, dict)
+    def test_validate_pipeline_scripts(self, project_root):
+        """Test validate_pipeline_scripts function."""
+        from src.utils.script_validator import validate_pipeline_scripts
+        
+        src_dir = project_root / "src"
+        result = validate_pipeline_scripts(src_dir)
+        
+        # Verify validation result
+        assert isinstance(result, dict)
+        # Result contains script_details and issue_summary
+        assert 'script_details' in result or 'issue_summary' in result
 
 class TestPipelineInfrastructureIntegration:
     """Test integration between pipeline infrastructure modules."""
@@ -535,51 +408,47 @@ class TestPipelineInfrastructureIntegration:
     @pytest.mark.safe_to_fail
     def test_discovery_and_validation_integration(self, project_root):
         """Test integration between discovery and validation."""
-        try:
-            from src.pipeline.discovery import get_pipeline_scripts
-            from src.pipeline.pipeline_validation import validate_pipeline
-            
-            src_dir = project_root / "src"
-            
-            # Discover scripts
-            scripts = get_pipeline_scripts(src_dir)
-            assert len(scripts) >= 1
-            
-            # Validate pipeline
-            validation = validate_pipeline(src_dir)
-            assert isinstance(validation, dict)
-            
-        except ImportError:
-            pytest.skip("Pipeline modules not available for integration test")
-        except Exception as e:
-            # Should handle integration errors gracefully
-            assert "error" in str(e).lower()
+        from src.pipeline.discovery import get_pipeline_scripts
+        from src.pipeline.pipeline_validation import validate_module_imports
+        
+        src_dir = project_root / "src"
+        
+        # Discover scripts
+        scripts = get_pipeline_scripts(src_dir)
+        assert len(scripts) >= 1
+        
+        # Validate first script
+        if scripts:
+            # scripts is a list of dicts with 'num', 'basename', 'path' keys
+            first_script = scripts[0]['path']
+            if first_script.exists():
+                validation = validate_module_imports(first_script)
+                assert isinstance(validation, dict)
     
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_monitoring_and_resource_management_integration(self):
         """Test integration between monitoring and resource management."""
-        try:
-            from src.utils.pipeline_monitor import monitor_execution
-            from src.utils.resource_manager import monitor_resources
-            
-            # Test function to monitor
-            def test_task():
-                resources = monitor_resources()
-                return {"resources": resources}
-            
-            # Monitor execution with resource tracking
-            result = monitor_execution(test_task)
-            
-            # Verify integration works
-            assert isinstance(result, dict)
-            assert 'execution_time' in result or 'resources' in result
-            
-        except ImportError:
-            pytest.skip("Utils modules not available for integration test")
-        except Exception as e:
-            # Should handle integration errors gracefully
-            assert isinstance(result, dict)
+        from src.utils.pipeline_monitor import PipelineMonitor
+        from src.utils.resource_manager import ResourceTracker
+        
+        # Create monitor and tracker
+        monitor = PipelineMonitor()
+        tracker = ResourceTracker()
+        
+        # Simulate monitored execution
+        execution_id = monitor.record_step_start("test_integration_step")
+        tracker.update()
+        tracker.stop()
+        
+        monitor.record_step_success("test_integration_step", execution_id, tracker.duration)
+        
+        # Verify integration works
+        health = monitor.get_pipeline_health()
+        metrics = tracker.to_dict()
+        
+        assert health is not None
+        assert isinstance(metrics, dict)
 
 # Performance and completeness tests
 @pytest.mark.slow
@@ -589,17 +458,13 @@ def test_pipeline_infrastructure_performance():
     
     start_time = time.time()
     
-        # Test infrastructure module imports
-    try:
-        from src.pipeline import discovery, pipeline_validation
-        from src.utils import resource_manager, script_validator
-        import_time = time.time() - start_time
-        
-        # Should import reasonably quickly
-        assert import_time < 10.0, f"Infrastructure modules took {import_time:.2f}s to import"
-        
-    except ImportError:
-        pytest.skip("Pipeline infrastructure not available for performance test")
+    # Test infrastructure module imports
+    from src.pipeline import discovery, pipeline_validation
+    from src.utils import resource_manager, script_validator
+    import_time = time.time() - start_time
+    
+    # Should import reasonably quickly
+    assert import_time < 10.0, f"Infrastructure modules took {import_time:.2f}s to import"
 
 def test_pipeline_infrastructure_completeness():
     """Test that pipeline infrastructure modules have expected functionality."""
