@@ -128,14 +128,14 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
                         # Try to install the default model
                         logger.info("📥 Installing default model...")
                         install_result = subprocess.run(
-                            ['ollama', 'pull', 'smollm2:135m-instruct-q4_K_S'],
+                            ['ollama', 'pull', 'ministral-3:3b'],
                             capture_output=True,
                             text=True,
                             timeout=60
                         )
                         if install_result.returncode == 0:
                             logger.info("✅ Default model installed successfully")
-                            models = ['smollm2:135m-instruct-q4_K_S']
+                            models = ['ministral-3:3b']
                         else:
                             logger.warning(f"⚠️ Failed to install default model: {install_result.stderr}")
 
@@ -189,18 +189,17 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
     
     Prioritizes small, fast models for quick analysis.
     """
-    # Preference order: smallest to largest for fast execution
+    # Preference order: prioritize quality local models
     preferred_models = [
+        'ministral-3:3b',
+        'mistral:7b',
+        'gemma2:2b',
+        'llama2:7b',
+        'phi3',
+        'tinyllama',
         'smollm2:135m-instruct-q4_K_S',
         'smollm2:135m',
         'smollm2',
-        'smollm:135m',
-        'smollm',
-        'tinyllama',
-        'llama2:7b',
-        'mistral:7b',
-        'gemma2:2b',
-        'phi3',
         'llama2',
         'mistral'
     ]
@@ -225,7 +224,7 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
         return model
     
     # Ultimate fallback
-    default_model = 'smollm2:135m-instruct-q4_K_S'
+    default_model = 'ministral-3:3b'
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
     return default_model
@@ -381,7 +380,7 @@ def process_llm(
 
                         prompt_outputs = {}
                         # Use selected model or fallback
-                        ollama_model = selected_model if selected_model else 'smollm2:135m-instruct-q4_K_S'
+                        ollama_model = selected_model if selected_model else 'ministral-3:3b'
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
                         # Ensure model is available, install if needed

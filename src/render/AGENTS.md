@@ -12,7 +12,7 @@
 
 **Version**: 2.0.0
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-21
 
 ---
 
@@ -541,7 +541,7 @@ def generate_pymdp_tool(model_data, options=None):
 
 ---
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 2.0.0

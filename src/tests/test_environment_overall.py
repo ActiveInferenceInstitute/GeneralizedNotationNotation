@@ -104,6 +104,7 @@ class TestEnvironmentFunctionality:
         except ImportError:
             pytest.skip("EnvironmentManager not available")
     
+    @pytest.mark.slow  # Makes subprocess calls to install packages
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_dependency_installation(self):

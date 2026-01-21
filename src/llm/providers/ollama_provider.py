@@ -30,20 +30,21 @@ logger = logging.getLogger(__name__)
 class OllamaProvider(BaseLLMProvider):
     """Ollama implementation of the LLM provider interface."""
 
-    # Include tiny models for low-latency defaults; larger ones stay optional
+    # Include quality local models; smaller ones for fallback
     AVAILABLE_MODELS = [
+        "ministral-3:3b",
+        "mistral:7b",
+        "gemma2:2b",
+        "llama3.1:8b",
+        "qwen2:7b",
         "smollm2:135m-instruct-q4_K_S",
         "smollm2:360m",
         "tinyllama:1.1b",
         "smollm2:1.7b",
-        "gemma2:2b",
-        "mistral:7b",
-        "llama3.1:8b",
         "llama3.1:70b",
-        "qwen2:7b",
     ]
 
-    DEFAULT_MODEL = "smollm2:135m-instruct-q4_K_S"
+    DEFAULT_MODEL = "ministral-3:3b"
 
     def __init__(self, **kwargs):
         super().__init__(api_key=None, **kwargs)

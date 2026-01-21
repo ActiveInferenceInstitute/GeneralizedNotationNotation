@@ -12,7 +12,7 @@
 
 **Version**: 1.0.0
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-21
 
 ---
 
@@ -458,7 +458,7 @@ python src/8_visualization.py --verbose --target-dir input/gnn_files
 
 ---
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
 **Status**: ✅ Production Ready
 **Version**: 1.0.0

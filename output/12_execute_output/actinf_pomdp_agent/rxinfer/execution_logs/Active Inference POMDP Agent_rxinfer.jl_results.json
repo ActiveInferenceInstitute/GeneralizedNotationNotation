@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 23.940301,
-  "timestamp": "2026-01-20T16:12:40.778106",
+  "execution_time": 21.566827,
+  "timestamp": "2026-01-21T09:18:55.476273",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,14 +21,14 @@
     "executor": "julia",
     "stdout_length": 379,
     "stderr_length": 220,
-    "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer"
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_34.png"
+      "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_8.png"
     ],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
     ],
     "traces": [],
     "other": []

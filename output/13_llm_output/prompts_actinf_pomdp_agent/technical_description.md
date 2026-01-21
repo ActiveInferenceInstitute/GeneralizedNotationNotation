@@ -6,458 +6,105 @@ Prompt:
 
 Response:
 
-Here's the complete code for the active inference agent:
-```python
-# Import dependencies
-from numpy import array, ndarray, crossprod
-import numpy as np
-import math
+Below is a **comprehensive technical breakdown** of the **Active Inference POMDP Agent** as specified in the GNN model, structured into key domains: **Mathematical Foundations, Computational Architecture, Inference Mechanisms, and Practical Implementation Considerations**.
 
-def compute_log-prob(states):
-    """Compute log-probabilities of all observation outcomes.
+---
 
-    Args:
-        states (ndarray): A 2D NumPy array representing the state space for each observable in a POMDP.
+## **1. Core Theoretical Framework**
+### **1.1 Partial Observable Markov Decision Process (POMDP) Structure**
+The agent operates under a **discrete-time POMDP** with:
+- **Hidden State Space**: \( \mathcal{S} = \{1, 2, 3\} \) (fully controllable via actions).
+- **Observation Space**: \( \mathcal{O} = \{1, 2, 3\} \) (3 possible outcomes).
+- **Action Space**: \( \mathcal{A} = \{1, 2, 3\} \) (3 discrete actions).
+- **Reward Function**: Implicitly encoded via **log-preferences** \( C \).
 
-    Returns:
-        ndarray: A 1D NumPy array, where each element represents a log-probability over the next observable
-    """
-    log_probs = [[0] * num_hidden_states for _ in range(num_actions)]
+#### **Key Properties**
+- **Deterministic Likelihood**: \( A \) maps hidden states to observations deterministically (identity-like).
+- **Transition Dynamics**: \( B \) defines deterministic state transitions given actions.
+- **Noisy Observations**: Likelihoods \( A \) introduce stochasticity (e.g., \( A_{1,1} = 0.9 \) means state 1 often yields observation 1).
 
-    # Step through observation outcomes by action selection (action) and action choice
-    steps=(num_hidden_states,) + [1]*locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0].flatten()[0:]
+---
 
-    # Apply the policy mapping to each observation
-    observations = [array(state) for _ in range(num_hidden_states)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    observations = np.stack([array(x) for x in observation_outcomes])
+### **1.2 Active Inference Formalism**
+The agent employs **Bayesian Active Learning** principles:
+- **Belief Representation**: \( s \) = current hidden state distribution (e.g., \( s = [0.4, 0.3, 0.3] \)).
+- **Policy Prior**: \( E \) = uniform initial policy (habit).
+- **Free Energy Minimization**: The agent optimizes expected free energy \( G \) to infer actions.
 
-    # Apply the policy and action choices to each observable
-    actions = [action + step[:] for _ in range(num_actions)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+#### **Variational Free Energy (F)**
+\[
+F = \mathbb{E}_s[\log p(o|s) + \log p(s) - \log p(o)]
+\]
+- **Inference**: \( F \) is minimized via variational inference to update \( s \).
+- **Policy Inference**: \( G \) (expected free energy) guides action selection.
 
-    # Apply the policy and action choices to each observation
-    actions = [action + step[:] for _ in range(num_actions)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+---
 
-    return array([[states],
-          [state_observation]])
-def compute_log-prob(observations):
-    """Computes the log probability of all observation outcomes over a specified state space."""
+## **2. Computational Architecture**
+### **2.1 GNN-Specified State Transitions**
+The model defines **discrete-time dynamics** via:
+- **Observation Likelihood (\( A \))**:
+  \[
+  p(o|s) = \sum_{s'} A_{o,s'} \cdot s'(s')
+  \]
+- **Transition Dynamics (\( B \))**:
+  \[
+  s'(s') = \sum_{a} B_{s',s,a} \cdot \pi(a)
+  \]
+  - \( B \) is action-dependent (e.g., action 1 moves from state 1→2).
 
-    # Initialize initializations 
-    for i in range(num_hidden_states+1):
-        if observable[i] == "0" and num_actions!= 2:
-            log_probs[observation_outcomes.shape]=np.ones((len(observations),))
-        elif observation_probabilities[observer_state]:
-            # If observed actions are sequential (e.g., one action is done, and another occurs next)
-                # Store the next observable for each subsequent observation to track progress of actions
-            elif i < num_actions-1:
-                log_probs[observations[:i],:]=np.ones((len(observation))+num_actions,) + observations[:,:-i]
+### **2.2 Policy and Control**
+- **Policy Vector (\( \pi \))**: Distribution over actions (initially uniform \( E \)).
+- **Action Selection**: Sample \( u \) from \( \pi \) (no planning horizon >1).
+- **Belief Update**: \( s \) is updated via \( F \) after observation \( o \).
 
-             
-        if observed == "0" and (observation_outcomes=="[",)):
-         
-    return array([[states],[]) 
-  
- 
-def compute_probability():
-    """Computes the probability of all observation outcomes for a single observable."""
+---
 
-    # Initialize initializations 
-    state_observations = [np.array(state) for _ in range(num_hidden_states)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+## **3. Inference Mechanisms**
+### **3.1 Variational Free Energy Update**
+1. **Infer Hidden State (\( s \))**:
+   - Minimize \( F \) to estimate \( s \) from \( o \).
+   - Example: If \( o = 1 \), \( s \) is updated to maximize \( p(o=1|s) \).
 
-    actions = [action + step[:] for _ in range(num_actions)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+2. **Infer Policy (\( \pi \))**:
+   - Optimize \( G \) to select actions that minimize expected free energy.
+   - Example: If \( C = [0.1, 0.1, 1.0] \), the agent prefers observation 3.
 
-    return array([[states],[]) 
-  
- 
-def compute_beliefs():
-    """Computes the belief of all observation outcomes for a single observable."""
-    
-    # Initialize initializations 
-    actions = [action + step[:] for _ in range(num_actions)] + steps[:-len(observations)].flatten()[0:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+### **3.2 Time-Stepping**
+- **Discrete Time**: Each step updates \( s \), \( \pi \), and \( u \).
+- **Unbounded Horizon**: The agent can run indefinitely (simulations may truncate).
 
-    probabilities = [array([[obs]]) for obs in actions]
-    states=[]
-  else:`
-    
-    # Initialize initializations 
-    action=(action + step)#(observations,)
-    next_state=['']*locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]) 
-    
+---
 
-    for i in range(obs):
-        state=states[i] # initialize the action
-        if actions[action]:# (observations,)
-           return array([[state]]) 
-   
-    next_state = '0'
-    
-    return array([next_state], dtype=[dtype]=) 
-  
- 
-def compute_policy():
-    """Computes the policy of all observation outcomes for a single observable."""
+## **4. Practical Implementation Considerations**
+### **4.1 Initialization**
+- **Prior (\( D \))**: Uniform over hidden states.
+- **Habit (\( E \))**: Uniform over actions.
+- **Belief (\( s \))**: Initialized to \( D \).
 
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)]   
-    states=[]      
-    beliefs={}    
-  
-    
-    
-    if action=="0":
-        return array([[states],[])  
-        
-    else:
+### **4.2 Limitations**
+- **No Deep Planning**: Only 1-step horizon.
+- **No Hierarchical Control**: Flat policy space.
+- **No Precision Modulation**: Fixed likelihoods.
 
-        
-        actions = [action + step[:] 
-        next_state=[next_state for _ in range(num_actions)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+### **4.3 Extensions**
+- **Hierarchical POMDPs**: Add sub-goals.
+- **Continuous Observations**: Replace \( A \) with Gaussian kernels.
+- **Reinforcement Learning**: Replace \( C \) with reward functions.
 
-        # If action is sequential (first observation) 
-        if observable==["","]:
-            return array([[states],[])  
-                
-        actions = [action + step[:] for _ in range(num_actions)]     
-      
-        
-        next_state=[]
-          
-        probabilities=[array([[obs]])]
-     
-        
-        # Simulate the sequence of actions and beliefs from current state 
-            
-            
-            actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
+---
 
-                 
-            for i in range(obs):
-                next_state = actions[i]/*'0',
-                   *next_state[:locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-                    
-                 
+## **5. Summary Table**
+| **Component**       | **Description**                                                                 |
+|---------------------|---------------------------------------------------------------------------------|
+| **Hidden State**    | \( \mathcal{S} = \{1,2,3\} \), fully controllable.                              |
+| **Observation**     | \( \mathcal{O} = \{1,2,3\} \), stochastic via \( A \).                         |
+| **Action**          | \( \mathcal{A} = \{1,2,3\} \), deterministic transitions via \( B \).          |
+| **Likelihood (\( A \))** | Deterministic mapping \( p(o|s) \).                                           |
+| **Transition (\( B \))** | Deterministic state transitions per action.                                   |
+| **Preference (\( C \))** | Log-preferences over observations.                                             |
+| **Policy (\( \pi \))** | Initialized to uniform \( E \), updated via \( G \).                          |
+| **Inference**       | Variational free energy minimizes \( F \) to update \( s \).                   |
 
-                probabilities: [[observations],[])
-                
-    ) 
-    else:`
-     
-
-        actions = [action + step[:] 
-        next_state=[]
-          
-        probabilities= array([[states[:i],']]*locallyminimize([np.ones((num_actions,))]**2+math.random()/4)
-               for i in range(observations)]
-                
-               
-                    
-                 
-             
-        next_state = '0'
-
-        
-    return array ([next_state],[]) 
-  
- 
-   
-  # Simulate the sequence of actions and beliefs from current state 
-    if action=="0":
-      
-         
-      actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-          
-        # Simulate the sequence of beliefs 
-            
-                
-                 
-  return array([[states],[]) 
-  
-      
-     
-             
-         
-        
-             
-    else:` 
-        actions = [action + step[:] 
-        next_state=[]
-           
-         
-              
-
-      probabilities=[array([[observations[:i],']]*locallyminimize([np.ones((num_actions,))]**2+math.random()/4)
-                  for i in range(observations)]
-                
-            
-                 
-             
-      next_state = '0'
-   
-  return array ([next_state],[]) 
-  
-def compute_policy():
-   """Computes the policy of all observation outcomes for a single observable."""
-
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    
-    states=[]  
-    beliefs={}
-    
-  else:
-        print('No policy for that observation!')   
-
-        
-     
-      
-     
-
-     
-  return array([[states],[]) 
-  
-  
- 
-def compute_beliefs():
-  """Computes the belief of all observation outcomes for a single observable."""
-
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}
-    
-  else:
-        print('No belief for that observation!')   
-
-        
-     
-      
-     
-
-     
-  return array([[states],[]) 
-  
-  
- 
-def compute_prior():
-    """Computes the prior of all observation outcomes and states."""
-
-    # Initializing probabilities 
-    actions = [action + step[:]         
-    next_state=[next_state]            
-    
-    for i in range(observations):
-        
-        if actions[i]:
-            return array([[states],[])  
-                
-        
-  else:`
-     
-    actions = [action + step[:] 
-      
-        
-                  
-
-def compute_prior():
-  """Computes the prior of all observation outcomes and states."""
-
-    # Initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-    
-  else:
-    print('No prior for that observation!')   
-
-        
-     
-      
-     
-
-  return array([[states],[]) 
-  
-  
- 
-def compute_observation():
-  """Computes the next observable based on current policy and actions."""
-    
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}
-    
-  else:
-    print('No observation for that observable!')   
-
-        
-     
-      
-
-  return array([[states],[]) 
-  
-  
- 
-def compute_policy(): 
-    """Computes the policy of all observation outcomes and actions."""
-
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-  else:`
-    
-     
-    actions = [action + step[:] 
-    next_state=[]
-          
-       
-        
-            
-        
-             
-      
-     
-    probabilities= [array([[states],[])  
-                
-         
-                 
-                  
-
-
-def compute_belief():
-    """Computes the belief of all observation outcomes and states."""
-    
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-  else:`
-      print('No belief for that observation!')   
-
-        
-    
- 
-    actions = [action + step[:] 
-    next_state=[]
-          
-      
-         
-
-      
-
-  return array([[states],[]) 
-  
-  
- 
-def compute_prior(): 
-      """Computes the prior of all observation outcomes and states."""
-
-    # Initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}
-    
-  else:`
-      print('No prior for that observation!')   
-
-        
-  
- 
-
-    actions = [action + step[:] 
-    next_state=[]
-          
-      
-         
-
-      
-
-  return array([[states],[]) 
-  
-  
- 
-def compute_policy(): 
-      """Computes the policy of all observation outcomes and actions."""
-
-      # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-  else:`
-      print('No policy for that observation!')   
-
-        
-      
-     
-
-  return array([[states],[]) 
-  
-  
- 
-def compute_observation(): 
-    """Computes the next observable based on current actions."""
-    
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}
-    
-  else:`
-      print('No observation for that observable!')   
-
-        
-     
-      
-  
-    
-    return array([[states],[]) 
-  
-  
- 
-def compute_policy(): 
-    """Computes the policy of all observation outcomes and actions."""
-
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-  else:`
-      print('No policy for that observation!')   
-
-        
-      
-    
-    
-     
-  
-  return array([[states],[]) 
-  
- *******************************************************
-
-      
-     
-     
-     
-  *******************************************************
-    
-     
-  ********************************************
-
-    """ 
-   
-         
-                 
-          
-             
-
- 
-def compute_probability():
-    """Computes the probability of all observable outcomes for a single observation."""
-    
-    # Initialization and initializing probabilities 
-    actions=actions[:-len(observations)].flatten()[locallyminimize([np.ones((num_actions,))], bounds=[[-1.]**2+math.random()/4]**3, alpha=0.)[0]]
-    beliefs={}    
-  
-  else:`
-    
-     
-      
-    
-    return array([[states],[]) 
-```
+---
+This model provides a **minimal yet expressive** framework for active inference in POMDPs, suitable for simulation or inference backends. Would you like a deeper dive into any specific component (e.g., variational inference details or action selection)?

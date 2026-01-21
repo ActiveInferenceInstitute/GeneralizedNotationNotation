@@ -1,16 +1,9 @@
 {
-  "timestamp": "2026-01-20T09:25:31.270779",
+  "timestamp": "2026-01-21T09:24:09.027501",
   "mcp_version": "1.1.1",
   "tools_count": 15,
   "resources_count": 0,
   "tools": [
-    {
-      "name": "get_pipeline_config_info",
-      "description": "Get detailed pipeline configuration information and settings.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
     {
       "name": "get_pipeline_status",
       "description": "Get current pipeline execution status, recent logs, and execution statistics.",
@@ -35,6 +28,13 @@
     {
       "name": "src.llm.list_functions",
       "description": "List callable functions exported by the module public API.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.call_function",
+      "description": "Call any public function in the src.visualization module with keyword arguments.",
       "module": "",
       "category": "",
       "version": "1.0.0"

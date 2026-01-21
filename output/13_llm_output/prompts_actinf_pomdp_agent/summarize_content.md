@@ -1,43 +1,71 @@
 # SUMMARIZE_CONTENT
 
-Here's a concise version:
+### **Structured Summary: Active Inference POMDP Agent (GNN Specification)**
 
-**Overview:** 
+---
 
-This model is an active inference agent for a discrete POMDP (pomdp_apoptosis) that enables inference into the decision probabilities of actions chosen by the agent based on available observations over time.
+#### **1. Model Overview**
+This is a **discrete, one-step Active Inference agent** embedded in a **Partially Observable Markov Decision Process (POMDP)**. It models an agent that infers hidden states (e.g., location) from noisy observations, selects actions based on preferences, and updates beliefs via variational free energy minimization. The agent operates in a **fully controllable** environment with no deep planning, relying only on immediate policy inference.
 
-**Key Variables:**
+---
 
-1. **GNN Profile**: A list containing metadata describing each observation and action, including identity mapping and prior distributions for states and actions.
-2. **Active Inference POMDP Agent**: A class-level object representing the original model with a learning objective to obtain new information about observed observations over time.
-3. **Initial Value Policy (IVP) Agent**: A type of agent that learns on a given action using a learned belief distribution for actions, allowing exploration and exploitation of available data.
-4. **Transition Matrix**: A list containing the transition probability between states along with a list of initial policies used to initialize the agent's preferences over actions.
-5. **Policy Vector**: A list containing the policy probabilities assigned to previous observations across all actions (no planning).
-6. **Habit**: A list containing each observed observation as an instance, which represents a sequence of data points from different action choices with their respective histories and prior distributions for states and actions.
-7. **Hidden States** and **Actions**: A list of `observations` that represent the current state-action relationships through observations (1). These are indexed by actions and actions themselves:
-  - Actions
-    - Next Observation (obs)
-  - Actions
-    - Next Observation (ob)
-  - Actions
-    - Next Observation (actions)(ob)
-8. **Habit**
-    - History
-    - Prior Probability for Observation (ob)
-    - History
-    - Prior Probability for Action (ob)
+#### **2. Key Variables**
 
-  **Statistics**:
-  - Observation Count
-  - Actions/Actions Permissions (permits)
-  - Initial Policy
-  - Belief Distribution
-  - History Distribution
-  
-This model is designed to:
+**Hidden States (s):**
+- Represents the agent’s latent belief over possible states (e.g., locations).
+- **3 discrete states** (e.g., *State₁, State₂, State₃*), each with a probability distribution (`s[3,1,type=float]`).
+- Determined via variational inference from observations and transitions.
 
-1. **Initialize** an action agent that can be used to explore and exploit available data from actions choices. 
+**Observations (o):**
+- **3 possible outcomes** (e.g., *Observation₁, Observation₂, Observation₃*), each with a deterministic likelihood from hidden states.
+- Observed via the **likelihood matrix (A)** and fed into free energy minimization.
 
-2. **Make decisions**: Obtain new information about observed observations, update beliefs based on preferences of previously discovered actions.
+**Actions/Controls (u, π):**
+- **3 discrete actions** (e.g., *Action₁, Action₂, Action₃*), chosen from a **policy distribution (π)**.
+- **Initial policy prior (habit, E)** is uniform over actions.
+- Action selection is **non-planning** (no lookahead), based on immediate policy inference.
 
-3. **Efficiently make decisions**: Choose actions in a decision-making style with the goal (policy) being determined by the current belief distribution over the history.
+---
+
+#### **3. Critical Parameters**
+
+**Matrices & Their Roles:**
+| Matrix | Role                                                                                     | Dimensions          |
+|--------|-----------------------------------------------------------------------------------------|---------------------|
+| **A**  | **Likelihood matrix**: Maps hidden states → observations (deterministic).             | [3 (obs) × 3 (states)] |
+| **B**  | **Transition matrix**: State transitions given previous state + action.               | [3 (next) × 3 (prev) × 3 (actions)] |
+| **C**  | **Log-preference vector**: Agent’s intrinsic reward for observations (log-probabilities). | [3]                  |
+| **D**  | **Prior over hidden states**: Initial belief distribution (uniform).                 | [3]                  |
+| **E**  | **Habit (initial policy)**: Uniform prior over actions.                                | [3]                  |
+
+**Key Hyperparameters:**
+- **3 hidden states**, **3 observations**, **3 actions** (fully discrete).
+- **Unbounded time horizon** (simulations may truncate).
+- **No precision modulation** (fixed free energy updates).
+- **One-step planning** (no hierarchical nesting).
+
+---
+
+#### **4. Notable Features**
+- **Deterministic likelihood (A)**: Each hidden state maps to a unique observation (identity-like mapping).
+- **Uniform prior (D, E)**: No prior bias on states or actions.
+- **Non-planning policy**: Actions are chosen from a flat prior (habit) without lookahead.
+- **Variational free energy (F)**: Used for belief updating and policy inference.
+- **Expected free energy (G)**: Optimized to balance exploration/exploitation.
+
+---
+#### **5. Use Cases**
+This model is ideal for:
+1. **Simple POMDPs** (e.g., navigation in a 3-state environment with 3 observations).
+2. **Active inference in discrete domains** (e.g., robot localization, game AI).
+3. **Educational applications** demonstrating variational inference in POMDPs.
+4. **Controlled environments** where actions are fully observable (but hidden states are not).
+
+**Limitations:**
+- No deep planning (only immediate policy inference).
+- No hierarchical or modular structure (flat belief space).
+- Fixed precision updates (no adaptive learning rates).
+
+---
+### **Key Takeaway**
+This is a **minimal, one-step Active Inference POMDP agent** with deterministic likelihoods and uniform priors, designed for clarity in demonstrating variational inference and policy selection in discrete domains. It lacks depth but captures the core mechanics of belief updating and action selection.

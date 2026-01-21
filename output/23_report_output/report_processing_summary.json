@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-20T09:25:33.255948",
+  "timestamp": "2026-01-21T09:24:11.363783",
   "target_dir": "input/gnn_files",
   "output_dir": "output/23_report_output",
   "pipeline_output_dir": "output",
@@ -11,7 +11,7 @@
     "report_summary.json"
   ],
   "report_count": 3,
-  "visualizations_discovered": 58,
+  "visualizations_discovered": 107,
   "html_reports_generated": 1,
   "html_validation_status": "valid",
   "html_validation_errors": [],

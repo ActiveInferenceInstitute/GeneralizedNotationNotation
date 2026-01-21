@@ -714,7 +714,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     # Add timeout flags only if pytest-timeout is available
     if has_timeout:
         cmd.extend([
-            "--timeout=2",  # 2-second per-test timeout for fast feedback
+            "--timeout=30",  # 30-second per-test timeout (increased from 2s to handle subprocess/network tests)
             "--timeout-method=thread",  # Use thread-based timeout
         ])
     
@@ -731,7 +731,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     logger.info(f"🚀 Executing fast test suite: {' '.join(cmd)}")
     logger.info("💡 Skipping slow tests (-m 'not slow')")
     if has_timeout:
-        logger.info("⏱️  Per-test timeout: 2s (pytest-timeout enabled)")
+        logger.info("⏱️  Per-test timeout: 30s (pytest-timeout enabled)")
     else:
         logger.info("⚠️  pytest-timeout not available - no per-test timeout enforcement")
 

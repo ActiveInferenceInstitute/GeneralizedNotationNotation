@@ -6,14 +6,69 @@ This module provides core utilities used throughout the GNN pipeline, including 
 
 ```
 src/utils/
-├── __init__.py                    # Module initialization and exports
-├── README.md                      # This documentation
-├── logging_utils.py               # Unified logging utilities
-├── argument_parser.py             # Enhanced argument parsing
-├── pipeline_utils.py              # Pipeline orchestration utilities
-├── file_utils.py                  # File handling utilities
-├── validation_utils.py            # Validation helper functions
-└── common_utils.py                # Common utility functions
+├── __init__.py                      # Module initialization and exports
+├── AGENTS.md                        # AI agent scaffolding documentation
+├── README.md                        # This documentation
+├── SPEC.md                          # Module specification
+│
+├── # Logging & Diagnostics
+├── logging_utils.py                 # Unified logging utilities (1071 lines)
+├── structured_logging.py            # Structured JSON logging (459 lines)
+├── visual_logging.py                # Visual log formatting (431 lines)
+├── step_logging.py                  # Step-level logging helpers
+├── diagnostic_logging.py            # Diagnostic logging utilities
+│
+├── # Configuration & Arguments
+├── argument_utils.py                # Enhanced argument parsing (1225 lines)
+├── config_loader.py                 # YAML/JSON config loading
+├── configuration.py                 # Configuration management (520 lines)
+│
+├── # Pipeline Infrastructure
+├── pipeline.py                      # Pipeline utilities
+├── pipeline_template.py             # Standardized pipeline templates (586 lines)
+├── pipeline_dependencies.py         # Step dependency management
+├── pipeline_monitor.py              # Pipeline health monitoring (696 lines)
+├── pipeline_planner.py              # Execution planning
+├── pipeline_validator.py            # Validation utilities
+│
+├── # Dependency Management
+├── dependency_audit.py              # Dependency auditing (504 lines)
+├── dependency_installer.py          # Dependency installation
+├── dependency_manager.py            # Dependency management (475 lines)
+├── dependency_validator.py          # Dependency validation (667 lines)
+│
+├── # Error Handling & Recovery
+├── error_handling.py                # Error handling framework
+├── error_recovery.py                # Error recovery strategies
+├── standardized_error_handling.py   # Standard error patterns
+├── fallback.py                      # Fallback implementations
+│
+├── # Resource & Performance
+├── resource_manager.py              # Resource monitoring
+├── performance_tracker.py           # Performance tracking
+├── timeout_manager.py               # Timeout management (445 lines)
+├── visualization_optimizer.py       # Viz optimization (445 lines)
+│
+├── # Testing & Validation
+├── test_utils.py                    # Test utilities (1121 lines)
+├── script_validator.py              # Script validation (523 lines)
+├── verify_function_signatures.py    # Signature verification
+│
+├── # Utilities
+├── base_processor.py                # Base processor class
+├── execution_utils.py               # Execution helpers
+├── io_utils.py                      # I/O utilities
+├── network_utils.py                 # Network utilities
+├── path_utils.py                    # Path utilities
+├── shared_functions.py              # Shared helper functions
+├── system_utils.py                  # System utilities
+├── venv_utils.py                    # Virtual environment helpers
+│
+├── # Specialized
+├── mcp.py                           # MCP integration (351 lines)
+├── migration_helper.py              # Migration utilities
+├── simulation_monitor.py            # Simulation monitoring
+└── simulation_utils.py              # Simulation utilities
 ```
 
 ## Core Components

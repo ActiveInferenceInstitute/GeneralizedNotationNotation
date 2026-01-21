@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-20T09:25:16.848129",
+  "timestamp": "2026-01-21T09:23:54.855962",
   "target_dir": "input/gnn_files",
   "output_dir": "output/14_ml_integration_output",
   "ml_frameworks_available": {
@@ -13,11 +13,11 @@
     },
     "jax": {
       "available": true,
-      "version": "0.7.0"
+      "version": "0.9.0"
     },
     "sklearn": {
       "available": true,
-      "version": "1.7.1"
+      "version": "1.8.0"
     }
   },
   "processing_status": "completed",

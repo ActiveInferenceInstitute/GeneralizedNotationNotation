@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.693971,
-  "timestamp": "2026-01-20T16:12:38.720369",
+  "execution_time": 0.550215,
+  "timestamp": "2026-01-21T09:18:53.589998",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -29,17 +29,17 @@
     "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1715,
     "stderr_length": 209,
-    "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy"
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
   },
   "collected_outputs": {
     "visualizations": [
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png"
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png"
     ],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []
