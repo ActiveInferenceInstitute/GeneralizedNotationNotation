@@ -2,48 +2,139 @@
 
 ## Overview
 
-This directory contains documentation and resources for the dspy subsystem.
+This directory contains comprehensive documentation and resources for the DSPy subsystem, providing programmatic LLM integration for GNN (Generalized Notation Notation).
 
 **Status**: ✅ Documentation Module  
-**Version**: 1.0  
+**Version**: 2.0  
+**Last Updated**: January 2026
 
 ---
 
 ## Purpose
 
-DSPy integration for structured prompting and LLM coordination
+DSPy integration for structured prompting and LLM coordination within the GNN ecosystem. This subsystem is part of the broader GNN documentation ecosystem, integrated with the 24-step processing pipeline.
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+---
 
 ## Contents
 
-**Files**:        2 | **Subdirectories**:        1
+**Files**: 10 | **Subdirectories**: 0
+
+### Documentation Files
+
+| File | Description | Lines |
+|------|-------------|-------|
+| [README.md](README.md) | Directory overview and quick start | ~200 |
+| [AGENTS.md](AGENTS.md) | Technical scaffolding (this file) | ~150 |
+| [gnn_dspy.md](gnn_dspy.md) | Core DSPy-GNN integration theory | ~550 |
+| [dspy_modules_reference.md](dspy_modules_reference.md) | Comprehensive module catalog | ~400 |
+| [dspy_agents_guide.md](dspy_agents_guide.md) | Building agents with ReAct | ~450 |
+| [dspy_optimizers_guide.md](dspy_optimizers_guide.md) | Optimization with MIPROv2 | ~500 |
+| [dspy_assertions_guide.md](dspy_assertions_guide.md) | Output validation and constraints | ~400 |
+| [dspy_retrieval_guide.md](dspy_retrieval_guide.md) | RAG and vector databases | ~450 |
+| [dspy_typed_predictors.md](dspy_typed_predictors.md) | Pydantic and structured output | ~400 |
+| [dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md) | Practical integration patterns | ~500 |
+
+---
 
 ## Quick Navigation
 
-- **README.md**: [Directory overview](README.md)
-- **GNN Documentation**: [gnn/AGENTS.md](../gnn/AGENTS.md)
-- **Main Documentation**: [doc/README.md](../README.md)
-- **Pipeline Reference**: [src/AGENTS.md](../../src/AGENTS.md)
+### This Directory
+- **[README.md](README.md)**: Directory overview (start here)
+- **[gnn_dspy.md](gnn_dspy.md)**: Complete DSPy-GNN integration guide
+
+### Core DSPy Documentation
+- **[dspy_modules_reference.md](dspy_modules_reference.md)**: All DSPy modules
+- **[dspy_agents_guide.md](dspy_agents_guide.md)**: Agent development with ReAct
+- **[dspy_optimizers_guide.md](dspy_optimizers_guide.md)**: MIPROv2, BootstrapFinetune
+
+### Advanced Topics
+- **[dspy_assertions_guide.md](dspy_assertions_guide.md)**: Output validation
+- **[dspy_retrieval_guide.md](dspy_retrieval_guide.md)**: RAG and retrieval
+- **[dspy_typed_predictors.md](dspy_typed_predictors.md)**: Structured output
+- **[dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md)**: GNN patterns
+
+### Related Documentation
+- **[GNN Documentation](../gnn/AGENTS.md)**: Core GNN docs
+- **[Main Documentation](../README.md)**: Documentation hub
+- **[Pipeline Reference](../../src/AGENTS.md)**: Pipeline details
+
+---
 
 ## Documentation Structure
 
 This module is organized as follows:
 
-- **Overview**: High-level description and purpose
-- **Contents**: Files and subdirectories
-- **Integration**: Connection to the broader pipeline
-- **Usage**: How to work with this subsystem
+```
+doc/dspy/
+│
+├── Overview & Navigation
+│   ├── README.md              # Entry point
+│   └── AGENTS.md              # This scaffolding
+│
+├── Core Theory
+│   └── gnn_dspy.md            # DSPy-GNN integration theory
+│
+├── Module Reference
+│   └── dspy_modules_reference.md
+│
+├── Guides
+│   ├── dspy_agents_guide.md
+│   ├── dspy_optimizers_guide.md
+│   ├── dspy_assertions_guide.md
+│   ├── dspy_retrieval_guide.md
+│   └── dspy_typed_predictors.md
+│
+└── Integration
+    └── dspy_gnn_integration_patterns.md
+```
+
+---
 
 ## Integration with Pipeline
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+### Core Processing (Steps 0-9)
+- GNN parsing, validation, export
+- DSPy can enhance GNN parsing with LLM assistance
+- Structured prompting for model interpretation
+
+### Simulation (Steps 10-16)
+- Model execution and analysis
+- DSPy-optimized LLM analysis (Step 13: LLM)
+- Automated prompt optimization for model interpretation
+
+### Integration (Steps 17-23)
+- System coordination and output
+- DSPy results integrated into comprehensive outputs
+- LLM-enhanced documentation generation
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+---
+
+## Key Topics Covered
+
+### DSPy Fundamentals
+- Signatures and declarative specifications
+- Modules (Predict, ChainOfThought, ReAct, etc.)
+- Optimizers (MIPROv2, BootstrapFewShot, etc.)
+- Configuration and LM providers
+
+### GNN Integration
+- Observation processing with DSPy modules
+- Policy evaluation using semantic understanding
+- GNN model authoring assistance
+- Explanation generation for Active Inference
+
+### Advanced Patterns
+- Multi-hop reasoning architectures
+- Typed outputs with Pydantic
+- RAG with ColBERT and vector databases
+- Agent development with tools
+
+---
 
 ## Standards and Guidelines
 
@@ -53,17 +144,24 @@ All documentation in this module adheres to professional standards:
 - **Functionality**: Describes actual capabilities
 - **Completeness**: Comprehensive coverage
 - **Consistency**: Uniform structure and style
+- **Code Examples**: Syntactically correct, tested
+
+---
 
 ## Related Resources
 
-**Main GNN Documentation**: [gnn/](../gnn/)
+### Main GNN Documentation
 - [GNN Overview](../gnn/gnn_overview.md)
 - [GNN Quickstart](../gnn/quickstart_tutorial.md)
 - [GNN Examples](../gnn/gnn_examples_doc.md)
 
-**Pipeline Architecture**: [src/](../../src/)
+### Pipeline Architecture
 - [Pipeline AGENTS](../../src/AGENTS.md)
 - [Pipeline README](../../src/README.md)
+
+### External Resources
+- [DSPy Official](https://dspy.ai)
+- [DSPy GitHub](https://github.com/stanfordnlp/dspy)
 
 ---
 

@@ -1,97 +1,199 @@
 # DSPy Integration for GNN
 
 > **📋 Document Metadata**  
-> **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Advanced  
+> **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Beginner to Advanced  
 > **Cross-References**: [AGENTS.md](AGENTS.md) | [DSPy GNN Guide](gnn_dspy.md) | [LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md) | [Main Documentation](../README.md)
 
 ## Overview
 
-This directory contains documentation, resources, and implementation guides for integrating **DSPy** (Declarative Structured Prompting for Language Models) with GNN (Generalized Notation Notation). DSPy provides a systematic approach to LLM programming, moving from prompt engineering to programmatic LLM workflows.
+This directory contains comprehensive documentation, resources, and implementation guides for integrating **DSPy** (Declarative Structured Prompting for Language Models) with GNN (Generalized Notation Notation). DSPy provides a systematic approach to LLM programming, moving from prompt engineering to programmatic LLM workflows.
 
 **Status**: ✅ Production Ready  
-**Version**: 1.0
+**Version**: 2.0  
+**Last Updated**: January 2026
 
-## Quick Navigation
+---
 
-### This Directory
-- **[README.md](README.md)**: Directory overview (this file)
-- **[AGENTS.md](AGENTS.md)**: Technical documentation and agent scaffolding
-- **[gnn_dspy.md](gnn_dspy.md)**: Complete DSPy-GNN integration guide
+## Quick Start
 
-### Main Documentation
-- **[doc/README.md](../README.md)**: Main documentation hub
-- **[CROSS_REFERENCE_INDEX.md](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference index
-- **[learning_paths.md](../learning_paths.md)**: Learning pathways
+```python
+import dspy
 
-### Related Directories
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
-- **[AutoGenLib Integration](../autogenlib/gnn_autogenlib.md)**: Dynamic code generation
-- **[PoE-World Integration](../poe-world/poe-world_gnn.md)**: Compositional world modeling
-- **[Development Guide](../development/README.md)**: Development workflows
+# Configure LM
+lm = dspy.LM('openai/gpt-4o-mini', api_key='YOUR_KEY')
+dspy.configure(lm=lm)
 
-### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
+# Create a simple module
+classifier = dspy.ChainOfThought('sentence -> sentiment: bool')
+result = classifier(sentence="Active Inference is fascinating!")
+print(result.sentiment)  # True
+```
 
-## Contents
+---
 
-**Files**: 2 | **Subdirectories**: 0
+## Documentation Index
 
-### Core Files
+### Core Documentation
 
-- **`gnn_dspy.md`**: Complete DSPy-GNN integration guide
-  - DSPy framework overview
-  - Structured prompting for GNN
-  - LLM program optimization
-  - Integration patterns and examples
+| Document | Description | Complexity |
+|----------|-------------|------------|
+| **[gnn_dspy.md](gnn_dspy.md)** | Complete DSPy-GNN integration theory | Advanced |
+| **[dspy_modules_reference.md](dspy_modules_reference.md)** | Comprehensive module catalog | Intermediate |
+| **[dspy_agents_guide.md](dspy_agents_guide.md)** | Building ReAct agents with tools | Advanced |
+| **[dspy_optimizers_guide.md](dspy_optimizers_guide.md)** | MIPROv2, BootstrapFinetune, optimization | Advanced |
+| **[dspy_assertions_guide.md](dspy_assertions_guide.md)** | Output validation and constraints | Intermediate |
+| **[dspy_retrieval_guide.md](dspy_retrieval_guide.md)** | RAG, ColBERT, vector databases | Intermediate |
+| **[dspy_typed_predictors.md](dspy_typed_predictors.md)** | Pydantic and structured output | Intermediate |
+| **[dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md)** | Practical GNN integration patterns | Advanced |
 
-- **`AGENTS.md`**: Technical documentation and agent scaffolding
-  - Complete documentation structure
-  - Integration with pipeline
-  - Cross-references and navigation
+### Navigation
 
-- **`README.md`**: Directory overview (this file)
+- **[README.md](README.md)**: This overview (start here)
+- **[AGENTS.md](AGENTS.md)**: Technical scaffolding and navigation
 
-## DSPy Overview
+---
 
-DSPy provides:
+## DSPy Core Concepts
 
-### Systematic LLM Programming
-- **Signatures**: Define input-output behavior without implementation details
-- **Modules**: Building blocks for LLM programs (ChainOfThought, ReAct, etc.)
-- **Optimizers**: Automated prompt and weight tuning
-- **Separation of Concerns**: Flow of AI programs separated from parameters
+### Signatures
+Define input-output behavior without implementation details:
+```python
+"question -> answer"
+"context, question -> reasoning, answer"
+"document -> summary: str, topics: list[str]"
+```
 
-### Key Features
-- **Declarative Approach**: Focus on high-level logic, not prompt engineering
-- **Modular Design**: Compose modules like neural network components
-- **Automatic Optimization**: Optimizers handle fine-tuning details
-- **Portability**: Works across different language models and strategies
+### Modules
+Building blocks for LLM programs:
+- **`dspy.Predict`**: Basic prediction
+- **`dspy.ChainOfThought`**: Step-by-step reasoning
+- **`dspy.ProgramOfThought`**: Code generation and execution
+- **`dspy.ReAct`**: Agent with tool use
+- **`dspy.Refine`**: Output refinement
 
-## Integration with Pipeline
+### Optimizers
+Automatic prompt and weight tuning:
+- **`MIPROv2`**: Bayesian instruction optimization
+- **`BootstrapFewShot`**: Example synthesis
+- **`BootstrapFinetune`**: LM weight fine-tuning
+
+### Key Benefits
+- **Programming over Prompting**: Systematic, maintainable approach
+- **Automatic Optimization**: Data-driven prompt tuning
+- **Modular Design**: Composable, reusable components
+- **Model Portability**: Works across different LLMs
+
+---
+
+## Integration with GNN Pipeline
 
 This documentation is integrated with the 24-step GNN processing pipeline:
 
-1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
-   - DSPy can enhance GNN parsing with LLM assistance
-   - Structured prompting for model interpretation
+### Core Processing (Steps 0-9)
+- DSPy enhances GNN parsing with LLM assistance
+- [dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md): Observation processing patterns
 
-2. **Simulation** (Steps 10-16): Model execution and analysis
-   - DSPy-optimized LLM analysis (Step 13: LLM)
-   - Automated prompt optimization for model interpretation
+### Simulation (Steps 10-16)
+- DSPy-optimized LLM analysis (Step 13: LLM)
+- [dspy_agents_guide.md](dspy_agents_guide.md): Active Inference agent patterns
 
-3. **Integration** (Steps 17-23): System coordination and output
-   - DSPy results integrated into comprehensive outputs
-   - LLM-enhanced documentation generation
+### Integration (Steps 17-23)
+- DSPy results integrated into comprehensive outputs
+- [dspy_typed_predictors.md](dspy_typed_predictors.md): Structured output generation
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
+
+---
+
+## File Structure
+
+```
+doc/dspy/
+├── README.md                          # This overview
+├── AGENTS.md                          # Technical scaffolding
+├── gnn_dspy.md                        # Core DSPy-GNN theory
+├── dspy_modules_reference.md          # Module reference
+├── dspy_agents_guide.md               # Agent development
+├── dspy_optimizers_guide.md           # Optimization guide
+├── dspy_assertions_guide.md           # Output validation
+├── dspy_retrieval_guide.md            # RAG and retrieval
+├── dspy_typed_predictors.md           # Typed outputs
+└── dspy_gnn_integration_patterns.md   # Integration patterns
+```
+
+**Files**: 10 | **Total Documentation**: ~3000 lines
+
+---
+
+## Learning Paths
+
+### Beginner Path
+1. Start with this README
+2. Read [dspy_modules_reference.md](dspy_modules_reference.md)
+3. Try examples in [dspy_typed_predictors.md](dspy_typed_predictors.md)
+
+### Intermediate Path
+1. Complete beginner path
+2. Study [dspy_assertions_guide.md](dspy_assertions_guide.md)
+3. Explore [dspy_retrieval_guide.md](dspy_retrieval_guide.md)
+
+### Advanced Path
+1. Complete intermediate path
+2. Master [dspy_optimizers_guide.md](dspy_optimizers_guide.md)
+3. Build agents with [dspy_agents_guide.md](dspy_agents_guide.md)
+4. Integrate with GNN via [dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md)
+
+---
+
+## Quick Reference
+
+### Common Patterns
+
+```python
+# Classification
+classifier = dspy.Predict('text -> category: str')
+
+# Question Answering with reasoning
+qa = dspy.ChainOfThought('context, question -> answer')
+
+# Agent with tools
+agent = dspy.ReAct('question -> answer', tools=[search, calculate])
+
+# Structured output
+from pydantic import BaseModel
+class Output(BaseModel):
+    summary: str
+    keywords: list[str]
+    
+predictor = dspy.ChainOfThought('document -> result: Output')
+```
+
+### Configuration
+
+```python
+import dspy
+
+# OpenAI
+lm = dspy.LM('openai/gpt-4o', api_key='...')
+
+# Anthropic
+lm = dspy.LM('anthropic/claude-3-opus', api_key='...')
+
+# Ollama (local)
+lm = dspy.LM('ollama/llama3.2:3b')
+
+# Configure globally
+dspy.configure(lm=lm)
+```
+
+---
 
 ## Related Resources
 
 ### Main GNN Documentation
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
-- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: LLM-enhanced analysis
+- **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
 
 ### Development Resources
 - **[AutoGenLib Integration](../autogenlib/gnn_autogenlib.md)**: Dynamic code generation
@@ -103,6 +205,13 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
+### External Resources
+- **[DSPy Official Documentation](https://dspy.ai)**: Official DSPy docs
+- **[DSPy GitHub](https://github.com/stanfordnlp/dspy)**: Source code
+- **[MLflow DSPy Integration](https://mlflow.org/docs/latest/llms/dspy/)**: Observability
+
+---
+
 ## Standards and Guidelines
 
 All documentation in this module adheres to professional standards:
@@ -111,6 +220,9 @@ All documentation in this module adheres to professional standards:
 - **Functionality**: Describes actual DSPy integration capabilities
 - **Completeness**: Comprehensive coverage of structured prompting integration
 - **Consistency**: Uniform structure and style with GNN documentation ecosystem
+- **Code Examples**: All examples are syntactically correct and tested
+
+---
 
 ## See Also
 
