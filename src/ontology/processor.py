@@ -204,9 +204,8 @@ def load_defined_ontology_terms() -> Dict[str, Any]:
     
     # Priority order for ontology files
     search_paths = [
-        Path(__file__).parent / "act_inf_ontology_terms.json",  # Module dir
+        Path(__file__).parent / "act_inf_ontology_terms.json",  # Module dir (canonical)
         Path("src/ontology/act_inf_ontology_terms.json"),        # From project root
-        Path("input/ontology_terms.json"),                        # Legacy location
     ]
     
     for ontology_file in search_paths:

@@ -282,7 +282,7 @@ src/
 **Solution**: Ensure `include_metadata=True` in conversion functions
 
 ### "Invalid ontology terms"
-**Solution**: Check `input/ontology_terms.json` or disable validation
+**Solution**: Check `src/ontology/act_inf_ontology_terms.json` or disable validation
 
 ### "Mermaid syntax errors"
 **Diagnostic**: Use `validate_mermaid_syntax()` from `oxdraw.utils`

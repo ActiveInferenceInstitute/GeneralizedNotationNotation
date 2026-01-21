@@ -45,7 +45,7 @@
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for ontology results
 - `logger` (Optional[logging.Logger]): Logger instance (default: None)
-- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `input/ontology_terms.json`)
+- `ontology_terms_file` (Path, optional): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
 - `recursive` (bool, optional): Process directories recursively (default: True)
 - `strict_validation` (bool, optional): Require all terms to be in ontology (default: False)
 - `generate_mapping` (bool, optional): Generate ontology mapping (default: True)
@@ -64,7 +64,7 @@ logger = logging.getLogger(__name__)
 success = process_ontology(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
-    ontology_terms_file=Path("input/ontology_terms.json"),
+    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json"),
     strict_validation=True
 )
 ```
@@ -121,7 +121,7 @@ success = process_ontology(
 ### Configuration Options
 
 #### Ontology File
-- `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `input/ontology_terms.json`)
+- `ontology_terms_file` (Path): Path to ontology terms JSON file (default: `src/ontology/act_inf_ontology_terms.json`)
 - `ontology_format` (str): Ontology file format (default: `"json"`)
 
 #### Validation Options
@@ -159,7 +159,7 @@ success = process_ontology_standardized(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/10_ontology_output"),
     logger=logger,
-    ontology_terms_file=Path("input/ontology_terms.json")
+    ontology_terms_file=Path("src/ontology/act_inf_ontology_terms.json")
 )
 ```
 
@@ -313,7 +313,7 @@ def extract_ontology_terms_tool(gnn_content: str) -> List[str]:
 **Symptom**: Validation reports errors even for valid terms  
 **Cause**: Ontology terms file missing or outdated  
 **Solution**: 
-- Check that `input/ontology_terms.json` exists
+- Check that `src/ontology/act_inf_ontology_terms.json` exists
 - Verify ontology terms file format is valid JSON
 - Update ontology terms file if needed
 - Use `--verbose` flag for detailed validation messages

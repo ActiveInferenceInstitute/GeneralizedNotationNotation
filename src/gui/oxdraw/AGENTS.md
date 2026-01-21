@@ -447,7 +447,7 @@ oxdraw --version
 **Symptom**: Ontology validation errors
 
 **Solution**: 
-- Check ontology terms in `input/ontology_terms.json`
+- Check ontology terms in `src/ontology/act_inf_ontology_terms.json`
 - Disable validation with `validate_ontology=False`
 
 #### Issue 4: "Mermaid syntax errors"
@@ -498,7 +498,7 @@ for error in errors:
 ### External Resources
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
 - [Mermaid Documentation](https://mermaid.js.org/)
-- [Active Inference Ontology](../../../input/ontology_terms.json)
+- [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
 
 ---
 

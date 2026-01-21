@@ -96,7 +96,7 @@ TEST_CONFIG = {
     "dev": False,
     "duration": 30.0,
     "audio_backend": "auto",
-    "ontology_terms_file": PROJECT_ROOT / "input" / "ontology_terms.json",
+    "ontology_terms_file": PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json",
     "pipeline_summary_file": PROJECT_ROOT / "output" / "pipeline_execution_summary.json",
     "fast_only": False,
     "include_performance": True,
@@ -346,7 +346,7 @@ def get_test_args() -> Dict[str, Any]:
         "dev": False,
         "duration": 30.0,
         "audio_backend": "auto",
-        "ontology_terms_file": str(PROJECT_ROOT / "input" / "ontology_terms.json"),
+        "ontology_terms_file": str(PROJECT_ROOT / "src" / "ontology" / "act_inf_ontology_terms.json"),
         "pipeline_summary_file": str(PROJECT_ROOT / "output" / "pipeline_execution_summary.json"),
     }
 
@@ -363,7 +363,7 @@ def get_sample_pipeline_arguments() -> Dict[str, Any]:
         "only_steps": [],
         "strict": False,
         "estimate_resources": False,
-        "ontology_terms_file": "input/ontology_terms.json",
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
         "pipeline_summary_file": "output/pipeline_execution_summary.json",
         "llm_tasks": "all",
         "llm_timeout": 360,
@@ -419,7 +419,6 @@ def create_missing_test_files() -> None:
     # Create test configuration files
     config_files = [
         (PROJECT_ROOT / "input" / "config.yaml", create_sample_config),
-        (PROJECT_ROOT / "input" / "ontology_terms.json", create_sample_ontology),
     ]
     
     for config_path, creator_func in config_files:
@@ -656,7 +655,7 @@ def get_test_filesystem_structure() -> Dict[str, List[str]]:
     return {
         "input": {
             "gnn_files": ["model1.md", "model2.md", "model3.md"],
-            "config": ["config.yaml", "ontology_terms.json"]
+            "config": ["config.yaml"]
         },
         "output": {
             "test_artifacts": ["test1.json", "test2.json"],

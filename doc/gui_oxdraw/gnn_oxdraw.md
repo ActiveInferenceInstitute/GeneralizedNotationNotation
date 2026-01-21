@@ -763,7 +763,7 @@ subprocess.run([
     "python3", "src/10_ontology.py",
     "--target-dir", "output/oxdraw_interface",
     "--output-dir", "output",
-    "--ontology-terms-file", "input/ontology_terms.json"
+    "--ontology-terms-file", "src/ontology/act_inf_ontology_terms.json"
 ])
 
 print("✅ Model validated through GNN pipeline")
@@ -1172,7 +1172,7 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 - [oxdraw Technical Overview](oxdraw.md)
 
 ### Active Inference
-- [Active Inference Ontology](../../input/ontology_terms.json)
+- [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
 - [POMDP Specification](../gnn/gnn_standards.md)
 
 ---
