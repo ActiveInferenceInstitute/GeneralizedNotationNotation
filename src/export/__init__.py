@@ -31,7 +31,7 @@ from .utils import (
     get_supported_formats as _get_supported_formats_dict
 )
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 FEATURES = {"json_export": True, "xml_export": True, "graphml_export": True, "gexf_export": True, "pickle_export": True, "mcp_integration": True}
 HAS_NETWORKX = True
 

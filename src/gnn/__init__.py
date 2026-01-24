@@ -16,6 +16,10 @@ from .processor import (
     get_module_info
 )
 
+from .multi_format_processor import (
+    process_gnn_multi_format
+)
+
 from .parser import (
     ValidationLevel,
     ParsedGNN,
@@ -31,7 +35,7 @@ from .parser import (
     _convert_parse_result_to_parsed_gnn
 )
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 # Ensure tests see MCP feature presence consistently
 FEATURES = {
     "file_discovery": True,
@@ -66,6 +70,9 @@ __all__ = [
     'process_gnn_directory',
     'generate_gnn_report',
     'get_module_info',
+
+    # Multi-format processor
+    'process_gnn_multi_format',
     
     # Parser classes and functions
     'ValidationLevel',

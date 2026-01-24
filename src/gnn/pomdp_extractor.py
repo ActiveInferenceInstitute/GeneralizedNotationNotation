@@ -44,6 +44,7 @@ class POMDPStateSpace:
     model_name: Optional[str] = None
     model_annotation: Optional[str] = None
     ontology_mapping: Optional[Dict[str, str]] = None
+    num_timesteps: Optional[int] = None  # Simulation timesteps (from ModelParameters)
     
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
@@ -62,7 +63,8 @@ class POMDPStateSpace:
             'connections': self.connections,
             'model_name': self.model_name,
             'model_annotation': self.model_annotation,
-            'ontology_mapping': self.ontology_mapping
+            'ontology_mapping': self.ontology_mapping,
+            'num_timesteps': self.num_timesteps
         }
 
 
@@ -118,7 +120,7 @@ class POMDPExtractor:
             initial_params = self._parse_initial_parameterization(sections.get('InitialParameterization', ''))
             
             # Extract dimensions (now with access to sections and initial_params for better inference)
-            num_states, num_observations, num_actions = self._extract_dimensions(
+            num_states, num_observations, num_actions, num_timesteps = self._extract_dimensions(
                 state_space_info, sections=sections, initial_params=initial_params
             )
             
@@ -144,7 +146,8 @@ class POMDPExtractor:
                 connections=connections,
                 model_name=model_name,
                 model_annotation=model_annotation,
-                ontology_mapping=ontology_mapping
+                ontology_mapping=ontology_mapping,
+                num_timesteps=num_timesteps
             )
             
             # Validate if strict validation enabled
@@ -294,6 +297,7 @@ class POMDPExtractor:
         num_states = 3  # Default
         num_observations = 3  # Default  
         num_actions = None  # Will be determined by priority
+        num_timesteps = None  # Simulation timesteps (optional)
         
         # Priority 1: Check ModelParameters section
         if sections:
@@ -311,6 +315,8 @@ class POMDPExtractor:
                             num_states = value
                         elif key in ['num_obs', 'num_observations', 'n_obs']:
                             num_observations = value
+                        elif key in ['num_timesteps', 'n_timesteps', 'timesteps']:
+                            num_timesteps = value
                     except (ValueError, IndexError):
                         pass
         
@@ -350,7 +356,7 @@ class POMDPExtractor:
         if num_actions is None:
             num_actions = 3
         
-        return num_states, num_observations, num_actions
+        return num_states, num_observations, num_actions, num_timesteps
     
     def _parse_initial_parameterization(self, content: str) -> Dict[str, Any]:
         """Parse InitialParameterization section."""

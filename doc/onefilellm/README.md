@@ -30,7 +30,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Data Processing](../CROSS_REFERENCE_INDEX.md#data-processing)**: Data processing tools
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -108,7 +108,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Data Processing](../CROSS_REFERENCE_INDEX.md#data-processing)**: Data processing tools
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

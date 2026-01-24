@@ -44,6 +44,11 @@ run_script = create_standardized_pipeline_script(
 )
 
 
+def main() -> int:
+    """Main entry point for advanced visualization step."""
+    return run_script()
+
+
 if __name__ == "__main__":
     # Explicitly handle --help to ensure it doesn't execute the full pipeline
     if "--help" in sys.argv or "-h" in sys.argv:
@@ -59,4 +64,4 @@ if __name__ == "__main__":
         parser.print_help()
         sys.exit(0)
 
-    sys.exit(run_script()) 
+    sys.exit(main()) 

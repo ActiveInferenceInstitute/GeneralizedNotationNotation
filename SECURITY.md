@@ -119,7 +119,7 @@ Once a security vulnerability is reported, we commit to:
 
 **Environment Setup:**
 - Use isolated Python virtual environments
-- Keep dependencies updated: `pip install --upgrade -r requirements.txt`
+- Keep dependencies updated: `uv sync --refresh`
 - Validate GNN file sources before processing
 - Use secure API key storage (environment variables, not files)
 

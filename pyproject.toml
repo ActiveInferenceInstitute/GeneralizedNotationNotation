@@ -59,6 +59,12 @@ dependencies = [
     "httpx>=0.27.0",
     # GNN processing
     "markdown>=3.0.0",
+    # Security: CVE-2026-0994 - JSON recursion depth bypass in json_format.ParseDict().
+    # Affected: protobuf <=6.33.4. Fix pending in protobuf v7+. 
+    # Mitigation: This codebase doesn't use ParseDict() with untrusted nested Any messages.
+    # Pinned to latest 6.x until streamlit updates its protobuf<7 constraint.
+    # See: https://github.com/advisories/GHSA-7gcm-g887-7qv7
+    "protobuf>=6.33.4",
     # Active Inference ecosystem
     "inferactively-pymdp>=0.0.7",  # Active Inference agent framework
     # High-performance computing

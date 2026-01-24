@@ -35,7 +35,7 @@ println("============================================================")
 const NUM_STATES = {num_states}
 const NUM_OBSERVATIONS = {num_observations}
 const NUM_ACTIONS = {num_actions}
-const TIME_STEPS = 20
+const TIME_STEPS = {num_timesteps}
 
 println("📊 State Space: $NUM_STATES states, $NUM_OBSERVATIONS observations, $NUM_ACTIONS actions")
 println("⏱️  Time Steps: $TIME_STEPS")

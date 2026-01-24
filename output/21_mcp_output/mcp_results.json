@@ -1,33 +1,61 @@
 {
-  "timestamp": "2026-01-21T12:57:49.859053",
-  "mcp_version": "1.1.1",
-  "tools_count": 13,
+  "timestamp": "2026-01-24T14:27:12.085730",
+  "mcp_version": "1.1.3",
+  "tools_count": 16,
   "resources_count": 0,
   "tools": [
     {
-      "name": "get_pipeline_config_info",
-      "description": "Get detailed pipeline configuration information and settings.",
+      "name": "check_ml_frameworks",
+      "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
       "module": "",
       "category": "",
       "version": "1.0.0"
     },
     {
-      "name": "get_pipeline_status",
-      "description": "Get current pipeline execution status, recent logs, and execution statistics.",
+      "name": "get_analysis_capabilities",
+      "description": "Get available intelligent analysis capabilities, tools, and features.",
       "module": "",
       "category": "",
       "version": "1.0.0"
     },
     {
-      "name": "get_pipeline_steps",
-      "description": "Get information about all available pipeline steps, their metadata, and dependencies.",
+      "name": "process_intelligent_analysis",
+      "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
       "module": "",
       "category": "",
       "version": "1.0.0"
     },
     {
-      "name": "src.llm.list_functions",
-      "description": "List callable functions exported by the module public API.",
+      "name": "process_ml_integration",
+      "description": "Process ML integration for GNN files including model training and inference setup.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_research",
+      "description": "Process research tasks for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_visualization",
+      "description": "Process visualization for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.call_function",
+      "description": "Call any public function in the src.visualization module with keyword arguments.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "src.visualization.list_functions",
+      "description": "List callable functions exported by the src.visualization module public API.",
       "module": "",
       "category": "",
       "version": "1.0.0"
@@ -84,13 +112,6 @@
     {
       "name": "sympy_validate_matrix",
       "description": "Validate matrix properties including stochasticity constraints",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "validate_pipeline_dependencies",
-      "description": "Validate pipeline step dependencies and identify missing or circular dependencies.",
       "module": "",
       "category": "",
       "version": "1.0.0"

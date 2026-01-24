@@ -47,6 +47,7 @@ C = [[0.1, 0.1, 1.0]]
 D = [[0.33333, 0.33333, 0.33333]]
 E = [[0.33333, 0.33333, 0.33333]]
 num_actions: 3       # B actions_dim = 3 (controlled by π)
+num_timesteps: 30    # Number of simulation timesteps for all frameworks
 
 ## Time
 Dynamic
@@ -68,6 +69,6 @@ u = Action       # Chosen action
 t = Time
 
 ## Footer
-Generated: 2026-01-21T12:52:10.561932
+Generated: 2026-01-24T15:01:04.886737
 
 ## Signature

@@ -631,11 +631,51 @@ class TestPipelineScriptIntegration:
 
 def test_pipeline_script_completeness():
     """Test that all pipeline scripts are complete and functional."""
-    # This test ensures that the test suite covers all aspects of pipeline scripts
-    logging.info("Pipeline script completeness test passed")
+    from pathlib import Path
+
+    # Check that expected pipeline scripts exist
+    src_dir = Path(__file__).parent.parent
+    expected_scripts = [
+        '0_template.py', '1_setup.py', '2_tests.py', '3_gnn.py',
+        '4_model_registry.py', '5_type_checker.py', '6_validation.py',
+        '7_export.py', '8_visualization.py', '9_advanced_viz.py',
+        '10_ontology.py', '11_render.py', '12_execute.py', '13_llm.py'
+    ]
+
+    found_scripts = []
+    for script_name in expected_scripts:
+        script_path = src_dir / script_name
+        if script_path.exists():
+            found_scripts.append(script_name)
+            # Verify script has main entry point
+            content = script_path.read_text()
+            assert 'def main' in content or 'if __name__' in content, \
+                f"Script {script_name} missing main entry point"
+
+    assert len(found_scripts) >= 10, f"Expected >=10 pipeline scripts, found {len(found_scripts)}"
+    logging.info(f"Pipeline script completeness: {len(found_scripts)}/{len(expected_scripts)} scripts found")
 
 @pytest.mark.slow
 def test_pipeline_script_performance():
     """Test performance characteristics of pipeline scripts."""
-    # This test validates that scripts perform within acceptable limits
+    import time
+    from pathlib import Path
+
+    src_dir = Path(__file__).parent.parent
+
+    # Test that pipeline module imports are fast
+    modules_to_check = ['gnn', 'render', 'validation', 'visualization']
+    slow_imports = []
+
+    for module_name in modules_to_check:
+        start = time.time()
+        try:
+            __import__(module_name)
+            elapsed = time.time() - start
+            if elapsed > 1.0:
+                slow_imports.append((module_name, elapsed))
+        except ImportError:
+            pass  # Module not available
+
+    assert len(slow_imports) == 0, f"Slow imports detected: {slow_imports}"
     logging.info("Pipeline script performance test completed") 

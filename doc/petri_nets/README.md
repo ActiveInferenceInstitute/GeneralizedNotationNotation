@@ -39,7 +39,7 @@ Petri net modeling enables:
 - **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination patterns
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -168,14 +168,14 @@ Petri nets enable modeling of:
 - **[Advanced Patterns](../gnn/advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
 ### Research Applications
 - **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent coordination
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
-- **[Workflow Analysis](../pipeline/PIPELINE_ARCHITECTURE.md)**: Process analysis
+- **[Workflow Analysis](../gnn/architecture_reference.md)**: Process analysis
 
 ## Standards and Guidelines
 
@@ -189,7 +189,7 @@ All documentation in this module adheres to professional standards:
 ## See Also
 
 - **[Petri Net Modeling](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Cross-reference index entry
-- **[Workflow Analysis](../pipeline/PIPELINE_ARCHITECTURE.md)**: Process analysis documentation
+- **[Workflow Analysis](../gnn/architecture_reference.md)**: Process analysis documentation
 - **[Formal Methods](../axiom/axiom_gnn.md)**: Related formal verification approaches
 - **[Main Index](../README.md)**: Return to main documentation
 

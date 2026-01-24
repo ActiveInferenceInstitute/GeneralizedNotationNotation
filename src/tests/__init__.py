@@ -92,7 +92,7 @@ except Exception:
         "safe_mode": True,
         "timeout_seconds": 300,
         "max_test_files": 10,
-        "temp_output_dir": PROJECT_ROOT / "output" / "test_artifacts",
+        "temp_output_dir": PROJECT_ROOT / "output" / "25_test_artifacts_output",
     }
     TEST_CATEGORIES = {}
     TEST_STAGES = {}
@@ -126,9 +126,66 @@ except Exception:
         def _cm():
             yield
         return _cm()
-    def assert_file_exists(*_, **__): pass
-    def assert_valid_json(*_, **__): pass
-    def assert_directory_structure(*_, **__): pass
+    def assert_file_exists(path, msg=None):
+        """Assert that a file exists at the given path.
+
+        Args:
+            path: Path to the file (str or Path).
+            msg: Optional custom error message.
+
+        Raises:
+            AssertionError: If file does not exist.
+        """
+        from pathlib import Path as P
+        p = P(path)
+        if not p.exists():
+            raise AssertionError(msg or f"File does not exist: {path}")
+        if not p.is_file():
+            raise AssertionError(msg or f"Path exists but is not a file: {path}")
+
+    def assert_valid_json(path, msg=None):
+        """Assert that file contains valid JSON.
+
+        Args:
+            path: Path to the JSON file.
+            msg: Optional custom error message.
+
+        Raises:
+            AssertionError: If file doesn't exist or contains invalid JSON.
+        """
+        import json
+        from pathlib import Path as P
+        p = P(path)
+        if not p.exists():
+            raise AssertionError(msg or f"JSON file does not exist: {path}")
+        try:
+            with open(p, 'r') as f:
+                json.load(f)
+        except json.JSONDecodeError as e:
+            raise AssertionError(msg or f"Invalid JSON in {path}: {e}")
+
+    def assert_directory_structure(base_path, expected_structure, msg=None):
+        """Assert that a directory contains expected structure.
+
+        Args:
+            base_path: Base directory path.
+            expected_structure: List of expected file/directory names or patterns.
+            msg: Optional custom error message.
+
+        Raises:
+            AssertionError: If structure doesn't match.
+        """
+        from pathlib import Path as P
+        base = P(base_path)
+        if not base.exists():
+            raise AssertionError(msg or f"Base directory does not exist: {base_path}")
+        if not base.is_dir():
+            raise AssertionError(msg or f"Path is not a directory: {base_path}")
+
+        for item in expected_structure:
+            item_path = base / item
+            if not item_path.exists():
+                raise AssertionError(msg or f"Expected item missing: {item_path}")
     def validate_report_data(d): return {"is_valid": True}
     def generate_html_report_file(*_, **__): return True
     def generate_markdown_report_file(*_, **__): return True
@@ -224,6 +281,6 @@ __all__ = [
 ]
 
 # Module metadata
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "Comprehensive testing for GNN Processing Pipeline"

@@ -37,12 +37,14 @@ The GNN toolkit is included in this repository:
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Install Python dependencies
-cd src
-pip install -r requirements.txt
+# Install dependencies using UV (recommended)
+uv sync
+
+# Or install with all optional dependencies
+uv sync --extra all
 
 # Run the main pipeline on examples
-python main.py --target-dir gnn/examples/ --output-dir ../output/
+python src/main.py --target-dir input/gnn_files/ --output-dir output/
 ```
 
 ### What's the easiest way to create my first model?
@@ -240,10 +242,10 @@ See [Performance Guide](performance.md) for optimization strategies.
    # or
    .venv\Scripts\activate  # Windows
    ```
-2. **Install missing dependencies**: 
+2. **Install missing dependencies**:
    ```bash
-   pip install -r requirements.txt
-   pip install --upgrade pip  # Update pip first if needed
+   uv sync  # Recommended - installs all dependencies
+   # Or: uv pip install -r requirements.txt
    ```
 3. **Python version compatibility**: GNN requires Python 3.8+
    ```bash
@@ -257,17 +259,14 @@ See [Performance Guide](performance.md) for optimization strategies.
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Create virtual environment
-python -m venv src/.venv
-source src/.venv/bin/activate
+# Install UV if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Install in editable mode with development dependencies
-cd src
-pip install -e .
-pip install -r requirements-dev.txt
+# Install all dependencies using UV (recommended)
+uv sync --extra dev
 
 # Run tests to verify setup
-python -m pytest tests/
+uv run pytest tests/
 ```
 
 ### Can I use GNN with Docker?

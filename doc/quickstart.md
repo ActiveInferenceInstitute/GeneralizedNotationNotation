@@ -129,8 +129,9 @@ GNN is a text-based language for standardizing Active Inference generative model
 ## 🚀 Quick Installation
 
 ### Prerequisites
-- Python 3.8+ 
+- Python 3.11+
 - Git
+- UV package manager (recommended): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 ### Install GNN
 ```bash
@@ -138,8 +139,11 @@ GNN is a text-based language for standardizing Active Inference generative model
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies using UV (recommended)
+uv sync
+
+# Or install with all optional dependencies
+uv sync --extra all
 
 # Verify installation
 python src/main.py --help
@@ -433,9 +437,9 @@ python src/4_gnn_type_checker.py my_model.md --check-matrices
 # Check what's missing
 python src/1_setup.py --check-dependencies
 
-# Install optional dependencies
-pip install torch  # For PyTorch integration
-pip install jax    # For JAX acceleration
+# Install optional dependencies using UV
+uv pip install torch  # For PyTorch integration
+uv pip install jax    # For JAX acceleration
 ```
 
 ## 🏗️ Templates for Common Models
@@ -479,7 +483,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ## 📖 Essential Documentation
 
 - **[GNN Syntax Reference](gnn/gnn_syntax.md)**: Complete syntax guide
-- **[Pipeline Documentation](pipeline/README.md)**: Detailed pipeline steps
+- **[Pipeline Documentation](gnn/gnn_tools.md)**: Detailed pipeline steps
 - **[API Reference](api/README.md)**: Programming interface
 - **[Troubleshooting](troubleshooting/README.md)**: Common problems and solutions
 

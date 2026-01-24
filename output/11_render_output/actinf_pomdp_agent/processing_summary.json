@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-01-21T12:52:20.114128",
-  "source_file": "input/gnn_files/actinf_pomdp_agent.md",
+  "timestamp": "2026-01-24T15:01:07.860428",
+  "source_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
   "model_name": "Active Inference POMDP Agent",
   "pomdp_dimensions": {
     "num_states": 3,

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: API Reference | **Audience**: Developers, Integrators | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../pipeline/README.md) | [Main Documentation](../README.md)
+> **Cross-References**: [AGENTS.md](AGENTS.md) | [Comprehensive API Reference](comprehensive_api_reference.md) | [Pipeline Architecture](../gnn/gnn_tools.md) | [Main Documentation](../README.md)
 
 ## Overview
 
@@ -24,13 +24,13 @@ This directory contains comprehensive API documentation for the GNN (Generalized
 - **[learning_paths.md](../learning_paths.md)**: Learning pathways
 
 ### Related Directories
-- **[Pipeline Documentation](../pipeline/README.md)**: Pipeline execution and orchestration
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Pipeline execution and orchestration
 - **[Development Guide](../development/README.md)**: Development workflows and contribution guidelines
 - **[MCP Integration](../mcp/README.md)**: Model Context Protocol APIs
 - **[Framework Integration](../gnn/framework_integration_guide.md)**: Framework-specific APIs
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -51,7 +51,7 @@ This directory contains comprehensive API documentation for the GNN (Generalized
 
 - **`api_index.json`**: Machine-readable API index
   - Generated map of modules, functions, and classes under `src/`
-  - Created by `src/pipeline/generate_api_index.py`
+  - Created by `src/generate_api_index.py`
   - AST-derived with file paths, module names, function signatures, class bases, and docstrings
   - Excludes tests and output directories
 
@@ -110,7 +110,7 @@ The `api_index.json` file is automatically generated from the codebase:
 
 ```bash
 # Generate API index
-python src/pipeline/generate_api_index.py
+python src/generate_api_index.py
 ```
 
 ### Index Generation Details
@@ -186,7 +186,7 @@ rxinfer_code = rxinfer_renderer.render(model)
 - **[Contributing Guide](../../CONTRIBUTING.md)**: Contribution guidelines
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

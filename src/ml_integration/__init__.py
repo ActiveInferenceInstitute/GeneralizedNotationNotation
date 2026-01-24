@@ -1,87 +1,29 @@
-# ML Integration module
+"""
+ML Integration module for GNN Processing Pipeline.
 
-import logging
-from pathlib import Path
-from typing import Optional
+This module provides machine learning model integration capabilities.
+"""
 
-# Import processor functions
-from .processor import (
-    process_ml_integration
-)
+__version__ = "1.1.3"
+FEATURES = {
+    "model_training": True,
+    "model_inference": True,
+    "pipeline_integration": True,
+    "mcp_integration": True
+}
 
+# Import processor functions - single source of truth
+from .processor import process_ml_integration
 
-def process_ml_integration(target_dir, output_dir, verbose=False, logger=None, **kwargs):
-    """
-    Main processing function for ml_integration.
-    
-    Args:
-        target_dir: Directory containing files to process
-        output_dir: Output directory for results
-        verbose: Whether to enable verbose logging
-        logger: Logger instance
-        **kwargs: Additional processing options
-        
-    Returns:
-        True if processing succeeded, False otherwise
-    """
-    import logging
-    import json
-    from pathlib import Path
-    from datetime import datetime
-    
-    if logger is None:
-        logger = logging.getLogger(__name__)
-        if verbose:
-            logger.setLevel(logging.DEBUG)
-    
-    try:
-        # Ensure output directory exists
-        output_dir = Path(output_dir)
-        output_dir.mkdir(parents=True, exist_ok=True)
-        
-        logger.info(f"Processing ml_integration for files in {target_dir}")
-        
-        # Gather ML framework information
-        ml_frameworks = check_ml_frameworks()
-        
-        # Create processing summary
-        summary = {
-            "timestamp": datetime.now().isoformat(),
-            "target_dir": str(target_dir),
-            "output_dir": str(output_dir),
-            "ml_frameworks_available": ml_frameworks,
-            "processing_status": "completed",
-            "frameworks_detected": [fw for fw, available in ml_frameworks.items() if available],
-            "message": "ML integration module ready for model training and evaluation"
-        }
-        
-        # Save summary
-        summary_file = output_dir / "ml_integration_summary.json"
-        with open(summary_file, 'w') as f:
-            json.dump(summary, f, indent=2)
-        logger.info(f"📊 ML integration summary saved to: {summary_file}")
-        
-        # Save framework details
-        frameworks_file = output_dir / "ml_frameworks_status.json"
-        with open(frameworks_file, 'w') as f:
-            json.dump(ml_frameworks, f, indent=2)
-        logger.info(f"🔧 ML frameworks status saved to: {frameworks_file}")
-        
-        logger.info(f"✅ ML integration processing completed")
-        return True
-    except Exception as e:
-        logger.error(f"❌ ML integration processing failed: {e}")
-        return False
 
 def check_ml_frameworks():
     """Check availability of ML frameworks."""
+    import logging
     frameworks = {}
-    
-    # Check PyTorch
+
     # Check PyTorch
     try:
         import torch
-        # Check if it's the real torch or a shadowed one
         if not hasattr(torch, '__version__'):
             logging.getLogger(__name__).warning(
                 f"Imported 'torch' module has no '__version__'. Path: {getattr(torch, '__file__', 'unknown')}"
@@ -98,7 +40,7 @@ def check_ml_frameworks():
     except Exception as e:
         logging.getLogger(__name__).warning(f"Error checking PyTorch: {e}")
         frameworks['pytorch'] = {'available': False, 'version': None}
-    
+
     # Check TensorFlow
     try:
         import tensorflow as tf
@@ -108,7 +50,7 @@ def check_ml_frameworks():
         }
     except ImportError:
         frameworks['tensorflow'] = {'available': False, 'version': None}
-    
+
     # Check JAX
     try:
         import jax
@@ -118,7 +60,7 @@ def check_ml_frameworks():
         }
     except ImportError:
         frameworks['jax'] = {'available': False, 'version': None}
-    
+
     # Check scikit-learn
     try:
         import sklearn
@@ -128,10 +70,13 @@ def check_ml_frameworks():
         }
     except ImportError:
         frameworks['sklearn'] = {'available': False, 'version': None}
-    
+
     return frameworks
 
 
 __all__ = [
-    'process_ml_integration'
+    'process_ml_integration',
+    'check_ml_frameworks',
+    'FEATURES',
+    '__version__'
 ]

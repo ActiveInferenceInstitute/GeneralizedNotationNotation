@@ -27,7 +27,7 @@ This directory contains comprehensive documentation for advanced visualization c
 - **[GNN Visualization Guide](../gnn/gnn_visualization.md)**: Comprehensive GNN visualization guide
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -105,7 +105,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Performance Guide](../performance/README.md)**: Performance optimization for visualization
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

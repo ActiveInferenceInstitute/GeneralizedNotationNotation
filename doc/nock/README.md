@@ -31,7 +31,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Jock](../nock/jock/)**: High-level programming language
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -119,7 +119,7 @@ See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 - **[Formal Verification](../CROSS_REFERENCE_INDEX.md#formal-methods-and-verification)**: Formal methods overview
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

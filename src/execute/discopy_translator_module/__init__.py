@@ -5,7 +5,7 @@ This module provides translation functionality from GNN specifications
 to DisCoPy categorical diagrams with JAX evaluation capabilities.
 """
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 
 # Import main functionality
 from .translator import (

@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: API Reference | **Audience**: Developers & Integrators | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Framework Integration](../gnn/framework_integration_guide.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Framework Integration](../gnn/framework_integration_guide.md)
 
 This comprehensive reference documents all programmatic interfaces for integrating with the GeneralizedNotationNotation (GNN) system.
 

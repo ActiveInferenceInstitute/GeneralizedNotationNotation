@@ -22,12 +22,12 @@ for fw, info in status.items():
 - **Python module**: `pymdp`
 - **Status file**: `output/12_execute_output/framework_status.json`
 - **Check command**: `python -c "import pymdp; print(pymdp.__version__)"`
-- **Install**: `pip install pymdp`
+- **Install**: `uv sync --extra active-inference` (or `uv pip install inferactively-pymdp`)
 
 ### JAX + Flax
 - **Python modules**: `jax`, `flax`
 - **Check command**: `python -c "import jax; import flax; print(f'JAX: {jax.__version__}, Flax: {flax.__version__}')"`
-- **Install**: `pip install jax flax`
+- **Install**: `uv sync --extra active-inference` (or `uv pip install jax flax`)
 
 ### RxInfer.jl
 - **Julia package**: `RxInfer`
@@ -53,8 +53,8 @@ The execute module automatically detects available frameworks and logs them:
 2025-11-19 11:07:11 [execute] INFO - Checking framework availability...
 2025-11-19 11:07:11 [execute] INFO - ✅ DisCoPy available
 2025-11-19 11:07:11 [execute] INFO - ✅ ActiveInference.jl available
-2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (optional - install with: pip install pymdp)
-2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: pip install flax)
+2025-11-19 11:07:11 [execute] INFO - ❌ PyMDP not available (optional - install with: uv sync --extra active-inference)
+2025-11-19 11:07:11 [execute] INFO - ❌ Flax not available (JAX requires Flax - install with: uv sync --extra active-inference)
 2025-11-19 11:07:11 [execute] INFO - ❌ RxInfer not available (optional - install Julia first, then: julia -e 'import Pkg; Pkg.add("RxInfer")')
 ```
 
@@ -69,7 +69,7 @@ For each framework:
 **Missing**:
 ```
 2025-11-19 11:07:13 [execute] WARNING - ❌ model_name_pymdp.py failed
-2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: pip install pymdp
+2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: uv sync --extra active-inference
 ```
 
 ### After Execution
@@ -88,12 +88,12 @@ The execution report shows framework statistics:
     "pymdp": {
       "status": "not_available",
       "reason": "Module pymdp not found",
-      "install_command": "pip install pymdp"
+      "install_command": "uv pip install inferactively-pymdp"
     },
     "jax": {
       "status": "not_available",
       "reason": "Module flax not found (required by JAX)",
-      "install_command": "pip install flax"
+      "install_command": "uv pip install flax"
     },
     "discopy": {
       "status": "success",
@@ -138,21 +138,20 @@ ActiveInference.jl (Julia)
 ### Minimum for Basic Pipeline
 ```bash
 # Just core dependencies
-pip install -r requirements.txt
+uv sync
 # Result: Only DisCoPy works, but pipeline completes successfully
 ```
 
 ### Minimum for Most Use Cases
 ```bash
-pip install -r requirements.txt
-pip install pymdp flax
+uv sync
+uv pip install inferactively-pymdp flax
 # Result: PyMDP, JAX, DisCoPy work (3/5 frameworks)
 ```
 
 ### For Complete Coverage
 ```bash
-pip install -r requirements.txt
-pip install pymdp flax plotly
+uv sync --extra active-inference --extra visualization
 julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 # Result: All 5 frameworks work
 ```
@@ -164,10 +163,10 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 **Problem**: Framework shows as "not available" but you installed it
 
 **Solutions**:
-1. Check installation: `pip list | grep pymdp`
+1. Check installation: `uv pip list | grep pymdp`
 2. Verify Python path: `which python`
 3. Try direct import: `python -c "import pymdp"`
-4. Reinstall: `pip install --force-reinstall pymdp`
+4. Reinstall: `uv pip install --force-reinstall inferactively-pymdp`
 
 ### Julia Packages Not Found
 

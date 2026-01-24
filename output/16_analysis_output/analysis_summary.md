@@ -1,7 +1,7 @@
 
 # Analysis Summary
 
-**Generated**: 2026-01-21 12:57:39
+**Generated**: 2026-01-24 14:27:00
 
 ## Processing Results
 - **Files Processed**: 1
@@ -18,7 +18,7 @@
 - No errors encountered
 
 ## Model Statistics
-- Total variables across all models: 72
+- Total variables across all models: 73
 - Total connections across all models: 0
-- Average variables per model: 72.0
+- Average variables per model: 73.0
 - Average connections per model: 0.0

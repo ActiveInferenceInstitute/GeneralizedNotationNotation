@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-01-21T12:52:10.560574",
-  "source_directory": "input/gnn_files",
-  "output_directory": "output/3_gnn_output",
+  "timestamp": "2026-01-24T15:01:04.885613",
+  "source_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": false,
+    "verbose": true,
     "supported_formats": [
       "markdown",
       "scala",
@@ -57,9 +57,9 @@
   "processed_files": [
     {
       "file_name": "actinf_pomdp_agent.md",
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "parse_success": true,
-      "parsed_model_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
+      "parsed_model_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json",
       "source_format": null,
       "model_info": {
         "name": "Active Inference POMDP Agent",
@@ -71,113 +71,113 @@
       },
       "generated_formats": {
         "markdown": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
-          "file_size": 1748,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md",
+          "file_size": 1821,
           "success": true
         },
         "scala": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
-          "file_size": 5086,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_scala.scala",
+          "file_size": 5160,
           "success": true
         },
         "lean": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
-          "file_size": 5455,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_lean.lean",
+          "file_size": 5529,
           "success": true
         },
         "coq": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
-          "file_size": 5215,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_coq.v",
+          "file_size": 5289,
           "success": true
         },
         "python": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
-          "file_size": 9060,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_python.py",
+          "file_size": 9208,
           "success": true
         },
         "bnf": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
-          "file_size": 5464,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_bnf.bnf",
+          "file_size": 5538,
           "success": true
         },
         "ebnf": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
-          "file_size": 5464,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_ebnf.ebnf",
+          "file_size": 5538,
           "success": true
         },
         "isabelle": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
-          "file_size": 5251,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_isabelle.thy",
+          "file_size": 5325,
           "success": true
         },
         "maxima": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
-          "file_size": 5737,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_maxima.max",
+          "file_size": 5884,
           "success": true
         },
         "xml": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
-          "file_size": 9534,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+          "file_size": 9681,
           "success": true
         },
         "json": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
-          "file_size": 9402,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+          "file_size": 9476,
           "success": true
         },
         "protobuf": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
-          "file_size": 7204,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_protobuf.proto",
+          "file_size": 7351,
           "success": true
         },
         "yaml": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
-          "file_size": 5725,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_yaml.yaml",
+          "file_size": 5805,
           "success": true
         },
         "xsd": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
-          "file_size": 6191,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_xsd.xsd",
+          "file_size": 6265,
           "success": true
         },
         "asn1": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
-          "file_size": 8087,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_asn1.asn1",
+          "file_size": 8161,
           "success": true
         },
         "pkl": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
-          "file_size": 11913,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl",
+          "file_size": 12133,
           "success": true
         },
         "alloy": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
-          "file_size": 8176,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_alloy.als",
+          "file_size": 8323,
           "success": true
         },
         "z_notation": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
-          "file_size": 5780,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_z_notation.z",
+          "file_size": 5854,
           "success": true
         },
         "tla_plus": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
-          "file_size": 4709,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_tla_plus.tla",
+          "file_size": 4783,
           "success": true
         },
         "agda": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
-          "file_size": 4716,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_agda.agda",
+          "file_size": 4790,
           "success": true
         },
         "haskell": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
-          "file_size": 5500,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_haskell.hs",
+          "file_size": 5574,
           "success": true
         },
         "pickle": {
-          "output_file": "output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
-          "file_size": 3876,
+          "output_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl",
+          "file_size": 3972,
           "success": true
         }
       },

@@ -120,6 +120,7 @@ t=Time
 num_hidden_states: 3  # s[3]
 num_obs: 3           # o[3]
 num_actions: 3       # B actions_dim=3 (controlled by π)
+num_timesteps: 30    # Number of simulation timesteps for all frameworks
 
 ## Footer
 Active Inference POMDP Agent v1 - GNN Representation. 

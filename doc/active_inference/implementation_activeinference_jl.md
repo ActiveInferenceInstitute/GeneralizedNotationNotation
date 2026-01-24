@@ -26,7 +26,7 @@
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **Analyzer** | [`src/analysis/activeinference_jl_analyzer.py`](../../src/analysis/activeinference_jl_analyzer.py) | Python analysis |
+| **Analyzer** | [`src/analysis/activeinference_jl/analyzer.py`](../../src/analysis/activeinference_jl/analyzer.py) | Python analysis |
 | **Julia Analysis** | [`src/analysis/activeinference_jl/`](../../src/analysis/activeinference_jl/) | Julia analysis scripts |
 
 ---

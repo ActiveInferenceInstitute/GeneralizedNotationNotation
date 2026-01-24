@@ -438,9 +438,9 @@ The `src/main.py` script accepts several command-line arguments:
 
 View all options: `python src/main.py --help`
 
-### Complete Pipeline Stages (24 Steps)
+### Complete Pipeline Stages (25 Steps)
 
-The GNN processing pipeline consists of exactly 24 steps (0-23), executed in order:
+The GNN processing pipeline consists of exactly 25 steps (0-24), executed in order:
 
 0.  **`0_template.py` (Template Initialization)** → `src/template/`
     *   Purpose: Pipeline template and initialization

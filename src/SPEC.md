@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.1.2  
-**Last Updated**: 2026-01-20  
+**Version**: 1.1.3  
+**Last Updated**: 2026-01-22  
 **Status**: ✅ Production Ready
 
 ---
@@ -120,8 +120,8 @@ Every module directory MUST contain:
 ## Technical Requirements
 
 ### Python Version
-- **Minimum**: Python 3.12+
-- **Recommended**: Python 3.12.x
+- **Minimum**: Python 3.11+
+- **Recommended**: Python 3.12.x or 3.13.x
 
 ### Core Dependencies
 ```

@@ -17,9 +17,17 @@ For complete documentation of this architectural pattern, see:
 - src/main.py: Main pipeline orchestrator
 """
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "GNN Pipeline Team"
 __description__ = "Standardized template for GNN pipeline steps"
+
+FEATURES = {
+    "standardized_processing": True,
+    "correlation_id_generation": True,
+    "safe_execution": True,
+    "pipeline_initialization": True,
+    "mcp_integration": True
+}
 
 # Export main functionality
 from .processor import (

@@ -6,12 +6,16 @@
 
 | 📁 Folder | 🔗 Key File | 🎯 What It Is | 💡 Why It Matters | 🚀 Status |
 |-----------|-------------|---------------|-------------------|-----------|
+| **🧠 active_inference** | [README.md](active_inference/README.md) | Core Active Inference theory and foundations documentation | Provides theoretical grounding for understanding Active Inference principles | 🟢 Foundation |
 | **🧠 activeinference_jl** | [activeinference-jl.md](activeinference_jl/activeinference-jl.md) | Julia implementation bridge for Active Inference models | Enables high-performance Bayesian inference in scientific computing environments | 🟢 Active |
+| **📊 advanced_visualization** | [README.md](advanced_visualization/README.md) | Advanced visualization techniques and patterns | Provides sophisticated visual representations of complex model dynamics | 🟡 Visualization |
 | **⚡ api** | [comprehensive_api_reference.md](api/comprehensive_api_reference.md) | Complete API documentation for GNN pipeline components | Essential reference for developers integrating GNN into applications | 🟢 Core |
 | **🎯 arc-agi** | [arc-agi-gnn.md](arc-agi/arc-agi-gnn.md) | ARC-AGI benchmark integration for abstract reasoning tasks | Connects GNN to frontier AI reasoning and generalization benchmarks | 🔵 Research |
 | **📦 archive** | [Archive Collection](archive/) | Historical models and deprecated implementations | Preserves research lineage and enables reproducibility of past experiments | 🟡 Stable |
-| **✔️ axiom** | [axiom_gnn.md](axiom/axiom_gnn.md) | Axiom formal verification framework for theorem proving | Enables provably correct Active Inference model specification | 🔵 Research |
+| **🔊 audio** | [README.md](audio/README.md) | Audio processing and sonification integration | Enables auditory representation and analysis of model dynamics | 🔵 Audio |
 | **🤖 autogenlib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Microsoft AutoGen integration for multi-agent Active Inference | Enables collaborative AI systems with Active Inference principles | 🔵 Experimental |
+| **✔️ axiom** | [axiom_gnn.md](axiom/axiom_gnn.md) | Axiom formal verification framework for theorem proving | Enables provably correct Active Inference model specification | 🔵 Research |
+| **🔗 catcolab** | [README.md](catcolab/README.md) | CatColab categorical collaborative modeling integration | Provides category-theoretic collaborative modeling capabilities | 🔵 Research |
 | **🧬 cerebrum** | [cerebrum_v1-4.md](cerebrum/cerebrum_v1-4.md) | Neuromorphic Active Inference architecture specification | Bridges theoretical neuroscience with practical AI implementations | 🟠 Research |
 | **🧩 cognitive_phenomena** | [README.md](cognitive_phenomena/README.md) | Models of attention, consciousness, memory, and executive control | Demonstrates GNN's capability for modeling complex cognitive processes | 🟢 Showcase |
 | **⚙️ configuration** | [examples.md](configuration/examples.md) | Configuration patterns and best practices for GNN models | Streamlines model setup and ensures reproducible experiments | 🟢 Essential |
@@ -22,6 +26,7 @@
 | **🕸️ discopy** | [gnn_discopy.md](discopy/gnn_discopy.md) | Category theory translation using DisCoPy for mathematical rigor | Provides formal mathematical foundations and enables advanced reasoning | 🔵 Advanced |
 | **🎯 dspy** | [gnn_dspy.md](dspy/gnn_dspy.md) | DSPy integration for structured prompting and LLM coordination | Enhances AI model reliability through systematic prompt engineering | 🟠 Emerging |
 | **⚙️ execution** | [FRAMEWORK_AVAILABILITY.md](execution/FRAMEWORK_AVAILABILITY.md) | Framework execution and simulation backend management | Provides multi-framework execution strategy and framework selection | 🟢 Essential |
+| **📤 export** | [README.md](export/README.md) | Export format conversion and multi-format output generation | Enables interoperability with external tools and frameworks | 🟢 Essential |
 | **✨ glowstick** | [glowstick_gnn.md](glowstick/glowstick_gnn.md) | Interactive visualization framework for real-time model exploration | Makes complex Active Inference models accessible through intuitive interfaces | 🔵 Visual |
 | **📝 gnn** | [about_gnn.md](gnn/about_gnn.md) | Core GNN language specification, syntax, and implementation guides | The foundational documentation for understanding and using GNN | 🟢 Critical |
 | **🖼️ gui_oxdraw** | [gnn_oxdraw.md](gui_oxdraw/gnn_oxdraw.md) | Oxdraw GUI for visual construction and editing of GNN models | Provides visual interface for non-textual model specification | 🔵 Interactive |
@@ -38,13 +43,13 @@
 | **🎵 pedalboard** | [pedalboard_gnn.md](pedalboard/pedalboard_gnn.md) | Pedalboard audio effects framework for sonification | Enables expressive audio representation of model dynamics | 🔵 Audio |
 | **⚡ performance** | [README.md](performance/README.md) | Performance optimization guides and benchmarking frameworks | Ensures GNN scales efficiently for large-scale applications | 🟠 Optimization |
 | **🕸️ petri_nets** | [pnml.pnml](petri_nets/pnml.pnml) | Petri net modeling and analysis for workflow specification | Provides formal methods for specifying agent process dynamics | 🔵 Formal |
-| **🔄 pipeline** | [PIPELINE_ARCHITECTURE.md](pipeline/PIPELINE_ARCHITECTURE.md) | Complete pipeline orchestration and execution framework | Provides automated end-to-end processing from model to simulation | 🟢 Infrastructure |
 | **🥒 pkl** | [pkl_gnn.md](pkl/pkl_gnn.md) | Pkl configuration language integration for structured modeling | Enables type-safe configuration with validation and tooling support | 🟡 Modern |
 | **🌍 poe-world** | [poe-world_gnn.md](poe-world/poe-world_gnn.md) | Point-of-effect world modeling for dynamic environment simulation | Models complex multi-agent environments with emergent behaviors | 🔵 Simulation |
 | **📊 pomdp** | [pomdp_overall.md](pomdp/pomdp_overall.md) | POMDP analytical framework and tools for belief state analysis | Provides theoretical foundations and analytical methods for POMDPs | 🟢 Theory |
 | **🐍 pymdp** | [gnn_pymdp.md](pymdp/gnn_pymdp.md) | Python active inference library integration and optimization | Provides the primary simulation backend for Active Inference research | 🟢 Foundation |
 | **📐 quadray** | [quadray_gnn.md](quadray/quadray_gnn.md) | Quadray coordinate system for 4D probability space visualization | Enables intuitive geometric understanding of high-dimensional beliefs | 🔵 Geometric |
 | **📚 releases** | [README.md](releases/README.md) | Release management and version control documentation | Maintains project versioning and deployment strategies | 🟢 Infrastructure |
+| **🔬 research** | [README.md](research/README.md) | Research documentation and experimental methodology | Documents research workflows and experimental Active Inference applications | 🔵 Research |
 | **🔬 rxinfer** | [gnn_rxinfer.md](rxinfer/gnn_rxinfer.md) | RxInfer.jl Bayesian inference framework integration | Provides Julia-based probabilistic programming and inference | 🟢 Foundation |
 | **🎵 sapf** | [sapf_gnn.md](sapf/sapf_gnn.md) | Structured Audio Processing Framework for sonification | Enables systematic auditory representation of model behavior | 🔵 Audio |
 | **🔒 security** | [security_framework.md](security/security_framework.md) | Security considerations and threat modeling for GNN systems | Ensures safe deployment of AI systems in sensitive environments | 🟠 Critical |
@@ -57,6 +62,7 @@
 | **🎓 tutorials** | [README.md](tutorials/README.md) | Step-by-step learning materials and interactive examples | Provides structured learning paths for mastering GNN and Active Inference | 🟢 Education |
 | **🔍 type-inference-zoo** | [type-inference-zoo.md](type-inference-zoo/type-inference-zoo.md) | Collection of type inference algorithms and validation methods | Demonstrates GNN's flexibility across different inference paradigms | 🔵 Research |
 | **📝 vec2text** | [vec2text_gnn.md](vec2text/vec2text_gnn.md) | Vector-to-text transformation for model interpretation | Converts numerical representations into human-readable descriptions | 🟠 Utility |
+| **📊 visualization** | [README.md](visualization/README.md) | Core visualization tools and graph rendering capabilities | Provides foundational visual representation of model structures | 🟢 Essential |
 | **🎯 x402** | [gnn_x402.md](x402/gnn_x402.md) | X402 protocol integration for distributed inference systems | Enables large-scale distributed Active Inference across networks | 🟠 Distributed |
 
 ## 🎯 Quick Navigation
@@ -78,7 +84,7 @@
 
 ### 🏗️ **For Integration**
 - [mcp/](mcp/) - Tool integration protocols
-- [pipeline/](pipeline/) - Automation frameworks
+
 - [llm/](llm/) - AI-enhanced workflows
 
 ---

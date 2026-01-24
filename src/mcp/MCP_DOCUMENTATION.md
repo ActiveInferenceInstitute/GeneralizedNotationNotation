@@ -147,8 +147,11 @@ class MCPPerformanceError(MCPError):
 git clone <repository-url>
 cd GeneralizedNotationNotation
 
-# Install dependencies
-pip install -r requirements.txt
+# Install dependencies using UV (recommended)
+uv sync
+
+# Or install with optional MCP dependencies
+uv sync --extra dev
 
 # Verify installation
 python -m src.mcp.cli --help

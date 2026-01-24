@@ -19,8 +19,8 @@ from typing import Dict, Any, Tuple, List
 
 logger = logging.getLogger(__name__)
 
-# NOTE: Visualization imports removed - all visualization is done in analysis step
-# See: src/analysis/pymdp_visualizer.py and src/analysis/pymdp_analyzer.py
+# NOTE: Visualization imports removed - all visualization is done in analysis step (Step 16)
+# See: src/analysis/pymdp/ for framework-specific analysis
 
 
 def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> Tuple[bool, Dict[str, Any]]:
@@ -133,7 +133,10 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E)
         logger.info("Successfully created PyMDP agent")
         
-        num_timesteps = 15
+        # Get number of timesteps from GNN spec (fall back to 20 for consistency)
+        model_params = gnn_spec.get('model_parameters', {})
+        num_timesteps = model_params.get('num_timesteps', 20)
+        logger.info(f"Simulation timesteps: {num_timesteps} (from GNN spec)")
         observations = []
         beliefs = []
         true_states = []

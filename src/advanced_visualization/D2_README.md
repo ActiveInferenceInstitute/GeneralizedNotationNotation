@@ -64,10 +64,14 @@ d2 version
 
 ### Python Dependencies
 
-All Python dependencies are included in the main GNN pipeline requirements:
+All Python dependencies are included in the main GNN pipeline. Install using UV:
 
 ```bash
-pip install -r requirements.txt
+# Install core dependencies
+uv sync
+
+# Or install with visualization extras
+uv sync --extra visualization
 ```
 
 ## Usage

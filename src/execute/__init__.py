@@ -5,6 +5,18 @@ This module provides execute capabilities with comprehensive safety patterns,
 validation, monitoring, and error recovery systems.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "pymdp_execution": True,
+    "rxinfer_execution": True,
+    "activeinference_jl_execution": True,
+    "discopy_execution": True,
+    "jax_execution": True,
+    "validation": True,
+    "error_recovery": True,
+    "mcp_integration": True
+}
+
 from pathlib import Path
 from typing import Dict, Any, List
 import logging
@@ -23,22 +35,41 @@ except Exception:
     def log_step_error(logger, msg): logger.error(f"❌ {msg}")
     def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
 
-# Import execute functionality 
+# Import execute functionality
 try:
-    from .executor import ExecutionEngine, execute_simulation_from_gnn
-    from .pymdp import execute_pymdp_simulation_from_gnn_impl, PyMdpExecutor
-    from .validator import validate_execution_environment_impl
+    from .executor import ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation
+    from .pymdp import (
+        execute_pymdp_simulation_from_gnn,
+        execute_pymdp_simulation,
+        PyMDPSimulation,
+        validate_pymdp_environment,
+        get_pymdp_health_status
+    )
+    from .validator import (
+        validate_execution_environment,
+        log_validation_results,
+        check_python_environment,
+        check_system_resources,
+        check_dependencies,
+        check_file_permissions,
+        check_network_connectivity
+    )
+    # Alias for backwards compatibility
+    execute_simulation_from_gnn = execute_gnn_model
+    PyMdpExecutor = PyMDPSimulation
     VALIDATION_AVAILABLE = True
     ERROR_RECOVERY_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    import logging as _log
+    _log.getLogger(__name__).warning(f"Execute module import failed: {e} - using fallback")
     # Import fallback functions
     from .fallback import (
         ExecutionEngine,
         PyMdpExecutor,
         execute_simulation_from_gnn,
-        execute_pymdp_simulation_from_gnn_impl,
-        validate_execution_environment_impl,
-        validate_execution_environment,
+        execute_pymdp_simulation_from_gnn_impl as execute_pymdp_simulation_from_gnn,
+        validate_execution_environment_impl as validate_execution_environment,
+        validate_execution_environment as validate_execution_environment_fallback,
         get_execution_health_status,
         log_validation_results,
         check_python_environment,
@@ -50,6 +81,18 @@ except ImportError:
         get_quick_error_suggestions,
         ErrorRecoverySystem
     )
+    # Stubs for missing items
+    execute_gnn_model = execute_simulation_from_gnn
+    GNNExecutor = ExecutionEngine
+    PyMDPSimulation = PyMdpExecutor
+    execute_pymdp_simulation = execute_pymdp_simulation_from_gnn
+    validate_pymdp_environment = lambda: {"valid": False, "issues": ["PyMDP validation not available"]}
+    get_pymdp_health_status = lambda: {"status": "unknown"}
+    check_system_resources = lambda: []
+    check_dependencies = lambda: []
+    check_file_permissions = lambda: []
+    check_network_connectivity = lambda: {"status": "unknown"}
+    run_simulation = lambda cfg: {"success": False, "error": "run_simulation not available"}
     VALIDATION_AVAILABLE = False
     ERROR_RECOVERY_AVAILABLE = False
 
@@ -58,15 +101,12 @@ from .processor import (
     process_execute,
 )
 
-# Provide execute_script_safely and validate_execution_environment exports for tests
+# Provide execute_script_safely export for tests (validate_execution_environment already imported above)
 try:
-    from .executor import execute_script_safely, validate_execution_environment
+    from .executor import execute_script_safely
 except Exception:
     def execute_script_safely(*args, **kwargs):
         return {"success": False, "error": "execute_script_safely not available"}
-
-    def validate_execution_environment(*args, **kwargs):
-        return {"valid": False, "issues": ["validate_execution_environment not available"]}
 
 # Ensure execute_simulation_from_gnn is exported from top-level module
 try:
@@ -81,26 +121,36 @@ except Exception:
 
 # Add to __all__ for proper exports
 __all__ = [
+    '__version__',
+    'FEATURES',
+    'VALIDATION_AVAILABLE',
+    'ERROR_RECOVERY_AVAILABLE',
+
     # Core classes
-    'ExecutionEngine', 
+    'ExecutionEngine',
+    'GNNExecutor',
     'PyMdpExecutor',
-    
-    # Processor functions
+    'PyMDPSimulation',
+
+    # Execution functions
     'process_execute',
     'execute_simulation_from_gnn',
-    
+    'execute_gnn_model',
+    'run_simulation',
+    'execute_script_safely',
+
+    # PyMDP functions
+    'execute_pymdp_simulation_from_gnn',
+    'execute_pymdp_simulation',
+    'validate_pymdp_environment',
+    'get_pymdp_health_status',
+
     # Validation functions
     'validate_execution_environment',
-    'get_execution_health_status',
     'log_validation_results',
     'check_python_environment',
-    'check_system_dependencies',
-    'check_python_packages',
-    'check_file_system',
-    
-    # Error recovery functions
-    'analyze_pipeline_error',
-    'generate_error_recovery_report',
-    'get_quick_error_suggestions',
-    'ErrorRecoverySystem'
+    'check_system_resources',
+    'check_dependencies',
+    'check_file_permissions',
+    'check_network_connectivity',
 ]

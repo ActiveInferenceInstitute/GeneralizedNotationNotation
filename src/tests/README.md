@@ -501,7 +501,7 @@ def test_new_module_integration():
 #### Issue: Collection Errors
 **Symptoms**: `ERROR collecting` messages, import errors
 **Solutions**:
-- Check for missing dependencies: `pip install -r requirements.txt`
+- Check for missing dependencies: `uv sync` (or `uv sync --extra dev` for dev tools)
 - Verify Python path includes `src/` directory
 - Check for syntax errors in test files
 - Review error messages for specific import failures
@@ -512,7 +512,7 @@ def test_new_module_integration():
 - Verify test files follow naming convention: `test_*.py`
 - Check that test functions are named with `test_` prefix
 - Ensure test files are in `src/tests/` directory
-- Check pytest is installed: `pip install pytest`
+- Check pytest is installed: `uv pip install pytest` (included in `uv sync`)
 
 #### Issue: Memory Errors
 **Symptoms**: Out of memory errors during test execution

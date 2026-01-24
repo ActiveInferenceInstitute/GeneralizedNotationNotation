@@ -5,6 +5,15 @@ This module provides comprehensive validation capabilities for GNN models,
 including semantic validation, performance profiling, and consistency checking.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "semantic_validation": True,
+    "performance_profiling": True,
+    "consistency_checking": True,
+    "multi_model_validation": True,
+    "mcp_integration": True
+}
+
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 
@@ -202,6 +211,8 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
 
 # Re-export main classes and functions
 __all__ = [
+    '__version__',
+    'FEATURES',
     'SemanticValidator',
     'PerformanceProfiler',
     'ConsistencyChecker',

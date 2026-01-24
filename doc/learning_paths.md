@@ -18,7 +18,7 @@ This document outlines structured learning paths for users of varying expertise 
    - Explore simple examples in [GNN Examples](/doc/gnn/gnn_examples_doc.md).
 
 4. **Run Your First Pipeline**:
-   - Execute via `src/main.py` (details in [Pipeline Architecture](../pipeline/PIPELINE_ARCHITECTURE.md)).
+   - Execute via `src/main.py` (details in [Pipeline Architecture](../gnn/architecture_reference.md)).
    - Visualize results (see [Visualization Docs](../visualization/README.md)).
 
 **Next Steps**: Move to Intermediate Path once comfortable with basic models.
@@ -81,14 +81,14 @@ This document outlines structured learning paths for users of varying expertise 
 
 4. **Contribution and Research**:
    - Read [GNN Paper](/doc/gnn/gnn_paper.md).
-74:    - Contribute via [Releases](/doc/releases/README.md) and [Security Framework](/doc/security/security_framework.md).
-75: 
-76: ### **🔬 Advanced Skill Checkpoints**
-77: - [ ] Have you implemented a custom cognitive phenomenon model using GNN?
-78: - [ ] Can you explain the categorical foundations of your model using the DisCoPy output?
-79: - [ ] Have you integrated a new scientific library into the GNN pipeline?
-80: 
-81: **Additional Resources**:
+   - Contribute via [Releases](/doc/releases/README.md) and [Security Framework](/doc/security/security_framework.md).
+
+### **🔬 Advanced Skill Checkpoints**
+- [ ] Have you implemented a custom cognitive phenomenon model using GNN?
+- [ ] Can you explain the categorical foundations of your model using the DisCoPy output?
+- [ ] Have you integrated a new scientific library into the GNN pipeline?
+
+**Additional Resources**:
 - Full index: [Cross-Reference Index](/doc/CROSS_REFERENCE_INDEX.md).
 - Style Guide: [Style Guide](/doc/style_guide.md) for contributions.
 - For updates, check project [README](/README.md) and [CHANGELOG](/CHANGELOG.md).

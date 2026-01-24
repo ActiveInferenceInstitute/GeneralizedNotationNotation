@@ -57,7 +57,7 @@ This subsystem is part of the broader GNN (Generalized Notation Notation) docume
 - **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent cognitive modeling
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Documentation Structure
@@ -126,7 +126,7 @@ All documentation in this module adheres to professional standards:
 - **[Multi-agent Systems](../gnn/gnn_multiagent.md)**: Multi-agent cognitive modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

@@ -2,41 +2,42 @@
 
 ## Overview
 
-The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step system for processing Active Inference generative models. Each module follows the **thin orchestrator pattern** where numbered scripts delegate to modular implementations.
+The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step system for processing Active Inference generative models. Each module follows the **thin orchestrator pattern** where numbered scripts delegate to modular implementations.
 
 ---
 
 ## Module Registry
 
 ### Core Processing Modules (Steps 0-9)
-1. **[template/](src/template/AGENTS.md)** - Pipeline template and initialization
-2. **[setup/](src/setup/AGENTS.md)** - Environment setup and dependency management
-3. **[tests/](src/tests/AGENTS.md)** - Comprehensive test suite execution
-4. **[gnn/](src/gnn/AGENTS.md)** - GNN file discovery, parsing, and multi-format serialization
-5. **[model_registry/](src/model_registry/AGENTS.md)** - Model versioning and registry management
-6. **[type_checker/](src/type_checker/AGENTS.md)** - Type checking and validation
-7. **[validation/](src/validation/AGENTS.md)** - Advanced validation and consistency checking
-8. **[export/](src/export/AGENTS.md)** - Multi-format export generation
-9. **[visualization/](src/visualization/AGENTS.md)** - Graph and matrix visualization
-10. **[advanced_visualization/](src/advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
+- **Step 0**: **[template/](src/template/AGENTS.md)** - Pipeline template and initialization
+- **Step 1**: **[setup/](src/setup/AGENTS.md)** - Environment setup and dependency management
+- **Step 2**: **[tests/](src/tests/AGENTS.md)** - Comprehensive test suite execution
+- **Step 3**: **[gnn/](src/gnn/AGENTS.md)** - GNN file discovery, parsing, and multi-format serialization
+- **Step 4**: **[model_registry/](src/model_registry/AGENTS.md)** - Model versioning and registry management
+- **Step 5**: **[type_checker/](src/type_checker/AGENTS.md)** - Type checking and validation
+- **Step 6**: **[validation/](src/validation/AGENTS.md)** - Advanced validation and consistency checking
+- **Step 7**: **[export/](src/export/AGENTS.md)** - Multi-format export generation
+- **Step 8**: **[visualization/](src/visualization/AGENTS.md)** - Graph and matrix visualization
+- **Step 9**: **[advanced_visualization/](src/advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
 
 ### Simulation & Analysis Modules (Steps 10-16)
-11. **[ontology/](src/ontology/AGENTS.md)** - Active Inference ontology processing
-12. **[render/](src/render/AGENTS.md)** - Code generation for simulation frameworks
-13. **[execute/](src/execute/AGENTS.md)** - Execute rendered simulation scripts
-14. **[llm/](src/llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
-15. **[ml_integration/](src/ml_integration/AGENTS.md)** - Machine learning integration
-16. **[audio/](src/audio/AGENTS.md)** - Audio generation and sonification
-17. **[analysis/](src/analysis/AGENTS.md)** - Advanced statistical analysis
+- **Step 10**: **[ontology/](src/ontology/AGENTS.md)** - Active Inference ontology processing
+- **Step 11**: **[render/](src/render/AGENTS.md)** - Code generation for simulation frameworks
+- **Step 12**: **[execute/](src/execute/AGENTS.md)** - Execute rendered simulation scripts
+- **Step 13**: **[llm/](src/llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
+- **Step 14**: **[ml_integration/](src/ml_integration/AGENTS.md)** - Machine learning integration
+- **Step 15**: **[audio/](src/audio/AGENTS.md)** - Audio generation and sonification
+- **Step 16**: **[analysis/](src/analysis/AGENTS.md)** - Advanced statistical analysis
 
-### Integration & Output Modules (Steps 17-23)
-18. **[integration/](src/integration/AGENTS.md)** - System integration and coordination
-19. **[security/](src/security/AGENTS.md)** - Security validation and access control
-20. **[research/](src/research/AGENTS.md)** - Research tools and experimental features
-21. **[website/](src/website/AGENTS.md)** - Static HTML website generation
-22. **[mcp/](src/mcp/AGENTS.md)** - Model Context Protocol processing
-23. **[gui/](src/gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
-24. **[report/](src/report/AGENTS.md)** - Comprehensive analysis report generation
+### Integration & Output Modules (Steps 17-24)
+- **Step 17**: **[integration/](src/integration/AGENTS.md)** - System integration and coordination
+- **Step 18**: **[security/](src/security/AGENTS.md)** - Security validation and access control
+- **Step 19**: **[research/](src/research/AGENTS.md)** - Research tools and experimental features
+- **Step 20**: **[website/](src/website/AGENTS.md)** - Static HTML website generation
+- **Step 21**: **[mcp/](src/mcp/AGENTS.md)** - Model Context Protocol processing
+- **Step 22**: **[gui/](src/gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
+- **Step 23**: **[report/](src/report/AGENTS.md)** - Comprehensive analysis report generation
+- **Step 24**: **[intelligent_analysis/](src/intelligent_analysis/AGENTS.md)** - AI-powered pipeline analysis and executive reports
 
 ### Infrastructure Modules
 - **[utils/](src/utils/AGENTS.md)** - Shared utilities and helper functions
@@ -190,9 +191,9 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-01-07)
-- **Total Steps**: 24 (all steps 0-23)
-- **Success Rate**: ✅ 100% (24/24 steps successful in latest run)
+### Latest Status (2026-01-23)
+- **Total Steps**: 25 (all steps 0-24)
+- **Success Rate**: ✅ 100% (25/25 steps successful in latest run)
 - **Execution Time**: ⏱️ 2m53s (172.7 seconds total)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
@@ -210,10 +211,10 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Recent Validation (2026-01-07)
+### Recent Validation (2026-01-22)
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging
 - **Performance**: All 24 steps complete in under 3 minutes with comprehensive progress tracking
-- **Tests**: 579 passed, 3 skipped (Ollama service-dependent), 56 skipped (optional dependencies)
+- **Tests**: 777 passed, 21 skipped (optional dependencies)
 - **Memory Efficiency**: Peak usage 36.3MB demonstrates good resource management
 - **Package Health**: 148 packages installed and validated via UV
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking
@@ -473,9 +474,9 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-01-21
-**Pipeline Version**: 1.1.1
-**Total Modules**: 28
-**Total Steps**: 24 (0-23)
-**Latest Run**: 100% Success (2m53s)
+**Last Updated**: 2026-01-23
+**Pipeline Version**: 1.1.3
+**Total Modules**: 29
+**Total Steps**: 25 (0-24)
+**Latest Run**: 100% Success
 **Status**: ✅ Production Ready

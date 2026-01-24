@@ -100,7 +100,7 @@ MyVariable[2,1,type=float]
 **Symptom**: No graph outputs in `output/8_visualization_output/`.
 **Cause**: `graphviz` or `networkx` issues, or disconnected graph structure.
 **Solution**:
-- Ensure dependencies are installed: `pip install graphviz networkx`.
+- Ensure dependencies are installed: `uv pip install graphviz networkx` or `uv sync --extra visualization`.
 - Verify `Connections` section in GNN file is not empty.
 
 ---

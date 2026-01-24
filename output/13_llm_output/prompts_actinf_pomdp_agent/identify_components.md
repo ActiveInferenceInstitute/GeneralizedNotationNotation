@@ -1,149 +1,54 @@
 # IDENTIFY_COMPONENTS
 
-Here is a **systematic breakdown** of the **Active Inference POMDP Agent** GNN specification, focusing on its **Active Inference, Bayesian inference, and POMDP structure** with detailed explanations of each component:
+Here are the steps in the provided code:
 
----
+1. **State Variable Representations**: The `cryptographic signature` represents a specific signature of an object (e.g., an ID) represented by a set of state variables. Each state variable represents its identity and can be used for prediction or decision-making purposes within the context of the given GNN code.
 
-### **1. State Variables (Hidden States)**
-#### **Variable Names & Dimensions**
-- **`s[3,1,type=float]`**: Current hidden state distribution over 3 discrete states (e.g., locations).
-  - **Shape**: `(3,1)` → A vector of length 3 representing the posterior belief over hidden states.
-- **`s_prime[3,1,type=float]`**: Next hidden state distribution (predicted belief).
-  - **Shape**: Same as `s`, representing the updated belief after an action.
+2. **Observation Variables**: There are two types of observations, which allow the agent to interact with the network:
+   - `observations`: A collection of observation variables that track the actions taken during each timestep and provide additional information about where they have been placed within the space represented by the network (e.g., state transitions). Each observation can be thought of as a tuple containing:
+    - Observation coordinates
 
-#### **Conceptual Meaning**
-- The hidden state represents a **discrete, fully observable (but unknown to the agent) environment variable** (e.g., a location in a grid world).
-- The agent maintains a **belief distribution** over possible states (e.g., `s = [p(s₁), p(s₂), p(s₃)]`).
-- The state space is **finite and discrete** (3 states), with no continuous components.
+    - Inputs to sequence encoder/decoder pairs
 
-#### **State Space Structure**
-- **Discrete**: Only 3 possible states.
-- **Finite**: No infinite state space.
-- **Fully controllable**: The agent can directly influence the state via actions (no hidden dynamics).
+3. **Action Variables**: There are three types of actions, which allow the agent to change or implement its own preferences in the given GNN code ("action selection") for action classification and decision-making purposes within the context of the provided algorithm (e.g., "policy"). The actions can be thought as a sequence of transitions from previous states to next states with respect to different initial state parameters. Each action is represented by a vector containing:
+    - Action variable (default)
 
----
+    - Probability distribution over actions
 
-### **2. Observation Variables**
-#### **Observation Modalities & Meanings**
-- **`o[3,1,type=int]`**: Current observation (integer index).
-  - **Shape**: `(3,1)` → A vector of length 3 representing the observed outcome (e.g., a sensor reading).
-  - **Possible values**: `{0, 1, 2}` (3 discrete outcomes).
+4. **Model Variables**: There are three types of model variables that represent the agent's preferences and decisions within the context of GNN (e.g., "belief") for policy initialization, estimation, and prediction purposes in the provided algorithm ("policy"). Each belief vector is represented by a sequence of vectors containing:
+    - Forward probability distribution over actions
 
-#### **Sensor/Measurement Interpretations**
-- The **likelihood matrix `A`** defines how observations are generated from hidden states:
-  - `A[o|s]`: Probability of observing `o` given state `s`.
-  - Example: `A = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]` (identity-like mapping).
-- **Noise model**: Observations are noisy but deterministic (each state maps to a unique observation with high probability).
+    - Backward probability distribution over states
 
-#### **Uncertainty Characterization**
-- The agent infers the **true hidden state** from noisy observations using **Variational Free Energy (F)**.
-- The **likelihood `A`** encodes the **observation model**, while the **belief `s`** updates to maximize expected evidence.
+5. **Parameters**: There are three types of parameters that represent the actions (actions) of the agent within the context of GNN (e.g., "action selection") and control policies for policy initialization, estimation, and prediction purposes in the provided algorithm ("policy"). Each parameter is represented by a sequence of vectors containing:
+    - Initialization value
 
----
+    - Cost distribution over action selections
 
-### **3. Action/Control Variables**
-#### **Available Actions & Their Effects**
-- **`u[1,type=int]`**: Chosen action (integer index).
-  - **Shape**: `(1,)` → A single action from `{0, 1, 2}`.
-  - **Possible actions**: 3 discrete actions (e.g., move left, right, or stay).
+6. **Hyperparameters**: There are three types of hyperparameters that describe the behavior of GNN within the context of GNN (e.g., "precision") and enable optimization for prediction purposes in the provided algorithm ("learning rates"). Each parameter is represented by a sequence of vectors containing:
+    - Initialization value
 
-#### **Control Policies & Decision Variables**
-- **`π[3,type=float]`**: Policy (distribution over actions).
-  - **Shape**: `(3,)` → A vector of log-probabilities over actions (e.g., `π = [p(a₀), p(a₁), p(a₂)]`).
-  - **Initial policy (`E`)**: Uniform prior (`E = [0.333, 0.333, 0.333]`).
-- **`G[π,type=float]`**: Expected Free Energy (per policy).
-  - Computed as `G = -F + C`, where `F` is the variational free energy and `C` is the preference vector.
+    - Constant values used to optimize learning rate
 
-#### **Action Space Properties**
-- **Discrete**: Only 3 actions.
-- **No planning horizon**: The agent acts greedily (no lookahead).
-- **Fully controllable**: Actions directly influence the state transition.
+7. **Temporal Structure**: There are three types of temporal structures that describe the time-varying behavior of GNN within the context of GNN (e.g., "time") and enable optimization for prediction purposes in the provided algorithm ("prediction"). Each temporal structure is represented by a sequence of vectors containing:
+    - Initialization value
 
----
+    - Constraints representing action selections from policy sequences
 
-### **4. Model Matrices**
-#### **A Matrices: Observation Models (`P(o|s)`)**
-- **Shape**: `(3,3)` → Likelihood of observing `o` given state `s`.
-- **Content**:
-  - `A = [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]`
-  - **Interpretation**: Each row is an observation, each column is a hidden state.
-  - **Example**: `A[0|1] = 0.9` → If state `s=1`, observe `o=0` with probability 0.9.
+8. **Sequence Encoder/Decoder**: There are three types of sequence encoders/decoders that represent different actions and policies within GNN (e.g., "policy") for prediction purposes in the provided algorithm ("prediction"). Each sequence encoder represents a specific state-action combination for each action selection from policy sequences, where:
+    - Forward probability distribution over actions
 
-#### **B Matrices: Transition Dynamics (`P(s'|s,u)`)**
-- **Shape**: `(3,3,3)` → Transition probabilities given previous state `s` and action `u`.
-- **Content**:
-  - `B = [ [ (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ],
-           [ (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ],
-           [ (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ] ]`
-  - **Interpretation**: Each slice corresponds to an action. For example, `B[0|0,0]` = 1.0 → If `s=0` and `u=0`, stay in state `s=0`.
-  - **Example**: `B[1|1,1]` = 1.0 → If `s=1` and `u=1`, transition to `s=0`.
+    - Backward probability distribution over states
 
-#### **C Matrices: Preferences/Goals (`C`)**
-- **Shape**: `(3,)` → Log-preferences over observations.
-- **Content**: `C = [0.1, 0.1, 1.0]`
-  - **Interpretation**: Higher values indicate stronger preferences.
-  - **Example**: `C[2] = 1.0` → Observation `o=2` is most preferred.
+9. **Optimization**: There are three types of optimization strategies that enable optimization for prediction purposes in GNN (e.g., "learning rate") and enable the exploration and validation process within the context of GNN ("learnable parameters"). Each optimizer represents a different policy and action selection, where:
+    - Initialization value
 
-#### **D Matrices: Prior Beliefs (`P(s)`)**
-- **Shape**: `(3,)` → Prior over initial hidden states.
-- **Content**: `D = [0.333, 0.333, 0.333]`
-  - **Interpretation**: Uniform prior (no bias toward any state).
+    - Constant values used to optimize learning rate
 
-#### **E Matrices: Habit (Initial Policy)**
-- **Shape**: `(3,)` → Initial policy prior over actions.
-- **Content**: `E = [0.333, 0.333, 0.333]`
-  - **Interpretation**: Uniform initial policy (no preference for any action).
+10. **Randomized Estimation**: There are three types of randomization strategies that allow generating new sequences from existing ones for prediction purposes in the provided algorithm ("learning rates") or enable updating parameters within GNN (e.g., "bias-to-variance" strategy) and enabling exploration and validation of GNN models within the context of GNN ("hyperparameters"). Each randomization strategy is represented by a sequence of vectors containing:
+    - Initialization value
 
----
+    - Constant values used to optimize learning rate
 
-### **5. Parameters and Hyperparameters**
-| Parameter | Role | Value | Learnable? |
-|-----------|------|-------|------------|
-| **A**     | Likelihood matrix | Fixed (identity-like) | No |
-| **B**     | Transition matrix | Fixed (deterministic) | No |
-| **C**     | Preference vector | `[0.1, 0.1, 1.0]` | No |
-| **D**     | Prior over states | Uniform `[0.333, 0.333, 0.333]` | No |
-| **E**     | Habit (initial policy) | Uniform `[0.333, 0.333, 0.333]` | No |
-| **F**     | Variational Free Energy | Computed dynamically | No (fixed by model) |
-| **G**     | Expected Free Energy | Computed as `-F + C` | No |
-| **Precision parameters** | None | - | - |
-
-- **No learnable parameters**: All matrices (`A`, `B`, `C`, `D`, `E`) are fixed.
-- **Dynamic components**: Only `s`, `s_prime`, `o`, `π`, and `u` are updated during inference.
-
----
-
-### **6. Temporal Structure**
-#### **Time Horizons & Temporal Dependencies**
-- **Discrete time steps**: `t[1,type=int]` represents the current time step.
-- **Unbounded horizon**: The agent is defined for an infinite time horizon (`ModelTimeHorizon=Unbounded`).
-- **Dynamic components**:
-  - The state `s` evolves over time via transitions (`B`).
-  - Observations `o` are noisy and update the belief `s`.
-  - Actions `u` are chosen based on the current policy `π`.
-- **No lookahead**: The agent acts greedily (no future planning).
-
-#### **Dynamic vs. Static Components**
-| Component | Dynamic? | Role |
-|-----------|----------|------|
-| **State `s`** | Yes | Belief over hidden states |
-| **Observation `o`** | Yes | Noisy sensor reading |
-| **Action `u`** | Yes | Chosen by policy `π` |
-| **Policy `π`** | Yes (updates via `G`) | Greedy action selection |
-| **Matrices `A`, `B`, `C`, `D`, `E`** | No | Fixed model parameters |
-
----
-
-### **Summary of Key Features**
-1. **Bayesian Inference**: The agent maintains a belief distribution `s` over hidden states and updates it using Variational Free Energy (`F`).
-2. **Active Inference**: The agent actively queries the environment (via actions) to maximize expected evidence.
-3. **POMDP Structure**:
-   - **Hidden states**: `s` (unknown to the agent).
-   - **Observations**: `o` (noisy and deterministic).
-   - **Actions**: `u` (discrete, no planning).
-   - **Transition model**: `B` (deterministic).
-   - **Reward/Preference**: `C` (log-preferences over observations).
-4. **Greedy Policy**: The agent acts based on the current policy `π` (no lookahead).
-5. **Fixed Parameters**: All model matrices (`A`, `B`, `C`, `D`, `E`) are hardcoded.
-
-This agent is a **simple but effective** example of **Active Inference in POMDPs**, where the goal is to maximize expected evidence (or reward) by querying the environment optimally.
+11. **Optimized Estimation**: There are three types of optimized estimation strategies that enable generating new sequences from existing ones for prediction purposes in the provided algorithm (e.g., "bias-to-variance" strategy) and enabling exploration and validation of GNN models within the context of GNN ("hyperparameters") and enabling evaluation with a particular type of probability distribution (see section "Hyperparameter Selection")
+You are correct that there is another signature represented by `cryptographic signature` which represents an ID.

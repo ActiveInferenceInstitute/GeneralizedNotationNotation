@@ -366,6 +366,7 @@ class ArgumentParser:
         "21_mcp.py": ["target_dir", "output_dir", "recursive", "verbose", "performance_mode"],
         "22_gui.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
     }
     
@@ -749,6 +750,12 @@ class StepConfiguration:
             "optional_args": ["recursive", "verbose"],
             "defaults": {"recursive": True, "verbose": False},
             "description": "Comprehensive Analysis Report Generation"
+        },
+        "24_intelligent_analysis": {
+            "required_args": ["target_dir", "output_dir"],
+            "optional_args": ["verbose"],
+            "defaults": {"verbose": False},
+            "description": "AI-powered Pipeline Analysis and Optimization Recommendations"
         }
     }
     

@@ -24,7 +24,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 4. **[Basic Syntax Guide](gnn/gnn_syntax.md)** - Essential notation rules
    - *Cross-refs*: [File Structure](gnn/gnn_file_structure_doc.md), [Implementation Guide](gnn/gnn_implementation.md)
 5. **[Tools Setup](gnn/gnn_tools.md#installation)** - Get GNN tools running
-   - *Cross-refs*: [Pipeline Guide](pipeline/README.md), [API Documentation](api/README.md)
+   - *Cross-refs*: [Pipeline Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
 
 **📚 Complete Learning Paths**: See [Learning Paths Guide](learning_paths.md) for structured beginner → intermediate → advanced progression
 
@@ -53,12 +53,12 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related Tools*: [Type Checker](gnn/gnn_tools.md#validation-tools), [Templates](templates/README.md)
 - **[File Structure Guide](gnn/gnn_file_structure_doc.md)** - How to organize GNN files
   - *See Also*: [Syntax Reference](gnn/gnn_syntax.md), [Implementation Guide](gnn/gnn_implementation.md)
-  - *Related Tools*: [Pipeline Documentation](pipeline/README.md)
+  - *Related Tools*: [Pipeline Documentation](gnn/gnn_tools.md)
 - **[Implementation Guide](gnn/gnn_implementation.md)** - Best practices for creating models
   - *See Also*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Framework Integration](#framework-integrations)
   - *Related Tools*: [Testing Guide](testing/README.md), [API Documentation](api/README.md)
 - **[Tools and Resources](gnn/gnn_tools.md)** - Available software and utilities
-  - *See Also*: [Pipeline Guide](pipeline/README.md), [API Documentation](api/README.md)
+  - *See Also*: [Pipeline Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
   - *Related*: [Configuration Guide](configuration/README.md), [Deployment Guide](deployment/README.md)
 
 ### For Developers
@@ -71,7 +71,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Featured*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Multi-agent](gnn/gnn_multiagent.md)
   - *See Also*: [Cognitive Phenomena](cognitive_phenomena/README.md), [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md)
 - **[Tool Development](gnn/gnn_dsl_manual.md)** - Creating GNN-compatible tools
-  - *See Also*: [API Documentation](api/README.md), [Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)
+  - *See Also*: [API Documentation](api/README.md), [Pipeline Architecture](gnn/architecture_reference.md)
   - *Related*: [MCP Integration](mcp/README.md), [Testing Framework](testing/README.md)
 
 ### For Researchers
@@ -85,7 +85,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Framework Integration*: [RxInfer Examples](rxinfer/gnn_rxinfer.md#multi-agent-examples)
 - **[LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
   - *See Also*: [DSPy Integration](dspy/gnn_dspy.md), [AutoGenLib](autogenlib/gnn_autogenlib.md)
-  - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](pipeline/README.md#step-11-llm-enhanced-analysis)
+  - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](gnn/gnn_tools.md#step-11-llm-enhanced-analysis)
 - **[PoE-World Integration](poe-world/poe-world.md)** - Compositional world modeling research
   - *See Also*: [PoE-World GNN Integration](poe-world/poe-world_gnn.md), [Program Synthesis](dspy/gnn_dspy.md)
   - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced_modeling_patterns.md)
@@ -104,7 +104,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 | **MCP** | [gnn_mcp.md](mcp/gnn_mcp_model_context_protocol.md) | Model Context Protocol | ✅ API integration | [MCP Guide](mcp/README.md), [FastMCP](mcp/fastmcp.md) |
 | **PoE-World** | [poe-world_gnn.md](poe-world/poe-world_gnn.md) | Compositional world modeling | 🔄 Research integration | [PoE-World Overview](poe-world/poe-world.md), [Program Synthesis](dspy/gnn_dspy.md) |
 
-> **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](pipeline/README.md) | [Performance Comparison](troubleshooting/performance.md)
+> **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](gnn/gnn_tools.md) | [Performance Comparison](troubleshooting/performance.md)
 
 ### Additional Framework Categories
 
@@ -188,19 +188,19 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Applications*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Multi-agent](gnn/gnn_multiagent.md)
 - **[Ontology System](gnn/ontology_system.md)** - Active Inference Ontology integration
   - *Cross-refs*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
-  - *Related*: [Pipeline Step 8](pipeline/README.md#step-8-ontology-processing)
+  - *Related*: [Pipeline Step 8](gnn/gnn_tools.md#step-8-ontology-processing)
 - **[Resource Metrics](gnn/resource_metrics.md)** - Computational resource estimation
   - *Cross-refs*: [Performance Guide](troubleshooting/performance.md), [Type Checker](gnn/gnn_tools.md#validation-tools)
-  - *Related*: [Pipeline Step 4](pipeline/README.md#step-4-gnn-type-checker)
+  - *Related*: [Pipeline Step 4](gnn/gnn_tools.md#step-4-gnn-type-checker)
 - **[GNN Kit](kit/gnn_kit.md)** - Comprehensive toolkit documentation
   - *Cross-refs*: [Tools Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
 - **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
   - *Cross-refs*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Hierarchical Template](templates/hierarchical_template.md)
-|- **[Audio Sonification](sapf/sapf_gnn.md)** - Auditory representation of model dynamics
+- **[Audio Sonification](sapf/sapf_gnn.md)** - Auditory representation of model dynamics
   - *Cross-refs*: [SAPF](sapf/README.md), [Pedalboard](pedalboard/pedalboard_gnn.md)
-|- **[Formal Verification](axiom/axiom_gnn.md)** - Provably correct model specification
+- **[Formal Verification](axiom/axiom_gnn.md)** - Provably correct model specification
   - *Cross-refs*: [Petri Nets](petri_nets/README.md), [Nock](nock/nock-gnn.md)
-|- **[Visual Model Construction](gui_oxdraw/gnn_oxdraw.md)** - Interactive GUI for model building
+- **[Visual Model Construction](gui_oxdraw/gnn_oxdraw.md)** - Interactive GUI for model building
   - *Cross-refs*: [Oxdraw](gui_oxdraw/README.md), [Glowstick](glowstick/glowstick_gnn.md)
 
 ## 🔍 Quick Reference
@@ -217,7 +217,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 - **Converting to code**: See [Rendering Documentation](gnn/gnn_tools.md#conversion-tools)
   - *Frameworks*: [PyMDP](pymdp/gnn_pymdp.md) | [RxInfer](rxinfer/gnn_rxinfer.md) | [DisCoPy](discopy/gnn_discopy.md)
 - **Visualizing models**: Follow [Visualization Guide](gnn/gnn_tools.md#visualization-tools)
-  - *Pipeline*: [Step 6 Visualization](pipeline/README.md#step-6-visualization) → [Step 12 Website](pipeline/README.md#step-12-website-generation)
+  - *Pipeline*: [Step 6 Visualization](gnn/gnn_tools.md#step-6-visualization) → [Step 12 Website](gnn/gnn_tools.md#step-12-website-generation)
 
 ### File Templates
 > **📋 Production-Ready Templates** | **📊 Total**: 4 comprehensive templates (49KB)
@@ -238,12 +238,12 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
-> **⚙️ 23-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
+> **⚙️ 25-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
 
-- **[Complete Pipeline Guide](pipeline/README.md)** - All 24 steps explained
-  - *Architecture*: [Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)
+- **[Complete Pipeline Guide](gnn/gnn_tools.md)** - All 25 steps explained (0-24)
+  - *Architecture*: [Pipeline Architecture](gnn/architecture_reference.md)
   - *Configuration*: [Configuration Guide](configuration/README.md)
-- **[Pipeline Architecture](pipeline/PIPELINE_ARCHITECTURE.md)** - Technical architecture
+- **[Pipeline Architecture](gnn/architecture_reference.md)** - Technical architecture
   - *Development*: [Development Guide](development/README.md)
   - *API Integration*: [API Documentation](api/README.md)
 
@@ -255,14 +255,14 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Examples*: [Tool Development](gnn/gnn_dsl_manual.md)
 - **[MCP Integration Guide](mcp/README.md)** - Model Context Protocol APIs
   - *FastMCP*: [FastMCP Guide](mcp/fastmcp.md)
-  - *Pipeline*: [Step 7 MCP](pipeline/README.md#step-7-model-context-protocol)
+  - *Pipeline*: [Step 7 MCP](gnn/gnn_tools.md#step-7-model-context-protocol)
 - **[Tool Development](mcp/README.md#development-guidelines)** - Creating new MCP tools
   - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/gnn_dsl_manual.md)
 - **[Interactive GUI Tools](../src/gui/README.md)** - Visual model construction interfaces
   - *GUI 1*: Form-based constructor (localhost:7860)
   - *GUI 2*: Visual matrix editor (localhost:7861) 
   - *GUI 3*: State space design studio (localhost:7862)
-  - *Pipeline*: [Step 22 GUI Processing](pipeline/README.md#step-22-gui-processing)
+  - *Pipeline*: [Step 22 GUI Processing](gnn/gnn_tools.md#step-22-gui-processing)
 
 ### Learning Resources
 > **📖 Progressive Learning System** | **🎯 Beginner to Expert**
@@ -273,7 +273,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Examples*: [Configuration Examples](configuration/examples.md)
   - *Deployment*: [Deployment Guide](deployment/README.md)
 - **[Testing Guide](testing/README.md)** - Testing strategies and best practices
-  - *Pipeline*: [Step 3 Testing](pipeline/README.md#step-3-test-execution)
+  - *Pipeline*: [Step 3 Testing](gnn/gnn_tools.md#step-3-test-execution)
   - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 
 ### Security & Compliance
@@ -377,7 +377,7 @@ primary_audience: [beginners, practitioners, developers, researchers]
 learning_paths:
   beginner: [about_gnn.md, quickstart_tutorial.md, gnn_examples_doc.md, gnn_syntax.md]
   practitioner: [gnn_syntax.md, gnn_file_structure_doc.md, gnn_implementation.md, templates/README.md]
-  developer: [api/README.md, pipeline/PIPELINE_ARCHITECTURE.md, development/README.md]
+  developer: [api/README.md, gnn/architecture_reference.md, development/README.md]
   researcher: [gnn/gnn_paper.md, advanced_modeling_patterns.md, cognitive_phenomena/README.md, poe-world/poe-world.md]
 cross_references:
   setup: [SETUP.md, configuration/README.md, deployment/README.md]
@@ -391,7 +391,7 @@ coverage_metrics:
   template_count: 4
   framework_integrations: 12+
   research_integrations: 5+
-  pipeline_steps: 24
+  pipeline_steps: 25
   cognitive_phenomena: 22+
 status: production_ready
 quality_level: gold_standard

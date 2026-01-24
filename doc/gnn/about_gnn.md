@@ -267,7 +267,7 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 - **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
 
 ### Pipeline and Tools
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete 24-step pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 24-step pipeline guide
 - **[GNN Tools](gnn_tools.md)**: Available software and utilities
 - **[Ontology System](ontology_system.md)**: Active Inference ontology processing
 

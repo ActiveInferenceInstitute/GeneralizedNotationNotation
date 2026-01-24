@@ -27,16 +27,16 @@ These packages are required and installed automatically:
 
 | Package | Purpose | Install Command | Used By |
 |---------|---------|-----------------|---------|
-| pymdp | Active Inference simulations | `pip install pymdp` | Step 12 Execute |
-| jax | ML/numerical computing | `pip install jax jaxlib` | Step 11 Render |
-| optax | JAX optimizers | `pip install optax` | Step 11 Render |
-| flax | Neural networks (optional) | `pip install flax` | Optional for JAX |
-| discopy | Categorical diagrams | `pip install discopy` | Step 11 Render |
-| ollama | Local LLM | `pip install ollama` | Step 13 LLM |
-| openai | OpenAI API | `pip install openai` | Step 13 LLM |
-| networkx | Graph analysis | `pip install networkx` | Visualization |
-| plotly | Interactive plots | `pip install plotly` | Advanced Viz |
-| seaborn | Statistical plots | `pip install seaborn` | Visualization |
+| pymdp | Active Inference simulations | `uv pip install inferactively-pymdp` | Step 12 Execute |
+| jax | ML/numerical computing | `uv pip install jax jaxlib` | Step 11 Render |
+| optax | JAX optimizers | `uv pip install optax` | Step 11 Render |
+| flax | Neural networks (optional) | `uv pip install flax` | Optional for JAX |
+| discopy | Categorical diagrams | `uv pip install discopy` | Step 11 Render |
+| ollama | Local LLM | `uv pip install ollama` | Step 13 LLM |
+| openai | OpenAI API | `uv pip install openai` | Step 13 LLM |
+| networkx | Graph analysis | `uv pip install networkx` | Visualization |
+| plotly | Interactive plots | `uv pip install plotly` | Advanced Viz |
+| seaborn | Statistical plots | `uv pip install seaborn` | Visualization |
 
 ### Optional System Dependencies
 
@@ -67,7 +67,7 @@ def check_python_dependency(package_name: str) -> tuple[bool, str]:
         version = getattr(module, "__version__", "unknown")
         return True, version
     except ImportError:
-        return False, f"Not installed. Install with: pip install {package_name}"
+        return False, f"Not installed. Install with: uv pip install {package_name}"
 
 # Usage
 available, info = check_python_dependency("pymdp")
@@ -154,7 +154,7 @@ except ImportError:
     PYMDP_AVAILABLE = False
     logger.info(
         "PyMDP not available - this is normal if not installed. "
-        "To enable PyMDP simulations, install with: pip install pymdp. "
+        "To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. "
         "Continuing with fallback mode."
     )
 
@@ -164,11 +164,11 @@ try:
 except ImportError:
     class PyMDPAgent:
         """Fallback stub when PyMDP unavailable."""
-        
+
         def __init__(self, *args, **kwargs):
             raise ImportError(
                 "PyMDP is required for this feature. "
-                "Install with: pip install pymdp"
+                "Install with: uv pip install inferactively-pymdp"
             )
 ```
 
@@ -302,7 +302,7 @@ def check_pymdp_environment() -> Dict[str, Any]:
         result["message"] = "PyMDP ready for simulations"
     except ImportError:
         result["message"] = (
-            "PyMDP not installed. Install with: pip install pymdp\n"
+            "PyMDP not installed. Install with: uv pip install inferactively-pymdp\n"
             "Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX"
         )
     
@@ -322,7 +322,7 @@ This file was generated because PyMDP is not installed.
 To run actual simulations:
 
 1. Install PyMDP:
-   pip install pymdp
+   uv pip install inferactively-pymdp
 
 2. Re-run the render step:
    python src/11_render.py --target-dir input/gnn_files
@@ -408,8 +408,11 @@ def setup_activeinference() -> bool:
 ### Install All Optional Dependencies
 
 ```bash
-# Python packages
-pip install pymdp jax jaxlib optax discopy ollama openai plotly seaborn networkx
+# Python packages using UV (recommended)
+uv sync --all-extras
+
+# Or install manually with uv pip:
+uv pip install inferactively-pymdp jax jaxlib optax discopy ollama openai plotly seaborn networkx
 
 # Julia packages (run in Julia REPL)
 using Pkg
@@ -424,19 +427,19 @@ brew install --cask ollama
 
 ```bash
 # ML/JAX stack (no Flax needed for GNN)
-pip install jax jaxlib optax
+uv pip install jax jaxlib optax
 
 # Active Inference Python
-pip install pymdp
+uv pip install inferactively-pymdp
 
 # Visualization
-pip install plotly seaborn networkx
+uv pip install plotly seaborn networkx
 
 # LLM Support
-pip install ollama openai
+uv pip install ollama openai
 
 # Categorical diagrams
-pip install discopy
+uv pip install discopy
 ```
 
 ### Environment Validation Script
@@ -510,15 +513,15 @@ export JAX_PLATFORM_NAME=cpu  # or 'gpu', 'tpu'
 
 **PyMDP Import Error**
 ```
-Solution: pip install pymdp
+Solution: uv pip install inferactively-pymdp
 Note: Requires Python 3.8+
 ```
 
 **JAX GPU Not Detected**
 ```
-Solution: 
-  - CPU: pip install jax jaxlib
-  - GPU: pip install jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+Solution:
+  - CPU: uv pip install jax jaxlib
+  - GPU: uv pip install jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 **Julia Package Load Failure**

@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_jax.py
-Timestamp: 2026-01-21T12:52:21.324418
+Timestamp: 2026-01-24T15:01:09.775742
 Return Code: 0
-Execution Time: 0.63 seconds
+Execution Time: 1.32 seconds
 
 STDOUT:
 ============================================================
@@ -33,15 +33,17 @@ Key Functions:
 
 📊 Simulation Results:
    Initial belief: [0.33333 0.33333 0.33333]
-   Updated belief: [1. 0. 0.]
-   Selected action: 0
-   Expected free energy: 0.0099
-   EFE for all actions: [0.00986223 0.00986223 0.00986223]
+   Updated belief: [0.9  0.05 0.05]
+   Selected action: 2
+   Expected free energy: -0.1560
+   EFE for all actions: [ 0.49429578  0.49429578 -0.1559542 ]
 
-🔄 Running 5-step simulation...
-   Actions taken: [0 0 0 0 0]
-   Final belief: [0. 0. 0.]
-   Average EFE: 0.0020
+🔄 Running 30-step simulation...
+   Actions taken: [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+   Final belief: [0.00291545 0.05247812 0.94460636]
+   Average EFE: -0.0021
+
+💾 Saved simulation results to: jax_outputs/simulation_results.json
 
 ✅ JAX Active Inference model test successful!
 

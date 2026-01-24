@@ -49,7 +49,7 @@ except ImportError:
     MCP_AVAILABLE = False
 
 # Module metadata
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "SAPF audio generation from GNN models"
 

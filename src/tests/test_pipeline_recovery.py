@@ -232,12 +232,19 @@ class TestErrorReportingRecovery:
         
     def test_error_recovery_logging(self, test_environment):
         """Test error recovery logging functionality."""
+        import logging
         from utils.logging_utils import log_step_error
-        
-        # Test error logging
-        result = log_step_error("test_step", "Test error occurred", None)
-            
-        assert result is not None
+
+        # Create a test logger
+        logger = logging.getLogger("test_error_recovery")
+
+        # Test error logging - log_step_error takes (logger, message) and returns None
+        # It logs the error and doesn't raise an exception
+        result = log_step_error(logger, "Test error occurred")
+
+        # The function logs the error and returns None (no return value)
+        # Success is determined by no exception being raised
+        assert result is None  # Function returns None
         # The function should handle the error gracefully
 
 if __name__ == "__main__":

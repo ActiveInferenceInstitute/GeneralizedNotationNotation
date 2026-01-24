@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-21T12:57:37.206133",
+  "timestamp": "2026-01-24T14:26:52.214996",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -7,8 +7,8 @@
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "file_size": 4233,
-      "line_count": 129,
+      "file_size": 4306,
+      "line_count": 130,
       "variables": [
         {
           "name": "Example",
@@ -105,6 +105,12 @@
           "definition": "num_actions: 3",
           "line": 122,
           "type": "3"
+        },
+        {
+          "name": "num_timesteps",
+          "definition": "num_timesteps: 30",
+          "line": 123,
+          "type": "30"
         },
         {
           "name": "type",
@@ -579,15 +585,15 @@
         },
         {
           "name": "Footer",
-          "line": 124
+          "line": 125
         },
         {
           "name": "Signature",
-          "line": 128
+          "line": 129
         }
       ],
       "variable_statistics": {
-        "count": 72,
+        "count": 73,
         "types": {
           "Active": 1,
           "1": 1,
@@ -598,10 +604,11 @@
           "E": 1,
           "3": 8,
           "action": 1,
+          "30": 1,
           "unknown": 56
         },
-        "average_line": 66.22222222222223,
-        "line_std": 36.27067311747966
+        "average_line": 67.0,
+        "line_std": 36.6209760985553
       },
       "connection_statistics": {
         "count": 0,
@@ -609,70 +616,106 @@
       },
       "section_statistics": {
         "count": 35,
-        "average_line": 58.34285714285714,
-        "line_std": 38.630811431249214
+        "average_line": 58.4,
+        "line_std": 38.731456392520464
       },
       "distributions": {
         "variable_distribution": {
-          "mean": 66.22222222222223,
-          "std": 36.27067311747966,
+          "mean": 67.0,
+          "std": 36.6209760985553,
           "min": 1,
-          "max": 122,
-          "median": 50.5
+          "max": 123,
+          "median": 52.0
         },
         "connection_distribution": {},
         "complexity_metrics": {
-          "total_elements": 72,
-          "variable_complexity": 72,
+          "total_elements": 73,
+          "variable_complexity": 73,
           "connection_complexity": 0,
           "density": 0.0,
-          "cyclomatic_complexity": -70
+          "cyclomatic_complexity": -71
         }
       },
       "correlations": {
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-01-21T12:57:37.209136"
+      "analysis_timestamp": "2026-01-24T14:26:52.218264"
     }
   ],
   "complexity_metrics": [
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "cyclomatic_complexity": -70,
-      "cognitive_complexity": 36.0,
-      "structural_complexity": 21.599999999999998,
+      "cyclomatic_complexity": -71,
+      "cognitive_complexity": 36.5,
+      "structural_complexity": 21.9,
       "maintainability_index": 100.0,
-      "technical_debt": 5.2,
-      "analysis_timestamp": "2026-01-21T12:57:37.211091"
+      "technical_debt": 5.300000000000001,
+      "analysis_timestamp": "2026-01-24T14:26:52.220605"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "parse_time": 4.225,
-      "memory_usage": 422.5,
-      "complexity_score": 72,
+      "parse_time": 4.298,
+      "memory_usage": 429.8,
+      "complexity_score": 73,
       "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-01-21T12:57:37.213017"
+      "benchmark_timestamp": "2026-01-24T14:26:52.222925"
     }
   ],
   "model_comparisons": [],
   "visualization_files": [
-    "output/16_analysis_output/pymdp_visualizations/Active_Inference_POMDP_Agent/discrete_states_0.png",
-    "output/16_analysis_output/pymdp_visualizations/Active_Inference_POMDP_Agent/belief_evolution_1.png",
-    "output/16_analysis_output/pymdp_visualizations/Active_Inference_POMDP_Agent/performance_2.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/discrete_states_0.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/belief_evolution_1.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/performance_2.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_belief_evolution.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_action_analysis.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_A_matrix.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_belief_trajectory_3d.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_preferences_prior.png",
+    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_dashboard.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_component_flow.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_structure_card.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_component_flow.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_structure_card.png",
+    "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_evolution.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_efe.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_actions.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_confidence.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_dashboard.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_evolution.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_obs_vs_true.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_heatmap.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_entropy.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_accuracy.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_evolution.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_obs_vs_true.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_heatmap.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_entropy.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_accuracy.png",
     "output/16_analysis_output/framework_success_rates.png",
-    "output/16_analysis_output/comprehensive_visualizations/actinf_pomdp_agent_jax_action_analysis.png",
-    "output/16_analysis_output/comprehensive_visualizations/actinf_pomdp_agent_jax_free_energy.png",
-    "output/16_analysis_output/comprehensive_visualizations/rxinfer_rxinfer_belief_heatmap.png",
-    "output/16_analysis_output/comprehensive_visualizations/rxinfer_rxinfer_observations.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_belief_heatmap.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_action_analysis.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_observations.png",
-    "output/16_analysis_output/comprehensive_visualizations/cross_framework_comparison.png"
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_heatmap.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_analysis.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_heatmap.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_analysis.png",
+    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_belief_heatmap.png",
+    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_observations.png",
+    "output/16_analysis_output/jax/jax_jax_belief_heatmap.png",
+    "output/16_analysis_output/jax/jax_jax_action_analysis.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_belief_heatmap.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_action_analysis.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_observations.png",
+    "output/16_analysis_output/cross_framework/cross_framework_comparison.png",
+    "output/16_analysis_output/cross_framework/unified_dashboard/unified_belief_comparison.png",
+    "output/16_analysis_output/cross_framework/unified_dashboard/unified_action_efe_comparison.png",
+    "output/16_analysis_output/cross_framework/unified_dashboard/unified_entropy_comparison.png"
   ],
   "post_simulation_analysis": [
     {
@@ -684,7 +727,7 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-01-21T12:57:37.777067",
+    "timestamp": "2026-01-24T14:26:56.153004",
     "frameworks": {
       "jax": {
         "success_count": 1,
@@ -782,13 +825,17 @@
   },
   "framework_comparison_report": "output/16_analysis_output/framework_comparison_report.md",
   "comprehensive_visualizations": [
-    "output/16_analysis_output/comprehensive_visualizations/actinf_pomdp_agent_jax_action_analysis.png",
-    "output/16_analysis_output/comprehensive_visualizations/actinf_pomdp_agent_jax_free_energy.png",
-    "output/16_analysis_output/comprehensive_visualizations/rxinfer_rxinfer_belief_heatmap.png",
-    "output/16_analysis_output/comprehensive_visualizations/rxinfer_rxinfer_observations.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_belief_heatmap.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_action_analysis.png",
-    "output/16_analysis_output/comprehensive_visualizations/pymdp_gen_unknown_observations.png",
-    "output/16_analysis_output/comprehensive_visualizations/cross_framework_comparison.png"
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_heatmap.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_analysis.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_heatmap.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_analysis.png",
+    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_belief_heatmap.png",
+    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_observations.png",
+    "output/16_analysis_output/jax/jax_jax_belief_heatmap.png",
+    "output/16_analysis_output/jax/jax_jax_action_analysis.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_belief_heatmap.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_action_analysis.png",
+    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_observations.png",
+    "output/16_analysis_output/cross_framework/cross_framework_comparison.png"
   ]
 }

@@ -1,0 +1,12 @@
+{
+  "timestamp": "2026-01-24T14:27:17.241032",
+  "overall_status": "SUCCESS",
+  "health_score": 100,
+  "failure_count": 0,
+  "red_flag_count": 0,
+  "yellow_flag_count": 1,
+  "bottleneck_count": 1,
+  "recommendation_count": 4,
+  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+}

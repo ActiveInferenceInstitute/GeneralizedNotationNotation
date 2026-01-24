@@ -12,11 +12,11 @@ The GNN pipeline generates executable simulation code for multiple Active Infere
 
 | Framework | Language | Status | Dependency | Use Case |
 |-----------|----------|--------|------------|----------|
-| PyMDP | Python | Optional | `pip install pymdp` | Python Active Inference |
-| JAX | Python | Recommended | `pip install jax optax` | High-performance ML |
+| PyMDP | Python | Optional | `uv pip install inferactively-pymdp` | Python Active Inference |
+| JAX | Python | Recommended | `uv pip install jax optax` | High-performance ML |
 | RxInfer.jl | Julia | Optional | Julia + RxInfer | Probabilistic programming |
 | ActiveInference.jl | Julia | Optional | Julia + ActiveInference | Native Julia AI |
-| DisCoPy | Python | Optional | `pip install discopy` | Categorical diagrams |
+| DisCoPy | Python | Optional | `uv pip install discopy` | Categorical diagrams |
 
 ---
 
@@ -29,7 +29,9 @@ PyMDP is a Python library for Active Inference simulations. It provides a comple
 ### Requirements
 
 ```bash
-pip install pymdp
+uv pip install inferactively-pymdp
+# Or use UV optional group:
+uv sync --extra active-inference
 ```
 
 ### Generated Code Structure
@@ -53,7 +55,7 @@ try:
     PYMDP_AVAILABLE = True
 except ImportError:
     PYMDP_AVAILABLE = False
-    print("PyMDP not installed. Install with: pip install pymdp")
+    print("PyMDP not installed. Install with: uv pip install inferactively-pymdp")
 
 # Model Matrices
 A = np.array([...])  # Observation likelihood (n_obs x n_states)
@@ -116,7 +118,9 @@ JAX is a high-performance numerical computing library. The GNN pipeline generate
 ### Requirements
 
 ```bash
-pip install jax jaxlib optax
+uv pip install jax jaxlib optax
+# Or use UV optional group:
+uv sync --extra active-inference
 # Note: Flax is NOT required
 ```
 
@@ -445,7 +449,9 @@ DisCoPy is a Python library for categorical diagrams and compositional semantics
 ### Requirements
 
 ```bash
-pip install discopy
+uv pip install discopy
+# Or use UV optional group:
+uv sync --extra active-inference
 ```
 
 ### Generated Code Structure
@@ -464,7 +470,7 @@ try:
     DISCOPY_AVAILABLE = True
 except ImportError:
     DISCOPY_AVAILABLE = False
-    print("DisCoPy not installed. Install with: pip install discopy")
+    print("DisCoPy not installed. Install with: uv pip install discopy")
 
 # Define types
 State = Ty('State')

@@ -81,15 +81,20 @@ class DisCoPyRenderer:
             'initial_parameterization': {},
             'connections': []
         }
-        
+
+        self.logger.info(f"Parsing GNN content for model: {model_name}")
+
         # Simple parser for key sections
         lines = content.split('\n')
         current_section = None
-        
+        sections_found = []
+
         for line in lines:
             line = line.strip()
             if line.startswith('## '):
                 current_section = line[3:].strip()
+                sections_found.append(current_section)
+                self.logger.debug(f"Found section: {current_section}")
             elif current_section == 'ModelParameters' and ':' in line:
                 key, value = line.split(':', 1)
                 key = key.strip()
@@ -99,9 +104,12 @@ class DisCoPyRenderer:
                         gnn_spec['model_parameters'][key] = float(value)
                     else:
                         gnn_spec['model_parameters'][key] = int(value)
+                    self.logger.debug(f"Extracted parameter: {key}={gnn_spec['model_parameters'][key]}")
                 except ValueError:
                     gnn_spec['model_parameters'][key] = value
-        
+                    self.logger.debug(f"Extracted parameter (string): {key}={value}")
+
+        self.logger.info(f"Parsed {len(sections_found)} sections, {len(gnn_spec['model_parameters'])} model parameters")
         return gnn_spec
     
     def _generate_discopy_diagram_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:

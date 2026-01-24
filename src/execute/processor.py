@@ -290,14 +290,28 @@ def process_execute(
 def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requested_frameworks: List[str]) -> List[Dict[str, Any]]:
     """
     Find executable scripts in the render output directory.
-    
+
+    Searches for Python (.py) and Julia (.jl) scripts in the render output
+    directory structure. Scripts are filtered by the requested frameworks
+    and excluded if they match common non-executable patterns (test files,
+    __init__.py, etc.).
+
     Args:
-        render_output_dir: Directory containing rendered scripts
-        verbose: Enable verbose logging
-        logger: Logger instance
-        
+        render_output_dir: Directory containing rendered scripts from Step 11.
+        verbose: Enable verbose logging of discovered scripts.
+        logger: Logger instance for output messages.
+        requested_frameworks: List of framework names to include (e.g.,
+            ["pymdp", "jax", "discopy"]). Scripts from other frameworks
+            will be skipped.
+
     Returns:
-        List of dictionaries with script information
+        List of dictionaries, each containing:
+            - path: Path to the script file
+            - name: Script filename
+            - framework: Detected framework name
+            - executor: Command to execute the script (python/julia)
+            - relative_path: Path relative to render_output_dir
+            - size_bytes: File size in bytes
     """
     executable_scripts = []
     
@@ -452,6 +466,14 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         # Execute the script with improved error handling
         script_name = script_path.name
         result = None
+
+        # Error result class for consistent interface when subprocess fails
+        class ErrorResult:
+            def __init__(self, returncode: int, stdout: str, stderr: str):
+                self.returncode = returncode
+                self.stdout = stdout
+                self.stderr = stderr
+
         try:
             # Set environment variables if needed
             env = os.environ.copy()
@@ -503,12 +525,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = "Timeout"
             logger.warning(f"⏰ Script {script_info['name']} timed out after 300 seconds")
-            # Create error result for consistency
-            class ErrorResult:
-                returncode = -1
-                stdout = ""
-                stderr = "Timeout"
-            result = ErrorResult()
+            result = ErrorResult(-1, "", "Timeout")
 
         except Exception as e:
             end_time = datetime.now()
@@ -518,20 +535,11 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stdout'] = ""
             exec_result['stderr'] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
-            # Create error result for consistency
-            class ErrorResult:
-                returncode = -2
-                stdout = ""
-                stderr = str(e)
-            result = ErrorResult()
+            result = ErrorResult(-2, "", str(e))
         
         # Ensure result is defined before using it
         if result is None:
-            class ErrorResult:
-                returncode = -3
-                stdout = ""
-                stderr = "Unknown error"
-            result = ErrorResult()
+            result = ErrorResult(-3, "", "Unknown error")
         
         # Save individual script output in implementation-specific subdirectory
         # Create the implementation-specific directory structure
@@ -838,10 +846,13 @@ def collect_execution_outputs(
             try:
                 # Determine category
                 ext = source_file.suffix.lower()
+                
+                # Skip visualization files - they belong in analysis step, not execute
                 if ext in ['.png', '.svg', '.jpg', '.jpeg']:
-                    dest_dir = output_dir / "visualizations"
-                    category = "visualizations"
-                elif ext in ['.json', '.pkl', '.csv']:
+                    logger.debug(f"Skipping visualization {source_file.name} (will be collected by analysis step)")
+                    continue
+                    
+                if ext in ['.json', '.pkl', '.csv']:
                     # Check if it's a trace file
                     if 'trace' in source_file.name.lower() or 'posterior' in source_file.name.lower():
                         dest_dir = output_dir / "traces"
@@ -1027,9 +1038,73 @@ def _extract_rxinfer_data_from_files(output_dir: Path, logger) -> Dict[str, Any]
 def _extract_activeinference_jl_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
     """Extract ActiveInference.jl simulation data from saved files."""
     data = {}
-    
+
     try:
-        # Look for simulation data JSON files
+        # Look for activeinference_outputs_* directories (timestamped output dirs)
+        output_dirs = list(output_dir.glob("activeinference_outputs_*"))
+        if not output_dirs:
+            # Also check parent directories
+            output_dirs = list(output_dir.parent.glob("**/activeinference_outputs_*"))
+
+        # Get most recent output directory
+        if output_dirs:
+            output_dirs.sort(key=lambda x: x.stat().st_mtime, reverse=True)
+            latest_output = output_dirs[0]
+            logger.debug(f"Found ActiveInference.jl output directory: {latest_output}")
+
+            # Parse model_parameters.json
+            params_file = latest_output / "model_parameters.json"
+            if params_file.exists():
+                try:
+                    with open(params_file, 'r') as f:
+                        params = json.load(f)
+                        data["model_name"] = params.get("model_name")
+                        data["n_states"] = params.get("n_states")
+                        data["n_observations"] = params.get("n_observations")
+                        data["n_actions"] = params.get("n_actions")
+                        data["timestamp"] = params.get("timestamp")
+                        logger.debug(f"Loaded model parameters from {params_file}")
+                except Exception as e:
+                    logger.warning(f"Error reading model_parameters.json: {e}")
+
+            # Parse simulation_results.csv
+            results_csv = latest_output / "simulation_results.csv"
+            if results_csv.exists():
+                try:
+                    import csv
+                    with open(results_csv, 'r') as f:
+                        reader = csv.DictReader(f)
+                        rows = list(reader)
+                        if rows:
+                            data["timesteps"] = len(rows)
+                            data["observations"] = [int(r.get("observation", 0)) for r in rows]
+                            data["actions"] = [int(r.get("action", 0)) for r in rows]
+                            # Extract beliefs if available
+                            belief_keys = [k for k in rows[0].keys() if k.startswith("belief")]
+                            if belief_keys:
+                                data["beliefs"] = [[float(r.get(k, 0)) for k in belief_keys] for r in rows]
+                            logger.debug(f"Loaded {len(rows)} timesteps from simulation_results.csv")
+                except Exception as e:
+                    logger.warning(f"Error reading simulation_results.csv: {e}")
+
+            # Parse summary.txt for validation status
+            summary_file = latest_output / "summary.txt"
+            if summary_file.exists():
+                try:
+                    with open(summary_file, 'r') as f:
+                        summary_text = f.read()
+                        data["validation_passed"] = "PASSED" in summary_text
+                        logger.debug(f"Read summary from {summary_file}")
+                except Exception as e:
+                    logger.warning(f"Error reading summary.txt: {e}")
+
+            # Count visualizations
+            viz_files = list(latest_output.glob("*.png"))
+            if viz_files:
+                data["visualization_count"] = len(viz_files)
+                data["visualization_files"] = [f.name for f in viz_files]
+
+        # Also check traditional locations for backwards compatibility
         data_dir = output_dir / "simulation_data"
         if data_dir.exists():
             json_files = list(data_dir.glob("*.json"))
@@ -1037,57 +1112,77 @@ def _extract_activeinference_jl_data_from_files(output_dir: Path, logger) -> Dic
                 try:
                     with open(json_file, 'r') as f:
                         sim_data = json.load(f)
-                        if "free_energy" in sim_data:
+                        if "free_energy" in sim_data and "free_energy" not in data:
                             data["free_energy"] = sim_data["free_energy"]
-                        if "beliefs" in sim_data:
+                        if "beliefs" in sim_data and "beliefs" not in data:
                             data["beliefs"] = sim_data["beliefs"]
                 except Exception:
                     pass
-        
+
         # Look for free energy traces
         fe_dir = output_dir / "free_energy_traces"
         if fe_dir.exists():
             trace_files = list(fe_dir.glob("*.csv"))
             if trace_files:
                 data["free_energy_trace_files"] = [str(f.name) for f in trace_files]
-                
+
     except Exception as e:
         logger.warning(f"Error extracting ActiveInference.jl data from files: {e}")
-    
+
     return data
 
 
 def _extract_discopy_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
     """Extract DisCoPy simulation data from saved files."""
     data = {}
-    
+
     try:
-        # Look for circuit analysis JSON
-        analysis_dir = output_dir / "analysis"
-        if analysis_dir.exists():
-            json_files = list(analysis_dir.glob("*circuit*.json")) + list(analysis_dir.glob("*analysis*.json"))
-            for json_file in json_files:
-                try:
-                    with open(json_file, 'r') as f:
-                        circuit_data = json.load(f)
-                        if "circuit" in circuit_data:
-                            data["circuit"] = circuit_data["circuit"]
-                        if "components" in circuit_data:
-                            data["components"] = circuit_data["components"]
-                except Exception:
-                    pass
-        
-        # Count diagram outputs
-        diagram_dir = output_dir / "diagram_outputs"
-        if diagram_dir.exists():
-            diagram_files = list(diagram_dir.glob("*.png"))
-            if diagram_files:
-                data["diagram_count"] = len(diagram_files)
-                data["diagram_files"] = [str(f.name) for f in diagram_files]
-                
+        # Look for circuit analysis JSON in multiple possible locations
+        search_dirs = [
+            output_dir / "simulation_data",
+            output_dir / "discopy_diagrams",
+            output_dir / "analysis",
+            output_dir
+        ]
+
+        for search_dir in search_dirs:
+            if search_dir.exists():
+                json_files = list(search_dir.glob("*circuit*.json")) + list(search_dir.glob("*analysis*.json"))
+                for json_file in json_files:
+                    try:
+                        with open(json_file, 'r') as f:
+                            circuit_data = json.load(f)
+                            if "circuit" in circuit_data:
+                                data["circuit"] = circuit_data["circuit"]
+                            if "components" in circuit_data:
+                                data["components"] = circuit_data["components"]
+                            if "analysis" in circuit_data:
+                                data["analysis"] = circuit_data["analysis"]
+                            if "parameters" in circuit_data:
+                                data["parameters"] = circuit_data["parameters"]
+                            logger.debug(f"Loaded DisCoPy data from {json_file}")
+                    except Exception:
+                        pass
+
+        # Count diagram outputs in multiple possible locations
+        diagram_dirs = [
+            output_dir / "discopy_diagrams",
+            output_dir / "diagram_outputs",
+            output_dir / "simulation_data"
+        ]
+
+        for diagram_dir in diagram_dirs:
+            if diagram_dir.exists():
+                diagram_files = list(diagram_dir.glob("*.png"))
+                if diagram_files:
+                    data["diagram_count"] = len(diagram_files)
+                    data["diagram_files"] = [str(f.name) for f in diagram_files]
+                    logger.debug(f"Found {len(diagram_files)} DisCoPy diagrams in {diagram_dir}")
+                    break
+
     except Exception as e:
         logger.warning(f"Error extracting DisCoPy data from files: {e}")
-    
+
     return data
 
 

@@ -157,7 +157,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 🛠️ Additional Resources
 
 **Related Documentation:**
-- [Pipeline Documentation](../pipeline/) - Pipeline-specific guides
+- [Pipeline Documentation](../gnn/) - Pipeline-specific guides
 - [API Reference](../api/) - API documentation
 - [Configuration Guide](../configuration/) - Configuration options
 - [Troubleshooting](../troubleshooting/) - Common issues and solutions
@@ -212,9 +212,10 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: 1.0  
-**Pipeline Version**: 1.1.1  
-**Total Pipeline Steps**: 24 (0-23)  
+**GNN Version**: 1.0
+**Pipeline Version**: 1.1.3
+**Total Pipeline Steps**: 24 (0-23)
+**Last Updated**: 2026-01-22
 **Status**: ✅ All Documentation Complete
 
 

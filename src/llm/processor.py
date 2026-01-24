@@ -12,6 +12,7 @@ from datetime import datetime
 import os
 import subprocess
 import shutil
+import asyncio
 
 try:
     from utils.pipeline_template import (
@@ -187,19 +188,21 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
     """
     Select the best available Ollama model for GNN analysis.
     
-    Prioritizes small, fast models for quick analysis.
+    Prioritizes small, fast models for quick analysis and reliability.
     """
-    # Preference order: prioritize quality local models
+    # Preference order: prioritize smaller/faster models for reliability
     preferred_models = [
-        'ministral-3:3b',
-        'mistral:7b',
-        'gemma2:2b',
-        'llama2:7b',
-        'phi3',
-        'tinyllama',
         'smollm2:135m-instruct-q4_K_S',
         'smollm2:135m',
+        'smollm2:360m',
+        'tinyllama',
+        'smollm2:1.7b',
         'smollm2',
+        'gemma2:2b',
+        'ministral-3:3b',
+        'mistral:7b',
+        'llama2:7b',
+        'phi3',
         'llama2',
         'mistral'
     ]
@@ -223,8 +226,8 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
         logger.info(f"🎯 Using first available model: {model}")
         return model
     
-    # Ultimate fallback
-    default_model = 'ministral-3:3b'
+    # Ultimate fallback - use the smallest model
+    default_model = 'smollm2:135m-instruct-q4_K_S'
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
     return default_model
@@ -258,7 +261,27 @@ def process_llm(
     Returns:
         True if processing successful, False otherwise
     """
+    import asyncio
+    
+    # Run the async implementation in a single event loop
+    try:
+        return asyncio.run(_process_llm_async(target_dir, output_dir, verbose, **kwargs))
+    except Exception as e:
+        logger = logging.getLogger("llm")
+        log_step_error(logger, f"LLM processing failed: {e}")
+        return False
+
+async def _process_llm_async(
+    target_dir: Path, 
+    output_dir: Path, 
+    verbose: bool, 
+    **kwargs
+) -> bool:
+    """Async implementation of process_llm."""
     logger = logging.getLogger("llm")
+    
+    # Initialize processor variable for cleanup in finally block
+    processor = None
     
     try:
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
@@ -319,14 +342,11 @@ def process_llm(
             results["processed_files"] = len(gnn_files)
             
             # Initialize LLM processor (prioritize Ollama)
-            processor = None
             processor_initialized = False
             try:
-                import asyncio
-
                 # Create processor with Ollama prioritized
                 processor = LLMProcessor(preferred_providers=[ProviderType.OLLAMA, ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY])
-                processor_initialized = asyncio.run(processor.initialize())
+                processor_initialized = await processor.initialize()
 
                 if not processor_initialized:
                     logger.warning("LLM processor initialization failed - using fallback analysis")
@@ -335,11 +355,13 @@ def process_llm(
             except Exception as e:
                 logger.warning(f"LLM processor initialization failed: {e} - using fallback analysis")
                 processor_initialized = False
+                processor = None
 
             # Process each GNN file
             for gnn_file in gnn_files:
                 try:
-                    file_analysis = analyze_gnn_file_with_llm(gnn_file, verbose)
+                    # Await the coroutine since we're in an async context
+                    file_analysis = await analyze_gnn_file_with_llm(gnn_file, verbose)
                     results["analysis_results"].append(file_analysis)
                     
                     # Generate insights
@@ -355,7 +377,7 @@ def process_llm(
                     results["documentation_generated"].append(docs)
 
                     # If LLM processor is available, run structured prompts and save outputs
-                    if processor_initialized:
+                    if processor_initialized and processor:
                         with open(gnn_file, 'r') as f:
                             gnn_content = f.read()
                         # Build custom prompt sequence including user-requested prompts
@@ -413,34 +435,28 @@ def process_llm(
                             # Get max prompt timeout from kwargs - default to 300s (5m) to allow for provider fallbacks
                             max_prompt_timeout = kwargs.get('max_prompt_timeout', 300)
 
-                            # Run generation with simple timeout handling
-                            def _run_prompt():
-                                async def _inner():
-                                    try:
-                                        # Simple timeout handling for LLM calls - let processor handle provider selection and fallback
-                                        resp = await asyncio.wait_for(
-                                            processor.get_response(
-                                                messages=messages,
-                                                max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
-                                                temperature=0.2,
-                                                config=LLMConfig(timeout=60)
-                                            ), timeout=max_prompt_timeout
-                                        )
-                                        return resp.content if hasattr(resp, 'content') else str(resp)
-                                    except asyncio.TimeoutError:
-                                        return f"Prompt execution timed out after {max_prompt_timeout} seconds"
-                                    except Exception as e:
-                                        return f"Prompt execution failed: {e}"
-                                return asyncio.run(_inner())
-
                             # Execute prompt
                             try:
-                                content = _run_prompt()
+                                # Use wait_for for timeout control
+                                resp = await asyncio.wait_for(
+                                    processor.get_response(
+                                        messages=messages,
+                                        max_tokens=min(512, prompt_cfg.get("max_tokens", 512)),
+                                        temperature=0.2,
+                                        config=LLMConfig(timeout=60)
+                                    ), timeout=max_prompt_timeout
+                                )
+                                content = resp.content if hasattr(resp, 'content') else str(resp)
+
                                 # Ensure we have some content, even if it's an error message
                                 if not content or content.strip() == "":
                                     content = f"No response generated for prompt {ptype.value}. This may indicate that the LLM provider is not available or not responding."
                                 prompt_outputs[ptype.value] = content
                                 logger.debug(f"  ✅ Prompt completed successfully")
+                            except asyncio.TimeoutError:
+                                error_msg = f"Prompt execution timed out after {max_prompt_timeout} seconds"
+                                logger.error(f"  ❌ {error_msg}")
+                                prompt_outputs[ptype.value] = error_msg
                             except Exception as e:
                                 error_msg = f"Prompt execution failed: {e}"
                                 logger.error(f"  ❌ {error_msg}")
@@ -452,7 +468,7 @@ def process_llm(
                             out_path = per_file_dir / f"{ptype.value}.md"
                             with open(out_path, 'w') as outf:
                                 outf.write(f"# {ptype.name}\n\n")
-                                outf.write(content or "")
+                                outf.write(prompt_outputs[ptype.value] or "")
 
                         # Run custom free-form prompts
                         for cust_idx, (key, user_prompt) in enumerate(custom_prompts, start=1):
@@ -463,33 +479,28 @@ def process_llm(
                                 LLMMessage(role="user", content=f"{user_prompt}\n\nGNN Model Content:\n{gnn_content}"),
                             ]
 
-                            def _run_custom():
-                                async def _inner():
-                                    try:
-                                        # Use configurable timeout
-                                        resp = await asyncio.wait_for(
-                                            processor.get_response(
-                                                messages=messages,
-                                                model_name=ollama_model,
-                                                max_tokens=512,
-                                                temperature=0.2,
-                                                config=LLMConfig(timeout=60)
-                                            ), timeout=max_prompt_timeout
-                                        )
-                                        return resp.content if hasattr(resp, 'content') else str(resp)
-                                    except asyncio.TimeoutError:
-                                        return f"Prompt execution timed out after {max_prompt_timeout} seconds"
-                                    except Exception as e:
-                                        return f"Prompt execution failed: {e}"
-                                return asyncio.run(_inner())
-
                             try:
-                                content = _run_custom()
+                                # Use configurable timeout
+                                resp = await asyncio.wait_for(
+                                    processor.get_response(
+                                        messages=messages,
+                                        model_name=ollama_model,
+                                        max_tokens=512,
+                                        temperature=0.2,
+                                        config=LLMConfig(timeout=60)
+                                    ), timeout=max_prompt_timeout
+                                )
+                                content = resp.content if hasattr(resp, 'content') else str(resp)
+
                                 # Ensure we have some content, even if it's an error message
                                 if not content or content.strip() == "":
                                     content = f"No response generated for custom prompt {key}. This may indicate that the LLM provider is not available or not responding."
                                 prompt_outputs[key] = content
                                 logger.debug(f"  ✅ Custom prompt completed successfully")
+                            except asyncio.TimeoutError:
+                                error_msg = f"Prompt execution timed out after {max_prompt_timeout} seconds"
+                                logger.error(f"  ❌ {error_msg}")
+                                prompt_outputs[key] = error_msg
                             except Exception as e:
                                 error_msg = f"Custom prompt execution failed: {e}"
                                 logger.error(f"  ❌ {error_msg}")
@@ -503,7 +514,7 @@ def process_llm(
                                 outf.write(f"# {title}\n\n")
                                 outf.write(f"Prompt:\n\n> {user_prompt}\n\n")
                                 outf.write("Response:\n\n")
-                                outf.write(content or "")
+                                outf.write(prompt_outputs[key] or "")
 
                         # Attach to file analysis record
                         file_analysis["llm_prompt_outputs"] = prompt_outputs
@@ -538,3 +549,8 @@ def process_llm(
     except Exception as e:
         log_step_error(logger, f"LLM processing failed: {e}")
         return False
+    finally:
+        # Close processor connections
+        if processor:
+            await processor.close()
+

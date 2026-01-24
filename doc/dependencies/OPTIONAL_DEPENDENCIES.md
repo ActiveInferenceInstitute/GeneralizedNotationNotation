@@ -6,11 +6,11 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 
 | Framework | Status | Purpose | Install Command | Pipeline Step |
 |-----------|--------|---------|-----------------|---|
-| PyMDP | Optional | POMDP agent simulation | `pip install pymdp` | 12 (Execute) |
-| Flax | Optional | JAX neural networks | `pip install flax` | 12 (Execute) |
+| PyMDP | Optional | POMDP agent simulation | `uv sync --extra active-inference` | 12 (Execute) |
+| Flax | Optional | JAX neural networks | `uv sync --extra active-inference` | 12 (Execute) |
 | RxInfer.jl | Optional | Julia probabilistic inference | `julia -e 'import Pkg; Pkg.add("RxInfer")'` | 12 (Execute) |
-| Plotly | Optional | Interactive visualizations | `pip install plotly` | 8-9 (Visualization) |
-| GraphViz | Optional | Advanced graph layouts | `apt-get install graphviz` | 8-9 (Visualization) |
+| Plotly | Optional | Interactive visualizations | `uv sync --extra visualization` | 8-9 (Visualization) |
+| GraphViz | Optional | Advanced graph layouts | `apt-get install graphviz` (system) | 8-9 (Visualization) |
 
 ---
 
@@ -26,7 +26,11 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 
 **Installation**:
 ```bash
-pip install pymdp
+# Via UV optional group (recommended)
+uv sync --extra active-inference
+
+# Or individual package
+uv pip install inferactively-pymdp
 ```
 
 **Error if missing**:
@@ -60,7 +64,11 @@ ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.age
 
 **Installation**:
 ```bash
-pip install flax
+# Via UV optional group (recommended)
+uv sync --extra active-inference
+
+# Or individual package
+uv pip install flax
 ```
 
 **Error if missing**:
@@ -135,7 +143,11 @@ Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 
 **Installation**:
 ```bash
-pip install plotly
+# Via UV optional group (recommended)
+uv sync --extra visualization
+
+# Or individual package
+uv pip install plotly
 ```
 
 **Impact on pipeline**:
@@ -191,7 +203,7 @@ Download from: https://graphviz.org/download/
 
 ```bash
 # Core-only installation - no optional dependencies
-pip install -r requirements.txt
+uv sync
 ```
 
 **Result**:
@@ -208,8 +220,8 @@ pip install -r requirements.txt
 
 ```bash
 # Install core + common optional dependencies
-pip install -r requirements.txt
-pip install pymdp flax  # Optional frameworks
+uv sync
+uv pip install inferactively-pymdp flax  # Optional frameworks
 ```
 
 **Result**:
@@ -224,9 +236,8 @@ pip install pymdp flax  # Optional frameworks
 **Best for**: Comprehensive testing, research, all frameworks
 
 ```bash
-# Install everything
-pip install -r requirements.txt
-pip install pymdp flax plotly  # Python optional deps
+# Install everything using UV optional groups
+uv sync --extra active-inference --extra visualization
 
 # Then separately install Julia packages
 julia -e 'import Pkg; Pkg.add(["RxInfer"])'
@@ -253,7 +264,7 @@ sudo apt-get install graphviz
 
 ```bash
 # List installed Python packages
-pip list | grep -E "pymdp|flax|plotly"
+uv pip list | grep -E "pymdp|flax|plotly"
 
 # Check for system dependencies
 which julia  # Julia installed?
@@ -301,7 +312,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: PyMDP not installed
 
 **Solutions**:
-1. Install PyMDP: `pip install pymdp`
+1. Install PyMDP: `uv pip install inferactively-pymdp` or `uv sync --extra active-inference`
 2. Or use other frameworks: Execution continues with available frameworks
 3. Check installation: `python -c "import pymdp; print(pymdp.__version__)"`
 
@@ -310,7 +321,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: Flax not installed (JAX is installed but Flax is missing)
 
 **Solutions**:
-1. Install Flax: `pip install flax`
+1. Install Flax: `uv pip install flax` or `uv sync --extra active-inference`
 2. Or skip JAX simulations in Step 12 settings
 3. Check installation: `python -c "import flax; print(flax.__version__)"`
 
@@ -329,7 +340,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 
 **Solutions**:
 1. Install GraphViz (system): See installation steps above
-2. Install Plotly: `pip install plotly`
+2. Install Plotly: `uv pip install plotly` or `uv sync --extra visualization`
 3. Run Step 9 with verbose: `python src/9_advanced_viz.py --verbose`
 
 ---
@@ -339,8 +350,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 ### For Research & Publication
 ```bash
 # Install everything for maximum features
-pip install -r requirements.txt
-pip install pymdp flax plotly
+uv sync --extra active-inference --extra visualization
 # Plus Julia packages
 julia -e 'import Pkg; Pkg.add(["RxInfer"])'
 # Plus system dependencies
@@ -350,29 +360,27 @@ brew install graphviz  # or apt-get on Linux
 ### For Development/Testing
 ```bash
 # Install core + testing frameworks
-pip install -r requirements.txt
-pip install pymdp flax  # Most common frameworks
+uv sync --extra active-inference
 ```
 
 ### For Quick Prototyping
 ```bash
 # Install only core
-pip install -r requirements.txt
+uv sync
 # Add optional deps as needed
 ```
 
 ### For CI/CD Pipelines
 ```bash
 # Install core - skip optional for speed
-pip install -r requirements.txt
+uv sync
 # CI will test that pipeline works without optional deps
 ```
 
 ### For Production Deployment
 ```bash
 # Install known-working set
-pip install -r requirements.txt
-pip install pymdp flax  # Tested combination
+uv sync --extra active-inference
 # Skip rarely-used optional deps
 ```
 
@@ -421,7 +429,7 @@ A: DisCoPy or ActiveInference.jl - they're already installed. Add PyMDP + Flax f
 If you encounter issues with optional dependencies:
 
 1. Check version compatibility: Some frameworks require specific versions
-2. Try fresh installation: `pip install --upgrade --force-reinstall pymdp`
+2. Try fresh installation: `uv pip install --upgrade --force-reinstall inferactively-pymdp`
 3. Report issues with: Python version, OS, and error messages
 4. See [TROUBLESHOOTING.md](../troubleshooting/README.md) for more help
 

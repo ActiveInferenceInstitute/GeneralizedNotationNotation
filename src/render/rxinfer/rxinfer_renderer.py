@@ -129,6 +129,9 @@ class RxInferRenderer:
                 3  # Default to 3 for proper POMDP
             )
             
+            # Extract num_timesteps from model parameters (default 20 for backward compat)
+            num_timesteps = model_params.get('num_timesteps', 20)
+            
             # Validate parameters
             if not isinstance(num_states, int) or num_states < 1:
                 num_states = 3
@@ -136,6 +139,8 @@ class RxInferRenderer:
                 num_observations = 3
             if not isinstance(num_actions, int) or num_actions < 1:
                 num_actions = 3
+            if not isinstance(num_timesteps, int) or num_timesteps < 1:
+                num_timesteps = 20
             
             # Read the minimal working template (no deprecated APIs)
             template_path = Path(__file__).parent / 'minimal_template.jl'
@@ -153,6 +158,7 @@ class RxInferRenderer:
             code = code.replace('{num_states}', str(num_states))
             code = code.replace('{num_observations}', str(num_observations))
             code = code.replace('{num_actions}', str(num_actions))
+            code = code.replace('{num_timesteps}', str(num_timesteps))
             
             return code
         except Exception as e:
@@ -195,6 +201,9 @@ class RxInferRenderer:
             inferred_actions or
             3  # Default to 3 for proper POMDP simulation
         )
+        
+        # Extract num_timesteps from model parameters (default 20 for backward compat)
+        num_timesteps = model_params.get('num_timesteps', 20)
         A_data = initial_params.get('A', [])
         B_data = initial_params.get('B', [])
         C_data = initial_params.get('C', [])
@@ -229,7 +238,7 @@ Random.seed!(42)
 const NUM_STATES = {num_states}
 const NUM_OBSERVATIONS = {num_observations}
 const NUM_ACTIONS = {num_actions}
-const TIME_STEPS = 20
+const TIME_STEPS = {num_timesteps}
 
 # Parameter Matrices (from GNN)
 # We use raw Vector of Vectors and convert to Matrix/Tensor for RxInfer

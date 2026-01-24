@@ -42,8 +42,8 @@ s_f0 > o_m0
 rm -rf src/.venv
 python src/main.py --only-steps 2 --force-reinstall
 
-# Manual dependency check
-pip list | grep -E "(numpy|scipy|matplotlib)"
+# Manual dependency check (using UV)
+uv pip list | grep -E "(numpy|scipy|matplotlib)"
 
 # Python version check (requires 3.8+)
 python --version
@@ -75,11 +75,11 @@ python src/main.py --output-dir /tmp/gnn_output
 **Error**: `ModuleNotFoundError: No module named 'pymdp'`
 **Solutions**:
 ```bash
-# Install PyMDP
-pip install pymdp
+# Install PyMDP using UV (recommended)
+uv pip install inferactively-pymdp
 
-# Alternative: use conda
-conda install -c conda-forge pymdp
+# Or install via optional group
+uv sync --extra active-inference
 ```
 
 #### RxInfer.jl Setup Issues
@@ -97,7 +97,7 @@ julia -e 'using Pkg; Pkg.add("RxInfer")'
 #### JAX Compilation Errors
 **Error**: `XLA compilation failed`
 **Solutions**:
-- Update JAX: `pip install --upgrade jax jaxlib`
+- Update JAX: `uv pip install --upgrade jax jaxlib` (or `uv sync --extra active-inference`)
 - Use CPU-only mode: `export JAX_PLATFORM_NAME=cpu`
 - Simplify model complexity
 
@@ -264,9 +264,8 @@ python src/main.py --only-steps 2
 # Fix permissions
 find . -name "*.py" -exec chmod +x {} \;
 
-# Clean install
-pip uninstall -y $(pip list --format=freeze | cut -d= -f1)
-pip install -r requirements.txt
+# Clean install using UV
+uv sync --refresh
 
 # Minimal test
 python src/main.py --target-dir input/gnn_files/ --only-steps 1,4

@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-01-20
+**Last Updated**: 2026-01-23
 
 <div align="center">
 
@@ -8,7 +8,7 @@
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/downloads/)
 [![Active Inference](https://img.shields.io/badge/Active%20Inference-Research-brightgreen.svg)](https://activeinference.org/)
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
-[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-24-blue.svg)](#%EF%B8%8F-processing-pipeline)
+[![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-25-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
 [![Tests](https://img.shields.io/badge/Tests-777%20Passed-brightgreen.svg)](#-repository-health)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
@@ -90,7 +90,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 24-step pipeline + 28 agent modules
+├── 📁 src/                    # 25-step pipeline + 29 agent modules
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 23_report.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
@@ -122,7 +122,7 @@ The GNN pipeline is composed of **24 specialized modules**, each acting as an ag
 | **6** | **[Validate](src/validation/)** | Logical consistency and ontology compliance. | [🤖 Agent](src/validation/AGENTS.md) • [📝 Code](src/6_validation.py) |
 | **7** | **[Export](src/export/)** | Serialization to JSON, XML, GraphML, etc. | [🤖 Agent](src/export/AGENTS.md) • [📝 Code](src/7_export.py) |
 | **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
-| **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/advanced_visualization/AGENTS.md) |
+| **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/9_advanced_viz.py) |
 | **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
 | **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, JAX, etc. | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
 | **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
@@ -137,6 +137,7 @@ The GNN pipeline is composed of **24 specialized modules**, each acting as an ag
 | **21** | **[MCP](src/mcp/)** | Model Context Protocol server and tools. | [🤖 Agent](src/mcp/AGENTS.md) • [📝 Code](src/21_mcp.py) |
 | **22** | **[GUI](src/gui/)** | Interactive visual editors (Web & Local). | [🤖 Agent](src/gui/AGENTS.md) • [📝 Code](src/22_gui.py) |
 | **23** | **[Report](src/report/)** | Final comprehensive report assembly. | [🤖 Agent](src/report/AGENTS.md) • [📝 Code](src/23_report.py) |
+| **24** | **[Intelligent Analysis](src/intelligent_analysis/)** | AI-powered pipeline analysis and executive reports. | [🤖 Agent](src/intelligent_analysis/AGENTS.md) • [📝 Code](src/24_intelligent_analysis.py) |
 
 ---
 
@@ -420,12 +421,12 @@ graph TB
 <details>
 <summary><strong>📂 src/ Directory Structure</strong></summary>
 
-The `src/` directory contains the 24-step pipeline scripts (`0_template.py` → `23_report.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
+The `src/` directory contains the 25-step pipeline scripts (`0_template.py` → `24_intelligent_analysis.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
 
 ```
 src/
-├── 📜 Pipeline Scripts (0-23)
-│   ├── 0_template.py … 23_report.py   # Thin orchestrators (0–23)
+├── 📜 Pipeline Scripts (0-24)
+│   ├── 0_template.py … 24_intelligent_analysis.py   # Thin orchestrators (0–24)
 ├── 🧠 Core Modules
 │   ├── gnn/ render/ execute/ llm/ visualization/ export/ type_checker/ ontology/ mcp/
 │   ├── setup/ tests/ website/ audio/ analysis/ integration/ security/ research/ report/
@@ -652,23 +653,9 @@ graph TB
 
 #### 📋 Current Status
 
-**✅ Compliant Scripts (7/23):**
-- `src/0_template.py` → `src/template/`
-- `src/1_setup.py` → `src/setup/`
-- `src/6_validation.py` → `src/validation/`
-- `src/7_export.py` → `src/export/`
-- `src/8_visualization.py` → `src/visualization/`
-- `src/10_ontology.py` → `src/ontology/`
-- `src/11_render.py` → `src/render/`
+**✅ All Scripts Compliant (25/25):**
 
-**🔄 Pending Refactoring (16/23):**
-- `src/2_tests.py` → `src/tests/` (8 functions)
-- `src/3_gnn.py` → `src/gnn/` (1 function)
-- `src/4_model_registry.py` → `src/model_registry/` (3 functions)
-- `src/5_type_checker.py` → `src/type_checker/` (4 functions)
-- `src/9_advanced_viz.py` → `src/advanced_visualization/` (10 functions)
-- `src/12_execute.py` → `src/execute/` (14 functions)
-- And 10 more scripts...
+All 25 pipeline scripts now follow the thin orchestrator pattern with complete delegation to their respective modules. Each script handles argument parsing, logging setup, and output directory management, then delegates all domain logic to the module implementation.
 
 #### 📁 Example Structure
 
@@ -941,7 +928,7 @@ uv run pytest          # run tests inside uv-managed venv
 uv run python -m pytest
 ```
 
-**5️⃣ Explore Results**
+**6️⃣ Explore Results**
 
 Check the generated outputs in the `output/` directory. The static site is under the numbered website folder:
 
@@ -961,7 +948,7 @@ xdg-open output/20_website_output/website/index.html  # Linux
 ```bash
 # Check Python version
 python --version
-# If < 3.8, install Python 3.8+ from python.org
+# If < 3.11, install Python 3.11+ from python.org
 ```
 
 **📦 Dependency Issues**
@@ -1140,16 +1127,16 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 
 The GNN project maintains high standards for code quality, testing, and documentation.
 
-### 📊 Current Metrics (2026-01-20)
+### 📊 Current Metrics (2026-01-23)
 
 | Metric | Status | Details |
 |--------|--------|---------|
-| **Pipeline Success** | ✅ 100% | 24/24 steps passing |
+| **Pipeline Success** | ✅ 100% | 25/25 steps passing |
 | **Tests Passing** | ✅ 777/798 | 21 skipped (optional deps) |
 | **Execution Time** | ⏱️ ~9 min | Full test suite |
 | **Memory Usage** | 💾 36 MB peak | Efficient resource consumption |
 | **Module Coverage** | 📊 74-95% | Median ~82% test coverage |
-| **Documentation** | 📖 100% | All 28 modules have AGENTS.md + README.md + SPEC.md |
+| **Documentation** | 📖 100% | All 29 modules have AGENTS.md + README.md + SPEC.md |
 
 ### 🧪 Testing Infrastructure
 

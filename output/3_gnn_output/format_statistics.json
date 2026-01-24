@@ -2,111 +2,111 @@
   "markdown": {
     "successful": 1,
     "failed": 0,
-    "total_size": 1748
+    "total_size": 1821
   },
   "scala": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5086
+    "total_size": 5160
   },
   "lean": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5455
+    "total_size": 5529
   },
   "coq": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5215
+    "total_size": 5289
   },
   "python": {
     "successful": 1,
     "failed": 0,
-    "total_size": 9060
+    "total_size": 9208
   },
   "bnf": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5464
+    "total_size": 5538
   },
   "ebnf": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5464
+    "total_size": 5538
   },
   "isabelle": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5251
+    "total_size": 5325
   },
   "maxima": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5737
+    "total_size": 5884
   },
   "xml": {
     "successful": 1,
     "failed": 0,
-    "total_size": 9534
+    "total_size": 9681
   },
   "json": {
     "successful": 1,
     "failed": 0,
-    "total_size": 9402
+    "total_size": 9476
   },
   "protobuf": {
     "successful": 1,
     "failed": 0,
-    "total_size": 7204
+    "total_size": 7351
   },
   "yaml": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5725
+    "total_size": 5805
   },
   "xsd": {
     "successful": 1,
     "failed": 0,
-    "total_size": 6191
+    "total_size": 6265
   },
   "asn1": {
     "successful": 1,
     "failed": 0,
-    "total_size": 8087
+    "total_size": 8161
   },
   "pkl": {
     "successful": 1,
     "failed": 0,
-    "total_size": 11913
+    "total_size": 12133
   },
   "alloy": {
     "successful": 1,
     "failed": 0,
-    "total_size": 8176
+    "total_size": 8323
   },
   "z_notation": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5780
+    "total_size": 5854
   },
   "tla_plus": {
     "successful": 1,
     "failed": 0,
-    "total_size": 4709
+    "total_size": 4783
   },
   "agda": {
     "successful": 1,
     "failed": 0,
-    "total_size": 4716
+    "total_size": 4790
   },
   "haskell": {
     "successful": 1,
     "failed": 0,
-    "total_size": 5500
+    "total_size": 5574
   },
   "pickle": {
     "successful": 1,
     "failed": 0,
-    "total_size": 3876
+    "total_size": 3972
   }
 }

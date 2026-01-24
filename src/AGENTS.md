@@ -2,7 +2,7 @@
 
 ## Overview
 
-The GNN (Generalized Notation Notation) Pipeline is a comprehensive 24-step system for processing Active Inference generative models. Each module follows the **thin orchestrator pattern** where numbered scripts delegate to modular implementations.
+The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step system for processing Active Inference generative models. Each module follows the **thin orchestrator pattern** where numbered scripts delegate to modular implementations.
 
 ## 📚 GNN Documentation
 
@@ -22,34 +22,35 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 24 doc
 ## Module Registry
 
 ### Core Processing Modules (Steps 0-9)
-1. **[template/](template/AGENTS.md)** - Pipeline template and initialization
-2. **[setup/](setup/AGENTS.md)** - Environment setup and dependency management
-3. **[tests/](tests/AGENTS.md)** - Comprehensive test suite execution
-4. **[gnn/](gnn/AGENTS.md)** - GNN file discovery, parsing, and multi-format serialization
-5. **[model_registry/](model_registry/AGENTS.md)** - Model versioning and registry management
-6. **[type_checker/](type_checker/AGENTS.md)** - Type checking and validation
-7. **[validation/](validation/AGENTS.md)** - Advanced validation and consistency checking
-8. **[export/](export/AGENTS.md)** - Multi-format export generation
-9. **[visualization/](visualization/AGENTS.md)** - Graph and matrix visualization
-10. **[advanced_visualization/](advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
+- **Step 0**: **[template/](template/AGENTS.md)** - Pipeline template and initialization
+- **Step 1**: **[setup/](setup/AGENTS.md)** - Environment setup and dependency management
+- **Step 2**: **[tests/](tests/AGENTS.md)** - Comprehensive test suite execution
+- **Step 3**: **[gnn/](gnn/AGENTS.md)** - GNN file discovery, parsing, and multi-format serialization
+- **Step 4**: **[model_registry/](model_registry/AGENTS.md)** - Model versioning and registry management
+- **Step 5**: **[type_checker/](type_checker/AGENTS.md)** - Type checking and validation
+- **Step 6**: **[validation/](validation/AGENTS.md)** - Advanced validation and consistency checking
+- **Step 7**: **[export/](export/AGENTS.md)** - Multi-format export generation
+- **Step 8**: **[visualization/](visualization/AGENTS.md)** - Graph and matrix visualization
+- **Step 9**: **[advanced_visualization/](advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
 
 ### Simulation & Analysis Modules (Steps 10-16)
-11. **[ontology/](ontology/AGENTS.md)** - Active Inference ontology processing
-12. **[render/](render/AGENTS.md)** - Code generation for simulation frameworks
-13. **[execute/](execute/AGENTS.md)** - Execute rendered simulation scripts
-14. **[llm/](llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
-15. **[ml_integration/](ml_integration/AGENTS.md)** - Machine learning integration
-16. **[audio/](audio/AGENTS.md)** - Audio generation and sonification
-17. **[analysis/](analysis/AGENTS.md)** - Advanced statistical analysis
+- **Step 10**: **[ontology/](ontology/AGENTS.md)** - Active Inference ontology processing
+- **Step 11**: **[render/](render/AGENTS.md)** - Code generation for simulation frameworks
+- **Step 12**: **[execute/](execute/AGENTS.md)** - Execute rendered simulation scripts
+- **Step 13**: **[llm/](llm/AGENTS.md)** - LLM-enhanced analysis and interpretation
+- **Step 14**: **[ml_integration/](ml_integration/AGENTS.md)** - Machine learning integration
+- **Step 15**: **[audio/](audio/AGENTS.md)** - Audio generation and sonification
+- **Step 16**: **[analysis/](analysis/AGENTS.md)** - Advanced statistical analysis
 
-### Integration & Output Modules (Steps 17-23)
-18. **[integration/](integration/AGENTS.md)** - System integration and coordination
-19. **[security/](security/AGENTS.md)** - Security validation and access control
-20. **[research/](research/AGENTS.md)** - Research tools and experimental features
-21. **[website/](website/AGENTS.md)** - Static HTML website generation
-22. **[mcp/](mcp/AGENTS.md)** - Model Context Protocol processing
-23. **[gui/](gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
-24. **[report/](report/AGENTS.md)** - Comprehensive analysis report generation
+### Integration & Output Modules (Steps 17-24)
+- **Step 17**: **[integration/](integration/AGENTS.md)** - System integration and coordination
+- **Step 18**: **[security/](security/AGENTS.md)** - Security validation and access control
+- **Step 19**: **[research/](research/AGENTS.md)** - Research tools and experimental features
+- **Step 20**: **[website/](website/AGENTS.md)** - Static HTML website generation
+- **Step 21**: **[mcp/](mcp/AGENTS.md)** - Model Context Protocol processing
+- **Step 22**: **[gui/](gui/AGENTS.md)** - Interactive GUI for model construction (includes gui_1, gui_2, gui_3, oxdraw)
+- **Step 23**: **[report/](report/AGENTS.md)** - Comprehensive analysis report generation
+- **Step 24**: **[intelligent_analysis/](intelligent_analysis/AGENTS.md)** - AI-powered pipeline analysis and executive reports
 
 ### Infrastructure Modules
 - **[utils/](utils/AGENTS.md)** - Shared utilities and helper functions
@@ -116,8 +117,9 @@ flowchart TD
     Step20 --> Step21[Step 21: MCP]
     Step21 --> Step22[Step 22: GUI]
     Step22 --> Step23[Step 23: Report]
-    
-    Step23 --> Output[output/ Directory]
+    Step23 --> Step24[Step 24: Intelligent Analysis]
+
+    Step24 --> Output[output/ Directory]
     Output --> Summary[pipeline_execution_summary.json]
 ```
 
@@ -148,12 +150,12 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-01-20)
-- **Total Steps**: 24 (all steps 0-23)
+### Latest Status (2026-01-23)
+- **Total Steps**: 25 (all steps 0-24)
 - **Execution Time**: ~90s (pipeline) / ~9min (full test suite)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (24/24 steps successful)
-- **Test Suite Status**: ✅ 777/798 tests passed (21 skipped - optional deps)
+- **Test Suite Status**: ✅ 777 tests passed (21 skipped - optional deps)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -166,7 +168,7 @@ graph TD
 - **Visualization Refactoring**: Removed visualization code from execute step (12), consolidated in analysis step (16)
   - RxInfer.jl: Removed Plots.jl dependencies, exports data only
   - PyMDP: Removed PyMDPVisualizer from execute, analysis step handles visualization
-- **Test Fixes**: Fixed LLM and pipeline test path expectations (777 tests now pass)
+- **Test Fixes**: Fixed LLM and pipeline test path expectations (777 tests passing)
 - **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
 - **Observability**: Added JSON logging, log rotation, and performance metrics
 - **Analysis**: Cross-simulation aggregation and statistical summaries
@@ -175,9 +177,9 @@ graph TD
 
 ---
 
-## 24-Step Pipeline Structure (CURRENT)
+## 25-Step Pipeline Structure (CURRENT)
 
-The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
+The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 
 0. **0_template.py** → `src/template/` - Pipeline template and initialization
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
@@ -203,6 +205,7 @@ The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
 21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
 22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
 23. **23_report.py** → `src/report/` - Comprehensive analysis report generation
+24. **24_intelligent_analysis.py** → `src/intelligent_analysis/` - AI-powered pipeline analysis and executive reports
 
 ---
 
@@ -234,6 +237,7 @@ The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
 | mcp | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 5 |
 | gui | ✅ Complete | ✅ Complete | ✅ Ready | 68% | 4 |
 | report | ✅ Complete | ✅ Complete | ✅ Ready | 81% | 3 |
+| intelligent_analysis | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 3 |
 | utils | ✅ Complete | ✅ Complete | ✅ Ready | 88% | N/A |
 | pipeline | ✅ Complete | ✅ Complete | ✅ Ready | 90% | N/A |
 | sapf | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 2 |
@@ -328,10 +332,10 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-01-20
-**Pipeline Version**: 1.1.2
-**Total Modules**: 28
-**Total Steps**: 24 (0-23)
-**Test Status**: ✅ 777/798 tests passed
+**Last Updated**: 2026-01-23
+**Pipeline Version**: 1.1.3
+**Total Modules**: 29
+**Total Steps**: 25 (0-24)
+**Test Status**: ✅ 777 tests passed (21 skipped)
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

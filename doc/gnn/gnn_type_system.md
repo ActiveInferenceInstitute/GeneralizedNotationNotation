@@ -181,7 +181,7 @@ Type checking integrates throughout the pipeline:
 
 ## See Also
 
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[GNN Overview](gnn_overview.md)**: Core GNN concepts
 - **[GNN Implementation Guide](gnn_implementation.md)**: Implementation guidance
 

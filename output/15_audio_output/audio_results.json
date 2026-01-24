@@ -1,46 +1,74 @@
 {
-  "timestamp": "2026-01-21T12:57:36.075681",
+  "timestamp": "2026-01-24T15:02:13.283577",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "audio_files_generated": [
     {
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/actinf_pomdp_agent_tonal.wav",
-        "rhythmic": "output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
-        "ambient": "output/15_audio_output/actinf_pomdp_agent_ambient.wav"
+        "tonal": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/actinf_pomdp_agent_tonal.wav",
+        "rhythmic": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
+        "ambient": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/actinf_pomdp_agent_ambient.wav"
       },
-      "variables_count": 72,
+      "variables_count": 73,
       "connections_count": 0,
-      "generation_timestamp": "2026-01-21T12:57:36.255127"
+      "generation_timestamp": "2026-01-24T15:02:13.772320"
     }
   ],
   "sonification_results": [
     {
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
-      "sonification_file": "output/15_audio_output/actinf_pomdp_agent_sonification.wav",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
+      "sonification_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/15_audio_output/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-01-21T12:57:36.262319"
+      "generation_timestamp": "2026-01-24T15:02:13.782111"
     }
   ],
   "audio_analysis": [
     {
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "audio_characteristics": {
         "tonal": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.039642333984375,
+          "rms_amplitude": 0.008275642484494536
         },
         "rhythmic": {
-          "error": "No module named 'soundfile'"
+          "duration": 5.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 0.0,
+          "rms_amplitude": 0.0
         },
         "ambient": {
-          "error": "No module named 'soundfile'"
+          "duration": 10.0,
+          "sample_rate": 44100,
+          "channels": 1,
+          "max_amplitude": 1.0,
+          "rms_amplitude": 0.12358291570867773
         }
       },
-      "spectral_analysis": {},
+      "spectral_analysis": {
+        "tonal": {
+          "dominant_frequency": 1760.0,
+          "spectral_centroid": 7109.10436989035,
+          "spectral_bandwidth": 8473.162127439247
+        },
+        "rhythmic": {
+          "dominant_frequency": 0.0,
+          "spectral_centroid": 0.0,
+          "spectral_bandwidth": 0.0
+        },
+        "ambient": {
+          "dominant_frequency": 55.0,
+          "spectral_centroid": 2595.0459214691,
+          "spectral_bandwidth": 3847.827590147729
+        }
+      },
       "temporal_analysis": {}
     }
   ]

@@ -8,7 +8,7 @@ from pathlib import Path
 from typing import List
 
 # Package-level metadata expected by tests
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 FEATURES = {
     "pipeline_orchestration": True,
     "mcp_integration": True,

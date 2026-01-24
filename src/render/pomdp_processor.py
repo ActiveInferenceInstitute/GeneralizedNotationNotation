@@ -17,6 +17,48 @@ if TYPE_CHECKING:
 
 logger = logging.getLogger(__name__)
 
+
+def count_code_metrics(file_path: Path) -> Dict[str, int]:
+    """
+    Calculate code metrics for a generated file.
+    
+    Args:
+        file_path: Path to the code file
+        
+    Returns:
+        Dictionary with lines_of_code, functions, classes counts
+    """
+    try:
+        content = file_path.read_text(encoding='utf-8')
+        lines = content.split('\n')
+        
+        # Count non-empty, non-comment lines
+        loc = sum(1 for line in lines if line.strip() and not line.strip().startswith('#'))
+        
+        # Count functions (Python: def, Julia: function)
+        functions = sum(1 for line in lines if 
+                       line.strip().startswith('def ') or 
+                       line.strip().startswith('function ') or
+                       '@jit' in line)  # JAX decorated functions
+        
+        # Count classes (Python: class)
+        classes = sum(1 for line in lines if line.strip().startswith('class '))
+        
+        return {
+            'lines_of_code': loc,
+            'total_lines': len(lines),
+            'functions': functions,
+            'classes': classes
+        }
+    except Exception as e:
+        logger.warning(f"Could not count code metrics for {file_path}: {e}")
+        return {
+            'lines_of_code': 0,
+            'total_lines': 0,
+            'functions': 0,
+            'classes': 0
+        }
+
 class POMDPRenderProcessor:
     """
     Processes POMDP state spaces and injects them into framework-specific renderers.
@@ -230,12 +272,21 @@ class POMDPRenderProcessor:
                     framework, pomdp_space, framework_output_dir, renderer_result
                 )
                 
+                # Calculate code metrics for generated files
+                code_metrics = {}
+                for output_file in renderer_result.get('artifacts', []):
+                    file_path = Path(output_file)
+                    if file_path.exists():
+                        code_metrics = count_code_metrics(file_path)
+                        break  # Use first file's metrics
+                
                 return {
                     'success': True,
                     'message': renderer_result['message'],
                     'output_files': renderer_result.get('artifacts', []),
                     'output_directory': str(framework_output_dir),
-                    'warnings': validation_result.get('warnings', [])
+                    'warnings': validation_result.get('warnings', []),
+                    'code_metrics': code_metrics
                 }
             else:
                 return {
@@ -318,7 +369,8 @@ class POMDPRenderProcessor:
             'model_parameters': {
                 'num_hidden_states': pomdp_space.num_states,
                 'num_obs': pomdp_space.num_observations,
-                'num_actions': pomdp_space.num_actions
+                'num_actions': pomdp_space.num_actions,
+                **(({'num_timesteps': pomdp_space.num_timesteps} if hasattr(pomdp_space, 'num_timesteps') and pomdp_space.num_timesteps else {}))
             },
             'initialparameterization': {},
             'variables': [],

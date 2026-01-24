@@ -30,28 +30,28 @@ logger = logging.getLogger(__name__)
 class OllamaProvider(BaseLLMProvider):
     """Ollama implementation of the LLM provider interface."""
 
-    # Include quality local models; smaller ones for fallback
+    # Include quality local models; smaller/faster ones prioritized for reliability
     AVAILABLE_MODELS = [
-        "ministral-3:3b",
-        "mistral:7b",
-        "gemma2:2b",
-        "llama3.1:8b",
-        "qwen2:7b",
         "smollm2:135m-instruct-q4_K_S",
         "smollm2:360m",
         "tinyllama:1.1b",
         "smollm2:1.7b",
+        "gemma2:2b",
+        "ministral-3:3b",
+        "mistral:7b",
+        "llama3.1:8b",
+        "qwen2:7b",
         "llama3.1:70b",
     ]
 
-    DEFAULT_MODEL = "ministral-3:3b"
+    DEFAULT_MODEL = "smollm2:135m-instruct-q4_K_S"
 
     def __init__(self, **kwargs):
         super().__init__(api_key=None, **kwargs)
         self.base_url = kwargs.get("base_url")  # optional custom host
         self.default_model_override = kwargs.get("default_model")
         self.default_max_tokens = kwargs.get("default_max_tokens", 256)
-        self.default_timeout = kwargs.get("timeout", 120.0)  # 120s for complex prompts
+        self.default_timeout = kwargs.get("timeout", 30.0)  # 30s max to avoid hanging
         self._ollama = None
         self._use_cli = False
 
@@ -147,9 +147,10 @@ class OllamaProvider(BaseLLMProvider):
                         )
                         if completed.returncode == 0 and completed.stdout.strip():
                             return json.loads(completed.stdout)
-                    except Exception:
-                        pass
+                    except Exception as json_error:
+                        logger.debug(f"JSON mode failed: {json_error}")
                     # Fallback to `ollama run`
+                    logger.debug(f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s")
                     completed = subprocess.run(
                         ["ollama", "run", model, prompt],
                         capture_output=True,

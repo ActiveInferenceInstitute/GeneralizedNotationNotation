@@ -402,9 +402,9 @@ python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using mode
 
 **Solution**:
 ```bash
-# Reinstall with all components
-pip uninstall jax jaxlib flax -y
-pip install jax[cpu] flax optax
+# Reinstall with all components using UV
+uv pip uninstall jax jaxlib flax -y
+uv pip install jax[cpu] flax optax
 
 # Verify
 python3 -c "import jax; print(jax.devices())"

@@ -26,8 +26,8 @@
 
 | Component | Path | Description |
 |-----------|------|-------------|
-| **PyMDP Analyzer** | [`src/analysis/pymdp_analyzer.py`](../../src/analysis/pymdp_analyzer.py) | Post-simulation analysis |
-| **PyMDP Visualizer** | [`src/analysis/pymdp_visualizer.py`](../../src/analysis/pymdp_visualizer.py) | Visualization generation |
+| **PyMDP Analyzer** | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) | Post-simulation analysis |
+| **PyMDP Visualizer** | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) | Visualization generation |
 | **Post-Simulation** | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) | Comprehensive analysis |
 
 ---
@@ -51,7 +51,9 @@
 ### Installation
 
 ```bash
-pip install pymdp
+uv pip install inferactively-pymdp
+# Or use UV optional group:
+uv sync --extra active-inference
 ```
 
 ### Basic Usage

@@ -101,7 +101,7 @@ cp doc/templates/basic_gnn_template.md my_model.md
 python src/main.py --template basic --output my_new_model.md
 ```
 
-**Cross-References**: [Pipeline Guide](../pipeline/README.md) | [Configuration](../configuration/README.md)
+**Cross-References**: [Pipeline Guide](../gnn/gnn_tools.md) | [Configuration](../configuration/README.md)
 
 ### Method 3: Interactive Creation
 ```bash
@@ -203,7 +203,7 @@ Templates should pass basic syntax validation and resource estimation.
 
 **Cross-References**: 
 - *Type Checker*: [Validation Tools](../gnn/gnn_tools.md#validation-tools)
-- *Pipeline*: [Step 4 Type Checker](../pipeline/README.md#step-4-gnn-type-checker)
+- *Pipeline*: [Step 4 Type Checker](../gnn/gnn_tools.md#step-4-gnn-type-checker)
 - *Troubleshooting*: [Common Errors](../troubleshooting/common_errors.md)
 
 ## Contributing Templates
@@ -308,7 +308,7 @@ Each template includes metadata for automatic categorization:
 
 ### Development & Support
 - **[API Documentation](../api/README.md)** - Programming interfaces
-- **[Pipeline Guide](../pipeline/README.md)** - Processing workflow
+- **[Pipeline Guide](../gnn/gnn_tools.md)** - Processing workflow
 - **[Troubleshooting](../troubleshooting/README.md)** - Problem solving
 - **[Contributing](../../CONTRIBUTING.md)** - Community contributions
 

@@ -4,6 +4,16 @@ Analysis module for GNN Processing Pipeline.
 This module provides comprehensive analysis and statistical processing for GNN models.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "statistical_analysis": True,
+    "framework_comparison": True,
+    "post_simulation_analysis": True,
+    "belief_visualization": True,
+    "cross_framework_metrics": True,
+    "mcp_integration": True
+}
+
 from .processor import process_analysis, convert_numpy_types
 from .analyzer import (
     perform_statistical_analysis,
@@ -42,7 +52,14 @@ from .post_simulation import (
     extract_jax_data,
     extract_discopy_data,
     analyze_execution_results,
-    # New comprehensive visualization functions
+    # Active Inference-specific statistical methods
+    compute_shannon_entropy,
+    compute_kl_divergence,
+    compute_variational_free_energy,
+    compute_expected_free_energy,
+    compute_information_gain,
+    analyze_active_inference_metrics,
+    # Comprehensive visualization functions
     visualize_all_framework_outputs,
     generate_belief_heatmaps,
     generate_action_analysis,
@@ -105,6 +122,8 @@ def check_analysis_tools():
 
 
 __all__ = [
+    '__version__',
+    'FEATURES',
     'process_analysis',
     'convert_numpy_types',
     'perform_statistical_analysis',
@@ -142,6 +161,13 @@ __all__ = [
     'extract_jax_data',
     'extract_discopy_data',
     'analyze_execution_results',
+    # Active Inference-specific statistical methods
+    'compute_shannon_entropy',
+    'compute_kl_divergence',
+    'compute_variational_free_energy',
+    'compute_expected_free_energy',
+    'compute_information_gain',
+    'analyze_active_inference_metrics',
     # Comprehensive visualization functions
     'visualize_all_framework_outputs',
     'generate_belief_heatmaps',

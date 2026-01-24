@@ -1,0 +1,18 @@
+{
+  "status": "completed",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/14_ml_integration_output",
+  "models_trained": [
+    {
+      "source": "actinf_pomdp_agent.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available or no dimensions found",
+      "dimensions": []
+    }
+  ],
+  "framework_status": {
+    "sklearn": "available"
+  }
+}

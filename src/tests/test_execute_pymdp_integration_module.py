@@ -121,64 +121,6 @@ class TestGNNPyMDPIntegration:
         success, message = renderer.render_file(gnn_file, output_path)
         
         assert success, f"Rendering failed: {message}"
-        assert output_path.exists(), "Rendered file not created"
-
-
-# Standalone test functions for backward compatibility
-def test_gnn_parsing():
-    """Test GNN file parsing and parameter extraction."""
-    gnn_file = project_root / "input" / "gnn_files" / "actinf_pomdp_agent.md"
-    
-    if not gnn_file.exists():
-        pytest.skip(f"GNN file not found: {gnn_file}")
-    
-    parser = MarkdownGNNParser()
-    parsed_data = parser.parse_file(gnn_file)
-    
-    assert parsed_data is not None
-
-
-def test_pymdp_renderer():
-    """Test PyMDP renderer exists and can be instantiated."""
-    renderer = PyMDPRenderer()
-    
-    # Verify renderer has the expected methods
-    assert hasattr(renderer, 'render_file')
-    assert callable(renderer.render_file)
-
-
-def test_pymdp_simulation():
-    """Test PyMDP simulation with GNN-derived parameters."""
-    config = {
-        'num_states': 3,
-        'num_observations': 3,
-        'num_actions': 3,
-        'num_timesteps': 5,
-    }
-    
-    simulation = PyMDPSimulation(config)
-    assert simulation is not None
-    
-    # Create model first
-    simulation.create_model()
-    # Use correct method name
-    results = simulation.run_simulation()
-    assert results is not None
-
-
-def test_full_integration(tmp_path):
-    """Test full GNN-to-PyMDP integration pipeline."""
-    gnn_file = project_root / "input" / "gnn_files" / "actinf_pomdp_agent.md"
-    
-    if not gnn_file.exists():
-        pytest.skip(f"GNN file not found: {gnn_file}")
-    
-    # Step 1: Render GNN file to PyMDP code
-    renderer = PyMDPRenderer()
-    output_path = tmp_path / "rendered_pymdp.py"
-    success, message = renderer.render_file(gnn_file, output_path)
-    
-    assert success, f"Rendering failed: {message}"
 
 
 if __name__ == "__main__":

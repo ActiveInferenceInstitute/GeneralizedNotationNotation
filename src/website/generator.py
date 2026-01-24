@@ -30,7 +30,7 @@ class WebsiteGenerator:
             }
             
             # Extract data
-            output_dir = Path(website_data.get("output_dir", "output/website"))
+            output_dir = Path(website_data.get("output_dir", "output/27_website_static_output"))
             input_dir = Path(website_data.get("input_dir", "output"))
             pipeline_root: Path = Path(website_data.get("pipeline_output_root", input_dir))
             

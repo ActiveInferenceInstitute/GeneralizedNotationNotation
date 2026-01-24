@@ -271,67 +271,30 @@ class TestErrorHandlingIntegration:
 
 
 def test_error_recovery_documentation():
-    """Test that error recovery framework is properly documented."""
-    
-    documentation = """
-    ERROR RECOVERY FRAMEWORK
-    =======================
-    
-    The error recovery framework provides:
-    
-    1. Structured Error Context
-    - ErrorContext: Encapsulates error information with severity
-    - ErrorSeverity: Severity levels (info, warning, error, critical)
-    - Error codes: Standardized error codes for categorization
-    
-    2. Error Recovery Manager
-    - Centralized error handling
-    - Recovery suggestions for each error category
-    - Logging integration with severity levels
-    
-    3. Error Code Registry
-    - Import errors (E001-E0XX)
-    - File errors (E101-E1XX)
-    - Resource errors (E201-E2XX)
-    - Validation errors (E301-E3XX)
-    - Execution errors (E401-E4XX)
-    
-    4. Error Message Formatting
-    - Consistent formatting across all modules
-    - Recovery suggestions included in messages
-    - Details and context preserved
-    
-    5. Integration Points
-    - All modules should use format_and_log_error()
-    - Recovery suggestions should be context-specific
-    - Logging level should match error severity
-    
-    Usage Example:
-    ```python
+    """Test that error recovery framework components exist and have docstrings."""
     from utils.error_recovery import (
-        format_and_log_error, ErrorSeverity, ErrorCodeRegistry
+        ErrorContext, 
+        ErrorSeverity, 
+        ErrorRecoveryManager, 
+        format_and_log_error, 
+        ErrorCodeRegistry
     )
-    
-    try:
-        result = parse_gnn_file(path)
-    except FileNotFoundError:
-        context = format_and_log_error(
-            error_code=ErrorCodeRegistry.FILE_NOT_FOUND,
-            operation="GNN Parsing",
-            message=f"GNN file not found: {path}",
-            severity=ErrorSeverity.ERROR,
-            details={"path": str(path)},
-            suggestions=[
-                "Verify file path is correct",
-                "Check file exists in input directory"
-            ]
-        )
-        return None
-    ```
-    """
-    
-    assert "Structured Error Context" in documentation
-    assert "Recovery Manager" in documentation
-    assert "Error Code Registry" in documentation
-    assert "Integration" in documentation
+
+    # Verify framework classes exist and are documented
+    assert ErrorContext.__doc__ is not None, "ErrorContext should have docstring"
+    assert ErrorSeverity.__doc__ is not None, "ErrorSeverity should have docstring"
+    assert ErrorRecoveryManager.__doc__ is not None, "ErrorRecoveryManager should have docstring"
+
+    # Verify key functions exist and are documented
+    assert format_and_log_error.__doc__ is not None, "format_and_log_error should have docstring"
+
+    # Verify error code registry has expected categories
+    registry = ErrorCodeRegistry
+    expected_attrs = ['IMPORT_NOT_FOUND', 'FILE_NOT_FOUND', 'RESOURCE_MEMORY_EXCEEDED', 'VALIDATION_TYPE_MISMATCH']
+    found_attrs = [attr for attr in expected_attrs if hasattr(registry, attr)]
+    assert len(found_attrs) >= 2, f"ErrorCodeRegistry should have error codes, found: {found_attrs}"
+
+    # Verify severity levels are defined
+    severities = [s for s in dir(ErrorSeverity) if not s.startswith('_')]
+    assert len(severities) >= 3, f"ErrorSeverity should have multiple levels: {severities}"
 

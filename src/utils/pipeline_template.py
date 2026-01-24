@@ -11,7 +11,10 @@ import argparse
 import logging
 from pathlib import Path
 from typing import Optional, Any, Callable, List, Dict
-from pipeline.config import get_output_dir_for_script
+try:
+    from src.pipeline.config import get_output_dir_for_script
+except ImportError:
+    from pipeline.config import get_output_dir_for_script
 
 # Standard import pattern for all pipeline modules
 try:

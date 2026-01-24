@@ -96,7 +96,19 @@ def process_gnn_directory_lightweight(target_dir: Path, output_dir: Path = None,
         }
 
 def _extract_sections_lightweight(content: str) -> List[str]:
-    """Extract sections from GNN content using lightweight parsing."""
+    """
+    Extract section headers from GNN content using lightweight regex parsing.
+
+    Searches for markdown-style headers (lines starting with #) and extracts
+    the header text. This provides a quick overview of document structure
+    without full markdown parsing.
+
+    Args:
+        content: Raw text content of the GNN file.
+
+    Returns:
+        List of section header strings found in the content.
+    """
     sections = []
     
     # Look for markdown headers
@@ -110,7 +122,20 @@ def _extract_sections_lightweight(content: str) -> List[str]:
     return sections
 
 def _extract_variables_lightweight(content: str) -> List[str]:
-    """Extract variables from GNN content using lightweight parsing."""
+    """
+    Extract variable names from GNN content using lightweight regex parsing.
+
+    Searches for common variable definition patterns including:
+    - Type annotations (name: type)
+    - Assignments (name = value)
+    - Array/matrix definitions (name[dimensions])
+
+    Args:
+        content: Raw text content of the GNN file.
+
+    Returns:
+        List of unique variable names found in the content.
+    """
     variables = []
     
     # Look for variable definitions
@@ -294,14 +319,24 @@ def validate_gnn_structure(file_path: Union[str, Path]) -> Dict[str, Any]:
 def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Path, None] = None, recursive: bool = True, parallel: bool = False) -> Dict[str, Any]:
     """
     Process all GNN files in a directory.
-    
+
+    Discovers GNN files in the specified directory, parses each file,
+    and returns aggregated results. Optionally saves results to an output
+    directory as JSON.
+
     Args:
-        directory: Directory to process
-        recursive: Whether to process subdirectories
-        parallel: Whether to use parallel processing (not implemented in lightweight version)
-        
+        directory: Directory containing GNN files to process.
+        output_dir: Optional directory to save processing results as JSON.
+            If provided, creates 'gnn_processing_results.json' in this location.
+        recursive: Whether to search subdirectories for GNN files.
+        parallel: Whether to use parallel processing. Currently not implemented
+            in the lightweight version; reserved for future optimization.
+
     Returns:
-        Dictionary with processing results
+        Dictionary containing:
+            - status: "SUCCESS" if processing completed
+            - files: List of discovered file paths
+            - processed_files: List of successfully processed file paths
     """
     # Use lightweight processing and wrap into status dict expected by tests
     results_map = process_gnn_directory_lightweight(directory, recursive=recursive)
@@ -379,8 +414,26 @@ def generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[s
     
     return report
 
-def get_module_info():
-    """Get information about the GNN module."""
+def get_module_info() -> Dict[str, Any]:
+    """
+    Get metadata and capability information about the GNN module.
+
+    Returns a dictionary describing the module's version, features,
+    and available functionality. Used for introspection, documentation,
+    and capability discovery by other pipeline components.
+
+    Returns:
+        Dictionary containing:
+            - name: Module display name
+            - version: Semantic version string
+            - description: Brief module description
+            - features: List of feature names
+            - available_validators: List of validator types
+            - available_parsers: List of parser types
+            - schema_formats: List of supported schema formats
+            - supported_formats: List of input file formats
+            - capabilities: Dict of boolean capability flags
+    """
     return {
         "name": "GNN Module",
         "version": "1.0.0",

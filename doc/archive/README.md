@@ -30,7 +30,7 @@ This directory contains archived documentation, historical materials, and exampl
 - **[Archive Examples](../archive/)**: Historical example models
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -125,10 +125,10 @@ When using archive materials:
 ### Current Resources
 - **[Templates](../templates/README.md)**: Current model templates
 - **[Framework Integration](../gnn/framework_integration_guide.md)**: Current framework guides
-- **[Pipeline Documentation](../pipeline/README.md)**: Current pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Current pipeline guide
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

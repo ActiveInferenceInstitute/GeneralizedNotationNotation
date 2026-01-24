@@ -59,13 +59,6 @@ import subprocess
 import sys
 import time
 import json
-# psutil is optional; tests should not fail to import if it's missing
-try:
-    import psutil as _psutil  # type: ignore
-    PSUTIL_AVAILABLE = True
-except Exception:
-    _psutil = None  # type: ignore
-    PSUTIL_AVAILABLE = False
 import gc
 import os
 from pathlib import Path
@@ -78,6 +71,26 @@ import re
 
 # Import test categories from dedicated module
 from .categories import MODULAR_TEST_CATEGORIES
+
+# Import from infrastructure submodule (refactored components)
+from .infrastructure import (
+    TestExecutionConfig,
+    TestExecutionResult,
+    ResourceMonitor,
+    TestRunner,
+    PSUTIL_AVAILABLE,
+    # Report generators
+    _generate_markdown_report,
+    _generate_fallback_report,
+    _generate_timeout_report,
+    _generate_error_report,
+    # Utilities
+    check_test_dependencies,
+    build_pytest_command,
+    _extract_collection_errors,
+    _parse_test_statistics,
+    _parse_coverage_statistics,
+)
 
 # Import test utilities
 from utils.test_utils import TEST_DIR, PROJECT_ROOT
@@ -92,112 +105,11 @@ from utils.pipeline_template import (
 # Calculate project root (don't import from conftest as it's a pytest fixture)
 project_root = Path(__file__).parent.parent.parent
 
-@dataclass
-class TestExecutionConfig:
-    """Configuration for test execution."""
-    timeout_seconds: int = 3600  # Increased to 60 minutes for comprehensive test suite
-    max_failures: int = 10
-    parallel: bool = True
-    coverage: bool = True
-    verbose: bool = False
-    markers: List[str] = None
-    memory_limit_mb: int = 2048
-    cpu_limit_percent: int = 80
-
-@dataclass
-class TestExecutionResult:
-    """Results from test execution."""
-    success: bool
-    tests_run: int
-    tests_passed: int
-    tests_failed: int
-    tests_skipped: int
-    execution_time: float
-    memory_peak_mb: float
-    coverage_percentage: Optional[float] = None
-    error_message: Optional[str] = None
-    stdout: str = ""
-    stderr: str = ""
-
-class ResourceMonitor:
-    """Monitor system resources during test execution."""
-    
-    def __init__(self, memory_limit_mb: int = 2048, cpu_limit_percent: int = 80):
-        self.memory_limit_mb = memory_limit_mb
-        self.cpu_limit_percent = cpu_limit_percent
-        self.peak_memory = 0.0
-        self.peak_cpu = 0.0
-        self.monitoring = False
-        self.monitor_thread = None
-        
-    def start_monitoring(self):
-        """Start resource monitoring in background thread."""
-        if not PSUTIL_AVAILABLE:
-            # No-op if psutil is not available
-            self.monitoring = False
-            return
-        self.monitoring = True
-        self.monitor_thread = threading.Thread(target=self._monitor_resources)
-        self.monitor_thread.daemon = True
-        self.monitor_thread.start()
-        
-    def stop_monitoring(self):
-        """Stop resource monitoring."""
-        self.monitoring = False
-        if self.monitor_thread:
-            self.monitor_thread.join(timeout=1.0)
-            
-    def _monitor_resources(self):
-        """Monitor system resources in background."""
-        if not PSUTIL_AVAILABLE:
-            # Passive sleep loop to avoid busy spin when psutil missing
-            while self.monitoring:
-                try:
-                    time.sleep(0.5)
-                except Exception:
-                    break
-            return
-        process = _psutil.Process()
-        
-        while self.monitoring:
-            try:
-                # Memory usage
-                memory_info = process.memory_info()
-                memory_mb = memory_info.rss / 1024 / 1024
-                self.peak_memory = max(self.peak_memory, memory_mb)
-                
-                # CPU usage
-                cpu_percent = process.cpu_percent()
-                self.peak_cpu = max(self.peak_cpu, cpu_percent)
-                
-                # Check limits
-                if memory_mb > self.memory_limit_mb:
-                    logging.warning(f"⚠️ Memory usage ({memory_mb:.1f}MB) exceeds limit ({self.memory_limit_mb}MB)")
-                
-                if cpu_percent > self.cpu_limit_percent:
-                    logging.warning(f"⚠️ CPU usage ({cpu_percent:.1f}%) exceeds limit ({self.cpu_limit_percent}%)")
-                    
-                time.sleep(0.5)  # Monitor every 500ms
-                
-            except Exception as e:
-                logging.warning(f"Resource monitoring error: {e}")
-                break
-                
-    def get_stats(self) -> Dict[str, float]:
-        """Get current resource statistics."""
-        if not PSUTIL_AVAILABLE:
-            return {
-                "peak_memory_mb": self.peak_memory,
-                "peak_cpu_percent": self.peak_cpu,
-                "current_memory_mb": 0.0,
-                "current_cpu_percent": 0.0,
-            }
-        return {
-            "peak_memory_mb": self.peak_memory,
-            "peak_cpu_percent": self.peak_cpu,
-            "current_memory_mb": _psutil.Process().memory_info().rss / 1024 / 1024,
-            "current_cpu_percent": _psutil.Process().cpu_percent(),
-        }
+# psutil reference for legacy code
+try:
+    import psutil as _psutil  # type: ignore
+except Exception:
+    _psutil = None  # type: ignore
 
 class TestRunner:
     """Test runner with comprehensive monitoring and reporting."""
@@ -624,7 +536,8 @@ def run_tests(
     include_slow: bool = False,
     fast_only: bool = True,  # Default to fast tests for pipeline integration
     comprehensive: bool = False,
-    generate_coverage: bool = False  # Disable coverage by default for speed
+    generate_coverage: bool = False,  # Disable coverage by default for speed
+    auto_fallback: bool = True  # Automatically fallback to comprehensive if no fast tests collected
 ) -> bool:
     """
     Run optimized test suite with improved performance and reliability.
@@ -637,6 +550,7 @@ def run_tests(
         fast_only: Run only fast tests
         comprehensive: Run comprehensive test suite (all tests)
         generate_coverage: Generate coverage report
+        auto_fallback: If fast tests collect 0 tests, automatically try comprehensive
 
     Returns:
         True if tests pass, False otherwise
@@ -652,7 +566,15 @@ def run_tests(
         # For pipeline integration, run a focused subset of tests
         if fast_only and not comprehensive:
             logger.info("🏃 Running fast pipeline test subset for quick validation")
-            return run_fast_pipeline_tests(logger, output_dir, verbose)
+            success = run_fast_pipeline_tests(logger, output_dir, verbose)
+
+            # Auto-fallback: if no tests collected and fallback enabled, try comprehensive
+            if not success and auto_fallback:
+                if _check_zero_tests_collected(output_dir, logger):
+                    logger.warning("⚠️ Fast test suite yielded 0 tests. Automatically falling back to comprehensive mode.")
+                    return run_comprehensive_tests(logger, output_dir, verbose, generate_coverage)
+
+            return success
 
         # For comprehensive mode, run all tests but with better timeout handling
         if comprehensive:
@@ -666,6 +588,19 @@ def run_tests(
     except Exception as e:
         log_step_error(logger, f"Test execution failed: {e}")
         return False
+
+
+def _check_zero_tests_collected(output_dir: Path, logger: logging.Logger) -> bool:
+    """Check if the test execution report shows zero tests collected."""
+    try:
+        summary_file = output_dir / "test_execution_report.json"
+        if summary_file.exists():
+            summary = json.loads(summary_file.read_text())
+            tests_run = summary.get("execution_summary", {}).get("tests_run", 0)
+            return tests_run == 0
+    except Exception as e:
+        logger.debug(f"Could not check test count: {e}")
+    return False
 
 def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
     """

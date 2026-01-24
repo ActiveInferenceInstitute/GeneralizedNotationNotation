@@ -767,7 +767,7 @@ except ImportError:
     PYMDP_AVAILABLE = False
     logger.info(
         "PyMDP not available - this is normal if not installed. "
-        "Install with: pip install pymdp. "
+        "Install with: uv pip install inferactively-pymdp. "
         "Continuing with fallback mode."
     )
 

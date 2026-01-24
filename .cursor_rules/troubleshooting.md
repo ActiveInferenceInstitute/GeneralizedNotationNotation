@@ -48,13 +48,15 @@ Peak memory: <50MB
 
 **Solution**:
 ```bash
-pip install pymdp
+uv pip install inferactively-pymdp
+# Or use UV optional group:
+uv sync --extra active-inference
 ```
 
 **Note**: This is expected behavior. The pipeline continues without PyMDP using fallback mode. The warning message is informational:
 ```
 WARNING: PyMDP not available - this is normal if not installed.
-To enable PyMDP simulations, install with: pip install pymdp.
+To enable PyMDP simulations, install with: uv pip install inferactively-pymdp.
 Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX.
 ```
 
@@ -231,7 +233,9 @@ python -c "from mcp import MCPServer; s = MCPServer(); print(len(s.tools))"
 
 **Solution**:
 ```bash
-pip install matplotlib seaborn plotly networkx
+uv pip install matplotlib seaborn plotly networkx
+# Or use UV optional group:
+uv sync --extra visualization
 ```
 
 #### D2 Diagrams Not Generated

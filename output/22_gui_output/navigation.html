@@ -26,97 +26,26 @@
             padding-bottom: 20px;
             border-bottom: 3px solid #007bff;
         }
-        h1 {
-            color: #2c3e50;
-            margin: 0;
-            font-size: 2.5em;
-            font-weight: 300;
-        }
-        h2 {
-            color: #34495e;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-            border-left: 4px solid #007bff;
-            padding-left: 15px;
-        }
+        h1 { color: #2c3e50; margin: 0; font-size: 2.5em; font-weight: 300; }
+        h2 { color: #34495e; margin-top: 40px; margin-bottom: 20px; font-size: 1.8em; border-left: 4px solid #007bff; padding-left: 15px; }
         .summary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 25px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 30px 0;
+            color: white; padding: 25px; border-radius: 10px;
+            text-align: center; margin: 30px 0;
         }
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin: 30px 0;
-        }
-        .summary-card {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-        }
-        .summary-card .value {
-            font-size: 2em;
-            font-weight: bold;
-            color: #007bff;
-            margin: 10px 0;
-        }
-        .step-section {
-            background-color: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-        }
-        .step-header {
-            font-weight: bold;
-            color: #495057;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }
-        .file-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .file-item {
-            background-color: white;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            padding: 10px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .file-item:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .file-item a {
-            color: #007bff;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .file-item a:hover {
-            text-decoration: underline;
-        }
-        .file-meta {
-            color: #6c757d;
-            font-size: 12px;
-            margin-top: 5px;
-        }
-        .link {
-            color: #007bff;
-            text-decoration: none;
-        }
-        .link:hover {
-            text-decoration: underline;
-        }
+        .summary-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0; }
+        .summary-card { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; text-align: center; }
+        .summary-card .value { font-size: 2em; font-weight: bold; color: #007bff; margin: 10px 0; }
+        .step-section { background-color: #f8f9fa; border: 1px solid #dee2e6; border-radius: 10px; padding: 20px; margin: 20px 0; }
+        .step-header { font-weight: bold; color: #495057; margin-bottom: 15px; font-size: 1.2em; }
+        .file-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 15px; }
+        .file-item { background-color: white; border: 1px solid #dee2e6; border-radius: 6px; padding: 10px; transition: transform 0.2s, box-shadow 0.2s; }
+        .file-item:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .file-item a { color: #007bff; text-decoration: none; font-weight: 500; }
+        .file-item a:hover { text-decoration: underline; }
+        .file-meta { color: #6c757d; font-size: 12px; margin-top: 5px; }
+        .link { color: #007bff; text-decoration: none; }
+        .link:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
@@ -125,7 +54,7 @@
             <h1>🎯 GNN Pipeline Output Navigation</h1>
             <p>Comprehensive navigation to all pipeline outputs and artifacts</p>
         </div>
-        
+
         <div class="summary">
             <h2>Pipeline Overview</h2>
             <div class="summary-grid">
@@ -135,7 +64,7 @@
                 </div>
                 <div class="summary-card">
                     <div>Total Files</div>
-                    <div class="value">162</div>
+                    <div class="value">150</div>
                 </div>
                 <div class="summary-card">
                     <div>Output Directory</div>
@@ -143,7 +72,7 @@
                 </div>
             </div>
         </div>
-        
+
         <h2>📁 Output Sections</h2>
 
         <div class="step-section">
@@ -153,23 +82,17 @@
 
                 <div class="file-item">
                     <a href="../0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_report.json" target="_blank">actinf_pomdp_agent_report.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../0_template_output/template_processing_summary.json" target="_blank">template_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md" target="_blank">actinf_pomdp_agent_processed.md</a>
-                    <div class="file-meta">
-                        .md • 0.004 MB
-                    </div>
+                    <div class="file-meta">.md • 0.004 MB</div>
                 </div>
 
             </div>
@@ -182,16 +105,12 @@
 
                 <div class="file-item">
                     <a href="../1_setup_output/environment_setup_summary.json" target="_blank">environment_setup_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.01 MB
-                    </div>
+                    <div class="file-meta">.json • 0.01 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../1_setup_output/installed_packages.json" target="_blank">installed_packages.json</a>
-                    <div class="file-meta">
-                        .json • 0.008 MB
-                    </div>
+                    <div class="file-meta">.json • 0.008 MB</div>
                 </div>
 
             </div>
@@ -204,16 +123,12 @@
 
                 <div class="file-item">
                     <a href="../2_tests_output/test_execution_report.json" target="_blank">test_execution_report.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../2_tests_output/pytest_comprehensive_output.txt" target="_blank">pytest_comprehensive_output.txt</a>
-                    <div class="file-meta">
-                        .txt • 0.128 MB
-                    </div>
+                    <div class="file-meta">.txt • 0.275 MB</div>
                 </div>
 
             </div>
@@ -226,58 +141,42 @@
 
                 <div class="file-item">
                     <a href="../3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json" target="_blank">actinf_pomdp_agent_json.json</a>
-                    <div class="file-meta">
-                        .json • 0.009 MB
-                    </div>
+                    <div class="file-meta">.json • 0.009 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_parsed.json" target="_blank">actinf_pomdp_agent_parsed.json</a>
-                    <div class="file-meta">
-                        .json • 0.019 MB
-                    </div>
+                    <div class="file-meta">.json • 0.019 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/format_statistics.json" target="_blank">format_statistics.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/gnn_processing_results.json" target="_blank">gnn_processing_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.007 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/gnn_processing_summary.json" target="_blank">gnn_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_markdown.md" target="_blank">actinf_pomdp_agent_markdown.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl" target="_blank">actinf_pomdp_agent_pickle.pkl</a>
-                    <div class="file-meta">
-                        .pkl • 0.004 MB
-                    </div>
+                    <div class="file-meta">.pkl • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../3_gnn_output/actinf_pomdp_agent/actinf_pomdp_agent_pkl.pkl" target="_blank">actinf_pomdp_agent_pkl.pkl</a>
-                    <div class="file-meta">
-                        .pkl • 0.011 MB
-                    </div>
+                    <div class="file-meta">.pkl • 0.012 MB</div>
                 </div>
 
             </div>
@@ -290,9 +189,7 @@
 
                 <div class="file-item">
                     <a href="../4_model_registry_output/model_registry.json" target="_blank">model_registry.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
             </div>
@@ -305,16 +202,12 @@
 
                 <div class="file-item">
                     <a href="../5_type_checker_output/type_check_results.json" target="_blank">type_check_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.023 MB
-                    </div>
+                    <div class="file-meta">.json • 0.023 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../5_type_checker_output/type_check_summary.md" target="_blank">type_check_summary.md</a>
-                    <div class="file-meta">
-                        .md • 0.0 MB
-                    </div>
+                    <div class="file-meta">.md • 0.0 MB</div>
                 </div>
 
             </div>
@@ -327,16 +220,12 @@
 
                 <div class="file-item">
                     <a href="../6_validation_output/validation_results.json" target="_blank">validation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../6_validation_output/validation_summary.json" target="_blank">validation_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -349,37 +238,27 @@
 
                 <div class="file-item">
                     <a href="../7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json" target="_blank">actinf_pomdp_agent_json.json</a>
-                    <div class="file-meta">
-                        .json • 0.019 MB
-                    </div>
+                    <div class="file-meta">.json • 0.019 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../7_export_output/export_results.json" target="_blank">export_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../7_export_output/export_summary.json" target="_blank">export_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_pickle.pkl" target="_blank">actinf_pomdp_agent_pickle.pkl</a>
-                    <div class="file-meta">
-                        .pkl • 0.01 MB
-                    </div>
+                    <div class="file-meta">.pkl • 0.011 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml" target="_blank">actinf_pomdp_agent_xml.xml</a>
-                    <div class="file-meta">
-                        .xml • 0.001 MB
-                    </div>
+                    <div class="file-meta">.xml • 0.001 MB</div>
                 </div>
 
             </div>
@@ -392,128 +271,92 @@
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.csv" target="_blank">actinf_pomdp_agent_A_heatmap.csv</a>
-                    <div class="file-meta">
-                        .csv • 0.0 MB
-                    </div>
+                    <div class="file-meta">.csv • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.csv" target="_blank">actinf_pomdp_agent_C_heatmap.csv</a>
-                    <div class="file-meta">
-                        .csv • 0.0 MB
-                    </div>
+                    <div class="file-meta">.csv • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.csv" target="_blank">actinf_pomdp_agent_D_heatmap.csv</a>
-                    <div class="file-meta">
-                        .csv • 0.0 MB
-                    </div>
+                    <div class="file-meta">.csv • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.csv" target="_blank">actinf_pomdp_agent_E_heatmap.csv</a>
-                    <div class="file-meta">
-                        .csv • 0.0 MB
-                    </div>
+                    <div class="file-meta">.csv • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_stats.json" target="_blank">actinf_pomdp_agent_network_stats.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/visualization_summary.json" target="_blank">visualization_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png" target="_blank">actinf_pomdp_agent_A_heatmap.png</a>
-                    <div class="file-meta">
-                        .png • 0.085 MB
-                    </div>
+                    <div class="file-meta">.png • 0.085 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png" target="_blank">actinf_pomdp_agent_B_analysis.png</a>
-                    <div class="file-meta">
-                        .png • 0.041 MB
-                    </div>
+                    <div class="file-meta">.png • 0.041 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_tensor.png" target="_blank">actinf_pomdp_agent_B_tensor.png</a>
-                    <div class="file-meta">
-                        .png • 0.17 MB
-                    </div>
+                    <div class="file-meta">.png • 0.17 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.png" target="_blank">actinf_pomdp_agent_C_heatmap.png</a>
-                    <div class="file-meta">
-                        .png • 0.072 MB
-                    </div>
+                    <div class="file-meta">.png • 0.072 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.png" target="_blank">actinf_pomdp_agent_D_heatmap.png</a>
-                    <div class="file-meta">
-                        .png • 0.071 MB
-                    </div>
+                    <div class="file-meta">.png • 0.071 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.png" target="_blank">actinf_pomdp_agent_E_heatmap.png</a>
-                    <div class="file-meta">
-                        .png • 0.07 MB
-                    </div>
+                    <div class="file-meta">.png • 0.07 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png" target="_blank">actinf_pomdp_agent_combined_analysis.png</a>
-                    <div class="file-meta">
-                        .png • 0.692 MB
-                    </div>
+                    <div class="file-meta">.png • 0.787 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_generative_model.png" target="_blank">actinf_pomdp_agent_generative_model.png</a>
-                    <div class="file-meta">
-                        .png • 0.21 MB
-                    </div>
+                    <div class="file-meta">.png • 0.21 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_matrix_size_distribution.png" target="_blank">actinf_pomdp_agent_matrix_size_distribution.png</a>
-                    <div class="file-meta">
-                        .png • 0.071 MB
-                    </div>
+                    <div class="file-meta">.png • 0.071 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png" target="_blank">actinf_pomdp_agent_network_graph.png</a>
-                    <div class="file-meta">
-                        .png • 0.445 MB
-                    </div>
+                    <div class="file-meta">.png • 0.449 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png" target="_blank">actinf_pomdp_agent_section_content_length.png</a>
-                    <div class="file-meta">
-                        .png • 0.192 MB
-                    </div>
+                    <div class="file-meta">.png • 0.192 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png" target="_blank">actinf_pomdp_agent_variable_type_distribution.png</a>
-                    <div class="file-meta">
-                        .png • 0.43 MB
-                    </div>
+                    <div class="file-meta">.png • 0.463 MB</div>
                 </div>
 
             </div>
@@ -526,79 +369,57 @@
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/advanced_viz_summary.json" target="_blank">advanced_viz_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.005 MB
-                    </div>
+                    <div class="file-meta">.json • 0.005 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png" target="_blank">actinf_pomdp_agent_3d_visualization.png</a>
-                    <div class="file-meta">
-                        .png • 0.182 MB
-                    </div>
+                    <div class="file-meta">.png • 0.182 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png" target="_blank">actinf_pomdp_agent_matrix_correlations.png</a>
-                    <div class="file-meta">
-                        .png • 0.129 MB
-                    </div>
+                    <div class="file-meta">.png • 0.129 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png" target="_blank">actinf_pomdp_agent_network_metrics.png</a>
-                    <div class="file-meta">
-                        .png • 0.245 MB
-                    </div>
+                    <div class="file-meta">.png • 0.245 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png" target="_blank">actinf_pomdp_agent_policy_visualization.png</a>
-                    <div class="file-meta">
-                        .png • 0.097 MB
-                    </div>
+                    <div class="file-meta">.png • 0.097 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png" target="_blank">actinf_pomdp_agent_pomdp_transitions.png</a>
-                    <div class="file-meta">
-                        .png • 0.12 MB
-                    </div>
+                    <div class="file-meta">.png • 0.12 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png" target="_blank">actinf_pomdp_agent_statistical_analysis.png</a>
-                    <div class="file-meta">
-                        .png • 0.28 MB
-                    </div>
+                    <div class="file-meta">.png • 0.28 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png" target="_blank">active_inference_concepts.png</a>
-                    <div class="file-meta">
-                        .png • 0.213 MB
-                    </div>
+                    <div class="file-meta">.png • 0.213 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.png" target="_blank">active_inference_pomdp_agent_structure.png</a>
-                    <div class="file-meta">
-                        .png • 0.027 MB
-                    </div>
+                    <div class="file-meta">.png • 0.027 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png" target="_blank">framework_integration.png</a>
-                    <div class="file-meta">
-                        .png • 0.208 MB
-                    </div>
+                    <div class="file-meta">.png • 0.208 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png" target="_blank">gnn_pipeline_flow.png</a>
-                    <div class="file-meta">
-                        .png • 0.317 MB
-                    </div>
+                    <div class="file-meta">.png • 0.317 MB</div>
                 </div>
 
             </div>
@@ -611,16 +432,12 @@
 
                 <div class="file-item">
                     <a href="../10_ontology_output/actinf_pomdp_agent_ontology_report.json" target="_blank">actinf_pomdp_agent_ontology_report.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.006 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../10_ontology_output/ontology_results.json" target="_blank">ontology_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -628,151 +445,111 @@
 
         <div class="step-section">
             <div class="step-header">📂 Render (11_render_output)</div>
-            <p><strong>Files:</strong> 41</p>
+            <p><strong>Files:</strong> 36</p>
             <div class="file-list">
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl" target="_blank">Active Inference POMDP Agent_activeinference.jl</a>
-                    <div class="file-meta">
-                        .jl • 0.02 MB
-                    </div>
+                    <div class="file-meta">.jl • 0.02 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl" target="_blank">Active Inference POMDP Agent_rxinfer.jl</a>
-                    <div class="file-meta">
-                        .jl • 0.007 MB
-                    </div>
+                    <div class="file-meta">.jl • 0.007 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/circuit_analysis.json" target="_blank">circuit_analysis.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/discopy/discopy_diagrams/circuit_info.json" target="_blank">circuit_info.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/model_parameters.json" target="_blank">model_parameters.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/model_parameters.json" target="_blank">model_parameters.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/model_parameters.json" target="_blank">model_parameters.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/model_parameters.json" target="_blank">model_parameters.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/processing_summary.json" target="_blank">processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/render_processing_summary.json" target="_blank">render_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.005 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/rxinfer/simulation_results.json" target="_blank">simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../11_render_output/actinf_pomdp_agent/jax/jax_outputs/simulation_results.json" target="_blank">simulation_results.json</a>
+                    <div class="file-meta">.json • 0.01 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/pymdp_gen/output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json" target="_blank">simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.011 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/rxinfer/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/jax/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.001 MB
-                    </div>
+                    <div class="file-meta">.md • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/discopy/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../11_render_output/actinf_pomdp_agent/pymdp_gen/README.md" target="_blank">README.md</a>
-                    <div class="file-meta">
-                        .md • 0.002 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png" target="_blank">Active Inference POMDP Agent_A_matrix.png</a>
-                    <div class="file-meta">
-                        .png • 0.138 MB
-                    </div>
+                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png" target="_blank">Active Inference POMDP Agent_A_matrix.png</a>
+                    <div class="file-meta">.png • 0.138 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png" target="_blank">Active Inference POMDP Agent_A_matrix.png</a>
-                    <div class="file-meta">
-                        .png • 0.138 MB
-                    </div>
+                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png" target="_blank">Active Inference POMDP Agent_A_matrix.png</a>
+                    <div class="file-meta">.png • 0.138 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png" target="_blank">Active Inference POMDP Agent_action_analysis.png</a>
-                    <div class="file-meta">
-                        .png • 0.171 MB
-                    </div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png" target="_blank">Active Inference POMDP Agent_action_analysis.png</a>
-                    <div class="file-meta">
-                        .png • 0.171 MB
-                    </div>
+                    <a href="../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png" target="_blank">Active Inference POMDP Agent_action_analysis.png</a>
+                    <div class="file-meta">.png • 0.207 MB</div>
                 </div>
 
                 <div class="file-item" style="opacity: 0.7; font-style: italic;">
-                    ... and 21 more files
+                    ... and 16 more files
                 </div>
 
             </div>
@@ -780,151 +557,111 @@
 
         <div class="step-section">
             <div class="step-header">📂 Execute (12_execute_output)</div>
-            <p><strong>Files:</strong> 28</p>
+            <p><strong>Files:</strong> 22</p>
             <div class="file-list">
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_results.json" target="_blank">Active Inference POMDP Agent_activeinference.jl_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_results.json" target="_blank">Active Inference POMDP Agent_discopy.py_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.004 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_results.json" target="_blank">Active Inference POMDP Agent_jax.py_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.006 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/pymdp_gen/execution_logs/Active Inference POMDP Agent_pymdp.py_results.json" target="_blank">Active Inference POMDP Agent_pymdp.py_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.004 MB
-                    </div>
+                    <div class="file-meta">.json • 0.006 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_results.json" target="_blank">Active Inference POMDP Agent_rxinfer.jl_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/pymdp_gen/simulation_data/Active Inference POMDP Agent_simulation_results.json" target="_blank">Active Inference POMDP Agent_simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.011 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_analysis.json" target="_blank">circuit_analysis.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json" target="_blank">circuit_info.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json" target="_blank">discopy_diagrams_circuit_analysis.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json" target="_blank">discopy_diagrams_circuit_info.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/execution_summary.json" target="_blank">execution_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.031 MB
-                    </div>
+                    <div class="file-meta">.json • 0.036 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json" target="_blank">jax_outputs_simulation_results.json</a>
+                    <div class="file-meta">.json • 0.01 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json" target="_blank">rxinfer_simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/simulation_results.json" target="_blank">simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
+                </div>
+
+                <div class="file-item">
+                    <a href="../12_execute_output/actinf_pomdp_agent/jax/simulation_data/simulation_results.json" target="_blank">simulation_results.json</a>
+                    <div class="file-meta">.json • 0.01 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/actinf_pomdp_agent/pymdp_gen/simulation_data/simulation_results.json" target="_blank">simulation_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.006 MB
-                    </div>
+                    <div class="file-meta">.json • 0.011 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../12_execute_output/execution_report.md" target="_blank">execution_report.md</a>
-                    <div class="file-meta">
-                        .md • 0.003 MB
-                    </div>
+                    <div class="file-meta">.md • 0.003 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png" target="_blank">discopy_diagrams_generative_model.png</a>
-                    <div class="file-meta">
-                        .png • 0.073 MB
-                    </div>
+                    <a href="../12_execute_output/individual_outputs/activeinference_jl/Active Inference POMDP Agent_activeinference.jl_output.txt" target="_blank">Active Inference POMDP Agent_activeinference.jl_output.txt</a>
+                    <div class="file-meta">.txt • 0.003 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png" target="_blank">discopy_diagrams_model_components.png</a>
-                    <div class="file-meta">
-                        .png • 0.034 MB
-                    </div>
+                    <a href="../12_execute_output/individual_outputs/discopy/Active Inference POMDP Agent_discopy.py_output.txt" target="_blank">Active Inference POMDP Agent_discopy.py_output.txt</a>
+                    <div class="file-meta">.txt • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
-                    <a href="../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png" target="_blank">discopy_diagrams_perception_action_loop.png</a>
-                    <div class="file-meta">
-                        .png • 0.057 MB
-                    </div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png" target="_blank">generative_model.png</a>
-                    <div class="file-meta">
-                        .png • 0.073 MB
-                    </div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png" target="_blank">model_components.png</a>
-                    <div class="file-meta">
-                        .png • 0.034 MB
-                    </div>
+                    <a href="../12_execute_output/individual_outputs/jax/Active Inference POMDP Agent_jax.py_output.txt" target="_blank">Active Inference POMDP Agent_jax.py_output.txt</a>
+                    <div class="file-meta">.txt • 0.001 MB</div>
                 </div>
 
                 <div class="file-item" style="opacity: 0.7; font-style: italic;">
-                    ... and 8 more files
+                    ... and 2 more files
                 </div>
 
             </div>
@@ -937,79 +674,57 @@
 
                 <div class="file-item">
                     <a href="../13_llm_output/llm_results.json" target="_blank">llm_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.096 MB
-                    </div>
+                    <div class="file-meta">.json • 0.073 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/analyze_structure.md" target="_blank">analyze_structure.md</a>
-                    <div class="file-meta">
-                        .md • 0.009 MB
-                    </div>
+                    <div class="file-meta">.md • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/explain_model.md" target="_blank">explain_model.md</a>
-                    <div class="file-meta">
-                        .md • 0.007 MB
-                    </div>
+                    <div class="file-meta">.md • 0.01 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/extract_parameters.md" target="_blank">extract_parameters.md</a>
-                    <div class="file-meta">
-                        .md • 0.008 MB
-                    </div>
+                    <div class="file-meta">.md • 0.003 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/identify_components.md" target="_blank">identify_components.md</a>
-                    <div class="file-meta">
-                        .md • 0.007 MB
-                    </div>
+                    <div class="file-meta">.md • 0.005 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/llm_summary.md" target="_blank">llm_summary.md</a>
-                    <div class="file-meta">
-                        .md • 0.0 MB
-                    </div>
+                    <div class="file-meta">.md • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/nontechnical_description.md" target="_blank">nontechnical_description.md</a>
-                    <div class="file-meta">
-                        .md • 0.004 MB
-                    </div>
+                    <div class="file-meta">.md • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/practical_applications.md" target="_blank">practical_applications.md</a>
-                    <div class="file-meta">
-                        .md • 0.01 MB
-                    </div>
+                    <div class="file-meta">.md • 0.005 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/runtime_behavior.md" target="_blank">runtime_behavior.md</a>
-                    <div class="file-meta">
-                        .md • 0.006 MB
-                    </div>
+                    <div class="file-meta">.md • 0.007 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/summarize_content.md" target="_blank">summarize_content.md</a>
-                    <div class="file-meta">
-                        .md • 0.007 MB
-                    </div>
+                    <div class="file-meta">.md • 0.003 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../13_llm_output/prompts_actinf_pomdp_agent/technical_description.md" target="_blank">technical_description.md</a>
-                    <div class="file-meta">
-                        .md • 0.006 MB
-                    </div>
+                    <div class="file-meta">.md • 0.004 MB</div>
                 </div>
 
             </div>
@@ -1017,21 +732,12 @@
 
         <div class="step-section">
             <div class="step-header">📂 ML Integration (14_ml_integration_output)</div>
-            <p><strong>Files:</strong> 2</p>
+            <p><strong>Files:</strong> 1</p>
             <div class="file-list">
 
                 <div class="file-item">
-                    <a href="../14_ml_integration_output/ml_frameworks_status.json" target="_blank">ml_frameworks_status.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
-                </div>
-
-                <div class="file-item">
-                    <a href="../14_ml_integration_output/ml_integration_summary.json" target="_blank">ml_integration_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <a href="../14_ml_integration_output/ml_integration_results.json" target="_blank">ml_integration_results.json</a>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -1044,58 +750,42 @@
 
                 <div class="file-item">
                     <a href="../15_audio_output/audio_results.json" target="_blank">audio_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/actinf_pomdp_agent_ambient.wav" target="_blank">actinf_pomdp_agent_ambient.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.841 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.841 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/actinf_pomdp_agent_rhythmic.wav" target="_blank">actinf_pomdp_agent_rhythmic.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.421 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.421 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/actinf_pomdp_agent_sonification.wav" target="_blank">actinf_pomdp_agent_sonification.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.673 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.673 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/actinf_pomdp_agent_tonal.wav" target="_blank">actinf_pomdp_agent_tonal.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.421 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.421 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/ambient.wav" target="_blank">ambient.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.841 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.841 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/rhythmic.wav" target="_blank">rhythmic.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.421 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.421 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../15_audio_output/tonal.wav" target="_blank">tonal.wav</a>
-                    <div class="file-meta">
-                        .wav • 0.421 MB
-                    </div>
+                    <div class="file-meta">.wav • 0.421 MB</div>
                 </div>
 
             </div>
@@ -1108,23 +798,17 @@
 
                 <div class="file-item">
                     <a href="../16_analysis_output/actinf_pomdp_agent_post_simulation_analysis.json" target="_blank">actinf_pomdp_agent_post_simulation_analysis.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../16_analysis_output/analysis_results.json" target="_blank">analysis_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.021 MB
-                    </div>
+                    <div class="file-meta">.json • 0.024 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../16_analysis_output/framework_comparison_data.json" target="_blank">framework_comparison_data.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.003 MB</div>
                 </div>
 
             </div>
@@ -1136,10 +820,8 @@
             <div class="file-list">
 
                 <div class="file-item">
-                    <a href="../17_integration_output/integration_processing_summary.json" target="_blank">integration_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <a href="../17_integration_output/integration_results/integration_results.json" target="_blank">integration_results.json</a>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -1151,10 +833,8 @@
             <div class="file-list">
 
                 <div class="file-item">
-                    <a href="../18_security_output/security_processing_summary.json" target="_blank">security_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <a href="../18_security_output/security_results.json" target="_blank">security_results.json</a>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
             </div>
@@ -1166,10 +846,8 @@
             <div class="file-list">
 
                 <div class="file-item">
-                    <a href="../19_research_output/research_processing_summary.json" target="_blank">research_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <a href="../19_research_output/research_results.json" target="_blank">research_results.json</a>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -1182,16 +860,12 @@
 
                 <div class="file-item">
                     <a href="../20_website_output/index.html" target="_blank">index.html</a>
-                    <div class="file-meta">
-                        .html • 0.001 MB
-                    </div>
+                    <div class="file-meta">.html • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../20_website_output/website_results.json" target="_blank">website_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
             </div>
@@ -1204,23 +878,17 @@
 
                 <div class="file-item">
                     <a href="../21_mcp_output/mcp_processing_summary.json" target="_blank">mcp_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../21_mcp_output/mcp_results.json" target="_blank">mcp_results.json</a>
-                    <div class="file-meta">
-                        .json • 0.003 MB
-                    </div>
+                    <div class="file-meta">.json • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../21_mcp_output/registered_tools.json" target="_blank">registered_tools.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.003 MB</div>
                 </div>
 
             </div>
@@ -1233,37 +901,27 @@
 
                 <div class="file-item">
                     <a href="../22_gui_output/gui_processing_summary.json" target="_blank">gui_processing_summary.json</a>
-                    <div class="file-meta">
-                        .json • 0.001 MB
-                    </div>
+                    <div class="file-meta">.json • 0.001 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../22_gui_output/gui_status.json" target="_blank">gui_status.json</a>
-                    <div class="file-meta">
-                        .json • 0.0 MB
-                    </div>
+                    <div class="file-meta">.json • 0.0 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../22_gui_output/visual_matrices.json" target="_blank">visual_matrices.json</a>
-                    <div class="file-meta">
-                        .json • 0.002 MB
-                    </div>
+                    <div class="file-meta">.json • 0.002 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../22_gui_output/constructed_model_gui1.md" target="_blank">constructed_model_gui1.md</a>
-                    <div class="file-meta">
-                        .md • 0.004 MB
-                    </div>
+                    <div class="file-meta">.md • 0.004 MB</div>
                 </div>
 
                 <div class="file-item">
                     <a href="../22_gui_output/visual_model_gui2.md" target="_blank">visual_model_gui2.md</a>
-                    <div class="file-meta">
-                        .md • 0.004 MB
-                    </div>
+                    <div class="file-meta">.md • 0.004 MB</div>
                 </div>
 
             </div>

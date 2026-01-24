@@ -4,6 +4,17 @@ Advanced visualization package for GNN Processing Pipeline.
 Exports real advanced visualization components including D2 diagram generation.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "d2_diagrams": True,
+    "interactive_dashboards": True,
+    "network_visualization": True,
+    "timeline_visualization": True,
+    "heatmap_visualization": True,
+    "data_extraction": True,
+    "mcp_integration": True
+}
+
 from .visualizer import (
     AdvancedVisualizer,
     create_visualization_from_data,

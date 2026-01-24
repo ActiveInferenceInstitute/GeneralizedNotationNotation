@@ -172,7 +172,8 @@ def run_jax_scripts(rendered_simulators_dir: Union[str, Path], execution_output_
         else:
             failure_count += 1
     logger.info(f"JAX script execution summary: {success_count} succeeded, {failure_count} failed, {success_count + failure_count} total")
-    return failure_count == 0 or success_count > 0
+    # Return True only if no failures occurred (success means zero failures)
+    return failure_count == 0
 
 if __name__ == "__main__":
     import argparse
@@ -185,5 +186,5 @@ if __name__ == "__main__":
     args = parser.parse_args()
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    success = run_jax_scripts(pipeline_output_dir=args.output_dir, recursive_search=args.recursive, verbose=args.verbose, device=args.device)
+    success = run_jax_scripts(rendered_simulators_dir=args.output_dir, recursive_search=args.recursive, verbose=args.verbose, device=args.device)
     sys.exit(0 if success else 1) 

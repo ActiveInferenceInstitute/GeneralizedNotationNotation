@@ -314,8 +314,26 @@ class TestFastIntegration:
 
 def test_fast_suite_completeness():
     """Test that fast test suite covers essential functionality."""
-    # This test ensures the fast suite is complete
-    logging.info("Fast test suite completeness validated")
+    from pathlib import Path
+    import ast
+
+    # Count fast-marked tests in test files
+    test_dir = Path(__file__).parent
+    fast_test_count = 0
+    test_files = list(test_dir.glob("test_*.py"))
+
+    assert len(test_files) > 10, f"Expected >10 test files, found {len(test_files)}"
+
+    for test_file in test_files:
+        try:
+            content = test_file.read_text()
+            if "@pytest.mark.fast" in content:
+                fast_test_count += content.count("@pytest.mark.fast")
+        except Exception:
+            pass
+
+    assert fast_test_count > 20, f"Expected >20 fast tests, found {fast_test_count}"
+    logging.info(f"Fast test suite completeness: {fast_test_count} fast tests in {len(test_files)} files")
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "-m", "fast"]) 

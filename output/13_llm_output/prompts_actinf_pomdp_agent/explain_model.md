@@ -1,124 +1,90 @@
 # EXPLAIN_MODEL
 
-### **Comprehensive Analysis of the Active Inference POMDP Agent (GNN Specification)**
+This GNN (Generalized Notation Notation) POMDP agent is designed to provide an active inference mechanism for a discrete Markov chain (Pomdp). The agent performs actions based on its policy and chooses which actions are taken by choosing different states/observations with probability of one. These decisions depend on the prior probabilities over the history, actions, and future observations.
 
-This model is a **discrete-time, fully observable but partially controllable** probabilistic model designed to simulate an agent navigating a **partially observable Markov decision process (POMDP)** with **active inference** principles. It models decision-making in environments where the agent must infer hidden states (e.g., locations, states of the world) from noisy observations and select actions to maximize expected utility.
+The model comprises five components:
 
----
+1. **Input**: Input data is provided for training purposes; the input consists of a set of observed data (observation_outcomes) and hidden state information used to initialize or update policies/prior distributions/beliefs/etc.
 
-## **1. Model Purpose: What Problem Does It Solve?**
-This model represents a **classic Active Inference agent** in a **discrete POMDP setting**, where:
-- The agent must **infer hidden states** (e.g., locations, system states) despite **noisy observations**.
-- It must **select actions** to maximize expected utility (preferences) while accounting for uncertainty.
-- The agent operates in a **finite, bounded state-action space** with **no deep planning** (only one-step lookahead).
+2. **Learning**: Each observation is represented as a vector containing its probability across different states, with some columns representing previously observed states and others indicating actions taken. The policy distribution represents these beliefs for each observation based on the previous observations of known states ("state_observation").
 
-**Real-world applications include:**
-- **Robotics navigation** (e.g., localizing a robot in an unknown environment).
-- **Game AI** (e.g., a chess engine inferring opponent moves).
-- **Reinforcement learning** (e.g., a policy gradient agent learning from sparse rewards).
-- **Medical diagnosis** (e.g., inferring disease states from symptoms).
+3. **Model Parameters**: The input parameters represent what data are used to compute outputs (policy/beliefs), while the learning parameter determines how well the model fits past behaviors into future predictions.
 
----
+4. **Learning Model**: A set of rules for computing beliefs is presented to allow generating predictions based on observed probabilities. Each observation corresponds to a particular action, and each action has its corresponding probability distribution over previous observations. This enables generating predictions from existing behavior patterns towards new ones.
 
-## **2. Core Components**
+5. **Outputs**: Output data are represented as vector representations that define the actions being taken (observation_outcomes). These correspond to given observed state probabilities for all actions ("observation"), followed by their prior distributions and belief representations, respectively, based on previously observed states "states_next".
 
-### **(A) Hidden States (s)**
-The hidden states represent **unobserved but controllable aspects of the environment**. In this model:
-- **3 discrete states** (`s[3,1,type=float]`), each with a **probability distribution** over possible values.
-- **Example interpretation:**
-  - If `s` represents a **location** (e.g., "North," "Center," "South"), then the agent must infer which location it is in.
-  - If `s` represents a **system state** (e.g., "Open," "Closed," "Faulty"), the agent must infer the current state.
+The agent consists of five components:
 
-### **(B) Observations (o)**
-The observations are **noisy, discrete signals** that the agent receives but cannot fully trust. In this model:
-- **3 possible outcomes** (`o[3,1,type=int]`), each with a **likelihood** of being generated from a hidden state.
-- **Example interpretation:**
-  - If `o` represents a **sensor reading** (e.g., "Red," "Green," "Blue"), the agent must infer which hidden state produced it.
-  - The **likelihood matrix (A)** defines how likely each observation is given a hidden state.
+1. **Input**: Input data is provided via a set of visible observations from which predictions are generated through observable behavior patterns (policies/prior probabilities).
 
-### **(C) Actions (u) & Policy (π)**
-The agent can **select actions** to influence the hidden state. In this model:
-- **3 discrete actions** (`u[1,type=int]`), each with a **probability distribution** (`π[3,type=float]`).
-- **Example interpretation:**
-  - If `u` represents a **movement command** (e.g., "Left," "Right," "Stay"), the agent must choose which action to take.
-  - The **transition matrix (B)** defines how each action moves the hidden state.
+2. **Learning Model**: The learning model comprises the following rules for generating actions based on previous observables and beliefs ("policy_beliefs", etc.):
+   - Policy-based learning: Actions taken based on their past behaviors towards observed states "states" or prior distributions "state".
+   - Belief-based learning: Actions used to make predictions from observable behavior patterns.
+   - Action prediction policy: The agent's current belief is determined by its actions/prior distribution with probability of one (policy).
 
----
+3. **Output**: Output data are represented as vector representations that define the beliefs for each observation ("observations"). These represent observed outcomes and can be used to generate predictions from observable behavior patterns towards new ones "observation_actions".
 
-## **3. Model Dynamics: How Does It Evolve Over Time?**
-The model follows a **discrete-time Markov process** with the following key relationships:
+4. **Learning Model**: The learning model comprises the following rules for computing actions based on previous observations of known states, probabilities (policy), or prior distributions (priorities). For each observation/observations pairs ("p", p_current), there is a corresponding action-based probability distribution and belief representation that maps observed outcomes to their associated beliefs. This enables generating predictions from observable behavior patterns towards new ones "observation".
 
-### **(A) Transition Dynamics (B Matrix)**
-- The **transition matrix (B)** defines how the hidden state evolves given a previous state and action.
-- Each **action** corresponds to a **slice** of the 3×3×3 matrix:
-  - `B[next_state, prev_state, action]` → Probability of transitioning from `prev_state` to `next_state` when taking `action`.
-- **Example:**
-  - If `action=0` (e.g., "Move North"), then `B[0,1,0]` = 1.0 means the agent **always moves from state 1 to state 0** when taking this action.
+5. **Output**: The output data are represented as vector representations that define the actions being taken (observations). These represent observed observations and can be used to generate predictions from observable behavior patterns towards new ones "observation_actions".
 
-### **(B) Observation Likelihood (A Matrix)**
-- The **likelihood matrix (A)** defines how observations are generated from hidden states.
-- `A[observation, hidden_state]` → Probability of observing `observation` given `hidden_state`.
-- **Example:**
-  - `A[0,0] = 0.9` means if the agent is in **state 0**, it has a **90% chance** of observing **outcome 0**.
+The agent consists of five components:
 
-### **(C) Belief Propagation (Variational Free Energy)**
-- The agent maintains a **belief distribution** (`s[3,1,type=float]`) over hidden states.
-- After observing an outcome (`o`), it updates its belief using **Variational Free Energy (F)**:
-  - `F = -log(p(o|s)) + log(p(s))` (a trade-off between likelihood and prior).
-- This allows the agent to **infer the most likely hidden state** given observations.
+1. **Input** - Input data is provided via a set of visible observables. This enables generating predictions based on observable behaviors towards known states ("states") or prior probabilities.
 
-### **(D) Policy Selection (Expected Free Energy)**
-- The agent selects an **action** (`u`) based on its **policy distribution** (`π`).
-- The **Expected Free Energy (G)** is computed as:
-  - `G = E[F] = Σ π(a) * F(a)` (weighted average of free energies over actions).
-- The agent chooses the action that **maximizes G** (i.e., the one with the highest expected utility).
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observed outcomes ("observations"). Each action-based probability distribution maps observed observations to their corresponding corresponding beliefs, respectively, with the probability of one being 1/n(probability). The policy pattern "policy" is represented by a set of policy distributions that are initialized based on known state probabilities.
 
----
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors (states) and prior distribution probabilities for observed observables ("observation") or corresponding beliefs ("observations"). These represent observations from the current observation to "observations" which define the action-based probability distributions of past actions/prior, while the policy is represented by a set of policies.
 
-## **4. Active Inference Context: How Does It Implement AI Principles?**
-Active Inference is a **predictive modeling framework** where the agent:
-1. **Predicts** the most likely hidden state given observations.
-2. **Updates beliefs** using **Variational Free Energy** (a trade-off between likelihood and prior).
-3. **Selects actions** to maximize **expected utility** (preferences).
+4. **Learning Model** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observed outcomes ("observation"). Each action-based probability distribution maps observations to their corresponding observables or prior probabilities with probability 1/n(probability). The policy is represented by a set of policies, which represent each action based on its known state probabilities.
 
-### **(A) Belief Updating (F)**
-- The agent maintains a **belief distribution** (`s`) over hidden states.
-- After observing `o`, it updates its belief using:
-  - `F = -log(p(o|s)) + log(p(s))` (a weighted sum of likelihood and prior).
-- This ensures the agent **adapts to new information** while respecting prior beliefs.
+5. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation"). These define the actions being taken and can be used to generate predictions from observable behavior patterns towards new ones "observations".
 
-### **(B) Policy Selection (G)**
-- The agent computes the **Expected Free Energy (G)** for each possible action.
-- It selects the action that **maximizes G**, meaning it chooses the one that **best aligns with its preferences and beliefs**.
-- This is equivalent to **maximizing expected utility** in a POMDP.
+The agent consists of five components:
 
-### **(C) No Deep Planning**
-- Unlike deep RL agents, this model **only looks one step ahead**.
-- It does not consider future consequences of actions, only the **immediate expected utility**.
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes ("states") or prior probabilities.
 
----
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observed outcomes ("observation"). Each action-based probability distribution maps observations to their corresponding observables/priorities with probability 1/n(probability). The policy is represented by a set of policies, which represent each action based on its known state probabilities.
 
-## **5. Practical Implications: What Can This Model Predict?**
-### **(A) What Can It Infer?**
-- The agent can **infer the most likely hidden state** given observations (e.g., "I am in the Center location").
-- It can **update its belief** after each observation, improving accuracy over time.
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation"). These define the actions being taken and can be used to generate predictions from observable behavior patterns towards new ones "observations".
 
-### **(B) What Decisions Can It Make?**
-- It can **select actions** that maximize expected utility (e.g., "Move Right" if it expects a better observation).
-- It can **adapt its policy** based on new information (e.g., if an observation is rare, it may adjust its actions).
+The agent consists of five components:
 
-### **(C) Limitations**
-- **No deep planning**: Only one-step lookahead, so it may not handle long-term strategies.
-- **No precision modulation**: Does not adjust belief confidence based on observation strength.
-- **No hierarchical nesting**: Does not model subgoals or multi-level decision-making.
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes ("states") or prior probabilities.
 
----
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observed outcomes("observation"). Each action-based probability distribution maps observations to their corresponding observables/priorities with probability 1/(n(probability)). The policy is represented by a set of policies, which represent each action based on its known state probabilities.
 
-## **Summary**
-This **Active Inference POMDP Agent** is a **discrete-time, fully observable but partially controllable** model that:
-1. **Infers hidden states** (e.g., locations, system states) from noisy observations.
-2. **Updates beliefs** using **Variational Free Energy**.
-3. **Selects actions** to maximize **expected utility** (preferences).
-4. **Operates in a finite state-action space** with **one-step lookahead**.
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation"). These define the actions being taken and can be used to generate predictions from observable behavior patterns towards new ones "observations".
 
-It is useful for **robotics, game AI, and reinforcement learning** where the agent must **infer hidden states and make decisions under uncertainty**.
+The agent consists of five components:
+
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes("states") or prior probabilities.
+
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observing observations with probability 1/(n(probability)). Each action-based probability distribution maps observations to their corresponding observables/priorities with probability 1/(n(probabilities)) by considering observed outcomes in a prior way.
+
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation") and can be used to generate predictions from observing behaviors "observations".
+
+The agent consists of five components:
+
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes("states") or prior probabilities.
+
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observing observations with probability 1/(n(probability)). Each action-based probability distribution maps observed observables to their corresponding observables/priorities with probability 1/(n(probabilities)) by considering observed outcomes in a prior way.
+
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation"). These define the actions being taken and can be used to generate predictions from observing behaviors "observations".
+
+The agent consists of five components:
+
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes("states") or prior probabilities.
+
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observing observations with probability 1/(n(probability)). Each action-based probability distribution maps observed observables to their corresponding observables/priorities with probability 1/(n(probabilities)) by considering observed outcomes in a prior way.
+
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation") and can be used to generate predictions from observing behaviors "observations".
+
+The agent consists of five components:
+
+1. **Input**: Input data is provided via a set of visible observables. This enables generating predictions based on observed outcomes("states") or prior probabilities.
+
+2. **Learning** - A learning rule computes the learned beliefs (belief) from observable behavior patterns and actions for observing observations with probability 1/(n(probability)). Each action-based probability distribution maps observed observables to their corresponding observables/priorities with probability 1/(n(probabilities)) by considering observed outcomes in a prior way.
+
+3. **Output** - Output data are presented in vector representations representing actions taken towards observable behaviors ("observation") and can be used to generate predictions from observing behaviors "observations".

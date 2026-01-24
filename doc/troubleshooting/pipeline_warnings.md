@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: All Users | **Complexity**: Intermediate  
-> **Cross-References**: [Setup Guide](../SETUP.md) | [Pipeline Assessment](../pipeline/pipeline_warning_assessment.md)
+> **Cross-References**: [Setup Guide](../SETUP.md) | [Pipeline Assessment](../gnn/gnn_troubleshooting.md)
 
 This guide helps you diagnose and resolve common warnings in the GNN pipeline execution.
 
@@ -371,7 +371,7 @@ du -sh output/
 
 1. **Check Logs**: All steps log to `output/[step]_output/`
 2. **Read Documentation**: See [Setup Guide](../SETUP.md) for installation help
-3. **Review Assessment**: See [Pipeline Assessment](../pipeline/pipeline_warning_assessment.md)
+3. **Review Assessment**: See [Pipeline Assessment](../gnn/gnn_troubleshooting.md)
 
 ### Community Support
 

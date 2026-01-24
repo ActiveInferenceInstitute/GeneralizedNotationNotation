@@ -296,12 +296,16 @@ def generate_graph_tool(graph_data):
 
 **Solution**:
 ```bash
-pip install matplotlib>=3.5.0 networkx>=2.8.0 numpy>=1.21.0
+# Using UV (recommended)
+uv pip install matplotlib>=3.5.0 networkx>=2.8.0 numpy>=1.21.0
+
+# Or install all dependencies via pyproject.toml
+uv sync
 ```
 
-**Alternative**: Install all visualization dependencies:
+**Alternative**: Install visualization optional group:
 ```bash
-pip install -r requirements.txt
+uv sync --extra visualization
 ```
 
 #### 3. Large Model Visualization Failures

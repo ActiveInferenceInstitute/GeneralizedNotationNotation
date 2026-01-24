@@ -1,12 +1,12 @@
 {
-  "report_generation_time": "2026-01-21T12:57:51.677369",
+  "report_generation_time": "2026-01-24T14:27:16.201194",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
       "directory": "output/0_template_output",
       "exists": true,
       "file_count": 3,
-      "total_size_mb": 0.0,
+      "total_size_mb": 0.01,
       "file_types": {
         ".json": {
           "count": 2,
@@ -14,10 +14,10 @@
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.0042476654052734375
+          "total_size_mb": 0.004317283630371094
         }
       },
-      "last_modified": "2026-01-21T12:50:22.735303",
+      "last_modified": "2026-01-24T14:22:11.654350",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -40,7 +40,7 @@
           "total_size_mb": 0.018258094787597656
         }
       },
-      "last_modified": "2026-01-21T12:50:26.765820",
+      "last_modified": "2026-01-24T14:22:15.493050",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -50,25 +50,25 @@
       "directory": "output/2_tests_output",
       "exists": true,
       "file_count": 2,
-      "total_size_mb": 0.13,
+      "total_size_mb": 0.28,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.00019073486328125
+          "total_size_mb": 0.00019359588623046875
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.1282482147216797
+          "total_size_mb": 0.2753753662109375
         }
       },
-      "last_modified": "2026-01-21T12:52:10.411095",
+      "last_modified": "2026-01-24T14:24:16.736338",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "pytest_comprehensive_output.txt",
-          "size_mb": 0.13,
+          "size_mb": 0.28,
           "type": ".txt"
         }
       ]
@@ -81,90 +81,90 @@
       "file_types": {
         ".json": {
           "count": 5,
-          "total_size_mb": 0.035785675048828125
+          "total_size_mb": 0.037360191345214844
         },
         ".tla": {
           "count": 1,
-          "total_size_mb": 0.004490852355957031
+          "total_size_mb": 0.004561424255371094
         },
         ".max": {
           "count": 1,
-          "total_size_mb": 0.005471229553222656
+          "total_size_mb": 0.005611419677734375
         },
         ".proto": {
           "count": 1,
-          "total_size_mb": 0.006870269775390625
+          "total_size_mb": 0.007010459899902344
         },
         ".lean": {
           "count": 1,
-          "total_size_mb": 0.005202293395996094
+          "total_size_mb": 0.005272865295410156
         },
         ".thy": {
           "count": 1,
-          "total_size_mb": 0.005007743835449219
+          "total_size_mb": 0.005078315734863281
         },
         ".als": {
           "count": 1,
-          "total_size_mb": 0.0077972412109375
+          "total_size_mb": 0.007937431335449219
         },
         ".pkl": {
           "count": 2,
-          "total_size_mb": 0.015057563781738281
+          "total_size_mb": 0.015358924865722656
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.001667022705078125
+          "total_size_mb": 0.0017366409301757812
         },
         ".hs": {
           "count": 1,
-          "total_size_mb": 0.005245208740234375
+          "total_size_mb": 0.0053157806396484375
         },
         ".ebnf": {
           "count": 1,
-          "total_size_mb": 0.00521087646484375
+          "total_size_mb": 0.0052814483642578125
         },
         ".bnf": {
           "count": 1,
-          "total_size_mb": 0.00521087646484375
+          "total_size_mb": 0.0052814483642578125
         },
         ".scala": {
           "count": 1,
-          "total_size_mb": 0.0048503875732421875
+          "total_size_mb": 0.00492095947265625
         },
         ".py": {
           "count": 1,
-          "total_size_mb": 0.008640289306640625
+          "total_size_mb": 0.00878143310546875
         },
         ".yaml": {
           "count": 1,
-          "total_size_mb": 0.005459785461425781
+          "total_size_mb": 0.005536079406738281
         },
         ".z": {
           "count": 1,
-          "total_size_mb": 0.005512237548828125
+          "total_size_mb": 0.0055828094482421875
         },
         ".xsd": {
           "count": 1,
-          "total_size_mb": 0.005904197692871094
+          "total_size_mb": 0.005974769592285156
         },
         ".agda": {
           "count": 1,
-          "total_size_mb": 0.004497528076171875
+          "total_size_mb": 0.0045680999755859375
         },
         ".xml": {
           "count": 1,
-          "total_size_mb": 0.009092330932617188
+          "total_size_mb": 0.009232521057128906
         },
         ".v": {
           "count": 1,
-          "total_size_mb": 0.004973411560058594
+          "total_size_mb": 0.005043983459472656
         },
         ".asn1": {
           "count": 1,
-          "total_size_mb": 0.007712364196777344
+          "total_size_mb": 0.007782936096191406
         }
       },
-      "last_modified": "2026-01-21T12:52:10.570862",
+      "last_modified": "2026-01-24T14:26:20.352337",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -187,7 +187,7 @@
           "total_size_mb": 0.0007076263427734375
         }
       },
-      "last_modified": "2026-01-21T12:52:10.672889",
+      "last_modified": "2026-01-24T14:24:17.434536",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -207,14 +207,14 @@
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.02302074432373047
+          "total_size_mb": 0.023477554321289062
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.00032711029052734375
         }
       },
-      "last_modified": "2026-01-21T12:52:10.802017",
+      "last_modified": "2026-01-24T14:26:20.720693",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -231,7 +231,7 @@
           "total_size_mb": 0.0024099349975585938
         }
       },
-      "last_modified": "2026-01-21T12:52:10.919517",
+      "last_modified": "2026-01-24T14:24:18.071341",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -247,11 +247,11 @@
       "directory": "output/7_export_output",
       "exists": true,
       "file_count": 7,
-      "total_size_mb": 0.03,
+      "total_size_mb": 0.04,
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.020624160766601562
+          "total_size_mb": 0.021184921264648438
         },
         ".graphml": {
           "count": 1,
@@ -267,10 +267,10 @@
         },
         ".pkl": {
           "count": 1,
-          "total_size_mb": 0.010469436645507812
+          "total_size_mb": 0.010608673095703125
         }
       },
-      "last_modified": "2026-01-21T12:52:10.999459",
+      "last_modified": "2026-01-24T14:26:21.059232",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -311,11 +311,11 @@
       "directory": "output/8_visualization_output",
       "exists": true,
       "file_count": 18,
-      "total_size_mb": 2.55,
+      "total_size_mb": 2.68,
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.0016679763793945312
+          "total_size_mb": 0.0022974014282226562
         },
         ".csv": {
           "count": 4,
@@ -323,10 +323,10 @@
         },
         ".png": {
           "count": 12,
-          "total_size_mb": 2.5490493774414062
+          "total_size_mb": 2.681675910949707
         }
       },
-      "last_modified": "2026-01-21T12:52:12.007549",
+      "last_modified": "2026-01-24T14:26:22.271156",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -353,7 +353,7 @@
         },
         {
           "name": "actinf_pomdp_agent_combined_analysis.png",
-          "size_mb": 0.69,
+          "size_mb": 0.79,
           "type": ".png"
         },
         {
@@ -363,12 +363,12 @@
         },
         {
           "name": "actinf_pomdp_agent_variable_type_distribution.png",
-          "size_mb": 0.43,
+          "size_mb": 0.46,
           "type": ".png"
         },
         {
           "name": "actinf_pomdp_agent_network_graph.png",
-          "size_mb": 0.44,
+          "size_mb": 0.45,
           "type": ".png"
         },
         {
@@ -409,7 +409,7 @@
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.0053348541259765625
+          "total_size_mb": 0.005333900451660156
         },
         ".d2": {
           "count": 4,
@@ -420,7 +420,7 @@
           "total_size_mb": 0.1119527816772461
         }
       },
-      "last_modified": "2026-01-21T12:52:19.781018",
+      "last_modified": "2026-01-24T14:24:27.772508",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -518,7 +518,7 @@
           "total_size_mb": 0.005862236022949219
         }
       },
-      "last_modified": "2026-01-21T12:52:19.998747",
+      "last_modified": "2026-01-24T14:24:28.186656",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -527,39 +527,39 @@
     "11_render_output": {
       "directory": "output/11_render_output",
       "exists": true,
-      "file_count": 45,
-      "total_size_mb": 4.42,
+      "file_count": 40,
+      "total_size_mb": 3.22,
       "file_types": {
         ".md": {
           "count": 6,
-          "total_size_mb": 0.009537696838378906
+          "total_size_mb": 0.009746551513671875
         },
         ".json": {
-          "count": 8,
-          "total_size_mb": 0.01397705078125
+          "count": 9,
+          "total_size_mb": 0.03154563903808594
         },
         ".jl": {
           "count": 2,
-          "total_size_mb": 0.02752971649169922
+          "total_size_mb": 0.027571678161621094
         },
         ".png": {
-          "count": 22,
-          "total_size_mb": 4.33270263671875
+          "count": 16,
+          "total_size_mb": 3.1068477630615234
         },
         ".py": {
           "count": 3,
-          "total_size_mb": 0.03551959991455078
+          "total_size_mb": 0.03821754455566406
         },
         ".csv": {
           "count": 2,
-          "total_size_mb": 0.00139617919921875
+          "total_size_mb": 0.00194549560546875
         },
         ".txt": {
           "count": 2,
-          "total_size_mb": 0.0016002655029296875
+          "total_size_mb": 0.0016193389892578125
         }
       },
-      "last_modified": "2026-01-21T12:53:07.598912",
+      "last_modified": "2026-01-24T14:26:55.312244",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -599,12 +599,12 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 33,
-      "total_size_mb": 0.48,
+      "file_count": 27,
+      "total_size_mb": 0.13,
       "file_types": {
         ".json": {
-          "count": 14,
-          "total_size_mb": 0.06756782531738281
+          "count": 16,
+          "total_size_mb": 0.1076345443725586
         },
         ".md": {
           "count": 1,
@@ -612,71 +612,27 @@
         },
         ".txt": {
           "count": 5,
-          "total_size_mb": 0.010304450988769531
-        },
-        ".png": {
-          "count": 8,
-          "total_size_mb": 0.38974761962890625
+          "total_size_mb": 0.011898994445800781
         },
         ".log": {
           "count": 5,
-          "total_size_mb": 0.010869979858398438
+          "total_size_mb": 0.012674331665039062
         }
       },
-      "last_modified": "2026-01-21T12:53:07.916427",
+      "last_modified": "2026-01-24T14:26:56.021255",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "execution_summary.json",
-          "size_mb": 0.03,
+          "size_mb": 0.04,
           "type": ".json"
         },
         {
           "name": "execution_report.md",
           "size_mb": 0.0,
           "type": ".md"
-        },
-        {
-          "name": "rxinfer_results.png",
-          "size_mb": 0.03,
-          "type": ".png"
-        },
-        {
-          "name": "rxinfer_results_1.png",
-          "size_mb": 0.03,
-          "type": ".png"
-        },
-        {
-          "name": "discopy_diagrams_perception_action_loop.png",
-          "size_mb": 0.06,
-          "type": ".png"
-        },
-        {
-          "name": "model_components.png",
-          "size_mb": 0.03,
-          "type": ".png"
-        },
-        {
-          "name": "discopy_diagrams_generative_model.png",
-          "size_mb": 0.07,
-          "type": ".png"
-        },
-        {
-          "name": "discopy_diagrams_model_components.png",
-          "size_mb": 0.03,
-          "type": ".png"
-        },
-        {
-          "name": "generative_model.png",
-          "size_mb": 0.07,
-          "type": ".png"
-        },
-        {
-          "name": "perception_action_loop.png",
-          "size_mb": 0.06,
-          "type": ".png"
         }
       ]
     },
@@ -684,18 +640,18 @@
       "directory": "output/13_llm_output",
       "exists": true,
       "file_count": 11,
-      "total_size_mb": 0.16,
+      "total_size_mb": 0.12,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.09608745574951172
+          "total_size_mb": 0.07347583770751953
         },
         ".md": {
           "count": 10,
-          "total_size_mb": 0.06462574005126953
+          "total_size_mb": 0.042842864990234375
         }
       },
-      "last_modified": "2026-01-21T12:57:34.570811",
+      "last_modified": "2026-01-24T14:26:48.884614",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -707,7 +663,7 @@
         },
         {
           "name": "summarize_content.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         },
         {
@@ -717,7 +673,7 @@
         },
         {
           "name": "practical_applications.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         },
         {
@@ -727,12 +683,12 @@
         },
         {
           "name": "identify_components.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         },
         {
           "name": "extract_parameters.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         },
         {
@@ -742,12 +698,12 @@
         },
         {
           "name": "technical_description.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         },
         {
           "name": "analyze_structure.md",
-          "size_mb": 0.01,
+          "size_mb": 0.0,
           "type": ".md"
         }
       ]
@@ -755,25 +711,19 @@
     "14_ml_integration_output": {
       "directory": "output/14_ml_integration_output",
       "exists": true,
-      "file_count": 2,
+      "file_count": 1,
       "total_size_mb": 0.0,
       "file_types": {
         ".json": {
-          "count": 2,
-          "total_size_mb": 0.000881195068359375
+          "count": 1,
+          "total_size_mb": 0.00041103363037109375
         }
       },
-      "last_modified": "2026-01-21T12:57:35.872713",
+      "last_modified": "2026-01-24T14:26:50.414603",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [
-        {
-          "name": "ml_integration_summary.json",
-          "size_mb": 0.0,
-          "type": ".json"
-        }
-      ]
+      "key_files": []
     },
     "15_audio_output": {
       "directory": "output/15_audio_output",
@@ -794,7 +744,7 @@
           "total_size_mb": 0.000370025634765625
         }
       },
-      "last_modified": "2026-01-21T12:57:36.262624",
+      "last_modified": "2026-01-24T14:26:51.142051",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -839,23 +789,23 @@
     "16_analysis_output": {
       "directory": "output/16_analysis_output",
       "exists": true,
-      "file_count": 17,
-      "total_size_mb": 2.18,
+      "file_count": 43,
+      "total_size_mb": 8.08,
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.025884628295898438
+          "total_size_mb": 0.028329849243164062
         },
         ".md": {
           "count": 2,
           "total_size_mb": 0.0010356903076171875
         },
         ".png": {
-          "count": 12,
-          "total_size_mb": 2.1548662185668945
+          "count": 38,
+          "total_size_mb": 8.051873207092285
         }
       },
-      "last_modified": "2026-01-21T12:57:39.347434",
+      "last_modified": "2026-01-24T14:27:00.119091",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -875,71 +825,65 @@
     "17_integration_output": {
       "directory": "output/17_integration_output",
       "exists": true,
-      "file_count": 1,
+      "file_count": 2,
       "total_size_mb": 0.0,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.000255584716796875
+          "total_size_mb": 0.000148773193359375
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 6.389617919921875e-05
         }
       },
-      "last_modified": "2026-01-21T12:57:39.523500",
+      "last_modified": "2026-01-24T14:27:00.701002",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [
-        {
-          "name": "integration_processing_summary.json",
-          "size_mb": 0.0,
-          "type": ".json"
-        }
-      ]
+      "key_files": []
     },
     "18_security_output": {
       "directory": "output/18_security_output",
       "exists": true,
-      "file_count": 1,
+      "file_count": 2,
       "total_size_mb": 0.0,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.00030231475830078125
+          "total_size_mb": 0.0010833740234375
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.00045108795166015625
         }
       },
-      "last_modified": "2026-01-21T12:57:39.593604",
+      "last_modified": "2026-01-24T14:27:01.029656",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [
-        {
-          "name": "security_processing_summary.json",
-          "size_mb": 0.0,
-          "type": ".json"
-        }
-      ]
+      "key_files": []
     },
     "19_research_output": {
       "directory": "output/19_research_output",
       "exists": true,
-      "file_count": 1,
+      "file_count": 2,
       "total_size_mb": 0.0,
       "file_types": {
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.00026035308837890625
+        },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.00027179718017578125
+          "total_size_mb": 0.000415802001953125
         }
       },
-      "last_modified": "2026-01-21T12:57:39.664319",
+      "last_modified": "2026-01-24T14:27:01.361208",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [
-        {
-          "name": "research_processing_summary.json",
-          "size_mb": 0.0,
-          "type": ".json"
-        }
-      ]
+      "key_files": []
     },
     "20_website_output": {
       "directory": "output/20_website_output",
@@ -956,7 +900,7 @@
           "total_size_mb": 3.528594970703125e-05
         }
       },
-      "last_modified": "2026-01-21T12:57:39.738375",
+      "last_modified": "2026-01-24T14:27:01.694128",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -976,10 +920,10 @@
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.0053768157958984375
+          "total_size_mb": 0.006903648376464844
         }
       },
-      "last_modified": "2026-01-21T12:57:49.862132",
+      "last_modified": "2026-01-24T14:27:12.087592",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1008,14 +952,14 @@
         },
         ".md": {
           "count": 2,
-          "total_size_mb": 0.008073806762695312
+          "total_size_mb": 0.008213043212890625
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.0511627197265625
+          "total_size_mb": 0.04422569274902344
         }
       },
-      "last_modified": "2026-01-21T12:57:51.504770",
+      "last_modified": "2026-01-24T14:27:15.730186",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1027,7 +971,7 @@
         },
         {
           "name": "navigation.html",
-          "size_mb": 0.05,
+          "size_mb": 0.04,
           "type": ".html"
         }
       ]
@@ -1046,11 +990,11 @@
     }
   },
   "summary": {
-    "total_files_processed": 216,
+    "total_files_processed": 233,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 16.24,
+    "total_size_mb": 20.85,
     "success_rate": 100.0
   },
   "performance_metrics": {},
@@ -1058,16 +1002,16 @@
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 61,
-        "total_size_mb": 0.33
+        "count": 63,
+        "total_size_mb": 0.37
       },
       ".md": {
-        "count": 25,
-        "total_size_mb": 0.09
+        "count": 28,
+        "total_size_mb": 0.07
       },
       ".txt": {
         "count": 8,
-        "total_size_mb": 0.14
+        "total_size_mb": 0.29
       },
       ".tla": {
         "count": 1,
@@ -1115,7 +1059,7 @@
       },
       ".py": {
         "count": 4,
-        "total_size_mb": 0.04
+        "total_size_mb": 0.05
       },
       ".yaml": {
         "count": 1,
@@ -1139,7 +1083,7 @@
       },
       ".v": {
         "count": 1,
-        "total_size_mb": 0.0
+        "total_size_mb": 0.01
       },
       ".asn1": {
         "count": 1,
@@ -1158,12 +1102,12 @@
         "total_size_mb": 0.0
       },
       ".png": {
-        "count": 64,
-        "total_size_mb": 11.24
+        "count": 76,
+        "total_size_mb": 15.66
       },
       ".html": {
         "count": 3,
-        "total_size_mb": 0.08
+        "total_size_mb": 0.07
       },
       ".d2": {
         "count": 4,
@@ -1199,11 +1143,11 @@
         },
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.00019073486328125
+          "size_mb": 0.00019359588623046875
         },
         "3_gnn_output": {
           "count": 5,
-          "size_mb": 0.035785675048828125
+          "size_mb": 0.037360191345214844
         },
         "4_model_registry_output": {
           "count": 1,
@@ -1211,7 +1155,7 @@
         },
         "5_type_checker_output": {
           "count": 1,
-          "size_mb": 0.02302074432373047
+          "size_mb": 0.023477554321289062
         },
         "6_validation_output": {
           "count": 2,
@@ -1219,35 +1163,35 @@
         },
         "7_export_output": {
           "count": 3,
-          "size_mb": 0.020624160766601562
+          "size_mb": 0.021184921264648438
         },
         "8_visualization_output": {
           "count": 2,
-          "size_mb": 0.0016679763793945312
+          "size_mb": 0.0022974014282226562
         },
         "9_advanced_viz_output": {
           "count": 1,
-          "size_mb": 0.0053348541259765625
+          "size_mb": 0.005333900451660156
         },
         "10_ontology_output": {
           "count": 2,
           "size_mb": 0.005862236022949219
         },
         "11_render_output": {
-          "count": 8,
-          "size_mb": 0.01397705078125
+          "count": 9,
+          "size_mb": 0.03154563903808594
         },
         "12_execute_output": {
-          "count": 14,
-          "size_mb": 0.06756782531738281
+          "count": 16,
+          "size_mb": 0.1076345443725586
         },
         "13_llm_output": {
           "count": 1,
-          "size_mb": 0.09608745574951172
+          "size_mb": 0.07347583770751953
         },
         "14_ml_integration_output": {
-          "count": 2,
-          "size_mb": 0.000881195068359375
+          "count": 1,
+          "size_mb": 0.00041103363037109375
         },
         "15_audio_output": {
           "count": 1,
@@ -1255,19 +1199,19 @@
         },
         "16_analysis_output": {
           "count": 3,
-          "size_mb": 0.025884628295898438
+          "size_mb": 0.028329849243164062
         },
         "17_integration_output": {
           "count": 1,
-          "size_mb": 0.000255584716796875
+          "size_mb": 0.000148773193359375
         },
         "18_security_output": {
           "count": 1,
-          "size_mb": 0.00030231475830078125
+          "size_mb": 0.0010833740234375
         },
         "19_research_output": {
           "count": 1,
-          "size_mb": 0.00027179718017578125
+          "size_mb": 0.000415802001953125
         },
         "20_website_output": {
           "count": 1,
@@ -1275,7 +1219,7 @@
         },
         "21_mcp_output": {
           "count": 3,
-          "size_mb": 0.0053768157958984375
+          "size_mb": 0.006903648376464844
         },
         "22_gui_output": {
           "count": 3,
@@ -1285,11 +1229,11 @@
       ".md": {
         "0_template_output": {
           "count": 1,
-          "size_mb": 0.0042476654052734375
+          "size_mb": 0.004317283630371094
         },
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.001667022705078125
+          "size_mb": 0.0017366409301757812
         },
         "5_type_checker_output": {
           "count": 1,
@@ -1297,7 +1241,7 @@
         },
         "11_render_output": {
           "count": 6,
-          "size_mb": 0.009537696838378906
+          "size_mb": 0.009746551513671875
         },
         "12_execute_output": {
           "count": 1,
@@ -1305,7 +1249,7 @@
         },
         "13_llm_output": {
           "count": 10,
-          "size_mb": 0.06462574005126953
+          "size_mb": 0.042842864990234375
         },
         "15_audio_output": {
           "count": 1,
@@ -1315,133 +1259,145 @@
           "count": 2,
           "size_mb": 0.0010356903076171875
         },
+        "17_integration_output": {
+          "count": 1,
+          "size_mb": 6.389617919921875e-05
+        },
+        "18_security_output": {
+          "count": 1,
+          "size_mb": 0.00045108795166015625
+        },
+        "19_research_output": {
+          "count": 1,
+          "size_mb": 0.00026035308837890625
+        },
         "22_gui_output": {
           "count": 2,
-          "size_mb": 0.008073806762695312
+          "size_mb": 0.008213043212890625
         }
       },
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.1282482147216797
+          "size_mb": 0.2753753662109375
         },
         "11_render_output": {
           "count": 2,
-          "size_mb": 0.0016002655029296875
+          "size_mb": 0.0016193389892578125
         },
         "12_execute_output": {
           "count": 5,
-          "size_mb": 0.010304450988769531
+          "size_mb": 0.011898994445800781
         }
       },
       ".tla": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.004490852355957031
+          "size_mb": 0.004561424255371094
         }
       },
       ".max": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005471229553222656
+          "size_mb": 0.005611419677734375
         }
       },
       ".proto": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.006870269775390625
+          "size_mb": 0.007010459899902344
         }
       },
       ".lean": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005202293395996094
+          "size_mb": 0.005272865295410156
         }
       },
       ".thy": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005007743835449219
+          "size_mb": 0.005078315734863281
         }
       },
       ".als": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.0077972412109375
+          "size_mb": 0.007937431335449219
         }
       },
       ".pkl": {
         "3_gnn_output": {
           "count": 2,
-          "size_mb": 0.015057563781738281
+          "size_mb": 0.015358924865722656
         },
         "7_export_output": {
           "count": 1,
-          "size_mb": 0.010469436645507812
+          "size_mb": 0.010608673095703125
         }
       },
       ".hs": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005245208740234375
+          "size_mb": 0.0053157806396484375
         }
       },
       ".ebnf": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.00521087646484375
+          "size_mb": 0.0052814483642578125
         }
       },
       ".bnf": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.00521087646484375
+          "size_mb": 0.0052814483642578125
         }
       },
       ".scala": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.0048503875732421875
+          "size_mb": 0.00492095947265625
         }
       },
       ".py": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.008640289306640625
+          "size_mb": 0.00878143310546875
         },
         "11_render_output": {
           "count": 3,
-          "size_mb": 0.03551959991455078
+          "size_mb": 0.03821754455566406
         }
       },
       ".yaml": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005459785461425781
+          "size_mb": 0.005536079406738281
         }
       },
       ".z": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005512237548828125
+          "size_mb": 0.0055828094482421875
         }
       },
       ".xsd": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.005904197692871094
+          "size_mb": 0.005974769592285156
         }
       },
       ".agda": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.004497528076171875
+          "size_mb": 0.0045680999755859375
         }
       },
       ".xml": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.009092330932617188
+          "size_mb": 0.009232521057128906
         },
         "7_export_output": {
           "count": 1,
@@ -1451,13 +1407,13 @@
       ".v": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.004973411560058594
+          "size_mb": 0.005043983459472656
         }
       },
       ".asn1": {
         "3_gnn_output": {
           "count": 1,
-          "size_mb": 0.007712364196777344
+          "size_mb": 0.007782936096191406
         }
       },
       ".graphml": {
@@ -1479,29 +1435,25 @@
         },
         "11_render_output": {
           "count": 2,
-          "size_mb": 0.00139617919921875
+          "size_mb": 0.00194549560546875
         }
       },
       ".png": {
         "8_visualization_output": {
           "count": 12,
-          "size_mb": 2.5490493774414062
+          "size_mb": 2.681675910949707
         },
         "9_advanced_viz_output": {
           "count": 10,
           "size_mb": 1.8172712326049805
         },
         "11_render_output": {
-          "count": 22,
-          "size_mb": 4.33270263671875
-        },
-        "12_execute_output": {
-          "count": 8,
-          "size_mb": 0.38974761962890625
+          "count": 16,
+          "size_mb": 3.1068477630615234
         },
         "16_analysis_output": {
-          "count": 12,
-          "size_mb": 2.1548662185668945
+          "count": 38,
+          "size_mb": 8.051873207092285
         }
       },
       ".html": {
@@ -1515,7 +1467,7 @@
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.0511627197265625
+          "size_mb": 0.04422569274902344
         }
       },
       ".d2": {
@@ -1533,13 +1485,13 @@
       ".jl": {
         "11_render_output": {
           "count": 2,
-          "size_mb": 0.02752971649169922
+          "size_mb": 0.027571678161621094
         }
       },
       ".log": {
         "12_execute_output": {
           "count": 5,
-          "size_mb": 0.010869979858398438
+          "size_mb": 0.012674331665039062
         }
       },
       ".wav": {
@@ -1746,7 +1698,7 @@
     "missing_prerequisites": []
   },
   "visualizations": {
-    "total_count": 58,
+    "total_count": 44,
     "by_step": {
       "8_visualization_output": {
         "step": "8_visualization_output",
@@ -1778,7 +1730,7 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 200984,
+            "size_bytes": 200971,
             "size_mb": 0.19,
             "step": "8_visualization_output"
           },
@@ -1798,8 +1750,8 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 725468,
-            "size_mb": 0.69,
+            "size_bytes": 825399,
+            "size_mb": 0.79,
             "step": "8_visualization_output"
           },
           {
@@ -1818,8 +1770,8 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 451298,
-            "size_mb": 0.43,
+            "size_bytes": 485737,
+            "size_mb": 0.46,
             "step": "8_visualization_output"
           },
           {
@@ -1828,8 +1780,8 @@
             "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 466517,
-            "size_mb": 0.44,
+            "size_bytes": 471229,
+            "size_mb": 0.45,
             "step": "8_visualization_output"
           },
           {
@@ -2032,7 +1984,7 @@
       },
       "11_render_output": {
         "step": "11_render_output",
-        "count": 22,
+        "count": 16,
         "files": [
           {
             "name": "rxinfer_results.png",
@@ -2040,34 +1992,34 @@
             "relative_path": "11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 31876,
-            "size_mb": 0.03,
+            "size_bytes": 37302,
+            "size_mb": 0.04,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_belief_evolution.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 288571,
-            "size_mb": 0.28,
+            "size_bytes": 310468,
+            "size_mb": 0.3,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_action_analysis.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 178917,
-            "size_mb": 0.17,
+            "size_bytes": 216626,
+            "size_mb": 0.21,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_A_matrix.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
             "type": "image",
             "extension": ".png",
             "size_bytes": 144679,
@@ -2076,18 +2028,18 @@
           },
           {
             "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 291504,
+            "size_bytes": 291593,
             "size_mb": 0.28,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_preferences_prior.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
             "type": "image",
             "extension": ".png",
             "size_bytes": 146149,
@@ -2096,108 +2048,58 @@
           },
           {
             "name": "Active Inference POMDP Agent_dashboard.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 396456,
-            "size_mb": 0.38,
-            "step": "11_render_output"
-          },
-          {
-            "name": "visualizations_Active Inference POMDP Agent_A_matrix.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 144679,
-            "size_mb": 0.14,
+            "size_bytes": 414485,
+            "size_mb": 0.4,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_belief_evolution.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 288571,
-            "size_mb": 0.28,
+            "size_bytes": 310468,
+            "size_mb": 0.3,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_action_analysis.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 178917,
-            "size_mb": 0.17,
-            "step": "11_render_output"
-          },
-          {
-            "name": "visualizations_Active Inference POMDP Agent_action_analysis.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 178917,
-            "size_mb": 0.17,
+            "size_bytes": 216626,
+            "size_mb": 0.21,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_A_matrix.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
             "type": "image",
             "extension": ".png",
             "size_bytes": 144679,
-            "size_mb": 0.14,
-            "step": "11_render_output"
-          },
-          {
-            "name": "visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 291504,
-            "size_mb": 0.28,
-            "step": "11_render_output"
-          },
-          {
-            "name": "visualizations_Active Inference POMDP Agent_dashboard.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 396456,
-            "size_mb": 0.38,
-            "step": "11_render_output"
-          },
-          {
-            "name": "visualizations_Active Inference POMDP Agent_preferences_prior.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 146149,
             "size_mb": 0.14,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 291504,
+            "size_bytes": 291593,
             "size_mb": 0.28,
             "step": "11_render_output"
           },
           {
             "name": "Active Inference POMDP Agent_preferences_prior.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
             "type": "image",
             "extension": ".png",
             "size_bytes": 146149,
@@ -2205,23 +2107,13 @@
             "step": "11_render_output"
           },
           {
-            "name": "visualizations_Active Inference POMDP Agent_belief_evolution.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 288571,
-            "size_mb": 0.28,
-            "step": "11_render_output"
-          },
-          {
             "name": "Active Inference POMDP Agent_dashboard.png",
-            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
-            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
+            "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
+            "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
             "type": "image",
             "extension": ".png",
-            "size_bytes": 396456,
-            "size_mb": 0.38,
+            "size_bytes": 414485,
+            "size_mb": 0.4,
             "step": "11_render_output"
           },
           {
@@ -2253,92 +2145,6 @@
             "size_bytes": 59924,
             "size_mb": 0.06,
             "step": "11_render_output"
-          }
-        ]
-      },
-      "12_execute_output": {
-        "step": "12_execute_output",
-        "count": 8,
-        "files": [
-          {
-            "name": "rxinfer_results.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 31876,
-            "size_mb": 0.03,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "rxinfer_results_1.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 31876,
-            "size_mb": 0.03,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "discopy_diagrams_perception_action_loop.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 59924,
-            "size_mb": 0.06,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "model_components.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 35562,
-            "size_mb": 0.03,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "discopy_diagrams_generative_model.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 76978,
-            "size_mb": 0.07,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "discopy_diagrams_model_components.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 35562,
-            "size_mb": 0.03,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "generative_model.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 76978,
-            "size_mb": 0.07,
-            "step": "12_execute_output"
-          },
-          {
-            "name": "perception_action_loop.png",
-            "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-            "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-            "type": "image",
-            "extension": ".png",
-            "size_bytes": 59924,
-            "size_mb": 0.06,
-            "step": "12_execute_output"
           }
         ]
       },
@@ -2387,7 +2193,7 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 200984,
+          "size_bytes": 200971,
           "size_mb": 0.19,
           "step": "8_visualization_output"
         },
@@ -2407,8 +2213,8 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 725468,
-          "size_mb": 0.69,
+          "size_bytes": 825399,
+          "size_mb": 0.79,
           "step": "8_visualization_output"
         },
         {
@@ -2427,8 +2233,8 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 451298,
-          "size_mb": 0.43,
+          "size_bytes": 485737,
+          "size_mb": 0.46,
           "step": "8_visualization_output"
         },
         {
@@ -2437,8 +2243,8 @@
           "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 466517,
-          "size_mb": 0.44,
+          "size_bytes": 471229,
+          "size_mb": 0.45,
           "step": "8_visualization_output"
         },
         {
@@ -2627,34 +2433,34 @@
           "relative_path": "11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 31876,
-          "size_mb": 0.03,
+          "size_bytes": 37302,
+          "size_mb": 0.04,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_belief_evolution.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 288571,
-          "size_mb": 0.28,
+          "size_bytes": 310468,
+          "size_mb": 0.3,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_action_analysis.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 178917,
-          "size_mb": 0.17,
+          "size_bytes": 216626,
+          "size_mb": 0.21,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_A_matrix.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
           "type": "image",
           "extension": ".png",
           "size_bytes": 144679,
@@ -2663,18 +2469,18 @@
         },
         {
           "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 291504,
+          "size_bytes": 291593,
           "size_mb": 0.28,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_preferences_prior.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
           "type": "image",
           "extension": ".png",
           "size_bytes": 146149,
@@ -2683,108 +2489,58 @@
         },
         {
           "name": "Active Inference POMDP Agent_dashboard.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 396456,
-          "size_mb": 0.38,
-          "step": "11_render_output"
-        },
-        {
-          "name": "visualizations_Active Inference POMDP Agent_A_matrix.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 144679,
-          "size_mb": 0.14,
+          "size_bytes": 414485,
+          "size_mb": 0.4,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_belief_evolution.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 288571,
-          "size_mb": 0.28,
+          "size_bytes": 310468,
+          "size_mb": 0.3,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_action_analysis.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 178917,
-          "size_mb": 0.17,
-          "step": "11_render_output"
-        },
-        {
-          "name": "visualizations_Active Inference POMDP Agent_action_analysis.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 178917,
-          "size_mb": 0.17,
+          "size_bytes": 216626,
+          "size_mb": 0.21,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_A_matrix.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
           "type": "image",
           "extension": ".png",
           "size_bytes": 144679,
-          "size_mb": 0.14,
-          "step": "11_render_output"
-        },
-        {
-          "name": "visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 291504,
-          "size_mb": 0.28,
-          "step": "11_render_output"
-        },
-        {
-          "name": "visualizations_Active Inference POMDP Agent_dashboard.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 396456,
-          "size_mb": 0.38,
-          "step": "11_render_output"
-        },
-        {
-          "name": "visualizations_Active Inference POMDP Agent_preferences_prior.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 146149,
           "size_mb": 0.14,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 291504,
+          "size_bytes": 291593,
           "size_mb": 0.28,
           "step": "11_render_output"
         },
         {
           "name": "Active Inference POMDP Agent_preferences_prior.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
           "type": "image",
           "extension": ".png",
           "size_bytes": 146149,
@@ -2792,23 +2548,13 @@
           "step": "11_render_output"
         },
         {
-          "name": "visualizations_Active Inference POMDP Agent_belief_evolution.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 288571,
-          "size_mb": 0.28,
-          "step": "11_render_output"
-        },
-        {
           "name": "Active Inference POMDP Agent_dashboard.png",
-          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
-          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
+          "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
+          "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
           "type": "image",
           "extension": ".png",
-          "size_bytes": 396456,
-          "size_mb": 0.38,
+          "size_bytes": 414485,
+          "size_mb": 0.4,
           "step": "11_render_output"
         },
         {
@@ -2840,86 +2586,6 @@
           "size_bytes": 59924,
           "size_mb": 0.06,
           "step": "11_render_output"
-        },
-        {
-          "name": "rxinfer_results.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 31876,
-          "size_mb": 0.03,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "rxinfer_results_1.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 31876,
-          "size_mb": 0.03,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "discopy_diagrams_perception_action_loop.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 59924,
-          "size_mb": 0.06,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "model_components.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 35562,
-          "size_mb": 0.03,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "discopy_diagrams_generative_model.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 76978,
-          "size_mb": 0.07,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "discopy_diagrams_model_components.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 35562,
-          "size_mb": 0.03,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "generative_model.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 76978,
-          "size_mb": 0.07,
-          "step": "12_execute_output"
-        },
-        {
-          "name": "perception_action_loop.png",
-          "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-          "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-          "type": "image",
-          "extension": ".png",
-          "size_bytes": 59924,
-          "size_mb": 0.06,
-          "step": "12_execute_output"
         }
       ],
       "html": [
@@ -2972,7 +2638,7 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 200984,
+        "size_bytes": 200971,
         "size_mb": 0.19,
         "step": "8_visualization_output"
       },
@@ -2992,8 +2658,8 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 725468,
-        "size_mb": 0.69,
+        "size_bytes": 825399,
+        "size_mb": 0.79,
         "step": "8_visualization_output"
       },
       {
@@ -3012,8 +2678,8 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 451298,
-        "size_mb": 0.43,
+        "size_bytes": 485737,
+        "size_mb": 0.46,
         "step": "8_visualization_output"
       },
       {
@@ -3022,8 +2688,8 @@
         "relative_path": "8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 466517,
-        "size_mb": 0.44,
+        "size_bytes": 471229,
+        "size_mb": 0.45,
         "step": "8_visualization_output"
       },
       {
@@ -3222,34 +2888,34 @@
         "relative_path": "11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 31876,
-        "size_mb": 0.03,
+        "size_bytes": 37302,
+        "size_mb": 0.04,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_belief_evolution.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 288571,
-        "size_mb": 0.28,
+        "size_bytes": 310468,
+        "size_mb": 0.3,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_action_analysis.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 178917,
-        "size_mb": 0.17,
+        "size_bytes": 216626,
+        "size_mb": 0.21,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_A_matrix.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png",
         "type": "image",
         "extension": ".png",
         "size_bytes": 144679,
@@ -3258,18 +2924,18 @@
       },
       {
         "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 291504,
+        "size_bytes": 291593,
         "size_mb": 0.28,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_preferences_prior.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png",
         "type": "image",
         "extension": ".png",
         "size_bytes": 146149,
@@ -3278,108 +2944,58 @@
       },
       {
         "name": "Active Inference POMDP Agent_dashboard.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 396456,
-        "size_mb": 0.38,
-        "step": "11_render_output"
-      },
-      {
-        "name": "visualizations_Active Inference POMDP Agent_A_matrix.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 144679,
-        "size_mb": 0.14,
+        "size_bytes": 414485,
+        "size_mb": 0.4,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_belief_evolution.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 288571,
-        "size_mb": 0.28,
+        "size_bytes": 310468,
+        "size_mb": 0.3,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_action_analysis.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 178917,
-        "size_mb": 0.17,
-        "step": "11_render_output"
-      },
-      {
-        "name": "visualizations_Active Inference POMDP Agent_action_analysis.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_action_analysis.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 178917,
-        "size_mb": 0.17,
+        "size_bytes": 216626,
+        "size_mb": 0.21,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_A_matrix.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_A_matrix.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png",
         "type": "image",
         "extension": ".png",
         "size_bytes": 144679,
-        "size_mb": 0.14,
-        "step": "11_render_output"
-      },
-      {
-        "name": "visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 291504,
-        "size_mb": 0.28,
-        "step": "11_render_output"
-      },
-      {
-        "name": "visualizations_Active Inference POMDP Agent_dashboard.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_dashboard.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 396456,
-        "size_mb": 0.38,
-        "step": "11_render_output"
-      },
-      {
-        "name": "visualizations_Active Inference POMDP Agent_preferences_prior.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_preferences_prior.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 146149,
         "size_mb": 0.14,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 291504,
+        "size_bytes": 291593,
         "size_mb": 0.28,
         "step": "11_render_output"
       },
       {
         "name": "Active Inference POMDP Agent_preferences_prior.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_preferences_prior.png",
         "type": "image",
         "extension": ".png",
         "size_bytes": 146149,
@@ -3387,23 +3003,13 @@
         "step": "11_render_output"
       },
       {
-        "name": "visualizations_Active Inference POMDP Agent_belief_evolution.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_belief_evolution.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 288571,
-        "size_mb": 0.28,
-        "step": "11_render_output"
-      },
-      {
         "name": "Active Inference POMDP Agent_dashboard.png",
-        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
-        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_dashboard.png",
+        "path": "output/11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
+        "relative_path": "11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_dashboard.png",
         "type": "image",
         "extension": ".png",
-        "size_bytes": 396456,
-        "size_mb": 0.38,
+        "size_bytes": 414485,
+        "size_mb": 0.4,
         "step": "11_render_output"
       },
       {
@@ -3437,86 +3043,6 @@
         "step": "11_render_output"
       },
       {
-        "name": "rxinfer_results.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 31876,
-        "size_mb": 0.03,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "rxinfer_results_1.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 31876,
-        "size_mb": 0.03,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "discopy_diagrams_perception_action_loop.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 59924,
-        "size_mb": 0.06,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "model_components.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 35562,
-        "size_mb": 0.03,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "discopy_diagrams_generative_model.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 76978,
-        "size_mb": 0.07,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "discopy_diagrams_model_components.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 35562,
-        "size_mb": 0.03,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "generative_model.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 76978,
-        "size_mb": 0.07,
-        "step": "12_execute_output"
-      },
-      {
-        "name": "perception_action_loop.png",
-        "path": "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-        "relative_path": "12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png",
-        "type": "image",
-        "extension": ".png",
-        "size_bytes": 59924,
-        "size_mb": 0.06,
-        "step": "12_execute_output"
-      },
-      {
         "name": "index.html",
         "path": "output/20_website_output/index.html",
         "relative_path": "20_website_output/index.html",
@@ -3530,7 +3056,7 @@
   },
   "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-01-21T12:57:51.690164",
+    "generation_time": "2026-01-24T14:27:16.215648",
     "formats_generated": [
       "html",
       "markdown",

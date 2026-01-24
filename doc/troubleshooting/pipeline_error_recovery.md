@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Troubleshooting Guide | **Audience**: Developers & Operators | **Complexity**: Intermediate  
-> **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Testing Guide](../testing/README.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Testing Guide](../testing/README.md)
 
 ## Overview
 
@@ -170,7 +170,7 @@ def initialize_jax_devices():
 
 ### 1. Pipeline Validator
 ```bash
-python src/pipeline/validate_pipeline.py --fix-issues
+python src/validate_pipeline.py --fix-issues
 ```
 
 ### 2. Environment Checker
@@ -195,7 +195,7 @@ When encountering new error patterns:
 
 ## References
 
-- [Pipeline Architecture](../pipeline/README.md)
+- [Pipeline Architecture](../gnn/gnn_tools.md)
 - [Testing Guide](../testing/README.md)
 - [Configuration Guide](../configuration/README.md)
 - [Development Guide](../development/README.md) 

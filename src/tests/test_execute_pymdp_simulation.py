@@ -36,11 +36,11 @@ def cleanup_test_temp_dir(path: Path) -> None:
         pass
 try:
     from execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from analysis.pymdp_visualizer import PyMDPVisualizer
+    from analysis.pymdp.visualizer import PyMDPVisualizer
     from execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
 except ImportError:
     from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from src.analysis.pymdp_visualizer import PyMDPVisualizer
+    from src.analysis.pymdp.visualizer import PyMDPVisualizer
     from src.execute.pymdp.pymdp_utils import convert_numpy_for_json, safe_json_dump
 
 

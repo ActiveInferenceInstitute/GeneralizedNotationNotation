@@ -30,7 +30,7 @@ from .execution import (
 )
 
 # Module metadata
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "GNN pipeline orchestration and execution"
 

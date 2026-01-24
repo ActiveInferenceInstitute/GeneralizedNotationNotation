@@ -118,6 +118,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         "n_states": [],
         "n_observations": [],
         "n_controls": [],
+        "n_timesteps": 20,  # Default, will be overridden if in GNN spec
         "policy_length": 1,
         "metadata": {}
     }
@@ -127,6 +128,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     n_states = model_params.get("num_hidden_states")
     n_obs = model_params.get("num_obs") 
     n_actions = model_params.get("num_actions")
+    n_timesteps = model_params.get("num_timesteps", 20)  # Default 20 for backward compat
+    model_info["n_timesteps"] = n_timesteps
     
     # --- Fallback 1: from original statespaceblock format ---
     if n_states is None or n_obs is None or n_actions is None:
@@ -270,19 +273,20 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     n_states = model_info["n_states"][0]
     n_obs = model_info["n_observations"][0]
     n_actions = model_info["n_controls"][0]
+    n_timesteps = model_info.get("n_timesteps", 20)  # From GNN ModelParameters
     
     # Extract matrices
     A_matrix = model_info["A"]
     B_matrix = model_info["B"]
     
     if isinstance(B_matrix, list):
-        logger.info(f"DEBUG: B_matrix is list with len {len(B_matrix)}")
+        logger.debug(f"B_matrix is list with len {len(B_matrix)}")
         if len(B_matrix) > 0 and isinstance(B_matrix[0], list):
-             logger.info(f"DEBUG: B_matrix[0] is list with len {len(B_matrix[0])}")
+             logger.debug(f"B_matrix[0] is list with len {len(B_matrix[0])}")
     else:
-        logger.info(f"DEBUG: B_matrix type is {type(B_matrix)}")
+        logger.debug(f"B_matrix type is {type(B_matrix)}")
 
-    logger.info(f"DEBUG: Initial n_actions={n_actions}")
+    logger.debug(f"Initial n_actions={n_actions}")
     
     # Fix mangled B matrix from GNN parser
     # The parser sometimes splits tuples incorrectly, leaving strings like '(1.0' instead of tuples
@@ -508,7 +512,7 @@ try
     
     # Run simulation
     println("🚀 Running simulation...")
-    n_steps = 20
+    n_steps = {n_timesteps}  # From GNN ModelParameters (num_timesteps)
     observations_log = []
     actions_log = []
     beliefs_log = []

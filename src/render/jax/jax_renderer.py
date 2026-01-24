@@ -270,23 +270,29 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             if "A" in init_params:
                 try:
                     A_data = init_params["A"]
-                    if isinstance(A_data, list):
+                    # Handle both list and tuple (POMDP extractor returns tuples)
+                    if isinstance(A_data, (list, tuple)):
                         A_matrix = np.array(A_data)
                         if A_matrix.ndim == 2:
                             matrices['A'] = A_matrix
                             logger.info(f"Successfully extracted A matrix: shape {A_matrix.shape}")
                 except Exception as e:
                     logger.warning(f"Failed to extract A matrix: {e}")
-            
+
             # Extract B matrix
             if "B" in init_params:
                 try:
                     B_data = init_params["B"]
-                    if isinstance(B_data, list):
+                    # Handle both list and tuple (POMDP extractor returns tuples)
+                    if isinstance(B_data, (list, tuple)):
                         B_matrix = np.array(B_data)
                         if B_matrix.ndim == 3:
+                            # POMDP extractor returns B as (actions, rows, cols)
+                            # JAX renderer expects B as (rows, cols, actions)
+                            # Transpose from (actions, rows, cols) to (rows, cols, actions)
+                            B_matrix = np.transpose(B_matrix, (1, 2, 0))
                             matrices['B'] = B_matrix
-                            logger.info(f"Successfully extracted B matrix: shape {B_matrix.shape}")
+                            logger.info(f"Successfully extracted B matrix: shape {B_matrix.shape} (transposed)")
                 except Exception as e:
                     logger.warning(f"Failed to extract B matrix: {e}")
             
@@ -590,9 +596,9 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                             matrices[param_name] = inferred_matrix
                             logger.info(f"Inferred {param_name} matrix from context: shape {inferred_matrix.shape}")
                             
-                    elif isinstance(param_value, list):
+                    elif isinstance(param_value, (list, tuple)):
                         matrices[param_name] = np.array(param_value)
-                        logger.info(f"Converted {param_name} list to array")
+                        logger.info(f"Converted {param_name} list/tuple to array")
                     elif isinstance(param_value, set):
                         # Convert set to list then to array
                         matrices[param_name] = np.array(list(param_value))
@@ -873,6 +879,10 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
             num_observations = 1
             num_actions = 1
         
+        # Extract num_timesteps from model_parameters (default 20 for backward compat)
+        model_params = gnn_spec.get('model_parameters', {})
+        num_timesteps = model_params.get('num_timesteps', 20)
+        
         # Convert matrices to lists for f-string insertion
         A_list = A_matrix.tolist()
         B_list = B_matrix.tolist()
@@ -1148,11 +1158,79 @@ Key Functions:
 """
 
 
+def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.ndarray],
+                            model_name: str, output_dir: str = ".") -> str:
+    """
+    Save simulation results to structured JSON for downstream analysis.
+
+    Args:
+        trajectory: Simulation trajectory dictionary
+        params: Model parameters
+        model_name: Name of the model
+        output_dir: Output directory for JSON file
+
+    Returns:
+        Path to the saved JSON file
+    """
+    import json
+    import os
+    from datetime import datetime
+
+    # Create output directory if needed
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Build structured results matching PyMDP format for cross-framework analysis
+    results = {{
+        "success": True,
+        "framework": "jax",
+        "model_name": model_name,
+        "num_timesteps": int(len(trajectory['actions'])),
+        "timestamp": datetime.now().isoformat(),
+        "simulation_trace": {{
+            "beliefs": [b.tolist() for b in trajectory['beliefs']],
+            "actions": trajectory['actions'].tolist(),
+            "efe_history": trajectory['expected_free_energies'].tolist(),
+            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+        }},
+        "beliefs": [b.tolist() for b in trajectory['beliefs']],
+        "actions": trajectory['actions'].tolist(),
+        "final_belief": trajectory['final_belief'].tolist(),
+        "model_parameters": {{
+            "A_shape": list(params['A_matrix'].shape),
+            "B_shape": list(params['B_matrix'].shape),
+            "C_shape": list(params['C_vector'].shape),
+            "D_shape": list(params['D_vector'].shape),
+            "num_states": NUM_STATES,
+            "num_observations": NUM_OBSERVATIONS,
+            "num_actions": NUM_ACTIONS
+        }},
+        "metrics": {{
+            "expected_free_energy": trajectory['expected_free_energies'].tolist(),
+            "average_efe": float(jnp.mean(trajectory['expected_free_energies'])),
+            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+        }},
+        "validation": {{
+            "all_beliefs_valid": all(abs(sum(b) - 1.0) < 0.01 for b in trajectory['beliefs']),
+            "beliefs_sum_to_one": True,
+            "actions_in_range": all(0 <= a < NUM_ACTIONS for a in trajectory['actions'])
+        }}
+    }}
+
+    # Save to JSON
+    output_file = os.path.join(output_dir, "simulation_results.json")
+    with open(output_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    return output_file
+
+
 if __name__ == "__main__":
+    import os
+
     print("=" * 60)
     print("JAX Active Inference Model: {model_name}")
     print("=" * 60)
-    
+
     # Create parameters
     params = create_params()
     print("\\n✅ Model parameters created")
@@ -1160,41 +1238,46 @@ if __name__ == "__main__":
     print(f"   B matrix shape: {{params['B_matrix'].shape}}")
     print(f"   C vector shape: {{params['C_vector'].shape}}")
     print(f"   D vector shape: {{params['D_vector'].shape}}")
-    
+
     # Print model summary
     print(get_model_summary())
-    
+
     # Test with uniform initial belief
     print("\\n🧪 Running test simulation...")
     initial_belief = params['D_vector']
-    
+
     # Create a test observation (one-hot for first observation)
     test_obs = jnp.zeros(NUM_OBSERVATIONS)
     test_obs = test_obs.at[0].set(1.0)
-    
+
     # Run one simulation step
     result = simulate_step(params, initial_belief, test_obs)
-    
+
     print(f"\\n📊 Simulation Results:")
     print(f"   Initial belief: {{initial_belief}}")
     print(f"   Updated belief: {{result['belief']}}")
     print(f"   Selected action: {{result['action']}}")
     print(f"   Expected free energy: {{result['expected_free_energy']:.4f}}")
     print(f"   EFE for all actions: {{result['all_efe_values']}}")
-    
+
     # Run multi-step simulation
-    print("\\n🔄 Running 5-step simulation...")
-    observations = jnp.eye(NUM_OBSERVATIONS)[:min(5, NUM_OBSERVATIONS)]  # Use identity as test observations
-    if observations.shape[0] < 5:
+    print("\\n🔄 Running {num_timesteps}-step simulation...")
+    observations = jnp.eye(NUM_OBSERVATIONS)[:min({num_timesteps}, NUM_OBSERVATIONS)]  # Use identity as test observations
+    if observations.shape[0] < {num_timesteps}:
         # Pad with repeated observations if needed
-        observations = jnp.concatenate([observations] * (5 // observations.shape[0] + 1))[:5]
-    
+        observations = jnp.concatenate([observations] * ({num_timesteps} // observations.shape[0] + 1))[:{num_timesteps}]
+
     trajectory = run_simulation(params, observations)
-    
+
     print(f"   Actions taken: {{trajectory['actions']}}")
     print(f"   Final belief: {{trajectory['final_belief']}}")
     print(f"   Average EFE: {{jnp.mean(trajectory['expected_free_energies']):.4f}}")
-    
+
+    # Save structured results for analysis step
+    output_dir = os.environ.get('GNN_OUTPUT_DIR', 'jax_outputs')
+    results_file = save_simulation_results(trajectory, params, "{model_name}", output_dir)
+    print(f"\\n💾 Saved simulation results to: {{results_file}}")
+
     print("\\n✅ JAX Active Inference model test successful!")
 '''
         

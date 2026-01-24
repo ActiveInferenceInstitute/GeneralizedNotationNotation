@@ -1076,8 +1076,8 @@ def _check_oxdraw_installed() -> bool:
 # Install oxdraw
 cargo install oxdraw
 
-# Install GNN pipeline dependencies
-pip install -r requirements.txt
+# Install GNN pipeline dependencies using UV
+uv sync
 
 # Optional: Install Mermaid CLI for server-side rendering
 npm install -g @mermaid-js/mermaid-cli

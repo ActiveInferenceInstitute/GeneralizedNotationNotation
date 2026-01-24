@@ -89,10 +89,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-01-21T12:52:10.560697'
+created_at: '2026-01-24T15:01:04.885713'
 equations: []
 model_name: Active Inference POMDP Agent
-modified_at: '2026-01-21T12:52:10.560698'
+modified_at: '2026-01-24T15:01:04.885714'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix
@@ -202,7 +202,9 @@ parameters:
 - description: null
   name: 'num_actions: 3       # B actions_dim'
   type_hint: null
-  value: 3 (controlled by π)
+  value: '3 (controlled by π)
+
+    num_timesteps: 30    # Number of simulation timesteps for all frameworks'
 time_specification:
   discretization: null
   horizon: 'Unbounded # The agent is defined for an unbounded time horizon; simulation

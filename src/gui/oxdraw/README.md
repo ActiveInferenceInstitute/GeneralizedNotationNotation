@@ -25,8 +25,11 @@ The oxdraw integration module enables researchers to:
 
 ### Required Dependencies
 ```bash
-# Install GNN pipeline dependencies
-pip install -r requirements.txt
+# Install GNN pipeline dependencies using UV (recommended)
+uv sync
+
+# Or install with GUI optional dependencies
+uv sync --extra gui
 ```
 
 ### Optional: oxdraw CLI

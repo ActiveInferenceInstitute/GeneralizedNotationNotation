@@ -186,10 +186,11 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         # Test collection
         try:
             result = collect_execution_outputs(script, output_dir, "pymdp", logger)
-            assert isinstance(result, dict)
+            assert isinstance(result, dict), f"Expected dict result, got {type(result)}"
         except Exception as e:
-            # If collection fails gracefully, that's acceptable
-            assert True
+            # If collection fails gracefully, verify it's an expected failure type
+            assert isinstance(e, (FileNotFoundError, ValueError, KeyError, AttributeError)), \
+                f"Unexpected exception type during collection: {type(e).__name__}: {e}"
 
     @pytest.mark.slow
     def test_process_execution_flow(self, safe_filesystem):

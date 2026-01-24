@@ -50,7 +50,7 @@ from .utils import (
 )
 
 # Module metadata and lightweight API expected by tests
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "GNN environment setup and management with UV"
 

@@ -91,10 +91,10 @@ Central documentation hub for all theoretical, computational, and implementation
 | Component | Source Path |
 |-----------|-------------|
 | Main Analyzer | [`src/analysis/analyzer.py`](../../src/analysis/analyzer.py) |
-| PyMDP Analyzer | [`src/analysis/pymdp_analyzer.py`](../../src/analysis/pymdp_analyzer.py) |
-| PyMDP Visualizer | [`src/analysis/pymdp_visualizer.py`](../../src/analysis/pymdp_visualizer.py) |
+| PyMDP Analyzer | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) |
+| PyMDP Visualizer | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) |
 | Post-Simulation | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) |
-| ActiveInference.jl Analyzer | [`src/analysis/activeinference_jl/`](../../src/analysis/activeinference_jl/) |
+| ActiveInference.jl Analyzer | [`src/analysis/activeinference_jl/analyzer.py`](../../src/analysis/activeinference_jl/analyzer.py) |
 
 ### Core GNN
 

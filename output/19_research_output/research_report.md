@@ -1,0 +1,1 @@
+# Research Hypotheses Report (Rule-Based Analysis)\n\n## actinf_pomdp_agent.md\n- **dimensionality_reduction**: Apply PCA or Factor Analysis to actinf_pomdp_agent\n  - *Rationale*: Detected dimension size 33333, which exceeds recommended baseline for tractable inference.\n

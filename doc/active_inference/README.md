@@ -121,8 +121,8 @@ This documentation connects to the GNN source code:
 
 | Tool | Path | Purpose |
 |------|------|---------|
-| PyMDP Analyzer | [`src/analysis/pymdp_analyzer.py`](../../src/analysis/pymdp_analyzer.py) | Post-simulation analysis |
-| PyMDP Visualizer | [`src/analysis/pymdp_visualizer.py`](../../src/analysis/pymdp_visualizer.py) | Visualization |
+| PyMDP Analyzer | [`src/analysis/pymdp/analyzer.py`](../../src/analysis/pymdp/analyzer.py) | Post-simulation analysis |
+| PyMDP Visualizer | [`src/analysis/pymdp/visualizer.py`](../../src/analysis/pymdp/visualizer.py) | Visualization |
 | Post-Simulation | [`src/analysis/post_simulation.py`](../../src/analysis/post_simulation.py) | Comprehensive analysis |
 
 ### GNN Core
@@ -158,7 +158,7 @@ This documentation integrates with the 24-step GNN processing pipeline:
 | **Step 13: LLM** | LLM-enhanced analysis |
 | **Step 16: Analysis** | Post-simulation analysis |
 
-See [Pipeline Documentation](../pipeline/README.md) for details.
+See [Pipeline Documentation](../gnn/gnn_tools.md) for details.
 
 ---
 
@@ -225,7 +225,7 @@ doc/active_inference/
 
 - **[Main Documentation Index](../README.md)**: Return to main documentation
 - **[Cross-Reference Index](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference
-- **[Pipeline Documentation](../pipeline/README.md)**: 24-step pipeline
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: 24-step pipeline
 
 ---
 

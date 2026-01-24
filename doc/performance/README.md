@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Performance Guide | **Audience**: Developers & Researchers | **Complexity**: Intermediate-Advanced  
-> **Cross-References**: [Pipeline Architecture](../pipeline/README.md) | [Troubleshooting](../troubleshooting/README.md) | [API Reference](../api/README.md)
+> **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Troubleshooting](../troubleshooting/README.md) | [API Reference](../api/README.md)
 
 This comprehensive guide covers performance optimization strategies, monitoring methodologies, and scaling approaches for GNN models and processing pipelines.
 

@@ -7,9 +7,9 @@ For complete pipeline documentation:
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator script
 
-## Complete 24-Step Pipeline Mapping
+## Complete 25-Step Pipeline Mapping
 
-The GNN pipeline consists of exactly 24 steps (0-23), each following the thin orchestrator pattern:
+The GNN pipeline consists of exactly 25 steps (0-24), each following the thin orchestrator pattern:
 
 **Core Processing (Steps 0-9)**
 - `0_template.py` → `src/template/` - Pipeline initialization
@@ -32,7 +32,7 @@ The GNN pipeline consists of exactly 24 steps (0-23), each following the thin or
 - `15_audio.py` → `src/audio/` - Audio generation
 - `16_analysis.py` → `src/analysis/` - Statistical analysis
 
-**Integration & Output (Steps 17-23)**
+**Integration & Output (Steps 17-24)**
 - `17_integration.py` → `src/integration/` - System integration
 - `18_security.py` → `src/security/` - Security validation
 - `19_research.py` → `src/research/` - Research tools
@@ -40,13 +40,14 @@ The GNN pipeline consists of exactly 24 steps (0-23), each following the thin or
 - `21_mcp.py` → `src/mcp/` - MCP processing
 - `22_gui.py` → `src/gui/` - GUI interface
 - `23_report.py` → `src/report/` - Report generation
+- `24_intelligent_analysis.py` → `src/intelligent_analysis/` - AI-enhanced analysis
 
 For module-specific documentation, see each `src/[module]/AGENTS.md` file.
 
 ## Thin Orchestrator Pattern (Actual Implementation)
 
 ### Pattern Definition
-Each numbered pipeline step (0-23) follows this structure:
+Each numbered pipeline step (0-24) follows this structure:
 - **Thin orchestrator script** handles argument parsing, logging, output management
 - **Module directory** contains actual implementation logic
 - **Cross-references** between steps via standardized JSON outputs
@@ -262,7 +263,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger):
 ### Output Directory Management
 ```python
 # Centralized output directory structure:
-# src/pipeline/config.py:get_output_dir_for_script()
+# src/config.py:get_output_dir_for_script()
 
 def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     step_name = script_name.replace('.py', '')

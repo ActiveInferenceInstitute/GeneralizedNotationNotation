@@ -1,6 +1,6 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
-**Last Updated**: 2026-01-07
+**Last Updated**: 2026-01-23
 
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
@@ -8,7 +8,7 @@ This document provides a complete, machine-parsable and human-accessible overvie
 
 - A standardized, text-based language for specifying Active Inference generative models.
 - Unifies model communication across natural language, math, diagrams, and executable code.
-- Enables end-to-end processing via a 24-step pipeline (0–23) from specification to simulation, analysis, GUI construction, and reporting.
+- Enables end-to-end processing via a 25-step pipeline (0–24) from specification to simulation, analysis, GUI construction, and reporting.
 
 ## Why GNN?
 

@@ -1,0 +1,11 @@
+{
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "system_graph_stats": {
+    "nodes": 0,
+    "edges": 0,
+    "cycles": 0
+  },
+  "issues": []
+}

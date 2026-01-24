@@ -201,7 +201,7 @@ Ontology processing integrates throughout the pipeline:
 
 ## See Also
 
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[GNN Overview](gnn_overview.md)**: Core GNN concepts
 - **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Advanced modeling techniques
 

@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/actinf_pomdp_agent.md
-# Processed on: 2026-01-21T12:50:22.734865
+# Processed on: 2026-01-24T14:22:11.654008
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Active Inference POMDP Agent
@@ -126,6 +126,7 @@ t=Time
 num_hidden_states: 3  # s[3]
 num_obs: 3           # o[3]
 num_actions: 3       # B actions_dim=3 (controlled by π)
+num_timesteps: 30    # Number of simulation timesteps for all frameworks
 
 ## Footer
 Active Inference POMDP Agent v1 - GNN Representation. 

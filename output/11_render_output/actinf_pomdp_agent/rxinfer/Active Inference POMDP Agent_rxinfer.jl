@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Active Inference POMDP Agent
-# Generated: 2026-01-21 12:52:20
+# Generated: 2026-01-24 15:01:07
 
 using Pkg
 
@@ -26,7 +26,7 @@ Random.seed!(42)
 const NUM_STATES = 3
 const NUM_OBSERVATIONS = 3
 const NUM_ACTIONS = 3
-const TIME_STEPS = 20
+const TIME_STEPS = 30
 
 # Parameter Matrices (from GNN)
 # We use raw Vector of Vectors and convert to Matrix/Tensor for RxInfer

@@ -5,6 +5,15 @@ This module provides comprehensive visualization capabilities for GNN files,
 including matrix visualizations, network graphs, and combined analysis plots.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "matrix_visualization": True,
+    "network_graphs": True,
+    "combined_analysis": True,
+    "interactive_plots": True,
+    "mcp_integration": True
+}
+
 # Typing
 from typing import Optional, Union, Dict, Any, List
 from pathlib import Path
@@ -76,7 +85,7 @@ from .processor import (
     generate_combined_visualizations
 )
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 
 def get_module_info() -> dict:
     return {

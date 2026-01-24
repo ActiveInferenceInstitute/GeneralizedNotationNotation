@@ -248,33 +248,82 @@ def process_analysis(
                 
                 # 2.5: Generate PyMDP Visualizations from Execution Logs
                 try:
-                    from .pymdp_analyzer import generate_analysis_from_logs
+                    from .pymdp.analyzer import generate_analysis_from_logs
+                    pymdp_output_dir = output_dir / "pymdp"
+                    pymdp_output_dir.mkdir(parents=True, exist_ok=True)
                     logger.info("Generating PyMDP visualizations from execution logs...")
-                    generated_viz = generate_analysis_from_logs(execution_dir, output_dir, verbose)
+                    generated_viz = generate_analysis_from_logs(execution_dir, pymdp_output_dir, verbose)
                     if generated_viz:
                         results["visualization_files"] = results.get("visualization_files", []) + generated_viz
                         logger.info(f"Generated {len(generated_viz)} PyMDP visualizations")
                 except ImportError:
-                    logger.debug("pymdp_analyzer not available, skipping PyMDP visualization")
+                    logger.debug("analysis.pymdp.analyzer not available, skipping PyMDP visualization")
                 except Exception as e:
                     logger.warning(f"PyMDP visualization generation failed: {e}")
             else:
                 logger.warning(f"Execution directory not found at {execution_dir}. Skipping post-simulation analysis.")
             
-             # 2.6: Generate ActiveInference.jl Visualizations
+            # 2.6: Generate ActiveInference.jl Visualizations
             try:
-                from .activeinference_jl_analyzer import generate_analysis_from_logs as analyze_actinf
+                from .activeinference_jl.analyzer import generate_analysis_from_logs as analyze_actinf
+                actinf_output_dir = output_dir / "activeinference_jl"
+                actinf_output_dir.mkdir(parents=True, exist_ok=True)
                 logger.info("Generating ActiveInference.jl visualizations...")
                 # We pass output_dir as the destination, but the analyzer might write back to the source dirs 
                 # or a specific subfolder. The implementation handles finding the right inputs.
-                actinf_viz = analyze_actinf(execution_dir, output_dir, verbose)
+                actinf_viz = analyze_actinf(execution_dir, actinf_output_dir, verbose)
                 if actinf_viz:
                     results["visualization_files"] = results.get("visualization_files", []) + actinf_viz
                     logger.info(f"Generated {len(actinf_viz)} ActiveInference.jl visualization files")
             except ImportError as e:
-                logger.debug(f"activeinference_jl_analyzer not available: {e}")
+                logger.debug(f"analysis.activeinference_jl.analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"ActiveInference.jl analysis failed: {e}")
+            
+            # 2.7: Generate DisCoPy Visualizations
+            try:
+                from .discopy.analyzer import generate_analysis_from_logs as analyze_discopy
+                discopy_output_dir = output_dir / "discopy"
+                discopy_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info("Generating DisCoPy visualizations...")
+                discopy_viz = analyze_discopy(execution_dir, discopy_output_dir, verbose)
+                if discopy_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + discopy_viz
+                    logger.info(f"Generated {len(discopy_viz)} DisCoPy visualization files")
+            except ImportError as e:
+                logger.debug(f"discopy analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"DisCoPy analysis failed: {e}")
+            
+            # 2.8: Generate JAX Visualizations
+            try:
+                from .jax.analyzer import generate_analysis_from_logs as analyze_jax
+                jax_output_dir = output_dir / "jax"
+                jax_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info("Generating JAX visualizations...")
+                jax_viz = analyze_jax(execution_dir, jax_output_dir, verbose)
+                if jax_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + jax_viz
+                    logger.info(f"Generated {len(jax_viz)} JAX visualization files")
+            except ImportError as e:
+                logger.debug(f"jax analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"JAX analysis failed: {e}")
+            
+            # 2.9: Generate RxInfer Visualizations
+            try:
+                from .rxinfer.analyzer import generate_analysis_from_logs as analyze_rxinfer
+                rxinfer_output_dir = output_dir / "rxinfer"
+                rxinfer_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info("Generating RxInfer visualizations...")
+                rxinfer_viz = analyze_rxinfer(execution_dir, rxinfer_output_dir, verbose)
+                if rxinfer_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + rxinfer_viz
+                    logger.info(f"Generated {len(rxinfer_viz)} RxInfer visualization files")
+            except ImportError as e:
+                logger.debug(f"rxinfer analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"RxInfer analysis failed: {e}")
             
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
@@ -311,14 +360,59 @@ def process_analysis(
             # 3. Comprehensive visualization of all execution outputs
             logger.info("Generating comprehensive visualizations for all execution outputs...")
             try:
-                from .post_simulation import visualize_all_framework_outputs
-                
-                viz_output_dir = results_dir / "comprehensive_visualizations"
+                from .post_simulation import visualize_all_framework_outputs, generate_unified_framework_dashboard
+
+                # Use cross_framework folder for cross-implementation analysis
+                viz_output_dir = results_dir / "cross_framework"
                 comprehensive_viz = visualize_all_framework_outputs(execution_dir, viz_output_dir, logger)
                 results["comprehensive_visualizations"] = comprehensive_viz
                 results["visualization_files"] = results.get("visualization_files", []) + comprehensive_viz
-                
+
                 logger.info(f"Generated {len(comprehensive_viz)} comprehensive visualization files")
+
+                # Generate unified framework dashboard for direct comparison
+                logger.info("Generating unified framework dashboard...")
+                try:
+                    # Build framework_data structure for unified dashboard
+                    framework_data_for_dashboard = {}
+                    for sim_file in execution_dir.rglob("*simulation_results.json"):
+                        try:
+                            with open(sim_file, 'r') as f:
+                                sim_data = json.load(f)
+
+                            # Determine framework from path
+                            path_parts = sim_file.parts
+                            framework = "unknown"
+                            for part in path_parts:
+                                if part in ["pymdp", "pymdp_gen", "rxinfer", "activeinference_jl", "jax", "discopy"]:
+                                    framework = part
+                                    break
+
+                            if framework != "unknown":
+                                key = framework
+                                if key not in framework_data_for_dashboard:
+                                    framework_data_for_dashboard[key] = {
+                                        "framework": framework,
+                                        "simulation_data": sim_data
+                                    }
+                        except Exception:
+                            pass
+
+                    if len(framework_data_for_dashboard) >= 2:
+                        model_name = gnn_files[0].stem if gnn_files else "Active Inference Model"
+                        dashboard_viz = generate_unified_framework_dashboard(
+                            framework_data_for_dashboard,
+                            viz_output_dir / "unified_dashboard",
+                            model_name=model_name
+                        )
+                        results["visualization_files"] = results.get("visualization_files", []) + dashboard_viz
+                        logger.info(f"Generated {len(dashboard_viz)} unified dashboard visualizations")
+                    else:
+                        logger.info("Less than 2 frameworks with data - skipping unified dashboard")
+                except Exception as e:
+                    logger.warning(f"Unified dashboard generation failed: {e}")
+                    import traceback
+                    logger.debug(traceback.format_exc())
             except Exception as e:
                 logger.warning(f"Comprehensive visualization generation failed: {e}")
                 import traceback

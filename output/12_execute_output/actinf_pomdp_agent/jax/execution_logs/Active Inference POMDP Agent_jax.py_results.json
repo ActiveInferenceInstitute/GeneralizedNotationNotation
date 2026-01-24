@@ -5,32 +5,213 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.631222,
-  "timestamp": "2026-01-21T12:52:21.324418",
+  "execution_time": 1.32045,
+  "timestamp": "2026-01-24T15:01:09.775742",
   "simulation_data": {
     "traces": [],
-    "free_energy": [
-      0.0099,
-      0.002
-    ],
+    "free_energy": [],
     "states": [],
     "observations": [],
     "actions": [
+      2,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
       0
     ],
     "policy": [],
-    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 3)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 3\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33333 0.33333 0.33333]\n   Updated belief: [1. 0. 0.]\n   Selected action: 0\n   Expected free energy: 0.0099\n   EFE for all actions: [0.00986223 0.00986223 0.00986223]\n\n\ud83d\udd04 Running 5-step simulation...\n   Actions taken: [0 0 0 0 0]\n   Final belief: [0. 0. 0.]\n   Average EFE: 0.0020\n\n\u2705 JAX Active Inference model test successful!\n",
-    "raw_error": ""
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 3)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 3\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33333 0.33333 0.33333]\n   Updated belief: [0.9  0.05 0.05]\n   Selected action: 2\n   Expected free energy: -0.1560\n   EFE for all actions: [ 0.49429578  0.49429578 -0.1559542 ]\n\n\ud83d\udd04 Running 30-step simulation...\n   Actions taken: [2 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [0.00291545 0.05247812 0.94460636]\n   Average EFE: -0.0021\n\n\ud83d\udcbe Saved simulation results to: jax_outputs/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.8999999761581421,
+        0.04999999701976776,
+        0.04999999701976776
+      ],
+      [
+        0.027027025818824768,
+        0.48648640513420105,
+        0.4864864647388458
+      ],
+      [
+        0.0029154522344470024,
+        0.0524781309068203,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ],
+      [
+        0.04999999329447746,
+        0.04999998211860657,
+        0.8999997973442078
+      ],
+      [
+        0.027027027681469917,
+        0.48648640513420105,
+        0.4864864945411682
+      ],
+      [
+        0.0029154522344470024,
+        0.05247812718153,
+        0.9446064829826355
+      ]
+    ],
+    "num_timesteps": 30
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
-    "stdout_length": 1179,
+    "stdout_length": 1333,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/jax"
+    "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax"
   },
   "collected_outputs": {
     "visualizations": [],
-    "simulation_data": [],
+    "simulation_data": [
+      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json"
+    ],
     "traces": [],
     "other": []
   }

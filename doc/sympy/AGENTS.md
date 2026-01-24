@@ -111,7 +111,7 @@ All documentation in this module adheres to professional standards:
 - **[Mathematical Foundations](../gnn/advanced_modeling_patterns.md)**: Mathematical modeling
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

@@ -1,9 +1,13 @@
+active_inference
 activeinference_jl
+advanced_visualization
 api
 arc-agi
 archive
+audio
 autogenlib
 axiom
+catcolab
 cerebrum
 cognitive_phenomena
 configuration
@@ -14,6 +18,7 @@ development
 discopy
 dspy
 execution
+export
 glowstick
 gnn
 gui_oxdraw
@@ -30,13 +35,13 @@ other
 pedalboard
 performance
 petri_nets
-pipeline
 pkl
 poe-world
 pomdp
 pymdp
 quadray
 releases
+research
 rxinfer
 sapf
 security
@@ -49,4 +54,5 @@ troubleshooting
 tutorials
 type-inference-zoo
 vec2text
+visualization
 x402

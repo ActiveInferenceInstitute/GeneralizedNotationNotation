@@ -55,7 +55,7 @@ SAPFProcessor = SAPFGNNProcessor
 PedalboardProcessor = SAPFGNNProcessor
 
 # Module metadata
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 __author__ = "Active Inference Institute"
 __description__ = "Audio generation and sonification for GNN Processing Pipeline"
 

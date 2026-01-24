@@ -48,9 +48,9 @@ graph TD
 - **SciPy**: ≥1.10.0 for sparse matrix operations
 
 ### Hardware Support
-- **CPU**: `pip install --upgrade jax[cpu]`
-- **GPU (CUDA 12.x)**: `pip install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html`
-- **TPU**: `pip install --upgrade "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html`
+- **CPU**: `uv pip install --upgrade jax[cpu]`
+- **GPU (CUDA 12.x)**: `uv pip install --upgrade "jax[cuda12]" -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html`
+- **TPU**: `uv pip install --upgrade "jax[tpu]" -f https://storage.googleapis.com/jax-releases/libtpu_releases.html`
 
 ## Usage
 

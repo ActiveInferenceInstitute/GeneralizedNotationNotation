@@ -5,6 +5,15 @@ report module for GNN Processing Pipeline.
 This module provides report capabilities with fallback implementations.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "html_reports": True,
+    "markdown_reports": True,
+    "comprehensive_analysis": True,
+    "pipeline_integration": True,
+    "mcp_integration": True
+}
+
 from pathlib import Path
 from typing import Dict, Any, List
 import logging
@@ -17,15 +26,18 @@ from utils.pipeline_template import (
 )
 
 # Import processor functions
+# Import processor functions
 from .processor import (
     process_report,
     analyze_gnn_file,
     generate_html_report,
-    generate_markdown_report
+    generate_markdown_report,
+    generate_comprehensive_report as generate_comprehensive_report_legacy
 )
 
 # Import generator functions
 from .generator import generate_comprehensive_report
+
 
 # Back-compat API expected by tests
 def analyze_pipeline_data(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -84,9 +96,9 @@ def validate_report(data: Dict[str, Any]) -> bool:
     return isinstance(data, dict)
 
 def generate_report(target_dir: Path, output_dir: Path, format: str = "json") -> Dict[str, Any]:
-    return generate_comprehensive_report(target_dir, output_dir, format=format)
+    return generate_comprehensive_report_legacy(target_dir, output_dir, format=format)
 
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 
 
 def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs):

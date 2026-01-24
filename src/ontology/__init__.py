@@ -39,7 +39,7 @@ def validate_ontology_terms(terms: List[str] | str = None) -> bool:
 
 # Feature flags expected by tests
 FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True, "mcp_integration": True}
-__version__ = "1.1.1"
+__version__ = "1.1.3"
 
 # Minimal classes expected by tests
 class OntologyProcessor:

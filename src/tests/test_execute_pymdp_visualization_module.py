@@ -20,7 +20,7 @@ import numpy as np
 from pathlib import Path
 import tempfile
 
-from analysis.pymdp_visualizer import PyMDPVisualizer, save_all_visualizations
+from analysis.pymdp.visualizer import PyMDPVisualizer, save_all_visualizations
 
 
 @pytest.fixture

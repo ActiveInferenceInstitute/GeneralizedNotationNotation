@@ -30,7 +30,7 @@ This directory contains miscellaneous documentation, research materials, experim
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -92,7 +92,7 @@ This directory maintains research transparency by:
 - **[Cognitive Phenomena](../cognitive_phenomena/README.md)**: Cognitive modeling applications
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

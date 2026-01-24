@@ -181,9 +181,9 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 python src/main.py --skip-steps "15,16" --verbose
 ```
 
-### Complete 24-Step Pipeline
+### Complete 25-Step Pipeline
 
-The pipeline consists of the following steps (0-23):
+The pipeline consists of the following steps (0-24):
 
 **Core Processing (Steps 0-9)**
 - **Step 0**: Template initialization
@@ -268,7 +268,7 @@ For more detailed information about specific aspects of GNN, refer to:
 - **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
 
 ### Pipeline and Tools
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete 24-step pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 24-step pipeline guide
 - **[GNN Tools](gnn_tools.md)**: Available software and utilities
 - **[Implementation Guide](gnn_implementation.md)**: Guidelines for implementing GNN in practice
 

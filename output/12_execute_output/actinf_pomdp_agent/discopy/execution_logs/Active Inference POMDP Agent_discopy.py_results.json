@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.531566,
-  "timestamp": "2026-01-21T12:52:21.957640",
+  "execution_time": 1.328648,
+  "timestamp": "2026-01-24T15:01:11.100422",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -23,23 +23,41 @@
       "data",
       "info",
       "generation"
-    ]
+    ],
+    "components": [
+      "A_matrix",
+      "B_matrix",
+      "C_vector",
+      "D_vector",
+      "E_vector",
+      "state_inference",
+      "policy_inference",
+      "action_selection"
+    ],
+    "analysis": {
+      "num_components": 8,
+      "loop_domain": "O",
+      "loop_codomain": "A",
+      "model_domain": "O",
+      "model_codomain": "A"
+    },
+    "parameters": {
+      "num_states": 3,
+      "num_observations": 3,
+      "num_actions": 3
+    }
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python",
     "stdout_length": 1715,
     "stderr_length": 209,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
+    "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy"
   },
   "collected_outputs": {
-    "visualizations": [
-      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png",
-      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png",
-      "output/12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png"
-    ],
+    "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

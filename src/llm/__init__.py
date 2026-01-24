@@ -6,6 +6,17 @@ It avoids importing heavy optional dependencies at import time; functions
 are provided as thin wrappers that import implementations on first use.
 """
 
+__version__ = "1.1.3"
+FEATURES = {
+    "openai_integration": True,
+    "anthropic_integration": True,
+    "ollama_integration": True,
+    "multi_provider_support": True,
+    "model_analysis": True,
+    "structured_prompting": True,
+    "mcp_integration": True
+}
+
 import os
 
 def process_llm(*args, **kwargs):
@@ -108,8 +119,6 @@ except Exception:
     def generate_code_suggestions(*_, **__): return {}
     def generate_documentation(*_, **__): return ""
     def generate_llm_summary(*_, **__): return ""
-
-__version__ = "1.1.1"
 
 
 class LLMProcessor:

@@ -28,7 +28,7 @@ from datetime import datetime
 import warnings
 warnings.filterwarnings('ignore')
 
-from analysis.pymdp_visualizer import PyMDPVisualizer
+from analysis.pymdp.visualizer import PyMDPVisualizer
 from .pymdp_utils import (
     convert_numpy_for_json,
     safe_json_dump,

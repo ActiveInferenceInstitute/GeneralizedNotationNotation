@@ -153,7 +153,7 @@ ontology   | ⚠️ Partial | 0 | 0 | Missing register_tools
 - Consistent naming conventions for output files  
 - Standard interface contracts for all modules
 
-**Implementation:** Create `src/pipeline/data_contracts.py` with schemas
+**Implementation:** Create `src/data_contracts.py` with schemas
 
 ## 4. Import Strategy Standardization
 
@@ -227,9 +227,9 @@ def process_gnn_content(content: str) -> dict:
 
 ## 6. Specific Module Issues
 
-### src/pipeline/ Module
+### src/ Module
 **Issues:**
-- Pipeline step template contains TODOs and placeholder comments (`src/pipeline/pipeline_step_template.py:47-51`)
+- Pipeline step template contains TODOs and placeholder comments (`src/pipeline_step_template.py:47-51`)
 - Mixed step counting (template says 13 steps, actual pipeline has 24)
 - Inconsistent validation patterns
 
@@ -266,7 +266,7 @@ def process_gnn_content(content: str) -> dict:
 
 ### Phase 2: Cross-Module Standards (Weeks 3-4)  
 3. **Data Exchange Standards**
-   - Create `src/pipeline/data_contracts.py` with schemas
+   - Create `src/data_contracts.py` with schemas
    - Standardize JSON file formats across steps
    - Implement result validation pipelines
 

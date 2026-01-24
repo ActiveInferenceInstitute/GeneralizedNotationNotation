@@ -27,8 +27,8 @@ NUM_ACTIONS = 3
 def create_params() -> Dict[str, jnp.ndarray]:
     """Create model parameters from GNN specification."""
     return {
-        'A_matrix': jnp.array([[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]),  # Observation model P(o|s)
-        'B_matrix': jnp.array([[[1.0, 1.0, 1.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0], [1.0, 1.0, 1.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [1.0, 1.0, 1.0]]]),  # Transition model P(s'|s,a)
+        'A_matrix': jnp.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]]),  # Observation model P(o|s)
+        'B_matrix': jnp.array([[[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]], [[0.0, 1.0, 0.0], [1.0, 0.0, 1.0], [0.0, 0.0, 0.0]], [[0.0, 0.0, 1.0], [0.0, 0.0, 0.0], [1.0, 1.0, 0.0]]]),  # Transition model P(s'|s,a)
         'C_vector': jnp.array([0.1, 0.1, 1.0]),  # Preferences over observations
         'D_vector': jnp.array([0.33333, 0.33333, 0.33333]),  # Prior over initial states
     }
@@ -267,11 +267,79 @@ Key Functions:
 """
 
 
+def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.ndarray],
+                            model_name: str, output_dir: str = ".") -> str:
+    """
+    Save simulation results to structured JSON for downstream analysis.
+
+    Args:
+        trajectory: Simulation trajectory dictionary
+        params: Model parameters
+        model_name: Name of the model
+        output_dir: Output directory for JSON file
+
+    Returns:
+        Path to the saved JSON file
+    """
+    import json
+    import os
+    from datetime import datetime
+
+    # Create output directory if needed
+    os.makedirs(output_dir, exist_ok=True)
+
+    # Build structured results matching PyMDP format for cross-framework analysis
+    results = {
+        "success": True,
+        "framework": "jax",
+        "model_name": model_name,
+        "num_timesteps": int(len(trajectory['actions'])),
+        "timestamp": datetime.now().isoformat(),
+        "simulation_trace": {
+            "beliefs": [b.tolist() for b in trajectory['beliefs']],
+            "actions": trajectory['actions'].tolist(),
+            "efe_history": trajectory['expected_free_energies'].tolist(),
+            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+        },
+        "beliefs": [b.tolist() for b in trajectory['beliefs']],
+        "actions": trajectory['actions'].tolist(),
+        "final_belief": trajectory['final_belief'].tolist(),
+        "model_parameters": {
+            "A_shape": list(params['A_matrix'].shape),
+            "B_shape": list(params['B_matrix'].shape),
+            "C_shape": list(params['C_vector'].shape),
+            "D_shape": list(params['D_vector'].shape),
+            "num_states": NUM_STATES,
+            "num_observations": NUM_OBSERVATIONS,
+            "num_actions": NUM_ACTIONS
+        },
+        "metrics": {
+            "expected_free_energy": trajectory['expected_free_energies'].tolist(),
+            "average_efe": float(jnp.mean(trajectory['expected_free_energies'])),
+            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+        },
+        "validation": {
+            "all_beliefs_valid": all(abs(sum(b) - 1.0) < 0.01 for b in trajectory['beliefs']),
+            "beliefs_sum_to_one": True,
+            "actions_in_range": all(0 <= a < NUM_ACTIONS for a in trajectory['actions'])
+        }
+    }
+
+    # Save to JSON
+    output_file = os.path.join(output_dir, "simulation_results.json")
+    with open(output_file, 'w') as f:
+        json.dump(results, f, indent=2)
+
+    return output_file
+
+
 if __name__ == "__main__":
+    import os
+
     print("=" * 60)
     print("JAX Active Inference Model: GNNModel")
     print("=" * 60)
-    
+
     # Create parameters
     params = create_params()
     print("\n✅ Model parameters created")
@@ -279,39 +347,44 @@ if __name__ == "__main__":
     print(f"   B matrix shape: {params['B_matrix'].shape}")
     print(f"   C vector shape: {params['C_vector'].shape}")
     print(f"   D vector shape: {params['D_vector'].shape}")
-    
+
     # Print model summary
     print(get_model_summary())
-    
+
     # Test with uniform initial belief
     print("\n🧪 Running test simulation...")
     initial_belief = params['D_vector']
-    
+
     # Create a test observation (one-hot for first observation)
     test_obs = jnp.zeros(NUM_OBSERVATIONS)
     test_obs = test_obs.at[0].set(1.0)
-    
+
     # Run one simulation step
     result = simulate_step(params, initial_belief, test_obs)
-    
+
     print(f"\n📊 Simulation Results:")
     print(f"   Initial belief: {initial_belief}")
     print(f"   Updated belief: {result['belief']}")
     print(f"   Selected action: {result['action']}")
     print(f"   Expected free energy: {result['expected_free_energy']:.4f}")
     print(f"   EFE for all actions: {result['all_efe_values']}")
-    
+
     # Run multi-step simulation
-    print("\n🔄 Running 5-step simulation...")
-    observations = jnp.eye(NUM_OBSERVATIONS)[:min(5, NUM_OBSERVATIONS)]  # Use identity as test observations
-    if observations.shape[0] < 5:
+    print("\n🔄 Running 30-step simulation...")
+    observations = jnp.eye(NUM_OBSERVATIONS)[:min(30, NUM_OBSERVATIONS)]  # Use identity as test observations
+    if observations.shape[0] < 30:
         # Pad with repeated observations if needed
-        observations = jnp.concatenate([observations] * (5 // observations.shape[0] + 1))[:5]
-    
+        observations = jnp.concatenate([observations] * (30 // observations.shape[0] + 1))[:30]
+
     trajectory = run_simulation(params, observations)
-    
+
     print(f"   Actions taken: {trajectory['actions']}")
     print(f"   Final belief: {trajectory['final_belief']}")
     print(f"   Average EFE: {jnp.mean(trajectory['expected_free_energies']):.4f}")
-    
+
+    # Save structured results for analysis step
+    output_dir = os.environ.get('GNN_OUTPUT_DIR', 'jax_outputs')
+    results_file = save_simulation_results(trajectory, params, "GNNModel", output_dir)
+    print(f"\n💾 Saved simulation results to: {results_file}")
+
     print("\n✅ JAX Active Inference model test successful!")

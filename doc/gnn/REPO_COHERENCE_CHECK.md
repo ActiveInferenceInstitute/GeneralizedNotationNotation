@@ -858,7 +858,7 @@ def test_pipeline_integration():
 
 #### Output Directory Conventions
 
-**Enforcement**: Output directory names are enforced via `get_output_dir_for_script()` in `src/pipeline/config.py`. This function maps script names to standardized output directories.
+**Enforcement**: Output directory names are enforced via `get_output_dir_for_script()` in `src/config.py`. This function maps script names to standardized output directories.
 
 **Standard Pattern**: `N_[module]_output/` where N is the step number and [module] is the module name.
 
@@ -1157,10 +1157,10 @@ def process_validation(
 
 ```bash
 # Run pipeline validation
-python src/pipeline/pipeline_validation.py --src-dir src --output-dir output
+python src/pipeline_validation.py --src-dir src --output-dir output
 
 # Save detailed report
-python src/pipeline/pipeline_validation.py --save-report validation_report.json
+python src/pipeline_validation.py --save-report validation_report.json
 ```
 
 #### Using Test Suite
@@ -1215,7 +1215,7 @@ Provide:
 
 ### 13.1 Pipeline Validation Script
 
-**Location**: `src/pipeline/pipeline_validation.py`
+**Location**: `src/pipeline_validation.py`
 
 **Capabilities**:
 - Validates module imports and centralized utilities usage
@@ -1228,7 +1228,7 @@ Provide:
 
 **Usage**:
 ```bash
-python src/pipeline/pipeline_validation.py [--fix-issues]
+python src/pipeline_validation.py [--fix-issues]
 ```
 
 ### 13.2 Validation Module

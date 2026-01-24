@@ -31,7 +31,7 @@ This directory contains documentation, resources, and implementation guides for 
 - **[Julia Frameworks](../execution/FRAMEWORK_AVAILABILITY.md)**: Julia framework availability
 
 ### Pipeline Integration
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Implementation details
 
 ## Contents
@@ -132,7 +132,7 @@ actions = sample_actions(agent, beliefs)
 - **[Execution Guide](../execution/README.md)**: Framework execution strategies
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

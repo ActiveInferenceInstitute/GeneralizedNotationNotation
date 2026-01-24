@@ -731,11 +731,36 @@ class TestCoreModuleIntegration:
 
 def test_core_module_completeness():
 	"""Test that all core modules are complete and functional."""
-	# This test ensures that the test suite covers all aspects of core modules
-	logging.info("Core module completeness test passed")
+	# Verify all expected core modules can be imported
+	core_modules = ['gnn', 'render', 'execute', 'validation', 'visualization']
+	imported = []
+	for module_name in core_modules:
+		try:
+			module = __import__(module_name)
+			imported.append(module_name)
+			# Verify module has required attributes
+			assert hasattr(module, '__version__') or hasattr(module, 'FEATURES'), \
+				f"Module {module_name} missing __version__ or FEATURES"
+		except ImportError:
+			pass  # Optional modules may not be installed
+
+	assert len(imported) >= 3, f"Expected at least 3 core modules, got {len(imported)}: {imported}"
+	logging.info(f"Core module completeness: {len(imported)}/{len(core_modules)} modules available")
 
 @pytest.mark.slow
 def test_core_module_performance():
 	"""Test performance characteristics of core modules."""
-	# This test validates that modules perform within acceptable limits
+	import time
+
+	# Test that module imports complete quickly
+	modules_to_time = ['gnn', 'render', 'validation']
+	for module_name in modules_to_time:
+		start = time.time()
+		try:
+			__import__(module_name)
+			elapsed = time.time() - start
+			assert elapsed < 2.0, f"Module {module_name} import took {elapsed:.2f}s"
+		except ImportError:
+			pass  # Module not available
+
 	logging.info("Core module performance test completed") 

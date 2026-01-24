@@ -1,0 +1,35 @@
+{
+  "timestamp": "2026-01-24T14:27:01.028326",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "security_checks": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+      "file_size": 4306,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-01-24T14:27:01.028738"
+    }
+  ],
+  "vulnerabilities": [],
+  "recommendations": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    }
+  ]
+}

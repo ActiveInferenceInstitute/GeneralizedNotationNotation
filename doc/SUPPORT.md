@@ -16,4 +16,4 @@ Join the discussion:
 - [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ## 🛑 Security
-For security-related issues, please verify our [Security Policy](../../SECURITY.md) (if available) or contact the maintainers directly.
+For security-related issues, please review the [Security Guide](security/README.md) or contact the maintainers directly.

@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-01-21T12:52:10.799112",
+  "timestamp": "2026-01-24T15:01:05.254723",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: C, o, E, t, B, matrix, u, D, F, s, vector, A, s_prime, \u03c0, type, G"
+        "Duplicate variable names: B, t, vector, C, A, o, E, D, G, matrix, u, F, \u03c0, s_prime, type, s"
       ],
       "warnings": [
         "Type issue: Unknown type 'Active' for variable 'Example'",
@@ -27,6 +27,7 @@
         "Type issue: Unknown type '3' for variable 'num_hidden_states'",
         "Type issue: Unknown type '3' for variable 'num_obs'",
         "Type issue: Unknown type '3' for variable 'num_actions'",
+        "Type issue: Unknown type '30' for variable 'num_timesteps'",
         "Type issue: Unknown type 'observation_outcomes, hidden_states' for variable 'A'",
         "Type issue: Unknown type '3,3,type=float' for variable 'A'",
         "Type issue: Unknown type 'states_next, states_previous, actions' for variable 'B'",
@@ -174,6 +175,12 @@
           "message": "Unknown type '3' for variable 'num_actions'",
           "variable": "num_actions",
           "type": "3"
+        },
+        {
+          "valid": false,
+          "message": "Unknown type '30' for variable 'num_timesteps'",
+          "variable": "num_timesteps",
+          "type": "30"
         },
         {
           "valid": false,
@@ -512,12 +519,12 @@
           "type": "3 (controlled by \u03c0)"
         }
       ],
-      "validation_timestamp": "2026-01-21T12:52:10.799289"
+      "validation_timestamp": "2026-01-24T15:01:05.254933"
     }
   ],
   "type_analysis": [
     {
-      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "types_found": [
         {
@@ -599,6 +606,11 @@
           "name": "num_actions",
           "type": "3",
           "line": 122
+        },
+        {
+          "name": "num_timesteps",
+          "type": "30",
+          "line": 123
         },
         {
           "name": "A",
@@ -711,6 +723,7 @@
         "E": 1,
         "3": 10,
         "action": 1,
+        "30": 1,
         "observation_outcomes, hidden_states": 1,
         "3,3,type=float": 1,
         "states_next, states_previous, actions": 1,
@@ -724,8 +737,8 @@
         "3,1,type=int": 1,
         "1,type=int": 2
       },
-      "total_variables": 36,
-      "analysis_timestamp": "2026-01-21T12:52:10.801453"
+      "total_variables": 37,
+      "analysis_timestamp": "2026-01-24T15:01:05.259077"
     }
   ]
 }

@@ -230,7 +230,7 @@ Visualization results are integrated throughout the pipeline:
 
 ## See Also
 
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[GNN Overview](gnn_overview.md)**: Core GNN concepts
 - **[Framework Integration](framework_integration_guide.md)**: Framework-specific visualization
 

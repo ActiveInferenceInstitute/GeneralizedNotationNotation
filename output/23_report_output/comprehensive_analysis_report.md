@@ -1,14 +1,14 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-21T12:57:51.677369  
+**Generated:** 2026-01-24T14:27:16.201194  
 **Pipeline Output Directory:** output  
 **Health Score:** 95.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 216
-- **Total Size:** 16.24 MB
+- **Total Files Processed:** 233
+- **Total Size:** 20.85 MB
 - **Success Rate:** 100.0%
 
 ## ⚡ Performance Metrics
@@ -20,8 +20,8 @@
 ### ✅ 0 Template Output
 
 - **Files:** 3
-- **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:50:22.735303
+- **Size:** 0.01 MB
+- **Last Modified:** 2026-01-24T14:22:11.654350
 - **Status:** success
 
 - **File Types:** .json: 2, .md: 1
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-01-21T12:50:26.765820
+- **Last Modified:** 2026-01-24T14:22:15.493050
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -41,20 +41,20 @@
 ### ✅ 2 Tests Output
 
 - **Files:** 2
-- **Size:** 0.13 MB
-- **Last Modified:** 2026-01-21T12:52:10.411095
+- **Size:** 0.28 MB
+- **Last Modified:** 2026-01-24T14:24:16.736338
 - **Status:** success
 
 - **File Types:** .json: 1, .txt: 1
 - **Key Files:**
-  - pytest_comprehensive_output.txt (0.13 MB)
+  - pytest_comprehensive_output.txt (0.28 MB)
 - **Dependencies:** Complete
 
 ### ✅ 3 Gnn Output
 
 - **Files:** 26
 - **Size:** 0.16 MB
-- **Last Modified:** 2026-01-21T12:52:10.570862
+- **Last Modified:** 2026-01-24T14:26:20.352337
 - **Status:** success
 
 - **File Types:** .json: 5, .tla: 1, .max: 1, .proto: 1, .lean: 1, .thy: 1, .als: 1, .pkl: 2, .md: 1, .hs: 1, .ebnf: 1, .bnf: 1, .scala: 1, .py: 1, .yaml: 1, .z: 1, .xsd: 1, .agda: 1, .xml: 1, .v: 1, .asn1: 1
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:52:10.672889
+- **Last Modified:** 2026-01-24T14:24:17.434536
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-01-21T12:52:10.802017
+- **Last Modified:** 2026-01-24T14:26:20.720693
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:52:10.919517
+- **Last Modified:** 2026-01-24T14:24:18.071341
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -99,8 +99,8 @@
 ### ✅ 7 Export Output
 
 - **Files:** 7
-- **Size:** 0.03 MB
-- **Last Modified:** 2026-01-21T12:52:10.999459
+- **Size:** 0.04 MB
+- **Last Modified:** 2026-01-24T14:26:21.059232
 - **Status:** success
 
 - **File Types:** .json: 3, .graphml: 1, .gexf: 1, .xml: 1, .pkl: 1
@@ -113,8 +113,8 @@
 ### ✅ 8 Visualization Output
 
 - **Files:** 18
-- **Size:** 2.55 MB
-- **Last Modified:** 2026-01-21T12:52:12.007549
+- **Size:** 2.68 MB
+- **Last Modified:** 2026-01-24T14:26:22.271156
 - **Status:** success
 
 - **File Types:** .json: 2, .csv: 4, .png: 12
@@ -128,7 +128,7 @@
 
 - **Files:** 20
 - **Size:** 1.97 MB
-- **Last Modified:** 2026-01-21T12:52:19.781018
+- **Last Modified:** 2026-01-24T14:24:27.772508
 - **Status:** success
 
 - **File Types:** .png: 10, .html: 1, .json: 1, .d2: 4, .svg: 4
@@ -142,7 +142,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-01-21T12:52:19.998747
+- **Last Modified:** 2026-01-24T14:24:28.186656
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -150,12 +150,12 @@
 
 ### ✅ 11 Render Output
 
-- **Files:** 45
-- **Size:** 4.42 MB
-- **Last Modified:** 2026-01-21T12:53:07.598912
+- **Files:** 40
+- **Size:** 3.22 MB
+- **Last Modified:** 2026-01-24T14:26:55.312244
 - **Status:** success
 
-- **File Types:** .md: 6, .json: 8, .jl: 2, .png: 22, .py: 3, .csv: 2, .txt: 2
+- **File Types:** .md: 6, .json: 9, .jl: 2, .png: 16, .py: 3, .csv: 2, .txt: 2
 - **Key Files:**
   - render_processing_summary.json (0.0 MB)
   - Active Inference POMDP Agent_rxinfer.jl (0.01 MB)
@@ -164,49 +164,46 @@
 
 ### ✅ 12 Execute Output
 
-- **Files:** 33
-- **Size:** 0.48 MB
-- **Last Modified:** 2026-01-21T12:53:07.916427
+- **Files:** 27
+- **Size:** 0.13 MB
+- **Last Modified:** 2026-01-24T14:26:56.021255
 - **Status:** success
 
-- **File Types:** .json: 14, .md: 1, .txt: 5, .png: 8, .log: 5
+- **File Types:** .json: 16, .md: 1, .txt: 5, .log: 5
 - **Key Files:**
-  - execution_summary.json (0.03 MB)
+  - execution_summary.json (0.04 MB)
   - execution_report.md (0.0 MB)
-  - rxinfer_results.png (0.03 MB)
 - **Dependencies:** Complete
 
 ### ✅ 13 Llm Output
 
 - **Files:** 11
-- **Size:** 0.16 MB
-- **Last Modified:** 2026-01-21T12:57:34.570811
+- **Size:** 0.12 MB
+- **Last Modified:** 2026-01-24T14:26:48.884614
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 10
 - **Key Files:**
   - llm_summary.md (0.0 MB)
-  - summarize_content.md (0.01 MB)
+  - summarize_content.md (0.0 MB)
   - explain_model.md (0.01 MB)
 - **Dependencies:** Complete
 
 ### ✅ 14 Ml Integration Output
 
-- **Files:** 2
+- **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:57:35.872713
+- **Last Modified:** 2026-01-24T14:26:50.414603
 - **Status:** success
 
-- **File Types:** .json: 2
-- **Key Files:**
-  - ml_integration_summary.json (0.0 MB)
+- **File Types:** .json: 1
 - **Dependencies:** Complete
 
 ### ✅ 15 Audio Output
 
 - **Files:** 9
 - **Size:** 4.04 MB
-- **Last Modified:** 2026-01-21T12:57:36.262624
+- **Last Modified:** 2026-01-24T14:26:51.142051
 - **Status:** success
 
 - **File Types:** .wav: 7, .json: 1, .md: 1
@@ -218,12 +215,12 @@
 
 ### ✅ 16 Analysis Output
 
-- **Files:** 17
-- **Size:** 2.18 MB
-- **Last Modified:** 2026-01-21T12:57:39.347434
+- **Files:** 43
+- **Size:** 8.08 MB
+- **Last Modified:** 2026-01-24T14:27:00.119091
 - **Status:** success
 
-- **File Types:** .json: 3, .md: 2, .png: 12
+- **File Types:** .json: 3, .md: 2, .png: 38
 - **Key Files:**
   - analysis_results.json (0.02 MB)
   - analysis_summary.md (0.0 MB)
@@ -231,45 +228,39 @@
 
 ### ✅ 17 Integration Output
 
-- **Files:** 1
+- **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:57:39.523500
+- **Last Modified:** 2026-01-24T14:27:00.701002
 - **Status:** success
 
-- **File Types:** .json: 1
-- **Key Files:**
-  - integration_processing_summary.json (0.0 MB)
+- **File Types:** .json: 1, .md: 1
 - **Dependencies:** Complete
 
 ### ✅ 18 Security Output
 
-- **Files:** 1
+- **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:57:39.593604
+- **Last Modified:** 2026-01-24T14:27:01.029656
 - **Status:** success
 
-- **File Types:** .json: 1
-- **Key Files:**
-  - security_processing_summary.json (0.0 MB)
+- **File Types:** .json: 1, .md: 1
 - **Dependencies:** Complete
 
 ### ✅ 19 Research Output
 
-- **Files:** 1
+- **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:57:39.664319
+- **Last Modified:** 2026-01-24T14:27:01.361208
 - **Status:** success
 
-- **File Types:** .json: 1
-- **Key Files:**
-  - research_processing_summary.json (0.0 MB)
+- **File Types:** .md: 1, .json: 1
 - **Dependencies:** Complete
 
 ### ✅ 20 Website Output
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-21T12:57:39.738375
+- **Last Modified:** 2026-01-24T14:27:01.694128
 - **Status:** success
 
 - **File Types:** .html: 1, .json: 1
@@ -281,7 +272,7 @@
 
 - **Files:** 3
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-01-21T12:57:49.862132
+- **Last Modified:** 2026-01-24T14:27:12.087592
 - **Status:** success
 
 - **File Types:** .json: 3
@@ -294,13 +285,13 @@
 
 - **Files:** 6
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-01-21T12:57:51.504770
+- **Last Modified:** 2026-01-24T14:27:15.730186
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
 - **Key Files:**
   - gui_processing_summary.json (0.0 MB)
-  - navigation.html (0.05 MB)
+  - navigation.html (0.04 MB)
 - **Dependencies:** Complete
 
 ### ✅ 23 Report Output
@@ -317,9 +308,9 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 61 | 0.33 |
-| .md | 25 | 0.09 |
-| .txt | 8 | 0.14 |
+| .json | 63 | 0.37 |
+| .md | 28 | 0.07 |
+| .txt | 8 | 0.29 |
 | .tla | 1 | 0.0 |
 | .max | 1 | 0.01 |
 | .proto | 1 | 0.01 |
@@ -331,19 +322,19 @@
 | .ebnf | 1 | 0.01 |
 | .bnf | 1 | 0.01 |
 | .scala | 1 | 0.0 |
-| .py | 4 | 0.04 |
+| .py | 4 | 0.05 |
 | .yaml | 1 | 0.01 |
 | .z | 1 | 0.01 |
 | .xsd | 1 | 0.01 |
 | .agda | 1 | 0.0 |
 | .xml | 2 | 0.01 |
-| .v | 1 | 0.0 |
+| .v | 1 | 0.01 |
 | .asn1 | 1 | 0.01 |
 | .graphml | 1 | 0.0 |
 | .gexf | 1 | 0.0 |
 | .csv | 6 | 0.0 |
-| .png | 64 | 11.24 |
-| .html | 3 | 0.08 |
+| .png | 76 | 15.66 |
+| .html | 3 | 0.07 |
 | .d2 | 4 | 0.0 |
 | .svg | 4 | 0.11 |
 | .jl | 2 | 0.03 |
@@ -352,7 +343,7 @@
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 58
+**Total Visualizations:** 44
 
 ### 8 Visualization
 
@@ -363,10 +354,10 @@
 - [actinf_pomdp_agent_A_heatmap.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png) (0.09 MB)
 - [actinf_pomdp_agent_section_content_length.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_section_content_length.png) (0.19 MB)
 - [actinf_pomdp_agent_D_heatmap.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.png) (0.07 MB)
-- [actinf_pomdp_agent_combined_analysis.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png) (0.69 MB)
+- [actinf_pomdp_agent_combined_analysis.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png) (0.79 MB)
 - [actinf_pomdp_agent_C_heatmap.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.png) (0.07 MB)
-- [actinf_pomdp_agent_variable_type_distribution.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png) (0.43 MB)
-- [actinf_pomdp_agent_network_graph.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png) (0.44 MB)
+- [actinf_pomdp_agent_variable_type_distribution.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_variable_type_distribution.png) (0.46 MB)
+- [actinf_pomdp_agent_network_graph.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_network_graph.png) (0.45 MB)
 - [actinf_pomdp_agent_E_heatmap.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.png) (0.07 MB)
 - [actinf_pomdp_agent_generative_model.png](../8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_generative_model.png) (0.21 MB)
 - ... and 2 more
@@ -390,34 +381,20 @@
 
 ### 11 Render
 
-**Count:** 22
+**Count:** 16
 
 **Files:**
-- [rxinfer_results.png](../11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png) (0.03 MB)
-- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.28 MB)
-- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.17 MB)
-- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
-- [Active Inference POMDP Agent_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png) (0.28 MB)
-- [Active Inference POMDP Agent_preferences_prior.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_preferences_prior.png) (0.14 MB)
-- [Active Inference POMDP Agent_dashboard.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-52-55/visualizations/Active Inference POMDP Agent_dashboard.png) (0.38 MB)
-- [visualizations_Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/visualizations_Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
-- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.28 MB)
-- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-21_12-51-16/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.17 MB)
-- ... and 12 more
-
-### 12 Execute
-
-**Count:** 8
-
-**Files:**
-- [rxinfer_results.png](../12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results.png) (0.03 MB)
-- [rxinfer_results_1.png](../12_execute_output/actinf_pomdp_agent/rxinfer/visualizations/rxinfer_results_1.png) (0.03 MB)
-- [discopy_diagrams_perception_action_loop.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_perception_action_loop.png) (0.06 MB)
-- [model_components.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/model_components.png) (0.03 MB)
-- [discopy_diagrams_generative_model.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_generative_model.png) (0.07 MB)
-- [discopy_diagrams_model_components.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/discopy_diagrams_model_components.png) (0.03 MB)
-- [generative_model.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/generative_model.png) (0.07 MB)
-- [perception_action_loop.png](../12_execute_output/actinf_pomdp_agent/discopy/visualizations/perception_action_loop.png) (0.06 MB)
+- [rxinfer_results.png](../11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png) (0.04 MB)
+- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
+- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
+- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
+- [Active Inference POMDP Agent_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png) (0.28 MB)
+- [Active Inference POMDP Agent_preferences_prior.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png) (0.14 MB)
+- [Active Inference POMDP Agent_dashboard.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png) (0.4 MB)
+- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
+- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
+- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
+- ... and 6 more
 
 ### 20 Website
 

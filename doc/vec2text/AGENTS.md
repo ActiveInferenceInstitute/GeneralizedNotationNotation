@@ -110,7 +110,7 @@ All documentation in this module adheres to professional standards:
 - **[Privacy and Interpretability](../CROSS_REFERENCE_INDEX.md#privacy-and-interpretability)**: Privacy considerations
 
 ### Pipeline Architecture
-- **[Pipeline Documentation](../pipeline/README.md)**: Complete pipeline guide
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 

@@ -2,12 +2,12 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-01-07
-**Version**: 2.2.0
+**Last Updated**: 2026-01-23
+**Version**: 2.2.1
 **Status**: ✅ Production Ready
-**Pipeline Steps**: 24 (0-23) - 100% Implemented
-**Agent Modules**: 28 - 100% Documented
-**Latest Run**: 95.8% Success (23/24 steps, performance varies by configuration)
+**Pipeline Steps**: 25 (0-24) - 100% Implemented
+**Agent Modules**: 29 - 100% Documented
+**Latest Run**: 100% Success (25/25 steps)
 
 ## Principles
 
@@ -30,11 +30,11 @@ This guide details the architecture of the Generalized Notation Notation (GNN) s
 - **Stateless Design**: Prefer stateless agents for better testability and reliability
 - **Resource Awareness**: Proper resource management with cleanup and monitoring
 - **Configuration Flexibility**: Environment-driven configuration with validation
-- **Integration Ready**: All modules integrate seamlessly with the 24-step pipeline
+- **Integration Ready**: All modules integrate seamlessly with the 25-step pipeline
 
 ## System Overview
 
-The GNN system implements a comprehensive 24-step pipeline that transforms GNN model specifications into executable simulations, visualizations, and analysis. The architecture follows the thin orchestrator pattern with complete separation between pipeline orchestration and domain-specific implementations.
+The GNN system implements a comprehensive 25-step pipeline that transforms GNN model specifications into executable simulations, visualizations, and analysis. The architecture follows the thin orchestrator pattern with complete separation between pipeline orchestration and domain-specific implementations.
 
 ```mermaid
 graph TB
@@ -127,7 +127,7 @@ graph LR
 
 ## Current Implementation Status
 
-### ✅ **Production Ready Components (October 1, 2025)**
+### ✅ **Production Ready Components (January 2026)**
 
 **Core Infrastructure (100% Complete):**
 - `src/main.py` - Main pipeline orchestrator with comprehensive monitoring
@@ -136,8 +136,8 @@ graph LR
 - `src/tests/` - Comprehensive test suite with real data validation
 
 **Agent Modules (100% Complete):**
-- All 24 pipeline steps (0-23) implemented with thin orchestrator pattern
-- All 28 agent modules documented with comprehensive AGENTS.md files
+- All 25 pipeline steps (0-24) implemented with thin orchestrator pattern
+- All 29 agent modules documented with comprehensive AGENTS.md files
 - Complete MCP integration across all applicable modules
 - Full test coverage with >95% coverage for all modules
 
@@ -148,13 +148,13 @@ graph LR
 - `.env` - Complete environment configuration template
 - `.gitignore` - Comprehensive ignore patterns for scientific computing
 
-### 📊 **Performance Metrics** (November 19, 2025)
-- **Execution Time**: Core processing 30-60s, full pipeline 7-10 min (varies by configuration)
-- **Memory Usage**: Peak 36.2 MB (1.77% of 2GB target) - excellent efficiency
-- **Success Rate**: 95.8% on latest run (23/24 steps successful)
+### 📊 **Performance Metrics** (January 2026)
+- **Execution Time**: Core processing ~90s, full pipeline ~9 min (varies by configuration)
+- **Memory Usage**: Peak 36.3 MB - excellent efficiency
+- **Success Rate**: 100% on latest run (25/25 steps successful)
 - **Error Rate**: <1% for critical failures ✅ confirmed
 - **Test Coverage**: 72%-95% by module (median ~82%)
-- **Recent Improvements**: Test suite timeout increased to 600s, enhanced visual logging
+- **Tests Passing**: 777 tests (21 skipped for optional dependencies)
 
 ### 🔧 **Recent Enhancements**
 - **Syntax Validation**: All Python files now have <2% syntax errors
@@ -312,12 +312,12 @@ Each agent implements comprehensive performance monitoring:
 
 ---
 
-**Architecture Version**: 2.2.0
-**Last Updated**: 2026-01-07
+**Architecture Version**: 2.2.1
+**Last Updated**: 2026-01-22
 **Status**: ✅ Production Ready
 **Compliance**: 100% Thin Orchestrator Pattern
 **Documentation**: 100% AGENTS.md Coverage
-**Latest Validation**: 95.8% Success (23/24 steps, configuration-dependent timing)
+**Latest Validation**: 100% Success (25/25 steps)
 
 ## References
 

@@ -40,7 +40,8 @@ STEP_METADATA = {
     "20_website": {"name": "Website", "description": "Static HTML website generation"},
     "21_mcp": {"name": "MCP", "description": "Model Context Protocol processing"},
     "22_gui": {"name": "GUI", "description": "Interactive GNN constructor"},
-    "23_report": {"name": "Report", "description": "Comprehensive report generation"}
+    "23_report": {"name": "Report", "description": "Comprehensive report generation"},
+    "24_intelligent_analysis": {"name": "Intelligent Analysis", "description": "AI-powered pipeline analysis and optimization"}
 }
 
 class StepConfig:
@@ -171,6 +172,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
         "21_mcp": base_output_dir / "21_mcp_output",
         "22_gui": base_output_dir / "22_gui_output",
         "23_report": base_output_dir / "23_report_output",
+        "24_intelligent_analysis": base_output_dir / "24_intelligent_analysis_output",
     }
 
     # Accept '.py' suffix keys as well

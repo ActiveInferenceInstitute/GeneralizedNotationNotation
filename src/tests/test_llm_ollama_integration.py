@@ -115,8 +115,16 @@ class TestOllamaDetection:
         else:
             logger.info("ℹ️ Ollama not detected and port closed")
         
-        # Test passes as long as detection runs without error
-        assert True
+        # Verify detection returned consistent results
+        assert isinstance(is_available, bool), f"Expected bool, got {type(is_available)}"
+        assert isinstance(models, list), f"Expected list, got {type(models)}"
+
+        # Verify logical consistency between port and availability
+        if models:
+            # If we have models, Ollama must be available
+            assert is_available or port_open, "Models found but neither available nor port open"
+
+        logger.info("✅ Detection completed with consistent results")
 
 
 class TestOllamaModelSelection:

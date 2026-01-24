@@ -3,18 +3,38 @@
 Standardized Pipeline Step Template
 
 This template provides a consistent structure for all GNN pipeline steps.
-Copy this template and modify the TODO sections to create new pipeline steps.
+Copy this template and modify the CUSTOMIZE sections to create new pipeline steps.
 
-The GNN pipeline consists of 13 steps:
-1-4: Discovery & Parsing
-5-6: Export & Visualization  
-7-8: Integration & Analysis
-9-11: Execution & Enhancement (PyMDP, RxInfer.jl, ActiveInference.jl)
-12-13: Advanced Representations
+The GNN pipeline consists of 24 steps (0-23):
+
+    Steps 0-9 (Core):
+        0: Template initialization    5: Type checker
+        1: Environment setup          6: Validation
+        2: Test execution             7: Export
+        3: GNN parsing                8: Visualization
+        4: Model registry             9: Advanced visualization
+
+    Steps 10-16 (Simulation):
+        10: Ontology                  14: ML integration
+        11: Render (code generation)  15: Audio processing
+        12: Execute (simulation)      16: Analysis
+        13: LLM analysis
+
+    Steps 17-23 (Output):
+        17: Integration               21: MCP (Model Context Protocol)
+        18: Security                  22: GUI
+        19: Research                  23: Report generation
+        20: Website
 
 Usage:
     python X_step_name.py [options]
     (Typically called by main.py)
+
+To create a new step:
+    1. Copy this file to src/N_stepname.py (where N is the step number)
+    2. Search for "CUSTOMIZE" and update each marked section
+    3. Create corresponding src/stepname/ module directory
+    4. Add step to main.py orchestration
 """
 
 import sys
@@ -41,18 +61,26 @@ import datetime
 import json
 import yaml
 
-# Initialize logger for this step - TODO: Update step name
+# Initialize logger for this step
+# CUSTOMIZE: Replace "X_step_name" with your step name (e.g., "3_gnn", "11_render")
 logger = setup_step_logging("X_step_name", verbose=False)
 
-# TODO: Import step-specific modules
+# Step-specific module imports
+# CUSTOMIZE: Import the modules your step requires. Examples:
+#   from gnn import parse_gnn_file, discover_gnn_files
+#   from render.pymdp import PyMDPRenderer
+#   from execute import run_simulation
 try:
-    # Replace with actual imports needed for your step
-    # from your_module import your_function
+    # Example imports for common step types:
+    # - Parsing steps: from gnn.parsers import MarkdownGNNParser
+    # - Render steps: from render.{framework} import {Framework}Renderer
+    # - Execute steps: from execute.{framework} import {Framework}Runner
+    # - Analysis steps: from analysis import run_analysis
     pass
-    
+
     DEPENDENCIES_AVAILABLE = True
     logger.debug("Successfully imported step-specific dependencies")
-    
+
 except ImportError as e:
     log_step_warning(logger, f"Failed to import step-specific modules: {e}")
     DEPENDENCIES_AVAILABLE = False
@@ -67,13 +95,30 @@ def validate_step_requirements() -> bool:
     if not DEPENDENCIES_AVAILABLE:
         log_step_error(logger, "Required dependencies are not available")
         return False
-    
-    # TODO: Add additional validation logic
-    # - Check for required files
-    # - Validate environment variables
-    # - Test external service connections
-    # etc.
-    
+
+    # CUSTOMIZE: Add validation checks specific to your step. Examples:
+    #
+    # Check required files exist:
+    #   required_file = Path("config/step_config.yaml")
+    #   if not required_file.exists():
+    #       log_step_error(logger, f"Required config not found: {required_file}")
+    #       return False
+    #
+    # Validate environment variables:
+    #   api_key = os.environ.get("LLM_API_KEY")
+    #   if not api_key:
+    #       log_step_error(logger, "LLM_API_KEY environment variable not set")
+    #       return False
+    #
+    # Test external service connections:
+    #   try:
+    #       response = requests.get("http://localhost:8080/health", timeout=5)
+    #       if response.status_code != 200:
+    #           return False
+    #   except requests.RequestException:
+    #       log_step_error(logger, "Cannot connect to required service")
+    #       return False
+
     return True
 
 def process_single_file(
@@ -323,41 +368,45 @@ def main(parsed_args) -> int:
         Exit code (0=success, 1=error, 2=warnings)
     """
     
-    # TODO: Update step description
+    # CUSTOMIZE: Update the step description for your specific step
+    # Example: "Starting GNN parsing step" or "Starting PyMDP render step"
     log_step_start(logger, "Starting standardized pipeline step")
-    
+
     # Update logger verbosity based on arguments
     if getattr(parsed_args, 'verbose', False):
         import logging
         logger.setLevel(logging.DEBUG)
-    
+
     # Validate step requirements
     if not validate_step_requirements():
         log_step_error(logger, "Step requirements not met")
         return 1
-    
+
     # Get configuration
     config = get_pipeline_config()
-    step_config = config.get_step_config("X_step_name.py")  # TODO: Update step name
-    
+    # CUSTOMIZE: Replace "X_step_name.py" with your script name (e.g., "3_gnn.py")
+    step_config = config.get_step_config("X_step_name.py")
+
     # Set up paths
     input_dir = getattr(parsed_args, 'target_dir', Path("input/gnn_files"))
     if isinstance(input_dir, str):
         input_dir = Path(input_dir)
-    
+
     output_dir = Path(getattr(parsed_args, 'output_dir', 'output'))
-    step_output_dir = get_output_dir_for_script("X_step_name.py", output_dir)  # TODO: Update step name
+    # CUSTOMIZE: Replace "X_step_name.py" with your script name (e.g., "3_gnn.py")
+    step_output_dir = get_output_dir_for_script("X_step_name.py", output_dir)
     step_output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Get processing options
     recursive = getattr(parsed_args, 'recursive', True)
     verbose = getattr(parsed_args, 'verbose', False)
-    
-    # TODO: Extract additional step-specific arguments
-    # Examples:
-    # strict_mode = getattr(parsed_args, 'strict', False)
-    # timeout = getattr(parsed_args, 'timeout', 300)
-    # custom_option = getattr(parsed_args, 'custom_option', 'default')
+
+    # CUSTOMIZE: Extract additional arguments specific to your step. Examples:
+    #   strict_mode = getattr(parsed_args, 'strict', False)  # For validation steps
+    #   timeout = getattr(parsed_args, 'timeout', 300)  # For execution steps
+    #   frameworks = getattr(parsed_args, 'frameworks', 'all')  # For render/execute
+    #   llm_provider = getattr(parsed_args, 'llm_provider', 'ollama')  # For LLM steps
+    #   audio_format = getattr(parsed_args, 'audio_format', 'wav')  # For audio steps
     
     logger.info(f"Processing files from: {input_dir}")
     logger.info(f"Recursive processing: {'enabled' if recursive else 'disabled'}")
@@ -369,7 +418,13 @@ def main(parsed_args) -> int:
         return 1
     
     # Find input files
-    pattern = "**/*.md" if recursive else "*.md"  # TODO: Update pattern for your file types
+    # CUSTOMIZE: Update the pattern for your step's input file types. Examples:
+    #   GNN steps: "**/*.md" or "**/*.gnn"
+    #   JSON steps: "**/*.json"
+    #   Python steps: "**/*.py"
+    #   Julia steps: "**/*.jl"
+    #   Multiple types: Use multiple globs and combine results
+    pattern = "**/*.md" if recursive else "*.md"
     input_files = list(input_dir.glob(pattern))
     
     if not input_files:
@@ -385,7 +440,11 @@ def main(parsed_args) -> int:
     processing_options = {
         'verbose': verbose,
         'recursive': recursive,
-        # TODO: Add other options as needed
+        # CUSTOMIZE: Add step-specific options to pass to process_single_file(). Examples:
+        #   'strict_mode': strict_mode,
+        #   'timeout': timeout,
+        #   'frameworks': frameworks.split(',') if isinstance(frameworks, str) else frameworks,
+        #   'output_format': output_format,
     }
     
     with performance_tracker.track_operation("process_all_files"):
@@ -411,18 +470,25 @@ def main(parsed_args) -> int:
     total_files = successful_files + failed_files
     logger.info(f"Processing complete: {successful_files}/{total_files} files successful")
     
-    # TODO: Generate summary report if needed
+    # Generate summary report with processing results
+    # CUSTOMIZE: Add step-specific fields to the summary as needed
     summary_file = step_output_dir / "processing_summary.json"
     import json
     summary = {
-        "step_name": "X_step_name",  # TODO: Update step name
+        # CUSTOMIZE: Replace "X_step_name" with your step name (e.g., "3_gnn")
+        "step_name": "X_step_name",
         "input_directory": str(input_dir),
         "output_directory": str(step_output_dir),
         "total_files": total_files,
         "successful_files": successful_files,
         "failed_files": failed_files,
         "processing_options": processing_options,
-        "performance_summary": performance_tracker.get_summary()
+        "performance_summary": performance_tracker.get_summary(),
+        # CUSTOMIZE: Add step-specific summary fields. Examples:
+        #   "models_parsed": len(parsed_models),
+        #   "frameworks_rendered": list(rendered_frameworks),
+        #   "simulations_completed": simulation_count,
+        #   "warnings": warning_messages,
     }
     
     with open(summary_file, 'w') as f:
@@ -443,18 +509,27 @@ def main(parsed_args) -> int:
 
 # Standardized execution using the template
 if __name__ == '__main__':
-    # TODO: Update step dependencies list
+    # CUSTOMIZE: List the module names your step depends on for import validation.
+    # These are checked during startup to provide clear error messages.
+    # Examples by step type:
+    #   GNN parsing: ["gnn", "gnn.parsers"]
+    #   Rendering: ["render", "render.pymdp", "jinja2"]
+    #   Execution: ["execute", "execute.pymdp", "numpy"]
+    #   Analysis: ["analysis", "pandas", "matplotlib"]
+    #   LLM: ["llm", "openai"] or ["llm", "anthropic"]
     step_dependencies = [
         # "your_required_module",
         # "another_dependency"
     ]
-    
-    # TODO: Update step name and description
+
+    # CUSTOMIZE: Update step_name and step_description for your step.
+    # step_name should match the filename (e.g., "3_gnn.py" for src/3_gnn.py)
+    # step_description should briefly describe what the step does
     exit_code = execute_pipeline_step_template(
         step_name="X_step_name.py",
         step_description="Standardized pipeline step template",
         main_function=main,
         import_dependencies=step_dependencies
     )
-    
+
     sys.exit(exit_code) 

@@ -107,8 +107,37 @@ try:
         create_visual_logger
     )
     STRUCTURED_LOGGING_AVAILABLE = True
-except ImportError:
+except ImportError as e:
     STRUCTURED_LOGGING_AVAILABLE = False
+    # Provide fallback implementations when visual logging is not available
+    from dataclasses import dataclass
+
+    @dataclass
+    class VisualConfig:
+        """Fallback visual config when visual_logging is not available."""
+        enable_colors: bool = True
+        enable_progress_bars: bool = True
+        enable_emoji: bool = True
+        enable_animation: bool = True
+        max_width: int = 80
+        show_timestamps: bool = False
+        show_correlation_ids: bool = True
+        compact_mode: bool = False
+
+    class VisualLogger:
+        """Fallback visual logger when visual_logging is not available."""
+        def __init__(self, name, config=None):
+            self.name = name
+            self.config = config
+            self._correlation_id = None
+        def set_correlation_id(self, cid): self._correlation_id = cid
+        def print_progress(self, current, total, message): print(f"[{current}/{total}] {message}")
+        def print_step_header(self, step_num, description, total): print(f"\n=== Step {step_num}/{total}: {description} ===")
+
+    def create_visual_logger(name, config): return VisualLogger(name, config)
+    def print_pipeline_banner(title, subtitle): print(f"\n{'='*60}\n{title}\n{subtitle}\n{'='*60}")
+    def print_step_summary(step, desc, status, duration, stats): print(f"Step {step}: {desc} - {status} ({duration:.2f}s)")
+    def print_completion_summary(success, duration, stats): print(f"\n{'='*60}\nPipeline {'COMPLETED' if success else 'FAILED'} in {duration:.2f}s\n{stats}\n{'='*60}")
 
 def main():
     """Main pipeline orchestration function."""
@@ -193,7 +222,8 @@ def main():
         ("20_website.py", "Website generation"),
         ("21_mcp.py", "Model Context Protocol processing"),
         ("22_gui.py", "GUI (Interactive GNN Constructor)"),
-        ("23_report.py", "Report generation")
+        ("23_report.py", "Report generation"),
+        ("24_intelligent_analysis.py", "Intelligent pipeline analysis")
     ]
 
     # Handle step filtering with automatic dependency resolution
@@ -267,6 +297,7 @@ def main():
                 10: [3],     # 10_ontology.py needs 3_gnn.py
                 15: [3],     # 15_audio.py needs 3_gnn.py
                 16: [3, 7],  # 16_analysis.py needs 3_gnn.py and 7_export.py
+                24: [23],    # 24_intelligent_analysis.py needs 23_report.py (and implicitly the summary it generates/pipeline completion)
             }
             
             # Include dependencies automatically

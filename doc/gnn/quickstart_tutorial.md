@@ -28,8 +28,11 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
-# Install dependencies
-pip install -r requirements.txt
+# Install UV package manager (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Install dependencies using UV (recommended)
+uv sync
 
 # Test the installation
 python src/main.py --help

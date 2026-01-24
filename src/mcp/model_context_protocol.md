@@ -73,6 +73,10 @@ npm install @modelcontextprotocol/sdk
 
 For a Python project:
 ```bash
+# Using UV (recommended)
+uv pip install "mcp[cli]"
+
+# Or via pip
 pip install "mcp[cli]"
 ```
 

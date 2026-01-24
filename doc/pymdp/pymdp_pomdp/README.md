@@ -6,11 +6,14 @@
 
 The PyMDP simulation capabilities have been moved to the main pipeline structure:
 
-### 📁 **Current Location**: `src/execute/pymdp/`
-- **PyMDP Simulation**: `src/execute/pymdp/pymdp_simulation.py`
-- **Utilities**: `src/execute/pymdp/pymdp_utils.py` 
-- **Visualization**: `src/execute/pymdp/pymdp_visualizer.py`
-- **Tests**: `src/execute/pymdp/test_*.py`
+### 📁 **Current Locations**:
+- **Execution**: `src/execute/pymdp/`
+  - PyMDP Simulation: `src/execute/pymdp/pymdp_simulation.py`
+  - Utilities: `src/execute/pymdp/pymdp_utils.py`
+  - Tests: `src/tests/test_execute_pymdp_*.py`
+- **Analysis**: `src/analysis/pymdp/`
+  - Analyzer: `src/analysis/pymdp/analyzer.py`
+  - Visualizer: `src/analysis/pymdp/visualizer.py`
 
 ### 🔄 **Pipeline Steps Integration**
 
@@ -56,11 +59,11 @@ The files in this directory serve as **reference implementations** that informed
 
 ### Core Components
 - `pymdp_gridworld_simulation.py` - Reference simulation [→ `src/execute/pymdp/pymdp_simulation.py`]
-- `pymdp_gridworld_visualizer.py` - Reference visualizer [→ `src/execute/pymdp/pymdp_visualizer.py`]  
+- `pymdp_gridworld_visualizer.py` - Reference visualizer [→ `src/analysis/pymdp/visualizer.py`]
 - `pymdp_utils.py` - Reference utilities [→ `src/execute/pymdp/pymdp_utils.py`]
 
-### Tests & Documentation  
-- `test_visualization.py` - Reference tests [→ `src/execute/pymdp/test_*.py`]
+### Tests & Documentation
+- `test_visualization.py` - Reference tests [→ `src/tests/test_execute_pymdp_visualizer.py`]
 - `test_numpy_serialization.py` - Reference numpy tests [→ integrated]
 - `POMDP_EXPLANATION.md` - Technical documentation
 
@@ -113,6 +116,6 @@ For **reference** and **understanding**, consult the files in this directory.
 ---
 
 **See Also**: 
-- [Pipeline Architecture](../../../doc/pipeline/PIPELINE_ARCHITECTURE.md)
+- [Pipeline Architecture](../../../doc/gnn/architecture_reference.md)
 - [Render Module README](../../../src/render/README.md)
 - [GNN Examples](../../../input/gnn_files/) 

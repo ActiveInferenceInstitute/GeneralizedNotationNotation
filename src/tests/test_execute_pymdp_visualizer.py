@@ -10,7 +10,7 @@ import pytest
 import numpy as np
 from pathlib import Path
 import tempfile
-from analysis.pymdp_visualizer import PyMDPVisualizer, create_visualizer
+from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer
 
 
 class TestPyMDPVisualizer:
@@ -168,7 +168,7 @@ class TestPyMDPVisualizer:
 
     def test_comprehensive_visualization(self, visualizer, temp_output_dir):
         """Test comprehensive visualization generation using save_all_visualizations."""
-        from analysis.pymdp_visualizer import save_all_visualizations
+        from analysis.pymdp.visualizer import save_all_visualizations
         
         sim_results = {
             'states': [0, 1, 2, 1, 0],
@@ -360,7 +360,7 @@ def test_episode_summary():
 
 def test_comprehensive_visualization():
     """Test comprehensive visualization generation using save_all_visualizations."""
-    from analysis.pymdp_visualizer import save_all_visualizations
+    from analysis.pymdp.visualizer import save_all_visualizations
     
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)

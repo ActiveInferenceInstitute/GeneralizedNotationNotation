@@ -170,7 +170,7 @@ try
     
     # Run simulation
     println("🚀 Running simulation...")
-    n_steps = 20
+    n_steps = 30  # From GNN ModelParameters (num_timesteps)
     observations_log = []
     actions_log = []
     beliefs_log = []

@@ -344,7 +344,7 @@ pytest src/tests/performance/ --benchmark-only
 #### Adding a New Pipeline Step
 
 1. **Create the script**: `src/N_description.py`
-2. **Add configuration**: Update `src/pipeline/config.py`
+2. **Add configuration**: Update `src/config.py`
 3. **Add tests**: Create tests in `tests/unit/` and `tests/integration/`
 4. **Add documentation**: Update pipeline documentation
 5. **Add MCP tools**: Create `module/mcp.py` if exposing APIs
@@ -420,7 +420,7 @@ pytest src/tests/performance/ --benchmark-only
    - Run individual test files for debugging
 
 3. **Pipeline Issues**
-   - Check step configuration in `src/pipeline/config.py`
+   - Check step configuration in `src/config.py`
    - Verify argument passing between steps
    - Check timeout settings for slow operations
 
