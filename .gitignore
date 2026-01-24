@@ -216,37 +216,10 @@ output/*/audio/
 cache/audio/
 temp_audio_*
 
-# ============================================================================
-# VISUALIZATION AND GRAPHICS
-# ============================================================================
-# Plotly / Matplotlib outputs
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.svg
-*.pdf
-*.eps
-
-# Generated visualizations
-output/*/visualization/
-cache/visualization/
-temp_plots_*
-
-# Graphviz and diagram outputs
-*.dot
-*.gv
-*.graphml
-*.gexf
 
 # ============================================================================
 # PIPELINE OUTPUTS (Selective - Keep important artifacts)
 # ============================================================================
-# Keep these important outputs:
-# output/pipeline_execution_summary.json
-# output/*/processing_summary.json
-# output/*/*_results.json
-# output/*/*_analysis.json
 
 # But ignore temporary and intermediate files
 output/*/temp/
@@ -355,12 +328,6 @@ yarn-error.log*
 .Rhistory
 .Rproj.user/
 
-# MATLAB (if used)
-*.mat
-*.fig
-
-# GNN-specific patterns
-/doc/rxinfer/RxInferExamples.jl
 *.timelock.*
 *.jl.mem
 
@@ -385,5 +352,5 @@ yarn-error.log*
 # To see what would be cleaned: git clean -fdxn
 # To update this file: Review and test patterns before committing
 #
-# Last updated: October 1, 2025
+# Last updated: January 24, 2026
 # ============================================================================
