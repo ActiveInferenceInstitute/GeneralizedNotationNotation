@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Active Inference POMDP Agent
-# Generated: 2026-01-24 15:01:07
+# Generated: 2026-01-24 15:07:23
 
 using Pkg
 

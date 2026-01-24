@@ -1,6 +1,6 @@
 # GNN Script Execution Report
 
-**Generated:** 2026-01-24T15:01:09.770700
+**Generated:** 2026-01-24T15:07:25.556076
 **Target Directory:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files
 **Output Directory:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output
 
@@ -18,7 +18,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py`
 - **Return Code:** 0
-- **Execution Time:** 1.32 seconds
+- **Execution Time:** 1.20 seconds
 - **Detailed Output:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log
 
 ### Active Inference POMDP Agent_discopy.py - ✅ SUCCESS
@@ -27,7 +27,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py`
 - **Return Code:** 0
-- **Execution Time:** 1.33 seconds
+- **Execution Time:** 0.65 seconds
 - **Detailed Output:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log
 
 ### Active Inference POMDP Agent_pymdp.py - ✅ SUCCESS
@@ -36,7 +36,7 @@
 - **Executor:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/bin/python
 - **Path:** `output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py`
 - **Return Code:** 0
-- **Execution Time:** 2.07 seconds
+- **Execution Time:** 1.42 seconds
 - **Detailed Output:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/pymdp_gen/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log
 
 ### Active Inference POMDP Agent_rxinfer.jl - ✅ SUCCESS
@@ -45,7 +45,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl`
 - **Return Code:** 0
-- **Execution Time:** 27.21 seconds
+- **Execution Time:** 24.25 seconds
 - **Detailed Output:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log
 
 ### Active Inference POMDP Agent_activeinference.jl - ✅ SUCCESS
@@ -54,7 +54,7 @@
 - **Executor:** julia
 - **Path:** `output/11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl`
 - **Return Code:** 0
-- **Execution Time:** 30.84 seconds
+- **Execution Time:** 28.23 seconds
 - **Detailed Output:** /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log
 
 ## Next Steps

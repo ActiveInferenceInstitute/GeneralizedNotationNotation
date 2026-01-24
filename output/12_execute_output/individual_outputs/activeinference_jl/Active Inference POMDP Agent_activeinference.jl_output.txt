@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_activeinference.jl
-Timestamp: 2026-01-24T15:01:41.728296
+Timestamp: 2026-01-24T15:07:53.084974
 Return Code: 0
-Execution Time: 30.84 seconds
+Execution Time: 28.23 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -10,10 +10,10 @@ STDOUT:
 ActiveInference.jl Script for GNN Model: Active Inference POMDP Agent
 ======================================================================
 Julia version: 1.12.1
-Date: 2026-01-24T15:01:57.028
+Date: 2026-01-24T15:08:06.599
 Model dimensions: States=3, Observations=3, Actions=3
 
-📁 Output directory: activeinference_outputs_2026-01-24_15-01-57
+📁 Output directory: activeinference_outputs_2026-01-24_15-08-06
 🔧 Creating model matrices from GNN specification...
 ✅ A matrix created: (3, 3)
 ✅ B matrix created: (3, 3, 3)
@@ -33,12 +33,12 @@ Step 25: obs=3, action=1, belief=0.0
 Step 30: obs=3, action=1, belief=0.0
 ✅ Simulation completed: 30 timesteps
 📊 Generating comprehensive visualizations...
-✅ Generated belief evolution plot: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_belief_evolution.png
-✅ Generated action analysis plot: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_action_analysis.png
-✅ Generated A matrix heatmap: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_A_matrix.png
-✅ Generated preferences/prior plot: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_preferences_prior.png
-✅ Generated 3D belief trajectory: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png
-✅ Generated summary dashboard: activeinference_outputs_2026-01-24_15-01-57/visualizations/Active Inference POMDP Agent_dashboard.png
+✅ Generated belief evolution plot: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_belief_evolution.png
+✅ Generated action analysis plot: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_action_analysis.png
+✅ Generated A matrix heatmap: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_A_matrix.png
+✅ Generated preferences/prior plot: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_preferences_prior.png
+✅ Generated 3D belief trajectory: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png
+✅ Generated summary dashboard: activeinference_outputs_2026-01-24_15-08-06/visualizations/Active Inference POMDP Agent_dashboard.png
 ✅ Visualization generation complete!
 💾 Saving results...
 🔍 Running validation checks...
@@ -46,10 +46,10 @@ Step 30: obs=3, action=1, belief=0.0
 ======================================================================
 ✅ Simulation completed successfully!
 ======================================================================
-📊 Results saved to: activeinference_outputs_2026-01-24_15-01-57
+📊 Results saved to: activeinference_outputs_2026-01-24_15-08-06
 📈 Final belief: 0.0
 🎯 Action distribution: Dict{Any, Int64}(2 => 12, 3 => 2, 1 => 16)
-🎨 Visualizations: 6 files in activeinference_outputs_2026-01-24_15-01-57/visualizations
+🎨 Visualizations: 6 files in activeinference_outputs_2026-01-24_15-08-06/visualizations
 ✅ Validation: ALL CHECKS PASSED
 
 ActiveInference.jl script completed!
