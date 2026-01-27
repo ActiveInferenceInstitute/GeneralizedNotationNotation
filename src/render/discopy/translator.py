@@ -51,16 +51,16 @@ def generate_setup_report() -> str:
 
 ### 1. Install DisCoPy
 ```bash
-pip install discopy
+uv pip install discopy
 ```
 
 ### 2. Install JAX (for matrix operations)
 ```bash
 # For CPU only
-pip install jax jaxlib
+uv pip install jax jaxlib
 
 # For GPU support (CUDA)
-pip install jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
+uv pip install jax[cuda] -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 ```
 
 ### 3. Verify Installation
@@ -93,10 +93,10 @@ print(f"JAX version: {{jax.__version__}}")
 
 ### Common Issues
 1. **ImportError: No module named 'discopy'**
-   - Solution: `pip install discopy`
+   - Solution: `uv pip install discopy`
 
 2. **ImportError: No module named 'jax'**
-   - Solution: `pip install jax jaxlib`
+   - Solution: `uv pip install jax jaxlib`
 
 3. **JAX backend not available**
    - Solution: Ensure JAX is properly installed and accessible
@@ -1311,7 +1311,7 @@ try:
 except ImportError as e:
     print(f"✗ Import error: {{e}}")
     print("Please install required packages:")
-    print("pip install discopy matplotlib")
+    print("uv pip install discopy matplotlib")
     exit(1)
 
 def create_gnn_diagram():
@@ -1414,7 +1414,7 @@ try:
 except ImportError as e:
     print(f"✗ Import error: {{e}}")
     print("Please install required packages:")
-    print("pip install discopy jax jaxlib matplotlib")
+    print("uv pip install discopy jax jaxlib matplotlib")
     exit(1)
 
 # Set JAX random seed

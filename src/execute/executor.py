@@ -622,7 +622,7 @@ def execute_rendered_simulators(
                 log_step_warning(logger, f"DisCoPy analysis failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ DisCoPy framework not available - skipping DisCoPy execution (install with: pip install discopy)")
+            logger.info("ℹ️ DisCoPy framework not available - skipping DisCoPy execution (install with: uv pip install discopy)")
             execution_results["discopy_executions"].append({
                 "status": "SKIPPED",
                 "message": "DisCoPy framework not installed (optional dependency)",
@@ -708,7 +708,7 @@ def execute_rendered_simulators(
                 log_step_warning(logger, f"JAX script execution failed: {e}")
         else:
             # Framework unavailable - log at INFO level (optional dependency)
-            logger.info("ℹ️ JAX framework not available - skipping JAX execution (install with: pip install jax jaxlib)")
+            logger.info("ℹ️ JAX framework not available - skipping JAX execution (install with: uv pip install jax jaxlib)")
             execution_results["jax_executions"].append({
                 "status": "SKIPPED",
                 "message": "JAX framework not installed (optional dependency)",
