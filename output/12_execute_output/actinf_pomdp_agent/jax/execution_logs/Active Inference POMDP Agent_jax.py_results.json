@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.203315,
-  "timestamp": "2026-01-24T15:07:25.561413",
+  "execution_time": 1.24566,
+  "timestamp": "2026-01-27T08:47:33.024168",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
