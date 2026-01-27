@@ -3,13 +3,14 @@
 ## Pipeline Architecture References
 
 This document validates the complete GNN pipeline architecture. For current implementation:
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and complete 24-step pipeline registry
+
+- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and thin orchestrator pattern
-- **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation (24 steps: 0-23)
+- **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation (25 steps: 0-24)
 - [Architecture Reference](architecture_reference.md): Implementation patterns and cross-module data flow
 - [Technical Reference](technical_reference.md): Complete entry points and round-trip data flow
 
-- ✅ 24 steps (0-23): All operational with 100% success rate
+- ✅ 25 steps (0-24): All operational with 100% success rate
 - ✅ Execution time: ~2 minutes for full pipeline
 - ✅ Memory usage: < 25MB peak
 - ✅ All modules use thin orchestrator pattern
@@ -19,7 +20,7 @@ This document validates the complete GNN pipeline architecture. For current impl
 
 ## Executive Summary
 
-This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 24 pipeline steps (0-23) and 28 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
+This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 24 pipeline steps (0-24) and 28 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
 
 ### High-Level Coherence Metrics
 
@@ -34,9 +35,10 @@ This document serves as a comprehensive checklist and analysis framework for val
 ### Validation Scope
 
 This mega-prompt validates:
+
 1. Architecture compliance across all 24 pipeline steps
 2. Code quality standards (type hints, docstrings, error handling)
-3. Module structure consistency (directory patterns, __init__.py, MCP integration)
+3. Module structure consistency (directory patterns, **init**.py, MCP integration)
 4. Documentation completeness (AGENTS.md, README.md, API docs)
 5. Testing standards (no-mock policy, real data, integration tests)
 6. Pipeline integration (dependencies, data flow, output consistency)
@@ -53,7 +55,7 @@ This mega-prompt validates:
 
 **Requirement**: All 24 numbered pipeline scripts must follow the thin orchestrator pattern, delegating core functionality to module implementations.
 
-#### Validation Checklist for Each Pipeline Script (0-23)
+#### Validation Checklist for Each Pipeline Script (0-24)
 
 For each script `N_[module_name].py`, verify:
 
@@ -71,107 +73,132 @@ For each script `N_[module_name].py`, verify:
 #### Specific Pipeline Scripts to Validate
 
 **Step 0**: `src/0_template.py` → `src/template/`
+
 - Verify: Uses `create_standardized_pipeline_script()` pattern
 - Verify: Delegates to `process_template_standardized()`
 
 **Step 1**: `src/1_setup.py` → `src/setup/`
+
 - Verify: Environment setup delegation
 - Verify: Dependency management patterns
 
 **Step 2**: `src/2_tests.py` → `src/tests/`
+
 - Verify: Test orchestration delegation
 - Verify: Real test execution (no mocks)
 
 **Step 3**: `src/3_gnn.py` → `src/gnn/`
+
 - Verify: GNN file discovery and parsing delegation
 - Verify: Multi-format support delegation
 - Verify: Delegates to `process_gnn_multi_format()` from `gnn.multi_format_processor`
 
 **Step 4**: `src/4_model_registry.py` → `src/model_registry/`
+
 - Verify: Registry management delegation
 - Verify: Versioning and metadata handling
 
 **Step 5**: `src/5_type_checker.py` → `src/type_checker/`
+
 - Verify: Type checking delegation
 - Verify: Resource estimation delegation
 
 **Step 6**: `src/6_validation.py` → `src/validation/`
+
 - Verify: Validation logic delegation
 - Verify: Consistency checking delegation
 
 **Step 7**: `src/7_export.py` → `src/export/`
+
 - Verify: Multi-format export delegation
 - Verify: Format-specific exporters
 
 **Step 8**: `src/8_visualization.py` → `src/visualization/`
+
 - Verify: Visualization generation delegation
 - Verify: Graph and matrix visualization
 - Verify: Delegates to `process_visualization_main()` from `visualization` module
 
 **Step 9**: `src/9_advanced_viz.py` → `src/advanced_visualization/`
+
 - Verify: Advanced visualization delegation
 - Verify: Interactive plot generation
 
 **Step 10**: `src/10_ontology.py` → `src/ontology/`
+
 - Verify: Ontology processing delegation
 - Verify: Active Inference term mapping
 
 **Step 11**: `src/11_render.py` → `src/render/`
+
 - Verify: Code generation delegation
 - Verify: Multi-framework rendering (PyMDP, RxInfer, ActiveInference.jl)
 
 **Step 12**: `src/12_execute.py` → `src/execute/`
+
 - Verify: Execution orchestration delegation
 - Verify: Multi-environment execution
 
 **Step 13**: `src/13_llm.py` → `src/llm/`
+
 - Verify: LLM processing delegation
 - Verify: AI-enhanced analysis
 
 **Step 14**: `src/14_ml_integration.py` → `src/ml_integration/`
+
 - Verify: ML integration delegation
 - Verify: Model training and evaluation
 
 **Step 15**: `src/15_audio.py` → `src/audio/`
+
 - Verify: Audio generation delegation
 - Verify: Multi-backend audio (SAPF, Pedalboard)
 
 **Step 16**: `src/16_analysis.py` → `src/analysis/`
+
 - Verify: Statistical analysis delegation
 - Verify: Performance metric computation
 - Verify: Delegates to `process_analysis()` from `analysis` module
 
 **Step 17**: `src/17_integration.py` → `src/integration/`
+
 - Verify: System integration delegation
 - Verify: Cross-module coordination
 
 **Step 18**: `src/18_security.py` → `src/security/`
+
 - Verify: Security validation delegation
 - Verify: Access control implementation
 
 **Step 19**: `src/19_research.py` → `src/research/`
+
 - Verify: Research tools delegation
 - Verify: Experimental features
 
 **Step 20**: `src/20_website.py` → `src/website/`
+
 - Verify: Website generation delegation
 - Verify: Static HTML generation
 
 **Step 21**: `src/21_mcp.py` → `src/mcp/`
+
 - Verify: MCP processing delegation
 - Verify: Tool registration
 
 **Step 22**: `src/22_gui.py` → `src/gui/`
+
 - Verify: GUI generation delegation
 - Verify: Interactive model construction
 
 **Step 23**: `src/23_report.py` → `src/report/`
+
 - Verify: Report generation delegation
 - Verify: Comprehensive analysis reports
 
 #### Anti-Patterns to Identify
 
 **Incorrect Pattern Examples**:
+
 ```python
 # ❌ WRONG: Long function definition in numbered script
 def generate_matrix_heatmap(data):
@@ -180,6 +207,7 @@ def generate_matrix_heatmap(data):
 ```
 
 **Correct Pattern Examples**:
+
 ```python
 # ✅ CORRECT: Thin orchestrator delegating to module
 from utils.pipeline_template import create_standardized_pipeline_script
@@ -217,6 +245,7 @@ if __name__ == "__main__":
 #### Import Pattern Validation
 
 **Correct Import Pattern**:
+
 ```python
 from utils.pipeline_template import (
     setup_step_logging,
@@ -229,6 +258,7 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 ```
 
 **Incorrect Import Pattern**:
+
 ```python
 # ❌ WRONG: Direct logging setup without centralized utilities
 import logging
@@ -450,14 +480,14 @@ src/[module_name]/
 #### Validation Checklist for Each Module
 
 - [ ] **Directory Exists**: Module directory exists in `src/`
-- [ ] **__init__.py Present**: Module has `__init__.py` file
+- [ ] ****init**.py Present**: Module has `__init__.py` file
 - [ ] **AGENTS.md Present**: Module has `AGENTS.md` documentation
 - [ ] **README.md Present**: Module has `README.md` (recommended)
 - [ ] **Core Logic Files**: Core logic in separate files (not in numbered scripts)
 - [ ] **MCP Integration**: `mcp.py` present where applicable
 - [ ] **Sub-modules**: Sub-modules properly organized
 
-### 3.2 __init__.py Public API Exports
+### 3.2 **init**.py Public API Exports
 
 **Requirement**: Module `__init__.py` files must export public API functions.
 
@@ -468,7 +498,7 @@ src/[module_name]/
 - [ ] **API Clarity**: Clear public API with well-named functions
 - [ ] **Module Info**: Module information functions exported (e.g., `get_module_info()`)
 
-#### Example __init__.py Pattern
+#### Example **init**.py Pattern
 
 ```python
 """
@@ -698,10 +728,10 @@ Each AGENTS.md should include:
 
 **Policy**: Tests must execute real code paths and real methods. No mocking frameworks are allowed.
 
-
 #### Anti-Pattern Detection
 
 **Incorrect Pattern**:
+
 ```python
 # ❌ WRONG: Using mocks
 from unittest.mock import Mock, patch
@@ -713,6 +743,7 @@ def test_processing(mock_process):
 ```
 
 **Correct Pattern**:
+
 ```python
 # ✅ CORRECT: Real code execution
 def test_processing():
@@ -920,7 +951,8 @@ output/
 
 ### 7.3 Success and Error Rates
 
-**Requirement**: 
+**Requirement**:
+
 - Success rate > 99% for all pipeline steps
 - Critical failure rate < 1%
 
@@ -1088,7 +1120,7 @@ For each validation area, assess:
 
 1. **Architecture Compliance**: Thin orchestrator pattern, centralized utilities
 2. **Code Quality**: Type hints, docstrings, error handling
-3. **Module Structure**: Directory structure, __init__.py, MCP integration
+3. **Module Structure**: Directory structure, **init**.py, MCP integration
 4. **Documentation**: AGENTS.md, README.md, API documentation
 5. **Testing**: No-mock policy, real data, integration tests
 6. **Pipeline Integration**: Dependencies, data flow, output consistency
@@ -1132,6 +1164,7 @@ def process_validation(
 ) -> bool:
     ...
 ```
+
 ```
 
 ---
@@ -1141,7 +1174,7 @@ def process_validation(
 ### 12.1 Manual Review Process
 
 1. **Start with Executive Summary**: Review high-level coherence metrics
-2. **Architecture Compliance**: Validate thin orchestrator pattern for all 24 steps
+2. **Architecture Compliance**: Validate thin orchestrator pattern for all 25 steps
 3. **Code Quality**: Check type hints, docstrings, error handling
 4. **Module Structure**: Verify directory structure and __init__.py patterns
 5. **Documentation**: Validate AGENTS.md and README.md completeness
@@ -1218,6 +1251,7 @@ Provide:
 **Location**: `src/pipeline_validation.py`
 
 **Capabilities**:
+
 - Validates module imports and centralized utilities usage
 - Checks configuration consistency
 - Validates output structure
@@ -1227,6 +1261,7 @@ Provide:
 - Checks performance tracking coverage
 
 **Usage**:
+
 ```bash
 python src/pipeline_validation.py [--fix-issues]
 ```
@@ -1236,6 +1271,7 @@ python src/pipeline_validation.py [--fix-issues]
 **Location**: `src/validation/`
 
 **Capabilities**:
+
 - Model consistency checking
 - Semantic validation
 - Quality assessment
@@ -1246,6 +1282,7 @@ python src/pipeline_validation.py [--fix-issues]
 **Location**: `src/tests/`
 
 **Capabilities**:
+
 - Comprehensive test suite
 - Integration tests
 - Performance tests
@@ -1405,6 +1442,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 **Issue**: Some test files violate the no-mock policy by using `unittest.mock`.
 
 **Affected Files**:
+
 - `src/tests/test_pipeline_warnings_fix.py`
 - `src/tests/test_pipeline_recovery.py`
 - `src/tests/test_pipeline_error_scenarios.py`
@@ -1446,4 +1484,3 @@ ls -la output/ | grep "_output"
 # Check AGENTS.md coverage
 find src -name "AGENTS.md" | wc -l
 ```
-

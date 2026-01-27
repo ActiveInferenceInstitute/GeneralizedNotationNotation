@@ -13,20 +13,23 @@ Visualization is a critical component of the GNN ecosystem, enabling researchers
 
 ## Visualization Pipeline Integration
 
-GNN visualization is integrated into the 24-step processing pipeline:
+GNN visualization is integrated into the 25-step processing pipeline:
 
 **Step 8: Visualization** (`8_visualization.py`)
+
 - Basic graph and matrix visualization
 - Static visualization generation
 - See: [src/visualization/AGENTS.md](../../src/visualization/AGENTS.md)
 
 **Step 9: Advanced Visualization** (`9_advanced_viz.py`)
+
 - Interactive dashboards
 - 3D visualizations
 - Real-time visualization updates
 - See: [src/advanced_visualization/AGENTS.md](../../src/advanced_visualization/AGENTS.md)
 
 **Quick Start:**
+
 ```bash
 # Generate visualizations
 python src/main.py --only-steps "3,8,9" --target-dir input/gnn_files --verbose
@@ -42,6 +45,7 @@ Graph visualization represents GNN models as networks, showing relationships bet
 ### Graph Structure
 
 GNN models can be visualized as graphs with:
+
 - **Nodes**: Representing states, observations, or model components
 - **Edges**: Representing transitions, connections, or dependencies
 - **Attributes**: Node and edge attributes (probabilities, weights, labels)
@@ -70,6 +74,7 @@ graph TD
 ```
 
 **Layout Types:**
+
 - **Force-Directed**: Natural, organic layouts using force simulation
 - **Hierarchical**: Tree-like structures for hierarchical models
 - **Circular**: Circular arrangements for symmetric structures
@@ -98,6 +103,7 @@ Matrix visualization provides heatmap representations of GNN matrices (A, B, C, 
 ### Matrix Types
 
 GNN models contain several key matrices:
+
 - **A Matrix**: Observation likelihood (observation × state)
 - **B Matrix**: Transition probabilities (state × state)
 - **C Matrix**: Prior preferences (state)
@@ -106,6 +112,7 @@ GNN models contain several key matrices:
 ### Matrix Heatmap Features
 
 Matrix visualizations include:
+
 - **Color-Coded Values**: Visual representation of matrix values
 - **Scale and Legend**: Value range indication
 - **Annotations**: Labels and value annotations
@@ -157,6 +164,7 @@ Advanced visualization provides comprehensive dashboards and 3D visualizations.
 ### Interactive Dashboards
 
 Interactive dashboards combine multiple visualization types:
+
 - **Comprehensive Analysis**: Multiple visualization views
 - **Navigation Controls**: Dashboard navigation
 - **Filtering Options**: Data filtering and selection
@@ -165,6 +173,7 @@ Interactive dashboards combine multiple visualization types:
 ### 3D Visualization
 
 3D visualization enables spatial representation of models:
+
 - **3D Graph Visualization**: Three-dimensional network visualization
 - **3D Matrix Visualization**: Three-dimensional matrix representation
 - **Spatial Analysis**: Spatial model analysis
@@ -239,5 +248,3 @@ Visualization results are integrated throughout the pipeline:
 **Status**: ✅ Production Ready  
 **Last Updated**: 2025-12-30  
 **Version**: 1.0.0
-
-

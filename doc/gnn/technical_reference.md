@@ -2,11 +2,12 @@
 
 Comprehensive reference for GNN processing pipeline implementation.
 
-## Complete Pipeline Entry Points (Steps 0-23)
+## Complete Pipeline Entry Points (Steps 0-24)
 
 All pipeline steps follow the thin orchestrator pattern. Each step is documented in its module's AGENTS.md:
 
 **Core Processing (0-9)**
+
 - `0_template.py` → `src/template/AGENTS.md`
 - `1_setup.py` → `src/setup/AGENTS.md`
 - `2_tests.py` → `src/tests/AGENTS.md`
@@ -19,6 +20,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `9_advanced_viz.py` → `src/advanced_visualization/AGENTS.md`
 
 **Simulation & Analysis (10-16)**
+
 - `10_ontology.py` → `src/ontology/AGENTS.md`
 - `11_render.py` → `src/render/AGENTS.md`
 - `12_execute.py` → `src/execute/AGENTS.md`
@@ -28,6 +30,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `16_analysis.py` → `src/analysis/AGENTS.md`
 
 **Integration & Output (17-23)**
+
 - `17_integration.py` → `src/integration/AGENTS.md`
 - `18_security.py` → `src/security/AGENTS.md`
 - `19_research.py` → `src/research/AGENTS.md`
@@ -37,6 +40,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `23_report.py` → `src/report/AGENTS.md`
 
 **Main Documentation:**
+
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation
@@ -46,9 +50,11 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 ## Round-Trip Data Flow (Actual Implementation)
 
 ### Stage 1: GNN → Parsed JSON (Step 3)
+
 **Entry Point:** `src/3_gnn.py:_run_gnn_processing()` → `src/gnn/multi_format_processor.py`
 
 **Key Parsing Patterns:**
+
 ```python
 # src/gnn/schema_validator.py:58-63 (actual regex patterns)
 SECTION_PATTERN = re.compile(r'^## (.+)$')
@@ -58,6 +64,7 @@ PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*
 ```
 
 **Input:** `input/gnn_files/actinf_pomdp_agent.md`
+
 ```gnn
 ## StateSpaceBlock
 A[3,3,type=float]           # Likelihood matrix
@@ -71,6 +78,7 @@ A-o                         # Likelihood relates to observation
 ```
 
 **Output:** `output/3_gnn_output/Classic Active Inference POMDP Agent v1/actinf_pomdp_agent_parsed.json`
+
 ```json
 {
   "model_name": "Classic Active Inference POMDP Agent v1",
@@ -91,9 +99,11 @@ A-o                         # Likelihood relates to observation
 ```
 
 ### Stage 2: Type Analysis (Step 5)  
+
 **Entry Point:** `src/5_type_checker.py:_run_type_check()` → `src/type_checker/analysis_utils.py:analyze_variable_types()`
 
 **Core Analysis Method:** (lines 13-62 in analysis_utils.py)
+
 ```python
 def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
     type_analysis = {
@@ -113,6 +123,7 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 ```
 
 **Output:** `output/5_type_checker_output/type_check_results.json`
+
 ```json
 {
   "type_analysis": {
@@ -131,9 +142,11 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 ```
 
 ### Stage 3: Multi-format Export (Step 7)
+
 **Entry Point:** `src/7_export.py:process_export()` → `src/export/`
 
 **Framework Targets:**
+
 - **GraphML**: Network analysis tools (Gephi, Cytoscape)
 - **GEXF**: Graph visualization (Sigma.js, Gephi)  
 - **XML**: Generic data interchange
@@ -141,11 +154,13 @@ def analyze_variable_types(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
 - **JSON**: Web applications and APIs
 
 ### Stage 4: Code Generation (Step 11)
+
 **Entry Point:** `src/11_render.py:_run_render_processing()` → `src/render/`
 
 **Framework Integration Points:**
 
 #### PyMDP Framework
+
 ```python
 # Generated: output/11_render_output/actinf_pomdp_agent_pymdp.py
 import pymdp
@@ -166,6 +181,7 @@ agent = pymdp.Agent(A=A, B=B, C=C, D=D, E=E)
 ```
 
 #### RxInfer.jl Framework  
+
 ```julia
 # Generated: output/11_render_output/actinf_pomdp_agent_rxinfer.jl
 using RxInfer, LinearAlgebra
@@ -190,6 +206,7 @@ end
 ```
 
 #### ActiveInference.jl Framework
+
 ```julia
 # Generated: output/11_render_output/actinf_pomdp_agent_ai.jl
 using ActiveInference
@@ -208,9 +225,11 @@ agent = ActiveInferenceAgent(pomdp)
 ```
 
 ### Stage 5: Execution (Step 12)
+
 **Entry Point:** `src/12_execute.py:_run_execute_processing()` → `src/execute/`
 
 **Execution Results:** `output/12_execute_output/execution_results.json`
+
 ```json
 {
   "pymdp_execution": {
@@ -232,6 +251,7 @@ agent = ActiveInferenceAgent(pomdp)
 ## Cross-References and Dependencies
 
 ### Data Flow Dependencies
+
 ```
 Step 3 (GNN) → parsed_*.json
 ├── Step 5 (Type Checker) ← parsed_*.json
@@ -250,6 +270,7 @@ Step 11 (Render) → generated framework code
 ### Module Cross-References
 
 #### Parsing System
+
 - **Main Interface:** `src/gnn/multi_format_processor.py`
 - **Schema Validation:** `src/gnn/schema_validator.py:GNNParser` (line 54)
 - **Multi-format Support:** `src/gnn/parsers/` directory
@@ -259,6 +280,7 @@ Step 11 (Render) → generated framework code
   - `protobuf_parser.py`: Binary protocol buffers
 
 #### Visualization System  
+
 - **Core Visualizer:** `src/visualization/visualizer.py:GNNVisualizer` (line 66)
 - **Matrix Processing:** `src/visualization/processor.py`
   - `parse_matrix_data()` (line 367)
@@ -267,6 +289,7 @@ Step 11 (Render) → generated framework code
 - **Safe Import Pattern:** `src/visualization/__init__.py` (line 15-47)
 
 #### Type Analysis System
+
 - **Core Analysis:** `src/type_checker/analysis_utils.py:analyze_variable_types()` (line 13)
 - **Validation Logic:** `src/type_checker/checker.py:GNNTypeChecker` (line 174)
 - **Processing Pipeline:** `src/type_checker/processor.py` (line 20)
@@ -274,6 +297,7 @@ Step 11 (Render) → generated framework code
 ## Framework Integration Validation
 
 ### Round-Trip Validation (Step 6)
+
 **Implementation:** `src/6_validation.py:validate_round_trip()`
 
 ```python
@@ -292,8 +316,10 @@ def validate_round_trip(original_gnn, exported_formats):
         assert connection_topology_preserved(parsed_original, reimported)
 ```
 
-### Framework Code Validation 
+### Framework Code Validation
+
 **PyMDP Validation:**
+
 ```python
 # Validate generated PyMDP code compiles and runs
 exec(compile(open('actinf_pomdp_agent_pymdp.py').read(), 'generated', 'exec'))
@@ -302,6 +328,7 @@ assert agent.B.shape == (3, 3, 3)
 ```
 
 **RxInfer.jl Validation:**  
+
 ```julia
 # Validate generated Julia code syntax
 include("actinf_pomdp_agent_rxinfer.jl")
@@ -312,16 +339,19 @@ model = actinf_pomdp_agent()
 ## Performance Characteristics
 
 ### Parsing Performance (Step 3)
+
 - **Markdown GNN:** ~50KB/s sustained throughput
 - **Multi-format Detection:** <10ms per file
 - **Memory Usage:** ~2MB per 1000 variables
 
 ### Visualization Performance (Step 8)
+
 - **Matrix Generation:** O(n²) for n×n matrices  
 - **Network Layout:** O(n log n) for n nodes
 - **Memory Usage:** ~15MB for 100×100 matrices
 
 ### Type Analysis Performance (Step 5)
+
 - **Variable Analysis:** O(n) for n variables
 - **Connection Analysis:** O(m) for m connections
 - **Complexity Estimation:** O(n×m) combined analysis

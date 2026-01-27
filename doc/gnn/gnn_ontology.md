@@ -7,6 +7,7 @@ This document provides comprehensive guidance on ontology processing for General
 Ontology processing enables semantic validation and term mapping for GNN models against the Active Inference Ontology. This ensures models use standardized terminology and maintain semantic consistency with Active Inference theory.
 
 The GNN ontology system provides:
+
 - **Term Extraction**: Automatic extraction of ontology terms from GNN models
 - **Ontology Validation**: Validation against Active Inference Ontology
 - **Term Mapping**: Mapping GNN components to ontological concepts
@@ -14,14 +15,16 @@ The GNN ontology system provides:
 
 ## Ontology Pipeline Integration
 
-GNN ontology processing is integrated into the 24-step processing pipeline:
+GNN ontology processing is integrated into the 25-step processing pipeline:
 
 **Step 10: Ontology** (`10_ontology.py`)
+
 - Ontology term extraction and validation
 - Semantic mapping and analysis
 - See: [src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)
 
 **Quick Start:**
+
 ```bash
 # Process ontology validation
 python src/main.py --only-steps "3,10" --target-dir input/gnn_files --verbose
@@ -210,5 +213,3 @@ Ontology processing integrates throughout the pipeline:
 **Status**: ✅ Production Ready  
 **Last Updated**: 2026-01-21  
 **Version**: 1.0.0
-
-

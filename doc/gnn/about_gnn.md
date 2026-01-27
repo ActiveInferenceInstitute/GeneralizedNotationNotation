@@ -15,7 +15,7 @@ GNN addresses the lack of a unified representation for Active Inference models, 
 
 ## GNN Syntax and Punctuation
 
-GNN leverages standard ASCII symbols to denote variables, operations, and causal relationships in generative models. The complete specification is maintained in machine-readable format at `src/gnn/documentation/punctuation.md`. 
+GNN leverages standard ASCII symbols to denote variables, operations, and causal relationships in generative models. The complete specification is maintained in machine-readable format at `src/gnn/documentation/punctuation.md`.
 
 The syntax is designed to be both human-readable and machine-parsable, making it suitable for documentation and automated processing. Key symbols include:
 
@@ -48,7 +48,7 @@ When writing GNN expressions:
 
 ## GNN Source File Structure
 
-A GNN source file follows a Markdown-like organization that segments model metadata, variables, connections, and equations. The complete specification is maintained in machine-readable format at `src/gnn/documentation/file_structure.md`. 
+A GNN source file follows a Markdown-like organization that segments model metadata, variables, connections, and equations. The complete specification is maintained in machine-readable format at `src/gnn/documentation/file_structure.md`.
 
 Each GNN file is organized into the following sections:
 
@@ -83,28 +83,33 @@ The GNN file structure is designed to be machine-readable, with each section cle
 
 ### GNN Processing Pipeline
 
-GNN files are processed through a comprehensive 24-step pipeline orchestrated by **`src/main.py`**. The pipeline handles:
+GNN files are processed through a comprehensive 25-step pipeline orchestrated by **`src/main.py`**. The pipeline handles:
 
 **Parsing and Validation (Steps 3, 5, 6)**
+
 - `3_gnn.py`: GNN file discovery and multi-format parsing
 - `5_type_checker.py`: Type checking and resource estimation
 - `6_validation.py`: Advanced validation and consistency checking
 
 **Rendering and Execution (Steps 11, 12)**
+
 - `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 - `12_execute.py`: Execution of rendered simulation scripts
 
 **Analysis and Reporting (Steps 13, 16, 23)**
+
 - `13_llm.py`: LLM-enhanced analysis and model interpretation
 - `16_analysis.py`: Advanced statistical analysis
 - `23_report.py`: Comprehensive report generation
 
 For complete pipeline documentation, see:
+
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and safety documentation
 - **[GNN Tools and Resources](gnn_tools.md)**: Detailed pipeline usage examples
 
 **Quick Start:**
+
 ```bash
 # Process a GNN model through the full pipeline
 python src/main.py --target-dir input/gnn_files --verbose
@@ -251,37 +256,41 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 ## See Also
 
 ### Core Documentation
+
 - **[GNN Overview](gnn_overview.md)**: High-level concepts and ecosystem overview
 - **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
 - **[GNN Examples](gnn_examples_doc.md)**: Example models from simple to complex
 - **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step getting started guide
 
 ### Advanced Topics
+
 - **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
 - **[Multi-agent Systems](gnn_multiagent.md)**: Multi-agent modeling specification
 - **[LLM Integration](gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
 
 ### Framework Integration
+
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
 - **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference
 - **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
 
 ### Pipeline and Tools
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 24-step pipeline guide
+
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
 - **[GNN Tools](gnn_tools.md)**: Available software and utilities
 - **[Ontology System](ontology_system.md)**: Active Inference ontology processing
 
 ### Navigation
+
 - **[Main Documentation Index](../README.md)**: Return to main documentation hub
 - **[Cross-Reference Index](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference system
 - **[Learning Paths](../learning_paths.md)**: Structured learning pathways
 
 ## References
 
-1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
-2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-3. Active Inference Institute: Generalized Notation Notation (GNN) Coda: https://coda.io/@active-inference-institute/generalized-notation-notation
+1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
+2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+3. Active Inference Institute: Generalized Notation Notation (GNN) Coda: <https://coda.io/@active-inference-institute/generalized-notation-notation>
 4. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
 5. Friston, K. J., Parr, T., & de Vries, B. (2017). The graphical brain: belief propagation and active inference. Network Neuroscience, 1(4), 381-414.
 6. Parr, T., Pezzulo, G., & Friston, K. J. (2022). Active Inference: The Free Energy Principle in Mind, Brain, and Behavior. MIT Press.
-

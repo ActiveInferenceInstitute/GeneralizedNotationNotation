@@ -45,11 +45,12 @@ Active Inference research has historically been challenged by the lack of a unif
 
 - Natural language explanations
 - Mathematical formulas
-- Diagrams and schematics 
+- Diagrams and schematics
 - Programming code
 - Pseudocode implementations
 
 This fragmentation leads to difficulties in:
+
 - **Communication**: Complex models become hard to explain
 - **Replication**: Research findings are difficult to reproduce
 - **Implementation**: Translating models to code introduces inconsistencies
@@ -162,11 +163,11 @@ graph LR
 - **Active Inference Theory**: Provides the theoretical foundation for GNN models
 - **Active Inference Ontology**: Defines standardized terms that GNN variables map to
 - **Model Repositories**: Collections of GNN models for reference and reuse
-- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the **`src/main.py`** orchestrator and individual numbered pipeline scripts (0-23). See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation.
+- **Software Tools**: Implementations that can parse, visualize, and execute GNN models. The main tools are accessed through the **`src/main.py`** orchestrator and individual numbered pipeline scripts (0-24). See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation.
 
 ## GNN Processing Pipeline
 
-The GNN project includes a comprehensive 24-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis outputs. The pipeline is orchestrated by **`src/main.py`**.
+The GNN project includes a comprehensive 25-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis outputs. The pipeline is orchestrated by **`src/main.py`**.
 
 ### Quick Start
 
@@ -186,6 +187,7 @@ python src/main.py --skip-steps "15,16" --verbose
 The pipeline consists of the following steps (0-24):
 
 **Core Processing (Steps 0-9)**
+
 - **Step 0**: Template initialization
 - **Step 1**: Environment setup and dependency management
 - **Step 2**: Comprehensive test suite execution
@@ -198,6 +200,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 9**: Advanced visualization and interactive plots
 
 **Simulation & Analysis (Steps 10-16)**
+
 - **Step 10**: Active Inference ontology processing
 - **Step 11**: Code rendering for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 - **Step 12**: Execution of rendered simulation scripts
@@ -207,6 +210,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 16**: Advanced statistical analysis
 
 **Integration & Output (Steps 17-23)**
+
 - **Step 17**: System integration and coordination
 - **Step 18**: Security validation and access control
 - **Step 19**: Research tools and experimental features
@@ -229,22 +233,26 @@ For complete information about the pipeline architecture and individual modules:
 For more detailed information about specific aspects of GNN, refer to:
 
 **GNN Language Specification**
+
 - [GNN Syntax and Punctuation](gnn_syntax.md): Detailed specification of the notation symbols
 - [GNN File Structure](gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
 - [GNN DSL Manual](gnn_dsl_manual.md): Complete Domain-Specific Language reference
 
 **Modeling and Examples**
+
 - [GNN Examples](gnn_examples_doc.md): Step-by-step examples and use cases
 - [Advanced Modeling Patterns](advanced_modeling_patterns.md): Sophisticated modeling techniques
 - [Multi-Agent Systems](gnn_multiagent.md): Multi-agent modeling specifications
 
 **Implementation and Tools**
+
 - [GNN Implementation Guide](gnn_implementation.md): Guidelines for implementing GNN in practice
 - [GNN Tools and Resources](gnn_tools.md): Available tools and resources for working with GNN
 - [Framework Integration Guide](framework_integration_guide.md): Integration with PyMDP, RxInfer, etc.
 - [Technical Reference](technical_reference.md): Detailed technical specifications
 
 **Advanced Topics**
+
 - [Architecture Reference](architecture_reference.md): Thin orchestrator pattern and data flow
 - [LLM and Neurosymbolic Active Inference](gnn_llm_neurosymbolic_active_inference.md): LLM integration
 - [Ontology System](ontology_system.md): Active Inference ontology annotations
@@ -252,33 +260,38 @@ For more detailed information about specific aspects of GNN, refer to:
 ## See Also
 
 ### Core Documentation
+
 - **[About GNN](about_gnn.md)**: Detailed GNN specification and motivation
 - **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
 - **[GNN Examples](gnn_examples_doc.md)**: Example models from simple to complex
 - **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step getting started guide
 
 ### Advanced Topics
+
 - **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
 - **[Multi-agent Systems](gnn_multiagent.md)**: Multi-agent modeling specification
 - **[LLM Integration](gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
 
 ### Framework Integration
+
 - **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
 - **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference
 - **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
 
 ### Pipeline and Tools
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 24-step pipeline guide
+
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
 - **[GNN Tools](gnn_tools.md)**: Available software and utilities
 - **[Implementation Guide](gnn_implementation.md)**: Guidelines for implementing GNN in practice
 
 ### Navigation
+
 - **[Main Documentation Index](../README.md)**: Return to main documentation hub
 - **[Cross-Reference Index](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference system
 - **[Learning Paths](../learning_paths.md)**: Structured learning pathways
 
 ## References
 
-1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
-2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-3. Friston, K. J., Parr, T., & de Vries, B. (2017). The graphical brain: belief propagation and active inference. Network Neuroscience, 1(4), 381-414. 
+1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
+2. Active Inference Institute: Generalized Notation Notation (GNN) Github repo: <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+3. Friston, K. J., Parr, T., & de Vries, B. (2017). The graphical brain: belief propagation and active inference. Network Neuroscience, 1(4), 381-414.

@@ -7,6 +7,7 @@ This document provides comprehensive guidance on type checking and the type syst
 The GNN type system provides comprehensive type checking, validation, and resource estimation for GNN models. This ensures type safety, validates model structure, and estimates computational resources required for model execution.
 
 The GNN type system provides:
+
 - **Type Checking**: Comprehensive type checking and inference
 - **Syntax Validation**: GNN syntax validation
 - **Resource Estimation**: Computational resource estimation
@@ -15,14 +16,16 @@ The GNN type system provides:
 
 ## Type System Pipeline Integration
 
-GNN type checking is integrated into the 24-step processing pipeline:
+GNN type checking is integrated into the 25-step processing pipeline:
 
 **Step 5: Type Checker** (`5_type_checker.py`)
+
 - Type checking and validation
 - Resource estimation
 - See: [src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)
 
 **Quick Start:**
+
 ```bash
 # Run type checking
 python src/main.py --only-steps "3,5" --target-dir input/gnn_files --verbose
@@ -190,5 +193,3 @@ Type checking integrates throughout the pipeline:
 **Status**: ✅ Production Ready  
 **Last Updated**: 2025-12-30  
 **Version**: 1.0.0
-
-

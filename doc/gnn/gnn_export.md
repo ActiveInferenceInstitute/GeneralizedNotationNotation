@@ -7,6 +7,7 @@ This document provides comprehensive guidance on multi-format export capabilitie
 GNN export enables conversion of GNN models to multiple formats with semantic preservation and cross-format compatibility. Export supports standard formats (JSON, XML), graph formats (GraphML, GEXF), and binary formats (Pickle) for various use cases.
 
 The GNN export system provides:
+
 - **Multi-Format Export**: Export to multiple formats simultaneously
 - **Semantic Preservation**: Maintaining model semantics across formats
 - **Validation**: Export integrity validation
@@ -14,14 +15,16 @@ The GNN export system provides:
 
 ## Export Pipeline Integration
 
-GNN export is integrated into the 24-step processing pipeline:
+GNN export is integrated into the 25-step processing pipeline:
 
 **Step 7: Export** (`7_export.py`)
+
 - Multi-format export generation
 - Export validation
 - See: [src/export/AGENTS.md](../../src/export/AGENTS.md)
 
 **Quick Start:**
+
 ```bash
 # Generate exports
 python src/main.py --only-steps "3,7" --target-dir input/gnn_files --verbose
@@ -35,18 +38,21 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 ### Standard Formats
 
 **JSON Export**
+
 - Human-readable format
 - Widely compatible
 - Schema validation support
 - Use case: Data exchange, API integration
 
 **XML Export**
+
 - Industry standard format
 - DTD/XSD validation
 - Structured representation
 - Use case: Enterprise integration, validation
 
 **YAML Export**
+
 - Configuration-friendly format
 - Human-readable
 - Hierarchical structure
@@ -55,12 +61,14 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 ### Graph Formats
 
 **GraphML Export**
+
 - Standard graph format
 - Network analysis tools (Cytoscape, yEd)
 - Node and edge attributes
 - Use case: Network analysis, visualization
 
 **GEXF Export**
+
 - Gephi visualization format
 - Interactive visualization
 - Dynamic attributes
@@ -69,6 +77,7 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 ### Binary Formats
 
 **Pickle Export**
+
 - Fast Python serialization
 - Python-specific format
 - Complete object preservation
@@ -206,5 +215,3 @@ Export integrates throughout the pipeline:
 **Status**: ✅ Production Ready  
 **Last Updated**: 2025-12-30  
 **Version**: 1.0.0
-
-

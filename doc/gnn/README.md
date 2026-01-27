@@ -5,16 +5,18 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 ## 🚀 Quick Start
 
 **New to GNN?** Start here:
+
 1. [GNN Overview](gnn_overview.md) - Introduction to GNN and its purpose
 2. [Quickstart Tutorial](quickstart_tutorial.md) - Build your first model in 15 minutes
 3. [GNN File Structure](gnn_file_structure_doc.md) - Understanding GNN file organization
 
 ## 📋 Pipeline Documentation
 
-**GNN Processing Pipeline** (24 Steps, 0-23):
+**GNN Processing Pipeline** (25 Steps, 0-24):
 
 **Core Documentation:**
-- **[src/AGENTS.md](../../src/AGENTS.md)** - Master agent scaffolding and complete 24-step registry
+
+- **[src/AGENTS.md](../../src/AGENTS.md)** - Master agent scaffolding and complete 25-step registry
 - **[src/README.md](../../src/README.md)** - Pipeline architecture and thin orchestrator pattern
 - **[src/main.py](../../src/main.py)** - Pipeline orchestrator implementation
 - [Architecture Reference](architecture_reference.md) - Implementation patterns and cross-module data flow
@@ -22,6 +24,7 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 - [Technical Reference](technical_reference.md) - Round-trip data flow and entry points
 
 **Quick Start:**
+
 ```bash
 # Run full pipeline
 python src/main.py --target-dir input/gnn_files --verbose
@@ -33,6 +36,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 📖 Language Specification
 
 **GNN Syntax and Structure:**
+
 - [GNN Syntax Reference](gnn_syntax.md) - Complete syntax guide with examples
 - [GNN DSL Manual](gnn_dsl_manual.md) - Domain-Specific Language specification
 - [GNN Schema Specification](gnn_schema.md) - Parsing and validation schemas
@@ -44,17 +48,20 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 🎯 Modeling and Examples
 
 **Learning to Model:**
+
 - [Quickstart Tutorial](quickstart_tutorial.md) - Step-by-step first model
 - [GNN Examples](gnn_examples_doc.md) - Model progression from simple to complex
 - [Advanced Modeling Patterns](advanced_modeling_patterns.md) - Hierarchical and sophisticated techniques
 - [Multi-Agent Systems](gnn_multiagent.md) - Multi-agent modeling specification
 
 **Cognitive Phenomena:**
+
 - [Cognitive Phenomena Models](../cognitive_phenomena/) - Attention, memory, learning, emotion models
 
 ## 🔧 Implementation and Integration
 
 **Framework Integration:**
+
 - [Framework Integration Guide](framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 - [GNN Implementation Guide](gnn_implementation.md) - Implementation workflows and patterns
 - [PyMDP Integration](../pymdp/gnn_pymdp.md) - Python POMDP framework
@@ -66,17 +73,20 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 🧠 Advanced Topics
 
 **AI and Analysis:**
+
 - [LLM and Neurosymbolic Active Inference](gnn_llm_neurosymbolic_active_inference.md) - LLM integration (Step 13)
 - [Ontology System](ontology_system.md) - Active Inference ontology annotations (Step 10)
 - [Resource Metrics](resource_metrics.md) - Computational resource estimation (Step 5)
 
 **Quality and Improvement:**
+
 - [Improvement Analysis](improvement_analysis.md) - Pipeline improvement opportunities
 - [REPO Coherence Check](REPO_COHERENCE_CHECK.md) - Quality standards and validation
 
 ## 📊 Complete Module Registry
 
 **Core Processing (Steps 0-9)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 0 | `0_template.py` | [template/](../../src/template/AGENTS.md) | Pipeline initialization |
@@ -91,6 +101,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 9 | `9_advanced_viz.py` | [advanced_visualization/](../../src/advanced_visualization/AGENTS.md) | Advanced plots |
 
 **Simulation & Analysis (Steps 10-16)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 10 | `10_ontology.py` | [ontology/](../../src/ontology/AGENTS.md) | Ontology processing |
@@ -101,7 +112,8 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 15 | `15_audio.py` | [audio/](../../src/audio/AGENTS.md) | Audio generation |
 | 16 | `16_analysis.py` | [analysis/](../../src/analysis/AGENTS.md) | Statistical analysis |
 
-**Integration & Output (Steps 17-23)**
+**Integration & Output (Steps 17-24)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 17 | `17_integration.py` | [integration/](../../src/integration/AGENTS.md) | System integration |
@@ -111,12 +123,14 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 21 | `21_mcp.py` | [mcp/](../../src/mcp/AGENTS.md) | MCP processing |
 | 22 | `22_gui.py` | [gui/](../../src/gui/AGENTS.md) | GUI interface |
 | 23 | `23_report.py` | [report/](../../src/report/AGENTS.md) | Report generation |
+| 24 | `24_intelligent_analysis.py` | [intelligent_analysis/](../../src/intelligent_analysis/AGENTS.md) | Intelligent analysis |
 
 ## 🔍 Find What You Need
 
 ### By Task
 
 **I want to...**
+
 - **Learn GNN basics** → [GNN Overview](gnn_overview.md) → [Quickstart Tutorial](quickstart_tutorial.md)
 - **Understand syntax** → [GNN Syntax](gnn_syntax.md) → [GNN DSL Manual](gnn_dsl_manual.md)
 - **Build a model** → [Quickstart Tutorial](quickstart_tutorial.md) → [GNN Examples](gnn_examples_doc.md)
@@ -129,18 +143,21 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ### By Audience
 
 **Beginners:**
+
 1. [GNN Overview](gnn_overview.md)
 2. [Quickstart Tutorial](quickstart_tutorial.md)
 3. [GNN Examples](gnn_examples_doc.md)
 4. [GNN Syntax](gnn_syntax.md)
 
 **Researchers:**
+
 1. [Advanced Modeling Patterns](advanced_modeling_patterns.md)
 2. [Multi-Agent Systems](gnn_multiagent.md)
 3. [LLM and Neurosymbolic AI](gnn_llm_neurosymbolic_active_inference.md)
 4. [Ontology System](ontology_system.md)
 
 **Developers:**
+
 1. [src/AGENTS.md](../../src/AGENTS.md)
 2. [Architecture Reference](architecture_reference.md)
 3. [Technical Reference](technical_reference.md)
@@ -148,6 +165,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 5. [GNN Implementation Guide](gnn_implementation.md)
 
 **System Architects:**
+
 1. [src/README.md](../../src/README.md)
 2. [Architecture Reference](architecture_reference.md)
 3. [GNN Standards](gnn_standards.md)
@@ -157,6 +175,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 🛠️ Additional Resources
 
 **Related Documentation:**
+
 - [Pipeline Documentation](../gnn/) - Pipeline-specific guides
 - [API Reference](../api/) - API documentation
 - [Configuration Guide](../configuration/) - Configuration options
@@ -164,6 +183,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 - [Development Guide](../development/) - Development standards
 
 **External Links:**
+
 - [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 - [Active Inference Institute](https://activeinference.org)
 - [Community Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
@@ -171,6 +191,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 ## 📝 Documentation Standards
 
 All GNN documentation follows these principles:
+
 - **Understated**: Concrete examples over promotional language
 - **Show Not Tell**: Working code and real outputs
 - **Evidence-Based**: Specific metrics and measurable results
@@ -214,8 +235,6 @@ All GNN documentation follows these principles:
 
 **GNN Version**: 1.0
 **Pipeline Version**: 1.1.3
-**Total Pipeline Steps**: 24 (0-23)
-**Last Updated**: 2026-01-22
+**Total Pipeline Steps**: 25 (0-24)
+**Last Updated**: 2026-01-27
 **Status**: ✅ All Documentation Complete
-
-
