@@ -20,7 +20,7 @@ This document validates the complete GNN pipeline architecture. For current impl
 
 ## Executive Summary
 
-This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 24 pipeline steps (0-24) and 28 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
+This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 28 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
 
 ### High-Level Coherence Metrics
 
@@ -36,7 +36,7 @@ This document serves as a comprehensive checklist and analysis framework for val
 
 This mega-prompt validates:
 
-1. Architecture compliance across all 24 pipeline steps
+1. Architecture compliance across all 25 pipeline steps
 2. Code quality standards (type hints, docstrings, error handling)
 3. Module structure consistency (directory patterns, **init**.py, MCP integration)
 4. Documentation completeness (AGENTS.md, README.md, API docs)
@@ -53,7 +53,7 @@ This mega-prompt validates:
 
 ### 1.1 Thin Orchestrator Pattern Validation
 
-**Requirement**: All 24 numbered pipeline scripts must follow the thin orchestrator pattern, delegating core functionality to module implementations.
+**Requirement**: All 25 numbered pipeline scripts must follow the thin orchestrator pattern, delegating core functionality to module implementations.
 
 #### Validation Checklist for Each Pipeline Script (0-24)
 
@@ -1410,7 +1410,7 @@ def test_processing(mock_process):
 
 ## 15. Conclusion
 
-This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 24 pipeline steps and 28 specialized modules. Use it systematically to:
+This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 28 specialized modules. Use it systematically to:
 
 1. **Identify Issues**: Find architectural, code quality, and documentation issues
 2. **Score Compliance**: Calculate compliance scores for each validation area
@@ -1431,7 +1431,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 **Status**: Production Ready
 **Version**: 1.0.0
-**Coverage**: 24 pipeline steps, 28 modules, 41 AGENTS.md files
+**Coverage**: 25 pipeline steps, 28 modules, 41 AGENTS.md files
 
 ---
 

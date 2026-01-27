@@ -200,7 +200,7 @@ All GNN documentation follows these principles:
 
 ## 📋 Documentation Status
 
-- ✅ All 24 pipeline steps documented
+- ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (28/28 modules)
 - ✅ 100% pipeline success rate (2m53s / 172.7 seconds execution time)
 - ✅ Enhanced visual logging across all steps

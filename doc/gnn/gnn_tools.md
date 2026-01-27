@@ -412,7 +412,7 @@ For detailed architecture information, see:
 
 ### Overview
 
-The `src/main.py` script orchestrates 24 numbered Python scripts (steps 0-24) located in the `src/` directory. Each script corresponds to a specific processing stage following the **thin orchestrator pattern** - delegating core functionality to modular implementations in their associated directories.
+The `src/main.py` script orchestrates 25 numbered Python scripts (steps 0-24) located in the `src/` directory. Each script corresponds to a specific processing stage following the **thin orchestrator pattern** - delegating core functionality to modular implementations in their associated directories.
 
 The pipeline is designed to be flexible, allowing users to run the entire sequence, skip certain steps, or run only specific steps. It manages configurations like target directories for GNN files and output directories for generated artifacts.
 

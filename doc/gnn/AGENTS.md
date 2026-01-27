@@ -264,7 +264,7 @@ python src/main.py --target-dir doc/gnn/examples/ --verbose
 **Audience**: Developers, pipeline maintainers  
 **Key Topics**:
 
-- All 24 pipeline entry points documented
+- All 25 pipeline entry points documented
 - Stage 1: GNN → Parsed JSON (Step 3)
 - Stage 2: JSON → Typed JSON (Step 5)
 - Stage 3: JSON → Multiple Formats (Step 7)
@@ -364,7 +364,7 @@ python src/main.py --target-dir doc/gnn/examples/ --verbose
 - Performance metrics validation
 - Security and compliance checks
 
-**Scope**: All 24 pipeline steps + 28 specialized modules
+**Scope**: All 25 pipeline steps + 28 specialized modules
 
 ---
 
