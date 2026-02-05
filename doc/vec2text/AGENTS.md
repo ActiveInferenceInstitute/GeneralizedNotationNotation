@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Vec2Text analysis of text representations in GNN files
@@ -53,7 +53,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 13 (LLM)**: Vec2Text integration with LLM analysis
 - **Step 16 (Analysis)**: Text reconstruction and analysis
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 20 (Website)**: Privacy and interpretability analysis
 - **Step 23 (Report)**: Embedding inversion results in reports
 

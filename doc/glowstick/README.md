@@ -85,7 +85,7 @@ Glowstick integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Glowstick type checking for matrix dimensions
@@ -95,7 +95,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Type-safe tensor operations
    - Performance-optimized execution
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Glowstick results integrated into comprehensive outputs
    - Type safety validation
 

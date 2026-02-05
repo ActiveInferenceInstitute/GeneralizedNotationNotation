@@ -83,7 +83,7 @@ Kit integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Kit analysis of GNN codebase
@@ -93,7 +93,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Kit analysis of generated code
    - Code intelligence for execution
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Kit results integrated into comprehensive outputs
    - Codebase intelligence reporting
 

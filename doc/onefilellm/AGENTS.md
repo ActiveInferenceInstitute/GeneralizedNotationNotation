@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: OneFileLLM aggregation of parsed GNN model documentation
@@ -53,7 +53,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 13 (LLM)**: OneFileLLM integration with LLM analysis
 - **Step 16 (Analysis)**: Automated documentation generation
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 20 (Website)**: OneFileLLM results in website generation
 - **Step 23 (Report)**: LLM-friendly documentation packages
 

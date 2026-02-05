@@ -195,7 +195,7 @@ Export integrates throughout the pipeline:
 
 1. **Core Processing** (Steps 0-9): Export generation during processing
 2. **Simulation** (Steps 10-16): Export of execution results
-3. **Integration** (Steps 17-23): Export results in comprehensive outputs
+3. **Integration** (Steps 17-24): Export results in comprehensive outputs
 
 ## Related Documentation
 

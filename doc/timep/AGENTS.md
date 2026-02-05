@@ -15,7 +15,7 @@ This directory contains comprehensive documentation, resources, and implementati
 
 TimEP integration enables:
 
-- **Pipeline Profiling**: Comprehensive profiling of GNN 24-step pipeline
+- **Pipeline Profiling**: Comprehensive profiling of GNN 25-step pipeline
 - **Performance Analysis**: Detailed analysis of processing workflows
 - **Optimization**: Identify bottlenecks and optimization opportunities
 - **Resource Tracking**: Track timing and resource consumption
@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **All Steps**: TimEP profiling of processing steps
@@ -54,7 +54,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 12 (Execute)**: Execution performance analysis
 - **Step 16 (Analysis)**: Analysis performance profiling
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **All Steps**: Comprehensive pipeline profiling
 - **Step 23 (Report)**: Performance reports and optimization recommendations
 
@@ -70,7 +70,7 @@ def profile_pipeline_step(step_number: int, command: str) -> ProfileResult:
     Profile a single pipeline step using TimEP.
     
     Parameters:
-        step_number: Pipeline step number (0-23)
+        step_number: Pipeline step number (0-24)
         command: Command to profile
     
     Returns:

@@ -81,7 +81,7 @@ ActiveInference.jl leverages Julia's capabilities to provide:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - GNN models parsed and validated
@@ -91,7 +91,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - ActiveInference.jl execution (Step 12: Execute)
    - High-performance simulation results
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - ActiveInference.jl results integrated into comprehensive outputs
    - Performance metrics and analysis
 

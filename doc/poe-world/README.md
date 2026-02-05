@@ -78,7 +78,7 @@ PoE-World enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - PoE-World models can be specified using GNN notation
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - PoE-World execution for compositional world modeling
    - Program synthesis and expert generation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - PoE-World results integrated into comprehensive outputs
    - Compositional model analysis and visualization
 

@@ -138,7 +138,7 @@ Central documentation hub for all theoretical, computational, and implementation
 
 ## Pipeline Integration
 
-This documentation integrates with the 24-step GNN processing pipeline:
+This documentation integrates with the 25-step GNN processing pipeline:
 
 ### Relevant Pipeline Steps
 

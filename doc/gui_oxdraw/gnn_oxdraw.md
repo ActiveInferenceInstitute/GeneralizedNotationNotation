@@ -7,7 +7,7 @@
 
 ## Executive Summary
 
-oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) pipeline, enabling drag-and-drop creation of Active Inference graphical models with bidirectional text-visual synchronization. This integration leverages oxdraw's hybrid Mermaid-based architecture alongside GNN's 24-step processing pipeline to provide researchers with intuitive visual model construction while maintaining rigorous semantic validation and computational reproducibility.
+oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) pipeline, enabling drag-and-drop creation of Active Inference graphical models with bidirectional text-visual synchronization. This integration leverages oxdraw's hybrid Mermaid-based architecture alongside GNN's 25-step processing pipeline to provide researchers with intuitive visual model construction while maintaining rigorous semantic validation and computational reproducibility.
 
 **Key Integration Value**:
 - Visual construction of POMDP architectures through intuitive node-and-edge manipulation

@@ -49,7 +49,7 @@ All documentation in this subsystem follows the professional standards establish
 
 ## Integration
 
-This documentation integrates with the 24-step GNN processing pipeline:
+This documentation integrates with the 25-step GNN processing pipeline:
 
 1. **Setup** (Step 1): Dependency installation and virtual environment creation
 2. **Testing** (Step 2): Validation of installed dependencies

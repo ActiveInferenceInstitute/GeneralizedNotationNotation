@@ -57,7 +57,7 @@ This directory contains:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Experimental models and concepts may inform pipeline development
@@ -65,7 +65,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 2. **Simulation** (Steps 10-16): Model execution and analysis
    - Research materials may guide simulation approaches
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Exploratory work may influence integration patterns
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.

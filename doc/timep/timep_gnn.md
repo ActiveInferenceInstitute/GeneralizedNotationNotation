@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-The integration of `timep` with the Generalized Notation Notation (GNN) project creates opportunities for sophisticated performance analysis of Active Inference modeling pipelines. GNN's 24-step computational pipeline, combined with `timep`'s hierarchical bash profiling capabilities, enables comprehensive visibility into cognitive model processing workflows from specification through simulation execution.
+The integration of `timep` with the Generalized Notation Notation (GNN) project creates opportunities for sophisticated performance analysis of Active Inference modeling pipelines. GNN's 25-step computational pipeline, combined with `timep`'s hierarchical bash profiling capabilities, enables comprehensive visibility into cognitive model processing workflows from specification through simulation execution.
 
 This analysis demonstrates concrete applications where `timep`'s trap-based profiling and flamegraph generation provide actionable insights for optimizing Active Inference research workflows, development processes, and production deployments.
 
@@ -16,12 +16,12 @@ GNN implements a comprehensive pipeline transforming textual model specification
 # Full pipeline execution
 python src/main.py --target-dir input/gnn_files --verbose
 
-# Steps 0-23 orchestration:
+# Steps 0-24 orchestration:
 # 0_template → 1_setup → 2_tests → 3_gnn → 4_model_registry → 5_type_checker
 # → 6_validation → 7_export → 8_visualization → 9_advanced_viz → 10_ontology
 # → 11_render → 12_execute → 13_llm → 14_ml_integration → 15_audio
 # → 16_analysis → 17_integration → 18_security → 19_research
-# → 20_website → 21_mcp → 22_gui → 23_report
+# → 20_website → 21_mcp → 22_gui → 23_report → 24_intelligent_analysis
 ```
 
 ### Shell Command Execution Patterns
@@ -64,7 +64,7 @@ These patterns create multi-level execution hierarchies ideal for `timep` analys
 **Implementation**:
 
 ```bash
-# Profile complete 24-step pipeline
+# Profile complete 25-step pipeline
 . /path/to/timep.bash
 timep --flame python src/main.py --target-dir input/gnn_files --verbose
 ```

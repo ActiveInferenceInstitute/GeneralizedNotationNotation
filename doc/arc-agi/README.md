@@ -76,7 +76,7 @@ To model ARC-AGI tasks using GNN, use the following template strategy:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - ARC-AGI models specified using GNN notation
@@ -86,7 +86,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - ARC-AGI task simulation
    - Interactive reasoning evaluation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - ARC-AGI results integrated into comprehensive outputs
    - Intelligence measurement and analysis
 

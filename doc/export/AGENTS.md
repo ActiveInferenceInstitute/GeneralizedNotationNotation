@@ -34,7 +34,7 @@ Multi-format export capabilities for GNN models including JSON, XML, GraphML, an
 
 ## Integration with Pipeline
 
-This documentation covers Step 7 (Export) of the 24-step GNN processing pipeline.
+This documentation covers Step 7 (Export) of the 25-step GNN processing pipeline.
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 

@@ -78,7 +78,7 @@ AutoGenLib integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - AutoGenLib can generate custom processing utilities
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - AutoGenLib-generated code for framework integration
    - Experimental feature prototyping
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - AutoGenLib results integrated into comprehensive outputs
    - Dynamic code generation for custom integrations
 

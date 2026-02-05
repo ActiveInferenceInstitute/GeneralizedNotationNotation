@@ -12,7 +12,7 @@ GNN (Generalized Notation Notation) and CatColab represent complementary approac
 |--------|-----|----------|
 | **Focus** | Active Inference generative models | Category-theoretic compositional models |
 | **Representation** | Text-based structured notation | Structure editor with domain-specific logics |
-| **Execution** | 24-step pipeline (PyMDP, RxInfer, JAX) | Simulation via AlgebraicJulia backend |
+| **Execution** | 25-step pipeline (PyMDP, RxInfer, JAX) | Simulation via AlgebraicJulia backend |
 | **Composition** | Module-based pipeline | Functorial composition of models |
 | **Export** | JSON, XML, GraphML, executable code | JSON, collaborative documents |
 

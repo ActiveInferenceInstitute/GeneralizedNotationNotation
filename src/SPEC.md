@@ -14,7 +14,7 @@ The `src/` directory contains the complete implementation of the GNN (Generalize
 
 ### Thin Orchestrator Pattern
 
-All numbered pipeline scripts (0-23) MUST follow the thin orchestrator pattern:
+All numbered pipeline scripts (0-24) MUST follow the thin orchestrator pattern:
 
 ```
 ┌─────────────────────────────────────────┐
@@ -67,7 +67,7 @@ Every module directory MUST contain:
 
 ## Pipeline Structure
 
-### 24-Step Pipeline (0-23)
+### 25-Step Pipeline (0-24)
 
 **Core Processing (Steps 0-9)**
 | Step | Script | Module | Purpose |
@@ -94,7 +94,7 @@ Every module directory MUST contain:
 | 15 | `15_audio.py` | `audio/` | Audio generation |
 | 16 | `16_analysis.py` | `analysis/` | Statistical analysis |
 
-**Integration & Output (Steps 17-23)**
+**Integration & Output (Steps 17-24)**
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 17 | `17_integration.py` | `integration/` | System integration |
@@ -104,6 +104,7 @@ Every module directory MUST contain:
 | 21 | `21_mcp.py` | `mcp/` | MCP processing |
 | 22 | `22_gui.py` | `gui/` | GUI interface |
 | 23 | `23_report.py` | `report/` | Report generation |
+| 24 | `24_intelligent_analysis.py` | `intelligent_analysis/` | AI-powered analysis |
 
 ### Infrastructure Modules
 

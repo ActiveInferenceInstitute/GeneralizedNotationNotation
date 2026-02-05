@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: X402 payment integration for processing services
@@ -54,7 +54,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 12 (Execute)**: Payment for simulation execution
 - **Step 13 (LLM)**: Payment for LLM analysis services
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 17 (Integration)**: Economic transaction coordination
 - **Step 23 (Report)**: Economic transaction logging
 

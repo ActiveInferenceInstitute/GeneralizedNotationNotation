@@ -5,7 +5,7 @@ Standardized Pipeline Step Template
 This template provides a consistent structure for all GNN pipeline steps.
 Copy this template and modify the CUSTOMIZE sections to create new pipeline steps.
 
-The GNN pipeline consists of 24 steps (0-23):
+The GNN pipeline consists of 25 steps (0-24):
 
     Steps 0-9 (Core):
         0: Template initialization    5: Type checker
@@ -20,11 +20,11 @@ The GNN pipeline consists of 24 steps (0-23):
         12: Execute (simulation)      16: Analysis
         13: LLM analysis
 
-    Steps 17-23 (Output):
+    Steps 17-24 (Output):
         17: Integration               21: MCP (Model Context Protocol)
         18: Security                  22: GUI
         19: Research                  23: Report generation
-        20: Website
+        20: Website                   24: Intelligent Analysis
 
 Usage:
     python X_step_name.py [options]

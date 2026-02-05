@@ -58,7 +58,7 @@ TimEP provides:
 ### Hierarchical Profiling
 - **Trap-Based Profiling**: Comprehensive command execution profiling
 - **Flamegraph Generation**: Visual performance analysis
-- **Pipeline Visibility**: Complete visibility into 24-step pipeline execution
+- **Pipeline Visibility**: Complete visibility into 25-step pipeline execution
 - **Performance Insights**: Actionable insights for optimization
 
 ### Key Features
@@ -71,14 +71,14 @@ TimEP provides:
 
 TimEP integration enables:
 
-- **Pipeline Profiling**: Comprehensive profiling of GNN 24-step pipeline
+- **Pipeline Profiling**: Comprehensive profiling of GNN 25-step pipeline
 - **Performance Analysis**: Detailed analysis of processing workflows
 - **Optimization**: Identify bottlenecks and optimization opportunities
 - **Resource Tracking**: Track timing and resource consumption
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - TimEP profiling of processing steps
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - TimEP profiling of execution workflows
    - Performance analysis
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - TimEP results integrated into comprehensive outputs
    - Performance reports and optimization recommendations
 

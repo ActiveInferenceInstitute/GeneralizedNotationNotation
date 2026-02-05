@@ -47,14 +47,14 @@ All documentation in this subsystem follows the professional standards establish
 
 ## Integration
 
-This documentation integrates with the 24-step GNN processing pipeline:
+This documentation integrates with the 25-step GNN processing pipeline:
 
 1. **Pipeline Initialization** (Step 0): Template setup
 2. **Environment Setup** (Step 1): Dependency installation
 3. **Testing** (Step 2): Quality assurance
 4. **Core Processing** (Steps 3-9): GNN parsing and validation
 5. **Simulation** (Steps 10-16): Model execution and analysis
-6. **Integration** (Steps 17-23): Output and reporting
+6. **Integration** (Steps 17-24): Output and reporting
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 

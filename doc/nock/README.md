@@ -90,7 +90,7 @@ Nock integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Nock compilation of GNN models
@@ -100,7 +100,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Nock execution for deterministic simulation
    - Zero-knowledge proof generation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Nock results integrated into comprehensive outputs
    - Formal verification certificates
 

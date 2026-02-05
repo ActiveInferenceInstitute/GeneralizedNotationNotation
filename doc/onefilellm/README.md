@@ -79,7 +79,7 @@ OneFileLLM integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - OneFileLLM aggregation of GNN model documentation
@@ -89,7 +89,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - OneFileLLM integration with LLM analysis (Step 13)
    - Automated documentation generation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - OneFileLLM results integrated into comprehensive outputs
    - LLM-friendly documentation packages
 

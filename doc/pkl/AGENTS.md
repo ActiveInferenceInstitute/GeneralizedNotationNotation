@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Pkl configuration generation from parsed GNN models
@@ -54,7 +54,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 11 (Render)**: Pkl configuration for simulation environments
 - **Step 12 (Execute)**: Pkl-based configuration management
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 17 (Integration)**: Pkl configuration coordination
 - **Step 23 (Report)**: Configuration validation results
 

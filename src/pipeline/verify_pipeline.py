@@ -16,7 +16,7 @@ def verify_pipeline_discovery() -> Dict[str, Any]:
         from pipeline.discovery import get_pipeline_scripts
         scripts = get_pipeline_scripts(Path(__file__).parent)
         
-        expected_steps = list(range(24))  # 0-23
+        expected_steps = list(range(25))  # 0-24
         found_steps = [s['num'] for s in scripts]
         
         return {
@@ -58,7 +58,10 @@ def verify_module_imports() -> Dict[str, Any]:
         "security",
         "research",
         "website",
-        "report"
+        "mcp",
+        "gui",
+        "report",
+        "intelligent_analysis"
     ]
     
     results = {}
@@ -105,7 +108,7 @@ def verify_step_files() -> Dict[str, Any]:
     """Verify that all step files exist."""
     expected_files = [f"{i}_" + name for i, name in enumerate([
         "template.py",
-        "setup.py", 
+        "setup.py",
         "tests.py",
         "gnn.py",
         "model_registry.py",
@@ -125,7 +128,10 @@ def verify_step_files() -> Dict[str, Any]:
         "security.py",
         "research.py",
         "website.py",
-        "report.py"
+        "mcp.py",
+        "gui.py",
+        "report.py",
+        "intelligent_analysis.py"
     ])]
     
     existing_files = []

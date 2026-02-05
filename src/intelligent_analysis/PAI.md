@@ -25,7 +25,7 @@ results = processor.process(verbose=True)
 
 | Direction | Module | Data |
 |-----------|--------|------|
-| **Input** | All prior steps | output/0-23_*_output/ |
+| **Input** | All prior steps | output/0-24_*_output/ |
 | **Output** | Final reports | executive_summary.md, insights.json |
 
 ## Key Files

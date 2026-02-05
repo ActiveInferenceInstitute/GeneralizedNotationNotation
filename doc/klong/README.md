@@ -78,7 +78,7 @@ Klong's tacit, array-oriented nature is ideal for optimizing tensor operations i
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Klong code generation for matrix operations
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Klong execution for tensor operations
    - Performance-optimized array computations
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Klong results integrated into comprehensive outputs
    - Performance metrics and analysis
 

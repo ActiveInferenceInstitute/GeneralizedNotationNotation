@@ -110,7 +110,7 @@ The Petri net representation supports verification of:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Petri net models can be generated from GNN specifications
@@ -120,7 +120,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Petri net execution for concurrent process simulation
    - Workflow analysis and verification
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Petri net models exported as part of comprehensive outputs
    - Formal verification results included in reports
 

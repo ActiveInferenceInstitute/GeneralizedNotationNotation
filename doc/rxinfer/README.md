@@ -117,7 +117,7 @@ Successful validation demonstrates:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - GNN models parsed and validated
@@ -127,7 +127,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - RxInfer.jl execution (Step 12: Execute)
    - Results processing and analysis
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - RxInfer.jl results integrated into comprehensive outputs
    - Multi-agent coordination and analysis
 

@@ -71,7 +71,7 @@ Advanced visualization in GNN enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Advanced visualization data extraction
@@ -84,7 +84,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Sophisticated data analysis visualization
    - Real-time visualization updates
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Advanced visualization results integrated into comprehensive outputs
    - Website generation with advanced visualizations (Step 20: Website)
    - Report generation with advanced visualizations (Step 23: Report)

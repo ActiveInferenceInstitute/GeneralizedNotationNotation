@@ -88,7 +88,7 @@ $$\vec{e}_a + \vec{e}_b + \vec{e}_c + \vec{e}_d = \vec{0}$$
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Quadray coordinate representation in parsed GNN models
@@ -101,7 +101,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 12 (Execute)**: Geometric transformation execution
 - **Step 16 (Analysis)**: Geometric analysis of Quadray representations
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 8 (Visualization)**: Quadray coordinate visualization
 - **Step 23 (Report)**: Geometric analysis and visualization results
 

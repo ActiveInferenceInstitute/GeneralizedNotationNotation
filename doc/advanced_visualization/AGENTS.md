@@ -26,7 +26,7 @@ Advanced graph, matrix, and interactive visualization techniques for Active Infe
 
 ## Integration with Pipeline
 
-This documentation covers Step 9 (Visualization) of the 24-step GNN processing pipeline, focusing on advanced techniques beyond basic graph rendering.
+This documentation covers Step 9 (Visualization) of the 25-step GNN processing pipeline, focusing on advanced techniques beyond basic graph rendering.
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 

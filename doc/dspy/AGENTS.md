@@ -12,7 +12,7 @@ This directory contains comprehensive documentation and resources for the DSPy s
 
 ## Purpose
 
-DSPy integration for structured prompting and LLM coordination within the GNN ecosystem. This subsystem is part of the broader GNN documentation ecosystem, integrated with the 24-step processing pipeline.
+DSPy integration for structured prompting and LLM coordination within the GNN ecosystem. This subsystem is part of the broader GNN documentation ecosystem, integrated with the 25-step processing pipeline.
 
 ---
 
@@ -93,7 +93,7 @@ doc/dspy/
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - GNN parsing, validation, export
@@ -105,7 +105,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - DSPy-optimized LLM analysis (Step 13: LLM)
 - Automated prompt optimization for model interpretation
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - System coordination and output
 - DSPy results integrated into comprehensive outputs
 - LLM-enhanced documentation generation

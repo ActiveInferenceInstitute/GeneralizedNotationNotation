@@ -95,7 +95,7 @@ The 12 Nock opcodes provide:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Nock compilation of parsed GNN models
@@ -107,7 +107,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 12 (Execute)**: Execute Nock bytecode for deterministic simulation
 - **Step 13 (LLM)**: Zero-knowledge proof generation for LLM analysis
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 21 (MCP)**: Nock-based MCP tool registration
 - **Step 23 (Report)**: Include formal verification certificates
 

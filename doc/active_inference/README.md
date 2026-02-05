@@ -150,7 +150,7 @@ This documentation connects to the GNN source code:
 
 ### Pipeline Integration
 
-This documentation integrates with the 24-step GNN processing pipeline:
+This documentation integrates with the 25-step GNN processing pipeline:
 
 | Step | Relevance |
 |------|-----------|
@@ -225,7 +225,7 @@ doc/active_inference/
 
 - **[Main Documentation Index](../README.md)**: Return to main documentation
 - **[Cross-Reference Index](../CROSS_REFERENCE_INDEX.md)**: Complete cross-reference
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: 24-step pipeline
+- **[Pipeline Documentation](../gnn/gnn_tools.md)**: 25-step pipeline
 
 ---
 

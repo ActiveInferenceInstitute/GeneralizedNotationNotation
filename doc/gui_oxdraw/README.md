@@ -81,7 +81,7 @@ Oxdraw provides:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Oxdraw visual edits translated to GNN files
@@ -91,7 +91,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Visual model execution
    - Results visualization
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Oxdraw results integrated into comprehensive outputs
    - Visual documentation generation
 

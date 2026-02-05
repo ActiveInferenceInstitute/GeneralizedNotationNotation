@@ -66,7 +66,7 @@ Audio processing in GNN enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Audio generation from GNN models
@@ -78,7 +78,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Audio-based model analysis
    - Audio visualization generation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Audio results integrated into comprehensive outputs
    - Audio visualization and analysis
    - Multi-format audio export

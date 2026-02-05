@@ -78,7 +78,7 @@ Vec2Text integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Vec2Text analysis of text representations
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Vec2Text integration with LLM analysis (Step 13)
    - Text reconstruction and analysis
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Vec2Text results integrated into comprehensive outputs
    - Privacy and interpretability analysis
 

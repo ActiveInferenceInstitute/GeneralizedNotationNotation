@@ -177,7 +177,7 @@ Ontology processing integrates throughout the pipeline:
 
 1. **Core Processing** (Steps 0-9): Ontology term extraction during parsing
 2. **Simulation** (Steps 10-16): Ontology validation during execution
-3. **Integration** (Steps 17-23): Ontology results in comprehensive outputs
+3. **Integration** (Steps 17-24): Ontology results in comprehensive outputs
 
 ## Best Practices
 

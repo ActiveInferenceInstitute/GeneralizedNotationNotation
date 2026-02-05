@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: SymPy validation of equation sections
@@ -55,7 +55,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 13 (LLM)**: SymPy MCP integration for LLM analysis
 - **Step 16 (Analysis)**: Mathematical validation and analysis
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 21 (MCP)**: SymPy MCP tool registration
 - **Step 23 (Report)**: Mathematical documentation generation
 

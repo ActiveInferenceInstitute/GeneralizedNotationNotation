@@ -31,7 +31,7 @@ logger.info("Processing started")
 
 ## Integration Points
 
-- All 24 pipeline step scripts use these utilities
+- All 25 pipeline step scripts use these utilities
 - MCP tools log through this system
 - Test framework uses consistent logging
 

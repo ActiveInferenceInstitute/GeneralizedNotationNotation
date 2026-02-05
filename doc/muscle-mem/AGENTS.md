@@ -87,7 +87,7 @@ For GNN processing, cache validation uses:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Cache parsing results for known GNN files
@@ -101,7 +101,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 13 (LLM)**: Cache LLM analysis responses
 - **Step 15 (Audio)**: Cache audio generation results
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 20 (Website)**: Cache website generation
 - **Step 23 (Report)**: Cache report generation
 

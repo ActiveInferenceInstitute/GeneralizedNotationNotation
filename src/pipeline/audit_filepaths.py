@@ -72,7 +72,7 @@ class FilepathAuditor:
             'PIPELINE_SCRIPTS.md',
         }
         
-        # Expected numbered scripts (0-23)
+        # Expected numbered scripts (0-24)
         self.expected_scripts = {
             f"{i}_{name}.py": i for i, name in [
                 (0, "template"), (1, "setup"), (2, "tests"), (3, "gnn"),
@@ -82,10 +82,10 @@ class FilepathAuditor:
                 (13, "llm"), (14, "ml_integration"), (15, "audio"),
                 (16, "analysis"), (17, "integration"), (18, "security"),
                 (19, "research"), (20, "website"), (21, "mcp"),
-                (22, "gui"), (23, "report")
+                (22, "gui"), (23, "report"), (24, "intelligent_analysis")
             ]
         }
-        
+
         # Expected output directories
         self.expected_output_dirs = {
             f"{i}_{name}_output": i for i, name in [
@@ -96,7 +96,7 @@ class FilepathAuditor:
                 (13, "llm"), (14, "ml_integration"), (15, "audio"),
                 (16, "analysis"), (17, "integration"), (18, "security"),
                 (19, "research"), (20, "website"), (21, "mcp"),
-                (22, "gui"), (23, "report")
+                (22, "gui"), (23, "report"), (24, "intelligent_analysis")
             ]
         }
     
@@ -373,11 +373,11 @@ class FilepathAuditor:
                 return False
             
             # Check for outdated references (old step numbers)
-            if step_num < 0 or step_num > 23:
+            if step_num < 0 or step_num > 24:
                 self.issues["outdated_references"].append({
                     "file": str(file_path.relative_to(self.project_root)),
                     "reference": ref,
-                    "issue": f"Step number {step_num} out of range (0-23)"
+                    "issue": f"Step number {step_num} out of range (0-24)"
                 })
                 return False
         return True
@@ -421,7 +421,7 @@ class FilepathAuditor:
                 pass
     
     def verify_numbered_scripts(self):
-        """Verify all numbered scripts 0-23 exist"""
+        """Verify all numbered scripts 0-24 exist"""
         src_dir = self.project_root / "src"
         for script_name, step_num in self.expected_scripts.items():
             script_path = src_dir / script_name

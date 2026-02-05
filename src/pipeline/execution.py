@@ -118,7 +118,7 @@ def get_pipeline_status() -> dict:
     return {
         "status": "ready",
         "timestamp": datetime.now().isoformat(),
-        "steps_available": 24,
+        "steps_available": 25,
         "steps_completed": 0
     }
 
@@ -136,7 +136,7 @@ def get_pipeline_info() -> dict:
         "name": "GNN Pipeline",
         "version": "1.0.0",
         "description": "GeneralizedNotationNotation processing pipeline",
-        "steps": list(range(24))  # 0-23 steps
+        "steps": list(range(25))  # 0-24 steps
     }
 
 def create_pipeline_config() -> dict:

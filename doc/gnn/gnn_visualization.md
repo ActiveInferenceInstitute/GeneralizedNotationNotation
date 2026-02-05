@@ -210,7 +210,7 @@ Visualization results are integrated throughout the pipeline:
 
 1. **Core Processing** (Steps 0-9): Visualization data extraction and generation
 2. **Simulation** (Steps 10-16): Execution result visualization
-3. **Integration** (Steps 17-23): Visualization integration into outputs
+3. **Integration** (Steps 17-24): Visualization integration into outputs
    - Website generation (Step 20) includes visualizations
    - Report generation (Step 23) includes visualizations
 

@@ -24,4 +24,4 @@ from pipeline.config import PipelineConfig, get_step_config
 ```
 
 ## Step Naming Convention
-Steps follow `N_name.py` pattern (0-23)
+Steps follow `N_name.py` pattern (0-24)

@@ -2,11 +2,11 @@
 
 ## Executive Summary
 
-This document provides a comprehensive technical overview of how D2 (Declarative Diagramming) can be integrated with the Generalized Notation Notation (GNN) Pipeline to create professional visualizations for Active Inference model processing. The GNN Pipeline is a 24-step system that transforms GNN plaintext specifications into executable simulations, and D2 offers powerful declarative diagramming capabilities that complement this workflow by providing clear, professional visualizations of pipeline architecture, model structures, and data flows.
+This document provides a comprehensive technical overview of how D2 (Declarative Diagramming) can be integrated with the Generalized Notation Notation (GNN) Pipeline to create professional visualizations for Active Inference model processing. The GNN Pipeline is a 25-step system that transforms GNN plaintext specifications into executable simulations, and D2 offers powerful declarative diagramming capabilities that complement this workflow by providing clear, professional visualizations of pipeline architecture, model structures, and data flows.
 
 ## GNN Pipeline Overview
 
-The GNN Pipeline processes Active Inference generative models through a structured 24-step workflow:
+The GNN Pipeline processes Active Inference generative models through a structured 25-step workflow:
 
 ### Core Processing Modules (Steps 0-9)
 - **Step 3**: GNN parsing and multi-format serialization (22 formats)
@@ -58,7 +58,7 @@ Data Flow: {
 ```
 
 **Benefits for Pipeline Documentation:**
-- Clear visualization of the 24-step workflow
+- Clear visualization of the 25-step workflow
 - Easy identification of data dependencies
 - Professional presentation for technical documentation
 - Interactive SVG output with clickable elements

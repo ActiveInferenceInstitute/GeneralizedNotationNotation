@@ -11,7 +11,7 @@ The GNN system is fully documented in `doc/gnn/`.
 > **[GNN Documentation Index](../doc/gnn/README.md)** - Start here for all GNN guides.
 
 ### Specialized Documentation Agents
-See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 24 documentation agents, including:
+See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 documentation agents, including:
 - **Syntax & DSL**: `gnn_syntax.md`, `gnn_dsl_manual.md`
 - **Modeling**: `quickstart_tutorial.md`, `gnn_examples_doc.md`
 - **Integration**: `framework_integration_guide.md`, `gnn_implementation.md`
@@ -154,7 +154,7 @@ graph TD
 - **Total Steps**: 25 (all steps 0-24)
 - **Execution Time**: ~90s (pipeline) / ~9min (full test suite)
 - **Memory Usage**: 36.3MB peak
-- **Success Rate**: 100% (24/24 steps successful)
+- **Success Rate**: 100% (25/25 steps successful)
 - **Test Suite Status**: ✅ 777 tests passed (21 skipped - optional deps)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)

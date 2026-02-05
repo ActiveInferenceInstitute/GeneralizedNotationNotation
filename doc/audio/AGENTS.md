@@ -26,7 +26,7 @@ Audio synthesis and sonification of Active Inference models (SAPF - Sonified Act
 
 ## Integration with Pipeline
 
-This documentation covers Step 14 (Audio/SAPF) of the 24-step GNN processing pipeline.
+This documentation covers Step 15 (Audio/SAPF) of the 25-step GNN processing pipeline.
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 

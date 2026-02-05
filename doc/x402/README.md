@@ -78,7 +78,7 @@ X402 integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - X402 payment integration for processing services
@@ -88,7 +88,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - X402 payments for simulation services
    - Autonomous economic operations
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - X402 results integrated into comprehensive outputs
    - Economic transaction logging
 

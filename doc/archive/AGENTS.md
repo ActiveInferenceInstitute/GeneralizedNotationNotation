@@ -13,7 +13,7 @@ This directory contains archived documentation, historical materials, and deprec
 
 The archive serves as a historical record of previous documentation, superseded implementations, and legacy materials from the GNN project development.
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
 
 ## Contents
 
@@ -40,11 +40,11 @@ This directory contains:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
 2. **Simulation** (Steps 10-16): Model execution and analysis  
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 

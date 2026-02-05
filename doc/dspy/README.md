@@ -87,7 +87,7 @@ Automatic prompt and weight tuning:
 
 ## Integration with GNN Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - DSPy enhances GNN parsing with LLM assistance
@@ -97,7 +97,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - DSPy-optimized LLM analysis (Step 13: LLM)
 - [dspy_agents_guide.md](dspy_agents_guide.md): Active Inference agent patterns
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - DSPy results integrated into comprehensive outputs
 - [dspy_typed_predictors.md](dspy_typed_predictors.md): Structured output generation
 

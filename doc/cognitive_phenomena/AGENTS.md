@@ -19,7 +19,7 @@ Comprehensive mapping of cognitive processes to Active Inference principles and 
 - **Educational Technology**: Cognitive modeling for educational applications
 - **AI Development**: Cognitive architectures for artificial intelligence systems
 
-This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 24-step processing pipeline.
+This subsystem is part of the broader GNN (Generalized Notation Notation) documentation ecosystem, integrated with the 25-step processing pipeline.
 
 ## Contents
 
@@ -88,7 +88,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Cognitive models specified using GNN notation
@@ -98,7 +98,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Cognitive process simulation
    - Behavioral prediction and validation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Cognitive model results integrated into comprehensive outputs
    - Research applications and clinical validation
 

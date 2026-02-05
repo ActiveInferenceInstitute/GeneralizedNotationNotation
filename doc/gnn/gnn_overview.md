@@ -209,7 +209,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 15**: Audio generation and sonification
 - **Step 16**: Advanced statistical analysis
 
-**Integration & Output (Steps 17-23)**
+**Integration & Output (Steps 17-24)**
 
 - **Step 17**: System integration and coordination
 - **Step 18**: Security validation and access control
@@ -218,6 +218,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 21**: Model Context Protocol processing
 - **Step 22**: Interactive GUI for model construction
 - **Step 23**: Comprehensive report generation
+- **Step 24**: Intelligent Analysis
 
 ### Pipeline Documentation
 

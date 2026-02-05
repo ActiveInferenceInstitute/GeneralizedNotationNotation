@@ -90,7 +90,7 @@ Historical GNN example models demonstrating various Active Inference application
 
 ## Integration with Pipeline
 
-Archive materials represent historical versions of the 24-step GNN processing pipeline:
+Archive materials represent historical versions of the 25-step GNN processing pipeline:
 
 1. **Historical Processing**: Previous pipeline implementations
 2. **Legacy Formats**: Older GNN syntax and structure

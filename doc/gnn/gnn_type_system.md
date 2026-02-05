@@ -173,7 +173,7 @@ Type checking integrates throughout the pipeline:
 
 1. **Core Processing** (Steps 0-9): Type checking during parsing and validation
 2. **Simulation** (Steps 10-16): Type validation during execution
-3. **Integration** (Steps 17-23): Type information in comprehensive outputs
+3. **Integration** (Steps 17-24): Type information in comprehensive outputs
 
 ## Related Documentation
 

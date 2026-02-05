@@ -66,7 +66,7 @@ Research tools in GNN enable:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Research model specification
@@ -78,7 +78,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Experimental model execution
    - Research data analysis
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - Research results integrated into comprehensive outputs
    - Research documentation generation
    - Research collaboration and sharing

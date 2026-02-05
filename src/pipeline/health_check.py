@@ -274,9 +274,9 @@ class EnhancedHealthChecker:
             "status": "complete"
         }
 
-        # Check for all numbered pipeline scripts (0-23)
+        # Check for all numbered pipeline scripts (0-24)
         expected_scripts = []
-        for step_num in range(24):  # 0-23
+        for step_num in range(25):  # 0-24
             # Check for both .py files and module directories
             script_path = src_dir / f"{step_num}_*.py"
             module_path = src_dir / f"{step_num}_*"
@@ -471,7 +471,7 @@ class EnhancedHealthChecker:
                 "category": "pipeline",
                 "title": "Complete Pipeline Structure",
                 "description": f"Missing scripts: {', '.join(pipeline_struct['missing_scripts'])}",
-                "action": "Ensure all numbered pipeline scripts (0-23) exist"
+                "action": "Ensure all numbered pipeline scripts (0-24) exist"
             })
 
         # System resource recommendations

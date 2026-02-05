@@ -43,7 +43,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: SPM-informed GNN model specification
@@ -55,7 +55,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 12 (Execute)**: Cross-validation with neuroimaging data
 - **Step 16 (Analysis)**: SPM statistical analysis integration
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 23 (Report)**: Neuroscientific validation and analysis results
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.

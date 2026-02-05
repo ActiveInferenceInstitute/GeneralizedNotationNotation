@@ -1,6 +1,6 @@
 # Pipeline Module
 
-This module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. It manages the 24-step pipeline execution, configuration handling, and inter-module communication.
+This module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. It manages the 25-step pipeline execution, configuration handling, and inter-module communication.
 
 ## Module Structure
 
@@ -346,8 +346,8 @@ print(f"Pipeline status: {pipeline_status}")
 
 ## Pipeline Structure
 
-### 23-Step Pipeline (Current)
-The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
+### 25-Step Pipeline (Current)
+The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 
 1. **0_template.py** → `src/template/` - Pipeline template and initialization
 2. **1_setup.py** → `src/setup/` - UV environment setup and dependency management
@@ -370,12 +370,10 @@ The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
 19. **18_security.py** → `src/security/` - Security validation and access control
 20. **19_research.py** → `src/research/` - Research tools and experimental features
 21. **20_website.py** → `src/website/` - Static HTML website generation from pipeline artifacts
-21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
-22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
-23. **23_report.py** → `src/report/` - Comprehensive analysis report generation
-21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
-22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
-23. **23_report.py** → `src/report/` - Comprehensive analysis report generation
+22. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
+23. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
+24. **23_report.py** → `src/report/` - Comprehensive analysis report generation
+25. **24_intelligent_analysis.py** → `src/intelligent_analysis/` - AI-powered pipeline analysis and executive reports
 
 ### Pipeline Execution Flow
 
@@ -622,7 +620,7 @@ logging.getLogger('pipeline').setLevel(logging.DEBUG)
 
 ## Summary
 
-The Pipeline module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. The module manages the 24-step pipeline execution, ensures proper step sequencing and dependency management, and provides comprehensive error handling and performance optimization. The pipeline architecture supports the full Active Inference modeling lifecycle from specification through simulation and GUI construction, with rigorous scientific validation and reproducibility standards.
+The Pipeline module provides core pipeline orchestration, configuration management, and step coordination for the GNN processing pipeline. The module manages the 25-step pipeline execution, ensures proper step sequencing and dependency management, and provides comprehensive error handling and performance optimization. The pipeline architecture supports the full Active Inference modeling lifecycle from specification through simulation and GUI construction, with rigorous scientific validation and reproducibility standards.
 
 ## License and Citation
 

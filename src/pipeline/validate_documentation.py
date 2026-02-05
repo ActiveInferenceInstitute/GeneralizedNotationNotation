@@ -45,8 +45,8 @@ class DocumentationValidator:
         self.verbose = verbose
         self.results = ValidationResult([], [], [])
         
-        # Define actual pipeline steps (24 steps: 0-23)
-        self.actual_pipeline_steps = list(range(0, 24))  # 0-23
+        # Define actual pipeline steps (25 steps: 0-24)
+        self.actual_pipeline_steps = list(range(0, 25))  # 0-24
         # Step number to script name mapping
         self.step_mapping = {
             0: "0_template.py",
@@ -72,7 +72,8 @@ class DocumentationValidator:
             20: "20_website.py",
             21: "21_mcp.py",
             22: "22_gui.py",
-            23: "23_report.py"
+            23: "23_report.py",
+            24: "24_intelligent_analysis.py"
         }
         
         # Patterns to search for broken links
@@ -180,11 +181,11 @@ class DocumentationValidator:
                 for match in matches:
                     try:
                         step_num = int(match)
-                        if step_num < 0 or step_num > 23:
+                        if step_num < 0 or step_num > 24:
                             rel_file_path = file_path.relative_to(self.project_root)
                             self.results.warnings.append(
                                 f"Invalid pipeline step in {rel_file_path}:{line_no}: "
-                                f"Step {step_num} is outside valid range 0-23: '{line.strip()}'"
+                                f"Step {step_num} is outside valid range 0-24: '{line.strip()}'"
                             )
                     except ValueError:
                         continue
@@ -202,7 +203,7 @@ class DocumentationValidator:
                     rel_file_path = file_path.relative_to(self.project_root)
                     self.results.warnings.append(
                         f"Potentially outdated pipeline reference in {rel_file_path}:{line_no}: "
-                        f"'{ref}' found in: '{line.strip()}' (pipeline has 24 steps: 0-23)"
+                        f"'{ref}' found in: '{line.strip()}' (pipeline has 25 steps: 0-24)"
                     )
     
     def validate_cross_references(self, file_path: Path) -> None:

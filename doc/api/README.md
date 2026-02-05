@@ -122,7 +122,7 @@ python src/generate_api_index.py
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - Core Parsing API used throughout
@@ -132,7 +132,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Framework Integration APIs for code generation
    - Execution interfaces for running simulations
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - MCP API for tool integration
    - Performance API for monitoring
    - Visualization API for output generation

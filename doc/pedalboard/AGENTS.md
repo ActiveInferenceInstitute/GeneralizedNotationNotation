@@ -45,7 +45,7 @@ This module is organized as follows:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
 - **Step 3 (GNN)**: Pedalboard audio generation from parsed GNN models
@@ -55,7 +55,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
 - **Step 15 (Audio)**: Real-time sonification using Pedalboard
 - **Step 16 (Analysis)**: Audio-based model analysis
 
-### Integration (Steps 17-23)
+### Integration (Steps 17-24)
 - **Step 20 (Website)**: Audio visualization integration
 - **Step 23 (Report)**: Audio analysis results in reports
 

@@ -79,7 +79,7 @@ DisCoPy integration enables:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - DisCoPy diagrams generated from GNN models
@@ -89,7 +89,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - DisCoPy execution for categorical modeling
    - String diagram computation
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - DisCoPy results integrated into comprehensive outputs
    - Categorical analysis and visualization
 

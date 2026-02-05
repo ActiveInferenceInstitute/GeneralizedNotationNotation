@@ -131,7 +131,7 @@ success = process_gui(
 **Returns**: `True` if navigation page generated successfully, `False` otherwise
 
 **Features**:
-- Scans all 24 pipeline output directories
+- Scans all 25 pipeline output directories
 - Discovers files by type (JSON, MD, PNG, SVG, HTML, etc.)
 - Generates organized HTML navigation with file metadata
 - Provides links to all pipeline artifacts
@@ -280,7 +280,7 @@ for gui_name, info in guis.items():
 
 #### Navigation and Discovery
 - `navigation.html` - **Comprehensive HTML navigation page** that provides:
-  - Links to all pipeline output files across all 24 steps
+  - Links to all pipeline output files across all 25 steps
   - Organized by pipeline step with file counts and metadata
   - File type filtering and search capabilities
   - Direct links to visualizations, reports, execution results, and all artifacts
@@ -303,7 +303,7 @@ output/22_gui_output/
 The `navigation.html` file provides comprehensive navigation to all pipeline outputs:
 
 1. **Pipeline Overview**: Summary statistics showing total pipeline steps and files
-2. **Output Sections**: Organized by all 24 pipeline steps:
+2. **Output Sections**: Organized by all 25 pipeline steps:
    - Template (0_template_output)
    - Setup (1_setup_output)
    - Tests (2_tests_output)
@@ -328,6 +328,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
    - MCP (21_mcp_output)
    - GUI (22_gui_output)
    - Report (23_report_output)
+   - Intelligent Analysis (24_intelligent_analysis_output)
 
 3. **File Information**: For each file, displays:
    - File name with clickable link
@@ -452,7 +453,7 @@ def construct_model_gui(model_type="pymdp", interactive=True):
 ### HTML Navigation Generation
 - **Added**: `generate_html_navigation()` function to create comprehensive navigation page
 - **Features**:
-  - Scans all 24 pipeline output directories automatically
+  - Scans all 25 pipeline output directories automatically
   - Discovers and catalogs all output files by type
   - Generates organized HTML with file metadata (type, size, path)
   - Provides direct links to all pipeline artifacts

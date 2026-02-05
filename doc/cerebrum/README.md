@@ -74,7 +74,7 @@ CEREBRUM provides:
 
 ## Integration with Pipeline
 
-This documentation is integrated with the 24-step GNN processing pipeline:
+This documentation is integrated with the 25-step GNN processing pipeline:
 
 1. **Core Processing** (Steps 0-9): GNN parsing, validation, export
    - CEREBRUM case transformations applied to GNN models
@@ -84,7 +84,7 @@ This documentation is integrated with the 24-step GNN processing pipeline:
    - Case-specific model execution
    - Functional role-based processing
 
-3. **Integration** (Steps 17-23): System coordination and output
+3. **Integration** (Steps 17-24): System coordination and output
    - CEREBRUM results integrated into comprehensive outputs
    - Case-based model analysis
 

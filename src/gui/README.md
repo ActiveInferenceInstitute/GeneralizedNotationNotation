@@ -64,7 +64,7 @@ python src/22_gui.py --gui-mode "gui_1,gui_2,gui_3" --target-dir input/gnn_files
 ### Navigation.html
 The `navigation.html` file provides a centralized navigation interface for all pipeline outputs:
 - **Pipeline Overview**: Summary statistics (total steps, total files)
-- **Output Sections**: Organized by all 24 pipeline steps with file listings
+- **Output Sections**: Organized by all 25 pipeline steps with file listings
 - **File Metadata**: File type, size, and direct links to all artifacts
 - **Integration**: Links to comprehensive reports and visualizations
 - **Access**: Open `output/22_gui_output/navigation.html` in a web browser

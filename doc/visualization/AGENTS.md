@@ -33,7 +33,7 @@ Graph rendering, matrix visualization, and diagram generation for Active Inferen
 
 ## Integration with Pipeline
 
-This documentation covers Step 9 (Visualization) of the 24-step GNN processing pipeline.
+This documentation covers Step 9 (Visualization) of the 25-step GNN processing pipeline.
 
 See [src/AGENTS.md](../../src/AGENTS.md) for complete pipeline documentation.
 
