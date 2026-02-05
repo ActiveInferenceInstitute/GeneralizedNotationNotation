@@ -328,7 +328,7 @@ class MatrixVisualizer:
         try:
             arr = np.array(matrix, dtype=float)
             # Save to project output/test_artifacts to avoid polluting repo root
-            base_dir = Path.cwd() / "output" / "25_test_artifacts_output"
+            base_dir = Path.cwd() / "output" / "2_tests_output"
             base_dir.mkdir(parents=True, exist_ok=True)
             tmp_path = base_dir / "matrix_heatmap.png"
             return self.generate_matrix_heatmap("matrix", arr, tmp_path)
@@ -684,7 +684,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         # Convenience: if called with raw matrix-like and no output_path
         if isinstance(parameters, list) and parameters and isinstance(parameters[0], list) and output_path is None:
             # Default to project output/test_artifacts directory
-            base_dir = Path.cwd() / "output" / "25_test_artifacts_output"
+            base_dir = Path.cwd() / "output" / "2_tests_output"
             base_dir.mkdir(parents=True, exist_ok=True)
             output_path = base_dir / "matrix_analysis.png"
             try:

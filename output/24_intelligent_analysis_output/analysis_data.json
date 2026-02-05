@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-01-24T14:27:17.240780",
+  "timestamp": "2026-02-05T06:15:19.596729",
   "analysis": {
     "overall_status": "SUCCESS",
-    "total_duration": 63.513971,
+    "total_duration": 73.678952,
     "step_count": 7,
     "failures": [],
     "warnings": [],
     "performance_metrics": {
-      "peak_memory_mb": 73.390625,
+      "peak_memory_mb": 71.53125,
       "successful_steps": 7,
       "failed_steps": 0,
       "warning_count": 0
@@ -20,20 +20,20 @@
       "script_name": "3_gnn.py",
       "description": "GNN file processing",
       "status": "SUCCESS",
-      "duration_seconds": 0.3344240188598633,
-      "memory_mb": 73.34375,
+      "duration_seconds": 0.3866419792175293,
+      "memory_mb": 71.03125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.33s"
+      "summary": "Completed successfully in 0.39s"
     },
     {
       "step_number": 2,
       "script_name": "5_type_checker.py",
       "description": "Type checking",
       "status": "SUCCESS",
-      "duration_seconds": 0.32652807235717773,
-      "memory_mb": 73.375,
+      "duration_seconds": 0.3344137668609619,
+      "memory_mb": 71.234375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
@@ -44,62 +44,62 @@
       "script_name": "7_export.py",
       "description": "Multi-format export",
       "status": "SUCCESS",
-      "duration_seconds": 0.3354530334472656,
-      "memory_mb": 73.390625,
+      "duration_seconds": 0.28585100173950195,
+      "memory_mb": 71.390625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.34s"
+      "summary": "Completed successfully in 0.29s"
     },
     {
       "step_number": 4,
       "script_name": "8_visualization.py",
       "description": "Visualization",
       "status": "SUCCESS",
-      "duration_seconds": 4.229520082473755,
-      "memory_mb": 73.390625,
+      "duration_seconds": 4.185535192489624,
+      "memory_mb": 71.46875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 4.23s"
+      "summary": "Completed successfully in 4.19s"
     },
     {
       "step_number": 5,
       "script_name": "11_render.py",
       "description": "Code rendering",
       "status": "SUCCESS",
-      "duration_seconds": 0.3286721706390381,
-      "memory_mb": 41.03125,
+      "duration_seconds": 0.3472421169281006,
+      "memory_mb": 71.515625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.33s"
+      "summary": "Completed successfully in 0.35s"
     },
     {
       "step_number": 6,
       "script_name": "12_execute.py",
       "description": "Execution",
       "status": "SUCCESS",
-      "duration_seconds": 57.08458209037781,
-      "memory_mb": 41.0625,
+      "duration_seconds": 66.84886002540588,
+      "memory_mb": 71.53125,
       "exit_code": 0,
       "flags": [
-        "Significantly above average: 57.1s (6.3x avg)"
+        "Slow: 66.8s (>60.0s threshold)"
       ],
       "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 57.08s"
+      "summary": "Completed with 1 flag(s) in 66.85s"
     },
     {
       "step_number": 7,
       "script_name": "15_audio.py",
       "description": "Audio processing",
       "status": "SUCCESS",
-      "duration_seconds": 0.873309850692749,
-      "memory_mb": 27.0625,
+      "duration_seconds": 1.2890470027923584,
+      "memory_mb": 30.296875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.87s"
+      "summary": "Completed successfully in 1.29s"
     }
   ],
   "flags_summary": {
@@ -110,17 +110,17 @@
   "bottlenecks": [
     {
       "step": "12_execute.py",
-      "duration_seconds": 57.08458209037781,
-      "threshold_exceeded": false,
-      "above_average_ratio": 6.291551140856695,
-      "memory_mb": 41.0625
+      "duration_seconds": 66.84886002540588,
+      "threshold_exceeded": true,
+      "above_average_ratio": 6.3512122652765886,
+      "memory_mb": 71.53125
     }
   ],
   "failures": [],
   "recommendations": [
     "\ud83d\udfe1 **WARNINGS**: 1 step(s) have yellow flags that should be reviewed.",
-    "   \u21b3 **12_execute.py**: Significantly above average: 57.1s (6.3x avg)",
-    "\u26a1 **Performance**: Slowest step is **12_execute.py** (57.1s). Consider parallelization or caching.",
+    "   \u21b3 **12_execute.py**: Slow: 66.8s (>60.0s threshold)",
+    "\u26a1 **Performance**: Slowest step is **12_execute.py** (66.8s). Consider parallelization or caching.",
     "\u2705 **Health**: Pipeline is healthy (100/100). All systems nominal."
   ],
   "llm_analysis_available": true

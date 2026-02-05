@@ -92,7 +92,7 @@ except Exception:
         "safe_mode": True,
         "timeout_seconds": 300,
         "max_test_files": 10,
-        "temp_output_dir": PROJECT_ROOT / "output" / "25_test_artifacts_output",
+        "temp_output_dir": PROJECT_ROOT / "output" / "2_tests_output",
     }
     TEST_CATEGORIES = {}
     TEST_STAGES = {}

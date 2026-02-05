@@ -19,12 +19,19 @@ import json
 import importlib
 import subprocess
 import platform
-import psutil
 import time
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 from datetime import datetime
 import logging
+
+# Optional psutil import with fallback
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    psutil = None  # type: ignore
+    PSUTIL_AVAILABLE = False
 
 # Enhanced imports with fallbacks
 try:
@@ -122,6 +129,19 @@ class EnhancedHealthChecker:
     def check_system_resources(self) -> Dict[str, Any]:
         """Check system resource availability."""
         self.logger.info("📊 Checking system resources...")
+
+        # Check if psutil is available
+        if not PSUTIL_AVAILABLE:
+            self.logger.warning("⚠️ psutil not available - limited system resource checks")
+            return {
+                "status": "limited",
+                "error": "psutil not installed - install with: pip install psutil",
+                "platform": {
+                    "system": platform.system(),
+                    "release": platform.release(),
+                    "python_version": sys.version
+                }
+            }
 
         try:
             # CPU information

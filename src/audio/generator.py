@@ -5,9 +5,16 @@ Audio generator module for GNN Processing Pipeline.
 This module provides audio generation functionality.
 """
 
-import numpy as np
 from typing import Dict, Any, List
 from pathlib import Path
+
+# Optional numpy import with fallback
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None  # type: ignore
+    NUMPY_AVAILABLE = False
 
 def generate_tonal_representation(variables: List[Dict], connections: List[Dict]) -> np.ndarray:
     """Generate tonal audio representation of the model."""

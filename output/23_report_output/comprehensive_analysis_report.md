@@ -1,14 +1,14 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-01-24T14:27:16.201194  
+**Generated:** 2026-02-05T06:15:19.189905  
 **Pipeline Output Directory:** output  
 **Health Score:** 95.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 233
-- **Total Size:** 20.85 MB
+- **Total Files Processed:** 235
+- **Total Size:** 20.93 MB
 - **Success Rate:** 100.0%
 
 ## ⚡ Performance Metrics
@@ -21,7 +21,7 @@
 
 - **Files:** 3
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-01-24T14:22:11.654350
+- **Last Modified:** 2026-02-05T06:10:49.045153
 - **Status:** success
 
 - **File Types:** .json: 2, .md: 1
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-01-24T14:22:15.493050
+- **Last Modified:** 2026-02-05T06:11:01.790721
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -40,21 +40,21 @@
 
 ### ✅ 2 Tests Output
 
-- **Files:** 2
-- **Size:** 0.28 MB
-- **Last Modified:** 2026-01-24T14:24:16.736338
+- **Files:** 4
+- **Size:** 0.35 MB
+- **Last Modified:** 2026-02-05T06:13:47.972229
 - **Status:** success
 
-- **File Types:** .json: 1, .txt: 1
+- **File Types:** .csv: 1, .png: 1, .json: 1, .txt: 1
 - **Key Files:**
-  - pytest_comprehensive_output.txt (0.28 MB)
+  - pytest_comprehensive_output.txt (0.27 MB)
 - **Dependencies:** Complete
 
 ### ✅ 3 Gnn Output
 
 - **Files:** 26
 - **Size:** 0.16 MB
-- **Last Modified:** 2026-01-24T14:26:20.352337
+- **Last Modified:** 2026-02-05T06:13:48.394387
 - **Status:** success
 
 - **File Types:** .json: 5, .tla: 1, .max: 1, .proto: 1, .lean: 1, .thy: 1, .als: 1, .pkl: 2, .md: 1, .hs: 1, .ebnf: 1, .bnf: 1, .scala: 1, .py: 1, .yaml: 1, .z: 1, .xsd: 1, .agda: 1, .xml: 1, .v: 1, .asn1: 1
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:24:17.434536
+- **Last Modified:** 2026-02-05T06:13:48.691380
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-01-24T14:26:20.720693
+- **Last Modified:** 2026-02-05T06:13:48.977230
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:24:18.071341
+- **Last Modified:** 2026-02-05T06:13:49.267051
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -99,8 +99,8 @@
 ### ✅ 7 Export Output
 
 - **Files:** 7
-- **Size:** 0.04 MB
-- **Last Modified:** 2026-01-24T14:26:21.059232
+- **Size:** 0.03 MB
+- **Last Modified:** 2026-02-05T06:13:49.559905
 - **Status:** success
 
 - **File Types:** .json: 3, .graphml: 1, .gexf: 1, .xml: 1, .pkl: 1
@@ -114,7 +114,7 @@
 
 - **Files:** 18
 - **Size:** 2.68 MB
-- **Last Modified:** 2026-01-24T14:26:22.271156
+- **Last Modified:** 2026-02-05T06:13:50.666398
 - **Status:** success
 
 - **File Types:** .json: 2, .csv: 4, .png: 12
@@ -128,7 +128,7 @@
 
 - **Files:** 20
 - **Size:** 1.97 MB
-- **Last Modified:** 2026-01-24T14:24:27.772508
+- **Last Modified:** 2026-02-05T06:14:01.368170
 - **Status:** success
 
 - **File Types:** .png: 10, .html: 1, .json: 1, .d2: 4, .svg: 4
@@ -142,7 +142,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-01-24T14:24:28.186656
+- **Last Modified:** 2026-02-05T06:14:01.800620
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -152,7 +152,7 @@
 
 - **Files:** 40
 - **Size:** 3.22 MB
-- **Last Modified:** 2026-01-24T14:26:55.312244
+- **Last Modified:** 2026-02-05T06:14:53.253464
 - **Status:** success
 
 - **File Types:** .md: 6, .json: 9, .jl: 2, .png: 16, .py: 3, .csv: 2, .txt: 2
@@ -166,7 +166,7 @@
 
 - **Files:** 27
 - **Size:** 0.13 MB
-- **Last Modified:** 2026-01-24T14:26:56.021255
+- **Last Modified:** 2026-02-05T06:14:53.609753
 - **Status:** success
 
 - **File Types:** .json: 16, .md: 1, .txt: 5, .log: 5
@@ -178,22 +178,22 @@
 ### ✅ 13 Llm Output
 
 - **Files:** 11
-- **Size:** 0.12 MB
-- **Last Modified:** 2026-01-24T14:26:48.884614
+- **Size:** 0.03 MB
+- **Last Modified:** 2026-02-05T06:14:54.205814
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 10
 - **Key Files:**
   - llm_summary.md (0.0 MB)
   - summarize_content.md (0.0 MB)
-  - explain_model.md (0.01 MB)
+  - explain_model.md (0.0 MB)
 - **Dependencies:** Complete
 
 ### ✅ 14 Ml Integration Output
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:26:50.414603
+- **Last Modified:** 2026-02-05T06:14:55.538302
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -203,7 +203,7 @@
 
 - **Files:** 9
 - **Size:** 4.04 MB
-- **Last Modified:** 2026-01-24T14:26:51.142051
+- **Last Modified:** 2026-02-05T06:14:56.093194
 - **Status:** success
 
 - **File Types:** .wav: 7, .json: 1, .md: 1
@@ -216,8 +216,8 @@
 ### ✅ 16 Analysis Output
 
 - **Files:** 43
-- **Size:** 8.08 MB
-- **Last Modified:** 2026-01-24T14:27:00.119091
+- **Size:** 8.19 MB
+- **Last Modified:** 2026-02-05T06:15:04.171635
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .png: 38
@@ -230,7 +230,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:27:00.701002
+- **Last Modified:** 2026-02-05T06:15:04.648525
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -240,7 +240,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:27:01.029656
+- **Last Modified:** 2026-02-05T06:15:04.947188
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -250,7 +250,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:27:01.361208
+- **Last Modified:** 2026-02-05T06:15:05.233195
 - **Status:** success
 
 - **File Types:** .md: 1, .json: 1
@@ -260,7 +260,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-01-24T14:27:01.694128
+- **Last Modified:** 2026-02-05T06:15:05.514691
 - **Status:** success
 
 - **File Types:** .html: 1, .json: 1
@@ -272,7 +272,7 @@
 
 - **Files:** 3
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-01-24T14:27:12.087592
+- **Last Modified:** 2026-02-05T06:15:15.851223
 - **Status:** success
 
 - **File Types:** .json: 3
@@ -285,7 +285,7 @@
 
 - **Files:** 6
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-01-24T14:27:15.730186
+- **Last Modified:** 2026-02-05T06:15:18.813219
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
@@ -308,8 +308,10 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 63 | 0.37 |
-| .md | 28 | 0.07 |
+| .json | 63 | 0.32 |
+| .md | 28 | 0.03 |
+| .csv | 7 | 0.0 |
+| .png | 77 | 15.84 |
 | .txt | 8 | 0.29 |
 | .tla | 1 | 0.0 |
 | .max | 1 | 0.01 |
@@ -332,8 +334,6 @@
 | .asn1 | 1 | 0.01 |
 | .graphml | 1 | 0.0 |
 | .gexf | 1 | 0.0 |
-| .csv | 6 | 0.0 |
-| .png | 76 | 15.66 |
 | .html | 3 | 0.07 |
 | .d2 | 4 | 0.0 |
 | .svg | 4 | 0.11 |
@@ -385,15 +385,15 @@
 
 **Files:**
 - [rxinfer_results.png](../11_render_output/actinf_pomdp_agent/rxinfer/rxinfer_results.png) (0.04 MB)
-- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
-- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
-- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
-- [Active Inference POMDP Agent_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png) (0.28 MB)
-- [Active Inference POMDP Agent_preferences_prior.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_preferences_prior.png) (0.14 MB)
-- [Active Inference POMDP Agent_dashboard.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-25-06/visualizations/Active Inference POMDP Agent_dashboard.png) (0.4 MB)
-- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
-- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
-- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-01-24_14-23-10/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
+- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
+- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
+- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
+- [Active Inference POMDP Agent_belief_trajectory_3d.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_belief_trajectory_3d.png) (0.28 MB)
+- [Active Inference POMDP Agent_preferences_prior.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_preferences_prior.png) (0.14 MB)
+- [Active Inference POMDP Agent_dashboard.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-14-40/visualizations/Active Inference POMDP Agent_dashboard.png) (0.4 MB)
+- [Active Inference POMDP Agent_belief_evolution.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-12-29/visualizations/Active Inference POMDP Agent_belief_evolution.png) (0.3 MB)
+- [Active Inference POMDP Agent_action_analysis.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-12-29/visualizations/Active Inference POMDP Agent_action_analysis.png) (0.21 MB)
+- [Active Inference POMDP Agent_A_matrix.png](../11_render_output/actinf_pomdp_agent/activeinference_jl/activeinference_outputs_2026-02-05_06-12-29/visualizations/Active Inference POMDP Agent_A_matrix.png) (0.14 MB)
 - ... and 6 more
 
 ### 20 Website

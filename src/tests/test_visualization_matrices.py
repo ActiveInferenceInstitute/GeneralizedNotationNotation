@@ -162,7 +162,7 @@ class TestMatrixHeatmapGeneration:
         
         # Change working directory to tmp_path for output
         monkeypatch.chdir(tmp_path)
-        (tmp_path / "output" / "25_test_artifacts_output").mkdir(parents=True, exist_ok=True)
+        (tmp_path / "output" / "2_tests_output").mkdir(parents=True, exist_ok=True)
         
         visualizer = MatrixVisualizer()
         

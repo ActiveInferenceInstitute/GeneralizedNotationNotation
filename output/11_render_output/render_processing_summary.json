@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-01-27T08:47:31.077107",
+  "timestamp": "2026-02-05T06:14:02.149575",
   "processing_type": "POMDP-aware rendering",
   "total_files": 1,
   "successful_files": 1,
@@ -10,20 +10,20 @@
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
-    "verbose": true,
+    "verbose": false,
     "pomdp_processing_available": true
   },
   "file_results": {
-    "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/input/gnn_files/actinf_pomdp_agent.md": {
+    "input/gnn_files/actinf_pomdp_agent.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py",
           "output_files": [
-            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py"
+            "output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py"
           ],
-          "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen",
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/pymdp_gen",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 412,
@@ -34,11 +34,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
           "output_files": [
-            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl"
+            "output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl"
           ],
-          "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/rxinfer",
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -55,7 +55,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl"
           ],
-          "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl",
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 416,
@@ -68,9 +68,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py"
+            "output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py"
           ],
-          "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/jax",
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 269,
@@ -81,11 +81,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
           "output_files": [
-            "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py"
+            "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py"
           ],
-          "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/discopy",
+          "output_directory": "output/11_render_output/actinf_pomdp_agent/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 218,
@@ -95,9 +95,9 @@
           }
         }
       },
-      "summary_file": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent/processing_summary.json",
-      "output_directory": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent",
-      "base_output_dir": "/Users/4d/Documents/GitHub/GeneralizedNotationNotation/output/11_render_output/actinf_pomdp_agent"
+      "summary_file": "output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+      "output_directory": "output/11_render_output/actinf_pomdp_agent",
+      "base_output_dir": "output/11_render_output/actinf_pomdp_agent"
     }
   }
 }

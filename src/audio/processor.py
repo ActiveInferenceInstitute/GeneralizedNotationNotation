@@ -10,9 +10,16 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
 import json
-import numpy as np
 from datetime import datetime
 import re
+
+# Optional numpy import with fallback
+try:
+    import numpy as np
+    NUMPY_AVAILABLE = True
+except ImportError:
+    np = None  # type: ignore
+    NUMPY_AVAILABLE = False
 
 try:
     from utils.pipeline_template import (

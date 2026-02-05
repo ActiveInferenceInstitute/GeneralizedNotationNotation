@@ -7,13 +7,6 @@
     "version": "1.0.0"
   },
   {
-    "name": "get_analysis_capabilities",
-    "description": "Get available intelligent analysis capabilities, tools, and features.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
     "name": "process_intelligent_analysis",
     "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
     "module": "",
