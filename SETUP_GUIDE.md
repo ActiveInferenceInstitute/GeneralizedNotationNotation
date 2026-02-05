@@ -13,7 +13,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/GeneralizedNotationNotation.git
+git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
 cd GeneralizedNotationNotation
 
 # Run basic setup
@@ -229,7 +229,7 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 - **ML (PyTorch)**: 2-4 minutes
 
 ### Pipeline Execution
-- **Full 24-step pipeline**: ~40 seconds
+- **Full 25-step pipeline**: ~40 seconds
 - **GNN parsing**: ~130ms
 - **Code rendering**: ~150ms
 - **Execution (with PyMDP/JAX)**: ~16 seconds

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-GNN (Generalized Notation Notation) is a text-based language for standardizing Active Inference generative models. The codebase implements a 24-step processing pipeline that transforms GNN specifications into executable simulations, visualizations, and analysis reports.
+GNN (Generalized Notation Notation) is a text-based language for standardizing Active Inference generative models. The codebase implements a 25-step processing pipeline (steps 0-24) that transforms GNN specifications into executable simulations, visualizations, and analysis reports.
 
 ## Essential Commands
 
@@ -12,7 +12,7 @@ GNN (Generalized Notation Notation) is a text-based language for standardizing A
 # Run full pipeline
 python src/main.py --target-dir input/gnn_files --verbose
 
-# Run specific steps only (steps are 0-23)
+# Run specific steps only (steps are 0-24)
 python src/main.py --only-steps "3,5,11,12" --verbose
 
 # Skip specific steps
@@ -45,16 +45,16 @@ uv run pytest
 
 ### Thin Orchestrator Pattern
 
-All 24 pipeline steps follow a consistent pattern:
+All 25 pipeline steps follow a consistent pattern:
 - **Numbered scripts** (`src/N_module.py`): Thin orchestrators (<150 lines) that handle CLI args, logging, and delegate to modules
 - **Module directories** (`src/module/`): Contain all domain logic
   - `__init__.py`: Public API
   - `processor.py`: Core logic
   - `mcp.py`: MCP tool registration (if applicable)
 
-### 24-Step Pipeline (0-23)
+### 25-Step Pipeline (0-24)
 
-| Steps 0-9 (Core) | Steps 10-16 (Simulation) | Steps 17-23 (Output) |
+| Steps 0-9 (Core) | Steps 10-16 (Simulation) | Steps 17-24 (Output) |
 |------------------|--------------------------|----------------------|
 | 0: Template init | 10: Ontology | 17: Integration |
 | 1: Setup | 11: Render (code gen) | 18: Security |
@@ -63,7 +63,7 @@ All 24 pipeline steps follow a consistent pattern:
 | 4: Model registry | 14: ML integration | 21: MCP |
 | 5: Type checker | 15: Audio | 22: GUI |
 | 6: Validation | 16: Analysis | 23: Report |
-| 7: Export | | |
+| 7: Export | | 24: Intelligent Analysis |
 | 8: Visualization | | |
 | 9: Advanced viz | | |
 
@@ -90,13 +90,13 @@ python src/12_execute.py --frameworks "pymdp,jax" --verbose
 | Path | Purpose |
 |------|---------|
 | `src/main.py` | Main pipeline orchestrator |
-| `src/N_*.py` | Pipeline step scripts (0-23) |
+| `src/N_*.py` | Pipeline step scripts (0-24) |
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
 | `src/tests/` | Test suite (~90 files) |
 | `input/gnn_files/` | Sample GNN model files |
-| `output/` | Generated outputs (24 step-specific folders) |
+| `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/gnn_syntax.md` | Complete GNN syntax specification |
 
 ## GNN File Format

@@ -25,7 +25,7 @@ mindmap
       Markdown files
       Schemas & grammars
     Processing
-      24-step pipeline
+      25-step pipeline
       Thin orchestrators
       Modular implementations
     Outputs
@@ -41,11 +41,11 @@ mindmap
       LLMs (analysis)
 ```
 
-## Pipeline Overview (0–23)
+## Pipeline Overview (0–24)
 
 ```mermaid
 flowchart LR
-  subgraph Pipeline (0–23)
+  subgraph Pipeline (0–24)
     S0[0 Template] --> S1[1 Setup]
     S1 --> S2[2 Tests]
     S2 --> S3[3 GNN]
@@ -69,6 +69,7 @@ flowchart LR
     S20 --> S21[21 MCP]
     S21 --> S22[22 GUI]
     S22 --> S23[23 Report]
+    S23 --> S24[24 Intelligent Analysis]
   end
 ```
 
@@ -132,6 +133,7 @@ flowchart TD
   O20 --> O21[output/21_mcp_output/]
   O21 --> O22[output/22_gui_output/]
   O22 --> O23[output/23_report_output/]
+  O23 --> O24[output/24_intelligent_analysis_output/]
 ```
 
 ## Module Interaction Map
@@ -157,6 +159,7 @@ graph LR
   WEB --> MCP[mcp/]
   MCP --> GUI[gui/]
   GUI --> REP[report/]
+  REP --> IA[intelligent_analysis/]
 ```
 
 ## Error Handling and Continuation
@@ -192,11 +195,11 @@ flowchart LR
 
 ## References
 
-- `.cursorrules` — canonical pipeline description (0–23)
+- `.cursorrules` — canonical pipeline description (0–24)
 - `src/main.py` — orchestrator implementation
 - `doc/pipeline/README.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
-- `doc/pipeline/steps_index.json` — machine-readable step index (0–23)
+- `doc/pipeline/steps_index.json` — machine-readable step index (0–24)
 - `doc/api/api_index.json` — machine-generated API index
 
 ## Machine-Readable Step Index
@@ -227,7 +230,8 @@ flowchart LR
     {"n": 20, "script": "20_website.py",        "module": "website",           "output": "20_website_output/"},
     {"n": 21, "script": "21_mcp.py",            "module": "mcp",               "output": "21_mcp_output/"},
     {"n": 22, "script": "22_gui.py",            "module": "gui",               "output": "22_gui_output/"},
-    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "23_report_output/"}
+    {"n": 23, "script": "23_report.py",         "module": "report",            "output": "23_report_output/"},
+    {"n": 24, "script": "24_intelligent_analysis.py", "module": "intelligent_analysis", "output": "24_intelligent_analysis_output/"}
   ]
 }
 ```

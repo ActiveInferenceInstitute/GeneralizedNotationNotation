@@ -92,7 +92,7 @@ GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
 ├── 📁 src/                    # 25-step pipeline + 29 agent modules
 │   ├── main.py               # 🎯 Main orchestrator - run this!
-│   ├── 0_template.py → 23_report.py  # Numbered pipeline scripts
+│   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
 ├── 📁 doc/                    # 580+ documentation files
@@ -101,7 +101,7 @@ GeneralizedNotationNotation/
 │   └── cognitive_phenomena/  # Example cognitive models
 ├── 📁 input/                  # Input GNN files and configuration
 │   └── gnn_files/            # Sample GNN model files
-├── 📁 output/                 # Generated outputs (24 step-specific folders)
+├── 📁 output/                 # Generated outputs (25 step-specific folders)
 └── 📄 pyproject.toml, pytest.ini  # Configuration files
 ```
 
@@ -109,7 +109,7 @@ GeneralizedNotationNotation/
 
 ## 🧩 Modules & Agents
 
-The GNN pipeline is composed of **24 specialized modules**, each acting as an agent with specific responsibilities. This "Thin Orchestrator" architecture ensures modularity and testability.
+The GNN pipeline is composed of **25 specialized modules**, each acting as an agent with specific responsibilities. This "Thin Orchestrator" architecture ensures modularity and testability.
 
 | Step | Agent / Module | Description | Links |
 | :--- | :--- | :--- | :--- |
@@ -276,7 +276,7 @@ o=Observation
 graph TB
     subgraph "🏗️ GNN Project Architecture"
         subgraph "📁 Source Code (src/)"
-            A[⚙️ Pipeline Scripts<br/>0_template.py → 23_report.py]
+            A[⚙️ Pipeline Scripts<br/>0_template.py → 24_intelligent_analysis.py]
             B[🧠 Core Modules<br/>gnn/, render/, llm/]
             C[🔧 Utilities<br/>utils/, pipeline/]
             D[🧪 Testing<br/>tests/]
@@ -470,7 +470,7 @@ doc/
 
 ## ⚙️ Processing Pipeline
 
-The GNN processing pipeline consists of **24 comprehensive steps (0-23)**, each handling a specific aspect of model processing from parsing to final report generation. The pipeline follows a **thin orchestrator pattern** where numbered scripts orchestrate execution while delegating core functionality to modular components.
+The GNN processing pipeline consists of **25 comprehensive steps (0-24)**, each handling a specific aspect of model processing from parsing to final report generation. The pipeline follows a **thin orchestrator pattern** where numbered scripts orchestrate execution while delegating core functionality to modular components.
 
 ```mermaid
 flowchart TD
@@ -498,11 +498,12 @@ flowchart TD
     V --> W["2️⃣1️⃣ MCP<br/>src/mcp/"]
     W --> X["2️⃣2️⃣ GUI<br/>src/gui/"]
     X --> Y["2️⃣3️⃣ Report<br/>src/report/"]
-    Y --> Z["✅ Complete"]
+    Y --> Y2["2️⃣4️⃣ Intelligent Analysis<br/>src/intelligent_analysis/"]
+    Y2 --> Z["✅ Complete"]
 
     style A fill:#e1f5fe
     style G fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    style Y fill:#e8f5e8,stroke:#4caf50
+    style Y2 fill:#e8f5e8,stroke:#4caf50
 ```
 
 ### 🎯 GNN Processing Workflow

@@ -133,7 +133,7 @@ def process_module(
 
 ```mermaid
 flowchart TD
-    Main[src/main.py] -->|Orchestrates| Steps[24 Pipeline Steps]
+    Main[src/main.py] -->|Orchestrates| Steps[25 Pipeline Steps]
     
     Steps --> Step0[Step 0: Template]
     Step0 --> Step1[Step 1: Setup]
@@ -159,8 +159,9 @@ flowchart TD
     Step20 --> Step21[Step 21: MCP]
     Step21 --> Step22[Step 22: GUI]
     Step22 --> Step23[Step 23: Report]
-    
-    Step23 --> Output[output/]
+    Step23 --> Step24[Step 24: Intelligent Analysis]
+
+    Step24 --> Output[output/]
     Output --> Summary[pipeline_execution_summary.json]
 ```
 
@@ -249,6 +250,7 @@ graph TD
 | mcp | ✅ Complete | ✅ Ready | 89% | 5 |
 | gui | ✅ Complete | ✅ Ready | 74% | 4 |
 | report | ✅ Complete | ✅ Ready | 87% | 3 |
+| intelligent_analysis | ✅ Complete | ✅ Ready | 80% | 2 |
 | utils | ✅ Complete | ✅ Ready | 93% | N/A |
 | pipeline | ✅ Complete | ✅ Ready | 95% | N/A |
 

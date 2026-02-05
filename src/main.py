@@ -2,7 +2,7 @@
 """
 GNN Processing Pipeline
 
-This script orchestrates the 24-step GNN processing pipeline (steps 0-23).
+This script orchestrates the 25-step GNN processing pipeline (steps 0-24).
 The pipeline transforms GNN specifications into executable simulations, visualizations,
 and advanced representations including audio sonification.
 
@@ -31,6 +31,7 @@ Pipeline Steps:
 21. Model Context Protocol processing (21_mcp.py)
 22. GUI (Interactive GNN Constructor) (22_gui.py)
 23. Report generation (23_report.py)
+24. Intelligent analysis (24_intelligent_analysis.py)
 
 Usage:
     python src/main.py [options]

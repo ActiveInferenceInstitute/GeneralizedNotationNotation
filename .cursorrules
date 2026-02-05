@@ -3,7 +3,7 @@
 ## Project Overview and Context
 GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
-This system represents a complete scientific computing framework with 24 integrated pipeline steps, 28 specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
+This system represents a complete scientific computing framework with 25 integrated pipeline steps (0-24), 29 specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
 
 ## Overall AI Behavior & Persona
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
@@ -19,7 +19,7 @@ This system represents a complete scientific computing framework with 24 integra
 ## Critical Success Metrics
 - **Code Quality**: All Python files must have <2% syntax errors, >90% test coverage, comprehensive type hints
 - **Documentation**: Every module must have complete AGENTS.md documentation with real examples and usage patterns
-- **Architecture Compliance**: 100% adherence to thin orchestrator pattern across all 24 pipeline steps
+- **Architecture Compliance**: 100% adherence to thin orchestrator pattern across all 25 pipeline steps
 - **Performance**: Pipeline execution time <30 minutes for standard workloads, memory usage <2GB peak
 - **Reliability**: <1% critical failure rate, >99% successful step completion rate
 

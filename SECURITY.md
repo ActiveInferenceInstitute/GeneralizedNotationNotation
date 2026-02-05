@@ -75,13 +75,13 @@ When reporting a vulnerability, please provide:
 - Prompt injection attacks through GNN files  
 - Unsafe code generation from LLM outputs
 
-**MCP Security** (Pipeline Step 22):
+**MCP Security** (Pipeline Step 21):
 
 - Model Context Protocol authentication issues
 - Unsafe resource access patterns
 - Data leakage through model context
 
-**Pipeline Security** (All 23 Steps):
+**Pipeline Security** (All 25 Steps):
 
 - Code injection through GNN file parsing
 - Unsafe file operations in output generation

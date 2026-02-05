@@ -39,7 +39,7 @@ The GNN system implements a comprehensive 25-step pipeline that transforms GNN m
 ```mermaid
 graph TB
   A["User/Researcher"] --> B["src/main.py<br/>Pipeline Orchestrator"]
-  B --> C["24 Numbered Scripts<br/>(0_template.py → 23_report.py)"]
+  B --> C["25 Numbered Scripts<br/>(0_template.py → 24_intelligent_analysis.py)"]
   C --> D["28 Agent Modules<br/>(src/template/ → src/report/)"]
   D --> E["Structured Outputs<br/>(output/step_N_output/)"]
 
@@ -180,7 +180,7 @@ flowchart LR
   CFG["config.yaml"] --> Merge
   ENV["Env Vars"] --> Merge
   Merge["Configuration Resolver"] --> Eff["Effective Config"]
-  Eff --> Steps["Steps 0..23"]
+  Eff --> Steps["Steps 0..24"]
 ```
 
 ## Output Management
@@ -313,16 +313,10 @@ Each agent implements comprehensive performance monitoring:
 ---
 
 **Architecture Version**: 2.2.1
-**Last Updated**: 2026-01-22
+**Last Updated**: 2026-01-23
 **Status**: ✅ Production Ready
 **Compliance**: 100% Thin Orchestrator Pattern
 **Documentation**: 100% AGENTS.md Coverage
 **Latest Validation**: 100% Success (25/25 steps)
 
-## References
-
-- `DOCS.md` — Conceptual overview and complete pipeline diagrams
-- `doc/pipeline/README.md` — Detailed step-by-step descriptions
-- `.cursorrules` — Canonical rules for scripts and modules
-- `src/main.py` — Orchestrator implementation
 
