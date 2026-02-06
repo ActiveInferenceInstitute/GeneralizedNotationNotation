@@ -29,7 +29,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | Date | CVE ID | Package | Action |
 |------|--------|---------|--------|
 | 2026-01-27 | CVE-2026-24486 | python-multipart | Upgraded 0.0.21 → 0.0.22 |
-| 2026-01-21 | CVE-2026-0994 | protobuf | Documented mitigation (pinned to 6.33.4) |
+| 2026-02-06 | CVE-2026-0994 | protobuf | Upgraded 6.33.4 → 6.33.5 (patched) |
 
 > **ℹ️ Known Accepted Risks**: The following vulnerabilities are documented and accepted:
 >
