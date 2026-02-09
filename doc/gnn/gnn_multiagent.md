@@ -1,26 +1,36 @@
 # GNN Multi-Agent Simulation Specification
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 ## Pipeline Processing for Multi-Agent Systems
 
 Multi-agent GNN models are processed through the standard pipeline with additional considerations:
 
-**Parsing (Step 3)**
+### Parsing (Step 3)
+
 - Multi-agent structure parsing and validation
 - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**
 
-**Rendering (Step 11)**
+### Rendering (Step 11)
+
 - Multi-agent code generation for PyMDP and other frameworks
 - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)**
 
-**Execution (Step 12)**
+### Execution (Step 12)
+
 - Multi-agent simulation execution with inter-agent communication
 - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**
 
-**Analysis (Steps 13, 16)**
+### Analysis (Steps 13, 16)
+
 - Multi-agent behavior analysis and emergent dynamics
 - See: **[src/llm/AGENTS.md](../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../src/analysis/AGENTS.md)**
 
 **Quick Start:**
+
 ```bash
 # Process multi-agent models
 python src/main.py --only-steps "3,11,12,16" --target-dir input/multiagent_models/
@@ -39,18 +49,22 @@ The goal is to enable the modeling of complex systems where multiple decision-ma
 ## 2. Core Concepts
 
 ### 2.1. Agent Definition
+
 An **Agent** in a GNN MAS is an autonomous entity with its own internal states, sensory inputs, action outputs, and decision-making logic.
--   **Homogeneous Agents:** Multiple instances of the same agent type, defined by a single GNN model template.
--   **Heterogeneous Agents:** Different types of agents, potentially defined by distinct GNN models or variations of a base model.
+
+- **Homogeneous Agents:** Multiple instances of the same agent type, defined by a single GNN model template.
+- **Heterogeneous Agents:** Different types of agents, potentially defined by distinct GNN models or variations of a base model.
 
 Each agent typically encapsulates its own GNN components: `StateSpaceBlock`, `ObservationSpaceBlock`, `ActionSpaceBlock`, `TransitionFunctionBlock`, `ObservationFunctionBlock`, `PolicyBlock`, etc.
 
 ### 2.2. Multi-Agent System (MAS)
+
 A **Multi-Agent System** is a collection of interacting agents. The GNN specification for a MAS will define:
--   The types and number of agents.
--   The communication infrastructure.
--   The shared environment, if any.
--   Global parameters or dynamics affecting all agents.
+
+- The types and number of agents.
+- The communication infrastructure.
+- The shared environment, if any.
+- Global parameters or dynamics affecting all agents.
 
 ## 3. GNN File Structure for Multi-Agent Systems
 
@@ -88,16 +102,17 @@ EndAgentsBlock
 ```
 
 **Fields:**
--   `AgentTypes`: A list defining different types of agents.
-    -   `AgentModelID`: A unique identifier for this agent type/model.
-    -   `GNNFile`: Path to an external GNN file defining this agent type.
-    -   `GNNModel`: An inline GNN definition for this agent type. One of `GNNFile` or `GNNModel` must be provided.
-    -   `Count`: Number of instances of this agent type. Defaults to 1.
-    -   `InstanceIDPrefix`: (Optional) If specified, instances will be named `InstanceIDPrefix_1`, `InstanceIDPrefix_2`, etc.
-    -   `InitialStates`: (Optional) A list to provide specific initial states for individual agent instances.
-        -   `InstanceID`: The specific ID of the agent instance.
-        -   `InitialState`: A dictionary mapping state variable names to their initial values.
-    -   `Parameters`: (Optional) A list to provide specific parameters for individual agent instances.
+
+- `AgentTypes`: A list defining different types of agents.
+  - `AgentModelID`: A unique identifier for this agent type/model.
+  - `GNNFile`: Path to an external GNN file defining this agent type.
+  - `GNNModel`: An inline GNN definition for this agent type. One of `GNNFile` or `GNNModel` must be provided.
+  - `Count`: Number of instances of this agent type. Defaults to 1.
+  - `InstanceIDPrefix`: (Optional) If specified, instances will be named `InstanceIDPrefix_1`, `InstanceIDPrefix_2`, etc.
+  - `InitialStates`: (Optional) A list to provide specific initial states for individual agent instances.
+    - `InstanceID`: The specific ID of the agent instance.
+    - `InitialState`: A dictionary mapping state variable names to their initial values.
+  - `Parameters`: (Optional) A list to provide specific parameters for individual agent instances.
 
 ### 3.2. Agent Referencing
 
@@ -150,18 +165,19 @@ EndCommunicationBlock
 ```
 
 **Fields:**
--   `Channels`: A list of communication channels.
-    -   `ChannelID`: A unique identifier for the channel.
-    -   `Type`: The type of communication channel.
-        -   `Broadcast`: One-to-many. Messages sent by any connected agent are received by all other connected agents.
-        -   `PointToPoint`: Direct one-to-one link between two specified agents.
-        -   `SharedMemory`: A common data structure that multiple agents can read from and/or write to.
-        -   `PublishSubscribe`: Agents can publish messages to topics, and other agents can subscribe to topics. (More complex, could be a future extension or a specialization of Broadcast).
-    -   `MessageType`/`Schema`: Defines the structure/type of data transmitted over the channel. Can reference a `SchemaID` defined in `MessageSchemas` or be a basic GNN type.
-    -   `Capacity`: (For buffered channels) Maximum number of messages the channel can hold.
-    -   `SourceAgent`/`TargetAgent`: (For `PointToPoint`) Specifies the sender and receiver `InstanceID`.
-    -   `AccessControl`: (For `SharedMemory`) Defines read/write permissions for agents.
-    -   `Latency`: (Optional) Delay in message transmission, e.g., "0step", "1step", "100ms".
+
+- `Channels`: A list of communication channels.
+  - `ChannelID`: A unique identifier for the channel.
+  - `Type`: The type of communication channel.
+    - `Broadcast`: One-to-many. Messages sent by any connected agent are received by all other connected agents.
+    - `PointToPoint`: Direct one-to-one link between two specified agents.
+    - `SharedMemory`: A common data structure that multiple agents can read from and/or write to.
+    - `PublishSubscribe`: Agents can publish messages to topics, and other agents can subscribe to topics. (More complex, could be a future extension or a specialization of Broadcast).
+  - `MessageType`/`Schema`: Defines the structure/type of data transmitted over the channel. Can reference a `SchemaID` defined in `MessageSchemas` or be a basic GNN type.
+  - `Capacity`: (For buffered channels) Maximum number of messages the channel can hold.
+  - `SourceAgent`/`TargetAgent`: (For `PointToPoint`) Specifies the sender and receiver `InstanceID`.
+  - `AccessControl`: (For `SharedMemory`) Defines read/write permissions for agents.
+  - `Latency`: (Optional) Delay in message transmission, e.g., "0step", "1step", "100ms".
 
 ### 4.2. Connecting Agents to Channels (within `ConnectionsBlock`)
 
@@ -205,32 +221,41 @@ EndConnectionsBlock
 ```
 
 **Conventions:**
--   Channels can be treated as nodes in the connection graph, with implicit `input` and `output` ports (or more specific ports depending on channel type).
--   For `SharedMemory`, paths within the shared memory schema might be used for fine-grained connections.
+
+- Channels can be treated as nodes in the connection graph, with implicit `input` and `output` ports (or more specific ports depending on channel type).
+- For `SharedMemory`, paths within the shared memory schema might be used for fine-grained connections.
 
 ## 5. Simulation Semantics
 
 ### 5.1. Execution Model
+
 The simulation loop for a GNN MAS will need to define the order of operations:
-1.  **Perception Phase:** Agents read from their sensors and incoming communication channels.
-2.  **Cognition/Decision Phase:** Agents update their internal states and decide on actions based on their policies (e.g., `TransitionFunctionBlock`, `PolicyBlock`).
-3.  **Action Phase:** Agents perform actions, which might include sending messages to communication channels or interacting with a shared environment.
-4.  **Communication Propagation:** Messages are propagated through channels according to their type and latency.
-5.  **Environment Update:** (If a shared environment is modeled) The environment state updates based on agent actions and its own dynamics.
+
+1. **Perception Phase:** Agents read from their sensors and incoming communication channels.
+2. **Cognition/Decision Phase:** Agents update their internal states and decide on actions based on their policies (e.g., `TransitionFunctionBlock`, `PolicyBlock`).
+3. **Action Phase:** Agents perform actions, which might include sending messages to communication channels or interacting with a shared environment.
+4. **Communication Propagation:** Messages are propagated through channels according to their type and latency.
+5. **Environment Update:** (If a shared environment is modeled) The environment state updates based on agent actions and its own dynamics.
 
 ### 5.2. Robust Execution (`FallbackAgent`)
+
 The system includes a functional `FallbackAgent` (in `src/execute/pymdp/simple_simulation.py`) that ensures pipeline continuity when the full PyMDP library is unavailable. This is **not a mock**, but a lightweight agent implementation that provides:
+
 - **Uniform Beliefs**: Maintains valid probability distributions over states.
 - **Random Policy Selection**: Selects actions from valid behavioral ranges.
 - **Structural Integrity**: Preserves data flow for downstream visualization and reporting steps.
 
 ### 5.3. Synchronization
--   **Synchronous Execution:** All agents complete a phase before the next phase begins for any agent (default).
--   **Asynchronous Execution:** (Advanced) Agents may operate on different clocks or with event-driven updates. This would require more detailed specification if supported.
+
+- **Synchronous Execution:** All agents complete a phase before the next phase begins for any agent (default).
+- **Asynchronous Execution:** (Advanced) Agents may operate on different clocks or with event-driven updates. This would require more detailed specification if supported.
 
 ### 5.3. Shared Environment
+
 If a shared environment exists, it can be modeled as a special GNN component or a set of global variables that agents can perceive and influence.
--   `EnvironmentBlock`: (Potential New Block) To define the state, dynamics, and agent interaction points of a shared environment.
+
+- `EnvironmentBlock`: (Potential New Block) To define the state, dynamics, and agent interaction points of a shared environment.
+
     ```gnn
     EnvironmentBlock:
       StateSpace:
@@ -337,13 +362,15 @@ ConnectionsBlock:
 EndConnectionsBlock
 
 ```
+
 *(Note: The example policy is highly simplified for brevity and would typically involve more structured `TransitionFunctionBlock` and `ObservationFunctionBlock`.)*
 
 ## 8. Future Considerations
--   **Dynamic Agent Populations:** Agents being created or destroyed during simulation.
--   **Complex Network Topologies:** Defining arbitrary graph-based communication networks beyond simple channel types.
--   **Resource Management:** Agents competing for or sharing limited resources.
--   **Standardized Agent API:** For easier integration of pre-built agent models.
--   **Advanced Asynchronous Communication Models.**
+
+- **Dynamic Agent Populations:** Agents being created or destroyed during simulation.
+- **Complex Network Topologies:** Defining arbitrary graph-based communication networks beyond simple channel types.
+- **Resource Management:** Agents competing for or sharing limited resources.
+- **Standardized Agent API:** For easier integration of pre-built agent models.
+- **Advanced Asynchronous Communication Models.**
 
 This specification provides a foundational framework for multi-agent modeling in GNN, intended to be extensible for more complex scenarios.

@@ -15,12 +15,14 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 ### **Voice and Tone**
 
 **Professional and Accessible**:
+
 - Use clear, direct language
 - Explain technical concepts without unnecessary jargon
 - Include context for Active Inference and category theory concepts
 - Maintain scientific rigor while being approachable
 
 **Examples**:
+
 ```markdown
 ✅ Good: "The GNN type checker validates model syntax and estimates computational resources."
 
@@ -34,12 +36,14 @@ This style guide ensures consistency, quality, and accessibility across all GNN 
 ### **Clarity and Concision**
 
 **Structure for Scanning**:
+
 - Use informative headings and subheadings
 - Include tables of contents for long documents
 - Provide quick reference sections
 - Use bullet points and numbered lists effectively
 
 **Information Hierarchy**:
+
 ```markdown
 # Document Title (H1)
 > **Document metadata block**
@@ -57,12 +61,14 @@ Implementation specifics
 ### **Accuracy and Currency**
 
 **Technical Accuracy**:
+
 - Verify all code examples execute correctly
 - Test all links and cross-references
 - Validate mathematical notation and formulas
 - Ensure framework compatibility information is current
 
 **Content Freshness**:
+
 - Include "Last Updated" dates on all documents
 - Review and update dependencies regularly
 - Maintain version compatibility matrices
@@ -73,6 +79,7 @@ Implementation specifics
 ### **Document Metadata Block**
 
 **Standard Metadata Format**:
+
 ```markdown
 > **📋 Document Metadata**  
 > **Type**: [Guide|Reference|Tutorial|API|Examples] | **Audience**: [Beginners|Practitioners|Developers|Researchers] | **Complexity**: [Beginner|Intermediate|Advanced]  
@@ -82,6 +89,7 @@ Implementation specifics
 ### **Headings and Structure**
 
 **Heading Hierarchy**:
+
 ```markdown
 # Document Title (H1) - Only one per document
 ## Major Sections (H2) - Main content divisions
@@ -91,6 +99,7 @@ Implementation specifics
 ```
 
 **Section Formatting**:
+
 ```markdown
 ## 🎯 **Section Title with Emoji**
 
@@ -106,12 +115,14 @@ Detailed content...
 ### **Code and Technical Elements**
 
 **Inline Code**:
+
 - Use backticks for file names: `config.yaml`
 - Use backticks for variable names: `s_f0`, `o_m1`
 - Use backticks for commands: `python main.py`
 - Use backticks for GNN syntax elements: `s_f0[3,1,type=int]`
 
 **Code Blocks**:
+
 ```markdown
 ```python
 # Always include language identifier
@@ -133,6 +144,7 @@ gnn_config:
 cd src
 python main.py --only-steps 1_gnn
 ```
+
 ```
 
 **Mathematical Notation**:
@@ -151,12 +163,14 @@ python main.py --only-steps 1_gnn
 ```
 
 **External Links**:
+
 ```markdown
 [Active Inference Institute](https://activeinference.org)
 [GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
 ```
 
 **Reference Citations**:
+
 ```markdown
 See [FR23] for foundational theory and [SM24] for implementation details.
 
@@ -169,6 +183,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ### **Visual Elements**
 
 **Tables**:
+
 ```markdown
 | Component | Purpose | Status | Documentation |
 |-----------|---------|--------|---------------|
@@ -178,6 +193,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ```
 
 **Callout Boxes**:
+
 ```markdown
 > **⚠️ Important**: Critical information that affects functionality
 
@@ -191,6 +207,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ```
 
 **Status Indicators**:
+
 - ✅ Complete/Working
 - 🔄 In Progress
 - ❌ Not Working/Deprecated
@@ -202,6 +219,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ### **Documentation Review Process**
 
 **Pre-Publication Checklist**:
+
 - [ ] **Accuracy**: All code examples tested and working
 - [ ] **Completeness**: All required sections present
 - [ ] **Consistency**: Follows style guide conventions
@@ -211,6 +229,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 - [ ] **Grammar**: Spell-checked and proofread
 
 **Review Criteria**:
+
 ```markdown
 ## Document Review Scorecard
 
@@ -242,6 +261,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ### **Content Standards by Document Type**
 
 **📖 Guides and Tutorials**:
+
 - Include hands-on examples
 - Provide step-by-step instructions
 - Anticipate common errors
@@ -249,6 +269,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 - Offer multiple difficulty levels
 
 **📚 Reference Documentation**:
+
 - Comprehensive parameter listings
 - Complete API coverage
 - Cross-reference related functions
@@ -256,6 +277,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 - Maintain version compatibility
 
 **🎯 Examples and Case Studies**:
+
 - Real-world applicability
 - Complete working examples
 - Clear setup instructions
@@ -263,6 +285,7 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 - Extension opportunities
 
 **🔧 Technical Specifications**:
+
 - Precise mathematical notation
 - Complete algorithm descriptions
 - Performance characteristics
@@ -272,12 +295,14 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ### **Maintenance Standards**
 
 **Regular Review Schedule**:
+
 - **Monthly**: Check external links and dependencies
 - **Quarterly**: Review accuracy of technical content
 - **Bi-annually**: Major structure and organization review
 - **Annually**: Comprehensive content audit
 
 **Version Control Integration**:
+
 ```bash
 # Documentation change workflow
 git checkout -b docs/update-integration-guide
@@ -292,6 +317,7 @@ git push origin docs/update-integration-guide
 ```
 
 **Deprecation Protocol**:
+
 1. **Warning Phase** (2 releases): Mark as deprecated with replacement guidance
 2. **Migration Phase** (2 releases): Provide migration tools and updated examples
 3. **Removal Phase** (1 release): Remove deprecated content, keep redirects
@@ -299,12 +325,14 @@ git push origin docs/update-integration-guide
 ### **Performance Standards**
 
 **Documentation Performance Metrics**:
+
 - **Load Time**: Documentation site loads < 3 seconds
 - **Search**: Full-text search returns results < 1 second
 - **Navigation**: Max 3 clicks to reach any information
 - **Mobile**: All content accessible on mobile devices
 
 **Content Effectiveness Metrics**:
+
 - **Completion Rate**: Users complete intended workflows
 - **Error Reduction**: Common errors decrease over time
 - **Support Reduction**: Documentation reduces support requests
@@ -315,6 +343,7 @@ git push origin docs/update-integration-guide
 ### **Interactive Documentation**
 
 **Executable Examples**:
+
 ```markdown
 ## Live Example
 
@@ -329,6 +358,7 @@ print(f"Model has {len(model.state_space)} state variables")
 
 Try it yourself:
 [🚀 Run in Colab](link) | [📝 Edit on GitHub](link)
+
 ```
 
 **Progressive Disclosure**:
@@ -355,6 +385,7 @@ Deep technical details for experts...
 ### **Multi-Modal Documentation**
 
 **Visual Learning Support**:
+
 ```markdown
 ## Concept Explanation
 
@@ -369,6 +400,7 @@ graph TD
 **🎥 Video Tutorial**: [Watch explanation](link)  
 **🎮 Interactive Demo**: [Try it yourself](link)  
 **📊 Infographic**: [Visual summary](link)
+
 ```
 
 **Accessibility Features**:
@@ -404,6 +436,7 @@ Brief description of document purpose and scope.
 ```
 
 **Section Template**:
+
 ```markdown
 ## 🎯 **Section Title**
 
@@ -423,6 +456,7 @@ What to do after completing this section...
 ```
 
 **Code Example Template**:
+
 ```markdown
 ### **Example: [Descriptive Title]**
 
@@ -438,11 +472,13 @@ def example_function():
 ```
 
 **Expected Output**:
+
 ```
 Clean output example
 ```
 
 **Explanation**: Why this works and how to adapt it
+
 ```
 
 ---
@@ -457,7 +493,7 @@ Clean output example
 ---
 
 **Style Guide Version**: 2.0  
-**Review Cycle**: Quarterly (Next: September 2025)  
+**Review Cycle**: Quarterly (Next: June 2026)  
 **Status**: Production-Ready
 - 🔗 Cross-Reference
 - 💡 Tip/Suggestion
@@ -482,6 +518,7 @@ Clean output example
 ```
 
 **Framework References**:
+
 - **PyMDP**: Python Active Inference framework
 - **RxInfer.jl**: Julia Bayesian inference framework
 - **DisCoPy**: Category theory and quantum computing framework
@@ -490,11 +527,13 @@ Clean output example
 ### **Examples and Tutorials**
 
 **Progressive Complexity**:
+
 1. **Basic Examples**: Simple, single-concept demonstrations
 2. **Intermediate Examples**: Multiple concepts with clear explanations
 3. **Advanced Examples**: Complex, real-world applications
 
 **Example Structure**:
+
 ```markdown
 ### Example: [Descriptive Title]
 
@@ -518,21 +557,26 @@ ExampleModel
 ```
 
 #### Explanation
+
 Step-by-step breakdown of the model...
 
 #### Running the Example
+
 ```bash
 cd src
 python main.py example.md
 ```
 
 #### Expected Output
+
 Description of what should happen...
 
 #### Next Steps
+
 - Try modifying parameter X to see Y
 - Explore related example Z
 - Read documentation section W
+
 ```
 
 ### **API Documentation**
@@ -564,6 +608,7 @@ def gnn_parse_model(file_path: str, validation: bool = True) -> GNNModel:
 ```
 
 **Class Documentation**:
+
 ```python
 class GNNTypeChecker:
     """Validates GNN model syntax and estimates computational resources.
@@ -589,24 +634,28 @@ class GNNTypeChecker:
 ### **Content Review Checklist**
 
 **Technical Accuracy**:
+
 - [ ] All code examples execute without errors
 - [ ] Mathematical notation is correct and consistent
 - [ ] Framework versions and compatibility are current
 - [ ] Cross-references link to existing content
 
 **Writing Quality**:
+
 - [ ] Clear, concise language appropriate for target audience
 - [ ] Proper grammar, spelling, and punctuation
 - [ ] Consistent terminology throughout document
 - [ ] Logical information flow and structure
 
 **Formatting Standards**:
+
 - [ ] Document metadata block is complete and accurate
 - [ ] Headings follow hierarchical structure
 - [ ] Code blocks have proper syntax highlighting
 - [ ] Tables and lists are properly formatted
 
 **Accessibility**:
+
 - [ ] Alt text for images and diagrams
 - [ ] Descriptive link text (not "click here")
 - [ ] Clear section headings for navigation
@@ -615,6 +664,7 @@ class GNNTypeChecker:
 ### **Automated Quality Checks**
 
 **Link Validation**:
+
 ```bash
 # Check for broken links
 markdown-link-check doc/**/*.md
@@ -624,12 +674,14 @@ python scripts/validate_cross_references.py
 ```
 
 **Spell Check**:
+
 ```bash
 # Spell check with technical dictionary
 aspell check --mode=markdown --add-extra-dicts=./tech-dictionary.txt doc/**/*.md
 ```
 
 **Style Linting**:
+
 ```bash
 # Markdown style checking
 markdownlint doc/**/*.md
@@ -665,12 +717,14 @@ write-good doc/**/*.md
 ### **Maintenance and Updates**
 
 **Regular Updates**:
+
 - Monthly link validation and dead link fixing
 - Quarterly content freshness review
 - Semi-annual style guide compliance audit
 - Annual comprehensive documentation overhaul
 
 **Change Management**:
+
 - Update documentation with every code release
 - Maintain backward compatibility information
 - Archive deprecated content appropriately
@@ -681,12 +735,14 @@ write-good doc/**/*.md
 ### **Writing Tools**
 
 **Recommended Editors**:
+
 - **VS Code**: With Markdown extensions
 - **Typora**: WYSIWYG Markdown editor
 - **GitBook**: For collaborative editing
 - **Notion**: For collaborative planning
 
 **Essential Extensions**:
+
 - Markdown linting and preview
 - Spell check with technical dictionaries
 - Link validation and cross-reference checking
@@ -695,11 +751,13 @@ write-good doc/**/*.md
 ### **Reference Materials**
 
 **Style Guides**:
+
 - [GitHub Markdown Guide](https://guides.github.com/features/mastering-markdown/)
 - [Microsoft Style Guide](https://docs.microsoft.com/en-us/style-guide/)
 - [Google Developer Documentation Style Guide](https://developers.google.com/style)
 
 **Technical References**:
+
 - [Active Inference Ontology](https://github.com/ActiveInferenceInstitute/ActiveInferenceOntology)
 - [GNN Syntax Specification](gnn/gnn_syntax.md)
 - [Framework Documentation](../README.md#framework-integrations)

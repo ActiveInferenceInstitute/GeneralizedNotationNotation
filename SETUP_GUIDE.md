@@ -3,8 +3,10 @@
 ## Quick Start (Cold Start Installation)
 
 ### Prerequisites
+
 - **Python 3.11+** installed
 - **UV** package manager installed
+
   ```bash
   curl -LsSf https://astral.sh/uv/install.sh | sh
   ```
@@ -21,6 +23,7 @@ python3 src/1_setup.py --verbose
 ```
 
 This installs **162 core packages** including:
+
 - Scientific computing: numpy, scipy, pandas, matplotlib
 - Testing: pytest, pytest-cov, pytest-asyncio
 - Development: black, isort, flake8, mypy
@@ -50,23 +53,29 @@ python3 src/pipeline/install_optional_packages.py --groups visualization --verbo
 The GNN pipeline supports the following optional package groups:
 
 ### 1. **jax** - High-Performance Computing
+
 - **Packages**: `jax[cpu]`, `jaxlib`, `optax`, `flax`
 - **Use case**: Fast numerical computing, automatic differentiation, JIT compilation
 - **Size**: ~500MB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups jax
   ```
 
 ### 2. **pymdp** - Active Inference Framework
+
 - **Packages**: `inferactively-pymdp`
 - **Use case**: Active Inference agents, POMDP modeling, free energy principle
 - **Size**: ~50MB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups pymdp
   ```
+
 - **PyMDP Example**:
+
   ```python
   import pymdp
   from pymdp import utils
@@ -86,37 +95,45 @@ The GNN pipeline supports the following optional package groups:
   ```
 
 ### 3. **visualization** - Data Visualization
+
 - **Packages**: `plotly`, `altair`, `seaborn`
 - **Use case**: Interactive plots, statistical graphics, dashboards
 - **Size**: ~100MB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups visualization
   ```
 
 ### 4. **audio** - Audio Processing & Sonification
+
 - **Packages**: `librosa`, `soundfile`, `pedalboard`
 - **Use case**: Audio analysis, sonification of model dynamics
 - **Size**: ~150MB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups audio
   ```
 
 ### 5. **llm** - LLM Integration
+
 - **Packages**: `openai`, `anthropic`
 - **Use case**: AI-enhanced analysis, model interpretation
 - **Size**: ~50MB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups llm
   ```
 
 ### 6. **ml** - Machine Learning
+
 - **Packages**: `torch`, `torchvision`, `transformers`
 - **Use case**: Deep learning, neural networks, model training
 - **Size**: ~2GB
 - **Installation**:
+
   ```bash
   python3 src/pipeline/install_optional_packages.py --groups ml
   ```
@@ -166,16 +183,19 @@ uv pip install plotly altair seaborn
 ## Platform-Specific Notes
 
 ### Linux (Tested on Parrot OS / Debian)
+
 - All packages install successfully using UV
 - No additional system dependencies required for core functionality
 - PyMDP and JAX work perfectly with CPU backend
 
 ### macOS
+
 - All packages install successfully using UV
 - Same behavior as Linux
 - Native M1/M2 support with JAX
 
 ### Windows
+
 - Core packages install successfully
 - Some optional packages may require Windows-specific builds
 - Recommended: Use WSL2 for best compatibility
@@ -201,17 +221,20 @@ print("✅ Plotly working!")
 ## Running the Pipeline
 
 ### Full Pipeline
+
 ```bash
 python3 src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ### Specific Steps
+
 ```bash
 # GNN parsing, rendering, and execution
 python3 src/main.py --only-steps "3,11,12" --verbose
 ```
 
 ### Individual Steps
+
 ```bash
 # Just GNN parsing
 python3 src/3_gnn.py --target-dir input/gnn_files --verbose
@@ -220,6 +243,7 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 ## Performance Metrics
 
 ### Installation Times (on modern hardware)
+
 - **Core dependencies**: 30-60 seconds
 - **JAX**: 30-45 seconds
 - **PyMDP**: 10-15 seconds
@@ -229,6 +253,7 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 - **ML (PyTorch)**: 2-4 minutes
 
 ### Pipeline Execution
+
 - **Full 25-step pipeline**: ~40 seconds
 - **GNN parsing**: ~130ms
 - **Code rendering**: ~150ms
@@ -237,25 +262,33 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 ## Troubleshooting
 
 ### Issue: "ModuleNotFoundError: No module named 'psutil'"
+
 **Solution**: Run setup to install core dependencies
+
 ```bash
 python3 src/1_setup.py --verbose
 ```
 
 ### Issue: "externally-managed-environment" error with pip
+
 **Solution**: Always use UV pip with --python flag
+
 ```bash
 uv pip install package_name --python .venv/bin/python
 ```
 
 ### Issue: JAX not using GPU
+
 **Solution**: Install CUDA-enabled JAX (optional)
+
 ```bash
 uv pip install jax[cuda] --python .venv/bin/python
 ```
 
 ### Issue: PyMDP import errors
+
 **Solution**: Ensure correct package name
+
 ```bash
 uv pip install inferactively-pymdp --python .venv/bin/python
 ```
@@ -263,6 +296,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 ## Package Versions (Current)
 
 ### Core Dependencies
+
 - Python: 3.11.2
 - numpy: 1.26.4
 - scipy: 1.16.2
@@ -272,6 +306,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 - pytest: 7.4.4
 
 ### Optional Dependencies
+
 - JAX: 0.7.2
 - Optax: 0.2.6
 - Flax: 0.12.0
@@ -282,15 +317,14 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ## References
 
-- **UV Documentation**: https://docs.astral.sh/uv/
-- **PyMDP Repository**: https://github.com/infer-actively/pymdp
-- **JAX Documentation**: https://jax.readthedocs.io/
+- **UV Documentation**: <https://docs.astral.sh/uv/>
+- **PyMDP Repository**: <https://github.com/infer-actively/pymdp>
+- **JAX Documentation**: <https://jax.readthedocs.io/>
 - **GNN Pipeline Documentation**: See `README.md` and `ARCHITECTURE.md`
 
 ---
 
-**Last Updated**: January 23, 2026
-**Pipeline Version**: 1.1.3
+**Last Updated**: February 9, 2026
+**Pipeline Version**: 1.1.0
 **Status**: ✅ Production Ready (Linux & macOS)
 **Latest Validation**: 100% Success (25/25 steps)
-

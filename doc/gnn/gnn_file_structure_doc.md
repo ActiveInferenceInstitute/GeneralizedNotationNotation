@@ -1,5 +1,10 @@
 # GNN File Structure
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides a comprehensive guide to the structure and organization of GNN files.
 
 ## Pipeline Processing
@@ -7,6 +12,7 @@ This document provides a comprehensive guide to the structure and organization o
 GNN files are processed and validated through the GNN processing pipeline:
 
 **Parsing and Validation (Steps 3, 5, 6)**
+
 - **`src/3_gnn.py`** → GNN file discovery and multi-format parsing
   - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)** for parser implementation
 - **`src/5_type_checker.py`** → Type checking and dimensional validation
@@ -14,6 +20,7 @@ GNN files are processed and validated through the GNN processing pipeline:
 - **`src/6_validation.py`** → Advanced consistency checking
 
 **Quick Start:**
+
 ```bash
 # Parse and validate GNN files
 python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
@@ -337,6 +344,7 @@ graph LR
 ```
 
 A model can start as a simple perceptual model and progressively add features:
+
 1. Start with basic perception (states, observations)
 2. Add temporal dynamics (transitions over time)
 3. Incorporate action selection (policies)
@@ -361,6 +369,6 @@ For automated processing, GNN file structures are available in a machine-readabl
 
 ## References
 
-1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
+1. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
 2. Active Inference Institute: [Generalized Notation Notation (GNN) GitHub Repository](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation)
-3. Machine-readable specification: [GNN File Structure Specification](../../src/gnn/processor.py) 
+3. Machine-readable specification: [GNN File Structure Specification](../../src/gnn/processor.py)

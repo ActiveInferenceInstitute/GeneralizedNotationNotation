@@ -15,6 +15,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 ## Core GNN Documentation
 
 ### GNN Language & Syntax
+
 - [GNN Overview](gnn/gnn_overview.md) - High-level introduction to GNN
 - [About GNN](gnn/about_gnn.md) - Background and motivation
 - [GNN Syntax Reference](gnn/gnn_syntax.md) - Complete syntax specification
@@ -24,6 +25,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 - [GNN Implementation](gnn/gnn_implementation.md) - Implementation details
 
 ### Active Inference Theory
+
 - [Active Inference README](active_inference/README.md) - Overview and navigation
 - [FEP Foundations](active_inference/fep_foundations.md) - Free Energy Principle
 - [Active Inference Theory](active_inference/active_inference_theory.md) - Core theory
@@ -33,6 +35,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 - [Glossary](active_inference/glossary.md) - Terminology reference
 
 ### Architecture & Design
+
 - [Architecture Reference](gnn/architecture_reference.md) - System architecture
 - [Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md) - Design patterns
 - [GNN Ontology](gnn/gnn_ontology.md) - Ontological foundations
@@ -45,22 +48,27 @@ This index provides navigation to all documentation in the GNN repository, organ
 ### Python Frameworks
 
 #### PyMDP
+
 - [PyMDP README](pymdp/README.md) - Overview
 - [PyMDP POMDP](pymdp/pymdp_pomdp/README.md) - POMDP implementation
 
 #### JAX
+
 - [JAX Integration](execution/README.md) - JAX execution documentation
 
 #### DisCoPy
+
 - [DisCoPy Integration](discopy/README.md) - Category theory diagrams
 
 ### Julia Frameworks
 
 #### RxInfer.jl
+
 - [RxInfer README](rxinfer/README.md) - Reactive inference
 - [Multiagent Planning](rxinfer/multiagent_trajectory_planning/README.md) - Multi-agent systems
 
 #### ActiveInference.jl
+
 - [ActiveInference.jl README](activeinference_jl/README.md) - Julia implementation
 - [Implementation Guide](active_inference/implementation_activeinference_jl.md) - Integration details
 
@@ -69,6 +77,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 ## Pipeline Documentation
 
 ### Pipeline Steps
+
 - [Pipeline README](gnn/gnn_tools.md) - Pipeline overview
 - Step 0: Template initialization
 - Step 1: Environment setup
@@ -97,6 +106,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 - Step 24: Intelligent Analysis
 
 ### Integration Guides
+
 - [Framework Integration Guide](gnn/framework_integration_guide.md) - Connecting frameworks
 - [GNN Export](gnn/gnn_export.md) - Export formats
 
@@ -105,17 +115,20 @@ This index provides navigation to all documentation in the GNN repository, organ
 ## Specialized Topics
 
 ### Visualization
+
 - [Visualization README](visualization/README.md) - Visualization tools
 - [D2 Diagrams](d2/README.md) - D2 diagram generation
 - [GUI OxDraw](gui_oxdraw/README.md) - Interactive diagrams
 
 ### Advanced Features
+
 - [LLM Integration](llm/README.md) - Language model integration
 - [MCP Protocol](mcp/README.md) - Model Context Protocol
 - [Audio Processing](audio/README.md) - Audio/SAPF integration
 - [DSPy](dspy/README.md) - DSPy integration guide
 
 ### Development
+
 - [Development Guide](development/README.md) - Contributing guide
 - [Testing](testing/README.md) - Test documentation
 - [Performance](performance/README.md) - Performance optimization
@@ -123,6 +136,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 - [Deployment](deployment/README.md) - Deployment guide
 
 ### Security
+
 - [Security Guide](security/README.md) - Security documentation
 
 ---
@@ -130,6 +144,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 ## Research & Theory
 
 ### Cognitive Science
+
 - [Cognitive Phenomena](cognitive_phenomena/) - Cognitive modeling
   - [Attention](cognitive_phenomena/attention/)
   - [Consciousness](cognitive_phenomena/consciousness/)
@@ -142,6 +157,7 @@ This index provides navigation to all documentation in the GNN repository, organ
   - [Meta-Awareness](cognitive_phenomena/meta-awareness/)
 
 ### External Libraries
+
 - [Axiom](axiom/README.md) - Axiom integration
 - [CatColab](catcolab/README.md) - Category theory
 - [Cerebrum](cerebrum/README.md) - Neural modeling
@@ -151,6 +167,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 - [Quadray](quadray/README.md) - Coordinate systems
 
 ### Research Notes
+
 - [Research](research/README.md) - Research documentation
 - [SPM](spm/README.md) - Statistical Parametric Mapping
 - [POMDP](pomdp/README.md) - POMDP theory
@@ -239,4 +256,4 @@ doc/
 
 ---
 
-*Last updated: January 2026*
+*Last updated: February 2026*

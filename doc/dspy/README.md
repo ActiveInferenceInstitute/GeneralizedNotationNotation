@@ -10,7 +10,7 @@ This directory contains comprehensive documentation, resources, and implementati
 
 **Status**: ✅ Production Ready  
 **Version**: 2.0  
-**Last Updated**: January 2026
+**Last Updated**: February 2026
 
 ---
 
@@ -56,7 +56,9 @@ print(result.sentiment)  # True
 ## DSPy Core Concepts
 
 ### Signatures
+
 Define input-output behavior without implementation details:
+
 ```python
 "question -> answer"
 "context, question -> reasoning, answer"
@@ -64,7 +66,9 @@ Define input-output behavior without implementation details:
 ```
 
 ### Modules
+
 Building blocks for LLM programs:
+
 - **`dspy.Predict`**: Basic prediction
 - **`dspy.ChainOfThought`**: Step-by-step reasoning
 - **`dspy.ProgramOfThought`**: Code generation and execution
@@ -72,12 +76,15 @@ Building blocks for LLM programs:
 - **`dspy.Refine`**: Output refinement
 
 ### Optimizers
+
 Automatic prompt and weight tuning:
+
 - **`MIPROv2`**: Bayesian instruction optimization
 - **`BootstrapFewShot`**: Example synthesis
 - **`BootstrapFinetune`**: LM weight fine-tuning
 
 ### Key Benefits
+
 - **Programming over Prompting**: Systematic, maintainable approach
 - **Automatic Optimization**: Data-driven prompt tuning
 - **Modular Design**: Composable, reusable components
@@ -90,14 +97,17 @@ Automatic prompt and weight tuning:
 This documentation is integrated with the 25-step GNN processing pipeline:
 
 ### Core Processing (Steps 0-9)
+
 - DSPy enhances GNN parsing with LLM assistance
 - [dspy_gnn_integration_patterns.md](dspy_gnn_integration_patterns.md): Observation processing patterns
 
 ### Simulation (Steps 10-16)
+
 - DSPy-optimized LLM analysis (Step 13: LLM)
 - [dspy_agents_guide.md](dspy_agents_guide.md): Active Inference agent patterns
 
 ### Integration (Steps 17-24)
+
 - DSPy results integrated into comprehensive outputs
 - [dspy_typed_predictors.md](dspy_typed_predictors.md): Structured output generation
 
@@ -128,16 +138,19 @@ doc/dspy/
 ## Learning Paths
 
 ### Beginner Path
+
 1. Start with this README
 2. Read [dspy_modules_reference.md](dspy_modules_reference.md)
 3. Try examples in [dspy_typed_predictors.md](dspy_typed_predictors.md)
 
 ### Intermediate Path
+
 1. Complete beginner path
 2. Study [dspy_assertions_guide.md](dspy_assertions_guide.md)
 3. Explore [dspy_retrieval_guide.md](dspy_retrieval_guide.md)
 
 ### Advanced Path
+
 1. Complete intermediate path
 2. Master [dspy_optimizers_guide.md](dspy_optimizers_guide.md)
 3. Build agents with [dspy_agents_guide.md](dspy_agents_guide.md)
@@ -191,21 +204,25 @@ dspy.configure(lm=lm)
 ## Related Resources
 
 ### Main GNN Documentation
+
 - **[GNN Overview](../gnn/gnn_overview.md)**: Core GNN concepts
 - **[GNN Quickstart](../gnn/quickstart_tutorial.md)**: Getting started guide
 - **[LLM Integration](../gnn/gnn_llm_neurosymbolic_active_inference.md)**: Neurosymbolic architecture
 
 ### Development Resources
+
 - **[AutoGenLib Integration](../autogenlib/gnn_autogenlib.md)**: Dynamic code generation
 - **[PoE-World Integration](../poe-world/poe-world_gnn.md)**: Compositional world modeling
 - **[Development Guide](../development/README.md)**: Development workflows
 
 ### Pipeline Architecture
+
 - **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
 - **[Pipeline AGENTS](../../src/AGENTS.md)**: Implementation details
 - **[Pipeline README](../../src/README.md)**: Pipeline overview
 
 ### External Resources
+
 - **[DSPy Official Documentation](https://dspy.ai)**: Official DSPy docs
 - **[DSPy GitHub](https://github.com/stanfordnlp/dspy)**: Source code
 - **[MLflow DSPy Integration](https://mlflow.org/docs/latest/llms/dspy/)**: Observability

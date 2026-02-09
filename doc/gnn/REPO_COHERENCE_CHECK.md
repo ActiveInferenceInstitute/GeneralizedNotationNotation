@@ -1,4 +1,9 @@
-# Repo-Wide Coherence and Improvement Check - Mega-Prompt
+# GNN Repo Coherence Check
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 ## Pipeline Architecture References
 
@@ -231,7 +236,7 @@ if __name__ == "__main__":
 
 **Requirement**: All pipeline scripts must use centralized utilities from `src/utils/`.
 
-#### Validation Checklist
+#### P1.2 Logic Validation Checklist
 
 - [ ] **Logging Utilities**: Uses `setup_step_logging()`, `log_step_start()`, `log_step_success()`, `log_step_error()`, `log_step_warning()`
 - [ ] **Argument Parsing**: Uses `EnhancedArgumentParser` or `create_standardized_pipeline_script()`
@@ -269,13 +274,13 @@ logger = logging.getLogger(__name__)
 
 **Requirement**: All pipeline scripts must return standardized exit codes.
 
-#### Exit Code Standards
+#### Exit Code Validation
 
 - **0**: Success - step completed without errors
 - **1**: Critical Error - step failed and cannot continue
 - **2**: Success with Warnings - step completed but with non-critical warnings
 
-#### Validation Checklist
+#### P1.3 Exit Code Validation Checklist
 
 - [ ] **Main Function**: Returns integer exit code
 - [ ] **Error Handling**: Returns 1 on critical errors
@@ -291,7 +296,7 @@ logger = logging.getLogger(__name__)
 
 **Requirement**: All public functions must have complete type hints with generic types for containers.
 
-#### Validation Checklist
+#### Type Hint Validation
 
 - [ ] **Function Signatures**: All public functions have type hints
 - [ ] **Return Types**: All functions specify return types (including `None`)
@@ -320,7 +325,7 @@ def process_validation(
 
 **Requirement**: Every public function/class must have comprehensive docstrings with examples.
 
-#### Validation Checklist
+#### Docstring Validation
 
 - [ ] **Module Docstrings**: All modules have module-level docstrings
 - [ ] **Class Docstrings**: All classes have class-level docstrings
@@ -371,7 +376,7 @@ def process_validation(
 
 **Requirement**: Comprehensive error handling with graceful degradation and recovery mechanisms.
 
-#### Validation Checklist
+#### P2.2 Docstring Validation Checklist
 
 - [ ] **Try-Except Blocks**: Critical operations wrapped in try-except
 - [ ] **Specific Exceptions**: Catch specific exceptions, not bare `except:`
@@ -406,11 +411,18 @@ def process_with_error_handling(target_dir: Path, output_dir: Path) -> bool:
         cleanup_resources()
 ```
 
+```json
+{
+  "step": 7,
+  "status": "success"
+}
+```
+
 ### 2.4 Resource Management
 
 **Requirement**: Proper cleanup of resources (files, connections, memory) in all code paths.
 
-#### Validation Checklist
+#### P3.4 CLI Integration Validation Checklist
 
 - [ ] **File Handles**: Files closed properly (use context managers)
 - [ ] **Memory Management**: Large objects cleaned up when no longer needed
@@ -449,7 +461,7 @@ def process_with_resource_management(target_dir: Path) -> bool:
 
 **Requirement**: Built-in timing and memory usage tracking for all major operations.
 
-#### Validation Checklist
+#### P3.5 File Parsing Validation Checklist
 
 - [ ] **Timing**: Operations timed using `time.time()` or `time.perf_counter()`
 - [ ] **Memory Tracking**: Memory usage tracked using `utils.resource_manager`
@@ -487,18 +499,18 @@ src/[module_name]/
 - [ ] **MCP Integration**: `mcp.py` present where applicable
 - [ ] **Sub-modules**: Sub-modules properly organized
 
-### 3.2 **init**.py Public API Exports
+### 3.2 `__init__.py` Public API Exports
 
 **Requirement**: Module `__init__.py` files must export public API functions.
 
-#### Validation Checklist
+#### P4.1 Logic Validation Checklist
 
 - [ ] **Public Functions Exported**: Main processing functions exported
 - [ ] **Import Pattern**: Uses `from .processor import process_module`
 - [ ] **API Clarity**: Clear public API with well-named functions
 - [ ] **Module Info**: Module information functions exported (e.g., `get_module_info()`)
 
-#### Example **init**.py Pattern
+#### Example `__init__.py` Pattern
 
 ```python
 """
@@ -535,11 +547,16 @@ def get_module_info() -> Dict[str, Any]:
     }
 ```
 
+```mermaid
+graph LR
+    A[Step 1] --> B[Step 2]
+```
+
 ### 3.3 MCP Integration
 
 **Requirement**: Modules that provide MCP tools must have `mcp.py` with functional tool registration.
 
-#### Validation Checklist
+#### P4.2 State Validation Checklist
 
 - [ ] **mcp.py Exists**: Module has `mcp.py` file (where applicable)
 - [ ] **Tool Registration**: Tools properly registered
@@ -585,7 +602,7 @@ def register_tools(server: Server) -> None:
 
 **Requirement**: Clear separation between numbered scripts and module implementations.
 
-#### Validation Checklist
+#### P4.3 Connection Validation Checklist
 
 - [ ] **No Core Logic in Scripts**: Numbered scripts contain no core logic
 - [ ] **Delegation Pattern**: Scripts delegate to module functions
@@ -681,11 +698,16 @@ Each AGENTS.md should include:
 [Real examples with actual GNN files]
 ```
 
+```mermaid
+graph TD
+    A[GNN File] --> B[Parser]
+```
+
 ### 4.2 README.md Presence
 
 **Requirement**: Modules should have README.md files for additional documentation.
 
-#### Validation Checklist
+#### P4.4 Module validation checklist
 
 - [ ] **README.md Exists**: Module has README.md (recommended)
 - [ ] **Module Description**: README describes module purpose
@@ -697,7 +719,7 @@ Each AGENTS.md should include:
 
 **Requirement**: API documentation must be consistent across modules.
 
-#### Validation Checklist
+#### P4.5 Integration validation checklist
 
 - [ ] **Function Signatures**: Docstrings match function signatures
 - [ ] **Parameter Names**: Parameter names consistent across modules
@@ -713,7 +735,7 @@ Each AGENTS.md should include:
 
 **Requirement**: All tests must execute real code paths and real methods. No mocking frameworks.
 
-#### Validation Checklist
+#### P5.1 Performance validation checklist
 
 - [ ] **No unittest.mock**: No `unittest.mock` imports or usage
 - [ ] **No Monkeypatching**: No monkeypatching of functions or classes
@@ -762,7 +784,7 @@ def test_processing():
 
 **Requirement**: Tests must use real, representative data - no synthetic or placeholder datasets.
 
-#### Validation Checklist
+#### P5.2 Scalability validation checklist
 
 - [ ] **Real GNN Files**: Tests use actual GNN files from test data
 - [ ] **Real Formats**: Tests cover all supported formats (Markdown, JSON, YAML, etc.)
@@ -774,7 +796,7 @@ def test_processing():
 
 **Requirement**: End-to-end tests must validate complete pipeline execution with real inputs/outputs.
 
-#### Validation Checklist
+#### P5.3 Resource validation checklist
 
 - [ ] **Pipeline Tests**: Tests for full pipeline execution
 - [ ] **Step Integration**: Tests for step-to-step integration
@@ -814,7 +836,7 @@ def test_pipeline_integration():
 
 **Requirement**: Include timing assertions for critical paths, memory usage validation.
 
-#### Validation Checklist
+#### P6.1 Script execution validation checklist
 
 - [ ] **Timing Assertions**: Critical paths have timing assertions
 - [ ] **Memory Validation**: Memory usage validated
@@ -829,7 +851,7 @@ def test_pipeline_integration():
 
 **Requirement**: Pipeline steps must have correct dependency relationships.
 
-#### Validation Checklist
+#### P6.2 Resource usage validation checklist
 
 - [ ] **Dependency Declaration**: Dependencies declared in configuration
 - [ ] **Dependency Validation**: Dependencies validated before step execution
@@ -869,7 +891,7 @@ def test_pipeline_integration():
 
 **Requirement**: Data flows correctly between pipeline steps.
 
-#### Validation Checklist
+#### P7.1 Error recovery validation checklist
 
 - [ ] **Input Validation**: Steps validate inputs from previous steps
 - [ ] **Output Format**: Steps produce expected output formats
@@ -880,7 +902,7 @@ def test_pipeline_integration():
 
 **Requirement**: Output formats and structures must be consistent.
 
-#### Validation Checklist
+#### P7.2 Logging coherence validation checklist
 
 - [ ] **Output Directory Structure**: Output directories follow conventions
 - [ ] **Output File Naming**: Output files follow naming conventions
@@ -931,7 +953,7 @@ output/
 
 **Requirement**: Full pipeline execution must complete within 30 minutes for standard workloads.
 
-#### Validation Checklist
+#### P8.1 Package structure validation checklist
 
 - [ ] **Pipeline Timing**: Full pipeline execution time < 30 minutes
 - [ ] **Step Timing**: Individual step timing tracked
@@ -942,7 +964,7 @@ output/
 
 **Requirement**: Peak memory usage must not exceed 2GB for standard workloads.
 
-#### Validation Checklist
+#### P8.2 Dependency validation checklist
 
 - [ ] **Memory Tracking**: Memory usage tracked per step
 - [ ] **Memory Limits**: Memory usage within 2GB limit
@@ -956,7 +978,7 @@ output/
 - Success rate > 99% for all pipeline steps
 - Critical failure rate < 1%
 
-#### Validation Checklist
+#### P8.3 Configuration validation checklist
 
 - [ ] **Success Rate Tracking**: Success rates tracked per step
 - [ ] **Error Rate Tracking**: Error rates tracked per step
@@ -971,7 +993,7 @@ output/
 
 **Requirement**: All inputs must be validated and sanitized.
 
-#### Validation Checklist
+#### P9.1 Documentation parity validation checklist
 
 - [ ] **Path Validation**: File paths validated for security
 - [ ] **Input Sanitization**: User inputs sanitized
@@ -982,7 +1004,7 @@ output/
 
 **Requirement**: Comprehensive error recovery mechanisms.
 
-#### Validation Checklist
+#### P9.2 Cross-reference validation checklist
 
 - [ ] **Recovery Strategies**: Error recovery strategies defined
 - [ ] **Graceful Degradation**: Graceful degradation implemented
@@ -993,7 +1015,7 @@ output/
 
 **Requirement**: Security patterns implemented where applicable.
 
-#### Validation Checklist
+#### P9.3 Metadata validation checklist
 
 - [ ] **Access Control**: Access control where applicable
 - [ ] **Secure Configuration**: Configuration managed securely
@@ -1008,7 +1030,7 @@ output/
 
 **Requirement**: Consistent naming across modules, functions, and classes.
 
-#### Validation Checklist
+#### P10.1 Access control validation checklist
 
 - [ ] **Module Names**: Module names follow `snake_case`
 - [ ] **Function Names**: Function names follow `snake_case`
@@ -1019,7 +1041,7 @@ output/
 
 **Requirement**: File names follow conventions.
 
-#### Validation Checklist
+#### P10.2 Secret management validation checklist
 
 - [ ] **Pipeline Scripts**: Numbered scripts follow `N_[module].py` pattern
 - [ ] **Module Files**: Module files follow `snake_case.py` pattern
@@ -1029,7 +1051,7 @@ output/
 
 **Requirement**: Output files and directories follow naming conventions.
 
-#### Validation Checklist
+#### P10.3 Vulnerability scanning validation checklist
 
 - [ ] **Output Directories**: Follow `N_[module]_output/` pattern
 - [ ] **Output Files**: Output files have descriptive names
@@ -1074,7 +1096,7 @@ from module.processor import process_module
 
 **Requirement**: Modules should minimize dependencies on other modules.
 
-#### Validation Checklist
+#### P12.1 Internal consistency validation checklist
 
 - [ ] **Low Coupling**: Modules have minimal dependencies
 - [ ] **Dependency Injection**: Dependency injection used where appropriate
@@ -1085,7 +1107,7 @@ from module.processor import process_module
 
 **Requirement**: Dependencies must be properly declared and validated.
 
-#### Validation Checklist
+#### P12.2 External consistency validation checklist
 
 - [ ] **Dependency Declaration**: Dependencies declared in `pyproject.toml`
 - [ ] **Dependency Validation**: Dependencies validated at runtime
@@ -1120,7 +1142,7 @@ For each validation area, assess:
 
 1. **Architecture Compliance**: Thin orchestrator pattern, centralized utilities
 2. **Code Quality**: Type hints, docstrings, error handling
-3. **Module Structure**: Directory structure, **init**.py, MCP integration
+3. **Module Structure**: Directory structure, `__init__.py`, MCP integration
 4. **Documentation**: AGENTS.md, README.md, API documentation
 5. **Testing**: No-mock policy, real data, integration tests
 6. **Pipeline Integration**: Dependencies, data flow, output consistency
@@ -1165,8 +1187,6 @@ def process_validation(
     ...
 ```
 
-```
-
 ---
 
 ## 12. Usage Instructions
@@ -1176,7 +1196,7 @@ def process_validation(
 1. **Start with Executive Summary**: Review high-level coherence metrics
 2. **Architecture Compliance**: Validate thin orchestrator pattern for all 25 steps
 3. **Code Quality**: Check type hints, docstrings, error handling
-4. **Module Structure**: Verify directory structure and __init__.py patterns
+4. **Module Structure**: Verify directory structure and `__init__.py` patterns
 5. **Documentation**: Validate AGENTS.md and README.md completeness
 6. **Testing**: Verify no-mock policy and real data usage
 7. **Integration**: Check pipeline dependencies and data flow
@@ -1201,9 +1221,16 @@ python src/pipeline_validation.py --save-report validation_report.json
 ```bash
 # Run all tests
 python src/2_tests.py --comprehensive
+```
+
+```bash
+python scripts/3_gnn.py --test-mode
+```
 
 # Run specific test module
+
 pytest src/tests/test_validation.py -v
+
 ```
 
 ### 12.3 Generating Coherence Reports
@@ -1227,6 +1254,7 @@ This mega-prompt can be used with AI assistants to:
 #### AI Review Prompt Template
 
 ```
+
 Using the REPO_COHERENCE_CHECK.md mega-prompt, review the following:
 
 1. Architecture compliance for [specific module/step]
@@ -1236,10 +1264,12 @@ Using the REPO_COHERENCE_CHECK.md mega-prompt, review the following:
 5. Testing standards compliance
 
 Provide:
+
 - Compliance scores for each area
 - Specific issues found with file paths and line numbers
 - Recommended fixes with code examples
 - Priority levels for each action item
+
 ```
 
 ---
@@ -1430,14 +1460,14 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: 1.0.0
+**Version**: v1.1.0
 **Coverage**: 25 pipeline steps, 28 modules, 41 AGENTS.md files
 
 ---
 
 ## 16. Known Issues and Action Items
 
-### 16.1 Testing Policy Violations
+### P16.1 Testing policy validation checklist
 
 **Issue**: Some test files violate the no-mock policy by using `unittest.mock`.
 

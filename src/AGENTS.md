@@ -6,12 +6,14 @@ The GNN (Generalized Notation Notation) Pipeline is a comprehensive 25-step syst
 
 ## 📚 GNN Documentation
 
-The GNN system is fully documented in `doc/gnn/`. 
+The GNN system is fully documented in `doc/gnn/`.
 
 > **[GNN Documentation Index](../doc/gnn/README.md)** - Start here for all GNN guides.
 
 ### Specialized Documentation Agents
+
 See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 documentation agents, including:
+
 - **Syntax & DSL**: `gnn_syntax.md`, `gnn_dsl_manual.md`
 - **Modeling**: `quickstart_tutorial.md`, `gnn_examples_doc.md`
 - **Integration**: `framework_integration_guide.md`, `gnn_implementation.md`
@@ -22,6 +24,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 ## Module Registry
 
 ### Core Processing Modules (Steps 0-9)
+
 - **Step 0**: **[template/](template/AGENTS.md)** - Pipeline template and initialization
 - **Step 1**: **[setup/](setup/AGENTS.md)** - Environment setup and dependency management
 - **Step 2**: **[tests/](tests/AGENTS.md)** - Comprehensive test suite execution
@@ -34,6 +37,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **Step 9**: **[advanced_visualization/](advanced_visualization/AGENTS.md)** - Advanced visualization and interactive plots
 
 ### Simulation & Analysis Modules (Steps 10-16)
+
 - **Step 10**: **[ontology/](ontology/AGENTS.md)** - Active Inference ontology processing
 - **Step 11**: **[render/](render/AGENTS.md)** - Code generation for simulation frameworks
 - **Step 12**: **[execute/](execute/AGENTS.md)** - Execute rendered simulation scripts
@@ -43,6 +47,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **Step 16**: **[analysis/](analysis/AGENTS.md)** - Advanced statistical analysis
 
 ### Integration & Output Modules (Steps 17-24)
+
 - **Step 17**: **[integration/](integration/AGENTS.md)** - System integration and coordination
 - **Step 18**: **[security/](security/AGENTS.md)** - Security validation and access control
 - **Step 19**: **[research/](research/AGENTS.md)** - Research tools and experimental features
@@ -53,6 +58,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 - **Step 24**: **[intelligent_analysis/](intelligent_analysis/AGENTS.md)** - AI-powered pipeline analysis and executive reports
 
 ### Infrastructure Modules
+
 - **[utils/](utils/AGENTS.md)** - Shared utilities and helper functions
 - **[pipeline/](pipeline/AGENTS.md)** - Pipeline orchestration and configuration
 
@@ -63,18 +69,21 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 ### Thin Orchestrator Design
 
 **Numbered Scripts** (`N_module.py`):
+
 - Handle argument parsing
 - Setup logging and output directories
 - Call module processing functions
 - Return standardized exit codes
 
 **Module Implementation** (`src/module/`):
+
 - Contains all domain logic
 - Provides public API for orchestrators
 - Implements error handling and fallbacks
 - Exports functions via `__init__.py`
 
 ### Example Structure
+
 ```
 src/
 ├── 11_render.py              # Thin orchestrator (< 150 lines)
@@ -151,11 +160,12 @@ graph TD
 ## Performance Characteristics
 
 ### Latest Status (2026-01-23)
+
 - **Total Steps**: 25 (all steps 0-24)
 - **Execution Time**: ~90s (pipeline) / ~9min (full test suite)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 777 tests passed (21 skipped - optional deps)
+- **Test Suite Status**: ✅ 1,127 tests passed (21 skipped - optional deps)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -164,11 +174,12 @@ graph TD
 - **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready
 
-### Recent Updates (January 2026)
+### Recent Updates (February 2026)
+
 - **Visualization Refactoring**: Removed visualization code from execute step (12), consolidated in analysis step (16)
   - RxInfer.jl: Removed Plots.jl dependencies, exports data only
   - PyMDP: Removed PyMDPVisualizer from execute, analysis step handles visualization
-- **Test Fixes**: Fixed LLM and pipeline test path expectations (777 tests passing)
+- **Test Fixes**: Fixed LLM and pipeline test path expectations (1,127 tests passing)
 - **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
 - **Observability**: Added JSON logging, log rotation, and performance metrics
 - **Analysis**: Cross-simulation aggregation and statistical summaries
@@ -249,21 +260,25 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 ## Quick Start
 
 ### Run Full Pipeline
+
 ```bash
 python src/main.py --target-dir input/gnn_files --verbose
 ```
 
 ### Run Specific Steps
+
 ```bash
 python src/main.py --only-steps "3,5,7,8,11,12" --verbose
 ```
 
 ### Run Individual Step
+
 ```bash
 python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 ```
 
 ### Framework Selection
+
 ```bash
 # Execute only specific frameworks
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
@@ -276,6 +291,7 @@ python src/12_execute.py --frameworks "all" --verbose
 ```
 
 ### Optional Dependencies
+
 ```bash
 # Install optional groups
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
@@ -289,6 +305,7 @@ python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
 ## Development Guidelines
 
 ### Adding New Modules
+
 1. Create module directory: `src/new_module/`
 2. Implement `__init__.py` with public API
 3. Create `AGENTS.md` documentation
@@ -297,6 +314,7 @@ python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
 6. Add MCP tools in `mcp.py` (if applicable)
 
 ### Code Standards
+
 - Follow thin orchestrator pattern
 - Use type hints for all public functions
 - Document all classes and methods
@@ -308,16 +326,19 @@ python src/1_setup.py --install_optional --optional_groups "viz,pymdp"
 ## Testing
 
 ### Run All Tests
+
 ```bash
 python src/2_tests.py --comprehensive
 ```
 
 ### Run Module-Specific Tests
+
 ```bash
 pytest src/tests/test_[module]*.py -v
 ```
 
 ### Check Coverage
+
 ```bash
 pytest --cov=src --cov-report=term-missing
 ```
@@ -332,10 +353,10 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-01-23
-**Pipeline Version**: 1.1.3
+**Last Updated**: 2026-02-09
+**Pipeline Version**: 1.1.0
 **Total Modules**: 29
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 777 tests passed (21 skipped)
+**Test Status**: ✅ 1,127 tests passed
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

@@ -9,12 +9,14 @@
 **Experience GNN instantly without installation!**
 
 ### **🎯 What You'll See**
+
 - A working Active Inference agent in action
 - Real-time model visualization
 - Code generation across multiple frameworks
 - Interactive model exploration
 
 ### **🚀 Option 1: Online Demo (Recommended)**
+
 ```bash
 # Use our pre-configured cloud environment
 curl -s https://demo.gnn-ai.org/quick-demo | bash
@@ -24,6 +26,7 @@ curl -s https://demo.gnn-ai.org/quick-demo | bash
 ```
 
 ### **🖥️ Option 2: Local Quick Demo**
+
 ```bash
 # One-command demo (no installation required)
 docker run --rm -it gnn-ai/quickdemo:latest
@@ -35,7 +38,9 @@ curl -s https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNo
 ### **📊 What the Demo Shows**
 
 #### **Model Creation (30 seconds)**
+
 Watch as we create a simple navigation agent:
+
 ```gnn
 ## ModelName
 NavigationAgent
@@ -51,7 +56,9 @@ s_f0, u_c0 > s_f0           # Position and action determine next position
 ```
 
 #### **Real-Time Processing (2 minutes)**
+
 See the GNN pipeline in action:
+
 1. **✅ Parsing**: Extract model structure
 2. **✅ Validation**: Check syntax and semantics  
 3. **✅ Visualization**: Generate interactive diagrams
@@ -59,7 +66,9 @@ See the GNN pipeline in action:
 5. **✅ Simulation**: Run the agent and see results
 
 #### **Results Exploration (2.5 minutes)**
+
 Interactive exploration of outputs:
+
 - **📊 Model Visualization**: Click-through network diagrams
 - **🐍 Generated Python Code**: Working PyMDP implementation
 - **🔢 Julia Code**: RxInfer.jl probabilistic programming
@@ -69,11 +78,13 @@ Interactive exploration of outputs:
 ### **🎮 Interactive Features**
 
 **Model Modifications**: Try these instant edits:
+
 - Change preferences: `C_m0 = [1.0, 0.0]` → `C_m0 = [0.0, 1.0]`
 - Add uncertainty: `A_m0 = [[1.0, 0.0], [0.0, 1.0]]` → `A_m0 = [[0.9, 0.1], [0.1, 0.9]]`
 - Increase complexity: Add third position with `s_f0[3,1,type=categorical]`
 
 **Real-Time Updates**: Watch how changes affect:
+
 - Agent behavior patterns
 - Computational complexity
 - Generated code structure
@@ -81,6 +92,7 @@ Interactive exploration of outputs:
 ### **📋 Demo Checklist**
 
 After the 5-minute demo, you'll have seen:
+
 - [ ] ✅ **GNN Syntax**: How models are specified
 - [ ] ✅ **Validation**: Automatic error checking  
 - [ ] ✅ **Multi-Framework**: Code for PyMDP, RxInfer, DisCoPy
@@ -93,28 +105,32 @@ After the 5-minute demo, you'll have seen:
 Based on what interested you most:
 
 **🔬 "I want to understand the theory"** → [Research Learning Path](learning_paths.md#research-focused-path)
+
 - Deep dive into Active Inference mathematics
 - Explore cognitive modeling applications
 - Review research methodology integration
 
 **💻 "I want to build something"** → [Developer Learning Path](learning_paths.md#developer-focused-path)  
+
 - Technical setup and integration
 - Production deployment patterns
 - Custom framework development
 
 **🎓 "I want structured learning"** → [Academic Learning Path](learning_paths.md#academic-learning-path)
+
 - Comprehensive curriculum
 - Hands-on exercises and assessments
 - Progressive skill building
 
 **⚡ "I want to explore more examples"** → [Quick Exploration Path](learning_paths.md#quick-exploration-path)
+
 - Gallery of pre-built models
 - Interactive model browser
 - Comparison with other approaches
 
 ---
 
-## Get up and running with Generalized Notation Notation (GNN) in 10 minutes.
+## Get up and running with Generalized Notation Notation (GNN) in 10 minutes
 
 ## What is GNN?
 
@@ -129,11 +145,13 @@ GNN is a text-based language for standardizing Active Inference generative model
 ## 🚀 Quick Installation
 
 ### Prerequisites
+
 - Python 3.11+
 - Git
 - UV package manager (recommended): `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
 ### Install GNN
+
 ```bash
 # Clone the repository
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
@@ -233,7 +251,7 @@ License: MIT
 python src/main.py --target-dir my_first_model.md
 
 # Or run specific steps
-python src/main.py --target-dir my_first_model.md --steps 1 2 3 4 5
+python src/main.py --target-dir my_first_model.md --only-steps "1,2,3,4,5"
 ```
 
 ### 3. Check the Results
@@ -274,12 +292,15 @@ s_f0, u_c0 > s_f0
 ```
 
 ### **2. Generate and Execute in One Command**
+
 ```bash
-python src/main.py --target-dir fast_agent.md --steps 1-10 --frameworks pymdp
+python src/main.py --target-dir fast_agent.md --only-steps "1,2,3,4,5,6,7,8,9,10"
 ```
 
 ### **3. Inspect the Logic**
+
 Check `output/pymdp/fast_agent.py` to see the generated belief update logic. You can run it directly:
+
 ```bash
 python output/pymdp/fast_agent.py
 ```
@@ -338,21 +359,23 @@ julia simple_agent.jl
 ## 🔧 Common Pipeline Commands
 
 ### Development Workflow
+
 ```bash
 # Quick validation only
-python src/main.py my_model.md --steps 1 2 3 4
+python src/main.py --target-dir my_model.md --only-steps "1,2,3,4"
 
 # Generate code for specific framework
-python src/main.py my_model.md --steps 1 2 4 5 9 --target pymdp
+python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Include visualization
-python src/main.py my_model.md --steps 1 2 4 5 6
+python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
 
 # Full pipeline with documentation
-python src/main.py my_model.md --steps 1-13
+python src/main.py --target-dir my_model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13"
 ```
 
 ### Batch Processing
+
 ```bash
 # Process all models in a directory
 python src/main.py --target-dir ./examples/
@@ -365,6 +388,7 @@ python src/main.py --target-dir ./models/ --parallel --workers 4
 ```
 
 ### Configuration
+
 ```bash
 # Use custom configuration
 python src/main.py my_model.md --config config/development.yaml
@@ -379,6 +403,7 @@ python src/main.py my_model.md --debug --verbose
 ## 📚 Learning Path
 
 ### 1. Start with Examples (5 minutes)
+
 ```bash
 # Explore provided examples
 ls src/gnn/gnn_examples/
@@ -386,23 +411,26 @@ python src/main.py --target-dir src/gnn/gnn_examples/actinf_pomdp_agent.md
 ```
 
 ### 2. Learn GNN Syntax (15 minutes)
+
 - Read: [GNN Syntax Guide](gnn/gnn_syntax.md)
 - Practice: Modify the example models
 - Validate: Use the type checker to check your syntax
 
 ### 3. Try Different Frameworks (10 minutes)
+
 ```bash
 # Generate PyMDP code
-python src/main.py my_model.md --steps 1 2 4 5 9
+python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Generate RxInfer code  
-python src/main.py my_model.md --steps 1 2 4 5 9 --target rxinfer
+python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,9"
 
 # Create visualizations
-python src/main.py my_model.md --steps 1 2 4 5 6
+python src/main.py --target-dir my_model.md --only-steps "1,2,4,5,6"
 ```
 
 ### 4. Advanced Features (30 minutes)
+
 - **Templates**: Use `doc/templates/` for common patterns
 - **LLM Integration**: Try AI-enhanced analysis
 - **Categorical Diagrams**: Explore DisCoPy translation
@@ -411,9 +439,10 @@ python src/main.py my_model.md --steps 1 2 4 5 6
 ## ⚡ Quick Troubleshooting
 
 ### Model Won't Parse
+
 ```bash
 # Check syntax with detailed errors
-python src/4_gnn_type_checker.py my_model.md --verbose
+python src/5_type_checker.py --target-dir . --verbose
 
 # Common issues:
 # - Missing required sections (ModelName, StateSpaceBlock, etc.)
@@ -422,9 +451,10 @@ python src/4_gnn_type_checker.py my_model.md --verbose
 ```
 
 ### Generated Code Doesn't Run
+
 ```bash
 # Validate matrices
-python src/4_gnn_type_checker.py my_model.md --check-matrices
+python src/5_type_checker.py --target-dir . --verbose
 
 # Common issues:
 # - Matrices don't sum to 1 (for probability matrices)
@@ -433,6 +463,7 @@ python src/4_gnn_type_checker.py my_model.md --check-matrices
 ```
 
 ### Missing Dependencies
+
 ```bash
 # Check what's missing
 python src/1_setup.py --check-dependencies
@@ -458,6 +489,7 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ```
 
 ### Customize Templates
+
 1. Replace placeholder values with your specifics
 2. Modify state spaces for your domain
 3. Adjust matrices for your dynamics
@@ -466,16 +498,19 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ## 🚀 Next Steps
 
 ### Beginner Path
+
 1. **Follow Tutorials**: Work through [tutorials/README.md](tutorials/README.md)
 2. **Read Documentation**: Study [gnn/about_gnn.md](gnn/about_gnn.md)
 3. **Join Community**: Participate in [discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ### Intermediate Path  
+
 1. **Framework Deep-Dive**: Master [PyMDP](pymdp/gnn_pymdp.md) or [RxInfer](rxinfer/gnn_rxinfer.md)
 2. **Performance Optimization**: Learn [performance tuning](performance/README.md)
 3. **Deploy Models**: Set up [production deployment](deployment/README.md)
 
 ### Advanced Path
+
 1. **Categorical Modeling**: Explore [DisCoPy integration](discopy/gnn_discopy.md)
 2. **Extend GNN**: Develop new pipeline steps
 3. **Research Applications**: Apply to your research domain
@@ -490,11 +525,13 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ## 🤝 Getting Help
 
 ### Community Resources
+
 - **GitHub Discussions**: [Ask questions and share ideas](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 - **Issues**: [Report bugs or request features](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - **Documentation**: Search the comprehensive docs in `/doc`
 
 ### Quick Support
+
 1. **Check Examples**: Look at `src/gnn/gnn_examples/` for similar models
 2. **Validate First**: Run step 4 (type checker) to catch common errors
 3. **Read Error Messages**: They often contain helpful hints
@@ -503,24 +540,26 @@ cp doc/templates/basic_gnn_template.md my_new_model.md
 ## 🎯 Quick Reference Card
 
 ### Essential Commands
+
 ```bash
 # Basic processing
 python src/main.py model.md
 
 # Just validation  
-python src/main.py model.md --steps 1-4
+python src/main.py --target-dir model.md --only-steps "1,2,3,4"
 
 # Generate code
-python src/main.py model.md --steps 1-5,9
+python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,9"
 
 # Full pipeline
-python src/main.py model.md --steps 1-14
+python src/main.py --target-dir model.md --only-steps "1,2,3,4,5,6,7,8,9,10,11,12,13,14"
 
 # Debug mode
 python src/main.py model.md --debug --verbose
 ```
 
 ### Key File Locations
+
 ```
 src/gnn/gnn_examples/  # Example GNN models
 doc/templates/        # Model templates  
@@ -530,6 +569,7 @@ config/               # Configuration files
 ```
 
 ### Pipeline Steps
+
 1. **Setup** - Initialize environment and dependencies
 2. **GNN Processing** - Read, parse, and validate models
 3. **Tests** - Run validation tests (optional)
@@ -552,4 +592,4 @@ config/               # Configuration files
 ---
 
 **Status**: Production-Ready Quick Start Guide  
-**Next Steps**: [Full Documentation](README.md) | [Learning Paths](learning_paths.md) 
+**Next Steps**: [Full Documentation](README.md) | [Learning Paths](learning_paths.md)

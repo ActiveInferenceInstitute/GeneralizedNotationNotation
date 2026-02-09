@@ -1,5 +1,10 @@
 # GNN Type System Guide
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides comprehensive guidance on type checking and the type system for Generalized Notation Notation (GNN) models, including type inference, validation, and resource estimation.
 
 ## Overview
@@ -67,18 +72,17 @@ graph TD
 Type checking validates model structure and type consistency:
 
 ```python
-from type_checker import GNNTypeChecker
+from type_checker.resource_estimator import GNNResourceEstimator
 
-# Create type checker
-checker = GNNTypeChecker()
+# Create type checker with optional pre-loaded type data
+estimator = GNNResourceEstimator(type_check_data="output/5_type_checker_output/type_check_results.json")
 
-# Validate GNN files
-success = checker.validate_gnn_files(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/5_type_checker_output"),
-    strict=True,
-    estimate_resources=True
-)
+# Estimate resources for a single GNN file
+resources = estimator.estimate_from_file("input/gnn_files/model.md")
+# Returns: {memory_kb, inference_units, storage_kb, complexity_metrics}
+
+# Estimate resources for all GNN files in a directory
+all_resources = estimator.estimate_from_directory("input/gnn_files", recursive=True)
 ```
 
 ### Validation Features
@@ -102,16 +106,20 @@ Resource estimation predicts computational resources required for model executio
 ### Resource Estimation Example
 
 ```python
-from type_checker import estimate_file_resources
+from type_checker.resource_estimator import GNNResourceEstimator
 
-# Estimate resources for GNN file
-resources = estimate_file_resources(gnn_content)
+estimator = GNNResourceEstimator()
+resources = estimator.estimate_from_file("input/gnn_files/model.md")
 
 # Resources include:
-# - memory_estimate: Estimated memory usage
-# - computation_estimate: Computational complexity
-# - execution_time: Predicted execution time
-# - storage_estimate: Storage space requirements
+# - memory_kb: Memory estimate based on variable dimensions × bytes_per_type
+# - inference_units: Relative cost from model type, variables, edges, equations
+# - storage_kb: Disk space from file size + metadata overhead
+# - complexity_metrics: {
+#     state_space_complexity, graph_density, avg_in_degree,
+#     avg_out_degree, cyclic_complexity, temporal_complexity,
+#     equation_complexity, overall_complexity (0-10 weighted composite)
+# }
 ```
 
 ## Performance Prediction
@@ -191,5 +199,5 @@ Type checking integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2025-12-30  
-**Version**: 1.0.0
+**Last Updated**: February 9, 2026  
+**Version**: v1.1.0

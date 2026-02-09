@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_discopy.py
-Timestamp: 2026-02-05T06:14:04.745018
+Timestamp: 2026-02-09T11:26:36.876406
 Return Code: 0
-Execution Time: 0.57 seconds
+Execution Time: 0.82 seconds
 
 STDOUT:
 ✅ DisCoPy is available
@@ -56,5 +56,5 @@ Model: Active Inference POMDP Agent
 
 
 STDERR:
-/Users/4d/Documents/GitHub/GeneralizedNotationNotation/.venv/lib/python3.12/site-packages/discopy/drawing/backend.py:560: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/discopy/drawing/backend.py:560: UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
   plt.show()

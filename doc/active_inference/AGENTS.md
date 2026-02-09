@@ -6,7 +6,7 @@ This directory contains comprehensive documentation for Active Inference and the
 
 **Status**: ✅ Documentation Module  
 **Version**: 1.0  
-**Last Updated**: January 2026
+**Last Updated**: February 2026
 
 ---
 
@@ -60,16 +60,19 @@ Central documentation hub for all theoretical, computational, and implementation
 ## Quick Navigation
 
 ### This Directory
+
 - **[README.md](README.md)**: Start here for overview
 - **[glossary.md](glossary.md)**: Terminology reference
 
 ### Theory Foundations
+
 - **[fep_foundations.md](fep_foundations.md)**: FEP theory
 - **[active_inference_theory.md](active_inference_theory.md)**: Active Inference core
 - **[variational_inference.md](variational_inference.md)**: VFE details
 - **[expected_free_energy.md](expected_free_energy.md)**: EFE and action
 
 ### Implementation
+
 - **[implementation_pymdp.md](implementation_pymdp.md)**: Python via PyMDP
 - **[implementation_rxinfer.md](implementation_rxinfer.md)**: Julia via RxInfer
 - **[implementation_activeinference_jl.md](implementation_activeinference_jl.md)**: Julia via ActiveInference.jl

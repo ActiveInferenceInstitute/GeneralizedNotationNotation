@@ -46,6 +46,7 @@ uv run pytest
 ### Thin Orchestrator Pattern
 
 All 25 pipeline steps follow a consistent pattern:
+
 - **Numbered scripts** (`src/N_module.py`): Thin orchestrators (<150 lines) that handle CLI args, logging, and delegate to modules
 - **Module directories** (`src/module/`): Contain all domain logic
   - `__init__.py`: Public API
@@ -74,6 +75,7 @@ Step 3 (GNN Parse) produces parsed models consumed by steps 5-8, 10-11, 13. Step
 ### Framework Integration
 
 Code generation and execution support multiple backends:
+
 - **PyMDP** (Python): `render/pymdp/`, `execute/pymdp/`
 - **RxInfer.jl** (Julia): `render/rxinfer/`, `execute/rxinfer/`
 - **ActiveInference.jl** (Julia): `render/activeinference_jl/`, `execute/activeinference_jl/`
@@ -94,7 +96,7 @@ python src/12_execute.py --frameworks "pymdp,jax" --verbose
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (~90 files) |
+| `src/tests/` | Test suite (~1,127 tests across ~90 files) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/gnn_syntax.md` | Complete GNN syntax specification |

@@ -12,40 +12,40 @@ This article explores the potential synergies, innovative applications, technica
 
 GNN provides a structured textual format for describing complex probabilistic models. Key aspects include:
 
-*   **GNN File Structure:** GNN files are typically Markdown (`.md`) and organized into specific sections, such as:
-    *   `ModelName`: The name of the model.
-    *   `StateSpaceBlock`: Defines state factors, their types, and dimensions.
-    *   `ObservationSpaceBlock`: Defines observation modalities and their dimensions.
-    *   `ControlSpaceBlock`: Defines control factors or actions.
-    *   `DynamicsBlock`: Specifies the transition dynamics (e.g., matrix `B`).
-    *   `LikelihoodBlock`: Specifies the observation likelihood model (e.g., matrix `A`).
-    *   `PriorBlock`: Defines prior beliefs over states (e.g., vector `D`) or policies.
-    *   `Connections`: Describes how different components or sub-models are linked.
-    *   `ActInfOntologyAnnotation`: Maps GNN components to terms from the Active Inference Ontology.
-    *   Refer to `doc/gnn/gnn_file_structure.md` for detailed specifications.
-*   **GNN Syntax and Punctuation:** Specific syntax rules and punctuation (detailed in `doc/gnn/gnn_punctuation.md`) ensure clarity and parsability.
-*   **Processing Pipeline:** The GNN toolkit, often orchestrated by `src/main.py`, involves a series of numbered processing steps (e.g., `1_gnn.py` for parsing, `4_gnn_type_checker.py` for validation, `5_render.py` for code generation). These scripts typically read from a `--target-dir` and write to an `--output-dir`.
-*   **Purpose:**
-    *   Formalize generative model specifications.
-    *   Enable interoperability between different modeling tools and simulation frameworks.
-    *   Automate the generation of executable code for simulators like PyMDP or RxInfer.jl.
-    *   Facilitate model validation, visualization, and resource estimation.
+* **GNN File Structure:** GNN files are typically Markdown (`.md`) and organized into specific sections, such as:
+  * `ModelName`: The name of the model.
+  * `StateSpaceBlock`: Defines state factors, their types, and dimensions.
+  * `ObservationSpaceBlock`: Defines observation modalities and their dimensions.
+  * `ControlSpaceBlock`: Defines control factors or actions.
+  * `DynamicsBlock`: Specifies the transition dynamics (e.g., matrix `B`).
+  * `LikelihoodBlock`: Specifies the observation likelihood model (e.g., matrix `A`).
+  * `PriorBlock`: Defines prior beliefs over states (e.g., vector `D`) or policies.
+  * `Connections`: Describes how different components or sub-models are linked.
+  * `ActInfOntologyAnnotation`: Maps GNN components to terms from the Active Inference Ontology.
+  * Refer to `doc/gnn/gnn_file_structure.md` for detailed specifications.
+* **GNN Syntax and Punctuation:** Specific syntax rules and punctuation (detailed in `doc/gnn/gnn_punctuation.md`) ensure clarity and parsability.
+* **Processing Pipeline:** The GNN toolkit, often orchestrated by `src/main.py`, involves a series of numbered processing steps (e.g., `3_gnn.py` for parsing, `5_type_checker.py` for validation, `11_render.py` for code generation). These scripts typically read from a `--target-dir` and write to an `--output-dir`.
+* **Purpose:**
+  * Formalize generative model specifications.
+  * Enable interoperability between different modeling tools and simulation frameworks.
+  * Automate the generation of executable code for simulators like PyMDP or RxInfer.jl.
+  * Facilitate model validation, visualization, and resource estimation.
 
 ### 2.2. AutoGenLib Deep Dive
 
 `AutoGenLib` offers a radical approach to code creation by generating it when needed. Its core features, largely derived from its [GitHub repository](https://github.com/cofob/autogenlib), include:
 
-*   **Synthetics**: Synthetic data generation:** Intercepts import statements (e.g., `from autogenlib.some_module import some_function`) and, if `some_module` or `some_function` doesn't exist, it calls an LLM (e.g., OpenAI API) to generate it.
-*   **Context-Awareness:** The LLM prompt includes:
-    *   A general description of the library's purpose (if provided during `init`).
-    *   The code of the module being imported (if it exists and is being extended).
-    *   All previously generated modules in the current session.
-    *   The source code of the caller (the script making the import).
-*   **Progressive Enhancement:** New functions can be added to existing `autogenlib` modules, with the LLM considering prior code in that module.
-*   **No Default Caching:** By default, code is regenerated on each import, allowing for varied implementations. Caching to `~/.autogenlib_cache` can be enabled for consistency and to reduce API calls.
-*   **Automatic Exception Handling:** Exceptions from generated code are caught, and the LLM is prompted to explain the error and suggest a fix.
-*   **Intended Use:** Primarily for prototyping, experimentation, and exploring LLM-driven code generation. It's explicitly *not* recommended for production-critical code without thorough human review.
-*   **Requirements:** Python 3.12+ and an `OPENAI_API_KEY` environment variable.
+* **Synthetics**: Synthetic data generation:** Intercepts import statements (e.g., `from autogenlib.some_module import some_function`) and, if `some_module` or `some_function` doesn't exist, it calls an LLM (e.g., OpenAI API) to generate it.
+* **Context-Awareness:** The LLM prompt includes:
+  * A general description of the library's purpose (if provided during `init`).
+  * The code of the module being imported (if it exists and is being extended).
+  * All previously generated modules in the current session.
+  * The source code of the caller (the script making the import).
+* **Progressive Enhancement:** New functions can be added to existing `autogenlib` modules, with the LLM considering prior code in that module.
+* **No Default Caching:** By default, code is regenerated on each import, allowing for varied implementations. Caching to `~/.autogenlib_cache` can be enabled for consistency and to reduce API calls.
+* **Automatic Exception Handling:** Exceptions from generated code are caught, and the LLM is prompted to explain the error and suggest a fix.
+* **Intended Use:** Primarily for prototyping, experimentation, and exploring LLM-driven code generation. It's explicitly *not* recommended for production-critical code without thorough human review.
+* **Requirements:** Python 3.12+ and an `OPENAI_API_KEY` environment variable.
 
 ## 3. Potential Applications of AutoGenLib in the GNN Workflow
 
@@ -55,8 +55,9 @@ The dynamic nature of `AutoGenLib` opens up several intriguing possibilities for
 
 Frequently, developers might need small utility functions for GNN file manipulation, parsing specific sections in a novel way, or transforming GNN structures for ad-hoc analyses.
 
-*   **Scenario:** A user needs a function to quickly extract all comments from a GNN file's `DynamicsBlock`.
-*   **With AutoGenLib:**
+* **Scenario:** A user needs a function to quickly extract all comments from a GNN file's `DynamicsBlock`.
+* **With AutoGenLib:**
+
     ```python
     # In a GNN analysis script (conceptual)
     # from autogenlib.gnn_utils import extract_dynamics_comments
@@ -68,14 +69,16 @@ Frequently, developers might need small utility functions for GNN file manipulat
     # comments = extract_dynamics_comments(gnn_content)
     # print(comments)
     ```
+
     `AutoGenLib` would attempt to generate `extract_dynamics_comments`, potentially by being prompted with the task and perhaps a simplified GNN structure example.
 
 ### 3.2. Automated Scaffolding for GNN Rendering Modules
 
 When adding support for a new simulation backend in `src/render/`, `AutoGenLib` could generate the initial boilerplate code.
 
-*   **Scenario:** A developer wants to start rendering GNN models to a new hypothetical simulator "SimX."
-*   **With AutoGenLib:**
+* **Scenario:** A developer wants to start rendering GNN models to a new hypothetical simulator "SimX."
+* **With AutoGenLib:**
+
     ```python
     # Conceptual: in a script to bootstrap the new renderer
     # from autogenlib.render.simplex_renderer import generate_initial_scaffold
@@ -92,14 +95,16 @@ When adding support for a new simulation backend in `src/render/`, `AutoGenLib` 
     # with open("src/render/render_simplex.py", "w") as f:
     #     f.write(scaffold_code)
     ```
+
     The prompt to `AutoGenLib` would include the GNN example, target language, and key functions to scaffold.
 
 ### 3.3. On-the-Fly Generation of Custom Visualization Snippets
 
 While GNN has `src/visualization/` tools, users might need unique, one-off visualizations not covered by existing functions.
 
-*   **Scenario:** Visualizing the sparsity pattern of a custom-defined matrix within a GNN file that isn't a standard A, B, or D matrix.
-*   **With AutoGenLib:**
+* **Scenario:** Visualizing the sparsity pattern of a custom-defined matrix within a GNN file that isn't a standard A, B, or D matrix.
+* **With AutoGenLib:**
+
     ```python
     # from autogenlib.viz_custom import plot_custom_matrix_sparsity
     # import numpy as np # Assume the matrix is parsed into a numpy array
@@ -113,8 +118,9 @@ While GNN has `src/visualization/` tools, users might need unique, one-off visua
 
 For the `ActInfOntologyAnnotation` section, `AutoGenLib` could suggest potential mappings based on GNN component names and descriptions.
 
-*   **Scenario:** A user has defined a new `StateSpaceBlock` and wants suggestions for mapping its states to Active Inference Ontology terms.
-*   **With AutoGenLib:**
+* **Scenario:** A user has defined a new `StateSpaceBlock` and wants suggestions for mapping its states to Active Inference Ontology terms.
+* **With AutoGenLib:**
+
     ```python
     # from autogenlib.ontology_helpers import suggest_act_inf_mapping_for_states
     #
@@ -138,8 +144,9 @@ For the `ActInfOntologyAnnotation` section, `AutoGenLib` could suggest potential
 
 If a GNN model needs to be exported to a new or niche format not yet supported in `src/export/`.
 
-*   **Scenario:** Exporting a GNN's `StateSpaceBlock` and `DynamicsBlock` to a simple custom XML structure.
-*   **With AutoGenLib:**
+* **Scenario:** Exporting a GNN's `StateSpaceBlock` and `DynamicsBlock` to a simple custom XML structure.
+* **With AutoGenLib:**
+
     ```python
     # from autogenlib.export.custom_xml import convert_gnn_to_simple_xml
     #
@@ -150,10 +157,11 @@ If a GNN model needs to be exported to a new or niche format not yet supported i
 
 ### 3.6. Adaptive GNN Processing Steps
 
-For one-off transformations or analyses within the GNN pipeline scripts (e.g., `src/1_gnn.py`), `AutoGenLib` could generate bespoke functions.
+For one-off transformations or analyses within the GNN pipeline scripts (e.g., `src/3_gnn.py`), `AutoGenLib` could generate bespoke functions.
 
-*   **Scenario:** A specific GNN file uses a non-standard keyword for a matrix, and a temporary parsing adaptation is needed.
-*   **With AutoGenLib:**
+* **Scenario:** A specific GNN file uses a non-standard keyword for a matrix, and a temporary parsing adaptation is needed.
+* **With AutoGenLib:**
+
     ```python
     # In a modified version of a pipeline script (conceptual)
     # from autogenlib.gnn_custom_parsers import parse_special_matrix_format
@@ -172,39 +180,41 @@ Integrating `AutoGenLib` effectively with GNN requires addressing several techni
 ### 4.1. Prompt Engineering for GNN Context
 
 The quality of code generated by `AutoGenLib` heavily depends on the prompt. For GNN-related tasks, prompts must be carefully engineered:
-*   **Provide GNN Schema:** Include or reference key parts of `doc/gnn/gnn_file_structure.md` and `doc/gnn/gnn_punctuation.md`.
-*   **Pass GNN Snippets:** Give concrete examples of GNN file sections the generated code will operate on.
-*   **Specify Task Clearly:** Define the expected input and output of the function to be generated.
-*   **Contextualize within GNN Pipeline:** Explain where in the GNN processing flow this function would fit.
-*   **Caller Code:** `AutoGenLib` automatically includes the caller's code, which itself should be GNN-aware if it's handling GNN data structures.
+
+* **Provide GNN Schema:** Include or reference key parts of `doc/gnn/gnn_file_structure.md` and `doc/gnn/gnn_punctuation.md`.
+* **Pass GNN Snippets:** Give concrete examples of GNN file sections the generated code will operate on.
+* **Specify Task Clearly:** Define the expected input and output of the function to be generated.
+* **Contextualize within GNN Pipeline:** Explain where in the GNN processing flow this function would fit.
+* **Caller Code:** `AutoGenLib` automatically includes the caller's code, which itself should be GNN-aware if it's handling GNN data structures.
 
 ### 4.2. Managing AutoGenLib's Caching
 
-*   **Development/Exploration:** `set_caching(False)` (default) can be useful for iterating on prompts and exploring different generated solutions.
-*   **Reproducible Pipelines:** For any integration into the main GNN processing scripts (`src/[number]_*.py`) or for tools intended for consistent output, `set_caching(True)` is crucial. This ensures that once a satisfactory function is generated, it's reused, saving API calls and ensuring deterministic behavior.
-*   **Cache Management:** The cache location is `~/.autogenlib_cache`. Developers need to be aware of this and potentially clear it if underlying GNN structures or prompt strategies change significantly.
+* **Development/Exploration:** `set_caching(False)` (default) can be useful for iterating on prompts and exploring different generated solutions.
+* **Reproducible Pipelines:** For any integration into the main GNN processing scripts (`src/[number]_*.py`) or for tools intended for consistent output, `set_caching(True)` is crucial. This ensures that once a satisfactory function is generated, it's reused, saving API calls and ensuring deterministic behavior.
+* **Cache Management:** The cache location is `~/.autogenlib_cache`. Developers need to be aware of this and potentially clear it if underlying GNN structures or prompt strategies change significantly.
 
 ### 4.3. Integration with `src/main.py` and Pipeline Steps
 
-*   **Dedicated Module:** Consider creating a `src/autogenlib_bridge.py` or similar module that initializes `AutoGenLib` with GNN-specific context (e.g., `init("Utility library for GNN processing according to GeneralizedNotationNotation standards.")`). Pipeline scripts could then import helper functions from `autogenlib.gnn_helpers` (for example).
-*   **Conditional Use:** `AutoGenLib` could be an optional dependency or used for specific experimental flags within the pipeline.
+* **Dedicated Module:** Consider creating a `src/autogenlib_bridge.py` or similar module that initializes `AutoGenLib` with GNN-specific context (e.g., `init("Utility library for GNN processing according to GeneralizedNotationNotation standards.")`). Pipeline scripts could then import helper functions from `autogenlib.gnn_helpers` (for example).
+* **Conditional Use:** `AutoGenLib` could be an optional dependency or used for specific experimental flags within the pipeline.
 
 ### 4.4. Error Handling and Validation
 
-*   `AutoGenLib` attempts to fix its own errors, but the generated code still needs GNN-specific validation.
-*   Any GNN structures produced or manipulated by `autogenlib`-generated code should ideally be passed through `src/gnn_type_checker/` or other validation logic within the GNN toolkit.
-*   Robust error handling in the calling GNN script is needed to catch unexpected behavior from generated code.
+* `AutoGenLib` attempts to fix its own errors, but the generated code still needs GNN-specific validation.
+* Any GNN structures produced or manipulated by `autogenlib`-generated code should ideally be passed through `src/type_checker/` or other validation logic within the GNN toolkit.
+* Robust error handling in the calling GNN script is needed to catch unexpected behavior from generated code.
 
 ### 4.5. Security and Reliability
 
-*   **Human Review is Non-Negotiable:** As `AutoGenLib`'s authors state, it's for prototyping. Any code generated by it that becomes part of the core GNN toolkit or is used in critical processing must be thoroughly reviewed, tested, and potentially refactored by a human developer.
-*   **Dependency Management:** If `AutoGenLib` is adopted, it becomes another dependency to manage for the GNN project (Python 3.12+ requirement).
+* **Human Review is Non-Negotiable:** As `AutoGenLib`'s authors state, it's for prototyping. Any code generated by it that becomes part of the core GNN toolkit or is used in critical processing must be thoroughly reviewed, tested, and potentially refactored by a human developer.
+* **Dependency Management:** If `AutoGenLib` is adopted, it becomes another dependency to manage for the GNN project (Python 3.12+ requirement).
 
 ## 5. Illustrative Example: Generating a State Extractor
 
 Let's imagine a GNN user wants a quick way to list all unique state names from a GNN file's `StateSpaceBlock`.
 
 **Conceptual GNN processing script:**
+
 ```python
 # File: src/scripts/extract_gnn_states_example.py
 from autogenlib import init, set_caching
@@ -262,49 +272,50 @@ if __name__ == "__main__":
 ```
 
 **Behind the Scenes (Conceptual `AutoGenLib` Interaction):**
-1.  `from autogenlib.gnn_parsers import extract_unique_state_names` is encountered.
-2.  `AutoGenLib` sees `gnn_parsers.py` (or `extract_unique_state_names`) doesn't exist in its cache or generated modules.
-3.  It constructs a prompt for the LLM. This prompt would include:
-    *   The `library_description` from `init`.
-    *   The source code of `get_states_from_gnn_file` (the caller).
-    *   The specific import statement.
-4.  The LLM might generate Python code for `gnn_parsers.py` containing `extract_unique_state_names`. This function would likely use regex or string manipulation to find `StateSpaceBlock` and then parse the `States:` lines.
-5.  The generated code is executed, and `unique_states` is populated.
-6.  If caching is enabled, this generated `gnn_parsers.py` is saved for future runs.
+
+1. `from autogenlib.gnn_parsers import extract_unique_state_names` is encountered.
+2. `AutoGenLib` sees `gnn_parsers.py` (or `extract_unique_state_names`) doesn't exist in its cache or generated modules.
+3. It constructs a prompt for the LLM. This prompt would include:
+    * The `library_description` from `init`.
+    * The source code of `get_states_from_gnn_file` (the caller).
+    * The specific import statement.
+4. The LLM might generate Python code for `gnn_parsers.py` containing `extract_unique_state_names`. This function would likely use regex or string manipulation to find `StateSpaceBlock` and then parse the `States:` lines.
+5. The generated code is executed, and `unique_states` is populated.
+6. If caching is enabled, this generated `gnn_parsers.py` is saved for future runs.
 
 ## 6. Challenges and Limitations
 
 While promising, integrating `AutoGenLib` with GNN is not without its hurdles:
 
-*   **Complexity of GNN Specifications:** GNN's structure is rich and detailed. Reliably generating code that correctly parses and manipulates all valid GNN constructs is a significant challenge for current LLMs. The LLM needs to "understand" or be extensively prompted about GNN schemas.
-*   **Determinism and Reproducibility:** Critical for GNN's scientific and engineering applications. `AutoGenLib`'s default non-cached behavior is antithetical to this. Strict adherence to `set_caching(True)` for any pipeline-integrated or shared tools is essential.
-*   **Cost and Latency:** OpenAI API calls incur monetary costs and introduce network latency. For frequent, large-scale GNN processing, this could be prohibitive if not managed well (e.g., by aggressive caching and using `AutoGenLib` for setup or one-off tasks rather than per-file processing in a large batch).
-*   **Debugging Generated Code:** Debugging code produced by an LLM can be more challenging than human-written code, especially if it's intricate GNN parsing logic. The "black box" nature, even with `inspect.getsource`, can be difficult.
-*   **Over-reliance and Review Burden:** There's a risk of developers treating `autogenlib`-generated tools as infallible, skipping thorough reviews. This is dangerous, as LLM-generated code can have subtle bugs or inefficiencies.
-*   **Maintaining Coherence and Context:** As the GNN project evolves (e.g., GNN schema changes), prompts and contextual information provided to `AutoGenLib` must be meticulously updated to ensure generated code remains compatible.
-*   **Vulnerability to Prompt Injection:** If parts of GNN files (which could be user-supplied) are used directly in prompts, care must be taken to avoid prompt injection vulnerabilities, though this is a more general LLM security concern.
+* **Complexity of GNN Specifications:** GNN's structure is rich and detailed. Reliably generating code that correctly parses and manipulates all valid GNN constructs is a significant challenge for current LLMs. The LLM needs to "understand" or be extensively prompted about GNN schemas.
+* **Determinism and Reproducibility:** Critical for GNN's scientific and engineering applications. `AutoGenLib`'s default non-cached behavior is antithetical to this. Strict adherence to `set_caching(True)` for any pipeline-integrated or shared tools is essential.
+* **Cost and Latency:** OpenAI API calls incur monetary costs and introduce network latency. For frequent, large-scale GNN processing, this could be prohibitive if not managed well (e.g., by aggressive caching and using `AutoGenLib` for setup or one-off tasks rather than per-file processing in a large batch).
+* **Debugging Generated Code:** Debugging code produced by an LLM can be more challenging than human-written code, especially if it's intricate GNN parsing logic. The "black box" nature, even with `inspect.getsource`, can be difficult.
+* **Over-reliance and Review Burden:** There's a risk of developers treating `autogenlib`-generated tools as infallible, skipping thorough reviews. This is dangerous, as LLM-generated code can have subtle bugs or inefficiencies.
+* **Maintaining Coherence and Context:** As the GNN project evolves (e.g., GNN schema changes), prompts and contextual information provided to `AutoGenLib` must be meticulously updated to ensure generated code remains compatible.
+* **Vulnerability to Prompt Injection:** If parts of GNN files (which could be user-supplied) are used directly in prompts, care must be taken to avoid prompt injection vulnerabilities, though this is a more general LLM security concern.
 
 ## 7. Best Practices for Using AutoGenLib with GNN
 
 To harness `AutoGenLib`'s potential while mitigating risks:
 
-*   **Start Small and Specific:** Begin by using `AutoGenLib` for well-defined, isolated helper tasks or utility functions rather than core GNN parsing or rendering logic.
-*   **Always Cache for "Production" Use:** Any `autogenlib`-generated code that is part of a shared tool, a pipeline step, or expected to produce consistent results *must* run with caching enabled.
-*   **Rigorous Review and Testing:** Treat all `autogenlib`-generated code as if it were written by a new, unproven contributor. Subject it to comprehensive code reviews, static analysis, and thorough unit/integration testing.
-*   **Invest in Prompt Engineering:** Develop a library of effective prompts for GNN-related tasks. Include references to GNN documentation and examples in prompts.
-*   **Document Usage Clearly:** If a GNN tool or script uses `AutoGenLib`, this should be clearly documented, along with the specific functions that are auto-generated and the prompts used (if feasible).
-*   **Human-in-the-Loop:** View `AutoGenLib` as a powerful assistant that can *draft* code or provide scaffolding, but a human developer must always be in the loop for refinement, validation, and integration.
-*   **Isolate Experimental Use:** Confine non-cached, purely experimental uses of `AutoGenLib` to developer sandboxes or specific research branches, separate from the main GNN development.
+* **Start Small and Specific:** Begin by using `AutoGenLib` for well-defined, isolated helper tasks or utility functions rather than core GNN parsing or rendering logic.
+* **Always Cache for "Production" Use:** Any `autogenlib`-generated code that is part of a shared tool, a pipeline step, or expected to produce consistent results *must* run with caching enabled.
+* **Rigorous Review and Testing:** Treat all `autogenlib`-generated code as if it were written by a new, unproven contributor. Subject it to comprehensive code reviews, static analysis, and thorough unit/integration testing.
+* **Invest in Prompt Engineering:** Develop a library of effective prompts for GNN-related tasks. Include references to GNN documentation and examples in prompts.
+* **Document Usage Clearly:** If a GNN tool or script uses `AutoGenLib`, this should be clearly documented, along with the specific functions that are auto-generated and the prompts used (if feasible).
+* **Human-in-the-Loop:** View `AutoGenLib` as a powerful assistant that can *draft* code or provide scaffolding, but a human developer must always be in the loop for refinement, validation, and integration.
+* **Isolate Experimental Use:** Confine non-cached, purely experimental uses of `AutoGenLib` to developer sandboxes or specific research branches, separate from the main GNN development.
 
 ## 8. Future Directions and Vision
 
 Looking ahead, the synergy between GNN and LLM-driven code generation could evolve in exciting ways:
 
-*   **GNN File Generation from Natural Language:** Could `AutoGenLib` (or similar LLM interfaces) assist in drafting entire GNN files or complex sections based on high-level natural language descriptions of a generative model?
-*   **"LLM Processing Step" in GNN Pipeline:** A configurable pipeline step in `src/main.py` that uses `AutoGenLib` to perform custom transformations or analyses based on user-defined prompts and GNN file context.
-*   **Fine-Tuned Models for GNN:** Instead of general-purpose LLMs, developing or fine-tuning smaller, specialized models specifically for GNN-related code generation tasks could improve accuracy, reduce costs, and enhance performance. This could eventually become a capability within the GNN toolkit itself, perhaps even independent of `AutoGenLib`.
-*   **Interactive GNN Development:** An interactive GNN editor where a user could request `AutoGenLib` to complete a section, suggest connections, or translate a high-level goal into GNN syntax.
-*   **Automated GNN to Documentation/Explanation:** Using LLMs (potentially via `AutoGenLib` to generate the "explainer" code) to translate GNN files into natural language summaries or documentation.
+* **GNN File Generation from Natural Language:** Could `AutoGenLib` (or similar LLM interfaces) assist in drafting entire GNN files or complex sections based on high-level natural language descriptions of a generative model?
+* **"LLM Processing Step" in GNN Pipeline:** A configurable pipeline step in `src/main.py` that uses `AutoGenLib` to perform custom transformations or analyses based on user-defined prompts and GNN file context.
+* **Fine-Tuned Models for GNN:** Instead of general-purpose LLMs, developing or fine-tuning smaller, specialized models specifically for GNN-related code generation tasks could improve accuracy, reduce costs, and enhance performance. This could eventually become a capability within the GNN toolkit itself, perhaps even independent of `AutoGenLib`.
+* **Interactive GNN Development:** An interactive GNN editor where a user could request `AutoGenLib` to complete a section, suggest connections, or translate a high-level goal into GNN syntax.
+* **Automated GNN to Documentation/Explanation:** Using LLMs (potentially via `AutoGenLib` to generate the "explainer" code) to translate GNN files into natural language summaries or documentation.
 
 ## 9. Conclusion
 
@@ -315,5 +326,5 @@ However, the experimental nature of `AutoGenLib`, the complexity of GNN specific
 By embracing a human-in-the-loop approach, the GNN project can potentially leverage the speed and flexibility of LLM-driven code generation without compromising the integrity and robustness that are central to its mission. The journey of combining these technologies will undoubtedly reveal more about the future of automated software development in specialized scientific domains.
 
 Citations:
-[1] AutoGenLib GitHub Repository: https://github.com/cofob/autogenlib
+[1] AutoGenLib GitHub Repository: <https://github.com/cofob/autogenlib>
 [2] GNN Project Documentation (refer to specific files in `doc/` and `src/gnn/` as needed within the GNN repository).

@@ -1,5 +1,10 @@
 # GNN Visualization Guide
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides comprehensive guidance on visualization capabilities for Generalized Notation Notation (GNN) models, including graph visualization, matrix visualization, and interactive plotting techniques.
 
 ## Overview
@@ -83,17 +88,16 @@ graph TD
 ### Graph Visualization Example
 
 ```python
-from visualization import process_visualization
+from visualization.processor import process_visualization
 from pathlib import Path
 
-# Generate graph visualizations
+# Generate graph visualizations for all GNN files
 success = process_visualization(
     target_dir=Path("input/gnn_files"),
     output_dir=Path("output/8_visualization_output"),
-    visualization_types=["graph"],
-    layout_algorithm="force-directed",
     verbose=True
 )
+# Generates: network graphs (PNG), matrix heatmaps (PNG), statistics reports (JSON)
 ```
 
 ## Matrix Visualization
@@ -121,15 +125,16 @@ Matrix visualizations include:
 ### Matrix Visualization Example
 
 ```python
-from visualization import visualize_matrices
+from visualization.processor import process_single_gnn_file
+from pathlib import Path
 
-# Create matrix heatmaps
-success = visualize_matrices(
-    content=gnn_content,
-    output_path=Path("output/matrix_visualizations/"),
-    matrices=["A", "B", "C", "D"],
-    color_scheme="viridis"
+# Process visualization for a single GNN file
+generated_files = process_single_gnn_file(
+    gnn_file=Path("input/gnn_files/model.md"),
+    results_dir=Path("output/8_visualization_output/model/"),
+    verbose=True
 )
+# generated_files: list of PNG/HTML paths for network graphs and matrix heatmaps
 ```
 
 ## Interactive Plotting
@@ -147,14 +152,19 @@ Interactive plotting enables dynamic exploration of GNN models with zoom, pan, a
 ### Interactive Plotting Example
 
 ```python
-from visualization import create_interactive_plots
+from visualization.processor import generate_network_visualizations, parse_gnn_content
+from pathlib import Path
 
-# Generate interactive plots
-success = create_interactive_plots(
-    content=gnn_content,
-    output_path=Path("output/interactive_plots/"),
-    plot_types=["graph", "matrix", "network"]
+# Parse GNN content and generate network graph visualizations
+with open("input/gnn_files/model.md") as f:
+    content = f.read()
+parsed = parse_gnn_content(content)
+files = generate_network_visualizations(
+    parsed_data=parsed,
+    output_dir=Path("output/network_viz/"),
+    model_name="my_model"
 )
+# Generates force-directed network graph with node types and edge styles
 ```
 
 ## Advanced Visualization
@@ -246,5 +256,5 @@ Visualization results are integrated throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2025-12-30  
-**Version**: 1.0.0
+**Last Updated**: February 9, 2026  
+**Version**: v1.1.0

@@ -1,5 +1,10 @@
 # GNN Documentation Index
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
 ## 🚀 Quick Start
@@ -85,10 +90,10 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 ## 📊 Complete Module Registry
 
-**Core Processing (Steps 0-9)**
+### Core Processing (Steps 0-9)
 
 | Step | Script | Module | Purpose |
-|------|--------|--------|---------|
+| ---- | ------ | ------ | ------- |
 | 0 | `0_template.py` | [template/](../../src/template/AGENTS.md) | Pipeline initialization |
 | 1 | `1_setup.py` | [setup/](../../src/setup/AGENTS.md) | Environment setup |
 | 2 | `2_tests.py` | [tests/](../../src/tests/AGENTS.md) | Test suite |
@@ -100,10 +105,10 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 8 | `8_visualization.py` | [visualization/](../../src/visualization/AGENTS.md) | Graph visualization |
 | 9 | `9_advanced_viz.py` | [advanced_visualization/](../../src/advanced_visualization/AGENTS.md) | Advanced plots |
 
-**Simulation & Analysis (Steps 10-16)**
+### Simulation and Analysis (Steps 10-16)
 
 | Step | Script | Module | Purpose |
-|------|--------|--------|---------|
+| ---- | ------ | ------ | ------- |
 | 10 | `10_ontology.py` | [ontology/](../../src/ontology/AGENTS.md) | Ontology processing |
 | 11 | `11_render.py` | [render/](../../src/render/AGENTS.md) | Code generation |
 | 12 | `12_execute.py` | [execute/](../../src/execute/AGENTS.md) | Simulation execution |
@@ -112,10 +117,10 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 | 15 | `15_audio.py` | [audio/](../../src/audio/AGENTS.md) | Audio generation |
 | 16 | `16_analysis.py` | [analysis/](../../src/analysis/AGENTS.md) | Statistical analysis |
 
-**Integration & Output (Steps 17-24)**
+### Integration and Output (Steps 17-24)
 
 | Step | Script | Module | Purpose |
-|------|--------|--------|---------|
+| ---- | ------ | ------ | ------- |
 | 17 | `17_integration.py` | [integration/](../../src/integration/AGENTS.md) | System integration |
 | 18 | `18_security.py` | [security/](../../src/security/AGENTS.md) | Security validation |
 | 19 | `19_research.py` | [research/](../../src/research/AGENTS.md) | Research tools |
@@ -176,7 +181,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **Related Documentation:**
 
-- [Pipeline Documentation](../gnn/) - Pipeline-specific guides
+- [GNN Troubleshooting](gnn_troubleshooting.md) - Common issues and solutions
 - [API Reference](../api/) - API documentation
 - [Configuration Guide](../configuration/) - Configuration options
 - [Troubleshooting](../troubleshooting/) - Common issues and solutions
@@ -202,7 +207,8 @@ All GNN documentation follows these principles:
 
 - ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (28/28 modules)
-- ✅ 100% pipeline success rate (2m53s / 172.7 seconds execution time)
+- ✅ 100% pipeline success rate (~3 minutes / 172.7 seconds execution time)
+- ✅ 1,127 tests passing
 - ✅ Enhanced visual logging across all steps
 - ✅ Comprehensive cross-referencing between documentation
 
@@ -214,16 +220,21 @@ All GNN documentation follows these principles:
 - [Framework Integration Guide](framework_integration_guide.md)
 - [GNN DSL Manual](gnn_dsl_manual.md)
 - [GNN Examples](gnn_examples_doc.md)
+- [GNN Export Guide](gnn_export.md)
 - [GNN File Structure](gnn_file_structure_doc.md)
 - [GNN Implementation Guide](gnn_implementation.md)
 - [GNN LLM and Neurosymbolic AI](gnn_llm_neurosymbolic_active_inference.md)
 - [GNN Multi-Agent](gnn_multiagent.md)
+- [GNN Ontology Guide](gnn_ontology.md)
 - [GNN Overview](gnn_overview.md)
+- [GNN Paper](gnn_paper.md)
 - [GNN Schema](gnn_schema.md)
 - [GNN Standards](gnn_standards.md)
 - [GNN Syntax](gnn_syntax.md)
 - [GNN Tools and Resources](gnn_tools.md)
 - [GNN Troubleshooting](gnn_troubleshooting.md)
+- [GNN Type System](gnn_type_system.md)
+- [GNN Visualization Guide](gnn_visualization.md)
 - [Improvement Analysis](improvement_analysis.md)
 - [Ontology System](ontology_system.md)
 - [Quickstart Tutorial](quickstart_tutorial.md)
@@ -233,8 +244,8 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: 1.0
-**Pipeline Version**: 1.1.3
+**GNN Version**: v1.1.0
+**Pipeline Version**: 1.1.0
 **Total Pipeline Steps**: 25 (0-24)
-**Last Updated**: 2026-01-27
+**Last Updated**: 2026-02-09
 **Status**: ✅ All Documentation Complete

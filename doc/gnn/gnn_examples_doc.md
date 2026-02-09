@@ -1,5 +1,10 @@
 # GNN Examples and Model Progression
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides practical examples of GNN models, demonstrating how models can be developed with increasing complexity.
 
 ## Processing Examples with Pipeline
@@ -15,6 +20,7 @@ python src/main.py --only-steps "3,5,8,11,12" --target-dir doc/gnn/examples/
 ```
 
 For module-specific documentation:
+
 - **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: GNN parsing module
 - **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code generation module
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Complete pipeline registry
@@ -496,5 +502,5 @@ When implementing these models:
 ## References
 
 1. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
-2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
-3. Machine-readable examples: [GNN Examples](../../src/gnn/gnn_examples/) 
+2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
+3. Machine-readable examples: [GNN Examples](../../src/gnn/gnn_examples/)

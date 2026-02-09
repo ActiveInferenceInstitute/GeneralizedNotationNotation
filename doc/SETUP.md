@@ -2,11 +2,12 @@
 
 > **📋 Document Metadata**
 > **Type**: Setup Guide | **Audience**: All Users | **Complexity**: Beginner
-> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](../README.md) | [Environment Template](../.env) | [Troubleshooting](troubleshooting/README.md)
+> **Cross-References**: [Quickstart Guide](quickstart.md) | [Main Documentation](../README.md) | [Troubleshooting](troubleshooting/README.md)
 
 This document provides comprehensive instructions for setting up the GNN (Generalized Notation Notation) Processing Pipeline environment, including installation steps, environment variables, and detailed information about dependencies.
 
 > **🎯 Quick Start**: For immediate setup, run:
+>
 > ```bash
 > cd src && python3 main.py --only-steps 1 --dev
 > ```
@@ -23,6 +24,7 @@ The GNN project provides multiple installation paths depending on your needs:
 - **🛠️ Development Setup** (45+ minutes): Full development environment with all tools
 
 Choose based on your use case:
+
 - **Researchers**: Quick or Standard setup
 - **Developers**: Standard or Complete setup
 - **Production**: Complete setup with optimization
@@ -41,10 +43,10 @@ python3 main.py --only-steps 1 --dev
 
 ## System Requirements
 
-- **Python**: 3.11 or newer (up to 3.13)
+- **Python**: 3.11 – 3.13 (see [pyproject.toml](../pyproject.toml) for exact range)
 - **Operating System**: Linux (primary support)
 - **Disk Space**: At least 2GB free for dependencies
-- **System Packages**: 
+- **System Packages**:
   - `build-essential`
   - `python3-dev`
   - `graphviz` (for visualization)
@@ -200,11 +202,13 @@ python src/1_setup.py --install_optional --optional_groups "all"
 DisCoPy is included by default and requires no additional installation.
 
 **Capabilities**:
+
 - Categorical diagram generation
 - String diagram composition
 - Functor visualization
 
 **Verification**:
+
 ```bash
 python3 -c "import discopy; print('DisCoPy OK')"
 ```
@@ -214,15 +218,18 @@ python3 -c "import discopy; print('DisCoPy OK')"
 ActiveInference.jl is automatically installed when first needed via Julia's package manager.
 
 **Requirements**:
+
 - Julia 1.6+ installed on system
 - Internet connection for first run
 
 **Capabilities**:
+
 - Full Active Inference agent implementation
 - Hierarchical temporal models
 - Comprehensive belief updating
 
 **Installation**:
+
 ```bash
 # Julia installs automatically on first execution
 # Or install manually:
@@ -230,6 +237,7 @@ julia -e 'using Pkg; Pkg.add("ActiveInference")'
 ```
 
 **Verification**:
+
 ```bash
 julia -e 'using ActiveInference; println("ActiveInference.jl OK")'
 ```
@@ -239,6 +247,7 @@ julia -e 'using ActiveInference; println("ActiveInference.jl OK")'
 PyMDP provides Python-based Active Inference for POMDPs.
 
 **Installation**:
+
 ```bash
 # Correct package name is inferactively-pymdp
 uv pip install inferactively-pymdp
@@ -253,16 +262,19 @@ uv pip install git+https://github.com/infer-actively/pymdp.git
 **Important**: The correct package name is `inferactively-pymdp`, not `pymdp`. The `pymdp` package on PyPI contains MDP/MDPSolver but not the Active Inference Agent class.
 
 **Capabilities**:
+
 - POMDP agent implementation
 - Variational message passing
 - Policy inference and learning
 
 **Common Issues**:
+
 - **Wrong package installed**: If you have `pymdp` installed, uninstall it and install `inferactively-pymdp`
 - **Import errors**: Verify correct package: `python -c "from pymdp import Agent; print('PyMDP OK')"`
 - **Package detection**: The execute module automatically detects wrong package variants
 
 **Verification**:
+
 ```bash
 python3 -c "from pymdp import Agent; print('PyMDP OK')"
 ```
@@ -272,6 +284,7 @@ python3 -c "from pymdp import Agent; print('PyMDP OK')"
 JAX enables high-performance numerical computing with GPU acceleration.
 
 **Installation**:
+
 ```bash
 # CPU-only version (most users)
 uv pip install jax[cpu] flax optax
@@ -284,16 +297,19 @@ uv pip install jax[cuda11_pip] flax optax
 ```
 
 **Capabilities**:
+
 - GPU-accelerated tensor operations
 - Just-in-time (JIT) compilation
 - Automatic differentiation
 - Vectorized computations
 
 **System Requirements**:
+
 - CPU version: Any modern CPU
 - GPU version: NVIDIA GPU with CUDA support
 
 **Verification**:
+
 ```bash
 python3 -c "import jax; import flax.linen; print('JAX + Flax OK')"
 python3 -c "import jax; print(f'JAX devices: {jax.devices()}')"
@@ -304,10 +320,12 @@ python3 -c "import jax; print(f'JAX devices: {jax.devices()}')"
 RxInfer.jl provides reactive Bayesian inference via message passing.
 
 **Requirements**:
+
 - Julia 1.6+ installed
 - RxInfer.jl Julia package
 
 **Installation**:
+
 ```bash
 # Install via Julia package manager
 julia -e 'using Pkg; Pkg.add("RxInfer")'
@@ -316,12 +334,14 @@ julia -e 'using Pkg; Pkg.add("GraphPPL")'
 ```
 
 **Capabilities**:
+
 - Reactive probabilistic programming
 - Efficient message-passing inference
 - Factor graph models
 - Streaming inference
 
 **Verification**:
+
 ```bash
 julia -e 'using RxInfer; println("RxInfer.jl OK")'
 ```
@@ -329,12 +349,14 @@ julia -e 'using RxInfer; println("RxInfer.jl OK")'
 ### Framework Selection Strategies
 
 #### Lite Preset (Recommended for Most Users)
+
 ```bash
 # Install PyMDP + JAX only
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 ```
 
 **Included**:
+
 - DisCoPy (built-in)
 - ActiveInference.jl (auto-install)
 - PyMDP (manual install)
@@ -343,6 +365,7 @@ python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 **Best for**: Python developers, GPU users, fast prototyping
 
 #### Full Preset (Complete Functionality)
+
 ```bash
 # Install all frameworks
 python src/1_setup.py --install_optional --optional_groups "all"
@@ -353,12 +376,14 @@ python src/1_setup.py --install_optional --optional_groups "all"
 **Best for**: Research, comprehensive benchmarking, production use
 
 #### Minimal Preset (Quick Start)
+
 ```bash
 # Use built-in frameworks only (no optional install)
 python src/1_setup.py
 ```
 
 **Included**:
+
 - DisCoPy (built-in)
 - ActiveInference.jl (auto-install on first use)
 
@@ -367,6 +392,7 @@ python src/1_setup.py
 ### Framework Execution
 
 #### Running Specific Frameworks
+
 ```bash
 # Execute specific frameworks only
 python src/12_execute.py --frameworks "pymdp,jax"
@@ -379,6 +405,7 @@ python src/12_execute.py --frameworks "all"
 ```
 
 #### Framework Availability Check
+
 ```bash
 # Check which frameworks are available
 python src/12_execute.py --frameworks "all" --dry-run
@@ -391,6 +418,7 @@ python src/12_execute.py --frameworks "all" --dry-run
 **Symptom**: `ModuleNotFoundError: No module named 'pymdp.agent'`
 
 **Solution**:
+
 ```bash
 uv pip install inferactively-pymdp  # Install correct package
 python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using modern API
@@ -401,6 +429,7 @@ python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"  # Verify using mode
 **Symptom**: `No module named 'flax'` or JAX import errors
 
 **Solution**:
+
 ```bash
 # Reinstall with all components using UV
 uv pip uninstall jax jaxlib flax -y
@@ -415,6 +444,7 @@ python3 -c "import jax; print(jax.devices())"
 **Symptom**: `Half-edge has been found` errors
 
 **Solution**: This is a known issue with older generated code templates. Regenerate code with:
+
 ```bash
 # Regenerate RxInfer code with latest templates
 python src/11_render.py --target-dir input/gnn_files --force-regenerate
@@ -425,6 +455,7 @@ python src/11_render.py --target-dir input/gnn_files --force-regenerate
 **Symptom**: Julia packages not found
 
 **Solution**:
+
 ```bash
 # Update Julia packages
 julia -e 'using Pkg; Pkg.update()'
@@ -465,27 +496,33 @@ julia -e 'using Pkg; Pkg.add("ActiveInference"); Pkg.add("RxInfer")'
 While the `main.py --only-steps 1` approach typically handles dependencies, certain environments (especially on Apple Silicon or specialized Linux distros) can experience conflicts.
 
 ### **JAX vs. PyMDP Version Mismatch**
+
 Some versions of PyMDP depend on specific NumPy ranges that can conflict with the latest JAX requirements.
+
 - **Symptom**: `ImportError: numpy.core.multiarray failed to import`
 - **Solution**:
+
     ```bash
     uv pip install --upgrade "numpy>=1.24,<1.27" "jax[cpu]" "inferactively-pymdp"
     ```
 
 ### **Julia Environment Issues**
+
 - **Symptom**: `julia: command not found` but Julia is definitely installed.
 - **Solution**: Ensure your PATH includes the Julia bin directory. On macOS:
+
     ```bash
     export PATH="$PATH:/Applications/Julia-1.10.app/Contents/Resources/julia/bin"
     ```
 
 ### **Category Theory Backend Conflicts**
+
 - **Symptom**: `TypeError: 'module' object is not callable` when using DisCoPy with JAX.
 - **Solution**: Ensure you install DisCoPy with the matrix extra:
+
     ```bash
     uv pip install "discopy[matrix]"
     ```
-
 
 ## Common Issues and Troubleshooting
 
@@ -563,11 +600,13 @@ docker run -it gnn-project
 ## Security Considerations
 
 ### **Environment Security**
+
 - Store API keys securely (use environment variables or secret management)
 - Validate GNN file inputs in production environments
 - Review [Security Guide](security/README.md) for comprehensive security practices
 
 ### **LLM Integration Security**
+
 - **API Key Protection**: Never commit API keys to version control
 - **Prompt Injection Prevention**: GNN includes built-in prompt sanitization
 - **Output Validation**: All LLM outputs are validated before execution
@@ -575,6 +614,7 @@ docker run -it gnn-project
 ## Performance Optimization
 
 ### **System Requirements for Optimal Performance**
+
 ```yaml
 recommended_specs:
   memory: ">= 8GB RAM"
@@ -584,7 +624,9 @@ recommended_specs:
 ```
 
 ### **Large Model Processing**
+
 For processing large GNN models (>50MB):
+
 ```bash
 # Increase memory limits and enable caching
 export GNN_CACHE_DIR="/path/to/fast/storage"
@@ -595,7 +637,9 @@ python3 main.py --memory-efficient
 ## Integration with Development Tools
 
 ### **VS Code Integration**
+
 For the best development experience:
+
 ```bash
 # Install recommended VS Code extensions
 code --install-extension ms-python.python
@@ -604,7 +648,9 @@ code --install-extension ms-toolsai.jupyter
 ```
 
 ### **Jupyter Notebook Support**
+
 GNN includes Jupyter notebook integration:
+
 ```bash
 # Install Jupyter support
 uv pip install jupyter ipykernel
@@ -617,7 +663,9 @@ jupyter notebook
 ## Continuous Integration Setup
 
 ### **GitHub Actions**
+
 For automated testing and validation:
+
 ```yaml
 # .github/workflows/gnn-test.yml
 name: GNN Pipeline Test
@@ -640,7 +688,9 @@ jobs:
 ## Version Management
 
 ### **Multiple GNN Versions**
+
 To work with multiple GNN versions:
+
 ```bash
 # Use virtual environments for version isolation
 python3 -m venv gnn-v1.1.0
@@ -654,21 +704,25 @@ cd src && python3 main.py --only-steps 1 --dev
 ```
 
 ### **Upgrade Process**
+
 When upgrading GNN versions:
+
 1. **Backup**: Save current models and configurations
 2. **Test**: Validate with existing models using new version
-3. **Migrate**: Follow version-specific upgrade guides in [Changelog](../CHANGELOG.md)
+3. **Migrate**: Follow version-specific upgrade guides in [Releases](releases/README.md)
 4. **Verify**: Run comprehensive tests on upgraded installation
 
 ## Need Help?
 
 ### **Common Setup Issues**
+
 - **Python Version**: Ensure Python 3.11+ is installed and active
 - **Virtual Environment**: Always use virtual environments for isolation
 - **Dependencies**: Check [Common Errors](troubleshooting/common_errors.md) for dependency issues
 - **Permissions**: Ensure write access to project directory
 
 ### **Getting Support**
+
 If you encounter issues during setup:
 
 1. **Check Documentation**: [Troubleshooting Guide](troubleshooting/README.md)
@@ -677,6 +731,7 @@ If you encounter issues during setup:
 4. **Create Issue**: Open a new issue with setup error details and system information
 
 ### **Community Resources**
+
 - **[GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)**: Community Q&A
 - **[Active Inference Institute](https://activeinference.org)**: Research community and resources
 - **[Documentation](README.md)**: Comprehensive project documentation

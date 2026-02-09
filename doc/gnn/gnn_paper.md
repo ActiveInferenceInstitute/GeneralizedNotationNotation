@@ -1,9 +1,16 @@
+# GNN Paper: Generalized Notation Notation
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Generalized Notation Notation for Active
 Inference Models
 Jakub Sm´ekal1[0000−0003−4989−4968] and Daniel Ari
 Friedman1[0000−0001−6232−9096]
-Active Inference Institute, USA https://www.activeinference.institute/
-blanket@activeinference.institute
+Active Inference Institute, USA <https://www.activeinference.institute/>
+<blanket@activeinference.institute>
 Abstract. This paper introduces Generalized Notation Notation (GNN),
 a novel approach to generative model representation that facilitates communication, understanding, and application of Active Inference across
 various domains. GNN complements the Active Inference Ontology as a
@@ -163,30 +170,31 @@ remain open to new ideas, methodologies, action policies, and inferred beliefs, 
 order to foster a more comprehensive understanding of minds and their workings
 [1].
 References
+
 1. Friston, KJ.: The free-energy principle: a unified brain theory?. Nature Reviews
-Neuroscience 11, pages 127–138 (2010) https://doi.org/10.1038/nrn2787
+Neuroscience 11, pages 127–138 (2010) <https://doi.org/10.1038/nrn2787>
 2. Parr, T., Pezzulo, G., Friston, KJ.: Active Inference: The Free Energy Principle in
 Mind, Brain, and Behavior. MIT Press (2022) 9780262045353
 3. Smith, R., Friston, KJ, Whyte, CJ: A step-by-step tutorial on active inference and
 its application to empirical data. Journal of Mathematical Psychology, Volume 107
-(2022) https://doi.org/10.1016/j.jmp.2021.102632
+(2022) <https://doi.org/10.1016/j.jmp.2021.102632>
 Generalized Notation Notation 9
 4. Smith, R., Whyte, CJ., Murphy, M., Friedman, DA: ActInf ModelStream 001.1,
 001.2, 001.3, 001.4: ”A Step-by-Step Tutorial on Active Inference”. Active Inference
-Journal (2022) https://doi.org/10.5281/zenodo.7452789
+Journal (2022) <https://doi.org/10.5281/zenodo.7452789>
 5. Friston, KJ., Ramstead, MJD, Kiefer, AB, Tschantz, A, Buckley CL, et al.: Designing Ecosystems of Intelligence from First Principles. arXiv:2212.01354 (2022)
-https://doi.org/10.48550/arXiv.2212.01354
+<https://doi.org/10.48550/arXiv.2212.01354>
 6. Friedman, DA, Applegate-Swanson, S, Balbuena, JA, Choudhury, A, Cordes, RJ:
 An Active Inference Ontology for Decentralized Science: from Situated Sensemaking
-to the Epistemic Commons. Zenodo (2022) https://doi.org/10.5281/zenodo.7484994
+to the Epistemic Commons. Zenodo (2022) <https://doi.org/10.5281/zenodo.7484994>
 7. Cloutier, J-F: Towards a symbolic implementation of Active Inference for Lego
-robots. Zenodo (2022) https://doi.org/10.5281/zenodo.6862626
+robots. Zenodo (2022) <https://doi.org/10.5281/zenodo.6862626>
 8. Andrews, M: The math is not the territory: navigating the free energy principle.
-Biology Philosophy 36, 30 (2021) https://doi.org/10.1007/s10539-021-09807-0
+Biology Philosophy 36, 30 (2021) <https://doi.org/10.1007/s10539-021-09807-0>
 9. Active Inference Institute: Active Inference Ontology. (2022)
-https://doi.org/10.5281/zenodo.7430333
+<https://doi.org/10.5281/zenodo.7430333>
 10. Active Inference Institute: Generalized Notation Notation (GNN) Github
 repo: github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-https://doi.org/10.5281/zenodo.7803314
+<https://doi.org/10.5281/zenodo.7803314>
 11. Active Inference Institute: Generalized Notation Notation (GNN) Coda:
-https://coda.io/@active-inference-institute/generalized-notation-notation
+<https://coda.io/@active-inference-institute/generalized-notation-notation>

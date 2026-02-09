@@ -1,0 +1,83 @@
+{
+    "$schema": "https://fundingjson.org/schema/v1.1.0.json",
+    "version": "v1.1.0",
+    "entity": {
+        "type": "organisation",
+        "role": "steward",
+        "name": "Active Inference Institute",
+        "email": "blanket@activeinference.institute",
+        "phone": "",
+        "description": "The Active Inference Institute is a 501(c)(3) nonprofit stewarding a long-horizon ecosystem around active inference and related fields. It coordinates open-source research projects, educational programs, and collaborative infrastructure that make active inference tools and concepts practically accessible to researchers, practitioners, and learners. Through community-maintained codebases, shared ontologies, and reproducible computational workflows, the Institute supports rigorous, interoperable, and application-ready active inference methods. Its activities span project incubation, technical stewardship, and public-facing resources that connect theory, simulation, and real-world use cases.",
+        "webpageUrl": {
+            "url": "https://www.activeinference.institute",
+            "wellKnown": ""
+        }
+    },
+    "projects": [
+        {
+            "guid": "generalizednotationnotation",
+            "name": "Generalized Notation Notation (GNN)",
+            "description": "A standardized text-based language for specifying active inference generative models, with a multi-stage validation, visualization, and code-generation pipeline. GNN improves clarity, reproducibility, and interoperability across active inference projects by providing a single canonical format for model specification, automatic type checking, multi-backend rendering (DiscoPy, SymPy, OxDraw, DSPy), and structured documentation generation.",
+            "webpageUrl": {
+                "url": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+                "wellKnown": ""
+            },
+            "repositoryUrl": {
+                "url": "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation",
+                "wellKnown": ""
+            },
+            "licenses": [
+                "spdx:CC-BY-NC-SA-4.0"
+            ],
+            "tags": [
+                "active-inference",
+                "developer-tools",
+                "scientific-computing",
+                "science",
+                "documentation",
+                "artificial-intelligence",
+                "model-specification",
+                "code-generation",
+                "reproducibility",
+                "data-visualization"
+            ]
+        }
+    ],
+    "funding": {
+        "channels": [
+            {
+                "guid": "aii-donate",
+                "type": "payment-provider",
+                "address": "http://donate.activeinference.institute/",
+                "description": "Donations to the Active Inference Institute, a 501(c)(3) nonprofit. For questions, contact blanket@activeinference.institute."
+            }
+        ],
+        "plans": [
+            {
+                "guid": "gnn-support-one-time",
+                "status": "active",
+                "name": "GNN support (one-time)",
+                "description": "One-time contributions to sustain development and maintenance of Generalized Notation Notation, including the pipeline, renderers, documentation, and model library.",
+                "amount": 0,
+                "currency": "USD",
+                "frequency": "one-time",
+                "channels": [
+                    "aii-donate"
+                ]
+            },
+            {
+                "guid": "gnn-support-monthly",
+                "status": "active",
+                "name": "GNN support (monthly)",
+                "description": "Recurring monthly support for long-term stewardship of the GNN specification, pipeline tooling, multi-backend renderers, and community model ecosystem.",
+                "amount": 0,
+                "currency": "USD",
+                "frequency": "monthly",
+                "channels": [
+                    "aii-donate"
+                ]
+            }
+        ],
+        "history": []
+    }
+}

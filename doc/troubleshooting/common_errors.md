@@ -15,17 +15,21 @@ This guide helps you diagnose and fix common issues when working with GNN models
 ## 📝 Syntax Errors
 
 ### Problem: "Invalid GNN syntax"
+
 ```
 Error: Unexpected character '[' at line 15
 ```
 
 **Common Causes:**
+
 - Missing commas in variable definitions
 - Incorrect bracket usage `[]` vs `{}` vs `()`
 - Invalid variable naming (spaces, special characters)
 
 **Solutions:**
+
 1. **Check variable definitions:**
+
    ```gnn
    # ❌ Wrong
    s f0[2,1,type=int]  # Space in variable name
@@ -35,6 +39,7 @@ Error: Unexpected character '[' at line 15
    ```
 
 2. **Verify bracket usage:**
+
    ```gnn
    # ❌ Wrong
    s_f0{2,1,type=int}  # Curly braces for dimensions
@@ -44,6 +49,7 @@ Error: Unexpected character '[' at line 15
    ```
 
 3. **Check connection syntax:**
+
    ```gnn
    # ❌ Wrong
    s_f0 -> A_m0 -> o_m0  # Chain notation not supported
@@ -54,11 +60,13 @@ Error: Unexpected character '[' at line 15
    ```
 
 ### Problem: "Unrecognized section header"
+
 ```
 Error: Unknown section "StateSpace" at line 8
 ```
 
 **Solution:** Use exact section names from the [GNN File Structure](../gnn/gnn_file_structure_doc.md):
+
 ```gnn
 # ❌ Wrong
 ## StateSpace
@@ -70,16 +78,19 @@ Error: Unknown section "StateSpace" at line 8
 ## 🔢 Dimension and Type Errors
 
 ### Problem: "Matrix dimension mismatch"
+
 ```
 Error: A_m0 expects dimensions [3,2] but got [2,3]
 ```
 
 **Diagnosis:**
+
 1. Check your StateSpaceBlock definitions
 2. Verify matrix structure in InitialParameterization
 3. Ensure observation outcomes match matrix rows
 
 **Solution:**
+
 ```gnn
 ## StateSpaceBlock
 o_m0[3,1,type=int]   # 3 possible observations
@@ -98,12 +109,15 @@ A_m0={
 ```
 
 ### Problem: "Probability distributions don't sum to 1"
+
 ```
 Error: B_f0 column 0 sums to 0.85, expected 1.0
 ```
 
 **Solution:**
+
 1. **Check each column sums to 1:**
+
    ```gnn
    # ❌ Wrong - columns don't sum to 1
    B_f0={
@@ -119,6 +133,7 @@ Error: B_f0 column 0 sums to 0.85, expected 1.0
    ```
 
 2. **Use normalization helper:**
+
    ```python
    # Python helper for normalization
    import numpy as np
@@ -134,12 +149,15 @@ Error: B_f0 column 0 sums to 0.85, expected 1.0
 ## 🔗 Connection Errors
 
 ### Problem: "Undefined variable in connections"
+
 ```
 Error: Variable 'G' referenced in connections but not defined in StateSpaceBlock
 ```
 
 **Solution:**
+
 1. **Add missing variables to StateSpaceBlock:**
+
    ```gnn
    ## StateSpaceBlock
    # Add the missing variable
@@ -151,6 +169,7 @@ Error: Variable 'G' referenced in connections but not defined in StateSpaceBlock
    ```
 
 2. **Check for typos in variable names:**
+
    ```gnn
    # ❌ Typo in connection
    (s_f0) -> (A_m0)
@@ -164,12 +183,14 @@ Error: Variable 'G' referenced in connections but not defined in StateSpaceBlock
    ```
 
 ### Problem: "Circular dependency detected"
+
 ```
 Error: Circular dependency: s_f0 -> A_m0 -> s_f0
 ```
 
 **Solution:**
 Review your model structure. Circular dependencies usually indicate:
+
 1. **Incorrect causality direction**
 2. **Missing temporal distinction** (use `s_f0_next` for future states)
 3. **Conceptual modeling error**
@@ -189,12 +210,15 @@ Review your model structure. Circular dependencies usually indicate:
 ## 🎯 Rendering and Code Generation Errors
 
 ### Problem: "Cannot generate PyMDP code"
+
 ```
 Error: Variable naming conflicts with PyMDP reserved words
 ```
 
 **Solutions:**
+
 1. **Avoid reserved words:**
+
    ```gnn
    # ❌ Problematic names
    A[2,2,type=float]      # 'A' might conflict with numpy
@@ -206,18 +230,22 @@ Error: Variable naming conflicts with PyMDP reserved words
    ```
 
 2. **Check matrix structure compatibility:**
+
    ```gnn
    # Ensure matrices are properly structured for target framework
    # PyMDP expects specific conventions for A, B, C, D matrices
    ```
 
 ### Problem: "LaTeX rendering fails"
+
 ```
 Error: Invalid LaTeX syntax in equations section
 ```
 
 **Solution:**
+
 1. **Escape special characters:**
+
    ```gnn
    ## Equations
    # ❌ Unescaped underscore
@@ -228,6 +256,7 @@ Error: Invalid LaTeX syntax in equations section
    ```
 
 2. **Use supported LaTeX commands:**
+
    ```gnn
    # ✅ Standard mathematical notation
    \mathbf{A}          # Bold matrix
@@ -238,24 +267,28 @@ Error: Invalid LaTeX syntax in equations section
 ## 🛠️ Debugging Workflow
 
 ### Step 1: Validate Syntax
+
 ```bash
 # Run the GNN type checker
-python src/4_gnn_type_checker.py --target-dir your_model_directory
+python src/5_type_checker.py --target-dir your_model_directory
 ```
 
 ### Step 2: Check Individual Sections
+
 1. **StateSpaceBlock**: Verify all variables are properly defined
 2. **Connections**: Ensure all referenced variables exist
 3. **InitialParameterization**: Check matrix dimensions and probability constraints
 4. **Equations**: Validate mathematical notation
 
 ### Step 3: Test Incremental Complexity
+
 1. Start with a minimal working model
 2. Add one component at a time
 3. Test after each addition
 4. Isolate the problematic component
 
 ### Step 4: Use Validation Tools
+
 ```python
 # Python validation script
 from src.gnn_type_checker import validate_gnn_file
@@ -269,21 +302,25 @@ if not result.is_valid:
 ## 📋 Preventive Best Practices
 
 ### 1. Use Consistent Naming
+
 - Follow `s_f0`, `o_m0`, `A_m0` conventions
 - Use descriptive comments
 - Avoid special characters
 
 ### 2. Validate Early and Often
+
 - Run type checker after major changes
 - Test with simple examples first
 - Use templates for new models
 
 ### 3. Document Your Model
+
 - Add clear ModelAnnotation
 - Comment complex parameterizations
 - Include usage examples
 
 ### 4. Version Control
+
 - Track changes to your GNN files
 - Tag working versions
 - Document breaking changes
@@ -303,6 +340,7 @@ If you're still stuck:
 ## 🔄 Error Recovery Templates
 
 ### Quick Fix: Basic POMDP Model
+
 ```gnn
 ## GNNVersionAndFlags
 GNN v1
@@ -335,11 +373,12 @@ Static
 Debug Test Model
 ```
 
-This minimal model should always parse correctly and can serve as a baseline for debugging more complex models. 
+This minimal model should always parse correctly and can serve as a baseline for debugging more complex models.
 
 ## 🐛 Internal Pipeline Errors
 
 ### Problem: "ImportError: cannot import name 'parse_matrix_data'"
+
 ```
 ImportError: cannot import name 'parse_matrix_data' from 'visualization.processor'
 ```
@@ -349,11 +388,13 @@ Missing import or definition in `src/visualization/processor.py`. This function 
 
 **Solution:**
 Ensure you are using the latest version of the `visualization` module. The function should be imported as:
+
 ```python
 from analysis.analyzer import parse_matrix_data, generate_matrix_visualizations
 ```
 
 ### Problem: "NameError: name 'Path' is not defined" in GUI
+
 ```
 NameError: name 'Path' is not defined
 ```
@@ -363,11 +404,13 @@ Missing `from pathlib import Path` in `src/gui/__init__.py`.
 
 **Solution:**
 Add the missing import to the top of the file:
+
 ```python
 from pathlib import Path
 ```
 
 ### Problem: "ImportError: cannot import name 'run_gui' from 'gui'"
+
 ```
 ImportError: cannot import name 'run_gui' from 'gui'
 ```
@@ -377,6 +420,7 @@ ImportError: cannot import name 'run_gui' from 'gui'
 
 **Solution:**
 Update your code/tests to use `process_gui` instead:
+
 ```python
 from gui import process_gui
 ```

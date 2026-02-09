@@ -1,5 +1,10 @@
 # GNN Implementation Guide
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides guidance on how to implement GNN models in computational environments, with practical code examples and workflows.
 
 ## Pipeline-Based Implementation
@@ -7,15 +12,18 @@ This document provides guidance on how to implement GNN models in computational 
 GNN models are implemented through the processing pipeline's code generation and execution steps:
 
 **Code Generation (Step 11)**
+
 - **`src/11_render.py`** → Generate executable code for multiple frameworks
   - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)** for rendering details
   - Supports: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 
 **Execution (Step 12)**
+
 - **`src/12_execute.py`** → Execute rendered simulation scripts
   - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution details
 
 **Quick Start:**
+
 ```bash
 # Generate and execute implementations
 python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
@@ -296,27 +304,27 @@ When developing a comprehensive environment for working with GNN, it's beneficia
 
 **Key Principles Demonstrated:**
 
-1.  **Central Orchestrator (`src/main.py`):**
-    *   A main script (e.g., `src/main.py`) acts as the primary entry point for all GNN processing tasks.
-    *   It handles common functionalities like command-line argument parsing (for selecting GNN files, output directories, specific tasks to run, verbosity, etc.), loading configurations, and initializing shared resources.
-    *   This central script then calls individual modules or sub-scripts that perform specific stages of the processing.
+1. **Central Orchestrator (`src/main.py`):**
+    - A main script (e.g., `src/main.py`) acts as the primary entry point for all GNN processing tasks.
+    - It handles common functionalities like command-line argument parsing (for selecting GNN files, output directories, specific tasks to run, verbosity, etc.), loading configurations, and initializing shared resources.
+    - This central script then calls individual modules or sub-scripts that perform specific stages of the processing.
 
-2.  **Modular, Numbered Scripts for Pipeline Stages:**
-    *   Specific tasks (e.g., core GNN parsing, setup, testing, type checking, export, visualization, ontology mapping) are implemented in separate Python scripts.
-    *   These scripts are often numbered (e.g., `1_setup.py`, `3_gnn.py`, `4_gnn_type_checker.py`) to indicate a logical sequence of execution or dependency.
-    *   Each script typically focuses on one primary function and can be developed and tested independently.
-    *   The orchestrator (`main.py`) dynamically discovers these numbered scripts and executes them in order, passing necessary arguments and context.
+2. **Modular, Numbered Scripts for Pipeline Stages:**
+    - Specific tasks (e.g., core GNN parsing, setup, testing, type checking, export, visualization, ontology mapping) are implemented in separate Python scripts.
+    - These scripts are often numbered (e.g., `1_setup.py`, `3_gnn.py`, `5_type_checker.py`) to indicate a logical sequence of execution or dependency.
+    - Each script typically focuses on one primary function and can be developed and tested independently.
+    - The orchestrator (`main.py`) dynamically discovers these numbered scripts and executes them in order, passing necessary arguments and context.
 
-3.  **Dedicated Subdirectories for Modules:**
-    *   Larger, more complex processing stages (like type checking or visualization) can have their own subdirectories (e.g., `src/gnn_type_checker/`, `src/visualization/`) containing their specific logic, helper files, and potentially their own internal main scripts if they can also be run standalone for debugging or specific use cases.
+3. **Dedicated Subdirectories for Modules:**
+    - Larger, more complex processing stages (like type checking or visualization) can have their own subdirectories (e.g., `src/type_checker/`, `src/visualization/`) containing their specific logic, helper files, and potentially their own internal main scripts if they can also be run standalone for debugging or specific use cases.
 
 **Benefits of this Approach:**
 
-*   **Clarity and Organization:** The processing pipeline is clearly defined, and each step has a dedicated module.
-*   **Modularity:** Individual components can be updated or replaced without affecting the entire system.
-*   **Scalability:** New processing steps can be easily added by creating a new numbered script.
-*   **Flexibility:** The orchestrator can allow users to run the full pipeline, skip steps, or run only specific steps, as demonstrated by the `src/main.py` script's `--skip-steps` and `--only-steps` options.
-*   **Reusability:** Core logic within each module can potentially be reused in other contexts.
+- **Clarity and Organization:** The processing pipeline is clearly defined, and each step has a dedicated module.
+- **Modularity:** Individual components can be updated or replaced without affecting the entire system.
+- **Scalability:** New processing steps can be easily added by creating a new numbered script.
+- **Flexibility:** The orchestrator can allow users to run the full pipeline, skip steps, or run only specific steps, as demonstrated by the `src/main.py` script's `--skip-steps` and `--only-steps` options.
+- **Reusability:** Core logic within each module can potentially be reused in other contexts.
 
 This structured approach, as seen in the GNN project's `src/` directory and `main.py`, is a recommended pattern for implementing a robust and maintainable GNN processing workflow.
 
@@ -655,7 +663,7 @@ graph LR
 ## References
 
 1. Smith, R., Friston, K.J., & Whyte, C.J. (2022). A step-by-step tutorial on active inference and its application to empirical data. Journal of Mathematical Psychology, 107, 102632.
-2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. https://doi.org/10.5281/zenodo.7803328
+2. Smékal, J., & Friedman, D. A. (2023). Generalized Notation Notation for Active Inference Models. Active Inference Institute. <https://doi.org/10.5281/zenodo.7803328>
 3. Hesp, C., Tschantz, A., Millidge, B., Ramstead, M., Friston, K., & Smith, R. (2021). Sophisticated Inference. Neural Computation, 33(3), 713-762.
-4. PyTorch Documentation: https://pytorch.org/docs/stable/index.html
-5. NumPy Documentation: https://numpy.org/doc/stable/ 
+4. PyTorch Documentation: <https://pytorch.org/docs/stable/index.html>
+5. NumPy Documentation: <https://numpy.org/doc/stable/>

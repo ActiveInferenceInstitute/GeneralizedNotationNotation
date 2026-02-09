@@ -1,5 +1,10 @@
 # GNN Syntax Reference
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Quick reference for GNN syntax with working examples.
 
 ## Syntax Validation
@@ -11,6 +16,7 @@ GNN syntax is validated through the pipeline type checker:
 - **`src/6_validation.py`** → Advanced consistency checking
 
 **Quick Start:**
+
 ```bash
 # Validate GNN syntax
 python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose

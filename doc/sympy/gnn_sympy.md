@@ -11,6 +11,7 @@ The Generalized Notation Notation (GNN) project can significantly benefit from i
 **Current GNN Challenge**: GNN files contain mathematical expressions in LaTeX format within the `Equations` section, but these are primarily treated as text without mathematical validation.
 
 **SymPy MCP Solution**:
+
 - **Expression Parsing**: Use `introduce_expression()` to parse and validate mathematical expressions from GNN files
 - **Symbolic Simplification**: Apply `simplify_expression()` to canonicalize mathematical relationships
 - **LaTeX Generation**: Leverage `print_latex_expression()` to ensure consistent mathematical formatting
@@ -36,6 +37,7 @@ def validate_gnn_equations(gnn_equations: List[str]) -> Dict[str, str]:
 **Current GNN Challenge**: GNN files specify A, B, C, D matrices for Active Inference models, but dimensional consistency and stochastic properties are not automatically verified.
 
 **SymPy MCP Solution**:
+
 - **Matrix Creation**: Use `create_matrix()` to construct A, B, C, D matrices from GNN specifications
 - **Stochasticity Validation**: Verify that transition matrices sum to 1 across appropriate dimensions
 - **Dimensional Analysis**: Ensure matrix dimensions align with state space and observation space definitions
@@ -66,6 +68,7 @@ def validate_active_inference_matrices(gnn_model: GNNModel) -> ValidationReport:
 **Current GNN Challenge**: GNN supports both static and dynamic models, but dynamic models with differential equations lack automated analysis capabilities.
 
 **SymPy MCP Solution**:
+
 - **ODE Solving**: Use `dsolve_ode()` for ordinary differential equations in temporal dynamics
 - **PDE Solving**: Apply `pdsolve_pde()` for partial differential equations in spatial-temporal models
 - **Stability Analysis**: Analyze equilibrium points and stability of dynamic systems
@@ -96,6 +99,7 @@ def analyze_gnn_dynamics(gnn_model: GNNModel) -> DynamicsAnalysis:
 **Current GNN Challenge**: Determining mathematical equivalence between different GNN model specifications is currently limited to syntactic comparison.
 
 **SymPy MCP Solution**:
+
 - **Symbolic Comparison**: Use symbolic manipulation to determine mathematical equivalence
 - **Canonical Forms**: Reduce expressions to canonical forms for meaningful comparison
 - **Substitution Analysis**: Apply `substitute_expression()` to explore model relationships
@@ -127,6 +131,7 @@ def compare_gnn_models(model1: GNNModel, model2: GNNModel) -> ComparisonReport:
 **Current GNN Challenge**: Limited capability for advanced mathematical analysis of Active Inference models beyond basic validation.
 
 **SymPy MCP Solution**:
+
 - **Vector Calculus**: Use gradient, divergence, and curl operations for gradient-based inference analysis
 - **Linear Algebra**: Apply eigenvalue/eigenvector analysis for system stability
 - **Integration/Differentiation**: Compute expected values and variational derivatives
@@ -161,11 +166,11 @@ def perform_advanced_analysis(gnn_model: GNNModel) -> AdvancedAnalysis:
 
 1. **MCP Client Integration**: Extend the existing `src/mcp/` module to include SymPy MCP client
 2. **Expression Parser**: Create GNN-to-SymPy expression converter that handles GNN syntax
-3. **Validation Pipeline**: Integrate mathematical validation into the existing `4_gnn_type_checker.py`
+3. **Validation Pipeline**: Integrate mathematical validation into the existing `5_type_checker.py`
 
 ### Phase 2: Mathematical Enhancement Pipeline
 
-1. **Enhanced Type Checker**: Extend `4_gnn_type_checker.py` to use SymPy for mathematical validation
+1. **Enhanced Type Checker**: Extend `5_type_checker.py` to use SymPy for mathematical validation
 2. **Equation Processor**: New pipeline step `4.5_equation_analyzer.py` for symbolic equation analysis
 3. **Matrix Validator**: Specialized validation for Active Inference matrices using SymPy linear algebra
 
@@ -230,7 +235,7 @@ class GNNSymPyMCP:
 ### Enhanced GNN Type Checker
 
 ```python
-# src/gnn_type_checker/mathematical_validator.py
+# src/type_checker/mathematical_validator.py
 
 class MathematicalValidator:
     """Enhanced mathematical validation using SymPy MCP"""
@@ -263,21 +268,25 @@ class MathematicalValidator:
 ## Benefits and Impact
 
 ### 1. Enhanced Reliability
+
 - **Mathematical Correctness**: Automatic validation of mathematical expressions prevents errors
 - **Dimensional Consistency**: Ensures matrices and equations have compatible dimensions
 - **Stochastic Validation**: Verifies probability constraints are satisfied
 
 ### 2. Research Acceleration
+
 - **Rapid Prototyping**: Researchers can quickly validate mathematical ideas
 - **Model Comparison**: Symbolic analysis enables deeper model understanding
 - **Automated Analysis**: Reduces manual mathematical verification overhead
 
 ### 3. Educational Value
+
 - **Learning Tool**: Students can see step-by-step symbolic manipulation
 - **Verification**: Provides confidence in mathematical derivations
 - **Exploration**: Enables "what-if" analysis through symbolic substitution
 
 ### 4. Interoperability Enhancement
+
 - **Standard Forms**: Canonical mathematical representations improve model sharing
 - **Translation Quality**: Better mathematical understanding improves code generation
 - **Documentation**: Automatic LaTeX generation ensures consistent notation
@@ -285,16 +294,19 @@ class MathematicalValidator:
 ## Implementation Considerations
 
 ### 1. Performance Optimization
+
 - **Expression Caching**: Cache parsed expressions to avoid redundant computation
 - **Lazy Evaluation**: Only perform expensive symbolic operations when needed
 - **Parallel Processing**: Leverage SymPy's capabilities for matrix operations
 
 ### 2. Error Handling
+
 - **Graceful Degradation**: Fall back to syntactic validation if symbolic analysis fails
 - **User Feedback**: Provide meaningful error messages for mathematical issues
 - **Recovery Strategies**: Suggest corrections for common mathematical errors
 
 ### 3. Configuration Management
+
 - **Precision Control**: Allow users to specify symbolic vs. numeric computation preferences
 - **Assumption Management**: Handle mathematical assumptions (real, positive, etc.) consistently
 - **Timeout Handling**: Prevent infinite computation on complex expressions
@@ -302,16 +314,19 @@ class MathematicalValidator:
 ## Future Extensions
 
 ### 1. Machine Learning Integration
+
 - **Gradient Computation**: Automatic differentiation for learning algorithms
 - **Optimization**: Symbolic optimization of variational parameters
 - **Uncertainty Quantification**: Symbolic manipulation of probability distributions
 
 ### 2. Visualization Enhancement
+
 - **Mathematical Plots**: Generate visualizations of mathematical relationships
 - **Interactive Exploration**: Real-time symbolic manipulation interface
 - **Equation Rendering**: Enhanced LaTeX rendering with mathematical insights
 
 ### 3. Domain-Specific Extensions
+
 - **Neuroscience**: Specialized validation for neural network models
 - **Robotics**: Kinematic and dynamic equation validation
 - **Economics**: Utility function and equilibrium analysis

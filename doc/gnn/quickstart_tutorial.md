@@ -1,5 +1,10 @@
 # GNN Quick Start Tutorial
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 **Goal**: Create and run your first GNN model in 15 minutes, no prior Active Inference knowledge required.
 
 ## 🎯 What You'll Build
@@ -21,7 +26,7 @@ A simple navigation agent that learns to find a goal location in a 2x2 grid worl
 
 ## 📥 Step 1: Setup (2 minutes)
 
-### Install the GNN toolkit:
+### Install the GNN toolkit
 
 ```bash
 # Clone the repository
@@ -38,7 +43,7 @@ uv sync
 python src/main.py --help
 ```
 
-### Create your workspace:
+### Create your workspace
 
 ```bash
 # Create a folder for your first model
@@ -49,18 +54,22 @@ cd my_first_gnn_model
 ## 🧱 Step 2: Understanding the Basics (3 minutes)
 
 ### What is Active Inference?
+
 **Simple version**: A mathematical framework where agents:
+
 1. Have **beliefs** about the world (hidden states)
 2. Make **observations** about what they can see
 3. Take **actions** to achieve their **preferences**
 
 ### What does a GNN model specify?
+
 1. **States**: What the agent needs to track (e.g., position)
 2. **Observations**: What the agent can see (e.g., visual input)
 3. **Actions**: What the agent can do (e.g., move)
 4. **Preferences**: What the agent wants (e.g., reach goal)
 
-### Our Grid World Model:
+### Our Grid World Model
+
 - **States**: 4 positions (Top-Left, Top-Right, Bottom-Left, Bottom-Right)
 - **Observations**: Current position (can see where it is)
 - **Actions**: 4 movements (Up, Down, Left, Right)
@@ -228,10 +237,11 @@ python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --out
 ```
 
 For more details on code generation, see:
+
 - **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code rendering module documentation  
 - **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**: Execution module documentation
 
-### Test the generated code:
+### Test the generated code
 
 ```bash
 # Navigate to rendered output
@@ -246,9 +256,10 @@ python grid_agent_pymdp.py
 # Time 2: Position=BottomRight, Action=Stay (GOAL REACHED!)
 ```
 
-## 🎉 Congratulations!
+## 🎉 Congratulations
 
 You've just:
+
 1. ✅ Written your first GNN model
 2. ✅ Validated it with the type checker
 3. ✅ Generated executable code
@@ -257,6 +268,7 @@ You've just:
 ## 🔄 What Just Happened?
 
 Your agent:
+
 1. **Started** with belief it's at TopLeft
 2. **Observed** its true position  
 3. **Planned** actions to reach the goal (BottomRight)
@@ -265,12 +277,14 @@ Your agent:
 
 ## 🎯 Next Steps
 
-### Immediate Experiments (5 minutes each):
+### Immediate Experiments (5 minutes each)
+
 1. **Change the goal**: Modify `C_m0` to prefer TopRight instead
 2. **Add uncertainty**: Make observations noisy by modifying `A_m0`
 3. **Bigger world**: Extend to a 3x3 grid (requires updating all matrices)
 
-### Deeper Learning:
+### Deeper Learning
+
 1. **Understand the math**: Read [Active Inference basics](about_gnn.md)
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
@@ -278,7 +292,8 @@ Your agent:
 5. **Pipeline architecture**: See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation
 6. **Pipeline safety**: Read **[src/README.md](../../src/README.md)** for architecture patterns
 
-### Build Your Own Model:
+### Build Your Own Model
+
 1. **Start with the template**: Use [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Model your domain**: What states, observations, actions make sense?
 3. **Get help**: Check [FAQ](../troubleshooting/faq.md) and [community discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
@@ -299,29 +314,33 @@ Your agent:
 ## 🛠️ Common Issues and Quick Fixes
 
 ### "Parser Error: Invalid syntax"
+
 - Check section headers: Use `## StateSpaceBlock` not `## StateSpace`
 - Check variable names: Use `s_f0` not `s f0` (underscores, not spaces)
 
-### "Dimension mismatch" 
+### "Dimension mismatch"
+
 - Ensure matrix sizes match variable definitions
 - `A_m0[4,4]` means 4 observations × 4 states
 
 ### "Probabilities don't sum to 1"
+
 - Each column in B_f0 must sum to 1.0
 - Each column in A_m0 must sum to 1.0
 
 ### "My agent doesn't reach the goal"
+
 - Check `C_m0`: Higher values should be at preferred states
 - Check `B_f0`: Ensure movement logic is correct
 - Try `ModelTimeHorizon=10` for longer planning
 
 ## 📚 Resources
 
-- **Pipeline Documentation**: 
+- **Pipeline Documentation**:
   - [src/AGENTS.md](../../src/AGENTS.md): Complete module registry
   - [src/README.md](../../src/README.md): Pipeline architecture and safety
 - **Documentation**: [Full GNN guide](about_gnn.md) and [GNN Overview](gnn_overview.md)
-- **Examples**: [Model gallery](gnn_examples_doc.md) 
+- **Examples**: [Model gallery](gnn_examples_doc.md)
 - **Help**:
   - [FAQ](../troubleshooting/README.md)
   - [Error guide](../troubleshooting/api_error_reference.md)
@@ -333,4 +352,4 @@ Your agent:
 **🎓 You're now a GNN practitioner!** Ready to model complex cognitive agents and contribute to Active Inference research.
 
 **Time taken**: ~15 minutes  
-**Achievement unlocked**: First working GNN model ✨ 
+**Achievement unlocked**: First working GNN model ✨

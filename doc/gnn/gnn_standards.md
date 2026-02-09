@@ -1,4 +1,9 @@
-# GNN Domain Knowledge and Standards
+# GNN Standards
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 ## Pipeline Processing Standards
 
@@ -18,7 +23,65 @@ The GNN pipeline follows strict architectural patterns and standards:
 
 ---
 
-### GNN File Structure Understanding
+## Coding Standards
+
+### Python Style
+
+- **Type Hints**: All public functions must have complete type annotations
+- **Docstrings**: Google-style docstrings for all public classes and functions
+- **Imports**: Use relative imports within modules, absolute imports for cross-module references
+- **Logging**: Use `logging.getLogger(__name__)` with structured log messages via `utils.pipeline_template`
+
+### Module Structure
+
+Each pipeline module follows this layout:
+
+```text
+src/<module_name>/
+├── __init__.py          # Public API exports
+├── processor.py         # Core processing logic
+├── mcp.py               # MCP tool definitions
+├── AGENTS.md            # Module documentation
+└── tests/               # Module-specific tests
+```
+
+### Naming Conventions
+
+- **Pipeline scripts**: `src/{step}_{name}.py` (e.g., `src/3_gnn.py`)
+- **Modules**: lowercase with underscores (e.g., `type_checker`, `advanced_visualization`)
+- **Test files**: `test_{module_name}.py` or `test_{feature}.py`
+- **Output directories**: `output/{step}_{name}_output/` (e.g., `output/3_gnn_output/`)
+
+---
+
+## Testing Standards
+
+### Zero-Mock Policy
+
+All tests must use real implementations. **No mock objects, fake methods, or stub functions** are permitted.
+
+```python
+# ❌ PROHIBITED
+@mock.patch("module.real_function")
+def test_with_mock(mock_fn):
+    mock_fn.return_value = fake_result
+
+# ✅ REQUIRED
+def test_with_real_data():
+    result = real_function(real_input)
+    assert result.is_valid
+```
+
+### Test Requirements
+
+- Minimum 90% code coverage per module
+- Tests must validate real pipeline outputs against known-good baselines
+- Integration tests run the full pipeline with sample GNN files from `input/gnn_files/`
+- Tests are run via: `python -m pytest tests/ -v`
+
+---
+
+## GNN File Structure Standards
 
 - **GNN Files**: Markdown-based (.md) with specific sections:
   - `GNNVersionAndFlags`: Version specification and processing flags
@@ -32,7 +95,7 @@ The GNN pipeline follows strict architectural patterns and standards:
   - `ActInfOntologyAnnotation`: Mapping to Active Inference Ontology terms
   - `Footer` and `Signature`: Provenance information
 
-### GNN Syntax and Punctuation
+## GNN Syntax and Punctuation
 
 - **Variables**: Use underscore for subscripts (X_2), caret for superscripts (X^Y)
 - **Dimensions**: Square brackets for array dimensions [2,3] = 2x3 matrix
@@ -41,3 +104,32 @@ The GNN pipeline follows strict architectural patterns and standards:
 - **Grouping**: Parentheses (), exact values {1}, indexing/dimensions [2,3]
 - **Comments**: Triple hashtags (###) for inline comments
 - **Probability**: Conditional probability notation P(X|Y) using pipe |
+
+---
+
+## Documentation Standards
+
+### File Metadata
+
+Every documentation file in `doc/gnn/` must include this header:
+
+```markdown
+# [Title]
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+```
+
+### Cross-Referencing
+
+- Link to relevant module AGENTS.md files for implementation details
+- Link to related documentation files within `doc/gnn/`
+- Use relative paths for all internal links
+
+### Content Principles
+
+- **Show Not Tell**: Provide working code examples and real outputs
+- **Evidence-Based**: Cite specific metrics and measurable results
+- **Understated**: Concrete descriptions over promotional language

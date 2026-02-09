@@ -10,6 +10,7 @@
 oxdraw serves as a visual interface for the Generalized Notation Notation (GNN) pipeline, enabling drag-and-drop creation of Active Inference graphical models with bidirectional text-visual synchronization. This integration leverages oxdraw's hybrid Mermaid-based architecture alongside GNN's 25-step processing pipeline to provide researchers with intuitive visual model construction while maintaining rigorous semantic validation and computational reproducibility.
 
 **Key Integration Value**:
+
 - Visual construction of POMDP architectures through intuitive node-and-edge manipulation
 - Automatic translation between Mermaid diagrams and GNN plaintext specifications
 - Preservation of Active Inference ontology assertions through comment-based metadata
@@ -705,6 +706,7 @@ oxdraw --input output/oxdraw_interface/actinf_pomdp_agent.mmd --edit --serve-por
 ```
 
 **Visual Editing Capabilities**:
+
 - Drag nodes to refine layout (preserves GNN metadata)
 - Add/remove connections by drawing edges
 - Adjust edge routing with control points
@@ -712,6 +714,7 @@ oxdraw --input output/oxdraw_interface/actinf_pomdp_agent.mmd --edit --serve-por
 - Add visual annotations (preserved in comments)
 
 **Example Edit**: Add precision modulation to the model by:
+
 1. Creating new node `γ` (precision parameter)
 2. Drawing edge `γ ==> F` (modulates inference)
 3. Adjusting layout for clarity
@@ -777,7 +780,7 @@ print("✅ Model validated through GNN pipeline")
 
 Create a dedicated pipeline step for oxdraw integration.
 
-#### File: `src/24_oxdraw_gui.py`
+#### File: `src/22_gui.py`
 
 ```python
 #!/usr/bin/env python3
@@ -802,7 +805,7 @@ def main():
     """Main entry point for oxdraw GUI integration step."""
     
     run_script = create_standardized_pipeline_script(
-        script_name="24_oxdraw_gui.py",
+        script_name="22_gui.py",
         processing_function=process_oxdraw_gui,
         description="oxdraw visual interface for GNN model construction"
     )
@@ -977,6 +980,7 @@ def _check_oxdraw_installed() -> bool:
 **Scenario**: Researcher wants to explore different POMDP architectures
 
 **Workflow**:
+
 1. Create skeleton GNN file with basic structure
 2. Convert to Mermaid with `convert_gnn_file_to_mermaid()`
 3. Launch oxdraw editor to visually experiment with:
@@ -987,6 +991,7 @@ def _check_oxdraw_installed() -> bool:
 5. Export to PyMDP/RxInfer for simulation
 
 **Benefits**:
+
 - Immediate visual feedback
 - No syntax errors from manual GNN editing
 - Preservation of mathematical semantics
@@ -996,6 +1001,7 @@ def _check_oxdraw_installed() -> bool:
 **Scenario**: Team designing complex cognitive security model
 
 **Workflow**:
+
 1. Initial model specification in GNN
 2. Convert to Mermaid for version control
 3. Team members use oxdraw to:
@@ -1006,6 +1012,7 @@ def _check_oxdraw_installed() -> bool:
 5. Merge approved changes back to canonical GNN
 
 **Benefits**:
+
 - Version-controlled visual models
 - Reduced communication overhead
 - Clear visual diff of architectural changes
@@ -1015,6 +1022,7 @@ def _check_oxdraw_installed() -> bool:
 **Scenario**: Teaching Active Inference to new researchers
 
 **Workflow**:
+
 1. Provide pre-built GNN models for classic examples
 2. Students explore through oxdraw visual interface
 3. Guided exercises:
@@ -1025,6 +1033,7 @@ def _check_oxdraw_installed() -> bool:
 5. Export to executable simulations for experimentation
 
 **Benefits**:
+
 - Lower barrier to entry (visual vs. text)
 - Immediate feedback on model validity
 - Smooth transition to full GNN syntax
@@ -1062,11 +1071,13 @@ def _check_oxdraw_installed() -> bool:
 ### Dependencies
 
 **Required**:
+
 - `oxdraw` (Rust binary via cargo)
 - Existing GNN pipeline modules (steps 3, 5, 6, 10)
 - Python 3.10+
 
 **Optional**:
+
 - `mermaid-cli` (for server-side rendering)
 - `pygraphviz` (for advanced layout algorithms)
 
@@ -1161,17 +1172,20 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 ## References
 
 ### GNN Pipeline Documentation
+
 - [GNN Parser](../../src/gnn/AGENTS.md) - Core parsing and validation
 - [Ontology Module](../../src/ontology/AGENTS.md) - Active Inference ontology
 - [Visualization Module](../../src/visualization/AGENTS.md) - Graph rendering
 - [GUI Module](../../src/gui/AGENTS.md) - Interactive constructors
 
 ### oxdraw Resources
+
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
 - [Mermaid Syntax](https://mermaid.js.org/syntax/flowchart.html)
 - [oxdraw Technical Overview](oxdraw.md)
 
 ### Active Inference
+
 - [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
 - [POMDP Specification](../gnn/gnn_standards.md)
 
@@ -1180,4 +1194,3 @@ This integration demonstrates how **diagram-as-code** tools can enhance scientif
 **Document Version**: 1.0  
 **Authors**: GNN Pipeline Team  
 **License**: MIT
-

@@ -1,5 +1,10 @@
 # GNN Schema Specification
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Complete specification for GNN syntax parsing and validation.
 
 ## Pipeline Processing
@@ -16,6 +21,7 @@ GNN schema validation is handled by multiple pipeline steps:
   - See: **[src/validation/AGENTS.md](../../src/validation/AGENTS.md)**
 
 **Quick Start:**
+
 ```bash
 # Validate GNN schema
 python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
@@ -28,6 +34,7 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)*
 ## Core Schema Components
 
 ### Variable Declaration
+
 ```gnn
 <name>[<dimensions>,type=<type>]
 ```
@@ -35,11 +42,13 @@ For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)*
 **Implementation:** `src/gnn/parser.py:parse_variable_declaration()`
 
 **Schema Rules:**
+
 - `<name>`: `[a-zA-Z_][a-zA-Z0-9_]*` (identifier pattern)
 - `<dimensions>`: comma-separated integers `\d+(,\d+)*`
 - `<type>`: `int|float|double|bool|string`
 
 **Examples from actinf_pomdp_agent.md:**
+
 ```gnn
 A[3,3,type=float]           # 3×3 matrix, float type
 B[3,3,3,type=float]         # 3×3×3 tensor, float type  
@@ -49,6 +58,7 @@ t[1,type=int]               # scalar, integer type
 ```
 
 ### Connection Syntax
+
 ```gnn
 <source>-<target>    # Undirected connection
 <source>><target>    # Directed connection
@@ -57,10 +67,12 @@ t[1,type=int]               # scalar, integer type
 **Implementation:** `src/gnn/parser.py:parse_connection()`
 
 **Schema Rules:**
+
 - `<source>`,`<target>`: variable names or compound expressions
 - Operators: `-` (undirected), `>` (directed)
 
 **Examples from actinf_pomdp_agent.md:**
+
 ```gnn
 D>s          # D causes s (directed)
 s-A          # s relates to A (undirected)
@@ -69,6 +81,7 @@ A-o          # A relates to o (undirected)
 ```
 
 ### Section Headers
+
 ```gnn
 ## <SectionName>
 ```
@@ -76,11 +89,13 @@ A-o          # A relates to o (undirected)
 **Implementation:** `src/gnn/parser.py:parse_section_header()`
 
 **Required Sections:**
+
 - `## StateSpaceBlock` - Variable declarations
 - `## Connections` - Connection specifications
 - `## InitialParameterization` - Parameter values
 
 **Optional Sections:**
+
 - `## ModelName` - Model identifier
 - `## ModelAnnotation` - Description
 - `## Equations` - Mathematical relations
@@ -89,10 +104,12 @@ A-o          # A relates to o (undirected)
 ## Round-Trip Data Flow
 
 ### 1. Parse: GNN → JSON
+
 **Entry Point:** `src/3_gnn.py:process_gnn_multi_format()`
 **Core Method:** `src/gnn/multi_format_processor.py`
 
 Input: `actinf_pomdp_agent.md`
+
 ```gnn
 A[3,3,type=float]
 B[3,3,3,type=float]
@@ -100,6 +117,7 @@ D>s
 ```
 
 Output: `output/3_gnn_output/parsed_actinf_pomdp_agent.json`
+
 ```json
 {
   "variables": [
@@ -113,10 +131,12 @@ Output: `output/3_gnn_output/parsed_actinf_pomdp_agent.json`
 ```
 
 ### 2. Validate: JSON → Typed JSON
+
 **Entry Point:** `src/5_type_checker.py:analyze_variable_types()`
 **Core Method:** `src/type_checker/analysis_utils.py`
 
 Applies type constraints and dimensional analysis:
+
 ```json
 {
   "variables": [...],
@@ -129,20 +149,24 @@ Applies type constraints and dimensional analysis:
 ```
 
 ### 3. Export: JSON → Multiple Formats
+
 **Entry Point:** `src/7_export.py:process_export()`
 **Core Methods:** `src/export/`
 
 Produces:
+
 - GraphML: `output/7_export_output/actinf_pomdp_agent.graphml`
-- GEXF: `output/7_export_output/actinf_pomdp_agent.gexf` 
+- GEXF: `output/7_export_output/actinf_pomdp_agent.gexf`
 - XML: `output/7_export_output/actinf_pomdp_agent.xml`
 - Pickle: `output/7_export_output/actinf_pomdp_agent.pkl`
 
 ### 4. Render: JSON → Framework Code
+
 **Entry Point:** `src/11_render.py:process_render()`
 **Core Methods:** `src/render/`
 
 Framework targets:
+
 - **PyMDP**: `src/render/pymdp/` → `.py` files
 - **RxInfer.jl**: `src/render/rxinfer/` → `.jl` files
 - **ActiveInference.jl**: `src/render/activeinference/` → `.jl` files
@@ -151,7 +175,8 @@ Framework targets:
 ## Core Method Locations (Actual Implementation)
 
 ### Parsing Pipeline (Step 3: GNN Processing)
-```
+
+```text
 src/3_gnn.py (thin orchestrator)
 ├── src/gnn/multi_format_processor.py (main processor)
 ├── src/gnn/schema_validator.py
@@ -173,7 +198,8 @@ src/3_gnn.py (thin orchestrator)
 ```
 
 ### Type Analysis (Step 5: Type Checking)
-```
+
+```text
 src/5_type_checker.py (thin orchestrator)
 └── src/type_checker/
     ├── analysis_utils.py (line 1-62)
@@ -192,6 +218,7 @@ src/5_type_checker.py (thin orchestrator)
 ```
 
 ### Visualization Pipeline (Steps 8 & 9)
+
 ```
 src/8_visualization.py (thin orchestrator)
 └── src/visualization/
@@ -213,6 +240,7 @@ src/9_advanced_viz.py (thin orchestrator)
 ```
 
 ### Export Pipeline (Step 7: Multi-format Export)  
+
 ```
 src/7_export.py (thin orchestrator)
 └── src/export/
@@ -220,6 +248,7 @@ src/7_export.py (thin orchestrator)
 ```
 
 ### Render Pipeline (Step 11: Code Generation)
+
 ```
 src/11_render.py (thin orchestrator)  
 └── src/render/
@@ -229,6 +258,7 @@ src/11_render.py (thin orchestrator)
 ## Cross-References
 
 ### Data Dependencies
+
 - Step 3 (GNN) → Step 5 (Type Checker): `parsed_*.json`
 - Step 5 (Type Checker) → Step 7 (Export): `type_check_results.json`  
 - Step 3 (GNN) → Step 8 (Visualization): `parsed_*.json`
@@ -236,12 +266,14 @@ src/11_render.py (thin orchestrator)
 - Step 11 (Render) → Step 12 (Execute): generated framework code
 
 ### Schema Validation Chain
+
 1. **Lexical**: `src/gnn/lexer.py` - tokenization
 2. **Syntactic**: `src/gnn/parser.py` - AST construction  
 3. **Semantic**: `src/type_checker/analysis_utils.py` - type validation
 4. **Ontological**: `src/ontology/processor.py` - domain validation
 
 ### Framework Integration Points
+
 - **PyMDP**: Matrices → `pymdp.Agent(A=A, B=B, C=C, D=D)`
 - **RxInfer.jl**: Probabilistic → `@model function gnn_model()`
 - **DisCoPy**: Categories → `Diagram` objects with morphisms
@@ -250,6 +282,7 @@ src/11_render.py (thin orchestrator)
 ## Validation Schema
 
 ### Variable Validation
+
 ```python
 # src/type_checker/analysis_utils.py:validate_variable()
 def validate_variable(var):
@@ -259,6 +292,7 @@ def validate_variable(var):
 ```
 
 ### Connection Validation  
+
 ```python
 # src/type_checker/analysis_utils.py:validate_connection()
 def validate_connection(conn, variables):
@@ -268,6 +302,7 @@ def validate_connection(conn, variables):
 ```
 
 ### Round-Trip Validation
+
 ```python
 # Implemented in src/6_validation.py
 def validate_round_trip(original_gnn, exported_formats):

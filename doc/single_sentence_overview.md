@@ -68,23 +68,26 @@
 ## 🎯 Quick Navigation
 
 ### 🚀 **Getting Started**
+
 - Start with [quickstart.md](quickstart.md) for immediate setup
 - Then explore [gnn/about_gnn.md](gnn/about_gnn.md) for core concepts
 - Use [templates/](templates/) for your first model
 
 ### 🔧 **For Developers**  
+
 - [api/](api/) - Complete API reference
 - [development/](development/) - Contribution guidelines
 - [testing/](testing/) - Quality assurance
 
 ### 🧠 **For Researchers**
+
 - [cognitive_phenomena/](cognitive_phenomena/) - Real neuroscience models
 - [pymdp/](pymdp/) - Simulation backends
 - [discopy/](discopy/) - Mathematical foundations
 
 ### 🏗️ **For Integration**
-- [mcp/](mcp/) - Tool integration protocols
 
+- [mcp/](mcp/) - Tool integration protocols
 - [llm/](llm/) - AI-enhanced workflows
 
 ---

@@ -1,4 +1,9 @@
-# Generalized Notation Notation (GNN): Overview
+# GNN Overview
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 ## What is GNN?
 
@@ -186,7 +191,7 @@ python src/main.py --skip-steps "15,16" --verbose
 
 The pipeline consists of the following steps (0-24):
 
-**Core Processing (Steps 0-9)**
+### Core Processing (Steps 0-9)
 
 - **Step 0**: Template initialization
 - **Step 1**: Environment setup and dependency management
@@ -199,7 +204,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 8**: Graph and matrix visualization generation
 - **Step 9**: Advanced visualization and interactive plots
 
-**Simulation & Analysis (Steps 10-16)**
+### Simulation & Analysis (Steps 10-16)
 
 - **Step 10**: Active Inference ontology processing
 - **Step 11**: Code rendering for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
@@ -209,7 +214,7 @@ The pipeline consists of the following steps (0-24):
 - **Step 15**: Audio generation and sonification
 - **Step 16**: Advanced statistical analysis
 
-**Integration & Output (Steps 17-24)**
+### Integration & Output (Steps 17-24)
 
 - **Step 17**: System integration and coordination
 - **Step 18**: Security validation and access control
@@ -233,19 +238,19 @@ For complete information about the pipeline architecture and individual modules:
 
 For more detailed information about specific aspects of GNN, refer to:
 
-**GNN Language Specification**
+### GNN Language Specification
 
 - [GNN Syntax and Punctuation](gnn_syntax.md): Detailed specification of the notation symbols
 - [GNN File Structure](gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
 - [GNN DSL Manual](gnn_dsl_manual.md): Complete Domain-Specific Language reference
 
-**Modeling and Examples**
+### Modeling and Examples
 
 - [GNN Examples](gnn_examples_doc.md): Step-by-step examples and use cases
 - [Advanced Modeling Patterns](advanced_modeling_patterns.md): Sophisticated modeling techniques
 - [Multi-Agent Systems](gnn_multiagent.md): Multi-agent modeling specifications
 
-**Implementation and Tools**
+### Implementation and Tools
 
 - [GNN Implementation Guide](gnn_implementation.md): Guidelines for implementing GNN in practice
 - [GNN Tools and Resources](gnn_tools.md): Available tools and resources for working with GNN

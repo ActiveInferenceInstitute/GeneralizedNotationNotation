@@ -33,6 +33,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 > **🧭 Navigation by User Type** | **🔗 Related**: Comprehensive cross-reference system
 
 ### For Beginners
+>
 > **📖 Learning Path**: Concepts → Syntax → Examples → Practice ([Full Beginner Path](learning_paths.md#beginner-path))
 
 - **[GNN Overview](gnn/gnn_overview.md)** - High-level concepts and ecosystem
@@ -46,6 +47,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Next Steps*: [Syntax Reference](gnn/gnn_syntax.md)
 
 ### For Intermediate Users
+>
 > **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools ([Full Intermediate Path](learning_paths.md#intermediate-path))
 
 - **[GNN Syntax Reference](gnn/gnn_syntax.md)** - Complete notation specification
@@ -62,6 +64,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related*: [Configuration Guide](configuration/README.md), [Deployment Guide](deployment/README.md)
 
 ### For Developers
+>
 > **⚙️ Learning Path**: APIs → Architecture → Integration → Development
 
 - **[Integration Guides](#framework-integrations)** - Framework-specific documentation
@@ -75,6 +78,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related*: [MCP Integration](mcp/README.md), [Testing Framework](testing/README.md)
 
 ### For Researchers
+>
 > **🔬 Learning Path**: Theory → Specification → Applications → Research
 
 - **[Academic Paper](gnn/gnn_paper.md)** - Formal specification and theory
@@ -109,35 +113,42 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 ### Additional Framework Categories
 
 #### Audio and Sonification
+
 - **[SAPF](sapf/sapf_gnn.md)** - Structured Audio Processing Framework for sonification
 - **[Pedalboard](pedalboard/pedalboard_gnn.md)** - Audio effects framework for model representation
 
 #### Formal Methods and Verification
+
 - **[Axiom](axiom/axiom_gnn.md)** - Formal verification and theorem proving
 - **[Petri Nets](petri_nets/README.md)** - Workflow modeling and process analysis
 - **[Nock](nock/nock-gnn.md)** - Formal specification language integration
 
 #### Distributed Systems
+
 - **[Iroh](iroh/iroh.md)** - Peer-to-peer networking for decentralized agents
 - **[X402](x402/gnn_x402.md)** - Distributed inference protocol
 
 #### Specialized Tools
+
 - **[GUI-Oxdraw](gui_oxdraw/gnn_oxdraw.md)** - Visual model construction interface
 - **[OneFileLLM](onefilellm/onefilellm_gnn.md)** - Single-file LLM wrapper for analysis
 - **[Vec2Text](vec2text/vec2text_gnn.md)** - Vector-to-text model interpretation
 
 #### Research and Benchmarking
+
 - **[ARC-AGI](arc-agi/arc-agi-gnn.md)** - Abstract reasoning benchmark integration
 - **[D2](d2/gnn_d2.md)** - Scriptable diagram generation
 - **[Glowstick](glowstick/glowstick_gnn.md)** - Interactive visualization framework
 - **[Klong](klong/klong.md)** - Array programming language integration
 
 #### Temporal and Analytical
+
 - **[TimEP](timep/timep_gnn.md)** - Performance profiling and temporal analysis
 - **[POMDP](pomdp/pomdp_overall.md)** - POMDP analytical framework
 - **[SPM](spm/spm_gnn.md)** - Statistical Parametric Mapping for neuroscience
 
 #### Configuration and Performance
+
 - **[Pkl](pkl/pkl_gnn.md)** - Configuration-as-code language integration
 - **[Muscle-Mem](muscle-mem/gnn-muscle-mem.md)** - Behavior caching for performance optimization
 - **[SymPy](sympy/gnn_sympy.md)** - Symbolic mathematics and MCP integration
@@ -150,6 +161,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 > **📈 Progressive Complexity** | **🎯 Learning Path**: Basic → Intermediate → Advanced
 
 ### Basic Examples
+>
 > **⏱️ Time to Complete**: 30 minutes | **Prerequisites**: [Syntax Guide](gnn/gnn_syntax.md)
 
 - **[Static Perception](archive/gnn_example_dynamic_perception.md)** - Simplest GNN model
@@ -159,6 +171,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *See Also*: [Time Modeling](gnn/gnn_file_structure_doc.md#time-section), [POMDP Template](templates/pomdp_template.md)
 
 ### Intermediate Examples  
+>
 > **⏱️ Time to Complete**: 1-2 hours | **Prerequisites**: Basic examples + [Implementation Guide](gnn/gnn_implementation.md)
 
 - **[Butterfly Agent](archive/gnn_example_butterfly_pheromone_agent.md)** - POMDP navigation
@@ -168,6 +181,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *See Also*: [Decision Theory](gnn/advanced_modeling_patterns.md#decision-theory), [Economic Models](cognitive_phenomena/README.md)
 
 ### Advanced Examples
+>
 > **⏱️ Time to Complete**: 2-4 hours | **Prerequisites**: Intermediate examples + [Advanced Patterns](gnn/advanced_modeling_patterns.md)
 
 - **[Language Model](archive/gnn_active_inference_language_model.md)** - Multi-level linguistic processing
@@ -208,6 +222,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 > **⚡ Fast Access** | **🎯 Common Tasks** | **🔗 Related**: [Troubleshooting](troubleshooting/README.md)
 
 ### Common Tasks
+
 - **Creating your first model**: Start with [Static Perception Example](gnn/gnn_examples_doc.md#example-1-static-perception-model)
   - *Tools*: [Basic Template](templates/basic_gnn_template.md) → [Type Checker](gnn/gnn_tools.md#validation-tools) → [PyMDP Rendering](pymdp/gnn_pymdp.md)
 - **Understanding syntax**: Check [GNN Syntax Reference](gnn/gnn_syntax.md)
@@ -220,6 +235,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Pipeline*: [Step 6 Visualization](gnn/gnn_tools.md#step-6-visualization) → [Step 12 Website](gnn/gnn_tools.md#step-12-website-generation)
 
 ### File Templates
+>
 > **📋 Production-Ready Templates** | **📊 Total**: 4 comprehensive templates (49KB)
 
 - **[Template System Overview](templates/README.md)** - Complete template documentation
@@ -238,6 +254,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Related*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
+>
 > **⚙️ 25-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
 
 - **[Complete Pipeline Guide](gnn/gnn_tools.md)** - All 25 steps explained (0-24)
@@ -248,6 +265,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *API Integration*: [API Documentation](api/README.md)
 
 ### API Reference & Integration
+>
 > **🔌 Programming Interfaces** | **📚 36KB Documentation** | **🎯 103 Functions**
 
 - **[Complete API Documentation](api/README.md)** - All classes, functions, and interfaces
@@ -260,11 +278,12 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/gnn_dsl_manual.md)
 - **[Interactive GUI Tools](../src/gui/README.md)** - Visual model construction interfaces
   - *GUI 1*: Form-based constructor (localhost:7860)
-  - *GUI 2*: Visual matrix editor (localhost:7861) 
+  - *GUI 2*: Visual matrix editor (localhost:7861)
   - *GUI 3*: State space design studio (localhost:7862)
   - *Pipeline*: [Step 22 GUI Processing](gnn/gnn_tools.md#step-22-gui-processing)
 
 ### Learning Resources
+>
 > **📖 Progressive Learning System** | **🎯 Beginner to Expert**
 
 - **[Tutorial System](tutorials/README.md)** - Step-by-step learning guides from beginner to expert
@@ -277,6 +296,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 
 ### Security & Compliance
+>
 > **🔒 Enterprise Security** | **📊 Production-Ready**
 
 - **[Security Guide](security/README.md)** - Comprehensive security documentation
@@ -286,6 +306,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Development Security*: Secure coding practices and testing
 
 ### Release Management
+>
 > **🚀 Professional Release Process** | **📋 Version Control**
 
 - **[Release Management](releases/README.md)** - Complete release process documentation
@@ -299,6 +320,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Upgrade Guides*: Migration assistance between major versions
 
 ### Documentation Standards
+>
 > **📝 Contribution Guidelines** | **✅ Quality Assurance**
 
 - **[Documentation Style Guide](style_guide.md)** - Comprehensive writing and formatting standards
@@ -308,6 +330,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Content Guidelines*: Structure, cross-references, and accessibility
 
 ### Deployment & Operations
+>
 > **🚀 Production Deployment** | **📊 46KB Operational Documentation**
 
 - **[Deployment Guide](deployment/README.md)** - Local development to enterprise deployment
@@ -321,6 +344,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *API Development*: [API Documentation](api/README.md)
 
 ### Troubleshooting & Support
+>
 > **🆘 Comprehensive Problem Solving** | **📊 56KB Support Documentation**
 
 - **[Troubleshooting Guide](troubleshooting/README.md)** - Comprehensive problem-solving guide
@@ -393,6 +417,7 @@ coverage_metrics:
   research_integrations: 5+
   pipeline_steps: 25
   cognitive_phenomena: 22+
+  test_status: 1,127 tests passing
 status: production_ready
 quality_level: gold_standard
 recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways, 100%_signposting_coverage]
@@ -402,4 +427,4 @@ recent_additions: [poe-world_integration, enhanced_cross_references, improved_re
 
 **Status**: Comprehensive and Production-Ready  
 **Documentation Version**: Compatible with GNN v1.x  
-**Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md) 
+**Cross-Reference Network**: ✅ [Fully Integrated](CROSS_REFERENCE_INDEX.md)

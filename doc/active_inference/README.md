@@ -10,7 +10,7 @@ This directory contains comprehensive documentation on **Active Inference** and 
 
 **Status**: ✅ Production Ready  
 **Version**: 1.0  
-**Last Updated**: January 2026
+**Last Updated**: February 2026
 
 ---
 
@@ -64,18 +64,21 @@ Active Inference is a unified theory of brain function derived from the **Free E
 ## Learning Paths
 
 ### 🟢 Beginner Path
+
 1. Start with this README
 2. Read [fep_foundations.md](fep_foundations.md) for theoretical background
 3. Explore [active_inference_theory.md](active_inference_theory.md)
 4. Review the [glossary.md](glossary.md)
 
 ### 🟡 Intermediate Path
+
 1. Complete beginner path
 2. Study [variational_inference.md](variational_inference.md)
 3. Master [expected_free_energy.md](expected_free_energy.md)
 4. Explore [generative_models.md](generative_models.md)
 
 ### 🔴 Advanced Path
+
 1. Complete intermediate path
 2. Dive into implementation guides
 3. Study [computational_patterns.md](computational_patterns.md)
@@ -92,6 +95,7 @@ Active Inference is built on rigorous mathematical foundations:
 $$F = \underbrace{D_{KL}(Q(s) \| P(s))}_{\text{Complexity}} + \underbrace{\mathbb{E}_{Q(s)}[-\ln P(o|s)]}_{\text{Inaccuracy}}$$
 
 **Minimizing F** leads to:
+
 - Accurate perception (beliefs match reality)
 - Efficient representations (Occam's razor)
 
@@ -100,6 +104,7 @@ $$F = \underbrace{D_{KL}(Q(s) \| P(s))}_{\text{Complexity}} + \underbrace{\mathb
 $$G(\pi) = \underbrace{-\mathbb{E}[D_{KL}(Q(o|s,\pi) \| P(o))]}_{\text{Pragmatic Value}} + \underbrace{\mathbb{E}[H(Q(s|o,\pi))]}_{\text{Epistemic Value}}$$
 
 **Minimizing G** leads to:
+
 - Goal-directed behavior (pragmatic)
 - Curiosity and exploration (epistemic)
 

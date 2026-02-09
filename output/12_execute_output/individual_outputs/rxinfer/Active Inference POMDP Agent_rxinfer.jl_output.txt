@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_rxinfer.jl
-Timestamp: 2026-02-05T06:14:06.651055
+Timestamp: 2026-02-09T11:26:39.147869
 Return Code: 0
-Execution Time: 22.21 seconds
+Execution Time: 33.29 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...
@@ -17,6 +17,12 @@ Saved plot to rxinfer_results.png
 
 
 STDERR:
+    Updating registry at `~/.julia/registries/General.toml`
    Resolving package versions...
      Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`
-    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`
+    Updating `~/.julia/environments/v1.12/Manifest.toml`
+  [f43a241f] ↑ Downloads v1.6.0 ⇒ v1.7.0
+  [44cfe95a] ↑ Pkg v1.12.0 ⇒ v1.12.1
+  [deac9b47] ↑ LibCURL_jll v8.11.1+1 ⇒ v8.15.0+0
+  [458c3c95] ↑ OpenSSL_jll v3.5.1+0 ⇒ v3.5.4+0
+  [3f19e933] ↑ p7zip_jll v17.5.0+2 ⇒ v17.7.0+0

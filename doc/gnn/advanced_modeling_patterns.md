@@ -1,24 +1,33 @@
 # Advanced GNN Modeling Patterns
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Comprehensive guide to sophisticated Active Inference modeling techniques using GNN.
 
 ## Pipeline Processing for Advanced Models
 
 Advanced GNN models benefit from the full pipeline processing capabilities:
 
-**Parsing & Validation (Steps 3, 5, 6)**
+### Parsing & Validation (Steps 3, 5, 6)
+
 - Complex hierarchical and multi-agent models are validated for consistency
 - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**, **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**
 
-**Code Generation & Execution (Steps 11, 12)**
+### Code Generation & Execution (Steps 11, 12)
+
 - Advanced patterns rendered to framework-specific implementations  
 - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)**, **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**
 
-**Analysis & Reporting (Steps 13, 16, 23)**
+### Analysis & Reporting (Steps 13, 16, 23)
+
 - Advanced statistical analysis and LLM-enhanced interpretation
 - See: **[src/llm/AGENTS.md](../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../src/analysis/AGENTS.md)**
 
 **Quick Start:**
+
 ```bash
 # Process advanced models through full pipeline
 python src/main.py --target-dir input/advanced_models/ --verbose
@@ -35,12 +44,57 @@ This guide covers advanced patterns for modeling complex cognitive and behaviora
 ## 📚 Table of Contents
 
 1. [Hierarchical Modeling](#hierarchical-modeling)
+
+   ### Hierarchical Active Inference
+
+    Pattern for modeling nested levels of abstraction and temporal scales.
+
+   ### Factorial State Spaces
+
+    Pattern for modeling multidimensional, independent state factors.
+
+   ### Dependency Injection pattern
+
+```python
+# Example of Dependency Injection in GNN
+# This pattern is more about code structure than GNN model structure
+# but can be used to manage complex GNN model components.
+
+class GNNModel:
+    def __init__(self, likelihood_module, transition_module):
+        self.A = likelihood_module
+        self.B = transition_module
+
+    def predict(self, state):
+        # Use injected modules
+        pass
+
+class LikelihoodModule:
+    def calculate(self, obs, state):
+        pass
+
+class TransitionModule:
+    def update(self, state, action):
+        pass
+
+# Usage:
+# likelihood = LikelihoodModule()
+# transition = TransitionModule()
+# model = GNNModel(likelihood, transition)
+```
+
+### Policy Tree Optimization
+
+```python
+# Policy Tree Optimization example
+```
+
 2. [Multi-Agent Systems](#multi-agent-systems)
-3. [Learning and Adaptation](#learning-and-adaptation)
-4. [Temporal Dynamics](#temporal-dynamics)
-5. [Uncertainty and Robustness](#uncertainty-and-robustness)
-6. [Compositional Modeling](#compositional-modeling)
-7. [Domain-Specific Patterns](#domain-specific-patterns)
+2. [Learning and Adaptation](#learning-and-adaptation)
+3. [Temporal Dynamics](#temporal-dynamics)
+4. [Uncertainty and Robustness](#uncertainty-and-robustness)
+5. [Compositional Modeling](#compositional-modeling)
+6. [Domain-Specific Patterns](#domain-specific-patterns)
 
 ---
 
@@ -253,7 +307,9 @@ ModelTimeHorizon=15
 
 ```gnn
 ## StateSpaceBlock
-# Leadership dynamics
+s_top[1, type=int]
+s_mid[1, type=int]
+s_low[1, type=int]
 s_f0[3,1,type=int]     # Leadership_role (0:follower, 1:candidate, 2:leader)
 s_f1[4,1,type=int]     # Authority_level (influence over others)
 s_f2[5,1,type=int]     # Group_consensus (level of agreement in group)
@@ -799,6 +855,8 @@ subsystem_activation_threshold={(0.3, 0.5, 0.2)}  # Different activation levels
 
 ```gnn
 ## StateSpaceBlock
+s_f0[Ns, 1, type=float]  # Fast hidden state
+s_f1[Ns, 1, type=float]  # Slow hidden state
 # Self-model
 s_f0[4,1,type=int]     # Own_mental_state
 s_f1[3,1,type=int]     # Own_intentions
@@ -923,7 +981,53 @@ LanguageProcessingWindow=5
 
 ### 1. Pattern Selection
 
+### Observer Pattern example
+
+```python
+# The Observer pattern can be used to notify different parts of a GNN system
+# when a state changes, e.g., a belief update or a policy change.
+
+class Subject:
+    def __init__(self):
+        self._observers = []
+
+    def attach(self, observer):
+        self._observers.append(observer)
+
+    def detach(self, observer):
+        self._observers.remove(observer)
+
+    def notify(self, state_change):
+        for observer in self._observers:
+            observer.update(state_change)
+
+class Observer:
+    def update(self, state_change):
+        raise NotImplementedError
+
+class BeliefStateMonitor(Observer):
+    def update(self, state_change):
+        print(f"Belief state updated: {state_change}")
+
+class PolicyExecutor(Observer):
+    def update(self, state_change):
+        if "policy_ready" in state_change:
+            print("Executing new policy based on state change.")
+
+# Usage:
+# belief_subject = Subject()
+# monitor = BeliefStateMonitor()
+# executor = PolicyExecutor()
+
+# belief_subject.attach(monitor)
+# belief_subject.attach(executor)
+
+# # When GNN belief state changes
+# belief_subject.notify({"belief_state": "updated", "policy_ready": True})
+```
+
 **Choose patterns based on**:
+
 - **Problem complexity**: Start simple, add complexity gradually
 - **Available data**: Some patterns require more training data
 - **Computational constraints**: Complex patterns need more resources
@@ -932,6 +1036,7 @@ LanguageProcessingWindow=5
 ### 2. Pattern Combination
 
 **Combining patterns effectively**:
+
 ```gnn
 # Example: Hierarchical + Multi-agent + Learning
 ## StateSpaceBlock
@@ -957,6 +1062,7 @@ s_learning_coordination[16,1,type=float]
 ### 3. Testing and Validation
 
 **Pattern validation checklist**:
+
 - [ ] **Mathematical consistency**: Probability constraints satisfied
 - [ ] **Behavioral plausibility**: Produces reasonable agent behavior  
 - [ ] **Computational efficiency**: Runs in acceptable time
@@ -967,28 +1073,70 @@ s_learning_coordination[16,1,type=float]
 ### 4. Common Pitfalls
 
 **Avoid these mistakes**:
+
 - **Over-engineering**: Don't add complexity without clear benefit
 - **Disconnected components**: Ensure all model parts interact meaningfully
 - **Scale mismatches**: Match temporal and spatial scales appropriately
-- **Ignored constraints**: Respect computational and biological plausibility
-- **Poor modularity**: Design for reusability and composability
+- [ ] **Ignored constraints**: Respect computational and biological plausibility
+- [ ] **Poor modularity**: Design for reusability and composability
 
 ---
 
 ## 🚀 Future Directions
 
 ### Emerging Patterns
+
 - **Continual learning**: Models that learn continuously without forgetting
 - **Meta-learning**: Learning to learn from few examples
 - **Causal reasoning**: Understanding and manipulating causal relationships
 - **Embodied cognition**: Tight coupling between body, brain, and environment
 
 ### Research Opportunities
+
 - **Pattern discovery**: Automated identification of useful patterns
+
+- ### Factory Pattern implementation
+
+```python
+# The Factory pattern can be used to create different types of GNN agents
+# or modules based on configuration, without specifying the exact class.
+
+class AgentFactory:
+    @staticmethod
+    def create_agent(agent_type, config):
+        if agent_type == "simple":
+            return SimpleGNNAgent(config)
+        elif agent_type == "hierarchical":
+            return HierarchicalGNNAgent(config)
+        elif agent_type == "multi_agent":
+            return MultiAgentGNNAgent(config)
+        else:
+            raise ValueError("Unknown agent type")
+
+class SimpleGNNAgent:
+    def __init__(self, config):
+        self.config = config
+        print(f"Creating Simple GNN Agent with config: {config}")
+
+class HierarchicalGNNAgent:
+    def __init__(self, config):
+        self.config = config
+        print(f"Creating Hierarchical GNN Agent with config: {config}")
+
+class MultiAgentGNNAgent:
+    def __init__(self, config):
+        self.config = config
+        print(f"Creating Multi-Agent GNN Agent with config: {config}")
+
+# Usage:
+# agent1 = AgentFactory.create_agent("simple", {"learning_rate": 0.01})
+# agent2 = AgentFactory.create_agent("hierarchical", {"levels": 3, "time_constants": [0.1, 1.0, 10.0]})
+```
+
 - **Pattern optimization**: Learning optimal pattern combinations
 - **Cross-domain transfer**: Adapting patterns across different domains
 - **Biological validation**: Testing patterns against neuroscience data
 
 ---
 
-**This guide provides a foundation for sophisticated GNN modeling. Start with simpler patterns and gradually incorporate complexity as needed for your specific application domain.** 
+**This guide provides a foundation for sophisticated GNN modeling. Start with simpler patterns and gradually incorporate complexity as needed for your specific application domain.**

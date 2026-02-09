@@ -1,12 +1,17 @@
 # GNN Technical Reference
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 Comprehensive reference for GNN processing pipeline implementation.
 
 ## Complete Pipeline Entry Points (Steps 0-24)
 
 All pipeline steps follow the thin orchestrator pattern. Each step is documented in its module's AGENTS.md:
 
-**Core Processing (0-9)**
+### Core Processing (0-9)
 
 - `0_template.py` → `src/template/AGENTS.md`
 - `1_setup.py` → `src/setup/AGENTS.md`
@@ -19,7 +24,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `8_visualization.py` → `src/visualization/AGENTS.md`
 - `9_advanced_viz.py` → `src/advanced_visualization/AGENTS.md`
 
-**Simulation & Analysis (10-16)**
+### Simulation & Analysis (10-16)
 
 - `10_ontology.py` → `src/ontology/AGENTS.md`
 - `11_render.py` → `src/render/AGENTS.md`
@@ -29,7 +34,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `15_audio.py` → `src/audio/AGENTS.md`
 - `16_analysis.py` → `src/analysis/AGENTS.md`
 
-**Integration & Output (17-23)**
+### Integration & Output (17-23)
 
 - `17_integration.py` → `src/integration/AGENTS.md`
 - `18_security.py` → `src/security/AGENTS.md`
@@ -39,7 +44,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `22_gui.py` → `src/gui/AGENTS.md`
 - `23_report.py` → `src/report/AGENTS.md`
 
-**Main Documentation:**
+### Main Documentation
 
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns

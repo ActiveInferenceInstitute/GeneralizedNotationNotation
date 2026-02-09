@@ -5,10 +5,13 @@ Common questions and answers about Generalized Notation Notation (GNN).
 ## 🤔 General Questions
 
 ### What is GNN?
+
 **GNN (Generalized Notation Notation)** is a standardized text-based language for expressing Active Inference generative models. It provides a human-readable, machine-parsable format that can be converted to executable code for various simulation frameworks.
 
 ### Why use GNN instead of directly coding models?
+
 GNN offers several advantages:
+
 - **Standardization**: Consistent representation across different frameworks
 - **Portability**: Same model can be rendered to PyMDP, RxInfer, etc.
 - **Documentation**: Self-documenting with clear structure and annotations
@@ -16,13 +19,17 @@ GNN offers several advantages:
 - **Collaboration**: Easy to share and understand models between researchers
 
 ### What's the "Triple Play" approach?
+
 GNN supports three complementary modalities:
+
 1. **Text-based**: Human-readable specifications and documentation
 2. **Graphical**: Visual factor graphs and dependency diagrams
 3. **Executable**: Runnable code in target simulation frameworks
 
 ### Do I need to know Active Inference to use GNN?
+
 Basic understanding helps, but GNN can be learned incrementally:
+
 - **Beginners**: Start with [simple examples](../gnn/gnn_examples_doc.md) and [basic concepts](../gnn/about_gnn.md)
 - **Intermediate**: Learn [Active Inference fundamentals](https://www.fil.ion.ucl.ac.uk/~karl/The%20free-energy%20principle%20A%20unified%20brain%20theory.pdf)
 - **Advanced**: Explore [research applications](../gnn/gnn_paper.md) and [complex models](../archive/)
@@ -30,6 +37,7 @@ Basic understanding helps, but GNN can be learned incrementally:
 ## 🛠️ Getting Started
 
 ### How do I install GNN tools?
+
 The GNN toolkit is included in this repository:
 
 ```bash
@@ -48,12 +56,14 @@ python src/main.py --target-dir input/gnn_files/ --output-dir output/
 ```
 
 ### What's the easiest way to create my first model?
+
 1. **Use the template**: Copy [`templates/basic_gnn_template.md`](../templates/basic_gnn_template.md)
 2. **Start simple**: Begin with a 2-state, 2-observation static model
 3. **Follow examples**: Reference [`gnn_examples_doc.md`](../gnn/gnn_examples_doc.md)
 4. **Validate early**: Run the type checker frequently
 
 ### Which simulation framework should I choose?
+
 | Framework | Best For | Language | Difficulty |
 |-----------|----------|----------|------------|
 | **PyMDP** | Learning Active Inference, POMDP research | Python | Beginner-friendly |
@@ -63,24 +73,31 @@ python src/main.py --target-dir input/gnn_files/ --output-dir output/
 ## 📝 Modeling Questions
 
 ### How do I decide what states and observations to include?
+
 **Start with the minimum viable model:**
+
 1. **Identify the key decision/inference problem**
 2. **What can the agent observe?** → Observation modalities
 3. **What does the agent need to track?** → Hidden state factors
 4. **What can the agent control?** → Action/control factors
 
 **Example**: Navigation agent
+
 - **States**: `position[4]` (North, South, East, West)
 - **Observations**: `sensor_reading[3]` (Clear, Obstacle, Goal)
 - **Actions**: `movement[4]` (Forward, Back, Left, Right)
 
 ### When should I use static vs. dynamic models?
+
 - **Static models**: Single-shot inference, classification, simple perception
+
   ```gnn
   ## Time
   Static
   ```
+
 - **Dynamic models**: Sequential decision making, temporal reasoning, learning
+
   ```gnn
   ## Time
   Dynamic
@@ -89,14 +106,18 @@ python src/main.py --target-dir input/gnn_files/ --output-dir output/
   ```
 
 ### How do I handle multiple agents?
+
 See [Multiagent Systems Guide](../gnn/gnn_multiagent.md). Key approaches:
+
 1. **Separate models**: Individual GNN files per agent
 2. **Shared states**: Common environmental factors
 3. **Communication**: Message passing between agents
 4. **Hierarchical**: Multi-level agent architectures
 
 ### What if my matrices are very large?
+
 For large state spaces:
+
 1. **Use sparse representations**: Only specify non-zero probabilities
 2. **Leverage structure**: Exploit symmetries and patterns
 3. **Consider approximations**: Use lower-dimensional embeddings or neural networks
@@ -105,7 +126,9 @@ For large state spaces:
 ## 🔧 Technical Questions
 
 ### Why is my GNN file not parsing?
+
 **Most common issues:**
+
 1. **Section headers**: Use exact names like `## StateSpaceBlock`
 2. **Variable naming**: Use underscores, not spaces: `s_f0` not `s f0`
 3. **Bracket types**: Use `[]` for dimensions, `{}` for values, `()` for connections
@@ -114,25 +137,32 @@ For large state spaces:
 See [Common Errors Guide](common_errors.md) for detailed troubleshooting.
 
 ### How do I know if my parameterization is correct?
+
 **Validation checklist:**
+
 1. **Probability constraints**: All rows/columns sum to 1
 2. **Dimension compatibility**: Matrix sizes match variable definitions
 3. **Type consistency**: Variables have compatible types
-4. **Run the type checker**: `python src/4_gnn_type_checker.py`
+4. **Run the type checker**: `python src/5_type_checker.py`
 
 ### Can I use custom mathematical functions?
+
 **Standard functions are supported:**
+
 - `softmax`, `sigmoid`, `exp`, `log`, `ln`
 - Basic arithmetic: `+`, `-`, `*`, `/`
 - Matrix operations: `^T` (transpose), `^dagger` (pseudo-inverse)
 
 **For custom functions:**
+
 1. Define in the `Equations` section using LaTeX
 2. Implement in your target rendering framework
 3. Consider contributing back to the GNN specification
 
 ### How do I handle missing or partial observations?
+
 **Strategies:**
+
 1. **Explicit missing state**: Add "unobserved" outcome to observation modality
 2. **Probabilistic observations**: Use likelihood matrices with uncertainty
 3. **Hierarchical models**: Separate observation and availability processes
@@ -151,21 +181,27 @@ A_m0={
 ## 🚀 Advanced Usage
 
 ### How do I integrate with my existing codebase?
+
 **Integration approaches:**
+
 1. **Export to your language**: Use GNN renderers to generate code
 2. **Direct parsing**: Parse GNN files in your application
 3. **API integration**: Use GNN as configuration format
 4. **Hybrid approach**: GNN for model structure, code for implementation details
 
 ### Can I use GNN for non-Active Inference models?
+
 **Yes, with adaptations:**
+
 - **Bayesian Networks**: Use StateSpaceBlock for variables, Connections for dependencies
 - **Neural Networks**: Represent layers as state factors, weights as parameters
 - **Markov Models**: Focus on transition structures in StateSpaceBlock
 - **Custom models**: Adapt GNN sections to your needs
 
 ### How do I contribute new features?
+
 **Contribution process:**
+
 1. **Discuss**: Open GitHub issue or discussion
 2. **Design**: Follow GNN design principles
 3. **Implement**: Add to appropriate src/ modules
@@ -174,7 +210,9 @@ A_m0={
 6. **Submit**: Create pull request with clear description
 
 ### Can I use GNN for real-time applications?
+
 **Performance considerations:**
+
 - **Model complexity**: Simpler models run faster
 - **Target framework**: Julia (RxInfer) typically faster than Python
 - **Compilation**: Pre-compile models when possible
@@ -185,7 +223,9 @@ See [Performance Guide](performance.md) for optimization strategies.
 ## 🔍 Troubleshooting
 
 ### My model runs but gives weird results
+
 **Debugging steps:**
+
 1. **Check parameterization**: Are probabilities normalized?
 2. **Verify connections**: Do causal relationships make sense?
 3. **Test edge cases**: What happens with extreme inputs?
@@ -193,7 +233,9 @@ See [Performance Guide](performance.md) for optimization strategies.
 5. **Visualize**: Use GNN visualization tools to inspect structure
 
 ### How do I debug complex models?
+
 **Systematic approach:**
+
 1. **Start minimal**: Begin with 2x2 matrices
 2. **Add complexity incrementally**: One variable at a time
 3. **Use logging**: Enable verbose output in renderers
@@ -201,7 +243,9 @@ See [Performance Guide](performance.md) for optimization strategies.
 5. **Compare frameworks**: Cross-validate between PyMDP and RxInfer
 
 ### Where can I get help?
+
 **Support channels:**
+
 1. **Documentation**: Start with [troubleshooting guides](common_errors.md)
 2. **Examples**: Check similar models in [`doc/archive/`](../archive/)
 3. **GitHub Issues**: Report bugs and ask questions
@@ -211,18 +255,21 @@ See [Performance Guide](performance.md) for optimization strategies.
 ## 📚 Learning Resources
 
 ### Recommended learning path
+
 1. **GNN Basics**: [Overview](../gnn/gnn_overview.md) → [Syntax](../gnn/gnn_syntax.md) → [Examples](../gnn/gnn_examples_doc.md)
 2. **Active Inference**: Smith et al. tutorial → Parr et al. textbook
 3. **Implementation**: Choose framework and work through examples
 4. **Advanced Topics**: Multi-agent, learning, optimization
 
 ### Key papers and resources
+
 - **Smith, R. et al. (2022)**: Step-by-step Active Inference tutorial
 - **Parr, T. et al. (2022)**: Active Inference textbook
 - **Friston, K. (2010)**: Free Energy Principle foundations
 - **Active Inference Institute**: Community and resources
 
 ### Practice projects
+
 1. **Simple agent**: 2D grid navigation
 2. **Perceptual inference**: Object recognition
 3. **Decision making**: Multi-armed bandit
@@ -234,26 +281,35 @@ See [Performance Guide](performance.md) for optimization strategies.
 ## 🔧 Installation and Setup
 
 ### I'm getting import errors when running GNN tools
+
 **Common solutions:**
+
 1. **Activate virtual environment**: Ensure you're in the correct Python environment
+
    ```bash
    cd src
    source .venv/bin/activate  # Linux/Mac
    # or
    .venv\Scripts\activate  # Windows
    ```
+
 2. **Install missing dependencies**:
+
    ```bash
    uv sync  # Recommended - installs all dependencies
    # Or: uv pip install -r requirements.txt
    ```
+
 3. **Python version compatibility**: GNN requires Python 3.8+
+
    ```bash
    python --version  # Check your version
    ```
 
 ### How do I set up GNN for development?
+
 **Development setup:**
+
 ```bash
 # Clone and set up development environment
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation.git
@@ -270,7 +326,9 @@ uv run pytest tests/
 ```
 
 ### Can I use GNN with Docker?
+
 **Yes! Docker setup:**
+
 ```dockerfile
 # Dockerfile example
 FROM python:3.11-slim
@@ -283,6 +341,7 @@ CMD ["python", "src/main.py", "--help"]
 ```
 
 **Docker Compose for development:**
+
 ```yaml
 version: '3.8'
 services:
@@ -302,14 +361,18 @@ services:
 ### PyMDP-specific issues
 
 #### My PyMDP model runs slowly
+
 **Optimization strategies:**
+
 1. **Use JAX backend**: `pymdp.utils.set_backend('jax')`
 2. **Reduce precision**: Use `float32` instead of `float64`
 3. **Vectorize operations**: Process multiple time steps in batches
 4. **Pre-compile models**: Enable compilation flags
 
 #### PyMDP gives different results than expected
+
 **Debugging checklist:**
+
 1. **Check matrix stochasticity**: Use `pymdp.utils.norm_dist()` to normalize
 2. **Verify dimensions**: Ensure A and B matrices match state space definitions
 3. **Policy depth**: Adjust `policy_len` parameter for planning horizon
@@ -318,7 +381,9 @@ services:
 ### RxInfer-specific issues
 
 #### How do I install RxInfer for GNN?
+
 **Julia setup:**
+
 ```julia
 # Install Julia packages
 using Pkg
@@ -328,13 +393,16 @@ Pkg.add("JSON")  # For GNN model import
 ```
 
 **Python-Julia bridge:**
+
 ```bash
 pip install julia
 python -c "import julia; julia.install()"
 ```
 
 #### RxInfer models don't converge
+
 **Common fixes:**
+
 1. **Message passing schedule**: Adjust iteration limits and convergence criteria
 2. **Prior specification**: Ensure proper prior distributions
 3. **Precision parameters**: Use appropriate precision for your problem scale
@@ -343,7 +411,9 @@ python -c "import julia; julia.install()"
 ### JAX-specific issues
 
 #### JAX models fail with "Abstract tracer" errors
+
 **Solutions:**
+
 1. **Avoid Python control flow**: Use `jax.lax.cond` instead of `if/else`
 2. **Use JAX arrays**: Convert numpy arrays with `jnp.array()`
 3. **JIT compilation boundaries**: Structure code to avoid side effects in JIT
@@ -354,22 +424,30 @@ python -c "import julia; julia.install()"
 ## 🔬 Advanced Modeling
 
 ### How do I model continuous state spaces?
+
 **Approaches:**
+
 1. **Discretization**: Divide continuous space into bins
+
    ```gnn
    # Position discretized into 10 bins
    s_f0[10,1,type=int]  # Discrete position bins
    ```
+
 2. **Gaussian approximations**: Use mean and variance parameters
+
    ```gnn
    # Continuous position with Gaussian beliefs
    s_f0_mean[1,type=float]    # Position mean
    s_f0_var[1,type=float]     # Position variance
    ```
+
 3. **Particle filters**: Multiple discrete samples of continuous space
 
 ### How do I handle time-varying parameters?
+
 **Dynamic parameterization:**
+
 ```gnn
 ## StateSpaceBlock
 # Time-varying transition matrix
@@ -383,13 +461,16 @@ t_index[1,type=int]        # Current time index
 ```
 
 ### How do I implement learning in GNN models?
+
 **Learning patterns:**
+
 1. **Parameter learning**: Update matrix entries based on experience
 2. **Structure learning**: Modify connections between variables
 3. **Meta-learning**: Learn learning rules themselves
 4. **Online adaptation**: Real-time parameter updates
 
 **Example learning implementation:**
+
 ```gnn
 ## StateSpaceBlock
 # Learnable parameters
@@ -404,7 +485,9 @@ prediction_error[4,type=float]    # Error signal for learning
 ```
 
 ### How do I model hierarchical goals?
+
 **Goal hierarchy patterns:**
+
 ```gnn
 ## StateSpaceBlock
 # Goal hierarchy levels
@@ -427,7 +510,9 @@ goal_weight_12[4,2,type=float] # How strategic goals influence tactical
 ## 💻 Integration and Workflows
 
 ### How do I integrate GNN with Jupyter notebooks?
+
 **Jupyter integration:**
+
 ```python
 # Install Jupyter extensions
 pip install jupyter ipywidgets
@@ -451,7 +536,9 @@ def tune_model(learning_rate):
 ```
 
 ### How do I use GNN with version control?
+
 **Git workflows:**
+
 ```bash
 # Track GNN model changes
 git add models/*.gnn
@@ -468,13 +555,16 @@ git commit -m "Experiment: Add hierarchical planning layers"
 ```
 
 **Model versioning best practices:**
+
 1. **Semantic versioning**: Use version numbers in model names
 2. **Change logs**: Document model modifications
 3. **Backward compatibility**: Maintain compatibility with older versions
 4. **Branching strategy**: Separate branches for different model variants
 
 ### How do I automate GNN workflows?
+
 **CI/CD pipeline example:**
+
 ```yaml
 # .github/workflows/gnn-validation.yml
 name: GNN Model Validation
@@ -497,7 +587,7 @@ jobs:
     
     - name: Validate GNN models
       run: |
-        python src/4_gnn_type_checker.py --target-dir models/
+        python src/5_type_checker.py --target-dir models/
     
     - name: Generate documentation
       run: |
@@ -505,13 +595,16 @@ jobs:
 ```
 
 ### How do I deploy GNN models to production?
+
 **Deployment strategies:**
+
 1. **REST API**: Wrap GNN-generated models in web services
 2. **Containerization**: Use Docker for consistent environments
 3. **Model serving**: Use frameworks like TensorFlow Serving or MLflow
 4. **Edge deployment**: Compile models for embedded systems
 
 **Example API deployment:**
+
 ```python
 from flask import Flask, request, jsonify
 from gnn_runtime import load_model, run_inference
@@ -531,13 +624,16 @@ def infer():
 ## 🐛 Common Gotchas and Edge Cases
 
 ### My model validation passes but execution fails
+
 **Common causes:**
+
 1. **Numerical instability**: Very small or large probability values
 2. **Memory issues**: Matrices too large for available RAM
 3. **Framework limitations**: Target framework doesn't support all GNN features
 4. **Runtime dependencies**: Missing libraries in execution environment
 
 **Solutions:**
+
 ```gnn
 # Add numerical stability constraints
 ## Constraints
@@ -547,13 +643,16 @@ normalize_matrices=true    # Auto-normalize probability matrices
 ```
 
 ### Matrix dimensions seem correct but I get size mismatch errors
+
 **Hidden dimension issues:**
+
 1. **Broadcasting**: Some frameworks handle singleton dimensions differently
 2. **Time dimensions**: Dynamic models have implicit time dimensions
 3. **Batch dimensions**: Multi-agent models may have hidden batch dimensions
 4. **Index ordering**: Row-major vs column-major matrix ordering
 
 **Debug matrix dimensions:**
+
 ```python
 # In Python/PyMDP
 print(f"A matrix shape: {A.shape}")
@@ -563,13 +662,16 @@ print(f"Expected shape: ({n_states}, {n_states}, {n_actions})")
 ```
 
 ### My agent gets stuck in loops or converges too quickly
+
 **Behavioral debugging:**
+
 1. **Exploration vs exploitation**: Adjust action precision parameters
 2. **Planning horizon**: Increase/decrease `ModelTimeHorizon`
 3. **Prior beliefs**: Check if priors are too strong or weak
 4. **Preference specification**: Verify preference values and scaling
 
 **Parameter tuning guidelines:**
+
 ```gnn
 # Exploration parameters
 alpha=16.0        # Higher = more deterministic actions
@@ -584,13 +686,16 @@ learning_rate=0.05    # Higher = faster adaptation, less stability
 ```
 
 ### State space explosion in multi-factor models
+
 **Complexity management:**
+
 1. **Mean-field approximations**: Approximate joint distributions as products
 2. **Structured inference**: Exploit conditional independence
 3. **Hierarchical decomposition**: Break complex states into levels
 4. **Factorized representations**: Use separate factors for independent aspects
 
 **Example factorization:**
+
 ```gnn
 ## StateSpaceBlock
 # Instead of joint state s_f0[100,1,type=int] (10×10 grid)
@@ -609,25 +714,31 @@ s_f0_y[10,1,type=int]  # Y coordinate
 ## 🔄 Version Compatibility and Migration
 
 ### I have GNN models from an older version. Do they still work?
+
 **Version compatibility:**
+
 - **GNN v1.0 → v1.1**: Fully backward compatible
 - **Pre-v1.0 → v1.x**: May require syntax updates
 - **Framework versions**: PyMDP/RxInfer updates may affect rendering
 
 **Migration checklist:**
+
 1. **Syntax updates**: Check for deprecated section names
 2. **Variable naming**: Ensure compliance with current naming conventions
 3. **Matrix specifications**: Verify dimension specifications
 4. **Validation**: Run updated type checker on old models
 
 ### How do I update my models to use new features?
+
 **Feature adoption process:**
+
 1. **Read release notes**: Understand new capabilities
 2. **Test on copies**: Don't modify original models directly
 3. **Incremental updates**: Add features gradually
 4. **Validation at each step**: Ensure models still work
 
 **Example migration (adding ontology annotations):**
+
 ```gnn
 # Original model (pre-ontology)
 s_f0[4,1,type=int]  # Hidden state
@@ -640,7 +751,9 @@ s_f0=SpatialPosition  # Map to ontology term
 ```
 
 ### What if a new GNN version breaks my model?
+
 **Troubleshooting steps:**
+
 1. **Check migration guide**: Look for breaking changes documentation
 2. **Use validation tools**: Run diagnostic scripts
 3. **Compare syntax**: Use diff tools to see what changed
@@ -652,7 +765,9 @@ s_f0=SpatialPosition  # Map to ontology term
 ## 🤝 Community and Contributing
 
 ### How do I report a bug in GNN?
+
 **Bug reporting template:**
+
 1. **Minimal example**: Simplest GNN model that reproduces the issue
 2. **Environment details**: Python version, OS, framework versions
 3. **Expected behavior**: What should happen
@@ -660,6 +775,7 @@ s_f0=SpatialPosition  # Map to ontology term
 5. **Error messages**: Full stack traces and logs
 
 **GitHub issue template:**
+
 ```markdown
 **Bug Description**
 Brief description of the issue
@@ -675,12 +791,14 @@ Bug Reproduction Example v1.0
 ```
 
 **Environment**
+
 - Python version: 3.9.7
 - GNN version: v1.2
 - Target framework: PyMDP 0.2.8
 - OS: Ubuntu 20.04
 
 **Steps to Reproduce**
+
 1. Create model file
 2. Run validation
 3. See error
@@ -688,6 +806,7 @@ Bug Reproduction Example v1.0
 **Expected vs Actual Behavior**
 Expected: Model should validate successfully
 Actual: Validation fails with error X
+
 ```
 
 ### How do I contribute new features?
@@ -729,11 +848,13 @@ s_f0_cov[2,2,type=float] # Position covariance matrix
 ```
 
 **Alternatives Considered**
+
 - Discretization (loses precision)
 - External preprocessing (breaks GNN workflow)
 
 **Impact**
 Would enable robotics, control theory, and continuous optimization use cases.
+
 ```
 
 ---
@@ -770,13 +891,16 @@ print(f"Peak memory usage: {peak / 1024 / 1024:.1f} MB")
 ```
 
 ### My GNN processing pipeline is too slow
+
 **Optimization strategies:**
+
 1. **Parallel processing**: Process multiple models simultaneously
 2. **Caching**: Cache parsed models and validation results
 3. **Incremental validation**: Only re-validate changed sections
 4. **Lazy loading**: Load model components on demand
 
 **Pipeline optimization example:**
+
 ```python
 from multiprocessing import Pool
 from functools import lru_cache
@@ -794,13 +918,16 @@ def parallel_process_models(model_files, num_workers=4):
 ```
 
 ### How do I optimize large-scale simulations?
+
 **Simulation optimization:**
+
 1. **Batch processing**: Process multiple episodes together
 2. **Approximation methods**: Use faster approximate inference
 3. **Model compression**: Reduce model complexity where possible
 4. **Hardware acceleration**: Use GPU/TPU for computation
 
 **Large-scale simulation patterns:**
+
 ```python
 # Vectorized batch processing
 import jax.numpy as jnp
@@ -825,17 +952,20 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 ## 💡 Still have questions?
 
 ### Quick Help Resources
+
 - **Search this FAQ**: Use Ctrl+F to find specific topics
 - **Documentation index**: [Main documentation](../README.md)
 - **Examples gallery**: [Model examples](../archive/)
 - **Syntax reference**: [GNN syntax guide](../gnn/gnn_syntax.md)
 
 ### Community Support
+
 - **GitHub Discussions**: [Community Q&A](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 - **GitHub Issues**: [Bug reports and feature requests](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues)
 - **Active Inference Institute**: [Broader community](https://www.activeinference.org/)
 
 ### Getting Deeper Help
+
 1. **Read the error message carefully**: Most issues have helpful error descriptions
 2. **Check similar problems**: Search existing GitHub issues
 3. **Create minimal examples**: Isolate the problem to simplest case
@@ -846,4 +976,4 @@ def chunked_simulation(agents, total_steps, chunk_size=100):
 
 **FAQ Version**: Compatible with GNN v1.x  
 **Total Questions**: 75+  
-**Covers**: Installation, Modeling, Frameworks, Advanced Topics, Troubleshooting, Contributing 
+**Covers**: Installation, Modeling, Frameworks, Advanced Topics, Troubleshooting, Contributing

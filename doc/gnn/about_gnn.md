@@ -1,8 +1,25 @@
-# Generalized Notation Notation (GNN)
+# About GNN
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 Generalized Notation Notation (GNN) is a text-based language designed to standardize the representation of Active Inference generative models, improving clarity, reproducibility, and interoperability across domains. It defines a concise ASCII syntax for model components, a structured file format, and supports multiple modalities—textual, graphical, and executable—facilitating seamless communication among researchers and tools.
 
-## Motivation and Goals
+## Motivation
+
+### GNN Structure and Sections
+
+GNN is centered around several core objects that define the structure and behavior of Active Inference models:
+
+### 1. Variables
+
+Variables represent states, observations, actions, or other quantities in the model. They can be categorical, continuous, or discrete.
+
+### 2. Edges
+
+Edges represent the relationships between variables, such as dependencies, transitions, or connections. They define how information flows through the model.
 
 GNN addresses the lack of a unified representation for Active Inference models, which are often described using disparate mixtures of natural language, pseudocode, mathematical formulas, and diagrams. By providing a formalized syntax and file structure, GNN aims to:
 
@@ -13,28 +30,28 @@ GNN addresses the lack of a unified representation for Active Inference models, 
 - Ensure reproducibility of computational cognitive models
 - Create a standardized way to document model implementations
 
-## GNN Syntax and Punctuation
+## GNN Syntax and Logic Rules
 
 GNN leverages standard ASCII symbols to denote variables, operations, and causal relationships in generative models. The complete specification is maintained in machine-readable format at `src/gnn/documentation/punctuation.md`.
 
 The syntax is designed to be both human-readable and machine-parsable, making it suitable for documentation and automated processing. Key symbols include:
 
-| Symbol | Meaning                             | Example    | Interpretation                           |
-|--------|-------------------------------------|------------|------------------------------------------|
-| ,      | List separator                      | X,Y        | Elements X and Y                         |
-| _      | Subscript                           | X_2        | Variable X with subscript 2              |
-| ^      | Superscript                         | X^Y        | Variable X with superscript Y            |
-| =      | Equality or assignment              | X=5        | X is set to 5                            |
-| >      | Directed causal edge                | X>Y        | Causal influence from X to Y             |
-| -      | Undirected causal edge              | X-Y        | Undirected relation between X and Y      |
-| ()     | Grouping                            | (X+Y)      | Parenthesized expression                 |
-| {}     | Exact value specification           | X{1}       | X equals 1                               |
-| []     | Dimensionality or indexing          | X[2,3]     | X is a 2×3 matrix                        |
-| # / ## / ### | Markdown headings and comments | ## Title  | Section header in GNN source file        |
-| +      | Addition                            | X+Y        | Sum of X and Y                           |
-| *      | Multiplication                      | X*Y        | Product of X and Y                       |
-| /      | Division                            | X/Y        | X divided by Y                           |
-| \|     | Conditional probability             | P(X\|Y)    | Probability of X given Y                 |
+| Symbol       | Meaning                         | Example   | Interpretation                      |
+|:-------------|:--------------------------------|:----------|:------------------------------------|
+| ,            | List separator                  | X,Y       | Elements X and Y                    |
+| _            | Subscript                       | X_2       | Variable X with subscript 2         |
+| ^            | Superscript                     | X^Y       | Variable X with superscript Y       |
+| =            | Equality or assignment          | X=5       | X is set to 5                       |
+| >            | Directed causal edge            | X>Y       | Causal influence from X to Y        |
+| -            | Undirected causal edge          | X-Y       | Undirected relation between X and Y |
+| ()           | Grouping                        | (X+Y)     | Parenthesized expression            |
+| {}           | Exact value specification       | X{1}      | X equals 1                          |
+| []           | Dimensionality or indexing      | X[2,3]    | X is a 2×3 matrix                   |
+| # / ## / ### | Markdown headings and comments  | ## Title  | Section header in GNN source file   |
+| +            | Addition                        | X+Y       | Sum of X and Y                      |
+| *            | Multiplication                  | X*Y       | Product of X and Y                  |
+| /            | Division                        | X/Y       | X divided by Y                      |
+| \|           | Conditional probability         | P(X\|Y)   | Probability of X given Y            |
 
 ### Syntax Guidelines
 
@@ -52,25 +69,29 @@ A GNN source file follows a Markdown-like organization that segments model metad
 
 Each GNN file is organized into the following sections:
 
-1. **GNN Version and Flags**: Specification of GNN release and optional flags that govern the file's interpretation.
+```gnn
+## GNNVersionAndFlags
+GNN v1
+Specification of GNN release and optional flags that govern the file's interpretation.
+```
 
-2. **Model Name**: Descriptive identifier for the model, providing a concise label for reference.
+1. **Model Name**: Descriptive identifier for the model, providing a concise label for reference.
 
-3. **Model Annotation**: Free-text caption explaining the model's purpose, context, and key features. This section allows for more detailed description than the name alone.
+2. **Model Annotation**: Free-text caption explaining the model's purpose, context, and key features. This section allows for more detailed description than the name alone.
 
-4. **State Space Block**: Definitions of variables and their dimensions/types. This section specifies all variables used in the model, including their dimensionality (e.g., scalar, vector, matrix) and data types.
+3. **State Space Block**: Definitions of variables and their dimensions/types. This section specifies all variables used in the model, including their dimensionality (e.g., scalar, vector, matrix) and data types.
 
-5. **Connections**: Directed or undirected edges specifying dependencies between variables. This section defines the graphical structure of the model, showing how variables influence each other.
+4. **Connections**: Directed or undirected edges specifying dependencies between variables. This section defines the graphical structure of the model, showing how variables influence each other.
 
-6. **Initial Parameterization**: Starting values for parameters and variables, which may include constants, distributions, or specific values for model initialization.
+5. **Initial Parameterization**: Starting values for parameters and variables, which may include constants, distributions, or specific values for model initialization.
 
-7. **Equations**: LaTeX-rendered formulas defining model dynamics and the mathematical relationships between variables. These equations specify how variables change over time or in response to inputs.
+6. **Equations**: LaTeX-rendered formulas defining model dynamics and the mathematical relationships between variables. These equations specify how variables change over time or in response to inputs.
 
-8. **Time**: Discrete or continuous time settings and horizons, including whether the model is static or dynamic, how time is represented, and the time horizon for simulation.
+7. **Time**: Discrete or continuous time settings and horizons, including whether the model is static or dynamic, how time is represented, and the time horizon for simulation.
 
-9. **ActInf Ontology Annotation**: Mapping of variables to Active Inference Ontology terms, which standardizes the interpretation of variables and facilitates cross-model comparison.
+8. **ActInf Ontology Annotation**: Mapping of variables to Active Inference Ontology terms, which standardizes the interpretation of variables and facilitates cross-model comparison.
 
-10. **Footer and Signature**: File closure and provenance information, potentially including cryptographic signatures for verification.
+9. **Footer and Signature**: File closure and provenance information, potentially including cryptographic signatures for verification.
 
 ### Machine-Readable Format
 
@@ -79,24 +100,27 @@ The GNN file structure is designed to be machine-readable, with each section cle
 - Validation of GNN syntax and structure  
 - Automatic conversion to computational implementations
 - Visualization of model structure
-- Cross-model comparison and analysis
+
+### Cross-model comparison and analysis
+
+### Punctuation and Representation
 
 ### GNN Processing Pipeline
 
 GNN files are processed through a comprehensive 25-step pipeline orchestrated by **`src/main.py`**. The pipeline handles:
 
-**Parsing and Validation (Steps 3, 5, 6)**
+### Parsing and Validation (Steps 3, 5, 6)
 
 - `3_gnn.py`: GNN file discovery and multi-format parsing
 - `5_type_checker.py`: Type checking and resource estimation
 - `6_validation.py`: Advanced validation and consistency checking
 
-**Rendering and Execution (Steps 11, 12)**
+### Rendering and Execution (Steps 11, 12)
 
 - `11_render.py`: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 - `12_execute.py`: Execution of rendered simulation scripts
 
-**Analysis and Reporting (Steps 13, 16, 23)**
+### Analysis and Reporting (Steps 13, 16, 23)
 
 - `13_llm.py`: LLM-enhanced analysis and model interpretation
 - `16_analysis.py`: Advanced statistical analysis
@@ -113,9 +137,27 @@ For complete pipeline documentation, see:
 ```bash
 # Process a GNN model through the full pipeline
 python src/main.py --target-dir input/gnn_files --verbose
+```
 
+```bash
+# Parse a GNN file using the dedicated parser
+python src/gnn/gnn_parser.py --input input/gnn_files/model.gnn --output output/gnn.json
+```
+
+```bash
 # Run specific steps
 python src/main.py --only-steps "3,5,11,12" --target-dir input/gnn_files
+```
+
+```bash
+# Step 3: GNN Core Processing
+python src/main.py --target-dir input/gnn_files
+ --verbose
+```
+
+```bash
+# Step 1: Environment Setup
+python src/1_setup.py
 ```
 
 ## Progressive Model Development with GNN
@@ -144,7 +186,7 @@ The progression from static to dynamic models in GNN typically follows these ste
 
 ### Example: Simple Perception Model in GNN
 
-```
+```gnn
 # Simple Perception Model
 ## Model Annotation
 A basic model of perceptual inference with hidden states and observations.
@@ -172,7 +214,7 @@ A=StateTransitionMatrix
 B=ObservationLikelihoodMatrix
 ```
 
-## The Triple Play: Modalities of GNN
+## The Triple Play: Modalities
 
 GNN expressions support three complementary modalities for model representation, which can be used together for comprehensive model documentation:
 

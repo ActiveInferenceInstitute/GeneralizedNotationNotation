@@ -1,6 +1,14 @@
 # GNN Ontology Guide
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides comprehensive guidance on ontology processing for Generalized Notation Notation (GNN) models, including Active Inference ontology integration, term mapping, and semantic validation.
+
+> [!TIP]
+> For concrete JSON examples, file paths, and quick-start commands, see [Ontology System Documentation](ontology_system.md). This guide focuses on the programmatic API and processing workflow.
 
 ## Overview
 
@@ -76,17 +84,16 @@ graph TD
 The ontology system automatically extracts terms from GNN models:
 
 ```python
-from ontology import extract_ontology_terms
+from ontology.processor import parse_gnn_ontology_section
 
-# Extract terms from parsed GNN model
-terms = extract_ontology_terms(gnn_model)
+# Parse ontology annotations from GNN file content
+with open("input/gnn_files/model.md") as f:
+    content = f.read()
+result = parse_gnn_ontology_section(content)
 
-# Terms include:
-# - State variable names
-# - Observation variable names
-# - Matrix identifiers
-# - Process names
-# - Function names
+# Returns dict with:
+# - annotations: ["A=LikelihoodMatrix", "B=TransitionMatrix", ...]
+# - raw_section: the raw ActInfOntologyAnnotation text
 ```
 
 ### Ontology Validation
@@ -94,20 +101,21 @@ terms = extract_ontology_terms(gnn_model)
 Validate extracted terms against the Active Inference Ontology:
 
 ```python
-from ontology import validate_ontology_compliance
+from ontology.processor import validate_annotations, load_defined_ontology_terms
 
-# Validate terms
-validation_result = validate_ontology_compliance(
-    terms=extracted_terms,
-    ontology=ontology_dict,
-    strict=False
+# Load the Active Inference Ontology terms
+ontology_terms = load_defined_ontology_terms()
+# Returns: {"HiddenState": {"description": "...", "uri": "obo:ACTO_000001"}, ...}
+
+# Validate annotations against the ontology
+result = validate_annotations(
+    annotations=["A=LikelihoodMatrix", "s=HiddenState", "x=InvalidTerm"],
+    ontology_terms=ontology_terms
 )
-
-# Result includes:
-# - valid_terms: Terms found in ontology
-# - invalid_terms: Terms not found in ontology
-# - compliance_score: Compliance score (0.0-1.0)
-# - suggestions: Suggestions for invalid terms
+# result includes:
+# - valid: [{term, description, uri}]
+# - invalid: [{term, suggestions: [closest_matches]}]
+# - stats: {total, passed, failed}
 ```
 
 ### Term Mapping
@@ -115,18 +123,14 @@ validation_result = validate_ontology_compliance(
 Generate mapping between GNN model components and ontology concepts:
 
 ```python
-from ontology import generate_ontology_mapping
+from ontology.processor import process_gnn_ontology
 
-# Generate ontology mapping
-mapping = generate_ontology_mapping(
-    gnn_model=parsed_model,
-    ontology=ontology_dict
-)
-
-# Mapping includes:
-# - Component-to-concept mappings
-# - Semantic relationships
-# - Hierarchical concept structure
+# Process ontology for a single GNN file (parse + validate + report)
+result = process_gnn_ontology("input/gnn_files/model.md")
+# Returns:
+# - annotations: parsed KEY=VALUE mappings
+# - validation: per-annotation valid/invalid results
+# - stats: {total_annotations, passed, failed}
 ```
 
 ## Ontology Processing Workflow
@@ -211,5 +215,5 @@ Ontology processing integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2026-01-21  
-**Version**: 1.0.0
+**Last Updated**: February 9, 2026  
+**Version**: v1.1.0

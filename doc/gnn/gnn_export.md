@@ -1,5 +1,10 @@
 # GNN Export Guide
 
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
+
 This document provides comprehensive guidance on multi-format export capabilities for Generalized Notation Notation (GNN) models, including export formats, validation, and semantic preservation.
 
 ## Overview
@@ -37,21 +42,21 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 
 ### Standard Formats
 
-**JSON Export**
+#### JSON Export
 
 - Human-readable format
 - Widely compatible
 - Schema validation support
 - Use case: Data exchange, API integration
 
-**XML Export**
+#### XML Export
 
 - Industry standard format
 - DTD/XSD validation
 - Structured representation
 - Use case: Enterprise integration, validation
 
-**YAML Export**
+#### YAML Export
 
 - Configuration-friendly format
 - Human-readable
@@ -60,14 +65,14 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 
 ### Graph Formats
 
-**GraphML Export**
+#### GraphML Export
 
 - Standard graph format
 - Network analysis tools (Cytoscape, yEd)
 - Node and edge attributes
 - Use case: Network analysis, visualization
 
-**GEXF Export**
+#### GEXF Export
 
 - Gephi visualization format
 - Interactive visualization
@@ -76,7 +81,7 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --format
 
 ### Binary Formats
 
-**Pickle Export**
+#### Pickle Export
 
 - Fast Python serialization
 - Python-specific format
@@ -113,33 +118,39 @@ graph TD
 ### Basic Export
 
 ```python
-from export import process_export
+from export.format_exporters import _gnn_model_to_dict, export_to_json_gnn
 
-# Generate exports
-success = process_export(
-    target_dir=Path("input/gnn_files"),
-    output_dir=Path("output/7_export_output"),
-    formats=['json', 'xml', 'graphml', 'gexf', 'pickle'],
-    verbose=True
-)
+# Parse a GNN markdown file into a structured dictionary
+gnn_model = _gnn_model_to_dict("input/gnn_files/model.md")
+# Returns: {ModelName, StateSpaceBlock, Connections, InitialParameterization, ...}
+
+# Export to JSON
+export_to_json_gnn(gnn_model, "output/7_export_output/model.json")
 ```
 
 ### Format-Specific Export
 
 ```python
-from export import export_single_gnn_file
-
-# Export single file to specific formats
-result = export_single_gnn_file(
-    gnn_file=Path("input/model.gnn"),
-    exports_dir=Path("output/exports/"),
-    formats=['json', 'graphml']
+from export.format_exporters import (
+    _gnn_model_to_dict,
+    export_to_json_gnn,
+    export_to_xml_gnn,
+    export_to_python_pickle,
+    export_to_gexf,
+    export_to_graphml,
+    export_to_json_adjacency_list,
+    export_to_plaintext_summary,
+    export_to_plaintext_dsl
 )
 
-# Result includes:
-# - exported_files: List of exported file paths
-# - validation_results: Export validation results
-# - metadata: Export metadata
+gnn_model = _gnn_model_to_dict("input/gnn_files/model.md")
+
+# Export to multiple formats
+export_to_xml_gnn(gnn_model, "output/exports/model.xml")
+export_to_gexf(gnn_model, "output/exports/model.gexf")
+export_to_graphml(gnn_model, "output/exports/model.graphml")
+export_to_python_pickle(gnn_model, "output/exports/model.pkl")
+export_to_plaintext_summary(gnn_model, "output/exports/model_summary.txt")
 ```
 
 ## Semantic Preservation
@@ -213,5 +224,5 @@ Export integrates throughout the pipeline:
 ---
 
 **Status**: ✅ Production Ready  
-**Last Updated**: 2025-12-30  
-**Version**: 1.0.0
+**Last Updated**: February 9, 2026  
+**Version**: v1.1.0

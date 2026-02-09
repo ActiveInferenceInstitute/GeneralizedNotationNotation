@@ -1,12 +1,9 @@
 # GNN Framework Integration Guide
 
-> **📋 Document Metadata**  
-> **Type**: Integration Guide | **Audience**: Developers, Researchers | **Complexity**: Intermediate  
-> **Cross-References**:- [PyMDP Integration Guide](../pymdp/README.md)
-- [RxInfer Integration Guide](../rxinfer/README.md)
-- [DisCoPy Integration Guide](../discopy/README.md)
-- [Performance Guide](../performance/README.md)
-- [Error Handling Guide](../troubleshooting/README.md)ce_jl/activeinference-jl.md)
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 ## Pipeline Integration
 
@@ -18,6 +15,7 @@ GNN framework integration is handled by **Steps 11 and 12** of the processing pi
   - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution module details
 
 **Quick Start:**
+
 ```bash
 # Generate and execute code for all frameworks
 python src/main.py --only-steps "11,12" --target-dir input/gnn_files --verbose
@@ -253,6 +251,7 @@ class PyMDPTemplateEngine:
 ```
 
 **Template: `complete_simulation.py.j2`**
+
 ```python
 #!/usr/bin/env python3
 """
@@ -727,6 +726,6 @@ class IntegrationTestSuite:
 
 ---
 
-**Integration Guide Version**: 2.1.0  
+**Integration Guide Version**: v1.1.0  
 **Framework Coverage**: PyMDP, RxInfer, DisCoPy  
-**Status**: Production-Ready 
+**Status**: Production-Ready

@@ -2,11 +2,12 @@
 
 ## 📚 GNN Documentation
 
-**Generalized Notation Notation (GNN)** is the core specification language for this pipeline. 
+**Generalized Notation Notation (GNN)** is the core specification language for this pipeline.
 
 > **[Start Here: GNN Documentation Index](../doc/gnn/README.md)**
 
 ### Key Resources
+
 - **[GNN Overview](../doc/gnn/gnn_overview.md)**: What is GNN?
 - **[Quickstart Tutorial](../doc/gnn/quickstart_tutorial.md)**: Build your first model
 - **[GNN Syntax Reference](../doc/gnn/gnn_syntax.md)**: Syntax guide
@@ -134,6 +135,7 @@ This README documents the comprehensive safety enhancements implemented across a
 #### 1. **Visualization Steps (8 & 9) - Complete Safe-to-Fail Implementation**
 
 **Step 8: Core Visualization**
+
 - **Comprehensive Error Classification**: Added detailed dependency tracking and graceful degradation
 - **Safe matplotlib Context**: Context managers for safe matplotlib operations with automatic cleanup
 - **Multiple Fallback Levels**: Full visualizer → Matrix visualizer → Basic plots → HTML fallback
@@ -142,6 +144,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Pipeline Continuation**: Non-blocking failures with graceful degradation; continuation governed by configuration
 
 **Step 9: Advanced Visualization**
+
 - **Modular Dependency Handling**: Safe imports with fallback handling for all advanced visualization components
 - **Comprehensive Fallback System**: Creates detailed HTML reports, JSON data, and error diagnostics when advanced features unavailable
 - **Resource Management**: Safe processing contexts with automatic cleanup and timeout handling
@@ -149,6 +152,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Performance Tracking**: Detailed timing and resource usage tracking for all visualization attempts
 
 #### 2. **Execute Step (12) - Robust Execution Patterns**
+
 - **Circuit Breaker Implementation**: Prevents cascading failures with intelligent retry mechanisms
 - **Execution Environment Validation**: Pre-execution checks for dependencies, resources, and permissions
 - **Comprehensive Error Classification**: Dependency, syntax, resource, timeout, permission, runtime, and network errors
@@ -158,6 +162,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Pipeline Continuation**: Non-blocking error handling with standard exit codes; continuation governed by configuration
 
 #### 3. **Output Management and Data Persistence**
+
 - **Comprehensive Output Directory Structure**: All outputs organized in `/output/` with step-specific subdirectories
 - **Detailed Result Tracking**: JSON summaries, detailed logs, and performance metrics for every step
 - **Error Recovery Reports**: Automatic generation of recovery suggestions and diagnostic information
@@ -165,6 +170,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Execution Reporting**: Detailed markdown reports with execution results, timing, and recovery suggestions
 
 #### 4. **Pipeline Continuation Logic**
+
 - **Exit Codes**: Standardized exit codes (0=success, 1=critical error, 2=success with warnings) with graceful degradation policies
 - **Warning-Based Error Reporting**: Failed operations logged with clear severity to avoid unnecessary termination
 - **Graceful Degradation**: Each step provides maximum functionality possible given available dependencies
@@ -173,6 +179,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Log Rotation**: Automatic log rotation and cleanup to manage disk usage for long-running pipelines
 
 #### 5. **Method Robustness Improvements**
+
 - **Model Registry**: Enhanced metadata extraction (author, license, version) for comprehensive model tracking
 - **Execute Processor**: Robust PyMDP error recovery, Julia dependency validation, and improved timeout handling
 - **Render Processor**: Pre-render validation of POMDP structures and matrix normalization
@@ -182,13 +189,18 @@ This README documents the comprehensive safety enhancements implemented across a
 ### 📊 Pipeline Execution Analysis
 
 **Current Status (Verified):**
+
 - **Total Steps**: 25 (0-24)
 - **Safe-to-Fail Implemented**: All steps ✅
 - **Output Directory Structure**: Fully organized ✅
 - **Pipeline Continuation**: Guaranteed ✅
 - **Error Recovery**: Comprehensive ✅
+- **Last Updated**: 2026-02-09
+- **Version**: 1.1.0
+- **Test Suite**: ✅ 1,127 tests passing
 
 **Complete Output Directory Organization (25 Steps):**
+
 ```
 output/
 ├── 0_template_output/
@@ -222,6 +234,7 @@ output/
 ### 🔧 Technical Implementation Details
 
 **Visualization Safe-to-Fail Patterns:**
+
 1. **Dependency Detection**: Runtime detection of matplotlib, networkx, and visualization modules
 2. **Graceful Degradation**: Four-tier fallback system from full visualization to basic HTML reports
 3. **Context Management**: Safe matplotlib contexts preventing resource leaks
@@ -229,6 +242,7 @@ output/
 5. **Output Persistence**: All visualization attempts generate outputs regardless of success
 
 **Execute Safe-to-Fail Patterns:**
+
 1. **Environment Validation**: Pre-execution validation of system requirements and dependencies
 2. **Retry Mechanisms**: Exponential backoff retry with configurable attempt limits
 3. **Resource Monitoring**: Memory and CPU usage tracking with timeout protection
@@ -236,6 +250,7 @@ output/
 5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, and DisCoPy
 
 **Pipeline Continuation Guarantees:**
+
 1. **Standard Exit Codes**: Steps follow 0 (success), 1 (critical error), 2 (success with warnings); continuation controlled via configuration and graceful-degradation policies
 2. **Warning-Based Logging**: Failures logged as warnings to prevent pipeline termination
 3. **Comprehensive Output**: Every step generates outputs even in failure modes
@@ -244,6 +259,7 @@ output/
 ### 🚀 Performance and Reliability Metrics
 
 **Measured Improvements:**
+
 - **Pipeline Completion Rate**: 100% (guaranteed continuation)
 - **Output Generation**: 100% (all steps produce outputs)
 - **Error Recovery**: Comprehensive diagnostics and suggestions
@@ -251,6 +267,7 @@ output/
 - **Debugging Capability**: Full traceability with correlation IDs
 
 **Verification Results:**
+
 - **Visualization Steps**: ✅ Generate outputs in all dependency scenarios
 - **Execute Step**: ✅ Handles all execution failures gracefully
 - **Pipeline Flow**: ✅ Continues through all 25 steps regardless of individual failures
@@ -260,6 +277,7 @@ output/
 ### 📋 Usage and Operation
 
 **Running the Pipeline:**
+
 ```bash
 # Full pipeline execution
 python src/main.py
@@ -278,6 +296,7 @@ python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,au
 ```
 
 **Output Verification:**
+
 ```bash
 # Check comprehensive outputs
 ls -la output/
@@ -293,6 +312,7 @@ cat output/execution_results.json
 ```
 
 **Error Recovery:**
+
 - All error reports include specific recovery suggestions
 - Dependency status clearly documented in output files
 - Fallback visualizations provide immediate value even when advanced features unavailable

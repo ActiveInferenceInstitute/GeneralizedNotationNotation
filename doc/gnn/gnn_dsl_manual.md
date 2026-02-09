@@ -1,5 +1,9 @@
-# GNN (Generalized Notation Notation) DSL Manual
-**Version: 1.0**
+# GNN DSL Manual
+
+**Version**: v1.1.0  
+**Last Updated**: February 9, 2026  
+**Status**: ✅ Production Ready  
+**Test Count**: 1,127 Tests Passing  
 
 This document provides a comprehensive guide to the GNN Domain Specific Language, which is a Markdown-based format for representing computational models, particularly those used in fields like Active Inference.
 
@@ -15,44 +19,24 @@ GNN DSL files are processed and validated through the pipeline:
 For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
 
 **Quick Start:**
+
 ```bash
 # Parse and validate GNN DSL files
 python src/3_gnn.py --target-dir input/gnn_files --verbose
 python src/5_type_checker.py --target-dir input/gnn_files --strict
 ```
 
----
-
-## 1. File Structure Specification
-
-| GNNSection                 | SectionMeaning                                                                                                | ControlledTerms                                                                                                                               |
-|----------------------------|---------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------|
-| ImageFromPaper             | Shows the image of the graphical model, if one exists.                                                        | NA                                                                                                                                            |
-| GNNVersionAndFlags         | Describes which specification of GNN is being used, including optional configuration flags.                 | Specifies GNN release version and optional flags that govern the file's interpretation.                                                         |
-| ModelName                  | Gives a descriptive identifier for the model being expressed.                                                 | NA                                                                                                                                            |
-| ModelAnnotation            | Plaintext caption or annotation for the model. This is a free metadata field which does not need to use any formal or controlled language. | Free-text explanation of the model's purpose and context.                                                                               |
-| StateSpaceBlock            | Describes all variables in the model, and their state space (dimensionality).                                 | Defines each variable using syntax like X[2,3] to specify dimensions and types.                                                                 |
-| Connections                | Describes edges among variables in the graphical model.                                                       | Uses directed (>) and undirected (-) edges to specify dependencies between variables.                                                           |
-| InitialParameterization    | Provides the initial parameter values for variables.                                                          | Sets starting values for all parameters and variables in the model.                                                                             |
-| Equations                  | Describes any equations associated with the model, written in LaTeX. These equations are at least rendered for display, and further can actually specify relationships among variables. | LaTeX-rendered formulas defining model dynamics and relationships between variables.                                                              |
-| Time                       | Describes the model's treatment of Time.                                                                      | Static:Is a static model;Dynamic:Is a dynamic model;DiscreteTime=X_t:Specifies X_t as the temporal variable in a discrete time model;ContinuousTime=X_t:Specifies X_t as the temporal variable in a continuous time model;ModelTimeHorizon=X:Specifies X as the time horizon for finite-time modeling. |
-| ActInfOntologyAnnotation   | Connects the variables to their associated Active Inference Ontology term, for display and model juxtaposition. | Variables in this section are associated with one or more terms from the Active Inference Ontology. Format: VariableName=OntologyTerm (Example: C=Preference) |
-| Footer                     | Closes the file and allows read-in from either end.                                                           | Marks the end of the GNN specification.                                                                                                       |
-| Signature                  | Cryptographic signature block (can have information regarding the completeness or provenance of the file).      | Contains provenance information and optional cryptographic verification.                                                                      |
-
-## 2. Punctuation Specification
-
-| Symbol | Meaning                                            | ExampleUse   | MeaningOfExample                      |
-|--------|----------------------------------------------------|--------------|---------------------------------------|
-| ^      | A caret means superscript.                         | X^Y          | X with a superscript Y                |
-| ,      | A comma is used to separate items in a list.       | X,Y          | List with X and Y as elements         |
-| ##     | A double hashtag signals a new section in the Markdown file. | ## Section123 | Has "Section123" as a section name    |
-| #      | A hashtag signals the title header in the Markdown file.   | # Title123   | Has "Title123" as model title         |
-| ###    | A triple hashtag is a comment line in the Markdown file. | ### Comment123 | Has "Comment123" as a comment       |
-| {}     | Curly brackets are specification of exact values for a variable. | X{1}         | X equals 1 exactly                    |
-| -      | Hyphen is an undirected causal edge between two variables. | X-Y          | Undirected relation between X and Y   |
-| ()     | Parentheses are used to group expressions.         | X^(Y_2)      | X with a superscript that is Y with a subscript 2 |
-| []     | Rectangular brackets define the dimensionality, or state space, of a variable. | X[2,3]       | X is a matrix with dimensions (2,3) |
+| Symbol | Meaning                                                                          | ExampleUse    | MeaningOfExample                                   |
+|--------|----------------------------------------------------------------------------------|---------------|----------------------------------------------------|
+| ^      | A caret means superscript.                                                       | X^Y           | X with a superscript Y                              |
+| ,      | A comma is used to separate items in a list.                                     | X,Y           | List with X and Y as elements                      |
+| ##     | A double hashtag signals a new section in the Markdown file.                     | ## Section123 | Has "Section123" as a section name                  |
+| #      | A hashtag signals the title header in the Markdown file.                         | # Title123    | Has "Title123" as model title                       |
+| ###    | A triple hashtag is a comment line in the Markdown file.                         | ### Comment123| Has "Comment123" as a comment                     |
+| {}     | Curly brackets are specification of exact values for a variable.                 | X{1}          | X equals 1 exactly                                 |
+| -      | Hyphen is an undirected causal edge between two variables.                       | X-Y           | Undirected relation between X and Y                |
+| ()     | Parentheses are used to group expressions.                                       | X^(Y_2)       | X with a superscript that is Y with a subscript 2  |
+| []     | Rectangular brackets define the dimensionality, or state space, of a variable.   | X[2,3]        | X is a matrix with dimensions (2,3)                |
 | =      | The equals sign declares equality or assignment.   | X=5          | Sets the variable X to value of 5     |
 | >      | The greater than symbol represents a directed causal edge between two variables. | X>Y          | Causal influence from X to Y          |
 | _      | Underscore means subscript.                        | X_2          | X with a subscript 2                  |
@@ -75,18 +59,18 @@ Each line within this section typically defines one variable. The common format 
 
 `VariableName[Dimension1,Dimension2,...,DimensionN,type=DataType] # Optional comment`
 
--   `VariableName`: The name of the variable. Can include underscores (`_`) and carets (`^`) for subscripts and superscripts (e.g., `s_t`, `X^observed`).
--   `[Dimensions,type=DataType]`: Enclosed in square brackets.
-    -   `DimensionX`: Numerical values representing the size of each dimension of the variable (e.g., `2`, `3`). For scalars or vectors where one dimension might be 1, it's often still included (e.g., `s_f0[2,1]`).
-    -   `type=DataType`: An optional parameter specifying the data type of the variable (e.g., `type=float`, `type=int`, `type=string`). If omitted, the type might be inferred or defaulted by consuming applications. The parser specifically looks for `type=` followed by the type string.
--   `# Optional comment`: Any text following a `#` symbol on the line is treated as a comment and can be used for annotation.
+- `VariableName`: The name of the variable. Can include underscores (`_`) and carets (`^`) for subscripts and superscripts (e.g., `s_t`, `X^observed`).
+- `[Dimensions,type=DataType]`: Enclosed in square brackets.
+  - `DimensionX`: Numerical values representing the size of each dimension of the variable (e.g., `2`, `3`). For scalars or vectors where one dimension might be 1, it's often still included (e.g., `s_f0[2,1]`).
+  - `type=DataType`: An optional parameter specifying the data type of the variable (e.g., `type=float`, `type=int`, `type=string`). If omitted, the type might be inferred or defaulted by consuming applications. The parser specifically looks for `type=` followed by the type string.
+- `# Optional comment`: Any text following a `#` symbol on the line is treated as a comment and can be used for annotation.
 
 **Parser Behavior:**
 
--   The parser extracts the `VariableName`, each `Dimension`, the `DataType`, and the `comment`.
--   It handles variable names with `^` and `_`.
--   It can parse dimensions like `len(π)` or `[2]` as string representations if they don't fit the simple integer model.
--   The extracted information is typically stored in a structured format, often a dictionary per variable, under a top-level key like `'Variables'` in the parsed output.
+- The parser extracts the `VariableName`, each `Dimension`, the `DataType`, and the `comment`.
+- It handles variable names with `^` and `_`.
+- It can parse dimensions like `len(π)` or `[2]` as string representations if they don't fit the simple integer model.
+- The extracted information is typically stored in a structured format, often a dictionary per variable, under a top-level key like `'Variables'` in the parsed output.
 
 **Example:**
 
@@ -111,19 +95,19 @@ Each line typically defines one connection (edge). The format is:
 
 `SourceVariable [->] TargetVariable [=Constraint] [#Comment]`
 
--   `SourceVariable`: The name of the variable where the edge originates.
--   `[->]`: The type of edge:
-    -   `>`: Represents a directed edge (causal influence from `SourceVariable` to `TargetVariable`).
-    -   `-`: Represents an undirected edge (a mutual relationship or correlation).
--   `TargetVariable`: The name of the variable where the edge terminates.
--   `=Constraint` (Optional): An optional constraint or label associated with the edge. The parser captures the text following the `=` sign.
--   `#Comment` (Optional): Any text following a `#` symbol is treated as a comment for that connection.
+- `SourceVariable`: The name of the variable where the edge originates.
+- `[->]`: The type of edge:
+  - `>`: Represents a directed edge (causal influence from `SourceVariable` to `TargetVariable`).
+  - `-`: Represents an undirected edge (a mutual relationship or correlation).
+- `TargetVariable`: The name of the variable where the edge terminates.
+- `=Constraint` (Optional): An optional constraint or label associated with the edge. The parser captures the text following the `=` sign.
+- `#Comment` (Optional): Any text following a `#` symbol is treated as a comment for that connection.
 
 **Parser Behavior:**
 
--   The parser extracts the `SourceVariable`, `TargetVariable`, the edge type (directed or undirected), any `Constraint`, and the `Comment`.
--   Variable names can include `^`, `_`, and `+` followed by digits (e.g., `X_t+1`).
--   The parsed edges are usually stored as a list of dictionaries under a top-level key like `'Edges'`.
+- The parser extracts the `SourceVariable`, `TargetVariable`, the edge type (directed or undirected), any `Constraint`, and the `Comment`.
+- Variable names can include `^`, `_`, and `+` followed by digits (e.g., `X_t+1`).
+- The parsed edges are usually stored as a list of dictionaries under a top-level key like `'Edges'`.
 
 **Example:**
 
@@ -138,6 +122,7 @@ G>π_f1
 G=ExpectedFreeEnergy
 t=Time
 ```
+
 *(Note: The example shows grouped variables like `(D_f0,D_f1)`. The current parser logic described focuses on single source/target per line. Grouped variables might be handled by pre-processing or a more complex parsing step not detailed in `src/gnn/parser.py`'s `_process_connections` regex. The documentation here reflects the identified regex capability.)*
 
 ### 3.3. `InitialParameterization`
@@ -147,14 +132,15 @@ This section provides the initial numerical or symbolic values for the variables
 **Syntax:**
 
 The content of this section is generally free-form text that describes the parameter settings. While the main parser (`src/gnn/parser.py`) captures this section's content as a single block of text, specific conventions are often followed in practice, as seen in example GNN files. These conventions might involve:
--   Comments (`#`) explaining the parameterization logic.
--   Assignments using `=` to set variable values.
--   Multi-dimensional arrays or matrices represented using nested curly braces `{}` or parentheses `()`, with comma-separated values.
+
+- Comments (`#`) explaining the parameterization logic.
+- Assignments using `=` to set variable values.
+- Multi-dimensional arrays or matrices represented using nested curly braces `{}` or parentheses `()`, with comma-separated values.
 
 **Parser Behavior:**
 
--   The primary GNN parser (`src/gnn/parser.py`) treats the entire content under `## InitialParameterization` as a text block.
--   Downstream tools or specialized parsers might further process this text block to extract specific values based on conventions used within the GNN file.
+- The primary GNN parser (`src/gnn/parser.py`) treats the entire content under `## InitialParameterization` as a text block.
+- Downstream tools or specialized parsers might further process this text block to extract specific values based on conventions used within the GNN file.
 
 **Example:**
 
@@ -181,8 +167,8 @@ The content is typically written in LaTeX format for clear mathematical represen
 
 **Parser Behavior:**
 
--   Similar to `InitialParameterization`, the primary GNN parser (`src/gnn/parser.py`) captures the content of the `## Equations` section as a single block of text.
--   Rendering or interpretation of these LaTeX equations is handled by other tools (e.g., for display in documentation or potentially for symbolic processing).
+- Similar to `InitialParameterization`, the primary GNN parser (`src/gnn/parser.py`) captures the content of the `## Equations` section as a single block of text.
+- Rendering or interpretation of these LaTeX equations is handled by other tools (e.g., for display in documentation or potentially for symbolic processing).
 
 **Example:**
 
@@ -205,16 +191,16 @@ This section uses controlled terms to specify the model's temporal nature. The c
 
 **Controlled Terms (from `src/gnn/documentation/file_structure.md`):**
 
--   `Static`: Indicates the model is static and does not evolve over time.
--   `Dynamic`: Indicates the model is dynamic.
--   `DiscreteTime=X_t`: Specifies `X_t` as the temporal variable in a discrete-time model.
--   `ContinuousTime=X_t`: Specifies `X_t` as the temporal variable in a continuous-time model.
--   `ModelTimeHorizon=X`: Specifies `X` as the time horizon for finite-time modeling (e.g., `ModelTimeHorizon=100`, `ModelTimeHorizon=Unbounded`).
+- `Static`: Indicates the model is static and does not evolve over time.
+- `Dynamic`: Indicates the model is dynamic.
+- `DiscreteTime=X_t`: Specifies `X_t` as the temporal variable in a discrete-time model.
+- `ContinuousTime=X_t`: Specifies `X_t` as the temporal variable in a continuous-time model.
+- `ModelTimeHorizon=X`: Specifies `X` as the time horizon for finite-time modeling (e.g., `ModelTimeHorizon=100`, `ModelTimeHorizon=Unbounded`).
 
 **Parser Behavior:**
 
--   The primary GNN parser captures the content of the `## Time` section as a text block.
--   Interpretation of these terms relies on conventions and downstream processing logic.
+- The primary GNN parser captures the content of the `## Time` section as a text block.
+- Interpretation of these terms relies on conventions and downstream processing logic.
 
 **Example:**
 
@@ -235,19 +221,19 @@ The section begins with `## ActInfOntologyAnnotation` on its own line. Each subs
 
 `ModelVariableName = OntologyTerm [# Optional comment]`
 
--   `ModelVariableName`: The name of a variable defined in the `StateSpaceBlock`.
--   `=` : An equals sign separates the model variable from the ontology term.
--   `OntologyTerm`: The corresponding term from the ontology (e.g., `HiddenState`, `LikelihoodMatrix`).
--   `# Optional comment`: Text after a `#` on the line is an ignored comment.
+- `ModelVariableName`: The name of a variable defined in the `StateSpaceBlock`.
+- `=` : An equals sign separates the model variable from the ontology term.
+- `OntologyTerm`: The corresponding term from the ontology (e.g., `HiddenState`, `LikelihoodMatrix`).
+- `# Optional comment`: Text after a `#` on the line is an ignored comment.
 
 **Parser Behavior (`src/ontology/mcp.py` - `parse_gnn_ontology_section`):**
 
--   The parser specifically looks for the `## ActInfOntologyAnnotation` header.
--   It reads each line, splitting it at the `=` to get the model variable and the ontology term.
--   Empty lines or lines starting with `#` (comments) within the section are ignored.
--   Malformed lines (e.g., missing `=`) are skipped.
--   Comments at the end of a mapping line are stripped from the ontology term value.
--   The result is typically a dictionary mapping model variable names to their ontology terms.
+- The parser specifically looks for the `## ActInfOntologyAnnotation` header.
+- It reads each line, splitting it at the `=` to get the model variable and the ontology term.
+- Empty lines or lines starting with `#` (comments) within the section are ignored.
+- Malformed lines (e.g., missing `=`) are skipped.
+- Comments at the end of a mapping line are stripped from the ontology term value.
+- The result is typically a dictionary mapping model variable names to their ontology terms.
 
 **Example:**
 
@@ -266,16 +252,17 @@ G=ExpectedFreeEnergy
 
 The GNN specification includes several other standard sections. The main parser (`src/gnn/parser.py`) generally treats these sections by capturing their content as a block of text under the section name. Their specific meaning and usage are defined by convention and the `src/gnn/documentation/file_structure.md`.
 
--   **`ImageFromPaper`**: Contains a link or embedded image of the model's graphical representation from a publication. Content is free-form.
--   **`GNNVersionAndFlags`**: Specifies the GNN version (e.g., `GNN v1`) and any flags affecting interpretation. Content is a text string.
--   **`ModelName`**: A descriptive name for the model. Often the first line of the file if starting with `# ModelName: ...` or `## ModelName`. Content is a text string.
--   **`ModelAnnotation`**: A free-text description, caption, or abstract for the model. Content is a multi-line text block.
--   **`Footer`**: A concluding marker for the file, often mirroring the model name or version. Content is a text string.
--   **`Signature`**: For cryptographic signatures or provenance information. Content is a text block, potentially structured according to a signature scheme.
+- **`ImageFromPaper`**: Contains a link or embedded image of the model's graphical representation from a publication. Content is free-form.
+- **`GNNVersionAndFlags`**: Specifies the GNN version (e.g., `GNN v1`) and any flags affecting interpretation. Content is a text string.
+- **`ModelName`**: A descriptive name for the model. Often the first line of the file if starting with `# ModelName: ...` or `## ModelName`. Content is a text string.
+- **`ModelAnnotation`**: A free-text description, caption, or abstract for the model. Content is a multi-line text block.
+- **`Footer`**: A concluding marker for the file, often mirroring the model name or version. Content is a text string.
+- **`Signature`**: For cryptographic signatures or provenance information. Content is a text block, potentially structured according to a signature scheme.
 
 **Parser Behavior (General):**
 For these sections, the parser:
+
 1. Identifies the section by its `## SectionName` heading.
 2. Captures all subsequent lines as the content of that section until another `## SectionName` heading or the end of the file is encountered.
 
-The interpretation and use of the content within these sections are typically handled by tools that consume the parsed GNN structure or by users referring to the GNN documentation. 
+The interpretation and use of the content within these sections are typically handled by tools that consume the parsed GNN structure or by users referring to the GNN documentation.
