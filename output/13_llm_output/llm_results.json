@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-05T06:14:54.195284",
+  "timestamp": "2026-02-09T16:13:14.192173",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -580,24 +580,13 @@
           "Consider breaking down into smaller modules"
         ]
       },
-      "analysis_timestamp": "2026-02-05T06:14:54.201077",
-      "llm_summary_error": "All providers failed for analysis",
+      "analysis_timestamp": "2026-02-09T16:13:14.195804",
+      "llm_summary_error": "Processor not initialized",
       "status": "SUCCESS",
       "analysis": "LLM-assisted analysis complete",
       "documentation": {
         "file_path": "input/gnn_files/actinf_pomdp_agent.md",
         "model_overview": ""
-      },
-      "llm_prompt_outputs": {
-        "summarize_content": "LLM analysis for summarize_content was not available. Please ensure that Ollama is running and the required model is installed.",
-        "explain_model": "LLM analysis for explain_model was not available. Please ensure that Ollama is running and the required model is installed.",
-        "identify_components": "LLM analysis for identify_components was not available. Please ensure that Ollama is running and the required model is installed.",
-        "analyze_structure": "LLM analysis for analyze_structure was not available. Please ensure that Ollama is running and the required model is installed.",
-        "extract_parameters": "LLM analysis for extract_parameters was not available. Please ensure that Ollama is running and the required model is installed.",
-        "practical_applications": "LLM analysis for practical_applications was not available. Please ensure that Ollama is running and the required model is installed.",
-        "technical_description": "LLM analysis for custom prompt technical_description was not available. Please ensure that Ollama is running and the required model is installed.",
-        "nontechnical_description": "LLM analysis for custom prompt nontechnical_description was not available. Please ensure that Ollama is running and the required model is installed.",
-        "runtime_behavior": "LLM analysis for custom prompt runtime_behavior was not available. Please ensure that Ollama is running and the required model is installed."
       }
     }
   ],
@@ -614,7 +603,7 @@
         "Complex model may be difficult to understand",
         "No connections defined"
       ],
-      "generation_timestamp": "2026-02-05T06:14:54.203093"
+      "generation_timestamp": "2026-02-09T16:13:14.195946"
     }
   ],
   "code_suggestions": [
@@ -627,7 +616,7 @@
         "Use descriptive variable names",
         "Group related variables together"
       ],
-      "generation_timestamp": "2026-02-05T06:14:54.203097"
+      "generation_timestamp": "2026-02-09T16:13:14.195950"
     }
   ],
   "documentation_generated": [
@@ -1082,7 +1071,7 @@
           "code": "# Example variable usage\nExample = ...\nVersion = ...\nmatrix = ..."
         }
       ],
-      "generation_timestamp": "2026-02-05T06:14:54.203108"
+      "generation_timestamp": "2026-02-09T16:13:14.195960"
     }
   ]
 }

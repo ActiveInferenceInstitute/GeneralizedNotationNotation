@@ -28,7 +28,7 @@ from utils.pipeline_template import (
 # Import processor functions
 # Import processor functions
 from .processor import (
-    process_report,
+    process_report as _process_report_legacy,
     analyze_gnn_file,
     generate_html_report,
     generate_markdown_report,
@@ -97,8 +97,6 @@ def validate_report(data: Dict[str, Any]) -> bool:
 
 def generate_report(target_dir: Path, output_dir: Path, format: str = "json") -> Dict[str, Any]:
     return generate_comprehensive_report_legacy(target_dir, output_dir, format=format)
-
-__version__ = "1.1.3"
 
 
 def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs):

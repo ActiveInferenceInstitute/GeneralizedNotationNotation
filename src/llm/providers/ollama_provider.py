@@ -71,6 +71,16 @@ class OllamaProvider(BaseLLMProvider):
         # Prefer Python client
         try:
             import ollama  # type: ignore
+            # Verify the imported module is the real ollama package and not a
+            # namespace collision (e.g., a local file named ollama.py).
+            if not hasattr(ollama, 'chat'):
+                logger.warning(
+                    "Imported 'ollama' module lacks 'chat' attribute. "
+                    "This may indicate a namespace collision with a local file "
+                    "named ollama.py, or an outdated ollama package version. "
+                    f"Module location: {getattr(ollama, '__file__', 'unknown')}"
+                )
+                return False
             self._ollama = ollama
             try:
                 _ = self._ollama.list()

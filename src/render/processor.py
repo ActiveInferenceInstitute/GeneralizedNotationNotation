@@ -58,30 +58,89 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
 def normalize_matrices(pomdp_space: Any, logger) -> Any:
     """
     Normalize probability matrices in POMDP space.
-    
+
+    Ensures that:
+    - A matrix (observation model): columns sum to 1 over the observation dimension
+    - B matrix (transition model): columns sum to 1 over the next-state dimension (per action)
+
+    Handles 2D arrays, 3D arrays, and list-of-arrays (factorial) structures.
+
     Args:
-        pomdp_space: POMDP space object
+        pomdp_space: POMDP space object with optional A_matrix and B_matrix attributes
         logger: Logger instance
-        
+
     Returns:
         POMDP space with normalized matrices
     """
+
+    def _normalize_columns(matrix: np.ndarray) -> np.ndarray:
+        """Normalize columns so each sums to 1. Works on 2D arrays."""
+        m = np.asarray(matrix, dtype=np.float64)
+        if m.ndim != 2:
+            return m
+        col_sums = m.sum(axis=0, keepdims=True)
+        # Avoid division by zero: replace zero-sum columns with uniform
+        zero_mask = col_sums == 0
+        col_sums[zero_mask] = 1.0
+        m = m / col_sums
+        # Fill zero-sum columns with uniform distribution
+        if np.any(zero_mask):
+            uniform = np.ones(m.shape[0], dtype=np.float64) / m.shape[0]
+            for col_idx in np.where(zero_mask.flatten())[0]:
+                m[:, col_idx] = uniform
+        return m
+
     try:
         # Normalize A matrix (Observation model)
-        # Should sum to 1.0 over observation dimension (rows) for each state factor
+        # Columns should sum to 1.0 over the observation dimension
         if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
-            # Implementation depends on matrix structure (simple vs factorial)
-            # This is a placeholder for the actual normalization logic
-            # tailored to the specific object structure
-            pass
-            
+            A = pomdp_space.A_matrix
+            if isinstance(A, list) and len(A) > 0 and isinstance(A[0], np.ndarray):
+                # Factorial structure: list of per-modality arrays
+                pomdp_space.A_matrix = [_normalize_columns(a) for a in A]
+                logger.debug(f"Normalized {len(A)} A-matrix modalities")
+            elif isinstance(A, np.ndarray):
+                if A.ndim == 2:
+                    pomdp_space.A_matrix = _normalize_columns(A)
+                elif A.ndim == 3:
+                    # 3D: (obs, states, factors) — normalize over axis 0 per slice
+                    for i in range(A.shape[2]):
+                        A[:, :, i] = _normalize_columns(A[:, :, i])
+                    pomdp_space.A_matrix = A
+                logger.debug("Normalized A matrix")
+
         # Normalize B matrix (Transition model)
+        # Columns should sum to 1.0 over next-state dimension, per action
         if hasattr(pomdp_space, 'B_matrix') and pomdp_space.B_matrix is not None:
-            pass
-            
+            B = pomdp_space.B_matrix
+            if isinstance(B, list) and len(B) > 0 and isinstance(B[0], np.ndarray):
+                # Factorial structure: list of per-factor transition arrays
+                normalized_B = []
+                for b in B:
+                    b = np.asarray(b, dtype=np.float64)
+                    if b.ndim == 3:
+                        # (next_state, current_state, action)
+                        for a_idx in range(b.shape[2]):
+                            b[:, :, a_idx] = _normalize_columns(b[:, :, a_idx])
+                    elif b.ndim == 2:
+                        b = _normalize_columns(b)
+                    normalized_B.append(b)
+                pomdp_space.B_matrix = normalized_B
+                logger.debug(f"Normalized {len(B)} B-matrix factors")
+            elif isinstance(B, np.ndarray):
+                B = np.asarray(B, dtype=np.float64)
+                if B.ndim == 3:
+                    # (next_state, current_state, action)
+                    for a_idx in range(B.shape[2]):
+                        B[:, :, a_idx] = _normalize_columns(B[:, :, a_idx])
+                elif B.ndim == 2:
+                    B = _normalize_columns(B)
+                pomdp_space.B_matrix = B
+                logger.debug("Normalized B matrix")
+
     except Exception as e:
         logger.warning(f"Matrix normalization failed: {e}")
-        
+
     return pomdp_space
 
 

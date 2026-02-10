@@ -98,7 +98,7 @@ class TestReportGNNIntegration:
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
         
-        gnn_file = sample_gnn_files[0]
+        gnn_file = list(sample_gnn_files.values())[0]
         result = analyze_gnn_file(gnn_file)
         
         assert result is not None
@@ -116,8 +116,9 @@ class TestReportGNNIntegration:
         output_dir = tmp_path / "output"
         output_dir.mkdir(parents=True, exist_ok=True)
         
+        gnn_file = list(sample_gnn_files.values())[0]
         result = process_report(
-            target_dir=sample_gnn_files[0].parent,
+            target_dir=gnn_file.parent,
             output_dir=output_dir,
             logger=logger
         )
@@ -167,25 +168,31 @@ class TestReportExportIntegration:
         """Test report exports to multiple formats simultaneously."""
         from report import generate_comprehensive_report
         import logging
+        import json
         
         logger = logging.getLogger("test_report")
-        output_dir = tmp_path / "reports"
-        output_dir.mkdir(parents=True, exist_ok=True)
         
-        pipeline_data = {
-            "status": "success",
-            "steps_completed": 10,
-            "duration": 120.5
-        }
+        # Create a mock pipeline output directory with step data
+        pipeline_output_dir = tmp_path / "pipeline_output"
+        pipeline_output_dir.mkdir(parents=True, exist_ok=True)
+        for step in ["3_gnn_output", "8_visualization_output"]:
+            step_dir = pipeline_output_dir / step
+            step_dir.mkdir(parents=True, exist_ok=True)
+            (step_dir / "summary.json").write_text(
+                json.dumps({"status": "success", "duration": 1.5})
+            )
+        
+        report_output_dir = tmp_path / "reports"
+        report_output_dir.mkdir(parents=True, exist_ok=True)
         
         result = generate_comprehensive_report(
-            pipeline_data=pipeline_data,
-            output_dir=output_dir,
+            pipeline_output_dir=pipeline_output_dir,
+            report_output_dir=report_output_dir,
             logger=logger
         )
         
-        # Should create report files
-        assert result is not None
+        # Should return a boolean indicating success/failure
+        assert isinstance(result, bool)
 
     @pytest.mark.integration
     def test_report_respects_output_directory(self, tmp_path):

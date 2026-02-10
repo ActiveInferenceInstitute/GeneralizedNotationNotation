@@ -18,7 +18,7 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 # Upgrade pip and install minimal deps
 RUN pip install -U pip setuptools wheel
-RUN pip install -r requirements.txt || true
+RUN pip install . || true
 RUN pip install pytest pytest-cov pytest-asyncio pytest-json-report
 
 # Default test command
