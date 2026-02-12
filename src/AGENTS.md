@@ -349,7 +349,6 @@ pytest --cov=src --cov-report=term-missing
 
 - **Main Documentation**: [README.md](../README.md)
 - **GNN Documentation Index**: [doc/gnn/README.md](../doc/gnn/README.md)
-- **Pipeline Execution Summary**: [pipeline_execution_summary.json](../output/pipeline_execution_summary.json)
 
 ---
 

@@ -15,7 +15,7 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 ### Execution Scripts
 
 - **[run_experiment.jl](run_experiment.jl)**: Command-line script for running individual experiments with configurable parameters.
-- **[Multi-agent Trajectory Planning.jl](Multi-agent%20Trajectory%20Planning.jl)**: Main control script for running the refactored version, generated from the original notebook.
+- **[MultiAgentTrajectoryPlanning.jl](MultiAgentTrajectoryPlanning.jl)**: Main control script for running the refactored version, generated from the original notebook.
 
 ### Documentation
 
@@ -41,11 +41,13 @@ This project demonstrates multi-agent trajectory planning using probabilistic in
 ### Quick Start
 
 1. Navigate to the project directory, and run the main script from there:
+
    ```bash
    cd scripts/Advanced\ Examples/Multi-agent\ Trajectory\ Planning/
    ```
 
 2. Run a single experiment with default parameters:
+
    ```bash
    julia run_experiment.jl
    ```
@@ -59,12 +61,14 @@ julia run_experiment.jl [--env=TYPE] [--seed=VALUE] [--output=PATH] [--no-interm
 ```
 
 Parameters:
+
 - `--env=TYPE`: Environment type (door, wall, combined). Default: combined
 - `--seed=VALUE`: Random seed for reproducibility. Default: 42
 - `--output=PATH`: Custom output directory. Default: timestamped directory in results/
 - `--no-intermediates`: Disable saving intermediate steps. Default: save intermediates
 
 Examples:
+
 ```bash
 # Run with door environment and seed 123
 julia run_experiment.jl --env=door --seed=123
@@ -143,4 +147,4 @@ These parameters can be adjusted in the `path_planning` function in `Models.jl`.
 
 - The inference process can be computationally intensive, especially with complex environments.
 - Increasing `nr_iterations` improves solution quality but increases computation time.
-- The solution quality depends on the random initialization controlled by the seed parameter. 
+- The solution quality depends on the random initialization controlled by the seed parameter.

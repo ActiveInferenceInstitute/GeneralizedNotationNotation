@@ -517,7 +517,6 @@ Each module provides specialized agent capabilities for different aspects of Act
 - **Main Documentation**: [README.md](README.md)
 - **Architecture Guide**: [ARCHITECTURE.md](ARCHITECTURE.md)
 - **Pipeline Rules**: [.cursorrules](.cursorrules)
-- **Pipeline Execution Summary**: [pipeline_execution_summary.json](output/pipeline_execution_summary.json)
 
 ---
 

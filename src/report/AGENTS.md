@@ -19,6 +19,7 @@
 ## Core Functionality
 
 ### Primary Responsibilities
+
 1. Generate comprehensive analysis reports from pipeline results
 2. Create multi-format documentation (HTML, Markdown, JSON, PDF)
 3. Aggregate results from all pipeline steps into unified reports
@@ -26,6 +27,7 @@
 5. Enable customizable report templates and styling
 
 ### Key Capabilities
+
 - Multi-format report generation (HTML, Markdown, JSON, PDF)
 - Pipeline results aggregation and analysis
 - Automated documentation creation
@@ -40,9 +42,11 @@
 ### Public Functions
 
 #### `process_report(target_dir: Path, output_dir: Path, verbose: bool = False, logger: Optional[logging.Logger] = None, **kwargs) -> bool`
+
 **Description**: Main report processing function called by orchestrator (23_report.py). Generates comprehensive analysis reports from pipeline results.
 
 **Parameters**:
+
 - `target_dir` (Path): Directory containing pipeline results (typically "output/")
 - `output_dir` (Path): Output directory for report results
 - `verbose` (bool): Enable verbose logging (default: False)
@@ -55,6 +59,7 @@
 **Returns**: `bool` - True if report generation succeeded, False otherwise
 
 **Example**:
+
 ```python
 from report import process_report
 from pathlib import Path
@@ -73,9 +78,11 @@ success = process_report(
 ```
 
 #### `generate_comprehensive_report(target_dir: Path, output_dir: Path, **kwargs) -> Dict[str, Any]`
+
 **Description**: Generate comprehensive analysis report from pipeline results.
 
 **Parameters**:
+
 - `target_dir` (Path): Input directory with pipeline results
 - `output_dir` (Path): Output directory for reports
 - `format` (str, optional): Report format ("html", "markdown", "json") (default: "html")
@@ -84,14 +91,17 @@ success = process_report(
 - `**kwargs`: Additional formatting options
 
 **Returns**: `Dict[str, Any]` - Report generation results with:
+
 - `success` (bool): Whether generation succeeded
 - `report_files` (List[Path]): Paths to generated report files
 - `summary` (Dict): Report summary statistics
 
 #### `generate_html_report(data: Dict[str, Any], output_path: Path, **kwargs) -> bool`
+
 **Description**: Generate interactive HTML report from analysis data.
 
 **Parameters**:
+
 - `data` (Dict[str, Any]): Analysis data to include in report
 - `output_path` (Path): Output path for HTML file
 - `include_charts` (bool, optional): Include interactive charts (default: True)
@@ -105,8 +115,10 @@ success = process_report(
 ## Report Types and Formats
 
 ### Comprehensive Report
+
 **Purpose**: Complete pipeline analysis with all details
 **Features**:
+
 - Executive summary and key findings
 - Detailed step-by-step analysis
 - Performance metrics and benchmarks
@@ -114,16 +126,20 @@ success = process_report(
 - Cross-reference linking
 
 ### Summary Report
+
 **Purpose**: High-level overview for quick review
 **Features**:
+
 - Key metrics and success indicators
 - Performance highlights
 - Critical findings and warnings
 - Action items and next steps
 
 ### Technical Report
+
 **Purpose**: Detailed technical documentation
 **Features**:
+
 - Implementation details and architecture
 - Configuration and environment information
 - Troubleshooting and debugging information
@@ -132,24 +148,28 @@ success = process_report(
 ### Supported Formats
 
 #### HTML Format
+
 - Interactive web-based reports
 - Embedded visualizations and charts
 - Collapsible sections and navigation
 - Responsive design for mobile devices
 
 #### Markdown Format
+
 - Human-readable structured documentation
 - GitHub-compatible formatting
 - Easy integration with documentation systems
 - Print-friendly layout
 
 #### JSON Format
+
 - Machine-readable structured data
 - API integration and automation
 - Data analysis and processing
 - Metadata and configuration export
 
 #### PDF Format (via external tools)
+
 - Professional document format
 - Print-ready layout and styling
 - Archival and sharing purposes
@@ -160,17 +180,20 @@ success = process_report(
 ## Dependencies
 
 ### Required Dependencies
+
 - `pathlib` - Path manipulation and file operations
 - `json` - JSON data handling and serialization
 - `typing` - Type annotations and validation
 
 ### Optional Dependencies
+
 - `jinja2` - HTML template rendering (fallback: basic HTML)
 - `markdown` - Markdown processing (fallback: text-based)
 - `weasyprint` - PDF generation (fallback: HTML only)
 - `plotly` - Interactive charts in HTML (fallback: static images)
 
 ### Internal Dependencies
+
 - `utils.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
 
@@ -179,15 +202,18 @@ success = process_report(
 ## Configuration
 
 ### Environment Variables
+
 - `REPORT_FORMAT` - Default report format ("html", "markdown", "json")
 - `REPORT_TEMPLATE` - Custom report template path
 - `REPORT_INCLUDE_VISUALS` - Include visualizations in reports (default: True)
 - `REPORT_COMPRESSION` - Enable report compression for large outputs
 
 ### Configuration Files
+
 - `report_config.yaml` - Report generation settings and templates
 
 ### Default Settings
+
 ```python
 DEFAULT_REPORT_SETTINGS = {
     'format': 'html',
@@ -212,6 +238,7 @@ DEFAULT_REPORT_SETTINGS = {
 ## Usage Examples
 
 ### Basic Report Generation
+
 ```python
 from report.processor import process_report
 
@@ -224,6 +251,7 @@ success = process_report(
 ```
 
 ### HTML Report Generation
+
 ```python
 from report.generator import generate_html_report
 
@@ -240,6 +268,7 @@ success = generate_html_report(
 ```
 
 ### Custom Report Configuration
+
 ```python
 from report.processor import generate_comprehensive_report
 
@@ -257,6 +286,7 @@ report = generate_comprehensive_report(
 ## Output Specification
 
 ### Output Products
+
 - `comprehensive_report.html` - Interactive HTML report
 - `comprehensive_report.md` - Markdown documentation
 - `comprehensive_report.json` - Structured data export
@@ -264,7 +294,8 @@ report = generate_comprehensive_report(
 - `report_assets/` - Images, charts, and supporting files
 
 ### Output Directory Structure
-```
+
+```text
 output/23_report_output/
 ├── comprehensive_report.html
 ├── comprehensive_report.md
@@ -281,11 +312,13 @@ output/23_report_output/
 ## Performance Characteristics
 
 ### Latest Execution
+
 - **Duration**: ~5-15 seconds (depending on data size)
 - **Memory**: ~50-100MB for comprehensive reports
 - **Status**: ✅ Production Ready
 
 ### Expected Performance
+
 - **Fast Path**: ~2-5s for summary reports
 - **Slow Path**: ~10-30s for comprehensive reports with visuals
 - **Memory**: ~20-50MB for typical reports, ~100MB+ for large datasets
@@ -295,11 +328,13 @@ output/23_report_output/
 ## Error Handling
 
 ### Graceful Degradation
+
 - **No template engine**: Fallback to basic HTML templates
 - **No visualization libraries**: Generate text-based reports
 - **Large datasets**: Sampling and summary generation
 
 ### Error Categories
+
 1. **Template Errors**: Invalid or missing report templates
 2. **Format Errors**: Unsupported output format requests
 3. **Data Errors**: Invalid or corrupted pipeline data
@@ -310,18 +345,22 @@ output/23_report_output/
 ## Integration Points
 
 ### Orchestrated By
+
 - **Script**: `23_report.py` (Step 23)
 - **Function**: `process_report()`
 
 ### Imports From
+
 - `utils.pipeline_template` - Standardized processing patterns
 - `pipeline.config` - Configuration management
 
 ### Imported By
+
 - `tests.test_report_integration.py` - Report generation tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
+
 ```
 Pipeline Results → Report Aggregation → Data Analysis → Format Generation → Multi-format Output
 ```
@@ -331,15 +370,18 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 ## Testing
 
 ### Test Files
+
 - `src/tests/test_report_integration.py` - Integration tests
 - `src/tests/test_report_generation.py` - Generation tests
 - `src/tests/test_report_formats.py` - Format tests
 
 ### Test Coverage
+
 - **Current**: 81%
 - **Target**: 90%+
 
 ### Key Test Scenarios
+
 1. Report generation across all supported formats
 2. Template rendering and customization
 3. Large dataset handling and performance
@@ -351,11 +393,13 @@ Pipeline Results → Report Aggregation → Data Analysis → Format Generation 
 ## MCP Integration
 
 ### Tools Registered
+
 - `report_generate` - Generate comprehensive reports
 - `report_format` - Convert reports between formats
 - `report_analyze` - Analyze existing reports
 
 ### Tool Endpoints
+
 ```python
 @mcp_tool("report_generate")
 def generate_report(pipeline_data, format="html", template="default"):
@@ -364,6 +408,7 @@ def generate_report(pipeline_data, format="html", template="default"):
 ```
 
 ### MCP File Location
+
 - `src/report/mcp.py` - MCP tool registrations
 
 ---
@@ -373,18 +418,22 @@ def generate_report(pipeline_data, format="html", template="default"):
 ### Common Issues
 
 #### Issue 1: Report generation fails
+
 **Symptom**: Report files not generated or incomplete  
 **Cause**: Missing pipeline artifacts or template issues  
-**Solution**: 
+**Solution**:
+
 - Verify all pipeline steps completed successfully
 - Check that required artifacts exist in output directories
 - Use `--verbose` flag for detailed generation logs
 - Review report template structure
 
 #### Issue 2: HTML validation errors
+
 **Symptom**: HTML reports have validation errors  
 **Cause**: Template issues or missing content  
 **Solution**:
+
 - Check HTML structure in generated files
 - Verify all referenced assets exist
 - Review HTML validation logs
@@ -397,15 +446,18 @@ def generate_report(pipeline_data, format="html", template="default"):
 ### Current Version: 1.0.0
 
 **Features**:
+
 - Multi-format report generation
 - Pipeline results aggregation
 - Automated documentation
 - Customizable templates
 
 **Known Issues**:
+
 - None currently
 
 ### Roadmap
+
 - **Next Version**: Enhanced visualization integration
 - **Future**: Real-time report updates
 
@@ -414,11 +466,13 @@ def generate_report(pipeline_data, format="html", template="default"):
 ## References
 
 ### Related Documentation
+
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
-- [Report Guide](../../doc/report/)
+- [Documentation Index](../../doc/README.md)
 
 ### External Resources
+
 - [Markdown Specification](https://daringfireball.net/projects/markdown/)
 
 ---

@@ -15,6 +15,7 @@
 ## Core Functionality
 
 ### Primary Responsibilities
+
 1. Convert GNN Active Inference models to Mermaid flowchart format
 2. Parse Mermaid diagrams edited in oxdraw back to GNN format
 3. Launch interactive oxdraw editor for visual model construction
@@ -22,6 +23,7 @@
 5. Validate bidirectional conversions for semantic consistency
 
 ### Key Capabilities
+
 - GNN → Mermaid conversion with embedded metadata
 - Mermaid → GNN parsing with visual edit preservation
 - Interactive visual editing through oxdraw CLI integration
@@ -36,9 +38,11 @@
 ### Public Functions
 
 #### `process_oxdraw(target_dir, output_dir, logger, **kwargs) -> bool`
+
 **Description**: Main processing function for oxdraw integration
 
 **Parameters**:
+
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for Mermaid files and results
 - `logger` (Logger): Logger instance for progress reporting
@@ -52,6 +56,7 @@
 **Returns**: `True` if processing succeeded
 
 **Example**:
+
 ```python
 from oxdraw.processor import process_oxdraw
 
@@ -65,15 +70,18 @@ success = process_oxdraw(
 ```
 
 #### `gnn_to_mermaid(gnn_model, include_metadata=True) -> str`
+
 **Description**: Convert parsed GNN model to Mermaid flowchart format
 
 **Parameters**:
+
 - `gnn_model` (Dict): Parsed GNN model dictionary
 - `include_metadata` (bool): Include GNN metadata in comments
 
 **Returns**: Mermaid flowchart string
 
 **Example**:
+
 ```python
 from gnn.processor import parse_gnn_file
 from oxdraw.mermaid_converter import gnn_to_mermaid
@@ -83,15 +91,18 @@ mermaid_diagram = gnn_to_mermaid(gnn_model)
 ```
 
 #### `mermaid_to_gnn(mermaid_content, validate_ontology=False) -> Dict`
+
 **Description**: Parse Mermaid flowchart back to GNN model structure
 
 **Parameters**:
+
 - `mermaid_content` (str): Mermaid diagram content
 - `validate_ontology` (bool): Validate ontology term mappings
 
 **Returns**: GNN model dictionary
 
 **Example**:
+
 ```python
 from oxdraw.mermaid_parser import mermaid_to_gnn
 
@@ -100,9 +111,11 @@ gnn_model = mermaid_to_gnn(mermaid_content, validate_ontology=True)
 ```
 
 #### `convert_gnn_file_to_mermaid(gnn_file_path, output_path=None) -> str`
+
 **Description**: Convert GNN file to Mermaid format for oxdraw
 
 **Example**:
+
 ```python
 from oxdraw import convert_gnn_file_to_mermaid
 
@@ -113,9 +126,11 @@ convert_gnn_file_to_mermaid(
 ```
 
 #### `convert_mermaid_file_to_gnn(mermaid_file_path, output_path=None) -> Dict`
+
 **Description**: Convert Mermaid file back to GNN format
 
 **Example**:
+
 ```python
 from oxdraw import convert_mermaid_file_to_gnn
 
@@ -130,15 +145,18 @@ gnn_model = convert_mermaid_file_to_gnn(
 ## Dependencies
 
 ### Required Dependencies
+
 - `pathlib` - File path operations
 - `json` - Metadata serialization
 - `re` - Pattern matching for parsing
 
 ### Optional Dependencies
+
 - `oxdraw` (Rust CLI) - Interactive visual editor (fallback: headless mode only)
 - `ontology.processor` - Ontology validation (fallback: skip validation)
 
 ### Internal Dependencies
+
 - `gnn.processor` - GNN file parsing and discovery
 - `utils.pipeline_template` - Standardized pipeline processing
 - `pipeline.config` - Configuration management
@@ -148,11 +166,13 @@ gnn_model = convert_mermaid_file_to_gnn(
 ## Configuration
 
 ### Environment Variables
+
 - `OXDRAW_DEFAULT_PORT` - Default port for oxdraw server (default: 5151)
 - `OXDRAW_DEFAULT_HOST` - Default host address (default: 127.0.0.1)
 - `OXDRAW_MODE` - Default processing mode (default: headless)
 
 ### Default Settings
+
 ```python
 DEFAULT_OXDRAW_SETTINGS = {
     'mode': 'headless',
@@ -258,16 +278,19 @@ subprocess.run([
 ## Input/Output Specification
 
 ### Input Requirements
+
 - **GNN Files**: `.md` files with valid GNN syntax
 - **Mermaid Files**: `.mmd` files with flowchart directive (for conversion back)
 - **Prerequisites**: Step 3 (GNN parsing) completion recommended but not required
 
 ### Output Products
+
 - `{model_name}.mmd` - Mermaid flowchart files
 - `{model_name}_from_mermaid.md` - Regenerated GNN files
 - `oxdraw_processing_results.json` - Processing summary
 
 ### Output Directory Structure
+
 ```
 output/24_oxdraw_output/
 ├── actinf_pomdp_agent.mmd
@@ -317,6 +340,7 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 ## Error Handling
 
 ### Error Categories
+
 1. **oxdraw Not Installed**: Falls back to headless mode
 2. **Invalid GNN Syntax**: Logs error, skips file
 3. **Malformed Mermaid**: Logs error with line number
@@ -324,6 +348,7 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 5. **File I/O Errors**: Graceful error handling with context
 
 ### Fallback Strategies
+
 - **No oxdraw CLI**: Headless conversion only (no interactive editing)
 - **Invalid Metadata**: Use visual structure only
 - **Missing Ontology**: Skip ontology validation
@@ -334,21 +359,25 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 ## Integration Points
 
 ### Orchestrated By
+
 - **Script**: `22_gui.py` (Step 22)
 - **Parent Module**: `gui` (Interactive GNN Constructors)
 - **Function**: `oxdraw_gui()` → `process_oxdraw()`
 
 ### Imports From
+
 - `gnn.processor` - GNN file parsing
 - `ontology.processor` - Ontology validation
 - `utils.pipeline_template` - Standardized processing
 
 ### Imported By
+
 - `gui.__init__.py` - GUI module aggregator
 - `tests.test_oxdraw_integration.py` - Integration tests
 - `main.py` - Pipeline orchestration via GUI module
 
 ### Data Flow
+
 ```
 GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
                 ↓                                          ↓
@@ -364,15 +393,18 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 ## Testing
 
 ### Test Files
+
 - `src/tests/test_oxdraw_integration.py` - Integration tests
 - `src/tests/test_mermaid_converter.py` - Converter unit tests
 - `src/tests/test_mermaid_parser.py` - Parser unit tests
 
 ### Test Coverage
+
 - **Current**: New module (comprehensive tests included)
 - **Target**: 90%+
 
 ### Key Test Scenarios
+
 1. GNN → Mermaid conversion with metadata
 2. Mermaid → GNN parsing with visual edits
 3. Round-trip conversion (GNN → Mermaid → GNN)
@@ -387,6 +419,7 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 ## MCP Integration
 
 ### Tools Registered
+
 - `oxdraw.convert_to_mermaid` - Convert GNN to Mermaid
 - `oxdraw.convert_from_mermaid` - Convert Mermaid to GNN
 - `oxdraw.launch_editor` - Launch interactive editor
@@ -394,6 +427,7 @@ GNN Files → parse_gnn_file() → gnn_to_mermaid() → Mermaid Files
 - `oxdraw.get_info` - Get module information
 
 ### Tool Endpoints
+
 ```python
 @mcp_tool("oxdraw.convert_to_mermaid")
 def convert_to_mermaid_tool(gnn_file_path: str, output_path: str = None):
@@ -406,12 +440,14 @@ def convert_to_mermaid_tool(gnn_file_path: str, output_path: str = None):
 ## Performance Characteristics
 
 ### Expected Performance
+
 - **GNN → Mermaid**: 10-50ms per file
 - **Mermaid → GNN**: 20-100ms per file
 - **oxdraw Launch**: 1-2s startup time
 - **Memory**: <10MB (excluding oxdraw process)
 
 ### Scalability
+
 - **Model Size**: Tested up to 100 variables, 200 connections
 - **oxdraw Limit**: ~500 nodes (practical visual limit)
 - **Batch Processing**: Linear scaling with file count
@@ -423,9 +459,11 @@ def convert_to_mermaid_tool(gnn_file_path: str, output_path: str = None):
 ### Common Issues
 
 #### Issue 1: "oxdraw CLI not found"
+
 **Symptom**: Warning about missing oxdraw CLI
 
 **Solution**:
+
 ```bash
 # Install oxdraw via Cargo
 cargo install oxdraw
@@ -437,6 +475,7 @@ oxdraw --version
 **Fallback**: Module works in headless mode without oxdraw CLI
 
 #### Issue 2: "Metadata not preserved"
+
 **Symptom**: Visual edits lost after conversion
 
 **Cause**: Metadata embedding disabled
@@ -444,16 +483,20 @@ oxdraw --version
 **Solution**: Ensure `include_metadata=True` in conversion
 
 #### Issue 3: "Invalid ontology terms"
+
 **Symptom**: Ontology validation errors
 
-**Solution**: 
+**Solution**:
+
 - Check ontology terms in `src/ontology/act_inf_ontology_terms.json`
 - Disable validation with `validate_ontology=False`
 
 #### Issue 4: "Mermaid syntax errors"
+
 **Symptom**: Parser fails on Mermaid files
 
 **Diagnostic**:
+
 ```python
 from oxdraw.utils import validate_mermaid_syntax
 
@@ -469,6 +512,7 @@ for error in errors:
 ### Current Version: 1.0.0
 
 **Features**:
+
 - Bidirectional GNN ↔ Mermaid conversion
 - Interactive visual editing via oxdraw
 - Ontology preservation and validation
@@ -476,11 +520,13 @@ for error in errors:
 - Comprehensive test coverage
 
 **Known Limitations**:
+
 - Requires manual oxdraw CLI installation
 - No real-time sync (save and reload required)
 - Limited to flowchart diagrams (no sequence/class diagrams)
 
 ### Roadmap
+
 - **1.1.0**: Real-time WebSocket sync with oxdraw
 - **1.2.0**: Multi-model hierarchical editing
 - **1.3.0**: Custom Active Inference shape library
@@ -490,19 +536,20 @@ for error in errors:
 ## References
 
 ### Related Documentation
+
 - [oxdraw Technical Overview](./README.md)
 - [GNN-oxdraw Integration Guide](./README.md)
 - [GNN Parser](../../../doc/gnn/AGENTS.md)
 - [Ontology Module](../../ontology/AGENTS.md)
 
 ### External Resources
+
 - [oxdraw GitHub](https://github.com/RohanAdwankar/oxdraw)
 - [Mermaid Documentation](https://mermaid.js.org/)
-- [Active Inference Ontology](../../src/ontology/act_inf_ontology_terms.json)
+- [Active Inference Ontology](../../ontology/act_inf_ontology_terms.json)
 
 ---
 
 **Last Updated**: 2026-01-21  
 **Maintainer**: GNN Pipeline Team  
 **Status**: ✅ Ready for Testing
-
