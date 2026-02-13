@@ -24,7 +24,7 @@ def get_module_info() -> Dict[str, Any]:
         'export_capabilities': [],
         'supported_formats': [],
         'export_methods': [],
-        'available_formats': ['json', 'xml', 'graphml', 'gexf', 'pkl', 'txt', 'dsl']
+        'available_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl']
     }
     
     # Export capabilities
@@ -47,7 +47,7 @@ def get_module_info() -> Dict[str, Any]:
     ])
     
     # Supported formats
-    info['supported_formats'].extend(['json', 'xml', 'graphml', 'gexf', 'pkl', 'txt', 'dsl'])
+    info['supported_formats'].extend(['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl'])
     info['graph_formats'] = ['graphml', 'gexf']
     info['text_formats'] = ['txt', 'dsl']
     info['data_formats'] = ['json', 'xml', 'pickle']
@@ -60,5 +60,5 @@ def get_supported_formats() -> Dict[str, List[str]]:
         'data_formats': ['json', 'xml', 'pickle'],
         'graph_formats': ['graphml', 'gexf'],
         'text_formats': ['txt', 'dsl'],
-        'all_formats': ['json', 'xml', 'graphml', 'gexf', 'pkl', 'txt', 'dsl']
+        'all_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl']
     }

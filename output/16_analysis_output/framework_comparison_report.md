@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-02-09T16:13:20.839574
+Generated: 2026-02-13T11:20:34.407937
 
 ## Summary
 

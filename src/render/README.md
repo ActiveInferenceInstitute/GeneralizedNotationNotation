@@ -8,7 +8,7 @@ This module provides comprehensive **POMDP-aware code generation** capabilities 
 
 🔧 **Modular Injection System** - Injects POMDP state spaces into framework-specific renderers with validation and compatibility checking
 
-📁 **Implementation-Specific Output Structure** - Creates organized output directories with framework-specific subfolders 
+📁 **Implementation-Specific Output Structure** - Creates organized output directories with framework-specific subfolders
 
 📚 **Structured Documentation Generation** - Automatically generates comprehensive documentation for each framework rendering
 
@@ -143,7 +143,11 @@ src/render/
 ├── README.md                      # This documentation
 ├── mcp.py                         # Model Context Protocol integration
 ├── render.py                      # Core rendering functionality
-├── renderer.py                    # Main renderer orchestrator
+├── processor.py                   # Main render processor (Step 11 entry)
+├── generators.py                  # Code generation utilities
+├── pomdp_processor.py             # POMDP state space injection into renderers
+├── pymdp_template.py              # PyMDP template definitions
+├── visualization_suite.py         # Render visualization suite
 ├── pymdp/                         # PyMDP code generation
 │   ├── __init__.py               # PyMDP module initialization
 │   ├── pymdp_renderer.py         # PyMDP renderer
@@ -177,12 +181,14 @@ src/render/
 
 ## Core Components
 
-### Main Renderer (`renderer.py`)
+### Main Renderer (`render.py`)
 
 #### `render_gnn_model(gnn_content: str, target_framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+
 Main function for rendering GNN models to executable code.
 
 **Supported Frameworks:**
+
 - **pymdp**: PyMDP Python framework
 - **rxinfer**: RxInfer.jl Julia framework
 - **activeinference_jl**: ActiveInference.jl Julia framework
@@ -190,12 +196,15 @@ Main function for rendering GNN models to executable code.
 - **discopy**: DisCoPy Python framework
 
 **Returns:**
+
 - Dictionary containing rendering results and generated files
 
 #### `generate_simulation_code(gnn_content: str, framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+
 Generates simulation code for specified framework.
 
 **Features:**
+
 - Framework-specific code generation
 - Template-based rendering
 - Configuration generation
@@ -205,6 +214,7 @@ Generates simulation code for specified framework.
 ### PyMDP Rendering (`pymdp/`)
 
 #### PyMDPRenderer (`pymdp_renderer.py`)
+
 Generates PyMDP simulation code from GNN models.
 
 **Key Methods:**
@@ -222,18 +232,22 @@ Generates PyMDP simulation code from GNN models.
   - Creates simulation logic
 
 #### PyMDPConverter (`pymdp_converter.py`)
+
 Converts GNN models to PyMDP-compatible format.
 
 **Features:**
+
 - Variable mapping and conversion
 - Matrix generation and validation
 - Parameter extraction and formatting
 - Simulation setup generation
 
 #### PyMDPTemplates (`pymdp_templates.py`)
+
 Provides code templates for PyMDP generation.
 
 **Templates:**
+
 - Basic simulation template
 - Advanced simulation template
 - Custom simulation template
@@ -242,6 +256,7 @@ Provides code templates for PyMDP generation.
 ### RxInfer.jl Rendering (`rxinfer/`)
 
 #### RxInferRenderer (`rxinfer_renderer.py`)
+
 Generates RxInfer.jl simulation code from GNN models.
 
 **Key Methods:**
@@ -259,18 +274,22 @@ Generates RxInfer.jl simulation code from GNN models.
   - Creates inference algorithms
 
 #### GNNParser (`gnn_parser.py`)
+
 Parses GNN content for RxInfer.jl conversion.
 
 **Features:**
+
 - GNN structure parsing
 - Variable extraction
 - Parameter mapping
 - Relationship analysis
 
 #### TOMLGenerator (`toml_generator.py`)
+
 Generates TOML configuration files for RxInfer.jl.
 
 **Features:**
+
 - Project configuration
 - Dependency management
 - Build configuration
@@ -279,6 +298,7 @@ Generates TOML configuration files for RxInfer.jl.
 ### ActiveInference.jl Rendering (`activeinference_jl/`)
 
 #### ActiveInferenceRenderer (`activeinference_renderer.py`)
+
 Generates ActiveInference.jl simulation code from GNN models.
 
 **Key Methods:**
@@ -298,6 +318,7 @@ Generates ActiveInference.jl simulation code from GNN models.
 ### JAX Rendering (`jax/`)
 
 #### JAXRenderer (`jax_renderer.py`)
+
 Generates JAX simulation code from GNN models.
 
 **Key Methods:**
@@ -315,9 +336,11 @@ Generates JAX simulation code from GNN models.
   - Creates simulation logic
 
 #### JAX Templates (`templates/`)
+
 Provides code templates for JAX generation.
 
 **Templates:**
+
 - Combined template for comprehensive simulations
 - General template for basic simulations
 - POMDP template for POMDP-specific simulations
@@ -325,6 +348,7 @@ Provides code templates for JAX generation.
 ### DisCoPy Rendering (`discopy/`)
 
 #### DisCoPyRenderer (`discopy_renderer.py`)
+
 Generates DisCoPy diagram code from GNN models.
 
 **Key Methods:**
@@ -342,9 +366,11 @@ Generates DisCoPy diagram code from GNN models.
   - Creates visualization logic
 
 #### Translator (`translator.py`)
+
 Translates GNN models to DisCoPy diagrams.
 
 **Features:**
+
 - GNN to diagram conversion
 - Relationship mapping
 - Visual representation
@@ -424,6 +450,7 @@ results = render_with_template(
 ## Rendering Pipeline
 
 ### 1. Content Parsing
+
 ```python
 # Parse GNN content for rendering
 parsed_content = parse_gnn_content(gnn_content)
@@ -432,6 +459,7 @@ parameters = extract_parameters(parsed_content)
 ```
 
 ### 2. Framework Selection
+
 ```python
 # Select appropriate renderer
 renderer = select_renderer(target_framework)
@@ -439,6 +467,7 @@ renderer_config = get_renderer_config(target_framework)
 ```
 
 ### 3. Code Generation
+
 ```python
 # Generate framework-specific code
 generated_code = renderer.generate_code(parsed_content, renderer_config)
@@ -447,6 +476,7 @@ config_files = renderer.generate_config_files(generated_code)
 ```
 
 ### 4. File Generation
+
 ```python
 # Generate output files
 output_files = renderer.generate_files(generated_code, output_dir)
@@ -454,6 +484,7 @@ documentation = renderer.generate_documentation(generated_code)
 ```
 
 ### 5. Validation
+
 ```python
 # Validate generated code
 validation_results = validate_generated_code(output_files)
@@ -463,6 +494,7 @@ test_files = generate_test_files(generated_code)
 ## Integration with Pipeline
 
 ### Pipeline Step 11: Code Rendering
+
 ```python
 # Called from 11_render.py
 def process_render(target_dir, output_dir, verbose=False, **kwargs):
@@ -511,6 +543,7 @@ output/11_render_output/
 ```
 
 **Benefits of This Structure:**
+
 - ✅ Clear separation of implementation-specific code
 - ✅ Framework-specific documentation and configurations
 - ✅ Easy navigation to specific implementations
@@ -519,11 +552,12 @@ output/11_render_output/
 
 ## POMDP Processing Features
 
-### POMDP State Space Extraction (`pomdp_extractor.py`)
+### POMDP State Space Extraction (`gnn.pomdp_extractor`)
 
 The system automatically extracts Active Inference structures from GNN specifications:
 
 **Extracted Components:**
+
 - **A Matrix**: Likelihood mapping P(o|s) - observations given states
 - **B Matrix**: Transition dynamics P(s'|s,a) - next states given current states and actions
 - **C Vector**: Preferences over observations (log-probabilities)
@@ -531,11 +565,13 @@ The system automatically extracts Active Inference structures from GNN specifica
 - **E Vector**: Policy priors (habits) over actions
 
 **State Space Variables:**
+
 - Hidden states, observations, actions with dimensions and types
 - Connections and relationships between variables
 - Ontology mappings to Active Inference concepts
 
 **Example POMDP Extraction:**
+
 ```python
 from gnn.pomdp_extractor import extract_pomdp_from_file
 
@@ -554,11 +590,13 @@ print(f"A Matrix: {len(pomdp_space.A_matrix)} x {len(pomdp_space.A_matrix[0])}")
 The processor validates POMDP compatibility and injects state spaces into framework renderers:
 
 **Compatibility Validation:**
+
 - Checks required matrices are present for each framework
 - Validates matrix dimensions and consistency
 - Warns about framework limitations (e.g., multi-modality support)
 
 **Framework-Specific Processing:**
+
 ```python
 from render.pomdp_processor import process_pomdp_for_frameworks
 
@@ -590,30 +628,35 @@ Each framework rendering includes:
 ## Framework Features
 
 ### PyMDP Framework
+
 - **Purpose**: Python-based Active Inference simulation
 - **Strengths**: Easy to use, comprehensive documentation
 - **Use Cases**: Research, prototyping, education
 - **Integration**: NumPy, SciPy, Matplotlib
 
 ### RxInfer.jl Framework
+
 - **Purpose**: Julia-based probabilistic programming
 - **Strengths**: High performance, type safety
 - **Use Cases**: Advanced research, high-performance computing
 - **Integration**: Julia ecosystem, ReactiveMP
 
 ### ActiveInference.jl Framework
+
 - **Purpose**: Julia-based Active Inference implementation
 - **Strengths**: Native Julia, high performance
 - **Use Cases**: Research, advanced simulations
 - **Integration**: Julia ecosystem, optimization
 
 ### JAX Framework
+
 - **Purpose**: High-performance numerical computing
 - **Strengths**: GPU acceleration, automatic differentiation
 - **Use Cases**: Research, custom algorithms
 - **Integration**: NumPy, TensorFlow, optimization
 
 ### DisCoPy Framework
+
 - **Purpose**: Categorical quantum computing
 - **Strengths**: Diagrammatic reasoning, quantum algorithms
 - **Use Cases**: Quantum computing, categorical methods
@@ -622,6 +665,7 @@ Each framework rendering includes:
 ## Configuration Options
 
 ### Rendering Settings
+
 ```python
 # Rendering configuration
 config = {
@@ -635,6 +679,7 @@ config = {
 ```
 
 ### Framework-Specific Settings
+
 ```python
 # Framework-specific configuration
 framework_config = {
@@ -659,6 +704,7 @@ framework_config = {
 ## Error Handling
 
 ### Rendering Failures
+
 ```python
 # Handle rendering failures gracefully
 try:
@@ -669,6 +715,7 @@ except RenderingError as e:
 ```
 
 ### Framework Issues
+
 ```python
 # Handle framework-specific issues
 try:
@@ -680,6 +727,7 @@ except FrameworkError as e:
 ```
 
 ### Template Issues
+
 ```python
 # Handle template issues
 try:
@@ -693,18 +741,21 @@ except TemplateError as e:
 ## Performance Optimization
 
 ### Code Generation Optimization
+
 - **Template Caching**: Cache rendered templates
 - **Parallel Generation**: Parallel code generation
 - **Incremental Generation**: Incremental code updates
 - **Optimized Algorithms**: Optimize generation algorithms
 
 ### Framework Optimization
+
 - **Framework Selection**: Optimize framework selection
 - **Code Optimization**: Optimize generated code
 - **Memory Management**: Optimize memory usage
 - **Performance Monitoring**: Monitor generation performance
 
 ### Validation Optimization
+
 - **Validation Caching**: Cache validation results
 - **Parallel Validation**: Parallel code validation
 - **Incremental Validation**: Incremental validation updates
@@ -713,6 +764,7 @@ except TemplateError as e:
 ## Testing and Validation
 
 ### Unit Tests
+
 ```python
 # Test individual rendering functions
 def test_pymdp_rendering():
@@ -723,6 +775,7 @@ def test_pymdp_rendering():
 ```
 
 ### Integration Tests
+
 ```python
 # Test complete rendering pipeline
 def test_rendering_pipeline():
@@ -734,6 +787,7 @@ def test_rendering_pipeline():
 ```
 
 ### Framework Tests
+
 ```python
 # Test different frameworks
 def test_framework_rendering():
@@ -746,12 +800,14 @@ def test_framework_rendering():
 ## Dependencies
 
 ### Required Dependencies
+
 - **jinja2**: Template engine for code generation
 - **pathlib**: Path handling
 - **json**: JSON data handling
 - **yaml**: YAML configuration handling
 
 ### Optional Dependencies
+
 - **black**: Code formatting for Python
 - **julia**: Julia language support
 - **jax**: JAX framework support
@@ -760,16 +816,19 @@ def test_framework_rendering():
 ## Performance Metrics
 
 ### Generation Times
+
 - **Small Models** (< 100 variables): < 5 seconds
 - **Medium Models** (100-1000 variables): 5-30 seconds
 - **Large Models** (> 1000 variables): 30-300 seconds
 
 ### Memory Usage
+
 - **Base Memory**: ~50MB
 - **Per Framework**: ~10-50MB depending on complexity
 - **Peak Memory**: 2-3x base usage during generation
 
 ### Code Quality
+
 - **Syntactic Correctness**: 95-99% correctness
 - **Framework Compatibility**: 90-95% compatibility
 - **Documentation Coverage**: 80-90% coverage
@@ -780,30 +839,35 @@ def test_framework_rendering():
 ### Common Issues
 
 #### 1. Framework Compatibility
+
 ```
 Error: Framework not supported for model type
 Solution: Use compatible framework or adjust model structure
 ```
 
 #### 2. Template Issues
+
 ```
 Error: Template rendering failed - invalid syntax
 Solution: Check template syntax or use default template
 ```
 
 #### 3. Code Generation Issues
+
 ```
 Error: Code generation failed - invalid model structure
 Solution: Validate model structure or use simpler framework
 ```
 
 #### 4. Performance Issues
+
 ```
 Error: Code generation taking too long
 Solution: Optimize model complexity or use faster framework
 ```
 
 ### Debug Mode
+
 ```python
 # Enable debug mode for detailed rendering information
 results = render_gnn_model(content, framework, output_dir, debug=True, verbose=True)
@@ -812,12 +876,14 @@ results = render_gnn_model(content, framework, output_dir, debug=True, verbose=T
 ## Future Enhancements
 
 ### Planned Features
+
 - **Additional Frameworks**: Support for more simulation frameworks
 - **Custom Templates**: User-defined code templates
 - **Real-time Rendering**: Live code generation during development
 - **Advanced Optimization**: Advanced code optimization techniques
 
 ### Performance Improvements
+
 - **Parallel Generation**: Multi-core code generation
 - **Incremental Updates**: Incremental code updates
 - **Advanced Caching**: Advanced caching strategies
@@ -829,7 +895,7 @@ The Render module provides comprehensive code generation capabilities for GNN mo
 
 ## License and Citation
 
-This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information.
 
 ## References
 

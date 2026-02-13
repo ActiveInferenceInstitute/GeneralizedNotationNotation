@@ -4,9 +4,10 @@ This module provides enhanced infrastructure for GNN (Generalized Notation Notat
 
 ## Format Interoperability Status
 
-GNN currently supports **20 formats** with **100% round-trip compatibility**:
+GNN currently supports **23 formats** with **100% round-trip compatibility**:
 
 ### Supported Format Categories
+
 - **Schema Formats**: JSON, XML, YAML, Protobuf, XSD, ASN.1, PKL (7 formats) ✅ **100% Success**
 - **Language Formats**: Python, Scala, Lean, Coq, Isabelle, Haskell (6 formats) ✅ **100% Success**
 - **Formal Specifications**: TLA+, Agda, Alloy, Z-notation, BNF (5 formats) ✅ **100% Success**
@@ -15,12 +16,11 @@ GNN currently supports **20 formats** with **100% round-trip compatibility**:
 ## Overview
 
 GNN enables researchers and practitioners to:
+
 - Specify generative models in a standardized, machine-readable format
 - Convert between all supported formats with semantic preservation
 - Validate model specifications with multiple validation levels
 - Parse and analyze model structures across different paradigms
-- Export models to simulation environments (PyMDP, RxInfer.jl)
-- Generate visualizations and documentation
 - Export models to simulation environments (PyMDP, RxInfer.jl)
 - Generate visualizations and documentation
 
@@ -267,7 +267,7 @@ print(f"Errors: {len(result.errors)}")
 
 ### 🎉 100% Success Achievement
 
-The system has achieved **100% round-trip success** across all 20 supported formats with complete semantic preservation.
+The system has achieved **100% round-trip success** across all 23 supported formats with complete semantic preservation.
 
 ### Embedded Data Architecture
 
@@ -334,6 +334,7 @@ print(f"Formats tested: {len(result.schema_formats)}")
 ### Schema Validator
 
 Features:
+
 - Multiple validation levels
 - Multi-format parsing with automatic detection
 - Binary format support
@@ -371,6 +372,7 @@ for result in report.round_trip_results:
 ## GNN Syntax
 
 ### Variable Definitions
+
 ```markdown
 # StateSpaceBlock
 A[3,3,type=float]                    # 3x3 transition matrix
@@ -381,6 +383,7 @@ learning_rate[1,type=float]          # Scalar learning rate
 ```
 
 ### Connections
+
 ```markdown
 # Connections
 A>B                                  # Directed influence
@@ -390,6 +393,7 @@ X|Y                                  # Conditional dependency
 ```
 
 ### Parameters
+
 ```markdown
 # InitialParameterization
 A=[[1.0, 0.0], [0.0, 1.0]]         # Matrix initialization
@@ -416,18 +420,21 @@ Standard Active Inference naming patterns:
 ### Common Error Patterns
 
 #### Format Detection
+
 ```
 Error: Could not detect format for file.unknown
 Solution: Use format_hint parameter: validator.validate_file('model.txt', format_hint='markdown')
 ```
 
 #### Round-Trip Issues
+
 ```
 Error: Round-trip test failed for XML format: 3 semantic differences
 Solution: Check embedded data preservation in XML serializer
 ```
 
 #### Cross-Format Inconsistencies
+
 ```
 Error: Semantic checksums differ across formats
 Solution: Review format-specific serialization patterns
@@ -516,11 +523,11 @@ parsing_system.register_parser(GNNFormat.NEW_FORMAT, NewFormatParser)
 
 ## Summary
 
-The GNN module provides comprehensive infrastructure for Active Inference model specification with support for 20 different formats and **100% round-trip success**. Key features include multi-level validation, cross-format consistency checking, and round-trip testing capabilities that ensure semantic preservation during format conversion.
+The GNN module provides comprehensive infrastructure for Active Inference model specification with support for 23 different formats and **100% round-trip success**. Key features include multi-level validation, cross-format consistency checking, and round-trip testing capabilities that ensure semantic preservation during format conversion.
 
 ## License and Citation
 
-This implementation follows the GNN specification v1.0+ and is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+This implementation follows the GNN specification v1.0+ and is part of the GeneralizedNotationNotation project. See the main repository for license and citation information.
 
 ## References
 

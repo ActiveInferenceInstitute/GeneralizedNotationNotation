@@ -30,6 +30,11 @@ from .formatters import (
     export_to_graphml,
     export_to_gexf,
     export_to_pickle,
+    export_to_json_gnn,
+    export_to_xml_gnn,
+    export_to_python_pickle,
+    export_to_plaintext_summary,
+    export_to_plaintext_dsl,
 )
 
 def generate_exports(

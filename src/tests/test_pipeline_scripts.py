@@ -196,6 +196,72 @@ class TestPipelineScriptExecution:
             assert result.returncode in [0, 1]
             assert artifact_checker(output_dir), f"Expected artifacts not produced by {script_name}"
 
+    @pytest.mark.integration
+    @pytest.mark.slow
+    def test_render_execute_analysis_chain_scripts(self):
+        """test that 11_render, 12_execute, 16_analysis run sequentially via CLI."""
+        
+        # We need pymdp for execution to work (at least minimally)
+        # Check if render/execute/analysis modules are importable first to avoid failures on environments without them
+        try:
+            import render
+            import execute
+            import analysis
+        except ImportError:
+            pytest.skip("Full pipeline modules not available")
+
+        with tempfile.TemporaryDirectory() as td:
+            tmp = Path(td)
+            input_dir = tmp / "input" / "gnn_files"
+            input_dir.mkdir(parents=True)
+            output_dir = tmp / "output"
+            
+            # 0. Create a valid GNN file for testing
+            gnn_content = """# Active Inference Test Agent
+## ModelName
+test_agent
+## StateSpaceBlock
+s[2,1,type=int]
+## ObservationBlock
+o[2,1,type=int]
+## HomeostaticGoalBlock
+g[2,1,type=int]
+## Connections
+s -> o
+"""
+            (input_dir / "test_agent.md").write_text(gnn_content)
+            
+            # Scripts to test in order
+            scripts = [
+                ("11_render.py", [], lambda out: (out / "11_render_output").exists()),
+                ("12_execute.py", ["--frameworks", "pymdp"], lambda out: True), # Execute might skip if no pymdp but should run
+                ("16_analysis.py", [], lambda out: True) # Analysis should run
+            ]
+            
+            for script_name, extra_args, checker in scripts:
+                script_path = SRC_DIR / script_name
+                if not script_path.exists():
+                    pytest.fail(f"Script {script_name} not found")
+                
+                cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir), "--verbose"] + extra_args
+                
+                # Run script
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+                
+                # Check return code
+                if result.returncode != 0:
+                    # Allow failure if it's just missing dependencies in the environment (e.g. pymdp not installed)
+                    # But the script itself should have handled it gracefully if it was designed to.
+                    # For now, we assert success because these are "thin orchestrators" and should mostly work or fail gracefully.
+                    # However, 12_execute might fail if no frameworks are runnable. 
+                    # Let's inspect stdout/stderr if it fails.
+                    logging.warning(f"{script_name} failed with {result.returncode}")
+                    logging.warning(f"STDOUT: {result.stdout}")
+                    logging.warning(f"STDERR: {result.stderr}")
+                
+                assert result.returncode == 0, f"{script_name} failed: {result.stderr}"
+                assert checker(output_dir), f"{script_name} verification failed"
+
 class TestStep2GNNComprehensive:
     """Comprehensive tests for Step 2: GNN File Processing."""
     

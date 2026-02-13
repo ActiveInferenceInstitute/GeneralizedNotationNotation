@@ -1,4 +1,5 @@
 # GNN File Structure Specification
+
 **Version: 1.0**
 
 ## Sections
@@ -15,5 +16,6 @@
 | Equations | Describes any equations associated with the model, written in LaTeX. These equations are at least rendered for display, and further can actually specify relationships among variables. | LaTeX-rendered formulas defining model dynamics and relationships between variables. |
 | Time | Describes the model's treatment of Time. | Static:Is a static model;Dynamic:Is a dynamic model;DiscreteTime=X_t:Specifies X_t as the temporal variable in a discrete time model;ContinuousTime=X_t:Specifies X_t as the temporal variable in a continuous time model;ModelTimeHorizon=X:Specifies X as the time horizon for finite-time modeling. |
 | ActInfOntologyAnnotation | Connects the variables to their associated Active Inference Ontology term, for display and model juxtaposition. | Variables in this section are associated with one or more terms from the Active Inference Ontology. Format: VariableName=OntologyTerm (Example: C=Preference) |
+| ModelParameters | Declares numeric parameters for the model that are not variable definitions (e.g. counts, horizons, simulation settings). | key: value pairs specifying model-level numeric parameters (Example: num_hidden_states: 3, num_timesteps: 30). |
 | Footer | Closes the file and allows read-in from either end. | Marks the end of the GNN specification. |
 | Signature | Cryptographic signature block (can have information regarding the completeness or provenance of the file). | Contains provenance information and optional cryptographic verification. |

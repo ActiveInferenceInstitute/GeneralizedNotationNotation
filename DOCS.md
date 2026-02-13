@@ -77,7 +77,7 @@ flowchart LR
 
 ```mermaid
 graph TB
-  A[main.py] --> B[0_template.py..23_report.py\nThin orchestrators]
+  A[main.py] --> B[0_template.py..24_intelligent_analysis.py\nThin orchestrators]
   B --> C[Modules in src/*/\nCore implementations]
   C --> D[Tests in src/tests/]
   A --> E[utils/, pipeline/\nShared infra]

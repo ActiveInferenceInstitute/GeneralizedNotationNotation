@@ -48,7 +48,7 @@ class LogContext:
     user_id: Optional[str] = None
     session_id: Optional[str] = None
     environment: str = field(default_factory=lambda: os.getenv("ENVIRONMENT", "development"))
-    version: str = "1.1.0"
+    version: str = "1.1.3"
     timestamp: float = field(default_factory=time.time)
 
 

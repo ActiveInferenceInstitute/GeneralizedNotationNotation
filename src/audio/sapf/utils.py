@@ -18,7 +18,7 @@ def get_module_info():
         Dictionary with module information
     """
     return {
-        'version': "1.1.0",
+        'version': "1.1.3",
         'description': "SAPF audio generation from GNN models",
         'features': {
             'gnn_to_sapf_conversion': True,

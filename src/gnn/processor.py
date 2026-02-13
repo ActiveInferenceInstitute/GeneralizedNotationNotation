@@ -339,11 +339,14 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
             - processed_files: List of successfully processed file paths
     """
     # Use lightweight processing and wrap into status dict expected by tests
-    results_map = process_gnn_directory_lightweight(directory, recursive=recursive)
+    lightweight_result = process_gnn_directory_lightweight(directory, recursive=recursive)
+    # Extract actual file paths from parsed file results
+    parsed_files = lightweight_result.get("parsed_files", [])
+    file_paths = [pf.get("file_path", "") for pf in parsed_files if isinstance(pf, dict)]
     result: Dict[str, Any] = {
-        "status": "SUCCESS",
-        "files": list(results_map.keys()),
-        "processed_files": list(results_map.keys()),
+        "status": "SUCCESS" if lightweight_result.get("success", False) else "FAILED",
+        "files": file_paths,
+        "processed_files": [fp for fp in file_paths if fp],
     }
     if output_dir is not None:
         from pathlib import Path as _P

@@ -582,13 +582,32 @@ class POMDPRenderProcessor:
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_jax.py"
             
+            # Pre-render validation: verify state spaces are present before rendering
+            validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'jax')
+            warnings = []
+            if not validation_result['valid']:
+                warnings = validation_result.get('warnings', [])
+                if validation_result.get('critical', False):
+                    return {
+                        'success': False,
+                        'message': f"State space validation failed: {validation_result.get('reason', 'Unknown')}",
+                        'artifacts': [],
+                        'warnings': warnings
+                    }
+            
             success, message, artifacts = render_gnn_to_jax(gnn_spec, output_file, kwargs)
+            
+            # Post-render validation: verify state spaces are in generated script
+            if success and output_file.exists():
+                post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
+                if not post_validation['valid']:
+                    warnings.extend(post_validation.get('warnings', []))
             
             return {
                 'success': success,
                 'message': message,
                 'artifacts': artifacts,
-                'warnings': []
+                'warnings': warnings
             }
             
         except ImportError:

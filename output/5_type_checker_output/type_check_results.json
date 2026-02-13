@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-02-10T08:47:43.853251",
+  "timestamp": "2026-02-13T11:19:12.215554",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: E, s, t, u, s_prime, D, A, B, G, type, o, \u03c0, matrix, C, F, vector"
+        "Duplicate variable names: G, s, o, type, F, E, \u03c0, C, s_prime, B, D, A, t, matrix, u, vector"
       ],
       "warnings": [
         "Type issue: Unknown type 'Active' for variable 'Example'",
@@ -519,12 +519,12 @@
           "type": "3 (controlled by \u03c0)"
         }
       ],
-      "validation_timestamp": "2026-02-10T08:47:43.853361"
+      "validation_timestamp": "2026-02-13T11:19:12.215686"
     }
   ],
   "type_analysis": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "types_found": [
         {
@@ -738,7 +738,7 @@
         "1,type=int": 2
       },
       "total_variables": 37,
-      "analysis_timestamp": "2026-02-10T08:47:43.855325"
+      "analysis_timestamp": "2026-02-13T11:19:12.217786"
     }
   ]
 }

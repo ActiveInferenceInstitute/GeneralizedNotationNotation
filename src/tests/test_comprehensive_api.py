@@ -154,9 +154,12 @@ class TestGNNModule:
     
     def test_validate_gnn_function(self):
         """Test the validate_gnn function."""
-        # Test with invalid input
+        # Test with invalid input — validate_gnn returns tuple(bool, list[str])
         result = src.gnn.validate_gnn("invalid content")
-        assert hasattr(result, 'is_valid') or isinstance(result, dict)
+        assert isinstance(result, tuple), f"Expected tuple, got {type(result)}"
+        is_valid, messages = result
+        assert isinstance(is_valid, bool)
+        assert isinstance(messages, list)
     
     def test_feature_flags(self):
         """Test that feature flags are properly set."""

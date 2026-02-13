@@ -81,7 +81,9 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
     logger.info(f"Executing JAX script: {script_path}")
     
     # Check JAX and related dependencies
-    required_deps = ["jax", "flax", "optax", "numpy"]
+    # Only jax and numpy are required — generated scripts use pure JAX
+    required_deps = ["jax", "numpy"]
+    optional_deps = ["flax", "optax"]
     missing_deps = []
     
     for dep in required_deps:
@@ -90,7 +92,14 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
             logger.debug(f"✅ Dependency available: {dep}")
         except ImportError:
             missing_deps.append(dep)
-            logger.warning(f"⚠️ Missing dependency: {dep}")
+            logger.warning(f"⚠️ Missing required dependency: {dep}")
+    
+    for dep in optional_deps:
+        try:
+            __import__(dep)
+            logger.debug(f"✅ Optional dependency available: {dep}")
+        except ImportError:
+            logger.info(f"ℹ️ Optional dependency not installed: {dep}")
     
     if missing_deps:
         logger.error(f"Missing required JAX dependencies: {', '.join(missing_deps)}")

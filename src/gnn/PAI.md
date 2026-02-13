@@ -5,6 +5,7 @@
 **Purpose:** Parse GNN (Generalized Notation Notation) files into structured model representations.
 
 **When to use this module:**
+
 - Parse GNN markdown files into data structures
 - Extract POMDP state spaces from GNN
 - Convert between GNN and formal representations
@@ -49,13 +50,17 @@ pomdp = extractor.extract(result)
 ```markdown
 # Model Name
 
-## StateSpace
-- states: [s0, s1, s2]
-- observations: [o0, o1]
-- actions: [a0, a1]
+## StateSpaceBlock
+- s[4],type=hidden  # 4 hidden states
+- o[5],type=observable  # 5 observations
+- u[3],type=control  # 3 control states
 
-## Matrices
-### A (Observation)
+## Connections
+s -> o  # Hidden states generate observations
+u -> s  # Control states influence transitions
+
+## InitialParameterization
+### A (Likelihood)
 ### B (Transition)
 ### C (Preferences)
 ### D (Initial State)

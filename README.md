@@ -52,7 +52,7 @@
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
 **Last Updated**: 2026-02-09  
-**Version**: 1.1.0  
+**Version**: 1.1.3  
 **Status**: ✅ Production Ready (Active Inference Institute)  
 **Test Suite**: ✅ 1,127 tests passing  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  

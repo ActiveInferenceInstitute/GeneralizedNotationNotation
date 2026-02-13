@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-09T16:12:18.736171",
+  "timestamp": "2026-02-13T11:19:25.520525",
   "total_attempts": 10,
   "successful": 10,
   "failed": 0,
@@ -35,7 +35,7 @@
       "viz_type": "3d",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 167.5870418548584,
+      "duration_ms": 174.14307594299316,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png"
       ],
@@ -46,7 +46,7 @@
       "viz_type": "statistical",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 243.8669204711914,
+      "duration_ms": 275.5889892578125,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png"
       ],
@@ -57,7 +57,7 @@
       "viz_type": "matrix_correlations",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 188.80176544189453,
+      "duration_ms": 216.16005897521973,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png"
       ],
@@ -68,7 +68,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 209.74993705749512,
+      "duration_ms": 235.3188991546631,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png"
       ],
@@ -79,7 +79,7 @@
       "viz_type": "policy",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 162.64700889587402,
+      "duration_ms": 174.28898811340332,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png"
       ],
@@ -90,7 +90,7 @@
       "viz_type": "interactive_dashboard",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 80.01470565795898,
+      "duration_ms": 113.19112777709961,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html"
       ],
@@ -101,7 +101,7 @@
       "viz_type": "dashboard",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 101.89986228942871,
+      "duration_ms": 120.95284461975098,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html"
       ],
@@ -112,7 +112,7 @@
       "viz_type": "network_metrics",
       "model_name": "actinf_pomdp_agent",
       "status": "success",
-      "duration_ms": 171.33426666259766,
+      "duration_ms": 185.6250762939453,
       "output_files": [
         "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png"
       ],
@@ -123,7 +123,7 @@
       "viz_type": "d2_diagrams",
       "model_name": "Active Inference POMDP Agent",
       "status": "success",
-      "duration_ms": 2288.4559631347656,
+      "duration_ms": 4294.495105743408,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.svg",
         "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.png"
@@ -135,7 +135,7 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "success",
-      "duration_ms": 5014.437913894653,
+      "duration_ms": 4429.347991943359,
       "output_files": [
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
         "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",

@@ -1,6 +1,6 @@
 # Pipeline Intelligent Analysis Report
 
-**Generated**: 2026-02-09T16:13:40.502615
+**Generated**: 2026-02-13T11:20:55.246261
 
 **Status**: ✅ SUCCESS
 
@@ -12,8 +12,8 @@
 | Metric | Value |
 |--------|-------|
 | Total Steps | 7 |
-| Duration | 63.52s |
-| Peak Memory | 78.9 MB |
+| Duration | 87.26s |
+| Peak Memory | 74.2 MB |
 | 🔴 Red Flags | 0 |
 | 🟡 Yellow Flags | 1 |
 | ✅ Green (Clean) | 6 |
@@ -27,7 +27,7 @@ Pipeline completed successfully with a health score of 100/100. There are 1 yell
 None - No critical issues detected.
 
 ### Yellow Flags (Warnings)
-- **12_execute.py**: Significantly above average: 57.2s (6.3x avg)
+- **12_execute.py**: Slow: 81.0s (>60.0s threshold)
 
 ### Action Items
 1. **Review**: Investigate yellow flag warnings
@@ -37,19 +37,19 @@ None - No critical issues detected.
 
 | Step | Duration | Memory | Issues |
 |------|----------|--------|--------|
-| 12_execute.py | 57.2s | 66MB | Significantly above average: 57.2s (6.3x avg) |
+| 12_execute.py | 81.0s | 28MB | Slow: 81.0s (>60.0s threshold) |
 
 ## Per-Step Execution Details
 
 | # | Step | Status | Duration | Memory | Flags |
 |---|------|--------|----------|--------|-------|
-| 1 | 3_gnn.py | ✅ SUCCESS | 0.34s | 79MB | - |
-| 2 | 5_type_checker.py | ✅ SUCCESS | 0.34s | 79MB | - |
-| 3 | 7_export.py | ✅ SUCCESS | 0.33s | 79MB | - |
-| 4 | 8_visualization.py | ✅ SUCCESS | 4.00s | 79MB | - |
-| 5 | 11_render.py | ✅ SUCCESS | 0.34s | 66MB | - |
-| 6 | 12_execute.py | 🟡 SUCCESS | 57.22s | 66MB | 1 |
-| 7 | 15_audio.py | ✅ SUCCESS | 0.95s | 34MB | - |
+| 1 | 3_gnn.py | ✅ SUCCESS | 0.43s | 74MB | - |
+| 2 | 5_type_checker.py | ✅ SUCCESS | 0.44s | 69MB | - |
+| 3 | 7_export.py | ✅ SUCCESS | 0.49s | 60MB | - |
+| 4 | 8_visualization.py | ✅ SUCCESS | 3.20s | 60MB | - |
+| 5 | 11_render.py | ✅ SUCCESS | 0.54s | 28MB | - |
+| 6 | 12_execute.py | 🟡 SUCCESS | 81.02s | 28MB | 1 |
+| 7 | 15_audio.py | ✅ SUCCESS | 1.13s | 28MB | - |
 
 ## Detailed Step Output (Flagged Steps)
 
@@ -58,21 +58,21 @@ None - No critical issues detected.
 **Execution**
 
 - Status: SUCCESS
-- Duration: 57.22s
-- Memory: 66MB
-- Flags: Significantly above average: 57.2s (6.3x avg)
+- Duration: 81.02s
+- Memory: 28MB
+- Flags: Slow: 81.0s (>60.0s threshold)
 
 ## Performance Bottlenecks
 
 | Step | Duration (s) | Memory (MB) | Above Avg Ratio |
 |------|-------------|-------------|-----------------|
-| 12_execute.py | 57.2 | 66 | 6.3x |
+| 12_execute.py | 81.0 | 28 | 6.5x |
 
 ## Recommendations
 
 - 🟡 **WARNINGS**: 1 step(s) have yellow flags that should be reviewed.
--    ↳ **12_execute.py**: Significantly above average: 57.2s (6.3x avg)
-- ⚡ **Performance**: Slowest step is **12_execute.py** (57.2s). Consider parallelization or caching.
+-    ↳ **12_execute.py**: Slow: 81.0s (>60.0s threshold)
+- ⚡ **Performance**: Slowest step is **12_execute.py** (81.0s). Consider parallelization or caching.
 - ✅ **Health**: Pipeline is healthy (100/100). All systems nominal.
 
 ## Pipeline Configuration

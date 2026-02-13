@@ -130,7 +130,7 @@ class TestRenderTargets:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_render_to_jax(self, tmp_path, sample_gnn_spec, test_render_module):
-        """Test rendering to JAX format using real rendering."""
+        """Test rendering to JAX format using real rendering with content validation."""
         # Use real rendering call with actual data
         ok, msg, artifacts = test_render_module.render_gnn_spec(sample_gnn_spec, "jax", tmp_path)
         
@@ -143,6 +143,17 @@ class TestRenderTargets:
         for artifact in artifacts:
             artifact_path = tmp_path / artifact
             assert artifact_path.exists(), f"Artifact {artifact} should be created"
+        
+        # Content validation: verify generated code has Active Inference constructs
+        jax_artifacts = [a for a in artifacts if a.endswith('.py')]
+        if jax_artifacts:
+            content = (tmp_path / jax_artifacts[0]).read_text()
+            assert 'import jax' in content or 'from jax' in content, \
+                "Generated JAX code should import jax"
+            assert 'create_params' in content or 'belief_update' in content, \
+                "Generated JAX code should contain Active Inference functions"
+            # Verify valid Python syntax
+            compile(content, jax_artifacts[0], 'exec')
     
     @pytest.mark.unit
     @pytest.mark.safe_to_fail

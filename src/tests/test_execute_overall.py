@@ -378,3 +378,147 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
                 if field in summary:
                     assert summary[field] is not None
 
+
+class TestJAXExecute:
+    """JAX-specific execute tests.
+    
+    These tests verify that the execute module correctly discovers,
+    identifies, and runs JAX scripts. All tests use real execution
+    functions with actual scripts — no mocking.
+    """
+
+    @pytest.fixture
+    def jax_render_output(self, safe_filesystem):
+        """Create sample render output with a JAX script."""
+        base = safe_filesystem.create_dir("output/11_render_output")
+        
+        # Create jax directory with a valid Python script
+        jax_dir = safe_filesystem.create_dir("output/11_render_output/actinf_model/jax")
+        jax_script = safe_filesystem.create_file(
+            "output/11_render_output/actinf_model/jax/actinf_model_jax.py",
+            '''#!/usr/bin/env python3
+"""Test JAX script for execution testing."""
+import json
+import os
+
+# Simulate JAX Active Inference output
+result = {
+    "success": True,
+    "framework": "jax",
+    "model_name": "actinf_model",
+    "num_timesteps": 10,
+    "actions": [0, 1, 2, 0, 1, 2, 0, 1, 2, 0],
+    "beliefs": [[0.33, 0.33, 0.34]] * 10,
+    "final_belief": [0.5, 0.3, 0.2],
+    "validation": {
+        "all_beliefs_valid": True,
+        "beliefs_sum_to_one": True,
+        "actions_in_range": True
+    }
+}
+
+# Write output to jax_outputs directory (matches real JAX script behavior)
+output_dir = os.environ.get("GNN_OUTPUT_DIR", "jax_outputs")
+os.makedirs(output_dir, exist_ok=True)
+output_file = os.path.join(output_dir, "simulation_results.json")
+with open(output_file, "w") as f:
+    json.dump(result, f, indent=2)
+
+print(json.dumps(result))
+print("JAX Active Inference model test successful!")
+'''
+        )
+        
+        return {
+            "base": base,
+            "jax_script": jax_script,
+        }
+
+    @pytest.mark.fast
+    def test_find_jax_executable_scripts(self, jax_render_output):
+        """Test that JAX scripts are discovered in render output."""
+        logger = logging.getLogger("test")
+        base = jax_render_output["base"]
+        
+        # Find JAX scripts specifically
+        scripts = find_executable_scripts(base, True, logger, ["jax"])
+        
+        assert isinstance(scripts, list)
+        assert len(scripts) > 0, "Should discover JAX scripts in jax/ directory"
+        # Verify they are identified as jax framework
+        for s in scripts:
+            assert s.get('framework') == 'jax', f"Script framework should be 'jax', got: {s.get('framework')}"
+
+    @pytest.mark.unit
+    def test_execute_jax_script(self, jax_render_output, safe_filesystem):
+        """Test execution of a JAX-style script via execute_single_script."""
+        logger = logging.getLogger("test")
+        results_dir = safe_filesystem.create_dir("results")
+        
+        script_info = {
+            "path": jax_render_output["jax_script"],
+            "script_path": jax_render_output["jax_script"],
+            "framework": "jax",
+            "name": "actinf_model_jax",
+            "executor": sys.executable,
+            "relative_path": Path("actinf_model/jax/actinf_model_jax.py"),
+            "size_bytes": jax_render_output["jax_script"].stat().st_size
+        }
+        
+        try:
+            result = execute_single_script(script_info, results_dir, True, logger)
+            assert isinstance(result, dict), "Execution result should be a dict"
+            # The script should succeed since it only uses json and os (no JAX dep needed)
+            if "success" in result:
+                assert result["success"] is True, f"JAX script execution should succeed: {result}"
+        except Exception as e:
+            pytest.fail(f"JAX script execution crashed: {e}")
+
+    @pytest.mark.fast
+    def test_determine_jax_framework(self, safe_filesystem):
+        """Test framework detection correctly identifies JAX scripts."""
+        base = safe_filesystem.create_dir("render_output")
+        jax_script = safe_filesystem.create_file(
+            "render_output/model/jax/model_jax.py",
+            "# JAX Active Inference script"
+        )
+        
+        framework_dirs = {
+            "pymdp": "pymdp",
+            "rxinfer": "rxinfer",
+            "jax": "jax",
+            "discopy": "discopy",
+            "activeinference_jl": "activeinference_jl"
+        }
+        
+        framework = determine_script_framework(jax_script, base, framework_dirs)
+        assert framework == "jax", f"Should detect jax framework, got: {framework}"
+
+    @pytest.mark.slow
+    def test_process_execution_with_jax_framework_filter(self, jax_render_output, safe_filesystem):
+        """Test execution processing with JAX framework filter."""
+        input_dir = safe_filesystem.create_dir("input")
+        output_dir = safe_filesystem.create_dir("output_exec")
+        
+        try:
+            success = process_execute(
+                input_dir,
+                output_dir,
+                verbose=True,
+                frameworks="jax"
+            )
+            assert isinstance(success, bool)
+            
+            # Check summary was created
+            summary_file = output_dir / "execution_summary.json"
+            if summary_file.exists():
+                with open(summary_file) as f:
+                    summary = json.load(f)
+                assert "timestamp" in summary
+                # Verify JAX was in requested frameworks
+                if "requested_frameworks" in summary:
+                    assert "jax" in summary["requested_frameworks"]
+        except Exception as e:
+            pytest.fail(f"JAX execution processing crashed: {e}")
+
+

@@ -5,16 +5,19 @@ This directory contains the comprehensive test suite for the GNN Processing Pipe
 ## Quick Start
 
 ### Run Fast Tests (Default - Pipeline Mode)
+
 ```bash
 python src/2_tests.py --fast-only --verbose
 ```
 
 ### Run Comprehensive Test Suite
+
 ```bash
 python src/2_tests.py --comprehensive --verbose
 ```
 
 ### Run Specific Test Category
+
 ```bash
 pytest src/tests/test_gnn_overall.py -v
 pytest src/tests/test_render_overall.py -v
@@ -38,6 +41,7 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 ### Component Overview
 
 **2_tests.py** (Thin Orchestrator):
+
 - Handles command-line argument parsing
 - Sets up logging and visual output
 - Manages output directory creation
@@ -45,6 +49,7 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 - Returns standardized exit codes (0=success, 1=failure)
 
 **runner.py** (Core Implementation):
+
 - Contains all test execution logic
 - Provides multiple execution modes: fast, comprehensive, reliable
 - Implements `ModularTestRunner` for category-based execution
@@ -52,12 +57,14 @@ The test infrastructure follows the **thin orchestrator pattern**, where `2_test
 - Generates comprehensive test reports
 
 **test_utils.py** (Shared Utilities):
+
 - Provides test fixtures and helper functions
 - Defines test categories, markers, and configuration
 - Provides test data creation utilities
 - Used by both test files and the runner
 
 **conftest.py** (Pytest Configuration):
+
 - Defines pytest fixtures available to all tests
 - Configures pytest markers
 - Handles test environment setup/teardown
@@ -96,6 +103,7 @@ flowchart TD
 ### Module-Based Naming Convention
 
 All test files follow the pattern:
+
 - `test_MODULENAME_overall.py` - Comprehensive module coverage
 - `test_MODULENAME_area1.py` - Specific module areas
 - `test_MODULENAME_area2.py` - Additional specialized areas
@@ -103,36 +111,39 @@ All test files follow the pattern:
 ### Current Test Files
 
 #### Core Module Tests
+
 - `test_gnn_overall.py` - Comprehensive GNN module testing
 - `test_gnn_parsing.py` - GNN parsing and discovery tests
 - `test_gnn_validation.py` - GNN validation and consistency tests
 - `test_gnn_processing.py` - GNN processing and serialization tests
-- `test_gnn_integration.py` - GNN integration tests
 
 #### Render Module Tests
+
 - `test_render_overall.py` - Comprehensive render module testing
 - `test_render_integration.py` - Render integration tests
 - `test_render_performance.py` - Render performance tests
 
 #### MCP Module Tests
+
 - `test_mcp_overall.py` - Comprehensive MCP module testing
 - `test_mcp_tools.py` - MCP tool execution tests
-- `test_mcp_transport.py` - MCP transport layer tests
-- `test_mcp_integration.py` - MCP integration tests
 - `test_mcp_performance.py` - MCP performance tests
 
 #### Audio Module Tests
+
 - `test_audio_overall.py` - Comprehensive audio module testing
 - `test_audio_sapf.py` - SAPF audio generation tests
 - `test_audio_generation.py` - Audio generation tests
 - `test_audio_integration.py` - Audio integration tests
 
 #### Visualization Module Tests
+
 - `test_visualization_overall.py` - Comprehensive visualization module testing
 - `test_visualization_matrices.py` - Matrix visualization tests
 - `test_visualization_ontology.py` - Ontology visualization tests
 
 #### Pipeline Module Tests
+
 - `test_pipeline_overall.py` - Comprehensive pipeline module testing
 - `test_pipeline_integration.py` - Pipeline integration tests
 - `test_pipeline_orchestration.py` - Pipeline orchestration tests
@@ -143,27 +154,34 @@ All test files follow the pattern:
 - `test_pipeline_functionality.py` - Pipeline functionality tests
 
 #### Export Module Tests
+
 - `test_export_overall.py` - Comprehensive export module testing
 
 #### Execute Module Tests
+
 - `test_execute_overall.py` - Comprehensive execute module testing
 
 #### LLM Module Tests
+
 - `test_llm_overall.py` - Comprehensive LLM module testing
 
 #### Ontology Module Tests
+
 - `test_ontology_overall.py` - Comprehensive ontology module testing
 
 #### Website Module Tests
+
 - `test_website_overall.py` - Comprehensive website module testing
 
 #### Report Module Tests
+
 - `test_report_overall.py` - Comprehensive report module testing
 - `test_report_generation.py` - Report generation tests
 - `test_report_integration.py` - Report integration tests
 - `test_report_formats.py` - Report format tests
 
 #### Environment Module Tests
+
 - `test_environment_overall.py` - Comprehensive environment module testing
 - `test_environment_dependencies.py` - Environment dependency tests
 - `test_environment_integration.py` - Environment integration tests
@@ -171,6 +189,7 @@ All test files follow the pattern:
 - `test_environment_system.py` - System environment tests
 
 #### Comprehensive Tests
+
 - `test_comprehensive_api.py` - Comprehensive API testing
 - `test_core_modules.py` - Core module integration tests
 - `test_fast_suite.py` - Fast test suite
@@ -189,7 +208,7 @@ MODULAR_TEST_CATEGORIES = {
         "name": "GNN Module Tests",
         "description": "GNN processing and validation tests",
         "files": ["test_gnn_overall.py", "test_gnn_parsing.py", "test_gnn_validation.py", 
-                  "test_gnn_processing.py", "test_gnn_integration.py"],
+                  "test_gnn_processing.py"],
         "markers": [],
         "timeout_seconds": 120,
         "max_failures": 8,
@@ -223,6 +242,7 @@ graph TD
 ### Running Tests
 
 #### Fast Tests (Default - Pipeline Mode)
+
 ```bash
 # Run fast tests only (default for pipeline)
 python src/2_tests.py --fast-only --verbose
@@ -232,12 +252,14 @@ python src/2_tests.py --verbose
 ```
 
 #### Comprehensive Tests
+
 ```bash
 # Run all tests including slow and performance tests
 python src/2_tests.py --comprehensive --verbose
 ```
 
 #### Direct Test Runner
+
 ```bash
 # Run fast test suite directly
 python src/tests/run_fast_tests.py
@@ -248,20 +270,25 @@ python src/tests/run_fast_tests.py
 The test runner supports several environment variables for configuration:
 
 #### `SKIP_TESTS_IN_PIPELINE`
+
 Skip all tests during pipeline execution (for faster pipeline runs).
+
 ```bash
 export SKIP_TESTS_IN_PIPELINE=1
 python src/main.py  # Tests will be skipped
 ```
 
 #### `FAST_TESTS_TIMEOUT`
+
 Override the default timeout for fast tests (default: 600 seconds = 10 minutes).
+
 ```bash
 export FAST_TESTS_TIMEOUT=300  # 5 minutes
 python src/2_tests.py --fast-only
 ```
 
 #### Usage Examples
+
 ```bash
 # Skip tests in pipeline for faster execution
 SKIP_TESTS_IN_PIPELINE=1 python src/main.py
@@ -276,6 +303,7 @@ python src/2_tests.py --comprehensive --verbose
 ## Test Utilities
 
 ### Shared Test Utilities (`src/utils/test_utils.py`)
+
 - `TEST_CATEGORIES` - Test category definitions
 - `TEST_STAGES` - Test execution stages
 - `TEST_CONFIG` - Test configuration
@@ -288,6 +316,7 @@ python src/2_tests.py --comprehensive --verbose
 - Report generation functions
 
 ### Test Fixtures (`conftest.py`)
+
 - `project_root` - Project root directory
 - `src_dir` - Source directory
 - `test_dir` - Test directory
@@ -299,6 +328,7 @@ python src/2_tests.py --comprehensive --verbose
 ## Test Markers
 
 ### Available Markers
+
 - `@pytest.mark.unit` - Unit tests
 - `@pytest.mark.integration` - Integration tests
 - `@pytest.mark.slow` - Slow tests
@@ -306,6 +336,7 @@ python src/2_tests.py --comprehensive --verbose
 - `@pytest.mark.fast` - Fast tests
 
 ### Running Tests by Marker
+
 ```bash
 # Run only unit tests
 pytest -m unit
@@ -323,6 +354,7 @@ pytest -m "not slow"
 ## Test Categories
 
 ### Core Module Tests
+
 - **GNN Module**: Processing, validation, parsing, integration
 - **Render Module**: Code generation, multiple targets, performance
 - **MCP Module**: Model Context Protocol, tools, transport, integration
@@ -330,6 +362,7 @@ pytest -m "not slow"
 - **Visualization Module**: Graphs, matrices, ontology, interactive
 
 ### Infrastructure Module Tests
+
 - **Pipeline Module**: Orchestration, steps, configuration, performance, recovery
 - **Export Module**: Multi-format export (JSON, XML, GraphML, GEXF, Pickle)
 - **Execute Module**: Execution and simulation
@@ -340,6 +373,7 @@ pytest -m "not slow"
 - **Environment Module**: Environment setup and validation
 
 ### Specialized Module Tests
+
 - **Type Checker Module**: Type checking and validation
 - **Validation Module**: Validation and consistency
 - **Model Registry Module**: Model registry and versioning
@@ -351,6 +385,7 @@ pytest -m "not slow"
 - **Advanced Visualization Module**: Advanced visualization
 
 ### Comprehensive Tests
+
 - **Comprehensive API**: Complete API testing
 - **Core Modules**: Core module integration
 - **Fast Suite**: Fast execution tests
@@ -362,23 +397,27 @@ pytest -m "not slow"
 ## Test Execution Features
 
 ### Resource Monitoring
+
 - Memory usage tracking
 - CPU usage monitoring
 - Timeout handling
 - Resource limits
 
 ### Parallel Execution
+
 - Category-based parallel execution
 - Configurable parallelization
 - Resource-aware scheduling
 
 ### Error Handling
+
 - Graceful failure handling
 - Error reporting and logging
 - Recovery mechanisms
 - Safe-to-fail test execution
 
 ### Reporting
+
 - Comprehensive test reports
 - Performance metrics
 - Coverage analysis
@@ -389,6 +428,7 @@ pytest -m "not slow"
 ### Naming Conventions
 
 Test files follow a consistent naming pattern:
+
 - `test_MODULENAME_overall.py` - Comprehensive module tests (required for each module)
 - `test_MODULENAME_area.py` - Specific area tests (e.g., `test_gnn_parsing.py`, `test_gnn_validation.py`)
 - `test_MODULENAME_integration.py` - Integration tests for the module
@@ -470,18 +510,21 @@ def test_new_module_integration():
 ## Best Practices
 
 ### Test Organization
+
 1. **Module-Based Structure**: Each module has its own test files
 2. **Comprehensive Coverage**: Each module has an `_overall.py` test file
 3. **Specialized Testing**: Additional test files for specific areas
 4. **Integration Testing**: Cross-module integration tests
 
 ### Test Writing
+
 1. **No Mocks**: Do not use mocking frameworks or monkeypatches to simulate behavior. Execute real methods and code paths.
 2. **Import Error Handling**: Wrap imports in try/except blocks; skip if optional deps missing.
 3. **Comprehensive Assertions**: Test both success and failure cases against real artifacts.
 4. **Performance Monitoring**: Use performance tracking for slow operations
 
 ### Test Execution
+
 1. **Category-Based**: Run tests by module category
 2. **Parallel Execution**: Use parallel execution for faster results
 3. **Resource Monitoring**: Monitor resource usage during execution
@@ -492,47 +535,59 @@ def test_new_module_integration():
 ### Common Issues and Solutions
 
 #### Issue: Tests Timeout
+
 **Symptoms**: Tests fail with timeout errors
 **Solutions**:
+
 - Increase timeout: `export FAST_TESTS_TIMEOUT=900` (15 minutes)
 - Run fast tests only: `python src/2_tests.py --fast-only`
 - Skip tests in pipeline: `export SKIP_TESTS_IN_PIPELINE=1`
 
 #### Issue: Collection Errors
+
 **Symptoms**: `ERROR collecting` messages, import errors
 **Solutions**:
+
 - Check for missing dependencies: `uv sync` (or `uv sync --extra dev` for dev tools)
 - Verify Python path includes `src/` directory
 - Check for syntax errors in test files
 - Review error messages for specific import failures
 
 #### Issue: Tests Fail to Run
+
 **Symptoms**: No tests collected, exit code 5
 **Solutions**:
+
 - Verify test files follow naming convention: `test_*.py`
 - Check that test functions are named with `test_` prefix
 - Ensure test files are in `src/tests/` directory
 - Check pytest is installed: `uv pip install pytest` (included in `uv sync`)
 
 #### Issue: Memory Errors
+
 **Symptoms**: Out of memory errors during test execution
 **Solutions**:
+
 - Run tests sequentially instead of parallel
 - Reduce number of tests: use `--fast-only` flag
 - Increase system memory or use swap space
 - Check for memory leaks in test code
 
 #### Issue: Slow Test Execution
+
 **Symptoms**: Tests take too long to complete
 **Solutions**:
+
 - Use `--fast-only` flag to skip slow tests
 - Mark slow tests with `@pytest.mark.slow` and exclude: `pytest -m "not slow"`
 - Run specific test categories instead of all tests
 - Use parallel execution (if not already enabled)
 
 #### Issue: Import Errors in Tests
+
 **Symptoms**: `ImportError` or `ModuleNotFoundError` in test files
 **Solutions**:
+
 - Ensure `src/` is in Python path
 - Check that modules are properly installed
 - Verify relative imports are correct
@@ -541,6 +596,7 @@ def test_new_module_integration():
 ### Getting Help
 
 If issues persist:
+
 1. Check test output files in `output/2_tests_output/`
 2. Review `pytest_comprehensive_output.txt` for detailed error messages
 3. Check `test_execution_report.json` for execution summary
@@ -550,6 +606,7 @@ If issues persist:
 ## Current Status
 
 ### Test Coverage
+
 - **652 test functions** across **54 test files**
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
@@ -558,6 +615,7 @@ If issues persist:
 - **Error recovery tests** for resilience validation
 
 ### Test Execution Statistics
+
 - **Fast Tests**: ~1-3 minutes (default for pipeline)
 - **Comprehensive Tests**: ~3 minutes (all tests including slow/performance)
 - **Test Categories**: 24 organized categories
@@ -566,12 +624,14 @@ If issues persist:
 - **Latest Execution**: 516 tests run, 0 failures, ~92 seconds duration
 
 ### Test Quality Metrics
+
 - **No Mock Usage**: All tests use real implementations per testing policy
 - **Real Data**: All tests use real, representative data
 - **Error Handling**: Comprehensive error scenario testing
 - **Documentation**: Complete test documentation in AGENTS.md and README.md
 
 ### Test Infrastructure
+
 - **Modular test runner** with category-based execution
 - **Resource monitoring** and timeout handling
 - **Parallel execution** support
@@ -601,6 +661,7 @@ If issues persist:
 ## Test Execution Results
 
 ### Latest Execution (2026-01-09)
+
 - **Test Suite**: Comprehensive mode
 - **Execution Mode**: Parallel (10 workers)
 - **Test Categories**: 24 categories executed
@@ -608,6 +669,7 @@ If issues persist:
 - **Infrastructure**: ✅ Working correctly
 
 ### Test Infrastructure Status
+
 - ✅ **ModularTestRunner**: Category-based execution working
 - ✅ **Parallel Execution**: 10 workers active
 - ✅ **Resource Monitoring**: Memory and CPU tracking active
@@ -618,6 +680,7 @@ If issues persist:
 ## Future Enhancements
 
 ### Planned Improvements
+
 1. **Coverage Analysis**: Enhanced code coverage tracking and reporting
 2. **Performance Benchmarking**: Automated performance regression detection
 3. **CI/CD Integration**: Automated test execution in CI/CD pipelines
@@ -625,12 +688,13 @@ If issues persist:
 5. **Visual Test Reports**: Enhanced HTML reporting with visualizations
 
 ### Module Expansion
+
 - Additional tests for new modules as they're added
 - Enhanced integration tests for cross-module workflows
 - Expanded performance tests for scalability validation
 - Additional error recovery scenarios
 
-This test infrastructure provides a solid foundation for comprehensive testing of the GNN Processing Pipeline, with modular organization, parallel execution, and comprehensive coverage of all major components. 
+This test infrastructure provides a solid foundation for comprehensive testing of the GNN Processing Pipeline, with modular organization, parallel execution, and comprehensive coverage of all major components.
 
 ## References
 

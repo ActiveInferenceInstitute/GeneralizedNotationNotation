@@ -50,14 +50,9 @@ def process_gnn(*args, **kwargs):
     return process_gnn_directory(*args, **kwargs)
 
 def validate_gnn_file(content: str):
-    # Minimal shim returning a tuple-like result; tests accept dict or object; return dict
-    ok, errors = (False, ["No sections found (use # headers)", "No variables found", "No connections found"]) if not content else (True, [])
-    return {"is_valid": ok, "errors": errors}
-
-# Ensure validate_gnn returns a dict-like for tests when passed a string
-def validate_gnn(content: str):  # type: ignore[override]
-    res = validate_gnn_file(content) if isinstance(content, str) else (False, ["Unsupported content type"])
-    return res
+    """Validate a GNN file's content using the real parser validate_gnn."""
+    is_valid, errors = validate_gnn(content)
+    return {"is_valid": is_valid, "errors": errors}
 
 __all__ = [
     # Processor functions

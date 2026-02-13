@@ -8,8 +8,14 @@ This module provides comprehensive multi-format export capabilities for GNN mode
 src/export/
 ├── __init__.py                    # Module initialization and exports
 ├── README.md                      # This documentation
-├── core.py                        # Core export functionality
-├── format_exporters.py            # Format-specific exporters
+├── AGENTS.md                      # Agent scaffolding documentation
+├── PAI.md                         # PAI context documentation
+├── SPEC.md                        # Module specification
+├── core.py                        # Pipeline integration adapter
+├── processor.py                   # Export orchestration and GNN parsing
+├── formatters.py                  # Format-specific serializers
+├── format_exporters.py            # Advanced GNN-aware exporters
+├── utils.py                       # Module introspection utilities
 └── mcp.py                         # Model Context Protocol integration
 ```
 
@@ -118,21 +124,26 @@ flowchart LR
 ### Export Functions
 
 #### `generate_exports(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool`
+
 Main function for generating multi-format exports from GNN models.
 
 **Features:**
+
 - Multi-format export support
 - Batch processing capabilities
 - Error handling and recovery
 - Progress tracking and reporting
 
 **Returns:**
+
 - `bool`: Success status of export operations
 
 #### `export_single_gnn_file(gnn_file: Path, exports_dir: Path) -> Dict[str, Any]`
+
 Exports a single GNN file to multiple formats.
 
 **Supported Formats:**
+
 - JSON (JavaScript Object Notation)
 - XML (Extensible Markup Language)
 - GraphML (Graph Markup Language)
@@ -142,12 +153,15 @@ Exports a single GNN file to multiple formats.
 - Plaintext DSL (Domain Specific Language)
 
 **Returns:**
+
 - Dictionary containing export results and metadata
 
 #### `parse_gnn_content(content: str) -> Dict[str, Any]`
+
 Parses GNN content into structured data for export.
 
 **Processing:**
+
 - Content structure analysis
 - Variable extraction and classification
 - Connection pattern analysis
@@ -156,15 +170,18 @@ Parses GNN content into structured data for export.
 ### Format-Specific Exporters
 
 #### JSON Export (`export_to_json`)
+
 Exports GNN models to JSON format with semantic preservation.
 
 **Features:**
+
 - Structured data representation
 - Metadata preservation
 - Cross-platform compatibility
 - Human-readable format
 
 **Example Output:**
+
 ```json
 {
   "model_name": "example_model",
@@ -191,15 +208,18 @@ Exports GNN models to JSON format with semantic preservation.
 ```
 
 #### XML Export (`export_to_xml`)
+
 Exports GNN models to XML format with schema validation.
 
 **Features:**
+
 - Hierarchical structure representation
 - Schema validation support
 - Namespace support
 - Attribute preservation
 
 **Example Output:**
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <gnn_model name="example_model">
@@ -219,36 +239,44 @@ Exports GNN models to XML format with schema validation.
 ```
 
 #### GraphML Export (`export_to_graphml`)
+
 Exports GNN models to GraphML format for graph analysis tools.
 
 **Features:**
+
 - Graph structure preservation
 - Node and edge attributes
 - Graph analysis tool compatibility
 - Network visualization support
 
 #### GEXF Export (`export_to_gexf`)
+
 Exports GNN models to GEXF format for network visualization.
 
 **Features:**
+
 - Network visualization compatibility
 - Dynamic graph support
 - Attribute preservation
 - Gephi compatibility
 
 #### Pickle Export (`export_to_pickle`)
+
 Exports GNN models to Python pickle format.
 
 **Features:**
+
 - Python object serialization
 - Binary format efficiency
 - Complete object preservation
 - Python-specific features
 
 #### Plaintext Export (`export_to_plaintext_summary`, `export_to_plaintext_dsl`)
+
 Exports GNN models to human-readable plaintext formats.
 
 **Features:**
+
 - Human-readable output
 - Documentation generation
 - DSL (Domain Specific Language) support
@@ -257,36 +285,44 @@ Exports GNN models to human-readable plaintext formats.
 ### Data Processing Functions
 
 #### `_gnn_model_to_dict(gnn_content: str) -> Dict[str, Any]`
+
 Converts GNN content to structured dictionary format.
 
 **Processing:**
+
 - Content parsing and validation
 - Structure extraction
 - Metadata preservation
 - Error handling
 
 #### `_parse_matrix_string(matrix_str: str) -> Any`
+
 Parses matrix string representations.
 
 **Support:**
+
 - Nested list format
 - NumPy array format
 - String matrix format
 - Validation and error handling
 
 #### `_parse_free_text_section(section_content: str) -> str`
+
 Parses free text sections from GNN content.
 
 **Features:**
+
 - Text extraction and cleaning
 - Format preservation
 - Unicode support
 - Error handling
 
 #### `_parse_key_value_section(section_content: str) -> dict`
+
 Parses key-value sections from GNN content.
 
 **Features:**
+
 - Parameter extraction
 - Type inference
 - Validation
@@ -295,20 +331,25 @@ Parses key-value sections from GNN content.
 ### Export Management Functions
 
 #### `export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str] = None) -> Dict[str, Any]`
+
 Exports model data to multiple formats.
 
 **Parameters:**
+
 - `model_data`: Structured model data
 - `output_dir`: Output directory path
 - `formats`: List of export formats (default: all formats)
 
 **Returns:**
+
 - Dictionary containing export results and metadata
 
 #### `get_supported_formats() -> Dict[str, List[str]]`
+
 Returns dictionary of supported export formats.
 
 **Formats:**
+
 - **JSON**: JavaScript Object Notation
 - **XML**: Extensible Markup Language
 - **GraphML**: Graph Markup Language
@@ -413,12 +454,14 @@ if success:
 ## Export Pipeline
 
 ### 1. Content Parsing
+
 ```python
 # Parse GNN content into structured data
 model_data = parse_gnn_content(gnn_content)
 ```
 
 ### 2. Data Validation
+
 ```python
 # Validate parsed data
 if not validate_model_data(model_data):
@@ -426,6 +469,7 @@ if not validate_model_data(model_data):
 ```
 
 ### 3. Format Selection
+
 ```python
 # Select export formats
 formats = get_supported_formats()
@@ -433,6 +477,7 @@ selected_formats = ['json', 'xml', 'graphml']
 ```
 
 ### 4. Export Generation
+
 ```python
 # Generate exports for each format
 for format_name in selected_formats:
@@ -442,6 +487,7 @@ for format_name in selected_formats:
 ```
 
 ### 5. Result Aggregation
+
 ```python
 # Collect export results
 export_results = {
@@ -454,22 +500,20 @@ export_results = {
 ## Integration with Pipeline
 
 ### Pipeline Step 7: Export
+
 ```python
 # Called from 7_export.py
-def process_export(target_dir, output_dir, verbose=False, **kwargs):
-    # Generate multi-format exports
-    success = generate_exports(target_dir, output_dir, verbose)
-    
-    # Generate export summary
-    summary = generate_export_summary(export_results)
-    
-    # Save export metadata
-    save_export_metadata(export_results, output_dir)
-    
-    return success
+from export import generate_exports
+
+success = generate_exports(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/7_export_output"),
+    verbose=True
+)
 ```
 
 ### Output Structure
+
 ```
 output/7_export_output/
 ├── model_name.json                # JSON export
@@ -486,31 +530,37 @@ output/7_export_output/
 ## Export Formats
 
 ### JSON Format
+
 - **Purpose**: Data interchange and API integration
 - **Features**: Human-readable, widely supported
 - **Use Cases**: Web APIs, data analysis, configuration
 
 ### XML Format
+
 - **Purpose**: Structured data representation
 - **Features**: Schema validation, hierarchical structure
 - **Use Cases**: Enterprise systems, data exchange
 
 ### GraphML Format
+
 - **Purpose**: Graph analysis and visualization
 - **Features**: Graph structure preservation, tool compatibility
 - **Use Cases**: Network analysis, graph visualization
 
 ### GEXF Format
+
 - **Purpose**: Network visualization
 - **Features**: Gephi compatibility, dynamic graphs
 - **Use Cases**: Network visualization, social network analysis
 
 ### Pickle Format
+
 - **Purpose**: Python object serialization
 - **Features**: Binary format, complete object preservation
 - **Use Cases**: Python applications, data persistence
 
 ### Plaintext Formats
+
 - **Purpose**: Human-readable documentation
 - **Features**: Cross-platform, no dependencies
 - **Use Cases**: Documentation, manual review
@@ -518,18 +568,21 @@ output/7_export_output/
 ## Data Preservation
 
 ### Semantic Preservation
+
 - **Variable Information**: Name, dimensions, type, description
 - **Connection Patterns**: Source, target, type, attributes
 - **Parameter Values**: Initial values, constraints, metadata
 - **Model Structure**: Hierarchical organization, relationships
 
 ### Metadata Preservation
+
 - **Model Information**: Name, version, description
 - **Creation Metadata**: Timestamp, author, source
 - **Processing Information**: Export timestamp, format version
 - **Validation Status**: Validation results, warnings, errors
 
 ### Cross-Format Compatibility
+
 - **Format Conversion**: Lossless conversion between formats
 - **Schema Validation**: Format-specific schema validation
 - **Error Handling**: Graceful handling of format-specific issues
@@ -538,6 +591,7 @@ output/7_export_output/
 ## Error Handling
 
 ### Export Failures
+
 ```python
 # Handle export failures gracefully
 try:
@@ -548,6 +602,7 @@ except ExportError as e:
 ```
 
 ### Format-Specific Issues
+
 ```python
 # Handle format-specific issues
 for format_name in selected_formats:
@@ -560,6 +615,7 @@ for format_name in selected_formats:
 ```
 
 ### Data Validation Issues
+
 ```python
 # Validate data before export
 if not validate_model_data(model_data):
@@ -570,17 +626,20 @@ if not validate_model_data(model_data):
 ## Performance Optimization
 
 ### Batch Processing
+
 - **Parallel Export**: Export multiple formats in parallel
 - **Memory Management**: Optimize memory usage for large models
 - **Progress Tracking**: Track export progress for long operations
 - **Resource Management**: Manage system resources during export
 
 ### Caching Strategies
+
 - **Parsed Data Cache**: Cache parsed GNN content
 - **Export Result Cache**: Cache export results for repeated exports
 - **Format Cache**: Cache format-specific processing results
 
 ### Scalability
+
 - **Large Models**: Handle models with thousands of variables
 - **Multiple Files**: Process multiple files efficiently
 - **Memory Optimization**: Optimize memory usage for large datasets
@@ -589,6 +648,7 @@ if not validate_model_data(model_data):
 ## Testing and Validation
 
 ### Unit Tests
+
 ```python
 # Test individual export functions
 def test_json_export():
@@ -599,6 +659,7 @@ def test_json_export():
 ```
 
 ### Integration Tests
+
 ```python
 # Test complete export pipeline
 def test_export_pipeline():
@@ -609,6 +670,7 @@ def test_export_pipeline():
 ```
 
 ### Format Validation
+
 ```python
 # Test format-specific validation
 def test_format_validation():
@@ -620,12 +682,14 @@ def test_format_validation():
 ## Dependencies
 
 ### Required Dependencies
+
 - **json**: JSON format support
 - **xml.etree.ElementTree**: XML format support
 - **pickle**: Python serialization
 - **pathlib**: Path handling
 
 ### Optional Dependencies
+
 - **networkx**: GraphML and GEXF support
 - **lxml**: Advanced XML processing
 - **yaml**: YAML format support (if needed)
@@ -633,16 +697,19 @@ def test_format_validation():
 ## Performance Metrics
 
 ### Processing Times
+
 - **Small Models** (< 100 variables): < 0.1 seconds
 - **Medium Models** (100-1000 variables): 0.1-1.0 seconds
 - **Large Models** (> 1000 variables): 1.0-10.0 seconds
 
 ### Memory Usage
+
 - **Base Memory**: ~10MB
 - **Per Model**: ~1-10MB depending on complexity
 - **Peak Memory**: 1.5-2x base usage during export
 
 ### File Sizes
+
 - **JSON**: ~1-10KB per model
 - **XML**: ~2-20KB per model
 - **GraphML**: ~1-15KB per model
@@ -654,44 +721,51 @@ def test_format_validation():
 ### Common Issues
 
 #### 1. Format Export Failures
+
 ```
 Error: Failed to export to XML format
 Solution: Check XML schema validation or use alternative format
 ```
 
 #### 2. Memory Issues
+
 ```
 Error: MemoryError during large model export
 Solution: Enable memory optimization or process in chunks
 ```
 
 #### 3. File System Issues
+
 ```
 Error: Permission denied writing export file
 Solution: Check file permissions or use alternative output directory
 ```
 
 #### 4. Data Validation Issues
+
 ```
 Error: Invalid model data for export
 Solution: Validate GNN content before export
 ```
 
 ### Debug Mode
+
 ```python
-# Enable debug mode for detailed export information
-success = generate_exports(target_dir, output_dir, verbose=True, debug=True)
+# Enable verbose mode for detailed export information
+success = generate_exports(target_dir, output_dir, verbose=True)
 ```
 
 ## Future Enhancements
 
 ### Planned Features
+
 - **Additional Formats**: Support for more export formats
 - **Custom Exporters**: User-defined export formats
 - **Real-time Export**: Live export during model development
 - **Export Templates**: Customizable export templates
 
 ### Performance Improvements
+
 - **Parallel Processing**: Multi-core export processing
 - **Streaming Export**: Memory-efficient streaming export
 - **Compression**: Export file compression
@@ -703,7 +777,7 @@ The Export module provides comprehensive multi-format export capabilities for GN
 
 ## License and Citation
 
-This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information.
 
 ## References
 
