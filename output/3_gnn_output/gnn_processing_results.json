@@ -1,10 +1,10 @@
 {
-  "timestamp": "2026-02-13T11:19:11.541668",
+  "timestamp": "2026-02-15T15:32:19.888147",
   "source_directory": "input/gnn_files",
   "output_directory": "output/3_gnn_output",
   "processing_config": {
     "recursive": true,
-    "verbose": false,
+    "verbose": true,
     "supported_formats": [
       "markdown",
       "scala",

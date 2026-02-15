@@ -7,6 +7,7 @@ Model Context Protocol (MCP) is an open standard that enables seamless integrati
 MCP employs a client-server architecture consisting of three primary components:
 
 ### Key Components
+
 - **Hosts**: LLM applications like Claude Desktop or AI-powered IDEs that initiate connections
 - **Clients**: Protocol clients within host applications that maintain 1:1 connections with servers
 - **Servers**: Lightweight programs that expose specific capabilities through the standardized protocol[2][11]
@@ -22,6 +23,7 @@ MCP servers can provide three main types of capabilities:
 3. **Prompts**: Templated messages and workflows for users[3][11]
 
 Additionally, clients may offer:
+
 - **Sampling**: Server-initiated agentic behaviors and recursive LLM interactions[10]
 
 ## Protocol Technical Details
@@ -29,6 +31,7 @@ Additionally, clients may offer:
 The MCP specification defines the protocol's message format, capabilities, and implementation requirements:
 
 ### Protocol Layer
+
 ```typescript
 class Protocol {
   // Handle incoming requests
@@ -48,6 +51,7 @@ class Protocol {
 ### Transport Mechanisms
 
 MCP supports two transport mechanisms:
+
 1. **stdio servers**: Run as a subprocess of the application (locally)
 2. **HTTP over SSE servers**: Run remotely, connected via URL[4]
 
@@ -67,17 +71,15 @@ Creating a basic MCP server requires several key components:
 ### 1. Essential Dependencies
 
 For a JavaScript/TypeScript project:
+
 ```bash
 npm install @modelcontextprotocol/sdk
 ```
 
 For a Python project:
-```bash
-# Using UV (recommended)
-uv pip install "mcp[cli]"
 
-# Or via pip
-pip install "mcp[cli]"
+```bash
+uv pip install "mcp[cli]"
 ```
 
 ### 2. Server Configuration
@@ -123,6 +125,7 @@ await server.connect(transport);
 To use your MCP server with a client like Claude Desktop, add server configuration to the appropriate configuration file:
 
 **On MacOS:**
+
 ```json
 // ~/Library/Application\ Support/Claude/claude_desktop_config.json
 {
@@ -216,6 +219,7 @@ This implementation follows best practices for MCP servers while addressing the 
 To start using GNN with MCP-enabled LLMs:
 
 1. **Setup the MCP Server**:
+
    ```bash
    python -m src.mcp.cli server --transport stdio
    ```
@@ -232,10 +236,10 @@ The GeneralizedNotationNotation (GNN) project utilizes the Model Context Protoco
 
 Key aspects of MCP implementation within GNN include:
 
-*   **GNN Functionalities as MCP Tools**: Core GNN operations are wrapped as callable MCP tools, each with a defined schema for inputs and outputs.
-*   **GNN Files as MCP Resources**: GNN specification files (`.gnn.md`) are the primary resources that these tools operate upon.
-*   **Modular Tool Registration**: Tools are registered from various GNN sub-modules (e.g., `export`, `render`, `gnn_type_checker`) into a central MCP server instance.
-*   **Multiple Transport Options**: The GNN MCP server can be run using HTTP or standard I/O (stdio) for flexible integration.
+- **GNN Functionalities as MCP Tools**: Core GNN operations are wrapped as callable MCP tools, each with a defined schema for inputs and outputs.
+- **GNN Files as MCP Resources**: GNN specification files (`.gnn.md`) are the primary resources that these tools operate upon.
+- **Modular Tool Registration**: Tools are registered from various GNN sub-modules (e.g., `export`, `render`, `gnn_type_checker`) into a central MCP server instance.
+- **Multiple Transport Options**: The GNN MCP server can be run using HTTP or standard I/O (stdio) for flexible integration.
 
 For a comprehensive overview of how MCP is specifically implemented and utilized within the GNN project, including details on the available tools, server architecture, and typical workflows, please refer to the GNN-specific MCP documentation: **[GNN MCP Integration README](./README.md)**.
 
@@ -250,64 +254,64 @@ The integration of MCP with the GeneralizedNotationNotation project demonstrates
 For developers looking to implement MCP in their projects, the most straightforward approach is to use the official SDKs and follow the pattern demonstrated in the example implementations. As the protocol continues to evolve, additional capabilities and optimizations are likely to emerge, further enhancing the potential for integrated AI systems.
 
 Citations:
-[1] https://www.anthropic.com/news/model-context-protocol
-[2] https://modelcontextprotocol.io/docs/concepts/architecture
-[3] https://spec.modelcontextprotocol.io/specification/
-[4] https://openai.github.io/openai-agents-python/mcp/
-[5] https://www.npmjs.com/package/@modelcontextprotocol/sdk
-[6] https://github.com/mcp-club/sdk
-[7] https://github.com/ckreiling/mcp-server-docker
-[8] https://github.com/alejandro-ao/mcp-server-example
-[9] https://github.com/dexaai/mcp-quickstart
-[10] https://modelcontextprotocol.io/specification/2025-03-26
-[11] https://modelcontextprotocol.io/introduction
-[12] https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem
-[13] https://www.kdnuggets.com/building-a-simple-mcp-server
-[14] https://github.com/modelcontextprotocol
-[15] https://npmjs.com/search?q=%40modelcontextprotocol
-[16] https://www.youtube.com/watch?v=7j_NE6Pjv-E
-[17] https://www.npmjs.com/package/@modelcontextprotocol/sdk?activeTab=readme
-[18] https://modelcontextprotocol.io/examples
-[19] https://diamantai.substack.com/p/model-context-protocol-mcp-explained
-[20] https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/introducing-model-context-protocol-mcp-in-copilot-studio-simplified-integration-with-ai-apps-and-agents/
-[21] https://www.philschmid.de/mcp-introduction
-[22] https://stytch.com/blog/model-context-protocol-introduction/
-[23] https://github.com/cyanheads/model-context-protocol-resources
-[24] https://docs.anthropic.com/en/docs/agents-and-tools/mcp
-[25] https://docs.rs/mcp-schema
-[26] https://www.infoq.com/news/2024/12/anthropic-model-context-protocol/
-[27] https://www.descope.com/learn/post/mcp
-[28] https://github.com/appcypher/awesome-mcp-servers
-[29] https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/introducing-model-context-protocol-mcp-in-copilot-studio-simplified-integration-with-ai-apps-and-agents/
-[30] https://www.npmjs.com/package/@modelcontextprotocol/inspector
-[31] https://www.npmjs.com/package/mcp-framework
-[32] https://www.youtube.com/watch?v=oq3dkNm51qc
-[33] https://www.reddit.com/r/docker/comments/1h6yxwf/introducing_dockermcp_a_mcp_server_for_docker/
-[34] https://www.npmjs.com/package/@modelcontextprotocol/server-postgres
-[35] https://mcp-framework.com/docs/installation/
-[36] https://modelcontextprotocol.io/development/updates
-[37] https://www.docker.com/blog/the-model-context-protocol-simplifying-building-ai-apps-with-anthropic-claude-desktop-and-docker/
-[38] https://www.npmjs.com/package/@modelcontextprotocol/server-everything
-[39] https://www.npmjs.com/package/mcp-sdk?activeTab=dependencies
-[40] https://github.com/modelcontextprotocol/python-sdk
-[41] https://dev.to/suzuki0430/the-easiest-way-to-set-up-mcp-with-claude-desktop-and-docker-desktop-5o
-[42] https://docs.cline.bot/mcp-servers/mcp-quickstart
-[43] https://github.com/modelcontextprotocol
-[44] https://www.reddit.com/r/Codeium/comments/1izjv13/a_hello_world_mcp_server_tutorial_beginner/
-[45] https://glama.ai/blog/2024-11-25-model-context-protocol-quickstart
-[46] https://www.anthropic.com/news/model-context-protocol
-[47] https://www.builder.io/blog/mcp-server
-[48] https://modelcontextprotocol.io/quickstart/client
-[49] https://www.k2view.com/model-context-protocol/
-[50] https://googleapis.github.io/genai-toolbox/getting-started/mcp_quickstart/
-[51] https://www.leanware.co/insights/model-context-protocol-guide
-[52] https://github.com/modelcontextprotocol/quickstart-resources
-[53] https://www.reddit.com/r/LocalLLaMA/comments/1jz2cj6/building_a_simple_mcp_server_step_by_step_guide/
-[54] https://www.youtube.com/watch?v=jLM6n4mdRuA
-[55] https://modelcontextprotocol.io/quickstart/server
-[56] https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-03-26/schema.ts
-[57] https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/index.ts
-[58] https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/types.ts
-[59] https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/mcp.ts
-[60] https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/completable.ts
-[61] https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md
+[1] <https://www.anthropic.com/news/model-context-protocol>
+[2] <https://modelcontextprotocol.io/docs/concepts/architecture>
+[3] <https://spec.modelcontextprotocol.io/specification/>
+[4] <https://openai.github.io/openai-agents-python/mcp/>
+[5] <https://www.npmjs.com/package/@modelcontextprotocol/sdk>
+[6] <https://github.com/mcp-club/sdk>
+[7] <https://github.com/ckreiling/mcp-server-docker>
+[8] <https://github.com/alejandro-ao/mcp-server-example>
+[9] <https://github.com/dexaai/mcp-quickstart>
+[10] <https://modelcontextprotocol.io/specification/2025-03-26>
+[11] <https://modelcontextprotocol.io/introduction>
+[12] <https://www.npmjs.com/package/@modelcontextprotocol/server-filesystem>
+[13] <https://www.kdnuggets.com/building-a-simple-mcp-server>
+[14] <https://github.com/modelcontextprotocol>
+[15] <https://npmjs.com/search?q=%40modelcontextprotocol>
+[16] <https://www.youtube.com/watch?v=7j_NE6Pjv-E>
+[17] <https://www.npmjs.com/package/@modelcontextprotocol/sdk?activeTab=readme>
+[18] <https://modelcontextprotocol.io/examples>
+[19] <https://diamantai.substack.com/p/model-context-protocol-mcp-explained>
+[20] <https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/introducing-model-context-protocol-mcp-in-copilot-studio-simplified-integration-with-ai-apps-and-agents/>
+[21] <https://www.philschmid.de/mcp-introduction>
+[22] <https://stytch.com/blog/model-context-protocol-introduction/>
+[23] <https://github.com/cyanheads/model-context-protocol-resources>
+[24] <https://docs.anthropic.com/en/docs/agents-and-tools/mcp>
+[25] <https://docs.rs/mcp-schema>
+[26] <https://www.infoq.com/news/2024/12/anthropic-model-context-protocol/>
+[27] <https://www.descope.com/learn/post/mcp>
+[28] <https://github.com/appcypher/awesome-mcp-servers>
+[29] <https://www.microsoft.com/en-us/microsoft-copilot/blog/copilot-studio/introducing-model-context-protocol-mcp-in-copilot-studio-simplified-integration-with-ai-apps-and-agents/>
+[30] <https://www.npmjs.com/package/@modelcontextprotocol/inspector>
+[31] <https://www.npmjs.com/package/mcp-framework>
+[32] <https://www.youtube.com/watch?v=oq3dkNm51qc>
+[33] <https://www.reddit.com/r/docker/comments/1h6yxwf/introducing_dockermcp_a_mcp_server_for_docker/>
+[34] <https://www.npmjs.com/package/@modelcontextprotocol/server-postgres>
+[35] <https://mcp-framework.com/docs/installation/>
+[36] <https://modelcontextprotocol.io/development/updates>
+[37] <https://www.docker.com/blog/the-model-context-protocol-simplifying-building-ai-apps-with-anthropic-claude-desktop-and-docker/>
+[38] <https://www.npmjs.com/package/@modelcontextprotocol/server-everything>
+[39] <https://www.npmjs.com/package/mcp-sdk?activeTab=dependencies>
+[40] <https://github.com/modelcontextprotocol/python-sdk>
+[41] <https://dev.to/suzuki0430/the-easiest-way-to-set-up-mcp-with-claude-desktop-and-docker-desktop-5o>
+[42] <https://docs.cline.bot/mcp-servers/mcp-quickstart>
+[43] <https://github.com/modelcontextprotocol>
+[44] <https://www.reddit.com/r/Codeium/comments/1izjv13/a_hello_world_mcp_server_tutorial_beginner/>
+[45] <https://glama.ai/blog/2024-11-25-model-context-protocol-quickstart>
+[46] <https://www.anthropic.com/news/model-context-protocol>
+[47] <https://www.builder.io/blog/mcp-server>
+[48] <https://modelcontextprotocol.io/quickstart/client>
+[49] <https://www.k2view.com/model-context-protocol/>
+[50] <https://googleapis.github.io/genai-toolbox/getting-started/mcp_quickstart/>
+[51] <https://www.leanware.co/insights/model-context-protocol-guide>
+[52] <https://github.com/modelcontextprotocol/quickstart-resources>
+[53] <https://www.reddit.com/r/LocalLLaMA/comments/1jz2cj6/building_a_simple_mcp_server_step_by_step_guide/>
+[54] <https://www.youtube.com/watch?v=jLM6n4mdRuA>
+[55] <https://modelcontextprotocol.io/quickstart/server>
+[56] <https://raw.githubusercontent.com/modelcontextprotocol/modelcontextprotocol/main/schema/2025-03-26/schema.ts>
+[57] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/index.ts>
+[58] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/types.ts>
+[59] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/mcp.ts>
+[60] <https://raw.githubusercontent.com/modelcontextprotocol/typescript-sdk/refs/heads/main/src/server/completable.ts>
+[61] <https://raw.githubusercontent.com/modelcontextprotocol/servers/refs/heads/main/README.md>

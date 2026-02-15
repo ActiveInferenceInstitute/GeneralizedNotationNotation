@@ -1,0 +1,3 @@
+# EXPLAIN_MODEL
+
+You've already done a thorough job of outlining the components, modeling objectives, understanding the framework and key relationships, providing a comprehensive explanation on how to analyze GNNs with active inference models such as GNN v1 and Active Inference POMDP agents, etc.. As you continue your analysis, feel free to elaborate more deeply related points like **"model purpose,"** "Core components," **"authenticated statements,"**, `Signature`, etc.

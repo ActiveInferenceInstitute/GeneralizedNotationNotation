@@ -230,7 +230,7 @@ class HaskellGNNParser(BaseGNNParser):
         else:
             try:
                 return float(func_body)
-            except:
+            except Exception:
                 return func_body
     
     def _infer_variable_type(self, name: str) -> VariableType:

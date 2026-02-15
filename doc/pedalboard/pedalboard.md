@@ -7,6 +7,7 @@ Pedalboard is an open-source Python package created by Spotify's Audio Intellige
 Pedalboard enables developers, data scientists, and audio engineers to apply VST3® and Audio Unit effects—or Pedalboard's own high-performance native plugins—to audio files, streams, and real-time input without leaving Python. The library was designed for Spotify's internal machine-learning pipelines, so it emphasizes thread-safety, GIL-free processing, low memory overhead, and deterministic behavior[1][2]. Benchmarks show speedups of up to 300× over pySoX for single transforms and 4× faster file decoding vs. `librosa.load` on many workloads[3][4]. Pedalboard ships as pre-compiled wheels for CPython 3.8-3.12 and PyPy 7.3+ across Windows, macOS (Intel & Apple Silicon), and manylinux x86-64/aarch64[5].
 
 ## Table of Contents
+
 - Introduction and Historical Context
 - Architectural Design and Core Components
 - Supported Audio I/O and File Formats
@@ -55,7 +56,7 @@ Blocking sections are wrapped in `Py_BEGIN_ALLOW_THREADS`/`Py_END_ALLOW_THREADS`
 |-------------------|----------------------------------------|---------------------------------------|-------------------|
 | Read              | AIFF, FLAC, MP3, OGG, WAV[5][7]        | AAC, AC3, WMA, others[5]              | 64-bit PCM only   |
 | Write             | AIFF, FLAC, OGG, WAV[5][7]             | —                                     | MP3 write omitted |
-| Live Streams      | `AudioStream` class (UNIX & macOS)[1]  | —                                     | 512-sample block  |
+| Live Streams      | `AudioStream` class [UNIX & macOS](1)  | —                                     | 512-sample block  |
 | On-the-fly Resamp | Any rate → Any rate with O(1) RAM[1]   | —                                     | sinc windowed     |
 
 Pedalboard's file loader outperforms `librosa.load` by roughly 4× on 44.1 kHz 2-channel WAVs thanks to vectorized SIMD decoding[3].
@@ -63,21 +64,27 @@ Pedalboard's file loader outperforms `librosa.load` by roughly 4× on 44.1 kHz 2
 ## Built-In Plugins and Digital Signal Processing Algorithms
 
 ### Guitar-Style FX
+
 - Chorus, Distortion, Phaser, Clipping, Overdrive[1][7]
 
 ### Dynamic Range
+
 - Compressor (RMS detector), Gain, Limiter (look-ahead), Noise Gate[5]
 
 ### Filters & EQ
+
 - HighpassFilter, LowpassFilter, LadderFilter with 12 dB & 24 dB slopes, BandpassFilter[5]
 
 ### Spatial & Time-Domain
+
 - Convolution (FFT-based), Delay (feedback, mix), Reverb (Schroeder/Freeverb hybrid), Echo[1]
 
 ### Pitch & Modulation
+
 - PitchShift (Rubber Band Library), Bitcrush, Resample, Vibrato[5]
 
 ### Lossy Compression
+
 - MP3Compressor (libmp3lame), GSMFullRateCompressor (libgsm), OGGCompressor[5]
 
 All plugins share a common parameter reflection API, allowing enumeration and real-time automation.
@@ -132,7 +139,7 @@ For true low-latency live audio, Pedalboard offers the experimental `AudioStream
 Installation is a single command:
 
 ```bash
-pip install pedalboard
+uv pip install pedalboard
 ```
 
 | Python | Windows x86-64 | macOS Intel | macOS ARM64 | Linux x86-64 | Linux ARM64 |
@@ -177,7 +184,8 @@ wet = board(audio, rate)
 with AudioFile('out.wav', 'w', rate) as f:
     f.write(wet)
 ```
-This entire pipeline involves zero external dependencies beyond `pip install pedalboard`[5].
+
+This entire pipeline involves zero external dependencies beyond `uv pip install pedalboard`[5].
 
 ### Parallel Effects Chains
 
@@ -191,6 +199,7 @@ long  = Pedalboard([Delay(0.5),  PitchShift(12), Gain(-6)])
 
 board = Pedalboard([Mix([passthrough, short, long])])
 ```
+
 Result: a lush stereo shimmer without needing separate buses[5][7].
 
 ### Advanced MIDI Integration (1.0+)
@@ -286,24 +295,24 @@ Pedalboard democratizes high-quality audio processing in Python by fusing JUCE-l
 
 All technical details, benchmarks, and quotations herein are drawn from the official PyPI documentation[5], Pedalboard's online manual[1], GitHub repository[2], Spotify Engineering blog post[6], PyCon US 2025 presentation[4], and package release notes[7][3].
 
-[1] https://spotify.github.io/pedalboard/
-[2] https://github.com/spotify/pedalboard
-[3] https://pypi.org/project/pedalboard/1.0.0/
-[4] https://lwn.net/Articles/1027814/
-[5] https://pypi.org/project/pedalboard/
-[6] https://engineering.atspotify.com/2021/9/introducing-pedalboard-spotifys-audio-effects-library-for-python/
-[7] https://pypi.org/project/pedalboard/1.0.0/
-[8] https://spotify.github.io/pedalboard/faq.html
-[9] https://github.com/spotify/pedalboard/blob/master/CODE_OF_CONDUCT.md
-[10] https://github.com/spotify/pedalboard/actions
-[11] https://news.ycombinator.com/item?id=28458930
-[12] https://www.logos.com/grow/advice-on-building-a-pedalboard/
-[13] https://sourceforge.net/projects/pedalboard.mirror/
-[14] https://pypi.org/project/pedalboard/0.4.1/
-[15] https://shop.fractalaudio.com/vp4-virtual-pedalboard-effects-modeler/
-[16] https://www.youtube.com/watch?v=G98NQQ12_l0
-[17] https://pedalpython.com
-[18] https://blog.zzounds.com/2025/04/09/bring-the-studio-to-the-stage-acoustic-pedalboard/
-[19] https://zenodo.org/records/7817839
-[20] https://www.eventideaudio.com/pedals/
-[21] https://pedalboards.moddevices.com
+[1] <https://spotify.github.io/pedalboard/>
+[2] <https://github.com/spotify/pedalboard>
+[3] <https://pypi.org/project/pedalboard/1.0.0/>
+[4] <https://lwn.net/Articles/1027814/>
+[5] <https://pypi.org/project/pedalboard/>
+[6] <https://engineering.atspotify.com/2021/9/introducing-pedalboard-spotifys-audio-effects-library-for-python/>
+[7] <https://pypi.org/project/pedalboard/1.0.0/>
+[8] <https://spotify.github.io/pedalboard/faq.html>
+[9] <https://github.com/spotify/pedalboard/blob/master/CODE_OF_CONDUCT.md>
+[10] <https://github.com/spotify/pedalboard/actions>
+[11] <https://news.ycombinator.com/item?id=28458930>
+[12] <https://www.logos.com/grow/advice-on-building-a-pedalboard/>
+[13] <https://sourceforge.net/projects/pedalboard.mirror/>
+[14] <https://pypi.org/project/pedalboard/0.4.1/>
+[15] <https://shop.fractalaudio.com/vp4-virtual-pedalboard-effects-modeler/>
+[16] <https://www.youtube.com/watch?v=G98NQQ12_l0>
+[17] <https://pedalpython.com>
+[18] <https://blog.zzounds.com/2025/04/09/bring-the-studio-to-the-stage-acoustic-pedalboard/>
+[19] <https://zenodo.org/records/7817839>
+[20] <https://www.eventideaudio.com/pedals/>
+[21] <https://pedalboards.moddevices.com>

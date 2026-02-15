@@ -204,6 +204,64 @@ success = process_advanced_visualization(
 )
 ```
 
+## Analysis Visualization (Step 16)
+
+Post-simulation analysis (Step 16) provides a suite of visualization functions in `src/analysis/post_simulation.py` that generate framework-specific and cross-framework visualizations from execution results.
+
+### Per-Framework Visualization Functions
+
+| Function | Description | Output |
+|----------|-------------|--------|
+| `plot_belief_evolution(beliefs, output_path, title, true_states)` | Plot belief distributions over time, optionally overlaid with true states | PNG |
+| `animate_belief_evolution(beliefs, output_path, title)` | Create animated GIF of belief state evolution | GIF |
+| `generate_belief_heatmaps(beliefs, output_path, title)` | Heatmap visualization of belief state evolution | PNG |
+| `generate_action_analysis(actions, output_path, title)` | Action selection histograms and temporal patterns | PNG |
+| `generate_free_energy_plots(free_energy, output_path, title)` | Free energy dynamics with moving average and convergence analysis | PNG |
+| `generate_observation_analysis(observations, output_path, title)` | Observation patterns, distribution, and autocorrelation | PNG |
+
+### Cross-Framework Visualization Functions
+
+| Function | Description | Output |
+|----------|-------------|--------|
+| `visualize_all_framework_outputs(execution_dir, output_dir, logger)` | Generate complete visualization suite for all frameworks | Multiple PNGs |
+| `generate_unified_framework_dashboard(framework_data, output_dir, model_name)` | Multi-panel comparison dashboard: beliefs, actions, free energy, observations across all frameworks | PNG |
+| `generate_cross_framework_comparison(framework_data, output_path)` | Side-by-side comparison of key metrics across frameworks | PNG |
+
+### Analysis Visualization Example
+
+```python
+from analysis.post_simulation import (
+    generate_belief_heatmaps,
+    generate_free_energy_plots,
+    generate_unified_framework_dashboard
+)
+from pathlib import Path
+
+# Per-framework visualization
+generate_belief_heatmaps(
+    beliefs=[[0.5, 0.3, 0.2], [0.6, 0.2, 0.2], [0.8, 0.1, 0.1]],
+    output_path=Path("output/16_analysis_output/pymdp/belief_heatmap.png"),
+    title="PyMDP Belief Evolution"
+)
+
+generate_free_energy_plots(
+    free_energy=[10.5, 8.3, 6.1, 4.2, 3.8, 3.5],
+    output_path=Path("output/16_analysis_output/pymdp/free_energy.png"),
+    title="PyMDP Free Energy Dynamics"
+)
+
+# Cross-framework unified dashboard
+framework_data = {
+    "pymdp": {"beliefs": [...], "actions": [...], "free_energy": [...]},
+    "activeinference_jl": {"beliefs": [...], "actions": [...], "free_energy": [...]},
+}
+generate_unified_framework_dashboard(
+    framework_data=framework_data,
+    output_dir=Path("output/16_analysis_output/cross_framework/"),
+    model_name="My POMDP Model"
+)
+```
+
 ## Output Formats
 
 Visualizations can be exported in multiple formats:

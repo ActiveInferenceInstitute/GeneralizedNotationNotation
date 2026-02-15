@@ -50,14 +50,15 @@ def check_julia_dependencies(verbose: bool, logger) -> bool:
     """
     try:
         # check basic julia availability
-        subprocess.run(['julia', '--version'], capture_output=True, check=True)
+        subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)
         
         # Check for key packages
         check_script = 'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
         result = subprocess.run(
             ['julia', '-e', check_script],
             capture_output=True,
-            text=True
+            text=True,
+            timeout=30
         )
         
         if result.returncode != 0:

@@ -451,7 +451,7 @@ def _is_gnn_file(file_path: Path) -> bool:
                 ]
                 
                 return any(indicator in content for indicator in gnn_indicators)
-            except:
+            except Exception:
                 return False
         
         # For other formats, assume they are GNN files if they're in our target directory

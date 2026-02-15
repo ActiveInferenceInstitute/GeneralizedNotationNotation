@@ -176,7 +176,7 @@ class TestFileOperationErrorScenarios:
             # Restore permissions for cleanup
             try:
                 readonly_dir.chmod(0o755)
-            except:
+            except Exception:
                 pass
     
     @pytest.mark.unit

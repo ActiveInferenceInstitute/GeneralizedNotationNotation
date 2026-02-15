@@ -329,7 +329,7 @@ class VisualizationSuite:
             for key, values in list(numeric_traces.items())[:4]:
                 try:
                     density = sns.kdeplot(data=values, ax=ax2, label=key, alpha=0.8)
-                except:
+                except Exception:
                     pass  # Skip if KDE fails
             ax2.set_title('Kernel Density Estimation')
             ax2.set_xlabel('Value')

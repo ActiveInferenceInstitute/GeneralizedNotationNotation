@@ -90,7 +90,7 @@ except ImportError:
             if len(numbers) >= 1:
                 return np.array([float(n) for n in numbers])
             return None
-        except:
+        except Exception:
             return None
             
     def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
@@ -578,7 +578,7 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                                 "data": matrix_data,
                                 "definition": stripped_line
                             })
-                    except:
+                    except Exception:
                         pass
         
         # Save any remaining multiline parameter
@@ -1285,7 +1285,7 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
                             import numpy as np
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
-                        except:
+                        except Exception:
                             # Count elements in nested structure
                             def count_elements(obj):
                                 if isinstance(obj, (int, float)):
@@ -1365,7 +1365,7 @@ def _generate_standalone_panels(parsed_data: Dict[str, Any], output_dir: Path, m
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
                             matrix_names.append(param.get("name", "Unknown"))
-                        except:
+                        except Exception:
                             pass
         
         if matrix_sizes:

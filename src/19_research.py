@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from research import process_research
 except ImportError:
-    def process_research(target_dir, output_dir, **kwargs):
+    def process_research(target_dir, output_dir, logger=None, **kwargs):
         """Fallback research processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("Research module not available - using fallback")
         return True
 

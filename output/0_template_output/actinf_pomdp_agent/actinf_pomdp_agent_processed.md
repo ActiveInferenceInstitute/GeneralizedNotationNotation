@@ -1,8 +1,8 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/actinf_pomdp_agent.md
-# Processed on: 2026-02-13T11:16:29.586152
-# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
+# Processed on: 2026-02-15T15:30:16.317002
+# Options: {'verbose': True, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Active Inference POMDP Agent
 # GNN Version: 1.0

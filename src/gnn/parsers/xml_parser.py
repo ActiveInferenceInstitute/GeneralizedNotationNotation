@@ -410,7 +410,7 @@ class XMLGNNParser(BaseGNNParser):
                 try:
                     if horizon.isdigit():
                         horizon = int(horizon)
-                except:
+                except Exception:
                     pass  # Keep as string
             
             model.time_specification = TimeSpecification(

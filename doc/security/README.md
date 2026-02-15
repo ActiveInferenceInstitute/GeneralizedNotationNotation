@@ -15,6 +15,7 @@ This comprehensive security guide covers all aspects of GNN security, from devel
 ### **1. Input Validation and Sanitization**
 
 **GNN File Security**:
+
 ```yaml
 validation_requirements:
   - Strict syntax validation before processing
@@ -24,6 +25,7 @@ validation_requirements:
 ```
 
 **Code Example**:
+
 ```python
 # src/gnn/security/validator.py
 def validate_gnn_file_security(file_path: str) -> SecurityValidationResult:
@@ -56,6 +58,7 @@ def validate_gnn_file_security(file_path: str) -> SecurityValidationResult:
 ### **2. Authentication and Authorization**
 
 **API Security**:
+
 ```yaml
 authentication:
   methods: [api_key, oauth2, jwt]
@@ -76,6 +79,7 @@ authorization:
 **Risk**: Malicious prompts could manipulate LLM behavior during GNN analysis.
 
 **Mitigation Strategies**:
+
 ```python
 # src/llm/security/prompt_sanitizer.py
 class PromptSanitizer:
@@ -115,6 +119,7 @@ class PromptSanitizer:
 ### **MCP Server Security**
 
 **Secure MCP Implementation**:
+
 ```python
 # src/mcp/security/secure_server.py
 class SecureMCPServer:
@@ -147,6 +152,7 @@ class SecureMCPServer:
 ### **Infrastructure Security**
 
 **Containerization Security**:
+
 ```dockerfile
 # Secure Dockerfile for GNN services
 FROM python:3.11-slim
@@ -166,7 +172,7 @@ COPY --chown=gnn:gnn . /app
 WORKDIR /app
 
 # Install dependencies with security scanning
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --no-cache-dir -r requirements.txt
 RUN pip audit  # Security vulnerability scanning
 
 # Security configurations
@@ -188,6 +194,7 @@ CMD ["python", "-m", "gunicorn", \
 ### **Secure Development Practices**
 
 **Code Security Scanning**:
+
 ```yaml
 # .github/workflows/security.yml
 name: Security Scanning
@@ -201,12 +208,12 @@ jobs:
     
     - name: Run Bandit Security Scanner
       run: |
-        pip install bandit[toml]
+        uv pip install bandit[toml]
         bandit -r src/ -f json -o bandit-report.json
     
     - name: Run Safety Dependency Scanner
       run: |
-        pip install safety
+        uv pip install safety
         safety check --json --output safety-report.json
     
     - name: Run Semgrep SAST
@@ -221,6 +228,7 @@ jobs:
 ### **Security Testing**
 
 **Security Test Suite**:
+
 ```python
 # tests/security/test_security.py
 class TestGNNSecurity:
@@ -252,6 +260,7 @@ class TestGNNSecurity:
 ### **Audit Logging**
 
 **Security Events**:
+
 ```python
 # src/security/audit.py
 class SecurityAuditLogger:
@@ -288,12 +297,14 @@ class SecurityAuditLogger:
 ### **Regulatory Compliance**
 
 **GDPR Compliance**:
+
 - Data minimization in GNN models
 - Right to be forgotten implementation
 - Privacy by design principles
 - Data processing transparency
 
 **SOC 2 Compliance**:
+
 - Access controls and monitoring
 - System availability and integrity
 - Data confidentiality protection
@@ -328,16 +339,19 @@ class SecurityAuditLogger:
 ## 🔗 **Security Resources**
 
 ### **Security Contacts**
-- **Security Team**: security@gnn-project.org
-- **Vulnerability Reports**: security-reports@gnn-project.org
+
+- **Security Team**: <security@gnn-project.org>
+- **Vulnerability Reports**: <security-reports@gnn-project.org>
 - **Emergency Contact**: +1-555-SECURITY
 
 ### **Security Documentation**
+
 - **[Deployment Security](../deployment/README.md#security)** - Production deployment security
 - **[API Security](../api/README.md#security)** - API security documentation
 - **[MCP Security](../mcp/README.md#security)** - MCP-specific security measures
 
 ### **External Resources**
+
 - **[OWASP Top 10](https://owasp.org/www-project-top-ten/)** - Web application security risks
 - **[NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)** - Security framework
 - **[CIS Controls](https://www.cisecurity.org/controls/)** - Security control framework
@@ -345,4 +359,4 @@ class SecurityAuditLogger:
 ---
 
 **Security Team**: GNN Security Working Group  
-**Compliance Status**: SOC 2 Type II, GDPR Compliant 
+**Compliance Status**: SOC 2 Type II, GDPR Compliant

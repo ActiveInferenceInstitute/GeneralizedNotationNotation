@@ -6,20 +6,24 @@ WORKDIR /workspace
 
 # System deps
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    build-essential git curl ca-certificates python3-dev gcc g++ \
+  build-essential git curl ca-certificates python3-dev gcc g++ \
   && rm -rf /var/lib/apt/lists/*
+
+# Install uv (repository-standard package manager)
+RUN curl -LsSf https://astral.sh/uv/install.sh | sh
+ENV PATH="/root/.local/bin:$PATH"
 
 # Copy project
 COPY . /workspace
 
-# Create venv
-RUN python -m venv /opt/venv
+# Create venv and install deps via uv
+RUN uv venv /opt/venv
+ENV VIRTUAL_ENV="/opt/venv"
 ENV PATH="/opt/venv/bin:$PATH"
 
-# Upgrade pip and install minimal deps
-RUN pip install -U pip setuptools wheel
-RUN pip install . || true
-RUN pip install pytest pytest-cov pytest-asyncio pytest-json-report
+# Install project and test dependencies via uv
+RUN uv pip install . || true
+RUN uv pip install pytest pytest-cov pytest-asyncio pytest-json-report
 
 # Default test command
 CMD ["/bin/bash","-lc",". /opt/venv/bin/activate && python -m pytest -n0 --cov=src --cov-report=html:output/2_tests_output/singleproc_htmlcov --tb=short --maxfail=10 -q"]

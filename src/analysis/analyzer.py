@@ -6,6 +6,7 @@ Analysis analyzer module for GNN statistical analysis.
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import re
+import json
 import numpy as np
 from datetime import datetime
 import logging
@@ -261,7 +262,7 @@ def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Di
             try:
                 correlation_matrix = np.corrcoef(var_lines, conn_lines)
                 correlations["line_position_correlation"] = correlation_matrix[0, 1]
-            except:
+            except Exception:
                 correlations["line_position_correlation"] = 0.0
     
     return correlations
@@ -643,57 +644,134 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
     return results
 
 def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], execution_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
-    """Extract simulation-specific metrics from framework outputs."""
+    """Extract simulation-specific metrics from framework outputs.
+    
+    Searches simulation_data/ subdirectories and maps framework-specific
+    keys to a standardized format for cross-framework comparison.
+    """
     metrics = {
         "beliefs": [],
         "actions": [],
         "observations": [],
         "free_energy": [],
-        "execution_times": []
+        "execution_times": [],
+        "num_timesteps": None,
+        "validation": {},
+        "model_parameters": {},
+        "data_source": None
     }
     
     for detail in details:
+        # Collect execution time from the detail record
+        exec_time = detail.get("execution_time", 0)
+        if exec_time:
+            metrics["execution_times"].append(exec_time)
+        
         impl_dir = Path(detail.get("implementation_directory", ""))
         if not impl_dir.exists():
-            continue
+            # Try resolving relative to execution_output_dir parent
+            impl_dir = execution_output_dir.parent.parent / detail.get("implementation_directory", "")
+            if not impl_dir.exists():
+                logger.debug(f"  [{framework}] impl_dir not found: {impl_dir}")
+                continue
         
-        # Look for common output files
-        output_files = [
+        # Search for simulation data files in multiple locations
+        candidate_files = [
+            # Primary: simulation_data subdirectory
+            impl_dir / "simulation_data" / "simulation_results.json",
+            # Direct in impl_dir
             impl_dir / "simulation_results.json",
             impl_dir / "results.json",
             impl_dir / "output.json",
-            impl_dir / "traces.json"
+            impl_dir / "traces.json",
         ]
         
-        for output_file in output_files:
+        # Also recursively search for any simulation_results.json
+        try:
+            for found_file in impl_dir.rglob("simulation_results.json"):
+                if found_file not in candidate_files:
+                    candidate_files.append(found_file)
+        except Exception:
+            pass
+        
+        for output_file in candidate_files:
             if output_file.exists():
                 try:
                     with open(output_file, 'r') as f:
                         data = json.load(f)
                     
-                    # Extract common metrics
-                    if "beliefs" in data:
-                        metrics["beliefs"].append(data["beliefs"])
-                    if "actions" in data:
-                        metrics["actions"].append(data["actions"])
-                    if "observations" in data:
-                        metrics["observations"].append(data["observations"])
-                    if "free_energy" in data:
-                        metrics["free_energy"].append(data["free_energy"])
+                    metrics["data_source"] = str(output_file)
+                    logger.info(f"  [{framework}] Loaded simulation data from: {output_file}")
                     
-                    break
+                    # Extract beliefs - check both top-level and simulation_trace
+                    beliefs = data.get("beliefs", [])
+                    if not beliefs:
+                        beliefs = data.get("simulation_trace", {}).get("beliefs", [])
+                    if beliefs:
+                        metrics["beliefs"] = beliefs
+                    
+                    # Extract actions
+                    actions = data.get("actions", [])
+                    if not actions:
+                        actions = data.get("simulation_trace", {}).get("actions", [])
+                    if actions:
+                        metrics["actions"] = actions
+                    
+                    # Extract observations
+                    observations = data.get("observations", [])
+                    if not observations:
+                        observations = data.get("simulation_trace", {}).get("observations", [])
+                    if observations:
+                        metrics["observations"] = observations
+                    
+                    # Extract free energy - multiple possible key locations
+                    free_energy = data.get("free_energy", [])
+                    if not free_energy:
+                        free_energy = data.get("metrics", {}).get("expected_free_energy", [])
+                    if not free_energy:
+                        free_energy = data.get("simulation_trace", {}).get("efe_history", [])
+                    if free_energy:
+                        metrics["free_energy"] = free_energy
+                    
+                    # Extract additional metadata
+                    metrics["num_timesteps"] = data.get("num_timesteps", data.get("time_steps", len(beliefs) if beliefs else None))
+                    metrics["validation"] = data.get("validation", {})
+                    metrics["model_parameters"] = data.get("model_parameters", {})
+                    
+                    # Extract belief confidence if available
+                    confidence = data.get("metrics", {}).get("belief_confidence", [])
+                    if not confidence:
+                        confidence = data.get("simulation_trace", {}).get("belief_confidence", [])
+                    if confidence:
+                        metrics["belief_confidence"] = confidence
+                    
+                    break  # Found data, stop searching
                 except Exception as e:
-                    logger.debug(f"Error reading {output_file}: {e}")
+                    logger.debug(f"  [{framework}] Error reading {output_file}: {e}")
                     continue
+    
+    # Log summary of what was extracted
+    data_found = []
+    if metrics["beliefs"]: data_found.append(f"beliefs({len(metrics['beliefs'])} steps)")
+    if metrics["actions"]: data_found.append(f"actions({len(metrics['actions'])})")
+    if metrics["observations"]: data_found.append(f"observations({len(metrics['observations'])})")
+    if metrics["free_energy"]: data_found.append(f"free_energy({len(metrics['free_energy'])})")
+    
+    if data_found:
+        logger.info(f"  [{framework}] Extracted: {', '.join(data_found)}")
+    else:
+        logger.warning(f"  [{framework}] No simulation data found")
     
     return metrics
 
 def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
-    """Compare results across frameworks."""
+    """Compare results across frameworks using real simulation data."""
     comparisons = {
         "success_rates": {},
         "performance_comparison": {},
-        "metric_agreement": {}
+        "metric_agreement": {},
+        "data_coverage": {},
+        "simulation_statistics": {}
     }
     
     # Compare success rates
@@ -706,13 +784,86 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
     # Compare execution times
     for framework, data in framework_data.items():
         times = data.get("execution_times", [])
-        if times:
+        if times and any(t > 0 for t in times):
+            valid_times = [t for t in times if t > 0]
             comparisons["performance_comparison"][framework] = {
-                "mean": float(np.mean(times)),
-                "std": float(np.std(times)),
-                "min": float(np.min(times)),
-                "max": float(np.max(times))
+                "mean": float(np.mean(valid_times)),
+                "std": float(np.std(valid_times)) if len(valid_times) > 1 else 0.0,
+                "min": float(np.min(valid_times)),
+                "max": float(np.max(valid_times))
             }
+    
+    # Compare data coverage — which frameworks produced which data
+    for framework, data in framework_data.items():
+        coverage = {
+            "has_beliefs": bool(data.get("beliefs")),
+            "has_actions": bool(data.get("actions")),
+            "has_observations": bool(data.get("observations")),
+            "has_free_energy": bool(data.get("free_energy")),
+            "num_timesteps": data.get("num_timesteps"),
+            "validation_passed": all(data.get("validation", {}).values()) if data.get("validation") else None,
+            "data_source": data.get("data_source")
+        }
+        comparisons["data_coverage"][framework] = coverage
+    
+    # Compare simulation statistics across frameworks with data
+    frameworks_with_beliefs = {fw: data for fw, data in framework_data.items() if data.get("beliefs")}
+    frameworks_with_efe = {fw: data for fw, data in framework_data.items() if data.get("free_energy")}
+    
+    for framework, data in frameworks_with_beliefs.items():
+        beliefs = data["beliefs"]
+        try:
+            beliefs_arr = np.array(beliefs)
+            if beliefs_arr.ndim == 2:
+                comparisons["simulation_statistics"][framework] = {
+                    "belief_dims": list(beliefs_arr.shape),
+                    "mean_confidence": float(np.mean(np.max(beliefs_arr, axis=1))),
+                    "final_belief": [float(v) for v in beliefs_arr[-1]] if len(beliefs_arr) > 0 else [],
+                }
+        except Exception:
+            pass
+    
+    for framework, data in frameworks_with_efe.items():
+        efe = data["free_energy"]
+        try:
+            efe_arr = np.array(efe, dtype=float)
+            stats = comparisons["simulation_statistics"].get(framework, {})
+            stats["efe_mean"] = float(np.mean(efe_arr))
+            stats["efe_std"] = float(np.std(efe_arr))
+            stats["efe_min"] = float(np.min(efe_arr))
+            stats["efe_max"] = float(np.max(efe_arr))
+            comparisons["simulation_statistics"][framework] = stats
+        except Exception:
+            pass
+    
+    # Metric agreement — if multiple frameworks have beliefs, compare final convergence
+    if len(frameworks_with_beliefs) >= 2:
+        agreement = {}
+        fw_names = list(frameworks_with_beliefs.keys())
+        for i in range(len(fw_names)):
+            for j in range(i+1, len(fw_names)):
+                fw_a, fw_b = fw_names[i], fw_names[j]
+                try:
+                    beliefs_a = np.array(frameworks_with_beliefs[fw_a]["beliefs"])
+                    beliefs_b = np.array(frameworks_with_beliefs[fw_b]["beliefs"])
+                    if beliefs_a.shape == beliefs_b.shape:
+                        correlation = float(np.corrcoef(
+                            np.max(beliefs_a, axis=1),
+                            np.max(beliefs_b, axis=1)
+                        )[0, 1]) if beliefs_a.shape[0] > 1 else 0.0
+                        agreement[f"{fw_a}_vs_{fw_b}"] = {
+                            "confidence_correlation": correlation,
+                            "same_dimensions": True
+                        }
+                    else:
+                        agreement[f"{fw_a}_vs_{fw_b}"] = {
+                            "same_dimensions": False,
+                            "dims_a": list(beliefs_a.shape),
+                            "dims_b": list(beliefs_b.shape)
+                        }
+                except Exception:
+                    pass
+        comparisons["metric_agreement"] = agreement
     
     return comparisons
 
@@ -732,7 +883,8 @@ def _calculate_aggregate_metrics(framework_data: Dict[str, Dict[str, Any]], logg
 
 def generate_framework_comparison_report(comparison_data: Dict[str, Any], output_dir: Path, logger: Optional[logging.Logger] = None) -> str:
     """
-    Generate a comprehensive comparison report across frameworks.
+    Generate a comprehensive comparison report across frameworks,
+    grounded in real simulation data.
     
     Args:
         comparison_data: Output from analyze_framework_outputs()
@@ -769,7 +921,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
         ""
     ])
     
-    # Framework details
+    # Framework details with simulation data
     report_lines.extend([
         "## Framework Details",
         ""
@@ -784,12 +936,94 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             f"### {framework.upper()}",
             "",
             f"- Success Rate: {success_rate:.1f}% ({success_count}/{total_count})",
-            f"- Execution Times: {len(data.get('execution_times', []))} recorded",
+        ])
+        
+        # Add execution time if available
+        times = [t for t in data.get('execution_times', []) if t > 0]
+        if times:
+            report_lines.append(f"- Execution Time: {times[0]:.2f}s")
+        
+        # Add simulation data coverage
+        n_beliefs = len(data.get('beliefs', []))
+        n_actions = len(data.get('actions', []))
+        n_obs = len(data.get('observations', []))
+        n_efe = len(data.get('free_energy', []))
+        timesteps = data.get('num_timesteps')
+        
+        if any([n_beliefs, n_actions, n_obs, n_efe]):
+            report_lines.append(f"- Timesteps: {timesteps}")
+            report_lines.append(f"- Data: beliefs={n_beliefs}, actions={n_actions}, observations={n_obs}, free_energy={n_efe}")
+        
+        # Add validation status
+        validation = data.get('validation', {})
+        if validation:
+            passed = all(validation.values())
+            checks = ', '.join(f"{k}={'✅' if v else '❌'}" for k, v in validation.items())
+            report_lines.append(f"- Validation: {'✅ ALL PASSED' if passed else '⚠️ ISSUES'} ({checks})")
+        
+        # Add data source
+        source = data.get('data_source')
+        if source:
+            report_lines.append(f"- Data Source: `{source}`")
+        
+        report_lines.append("")
+    
+    # Simulation Statistics Comparison
+    comparisons = comparison_data.get("comparisons", {})
+    sim_stats = comparisons.get("simulation_statistics", {})
+    if sim_stats:
+        report_lines.extend([
+            "## Simulation Data Comparison",
+            "",
+            "| Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |",
+            "|-----------|-----------|-----------------|----------|---------|"
+        ])
+        
+        for framework, stats in sim_stats.items():
+            dims = stats.get('belief_dims', [])
+            timesteps = dims[0] if dims else 'N/A'
+            conf = f"{stats.get('mean_confidence', 0):.4f}" if 'mean_confidence' in stats else 'N/A'
+            efe_mean = f"{stats.get('efe_mean', 0):.4f}" if 'efe_mean' in stats else 'N/A'
+            efe_std = f"{stats.get('efe_std', 0):.4f}" if 'efe_std' in stats else 'N/A'
+            report_lines.append(f"| {framework} | {timesteps} | {conf} | {efe_mean} | {efe_std} |")
+        report_lines.append("")
+    
+    # Data Coverage
+    data_coverage = comparisons.get("data_coverage", {})
+    if data_coverage:
+        report_lines.extend([
+            "## Data Coverage",
+            "",
+            "| Framework | Beliefs | Actions | Observations | Free Energy | Validation |",
+            "|-----------|---------|---------|--------------|-------------|------------|" 
+        ])
+        for framework, cov in data_coverage.items():
+            report_lines.append(
+                f"| {framework} "
+                f"| {'✅' if cov.get('has_beliefs') else '❌'} "
+                f"| {'✅' if cov.get('has_actions') else '❌'} "
+                f"| {'✅' if cov.get('has_observations') else '❌'} "
+                f"| {'✅' if cov.get('has_free_energy') else '❌'} "
+                f"| {'✅' if cov.get('validation_passed') else ('❌' if cov.get('validation_passed') is False else '—')} |"
+            )
+        report_lines.append("")
+    
+    # Metric Agreement
+    metric_agreement = comparisons.get("metric_agreement", {})
+    if metric_agreement:
+        report_lines.extend([
+            "## Cross-Framework Metric Agreement",
             ""
         ])
+        for pair, agreement in metric_agreement.items():
+            if agreement.get("same_dimensions"):
+                corr = agreement.get('confidence_correlation', 0)
+                report_lines.append(f"- **{pair}**: confidence correlation = {corr:.4f}")
+            else:
+                report_lines.append(f"- **{pair}**: different dimensions ({agreement.get('dims_a')} vs {agreement.get('dims_b')})")
+        report_lines.append("")
     
-    # Comparisons
-    comparisons = comparison_data.get("comparisons", {})
+    # Performance comparison
     if comparisons.get("performance_comparison"):
         report_lines.extend([
             "## Performance Comparison",

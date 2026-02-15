@@ -574,6 +574,28 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 - **Outputs:** `output/11_render_output/` and `output/12_execute_output/`
 
+#### Post-Simulation Analysis (Step 16)
+
+- **Pipeline Step:** `16_analysis.py`
+- **Functionality:** Statistical analysis, post-simulation analysis (free energy, policy convergence, state distributions), Active Inference metric computation (entropy, KL divergence, VFE, EFE, information gain), cross-framework comparison, and visualization generation
+- **Invocation:**
+
+    ```bash
+    # Run full render → execute → analyze pipeline
+    python src/main.py --only-steps "3,11,12,16" --target-dir input/gnn_files --verbose
+
+    # Run analysis on existing execution results
+    python src/main.py --only-steps "16" --verbose
+    ```
+
+- **Outputs:** `output/16_analysis_output/` — includes `analysis_results.json`, `analysis_summary.md`, per-model post-simulation analysis, framework-specific visualizations, and cross-framework comparison dashboards
+- **Key Capabilities:**
+  - Per-GNN-file statistical analysis and complexity metrics
+  - Post-simulation analysis consuming Step 12 execution results
+  - Active Inference metrics: Shannon entropy, KL divergence, variational free energy, expected free energy, information gain
+  - Framework-specific visualization generation (PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy)
+  - Cross-framework comparison reports and unified dashboards
+
 ### Pipeline Examples
 
 ```bash

@@ -54,6 +54,7 @@ For complete usage information, see:
 
 import sys
 import os
+import re
 import json
 import time
 import logging
@@ -90,7 +91,6 @@ try:
     from utils.logging_utils import (
         PipelineProgressTracker,
         VisualLoggingEnhancer,
-        PipelineLogger,
         PipelineLogger,
         log_pipeline_summary,
         reset_progress_tracker,
@@ -394,7 +394,7 @@ def main():
             # Check for warnings in both stdout and stderr (precise regex matching)
             combined_output = f"{step_result.get('stdout', '')}\n{step_result.get('stderr', '')}"
             # More precise warning detection - look for actual log levels or warning symbols
-            import re
+
             
             # Known safe warnings that should not trigger SUCCESS_WITH_WARNINGS
             safe_warning_patterns = [
@@ -678,8 +678,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         # Execute step with proper working directory (project root)
         project_root = Path(__file__).parent.parent
         # Ensure unbuffered output from children
-        import os as _os
-        _env = _os.environ.copy()
+        _env = os.environ.copy()
         _env.setdefault("PYTHONUNBUFFERED", "1")
 
         # Execute step with timeout

@@ -11,6 +11,7 @@ Analyzes GNN models and estimates computational resources needed for:
 import os
 import sys
 import json
+import logging
 import math
 import argparse
 from pathlib import Path
@@ -18,6 +19,8 @@ from typing import Dict, List, Set, Tuple, Any, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 
 class GNNResourceEstimator:
@@ -85,7 +88,7 @@ class GNNResourceEstimator:
                 with open(type_check_data, 'r') as f:
                     self.type_check_data = json.load(f)
             except (FileNotFoundError, json.JSONDecodeError) as e:
-                print(f"Warning: Could not load type check data: {e}")
+                logger.warning(f"Could not load type check data: {e}")
                 self.type_check_data = None
         else:
             self.type_check_data = None
@@ -109,7 +112,7 @@ class GNNResourceEstimator:
             content = parser.parse_file(file_path)
             return self._analyze_model(content, file_path)
         except Exception as e:
-            print(f"Error analyzing {file_path}: {str(e)}")
+            logger.error(f"Error analyzing {file_path}: {str(e)}")
             return {
                 "file": file_path,
                 "error": str(e),
@@ -262,7 +265,7 @@ class GNNResourceEstimator:
                 
                 total_size = size_factor * math.prod(dimension_values)
             except Exception as e:
-                print(f"Warning: Error calculating size for variable {var_name}: {e}")
+                logger.warning(f"Error calculating size for variable {var_name}: {e}")
                 # Use a default size based on variable type
                 total_size = size_factor * 2  # Assume small dimensions as fallback
             
@@ -343,7 +346,7 @@ class GNNResourceEstimator:
                 breakdown["representation_overhead"] += var_overhead
                 
             except Exception as e:
-                print(f"Warning: Error in memory breakdown for {var_name}: {e}")
+                logger.warning(f"Error in memory breakdown for {var_name}: {e}")
         
         # Convert totals to KB for convenience
         breakdown["total_kb"] = breakdown["total_bytes"] / 1024.0
@@ -1494,7 +1497,7 @@ class GNNResourceEstimator:
         
         # Check if we have any valid data for visualization
         if not memory_values or not inference_values or not storage_values:
-            print("Warning: No valid resource estimates available for HTML visualizations")
+            logger.warning("No valid resource estimates available for HTML visualizations")
             return
             
         # Short file names for better display

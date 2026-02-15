@@ -43,7 +43,7 @@ def get_file_hash(file_path: Path) -> str:
     """Calculate SHA256 hash of file."""
     try:
         return hashlib.sha256(file_path.read_bytes()).hexdigest()[:16]
-    except:
+    except Exception:
         return "error"
 
 def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:

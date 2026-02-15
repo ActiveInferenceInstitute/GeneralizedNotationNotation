@@ -395,7 +395,7 @@ class CrossFormatValidator:
         try:
             with open(temp_fd, 'w', encoding='utf-8') as f:
                 f.write(content)
-        except:
+        except Exception:
             # Handle binary formats
             with open(temp_path, 'wb') as f:
                 f.write(content.encode('utf-8'))

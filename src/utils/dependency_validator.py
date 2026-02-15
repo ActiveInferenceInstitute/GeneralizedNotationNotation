@@ -65,28 +65,13 @@ class DependencyValidator:
                 DependencySpec(
                     name="yaml",
                     module_name="yaml", 
-                    install_command="pip install pyyaml",
+                    install_command="uv pip install pyyaml",
                     description="YAML file processing"
                 ),
                 DependencySpec(
                     name="numpy",
                     version_min="1.20.0",
                     description="Numerical computing library"
-                ),
-                DependencySpec(
-                    name="pathlib",
-                    module_name="pathlib",
-                    description="File system path handling (built-in)"
-                ),
-                DependencySpec(
-                    name="json",
-                    module_name="json", 
-                    description="JSON processing (built-in)"
-                ),
-                DependencySpec(
-                    name="re",
-                    module_name="re",
-                    description="Regular expressions (built-in)"
                 ),
                 # HTTP and async communication
                 DependencySpec(
@@ -514,8 +499,8 @@ def install_missing_dependencies() -> dict:
             skipped.append(dep.name)
             continue
         try:
-            cmd = [sys.executable, '-m', 'pip', 'install', dep.name]
-            result = subprocess.run(cmd, capture_output=True, text=True)
+            cmd = ['uv', 'pip', 'install', dep.name]
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
             if result.returncode == 0:
                 installed.append(dep.name)
                 logging.info(f"Installed missing dependency: {dep.name}")
@@ -530,8 +515,6 @@ def install_missing_dependencies() -> dict:
 
 if __name__ == "__main__":
     # Command-line interface for dependency validation
-    import argparse
-    
     parser = argparse.ArgumentParser(description="Validate GNN pipeline dependencies")
     parser.add_argument("--groups", nargs="*", help="Dependency groups to validate")
     parser.add_argument("--verbose", action="store_true", help="Enable verbose logging")
@@ -567,10 +550,6 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     Returns:
         bool: True if validation passed or validator unavailable
     """
-    # Temporarily skip dependency validation for testing
-    logger.info("Dependency validation temporarily skipped for testing")
-    return True
-    
     if getattr(args, 'skip_dependency_validation', False):
         logger.info("Dependency validation skipped (--skip-dependency-validation flag)")
         return True

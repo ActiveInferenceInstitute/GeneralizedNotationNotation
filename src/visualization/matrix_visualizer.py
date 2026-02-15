@@ -799,7 +799,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                     f.write(f"Error: {str(e)}\n")
                     f.write(f"Parameters: {len(parameters)} found\n")
                 return True
-            except:
+            except Exception:
                 return False
     
     def generate_combined_matrix_overview(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:

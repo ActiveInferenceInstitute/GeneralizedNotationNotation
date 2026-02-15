@@ -321,44 +321,29 @@ class OpenAIProvider(BaseLLMProvider):
 
     def analyze(self, content: str, task: str) -> str:
         """Perform analysis on GNN content."""
+        import concurrent.futures
+
         prompt = f"Analyze this GNN model for {task}: {content}"
-        
-        # Handle async call properly
-        try:
-            # Try to run in existing event loop
-            loop = asyncio.get_event_loop()
-            if loop.is_running():
-                # Create a new event loop in a separate thread
-                import concurrent.futures
-                import threading
-                
-                def run_async():
-                    new_loop = asyncio.new_event_loop()
-                    asyncio.set_event_loop(new_loop)
-                    try:
-                        result = new_loop.run_until_complete(
-                            self.generate_response([{"role": "user", "content": prompt}])
-                        )
-                        return result.content if hasattr(result, 'content') else str(result)
-                    finally:
-                        new_loop.close()
-                
-                with concurrent.futures.ThreadPoolExecutor() as executor:
-                    future = executor.submit(run_async)
-                    return future.result(timeout=30)
-            else:
-                # Run directly in current loop
-                result = loop.run_until_complete(
-                    self.generate_response([{"role": "user", "content": prompt}])
-                )
-                return result.content if hasattr(result, 'content') else str(result)
-                
-        except RuntimeError:
-            # No event loop, create new one
-            result = asyncio.run(
-                self.generate_response([{"role": "user", "content": prompt}])
+
+        async def _run():
+            return await self.generate_response(
+                [{"role": "user", "content": prompt}]
             )
+
+        def _extract(result):
             return result.content if hasattr(result, 'content') else str(result)
+
+        try:
+            result = asyncio.run(_run())
+            return _extract(result)
+        except RuntimeError:
+            # Already inside a running event loop – delegate to a worker thread
+            def _thread_run():
+                return asyncio.run(_run())
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(_thread_run)
+                return _extract(future.result(timeout=30))
         except Exception as e:
             logger.error(f"OpenAI analysis failed: {e}")
             return f"Analysis failed: {e}" 

@@ -766,7 +766,7 @@ class GNNTypeChecker:
                     # For symbolic dimensions, estimate
                     total *= 2
             return total
-        except:
+        except Exception:
             return 1
 
     def generate_report(self, results: Dict[str, Dict[str, Any]], 

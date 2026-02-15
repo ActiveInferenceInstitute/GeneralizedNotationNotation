@@ -149,13 +149,13 @@ class JSONGNNParser(BaseGNNParser):
         if 'created_at' in data:
             try:
                 model.created_at = datetime.fromisoformat(data['created_at'])
-            except:
+            except Exception:
                 pass
         
         if 'modified_at' in data:
             try:
                 model.modified_at = datetime.fromisoformat(data['modified_at'])
-            except:
+            except Exception:
                 pass
         
         model.checksum = data.get('checksum')

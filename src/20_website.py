@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from website import process_website
 except ImportError:
-    def process_website(target_dir, output_dir, **kwargs):
+    def process_website(target_dir, output_dir, logger=None, **kwargs):
         """Fallback website processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("Website module not available - using fallback")
         return True
 

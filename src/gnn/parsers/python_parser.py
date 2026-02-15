@@ -461,7 +461,7 @@ class PythonGNNParser(BaseGNNParser):
                                     dims.append(elt.value)
                             if dims:
                                 return dims
-                        except:
+                        except Exception:
                             pass
         
         return []

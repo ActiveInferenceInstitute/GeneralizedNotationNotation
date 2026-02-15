@@ -6,9 +6,12 @@ that combine multiple visualization types and interactive features.
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 from .data_extractor import VisualizationDataExtractor
 from .html_generator import HTMLVisualizationGenerator
@@ -67,7 +70,7 @@ class DashboardGenerator:
             return dashboard_file
             
         except Exception as e:
-            print(f"Failed to generate dashboard for {model_name}: {e}")
+            logger.error(f"Failed to generate dashboard for {model_name}: {e}")
             return None
     
     def _generate_dashboard_html(self, extracted_data: Dict[str, Any], model_name: str) -> str:

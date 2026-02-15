@@ -472,7 +472,7 @@ def execute_rendered_simulators(
         
         # Check Julia availability
         try:
-            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False)
+            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False, timeout=10)
             if result.returncode == 0:
                 logger.info(f"✅ Julia available: {result.stdout.strip()}")
             else:

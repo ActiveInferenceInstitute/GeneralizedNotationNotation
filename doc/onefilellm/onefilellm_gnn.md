@@ -1,4 +1,5 @@
 # OneFileLLM × Generalized Notation Notation (GNN)  
+
 ### A Deep-Technical Blueprint for Data Aggregation, Model Documentation, and Active Inference Workflows
 
 OneFileLLM and Generalized Notation Notation (GNN) address complementary bottlenecks in modern AI pipelines. OneFileLLM automates the **ingestion and structural packaging of heterogeneous knowledge** into LLM-friendly XML[1][2], while GNN standardizes the **symbolic description, visualization, and executable rendering** of Active Inference generative models[3][4]. Integrating the two unlocks an end-to-end workflow where richly annotated cognitive models—along with every supporting artefact—can be scraped, validated, visualized, and delivered to an LLM in a single click.  
@@ -6,6 +7,7 @@ OneFileLLM and Generalized Notation Notation (GNN) address complementary bottlen
 Below is an extensive, 20-page technical exploration that (1) expands the prior summary of OneFileLLM, (2) dissects GNN at an implementation level, and (3) shows how to fuse both projects into a seamless research and engineering toolchain.
 
 ## Table of Contents  
+
 - **OneFileLLM in Depth**  
   - Architecture, modules, tokenization internals, performance tips  
 - **GNN in Depth**  
@@ -33,6 +35,7 @@ Below is an extensive, 20-page technical exploration that (1) expands the prior 
 | 6. Token Audit & Copy | `tiktoken` counts, clipboard sync | `report_token_stats()` | Toggle `--no-clipboard` in headless CI[2] |
 
 #### Internal Token Accounting
+
 OneFileLLM tracks **compressed vs. raw token footprints** to help researchers trim prompts before pushing to a cost-sensitive LLM endpoint[2][6]. Internally it:
 
 1. Uses `tiktoken.get_encoding("cl100k_base")` to emulate GPT-4 pricing tiers.  
@@ -44,6 +47,7 @@ This metadata is critical when GNN files explode due to large Markov blanket mat
 ### Advanced CLI Workflows
 
 #### Multi-Source Active Inference Bundle
+
 ```bash
 onefilellm \
   https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation \
@@ -53,17 +57,19 @@ onefilellm \
   --alias-add gnn_spec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/spec/{0}.md" \
   gnn_spec GNN_Specification
 ```
+
 1. Forks the GNN repo.  
 2. Ingests a local Jupyter notebook.  
 3. Retrieves the peer-reviewed Zenodo PDF[3].  
 4. Adds an alias to pull any spec chapter on demand.  
 5. Outputs a **single XML** ready for LLM analysis.
 
-Average runtime on a 1 Gbps link: **37 s** for 188 MB total payload, 28,430 uncompressed tokens (tested on Ubuntu 22.04, Python 3.11)[7].
+Average runtime on a 1 Gbps link: **37 s** for 188 MB total payload, 28,430 uncompressed tokens [tested on Ubuntu 22.04, Python 3.11](7).
 
 ## Generalized Notation Notation (GNN): Technical Specification
 
 ### Conceptual Foundations
+
 GNN formalizes Active Inference models via **plain-text Markdown + YAML front-matter**[4]. A minimal file:
 
 ```markdown
@@ -114,21 +120,26 @@ By piping all three through OneFileLLM, a modeler can hand a single prompt to an
 
 1. **OneFileLLM detects `.md` + YAML header** → sets `type="gnn_file"`.  
 2. `` tag augmented with extracted metadata:
+
    ```xml
    
    ```
+
 3. Inside, each GNN section becomes nested `` elements, enabling token-level targeting.
 
 ### Alias-Driven Spec Injection
+
 Create reusable shorthand for spec modules:
 
 ```bash
 onefilellm --alias-add gnnsec "https://raw.githubusercontent.com/ActiveInferenceInstitute/GeneralizedNotationNotation/main/spec/{0}.md"
 onefilellm gnnsec State_Space gnnsec Likelihood_Matrix gnnsec Policy_Prior
 ```
+
 Reduces CLI length by **67%**, supports placeholder arg substitution[1][5].
 
 ### Round-Trip Execution
+
 1. Run `gnn2pymdp.py` to synthesize a simulation script.  
 2. OneFileLLM ingests the generated Python file plus runtime logs.  
 3. LLM receives full feedback loop (spec ➡ execution ➡ new observations) inside a single prompt for meta-learning tasks.
@@ -136,16 +147,19 @@ Reduces CLI length by **67%**, supports placeholder arg substitution[1][5].
 ## Hands-On Walk-Through
 
 ### 1. Clone & Install
+
 ```bash
 git clone https://github.com/jimmc414/onefilellm.git && cd onefilellm
-pip install -r requirements.txt  # see req list[17]
+uv pip install -r requirements.txt  # see req list[17]
 export GITHUB_TOKEN="ghp_xxx"    # increases GitHub rate limits
 ```
+
 ```bash
 git clone https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
 ```
 
 ### 2. Compose a Research Prompt
+
 ```bash
 onefilellm \
   ./GeneralizedNotationNotation/examples/foraging_simple.gnn.md \
@@ -153,13 +167,16 @@ onefilellm \
   --crawl-max-depth 1 --crawl-include-pattern ".*\\.svg$" \
   ./notes/my_hypotheses.txt
 ```
+
 Outputs `uncompressed_output.txt` (≈14 kB) and auto-copies to clipboard.
 
 ### 3. Send to LLM (cli-llm example)
+
 ```bash
 llm -m claude-3-opus @uncompressed_output.txt \
     "Critically assess the model’s prior over policies and suggest biologically plausible alternatives."
 ```
+
 Latency: 8 s; cost: ~0.25 USD at 28 k tokens.
 
 ## Benchmark & Profiling
@@ -210,8 +227,8 @@ This synergy eliminates brittle manual context gathering, enforces ontological r
 
 ```bash
 # STEP 0: install
-pip install -r onefilellm/requirements.txt
-pip install torch pymdp rich
+uv pip install -r onefilellm/requirements.txt
+uv pip install torch pymdp rich
 
 # STEP 1: scrape + package
 onefilellm GeneralizedNotationNotation/examples/*.gnn.md --crawl-max-depth 0
@@ -226,59 +243,59 @@ onefilellm ...                                      # re-scrape
 
 With a single command pair—`onefilellm` → `llm`—researchers can now move from **idea to empirically grounded Active Inference model** within minutes, backed by rigorous notation and optimal prompt engineering.
 
-[1] https://github.com/jimmc414/onefilellm
-[2] https://github.com/jimmc414/onefilellm/blob/main/README.md
-[3] https://zenodo.org/record/7803328
-[4] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation
-[5] https://github.com/jimmc414/1filellm/blob/main/requirements.txt
-[6] https://hub.athina.ai/top-5-open-source-scraping-and-ingestion-tools/
-[7] https://docfork.com/jimmc414/onefilellm/llms.txt
-[8] https://www.youtube.com/watch?v=3tYOBVIOLyU
-[9] https://zenodo.org/records/7803328
-[10] https://www.youtube.com/watch?v=L0kFneuINsg
-[11] https://liquidbrain.net/blog/onefilellm-terminal-script/
-[12] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/
-[13] https://www.aisharenet.com/en/onefilellm/
-[14] https://www.kdjingpai.com/en/onefilellm/
-[15] https://microsoft.github.io/genaiscript/reference/scripts/model-aliases/
-[16] https://github.com/jimmc414/onefilellm/wiki
-[17] https://juejin.cn/post/7413715248845455412
-[18] https://github.com/gusanmaz/onefile
-[19] https://gist.github.com/ra101/70ea4389ba04bf6d5a172d9a3000e5f7
-[20] https://github.com/GiladKingsley
-[21] https://github.com/simonw/llm
-[22] https://pypi.org/project/onetokenpy/
-[23] https://x.com/JimMcM4
-[24] https://github.com/topics/repository
-[25] https://llm.datasette.io/en/stable/help.html
-[26] https://www.youtube.com/watch?v=81DY1IsMckE
-[27] https://journals.aps.org/prd/authors/general-notation-terminology
-[28] https://coda.io/@active-inference-institute/generalized-notation-notation
-[29] https://learn.saylor.org/mod/page/view.php?id=27241
-[30] https://www.activeinference.institute/research
-[31] https://pypi.org/project/gnn/
-[32] https://journals.aps.org/authors/general-notation-terminology
-[33] https://bookdown.org/a_shaker/STM1001_Topic_0/notation-summary.html
-[34] https://coda.io/@active-inference-institute/generalized-notation-notation/step-by-step-6
-[35] https://cran.r-project.org/web/packages/gnn/gnn.pdf
-[36] https://heil.math.gatech.edu/6337/spring11/notation.pdf
-[37] https://ics.uci.edu/~smyth/courses/cs274/notes/Notation.pdf
-[38] https://x.com/InferenceActive
-[39] https://gist.github.com/josephlewisjgl/de0f05b16da4a25a37613c2f1df5894b
-[40] https://en.wikipedia.org/wiki/Generalized_coordinates
-[41] https://twitter.com/i/status/1864847140712825083
-[42] https://www.jmlr.org/papers/volume24/22-0567/22-0567.pdf
-[43] https://www.faa.gov/about/office_org/headquarters_offices/ang/redac/redac-sas-201503-gsn-community-standard-v1.pdf
-[44] https://www.youtube.com/watch?v=Y3-FMoaEZYE
-[45] https://cs230.stanford.edu/files/Notation.pdf
-[46] https://github.com/matiassingers/awesome-readme
-[47] https://academics.hamilton.edu/economics/cgeorges/game-theory-files/Notation-Definitions.pdf
-[48] https://www.reddit.com/r/webdev/comments/18sozpf/how_do_you_write_your_readmemd_or_docs_for_your/
-[49] https://www.itu.int/ITU-T/studygroups/com17/languages/X.680-0207.pdf
-[50] https://mathworld.wolfram.com/topics/Notation.html
-[51] http://arxiv.org/pdf/2406.07726.pdf
-[52] https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=c2ec433ee2464122d9064bf1ccef10d2a9a6c1cf
-[53] https://readme.so
-[54] https://learn.microsoft.com/en-us/previous-versions/ms256108(v=vs.85)
-[55] https://pdfs.semanticscholar.org/fb4a/3eb825eaca5861ab5589ba47fea5e575db36.pdf
-[56] https://rumble.com/v6toq0t-active-inferant-stream-014.1-generalized-notation-notation-from-plaintext-t.html?e9s=src_v1_s%2Csrc_v1_s_m
+[1] <https://github.com/jimmc414/onefilellm>
+[2] <https://github.com/jimmc414/onefilellm/blob/main/README.md>
+[3] <https://zenodo.org/record/7803328>
+[4] <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation>
+[5] <https://github.com/jimmc414/1filellm/blob/main/requirements.txt>
+[6] <https://hub.athina.ai/top-5-open-source-scraping-and-ingestion-tools/>
+[7] <https://docfork.com/jimmc414/onefilellm/llms.txt>
+[8] <https://www.youtube.com/watch?v=3tYOBVIOLyU>
+[9] <https://zenodo.org/records/7803328>
+[10] <https://www.youtube.com/watch?v=L0kFneuINsg>
+[11] <https://liquidbrain.net/blog/onefilellm-terminal-script/>
+[12] <https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/>
+[13] <https://www.aisharenet.com/en/onefilellm/>
+[14] <https://www.kdjingpai.com/en/onefilellm/>
+[15] <https://microsoft.github.io/genaiscript/reference/scripts/model-aliases/>
+[16] <https://github.com/jimmc414/onefilellm/wiki>
+[17] <https://juejin.cn/post/7413715248845455412>
+[18] <https://github.com/gusanmaz/onefile>
+[19] <https://gist.github.com/ra101/70ea4389ba04bf6d5a172d9a3000e5f7>
+[20] <https://github.com/GiladKingsley>
+[21] <https://github.com/simonw/llm>
+[22] <https://pypi.org/project/onetokenpy/>
+[23] <https://x.com/JimMcM4>
+[24] <https://github.com/topics/repository>
+[25] <https://llm.datasette.io/en/stable/help.html>
+[26] <https://www.youtube.com/watch?v=81DY1IsMckE>
+[27] <https://journals.aps.org/prd/authors/general-notation-terminology>
+[28] <https://coda.io/@active-inference-institute/generalized-notation-notation>
+[29] <https://learn.saylor.org/mod/page/view.php?id=27241>
+[30] <https://www.activeinference.institute/research>
+[31] <https://pypi.org/project/gnn/>
+[32] <https://journals.aps.org/authors/general-notation-terminology>
+[33] <https://bookdown.org/a_shaker/STM1001_Topic_0/notation-summary.html>
+[34] <https://coda.io/@active-inference-institute/generalized-notation-notation/step-by-step-6>
+[35] <https://cran.r-project.org/web/packages/gnn/gnn.pdf>
+[36] <https://heil.math.gatech.edu/6337/spring11/notation.pdf>
+[37] <https://ics.uci.edu/~smyth/courses/cs274/notes/Notation.pdf>
+[38] <https://x.com/InferenceActive>
+[39] <https://gist.github.com/josephlewisjgl/de0f05b16da4a25a37613c2f1df5894b>
+[40] <https://en.wikipedia.org/wiki/Generalized_coordinates>
+[41] <https://twitter.com/i/status/1864847140712825083>
+[42] <https://www.jmlr.org/papers/volume24/22-0567/22-0567.pdf>
+[43] <https://www.faa.gov/about/office_org/headquarters_offices/ang/redac/redac-sas-201503-gsn-community-standard-v1.pdf>
+[44] <https://www.youtube.com/watch?v=Y3-FMoaEZYE>
+[45] <https://cs230.stanford.edu/files/Notation.pdf>
+[46] <https://github.com/matiassingers/awesome-readme>
+[47] <https://academics.hamilton.edu/economics/cgeorges/game-theory-files/Notation-Definitions.pdf>
+[48] <https://www.reddit.com/r/webdev/comments/18sozpf/how_do_you_write_your_readmemd_or_docs_for_your/>
+[49] <https://www.itu.int/ITU-T/studygroups/com17/languages/X.680-0207.pdf>
+[50] <https://mathworld.wolfram.com/topics/Notation.html>
+[51] <http://arxiv.org/pdf/2406.07726.pdf>
+[52] <https://citeseerx.ist.psu.edu/document?repid=rep1&type=pdf&doi=c2ec433ee2464122d9064bf1ccef10d2a9a6c1cf>
+[53] <https://readme.so>
+[54] <https://learn.microsoft.com/en-us/previous-versions/ms256108(v=vs.85)>
+[55] <https://pdfs.semanticscholar.org/fb4a/3eb825eaca5861ab5589ba47fea5e575db36.pdf>
+[56] <https://rumble.com/v6toq0t-active-inferant-stream-014.1-generalized-notation-notation-from-plaintext-t.html?e9s=src_v1_s%2Csrc_v1_s_m>

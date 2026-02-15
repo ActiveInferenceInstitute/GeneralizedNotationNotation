@@ -2,7 +2,7 @@
 """
 GNN Pipeline Step Template (Thin Orchestrator)
 
-This template provides the standardized pattern for all GNN pipeline steps (0-23).
+This template provides the standardized pattern for all GNN pipeline steps (0-24).
 It implements the thin orchestrator pattern that delegates core functionality to
 modular implementations while handling argument parsing, logging, and orchestration.
 

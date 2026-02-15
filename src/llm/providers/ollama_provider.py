@@ -5,7 +5,7 @@ Ollama LLM Provider
 Local provider using the `ollama` Python package to call a local Ollama server.
 
 Requirements:
-- pip install ollama>=0.3.0
+- uv pip install ollama>=0.3.0
 - Run `ollama serve` and ensure a model is pulled, e.g. `ollama pull gemma2:2b`
 """
 
@@ -76,11 +76,12 @@ class OllamaProvider(BaseLLMProvider):
             if not hasattr(ollama, 'chat'):
                 logger.warning(
                     "Imported 'ollama' module lacks 'chat' attribute. "
-                    "This may indicate a namespace collision with a local file "
-                    "named ollama.py, or an outdated ollama package version. "
+                    "Namespace collision or outdated package detected. "
+                    "Falling back to CLI. "
                     f"Module location: {getattr(ollama, '__file__', 'unknown')}"
                 )
-                return False
+                # Fall through to CLI fallback instead of failing outright
+                raise ImportError("ollama package is not functional")
             self._ollama = ollama
             try:
                 _ = self._ollama.list()
@@ -96,7 +97,7 @@ class OllamaProvider(BaseLLMProvider):
                 self._is_initialized = True
                 logger.info("Ollama provider initialized (CLI fallback)")
                 return True
-            logger.warning("Ollama not available. Install python client with 'pip install ollama' or install Ollama CLI from https://ollama.ai")
+            logger.warning("Ollama not available. Install python client with 'uv pip install ollama' or install Ollama CLI from https://ollama.ai")
             return False
         except Exception as e:
             logger.error(f"Failed to initialize Ollama: {e}")
@@ -139,8 +140,11 @@ class OllamaProvider(BaseLLMProvider):
                 model = config.model or self.default_model
 
                 def _call_cli() -> Dict[str, Any]:
+                    import time as _t
                     # Prefer JSON mode via `ollama chat` if available; fallback to `ollama run`
                     try:
+                        logger.debug(f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s")
+                        t0 = _t.monotonic()
                         completed = subprocess.run(
                             ["ollama", "chat", model, "--json"],
                             input=json.dumps({
@@ -155,12 +159,17 @@ class OllamaProvider(BaseLLMProvider):
                             check=False,
                             timeout=self.default_timeout,
                         )
+                        elapsed = _t.monotonic() - t0
+                        logger.debug(f"Ollama CLI chat completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
+                        if completed.returncode != 0 and completed.stderr:
+                            logger.debug(f"Ollama CLI chat stderr: {completed.stderr[:200]}")
                         if completed.returncode == 0 and completed.stdout.strip():
                             return json.loads(completed.stdout)
                     except Exception as json_error:
                         logger.debug(f"JSON mode failed: {json_error}")
                     # Fallback to `ollama run`
                     logger.debug(f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s")
+                    t0 = _t.monotonic()
                     completed = subprocess.run(
                         ["ollama", "run", model, prompt],
                         capture_output=True,
@@ -168,6 +177,10 @@ class OllamaProvider(BaseLLMProvider):
                         check=False,
                         timeout=self.default_timeout,
                     )
+                    elapsed = _t.monotonic() - t0
+                    logger.debug(f"Ollama CLI run completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
+                    if completed.returncode != 0 and completed.stderr:
+                        logger.debug(f"Ollama CLI run stderr: {completed.stderr[:200]}")
                     return {"model": model, "message": {"content": completed.stdout.strip()}}
 
                 response = await asyncio.to_thread(_call_cli)
@@ -236,8 +249,11 @@ class OllamaProvider(BaseLLMProvider):
             if self._use_cli:
                 # CLI streaming not standardized; emit single chunk
                 def _call_cli_once() -> str:
+                    import time as _t
                     prompt = "\n\n".join(m.content for m in messages)
                     model = config.model or self.default_model
+                    logger.debug(f"Ollama CLI stream: model={model}, timeout={self.default_timeout}s")
+                    t0 = _t.monotonic()
                     completed = subprocess.run(
                         ["ollama", "run", model, prompt],
                         capture_output=True,
@@ -245,6 +261,8 @@ class OllamaProvider(BaseLLMProvider):
                         check=False,
                         timeout=self.default_timeout,
                     )
+                    elapsed = _t.monotonic() - t0
+                    logger.debug(f"Ollama CLI stream completed: rc={completed.returncode}, elapsed={elapsed:.1f}s")
                     return completed.stdout
                 text = await asyncio.to_thread(_call_cli_once)
                 yield text

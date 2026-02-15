@@ -815,15 +815,7 @@ def analyze_gnn_model(gnn_content: str, analysis_type: str = "summary") -> Dict[
     import asyncio
     
     try:
-        # Create a new event loop if one doesn't exist
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        
-        # Run the async function
-        result = loop.run_until_complete(analyze_gnn_with_llm(gnn_content, analysis_type))
+        result = asyncio.run(analyze_gnn_with_llm(gnn_content, analysis_type))
         return result
         
     except Exception as e:
@@ -845,12 +837,7 @@ def generate_explanation(gnn_content: str) -> dict:
     """
     import asyncio
     try:
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        result = loop.run_until_complete(explain_gnn_model(gnn_content))
+        result = asyncio.run(explain_gnn_model(gnn_content))
         return result
     except Exception as e:
         return {"success": False, "error": str(e), "error_type": type(e).__name__} 
@@ -868,14 +855,11 @@ def enhance_model(gnn_content: str) -> dict:
     import asyncio
     try:
         processor = GNNLLMProcessor()
-        try:
-            loop = asyncio.get_event_loop()
-        except RuntimeError:
-            loop = asyncio.new_event_loop()
-            asyncio.set_event_loop(loop)
-        loop.run_until_complete(processor.initialize())
-        result = loop.run_until_complete(processor.suggest_enhancements(gnn_content))
-        loop.run_until_complete(processor.close())
-        return result
+        async def _run():
+            await processor.initialize()
+            result = await processor.suggest_enhancements(gnn_content)
+            await processor.close()
+            return result
+        return asyncio.run(_run())
     except Exception as e:
         return {"success": False, "error": str(e), "error_type": type(e).__name__} 

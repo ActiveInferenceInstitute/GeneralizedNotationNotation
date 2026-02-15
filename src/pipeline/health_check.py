@@ -135,7 +135,7 @@ class EnhancedHealthChecker:
             self.logger.warning("⚠️ psutil not available - limited system resource checks")
             return {
                 "status": "limited",
-                "error": "psutil not installed - install with: pip install psutil",
+                "error": "psutil not installed - install with: uv pip install psutil",
                 "platform": {
                     "system": platform.system(),
                     "release": platform.release(),

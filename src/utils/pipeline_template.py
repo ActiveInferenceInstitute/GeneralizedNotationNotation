@@ -55,7 +55,7 @@ except ImportError as e:
         try:
             (output_dir / f"{step_name}_step").mkdir(parents=True, exist_ok=True)
             return True
-        except:
+        except Exception:
             return False
     
     UTILS_AVAILABLE = False
@@ -552,7 +552,8 @@ STANDARD_MODULE_FUNCTION_NAMES = {
     "20_website": "process_website",
     "21_mcp": "process_mcp",
     "22_gui": "process_gui",
-    "23_report": "process_report"
+    "23_report": "process_report",
+    "24_intelligent_analysis": "process_intelligent_analysis"
 }
 
 # Standard additional arguments for each step

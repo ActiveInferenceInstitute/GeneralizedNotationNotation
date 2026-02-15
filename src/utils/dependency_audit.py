@@ -203,7 +203,7 @@ class DependencyAuditor:
         """Load information about installed packages."""
         try:
             result = subprocess.run([
-                sys.executable, '-m', 'pip', 'list', '--format=json'
+                'uv', 'pip', 'list', '--format=json'
             ], capture_output=True, text=True, timeout=30)
 
             if result.returncode == 0:
@@ -240,7 +240,7 @@ class DependencyAuditor:
         """Check for outdated packages."""
         try:
             result = subprocess.run([
-                sys.executable, '-m', 'pip', 'list', '--outdated', '--format=json'
+                'uv', 'pip', 'list', '--outdated', '--format=json'
             ], capture_output=True, text=True, timeout=60)
 
             if result.returncode == 0:
@@ -273,7 +273,7 @@ class DependencyAuditor:
                 self.logger.warning("Security scan encountered issues")
 
         except FileNotFoundError:
-            self.logger.warning("pip-audit not available, install with: pip install pip-audit")
+            self.logger.warning("pip-audit not available, install with: uv pip install pip-audit")
         except Exception as e:
             self.logger.error(f"Error during security scan: {e}")
 
@@ -281,7 +281,7 @@ class DependencyAuditor:
         """Analyze dependency relationships."""
         try:
             result = subprocess.run([
-                sys.executable, '-m', 'pip', 'show', '--verbose', *list(self.dependencies.keys())
+                'uv', 'pip', 'show', *list(self.dependencies.keys())
             ], capture_output=True, text=True, timeout=60)
 
             if result.returncode == 0:
@@ -473,7 +473,7 @@ class DependencyOptimizer:
         result = {"updated": [], "failed": [], "skipped": []}
 
         try:
-            cmd = [sys.executable, '-m', 'pip', 'install', '--upgrade']
+            cmd = ['uv', 'pip', 'install', '--upgrade']
             if dry_run:
                 cmd.append('--dry-run')
 

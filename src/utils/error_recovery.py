@@ -63,9 +63,9 @@ class ErrorRecoveryManager:
         # Import error handlers
         self.error_handlers['import'] = self._handle_import_error
         self.recovery_strategies['import'] = [
-            'Install missing package: pip install <package>',
+            'Install missing package: uv pip install <package>',
             'Check Python version compatibility',
-            'Verify package is in requirements.txt',
+            'Verify package is in pyproject.toml',
             'Try running with --verbose for more details',
         ]
         

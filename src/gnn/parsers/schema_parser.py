@@ -113,7 +113,7 @@ class XSDParser(BaseGNNParser):
                     return enum_val
             # Fallback to first enum value
             return list(enum_class)[0]
-        except:
+        except Exception:
             return list(enum_class)[0]
     
     def get_supported_extensions(self) -> List[str]:
@@ -295,7 +295,7 @@ class ASN1Parser(BaseGNNParser):
                     return enum_val
             # Fallback to first enum value
             return list(enum_class)[0]
-        except:
+        except Exception:
             return list(enum_class)[0]
     
     def get_supported_extensions(self) -> List[str]:
@@ -484,7 +484,7 @@ class PKLParser(BaseGNNParser):
                     return enum_val
             # Fallback to first enum value
             return list(enum_class)[0]
-        except:
+        except Exception:
             return list(enum_class)[0]
     
     def get_supported_extensions(self) -> List[str]:
@@ -620,7 +620,7 @@ class PKLParser(BaseGNNParser):
                 description="PKL variable definition"
             )
             return variable
-        except:
+        except Exception:
             return None
     
     def _infer_variable_type(self, name: str) -> VariableType:

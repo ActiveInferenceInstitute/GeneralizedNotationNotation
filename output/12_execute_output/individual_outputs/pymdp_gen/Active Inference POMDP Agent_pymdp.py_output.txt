@@ -1,66 +1,66 @@
 Execution Results for Active Inference POMDP Agent_pymdp.py
-Timestamp: 2026-02-13T11:19:30.125948
+Timestamp: 2026-02-15T15:32:35.846833
 Return Code: 0
-Execution Time: 1.53 seconds
+Execution Time: 1.42 seconds
 
 STDOUT:
 ✅ PyMDP (inferactively-pymdp) is available
 
 
 STDERR:
-2026-02-13 11:19:31,417 - INFO - A matrix shape: (3, 3)
-2026-02-13 11:19:31,417 - INFO - B matrix shape: (3, 3, 3)
-2026-02-13 11:19:31,417 - INFO - C vector shape: (3,)
-2026-02-13 11:19:31,417 - INFO - D vector shape: (3,)
-2026-02-13 11:19:31,417 - INFO - E vector shape: (3,)
-2026-02-13 11:19:31,417 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent
-2026-02-13 11:19:31,417 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent
-2026-02-13 11:19:31,417 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True
-2026-02-13 11:19:31,417 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)
-2026-02-13 11:19:31,417 - INFO - Using PyMDP (inferactively-pymdp) API
-2026-02-13 11:19:31,417 - INFO - Starting simple PyMDP simulation
-2026-02-13 11:19:31,417 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)
-2026-02-13 11:19:31,417 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)
-2026-02-13 11:19:31,417 - INFO - Wrapped arrays in obj_array format (except E)
-2026-02-13 11:19:31,418 - INFO - Successfully created PyMDP agent
-2026-02-13 11:19:31,418 - INFO - Simulation timesteps: 30 (from GNN spec)
-2026-02-13 11:19:31,418 - INFO - Step 0: true_s=2, obs=1, belief=[0.05 0.9  0.05], action=0.0
-2026-02-13 11:19:31,418 - INFO - Step 1: true_s=2, obs=2, belief=[0.03 0.49 0.49], action=0.0
-2026-02-13 11:19:31,419 - INFO - Step 2: true_s=2, obs=2, belief=[0.   0.05 0.94], action=0.0
-2026-02-13 11:19:31,419 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,419 - INFO - Step 4: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,420 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,420 - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,420 - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,420 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,420 - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,421 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,421 - INFO - Step 11: true_s=2, obs=1, belief=[0. 0. 1.], action=1.0
-2026-02-13 11:19:31,421 - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,421 - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,422 - INFO - Step 14: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,422 - INFO - Step 15: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,422 - INFO - Step 16: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,422 - INFO - Step 17: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,422 - INFO - Step 18: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,423 - INFO - Step 19: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,423 - INFO - Step 20: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,423 - INFO - Step 21: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,423 - INFO - Step 22: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,423 - INFO - Step 23: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,424 - INFO - Step 24: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,424 - INFO - Step 25: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,424 - INFO - Step 26: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,424 - INFO - Step 27: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,425 - INFO - Step 28: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,425 - INFO - Step 29: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0
-2026-02-13 11:19:31,425 - INFO - Saving raw simulation data for analysis step...
-2026-02-13 11:19:31,425 - INFO - 💾 Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json
-2026-02-13 11:19:31,425 - INFO - 📊 Validation: beliefs_valid=True, sum_to_one=True
-2026-02-13 11:19:31,425 - INFO - 📈 Trace data saved: 30 timesteps, ready for analysis step visualization
-2026-02-13 11:19:31,425 - INFO - PyMDP simulation completed successfully
-2026-02-13 11:19:31,425 - INFO - ✓ Simulation completed successfully!
-2026-02-13 11:19:31,425 - INFO - Results summary:
-2026-02-13 11:19:31,425 - INFO -   Correlation ID: render_generated_script
-2026-02-13 11:19:31,425 - INFO -   Success: True
-2026-02-13 11:19:31,425 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent
+2026-02-15 15:32:37,072 - INFO - A matrix shape: (3, 3)
+2026-02-15 15:32:37,072 - INFO - B matrix shape: (3, 3, 3)
+2026-02-15 15:32:37,072 - INFO - C vector shape: (3,)
+2026-02-15 15:32:37,072 - INFO - D vector shape: (3,)
+2026-02-15 15:32:37,072 - INFO - E vector shape: (3,)
+2026-02-15 15:32:37,072 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent
+2026-02-15 15:32:37,072 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent
+2026-02-15 15:32:37,072 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True
+2026-02-15 15:32:37,072 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)
+2026-02-15 15:32:37,073 - INFO - Using PyMDP (inferactively-pymdp) API
+2026-02-15 15:32:37,073 - INFO - Starting simple PyMDP simulation
+2026-02-15 15:32:37,073 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)
+2026-02-15 15:32:37,073 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)
+2026-02-15 15:32:37,073 - INFO - Wrapped arrays in obj_array format (except E)
+2026-02-15 15:32:37,073 - INFO - Successfully created PyMDP agent
+2026-02-15 15:32:37,073 - INFO - Simulation timesteps: 30 (from GNN spec)
+2026-02-15 15:32:37,074 - INFO - Step 0: true_s=0, obs=0, belief=[0.9  0.05 0.05], action=2.0
+2026-02-15 15:32:37,074 - INFO - Step 1: true_s=2, obs=2, belief=[0.   0.   0.99], action=0.0
+2026-02-15 15:32:37,074 - INFO - Step 2: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,075 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,075 - INFO - Step 4: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,075 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,075 - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,076 - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,076 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,076 - INFO - Step 9: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,076 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,077 - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,077 - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,077 - INFO - Step 13: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,077 - INFO - Step 14: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,077 - INFO - Step 15: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,078 - INFO - Step 16: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,078 - INFO - Step 17: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,078 - INFO - Step 18: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,078 - INFO - Step 19: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,079 - INFO - Step 20: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,079 - INFO - Step 21: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,079 - INFO - Step 22: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,079 - INFO - Step 23: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,079 - INFO - Step 24: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Step 25: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Step 26: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Step 27: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Step 28: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Step 29: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0
+2026-02-15 15:32:37,080 - INFO - Saving raw simulation data for analysis step...
+2026-02-15 15:32:37,081 - INFO - 💾 Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json
+2026-02-15 15:32:37,081 - INFO - 📊 Validation: beliefs_valid=True, sum_to_one=True
+2026-02-15 15:32:37,081 - INFO - 📈 Trace data saved: 30 timesteps, ready for analysis step visualization
+2026-02-15 15:32:37,081 - INFO - PyMDP simulation completed successfully
+2026-02-15 15:32:37,081 - INFO - ✓ Simulation completed successfully!
+2026-02-15 15:32:37,081 - INFO - Results summary:
+2026-02-15 15:32:37,081 - INFO -   Correlation ID: render_generated_script
+2026-02-15 15:32:37,081 - INFO -   Success: True
+2026-02-15 15:32:37,081 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent

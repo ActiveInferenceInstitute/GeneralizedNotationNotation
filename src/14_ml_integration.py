@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from ml_integration import process_ml_integration
 except ImportError:
-    def process_ml_integration(target_dir, output_dir, **kwargs):
+    def process_ml_integration(target_dir, output_dir, logger=None, **kwargs):
         """Fallback ml_integration processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("ML integration module not available - using fallback")
         return True
 

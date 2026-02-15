@@ -265,7 +265,7 @@ class IsabelleParser(BaseGNNParser):
                 return float(body_clean) if '.' in body_clean else int(body_clean)
             else:
                 return body_clean
-        except:
+        except Exception:
             return body_clean
     
     def _extract_connections(self, content: str) -> List[Connection]:

@@ -614,7 +614,68 @@ class EnhancedDisCoPyRenderer:
         return diagram
 ```
 
-## Performance Benchmarking
+## Render → Execute → Analyze Pipeline per Framework
+
+The GNN pipeline processes each framework through three stages. This section documents framework-specific behavior at each stage.
+
+### Pipeline Overview per Framework
+
+| Framework | Render Target | Script Type | Executor | Data Extractor | Analysis Metrics |
+|-----------|---------------|-------------|----------|----------------|------------------|
+| **PyMDP** | `render/pymdp/` | `.py` | Python `subprocess` | `extract_pymdp_data()` | Beliefs, actions, free energy, observations |
+| **RxInfer.jl** | `render/rxinfer/` | `.jl` | Julia `subprocess` | `extract_rxinfer_data()` | Posterior distributions |
+| **ActiveInference.jl** | `render/activeinference_jl/` | `.jl` | Julia `subprocess` | `extract_activeinference_jl_data()` | Full Active Inference fields from CSV |
+| **JAX** | `render/jax/` | `.py` | Python `subprocess` | `extract_jax_data()` | GPU-accelerated simulation output |
+| **DisCoPy** | `render/discopy/` | `.py` | Python `subprocess` | `extract_discopy_data()` | Diagram executions, categorical outputs |
+
+### PyMDP Pipeline Details
+
+**Render:** `POMDPRenderProcessor` generates complete PyMDP Python scripts with A, B, C, D matrices, `Agent` instantiation, simulation loop, and result serialization.
+
+**Execute:** Python subprocess with `PYTHONPATH` extended for PyMDP imports. Dependency check: `import pymdp`.
+
+**Analyze:** `extract_pymdp_data()` reads beliefs, actions, free energy, and observations from JSON output. Supports reading from collected files in `output/pymdp_simulations/`.
+
+### ActiveInference.jl Pipeline Details
+
+**Render:** Generates Julia scripts using `ActiveInference.jl` with POMDP agent setup, environment initialization, and simulation loop. Creates companion `config.toml` files.
+
+**Execute:** Julia subprocess with package availability check for `ActiveInference`, `GraphPPL` packages. Reads output from `simulation_results.csv`.
+
+**Analyze:** `extract_activeinference_jl_data()` performs CSV parsing to extract beliefs, actions, free energy, observations, states, and policies. Supports numerical parsing with robust error handling.
+
+### RxInfer.jl Pipeline Details
+
+**Render:** Generates probabilistic programming model definitions using `@model` macro, inference configuration, and observation generation. Supports TOML-based configuration.
+
+**Execute:** Julia subprocess with package availability check for `RxInfer` package.
+
+**Analyze:** `extract_rxinfer_data()` reads posterior distributions from JSON/CSV output files in `rxinfer_outputs_*/`.
+
+### JAX Pipeline Details
+
+**Render:** Generates JAX-based Python scripts with JIT compilation, GPU acceleration, and automatic differentiation. Supports POMDP simulation with vectorized operations.
+
+**Execute:** Python subprocess, same as PyMDP but without PyMDP-specific dependency check.
+
+**Analyze:** `extract_jax_data()` reads simulation output from `jax_outputs_*/` directories.
+
+### DisCoPy Pipeline Details
+
+**Render:** Generates categorical string diagrams using DisCoPy's rigid category framework. Creates morphisms for state-observation connections and composes them via sequential (`>>`) or tensor (`@`) products.
+
+**Execute:** Python subprocess. Diagram evaluation produces categorical composition results.
+
+**Analyze:** `extract_discopy_data()` counts diagram executions and extracts categorical outputs from `discopy_diagrams/`. Treats individual diagram evaluations as simulation "steps".
+
+### Cross-Framework Analysis
+
+After individual framework execution, Step 16 performs comparative analysis:
+
+1. **`analyze_framework_outputs()`** — Loads and normalizes results from all frameworks
+2. **`generate_framework_comparison_report()`** — Generates comparison metrics (execution time, convergence, accuracy)
+3. **`visualize_cross_framework_metrics()`** — Side-by-side metric visualizations
+4. **`generate_unified_framework_dashboard()`** — Multi-panel dashboard comparing beliefs, actions, free energy, and observations across all frameworks
 
 ### **Cross-Framework Performance Comparison**
 

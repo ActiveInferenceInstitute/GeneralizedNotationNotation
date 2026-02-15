@@ -60,10 +60,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from gui import process_gui
 except ImportError:
-    def process_gui(target_dir, output_dir, **kwargs):
+    def process_gui(target_dir, output_dir, logger=None, **kwargs):
         """Fallback GUI processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("GUI module not available - using fallback")
         logger.info("Install GUI support with: uv pip install -e .[gui]")
         return True

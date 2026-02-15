@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from execute import process_execute
 except ImportError as e:
-    def process_execute(target_dir, output_dir, **kwargs):
+    def process_execute(target_dir, output_dir, logger=None, **kwargs):
         """Fallback execute processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning(f"Execute module not available - using fallback: {e}")
         logger.info("Install execute support with: uv pip install -e .[execute]")
         

@@ -732,7 +732,7 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
                         new_vector = np.ones(shape) / shape[0]
                 
                 return new_vector
-        except:
+        except Exception:
             pass
     
     # If we can't improve it, return the default

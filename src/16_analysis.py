@@ -41,10 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from analysis import process_analysis
 except ImportError as e:
-    def process_analysis(target_dir, output_dir, **kwargs):
+    def process_analysis(target_dir, output_dir, logger=None, **kwargs):
         """Fallback analysis processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning(f"Analysis module not available - using fallback: {e}")
         logger.info("Install analysis support with: uv pip install -e .[analysis]")
         return True

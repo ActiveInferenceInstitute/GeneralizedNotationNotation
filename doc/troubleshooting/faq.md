@@ -336,7 +336,7 @@ FROM python:3.11-slim
 WORKDIR /app
 COPY . /app
 
-RUN cd src && pip install -r requirements.txt
+RUN cd src && uv pip install -r requirements.txt
 CMD ["python", "src/main.py", "--help"]
 ```
 
@@ -395,7 +395,7 @@ Pkg.add("JSON")  # For GNN model import
 **Python-Julia bridge:**
 
 ```bash
-pip install julia
+uv pip install julia
 python -c "import julia; julia.install()"
 ```
 
@@ -515,7 +515,7 @@ goal_weight_12[4,2,type=float] # How strategic goals influence tactical
 
 ```python
 # Install Jupyter extensions
-pip install jupyter ipywidgets
+uv pip install jupyter ipywidgets
 
 # GNN notebook setup
 import sys
@@ -583,7 +583,7 @@ jobs:
     - name: Install dependencies
       run: |
         cd src
-        pip install -r requirements.txt
+        uv pip install -r requirements.txt
     
     - name: Validate GNN models
       run: |

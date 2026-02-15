@@ -137,7 +137,7 @@ def _parse_transition_line(line: str) -> Optional[dict]:
     if attrs_str:
         for key_attr, value_attr in re.findall(r'(\w+)\s*=\s*(".*?"|\'.*?\'|\S+)', attrs_str):
             try: attributes[key_attr] = ast.literal_eval(value_attr)
-            except: attributes[key_attr] = value_attr
+            except Exception: attributes[key_attr] = value_attr
     return {"sources": sources, "operator": operator, "targets": targets, "attributes": attributes}
 
 def _parse_list_items_section(content: str, parser: Callable) -> list:

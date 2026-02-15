@@ -1,7 +1,7 @@
 Execution Results for Active Inference POMDP Agent_rxinfer.jl
-Timestamp: 2026-02-13T11:19:31.657874
+Timestamp: 2026-02-15T15:32:37.264508
 Return Code: 0
-Execution Time: 25.33 seconds
+Execution Time: 23.75 seconds
 
 STDOUT:
 📦 Ensuring required packages are installed...

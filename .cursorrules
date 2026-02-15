@@ -135,8 +135,8 @@ src/
 - Defining `process_ontology_file()` directly in `10_ontology.py`
 - Any long method definitions (>20 lines) in numbered scripts
 
-## 24-Step Pipeline Structure (CURRENT)
-The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
+## 25-Step Pipeline Structure (CURRENT)
+The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 0. **0_template.py** → `src/template/` - Pipeline template and initialization
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
 2. **2_tests.py** → `src/tests/` - Comprehensive test suite execution
@@ -161,6 +161,7 @@ The pipeline consists of exactly 24 steps (steps 0-23), executed in order:
 21. **21_mcp.py** → `src/mcp/` - Model Context Protocol processing and tool registration
 22. **22_gui.py** → `src/gui/` - Interactive GUI for constructing/editing GNN models
 23. **23_report.py** → `src/report/` - Comprehensive analysis report generation
+24. **24_intelligent_analysis.py** → `src/intelligent_analysis/` - AI-powered pipeline analysis and executive reports
 
 ## Detailed Guidelines
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:

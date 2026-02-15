@@ -10,9 +10,9 @@ This document provides a comprehensive technical overview of FastMCP's specifica
 
 The Model Context Protocol (MCP) is a standard that allows you to build servers exposing data and functionality to LLM applications in a secure, standardized manner. It's often described as "the USB-C port for AI," providing a uniform way to connect LLMs to resources they can use. Think of it as an API specifically designed for LLM interactions. MCP servers can [2]:
 
-*   **Expose data** through `Resources` (akin to GET endpoints, used to load information into an LLM's context).
-*   **Provide functionality** through `Tools` (akin to POST endpoints, used to execute code or produce side effects).
-*   **Define interaction patterns** through `Prompts` (reusable templates for LLM interactions).
+* **Expose data** through `Resources` (akin to GET endpoints, used to load information into an LLM's context).
+* **Provide functionality** through `Tools` (akin to POST endpoints, used to execute code or produce side effects).
+* **Define interaction patterns** through `Prompts` (reusable templates for LLM interactions).
 
 While a low-level Python SDK exists for direct protocol implementation, FastMCP offers a high-level, Pythonic interface to simplify this process [2].
 
@@ -22,10 +22,10 @@ While a low-level Python SDK exists for direct protocol implementation, FastMCP 
 
 FastMCP handles the complex protocol details and server management, allowing developers to focus on building valuable tools and resources. It aims to be [2]:
 
-*   🚀 **Fast**: A high-level interface means less code and faster development cycles.
-*   🍀 **Simple**: Build MCP servers with minimal boilerplate code; often, decorating a function is sufficient.
-*   🐍 **Pythonic**: Designed to feel natural and intuitive for Python developers.
-*   🔍 **Complete**: Aims to provide a full implementation of the core MCP specification.
+* 🚀 **Fast**: A high-level interface means less code and faster development cycles.
+* 🍀 **Simple**: Build MCP servers with minimal boilerplate code; often, decorating a function is sufficient.
+* 🐍 **Pythonic**: Designed to feel natural and intuitive for Python developers.
+* 🔍 **Complete**: Aims to provide a full implementation of the core MCP specification.
 
 FastMCP 2.0 is the recommended path for building modern, powerful MCP applications [2].
 
@@ -36,9 +36,10 @@ FastMCP 2.0 is the recommended path for building modern, powerful MCP applicatio
 **MCP Protocol Implementation**: FastMCP robustly implements the Model Context Protocol, facilitating secure and structured LLM tooling interactions. It effectively creates specialized web APIs tailored for AI agents [1, 2].
 
 **Server Types**:
-*   **Direct Servers**: Host tools and resources directly using the `FastMCP` class.
-*   **Proxy Servers**: Act as intermediaries for other MCP servers (local or remote) using `FastMCP.from_client()`. This is useful for bridging transports or adding logic to existing servers [1].
-*   **Composite Servers**: Build modular applications by mounting multiple `FastMCP` instances onto a parent server using `mcp.mount()` (live link) or `mcp.import_server()` (static copy) [1].
+
+* **Direct Servers**: Host tools and resources directly using the `FastMCP` class.
+* **Proxy Servers**: Act as intermediaries for other MCP servers (local or remote) using `FastMCP.from_client()`. This is useful for bridging transports or adding logic to existing servers [1].
+* **Composite Servers**: Build modular applications by mounting multiple `FastMCP` instances onto a parent server using `mcp.mount()` (live link) or `mcp.import_server()` (static copy) [1].
 
 ---
 
@@ -47,10 +48,10 @@ FastMCP 2.0 is the recommended path for building modern, powerful MCP applicatio
 ### 1. Tools
 
 Tools are functions exposed by the MCP server that an LLM can call to perform actions.
-- Decorate Python functions with `@mcp.tool()` to expose them as MCP tools.
-- Supports both synchronous and asynchronous functions.
-- Automatic schema generation from type hints and docstrings.
-- Context injection is available via the `ctx: Context` parameter [1, 2].
+* Decorate Python functions with `@mcp.tool()` to expose them as MCP tools.
+* Supports both synchronous and asynchronous functions.
+* Automatic schema generation from type hints and docstrings.
+* Context injection is available via the `ctx: Context` parameter [1, 2].
 
 ```python
 from fastmcp import FastMCP
@@ -72,8 +73,8 @@ async def calculate_entropy(data: list[float]) -> float:
 ### 2. Resources
 
 Resources are data endpoints that an LLM can query to retrieve information.
-- Define resources using the `@mcp.resource("schema://uri")` decorator.
-- Supports static and templated URIs for dynamic resource access [1, 2].
+* Define resources using the `@mcp.resource("schema://uri")` decorator.
+* Supports static and templated URIs for dynamic resource access [1, 2].
 
 ```python
 from fastmcp import FastMCP # Assuming mcp is an instance of FastMCP
@@ -91,8 +92,8 @@ def get_user_profile(id: str) -> dict:
 ### 3. Prompts
 
 Prompts are reusable message templates that can guide LLM interactions.
-- Create prompts using the `@mcp.prompt()` decorator.
-- Prompts can be dynamically generated using function parameters [1, 2].
+* Create prompts using the `@mcp.prompt()` decorator.
+* Prompts can be dynamically generated using function parameters [1, 2].
 
 ```python
 from fastmcp import FastMCP # Assuming mcp is an instance of FastMCP
@@ -109,10 +110,10 @@ def generate_analysis_prompt(data: pd.DataFrame, focus_metric: str) -> str:
 ### 4. Context System (`ctx`)
 
 When a tool is called, FastMCP can inject a `Context` object (`ctx`) as a parameter. This object provides powerful capabilities for interacting with the client and server environment [1]:
-- **Logging**: Send messages back to the client LLM (e.g., `await ctx.info("Processing started...")`).
-- **LLM Sampling**: Request the client LLM to generate text (e.g., `summary = await ctx.sample("Summarize this text: ...")`).
-- **Resource Access**: Read other resources exposed by the server (e.g., `data = await ctx.read_resource("users://all")`).
-- **HTTP Requests**: Make external HTTP requests (e.g., `response = await ctx.http_request("GET", "https://api.example.com/data")`).
+* **Logging**: Send messages back to the client LLM (e.g., `await ctx.info("Processing started...")`).
+* **LLM Sampling**: Request the client LLM to generate text (e.g., `summary = await ctx.sample("Summarize this text: ...")`).
+* **Resource Access**: Read other resources exposed by the server (e.g., `data = await ctx.read_resource("users://all")`).
+* **HTTP Requests**: Make external HTTP requests (e.g., `response = await ctx.http_request("GET", "https://api.example.com/data")`).
 
 ```python
 from fastmcp import FastMCP, Context
@@ -154,6 +155,7 @@ The primary way to run a FastMCP server is by calling the `run()` method on your
 
 **1. STDIO (Default)**:
 Best for local tools and command-line scripts.
+
 ```python
 # server.py
 from fastmcp import FastMCP
@@ -174,6 +176,7 @@ if __name__ == "__main__":
 
 **2. Streamable HTTP**:
 Recommended for web deployments. This typically involves an ASGI server like Uvicorn.
+
 ```python
 # server_http.py
 from fastmcp import FastMCP
@@ -198,11 +201,13 @@ app = mcp_http.build_asgi_app()
 #        print(f"Direct run failed (likely due to asyncio loop): {e}")
 #        print("Please use Uvicorn for HTTP.")
 ```
+
 To serve via HTTP, you would typically define `app = mcp.build_asgi_app()` in your Python file (e.g., `server_http.py`) and run it with an ASGI server:
 `uvicorn server_http:app --host 127.0.0.1 --port 8000`
 
 **3. Server-Sent Events (SSE)**:
 For compatibility with existing SSE clients.
+
 ```python
 # server_sse.py
 from fastmcp import FastMCP
@@ -220,6 +225,7 @@ if __name__ == "__main__":
 
 **Command-Line Interface (CLI)**:
 FastMCP also provides a CLI for running servers (ensure your server file defines an `mcp` instance):
+
 ```bash
 # Local execution using STDIO (assuming server.py has 'mcp = FastMCP(...)')
 fastmcp run server.py --transport stdio
@@ -235,6 +241,7 @@ fastmcp run server.py --transport streamable-http --host 0.0.0.0 --port 8080 --p
 FastMCP includes a versatile `Client` for interacting with any MCP server programmatically. It supports various transports (Stdio, SSE, In-Memory) and often auto-detects the correct one [1].
 
 ### Basic Usage
+
 ```python
 from fastmcp import Client, FastMCP
 import asyncio
@@ -282,6 +289,7 @@ if __name__ == "__main__":
 ```
 
 ### In-Memory Testing
+
 The client allows for efficient in-memory testing of your servers by connecting directly to a `FastMCP` server instance via the `FastMCPTransport`. This eliminates the need for process management or network calls during tests [1].
 
 ```python
@@ -334,14 +342,16 @@ FastMCP introduces powerful ways to structure and deploy your MCP applications [
 | **Lifespan Management**        | `lifespan` argument in `FastMCP` constructor      | Manage resources like DB connections         |
 | **Tagging & Metadata**         | `tags`, `instructions` in `FastMCP` constructor   | Richer server/tool description for LLMs    |
 
-
 ### Proxy Servers
+
 Create a FastMCP server that acts as an intermediary for another local or remote MCP server using `FastMCP.from_client()`. This is useful for bridging transports (e.g., remote SSE to local Stdio) or adding a layer of logic to a server you don't control [1].
 
 ### Composing MCP Servers
+
 Build modular applications by mounting multiple `FastMCP` instances onto a parent server using `mcp.mount()` (for live, prefix-based mounting) or `mcp.import_server()` (for a static copy of tools/resources) [1].
 
 ### OpenAPI & FastAPI Generation
+
 Automatically generate FastMCP servers from existing OpenAPI specifications (`FastMCP.from_openapi()`) or FastAPI applications (`FastMCP.from_fastapi()`), instantly bringing your web APIs to the MCP ecosystem [1].
 
 ---
@@ -349,72 +359,85 @@ Automatically generate FastMCP servers from existing OpenAPI specifications (`Fa
 ## Development Ecosystem
 
 ### Installation
+
 ```bash
 # Recommended (using uv)
 uv pip install fastmcp
 
 # Alternative (using pip)
-pip install fastmcp
+uv pip install fastmcp
 ```
+
 Ensure you have Python 3.10+ [1].
 
 ### Contributing
+
 Contributions are highly welcome! FastMCP uses `pre-commit` for code formatting, linting, and type-checking. The project has a comprehensive unit test suite [1].
 
 **Prerequisites**:
-*   Python 3.10+
-*   `uv` (Recommended for environment management)
+
+* Python 3.10+
+* `uv` (Recommended for environment management)
 
 **Setup**:
-1.  Clone the repository: `git clone https://github.com/jlowin/fastmcp.git && cd fastmcp`
-2.  Create and sync the environment: `uv sync` (installs dependencies, including dev tools)
-3.  Activate the virtual environment (e.g., `source .venv/bin/activate`).
+
+1. Clone the repository: `git clone https://github.com/jlowin/fastmcp.git && cd fastmcp`
+2. Create and sync the environment: `uv sync` (installs dependencies, including dev tools)
+3. Activate the virtual environment (e.g., `source .venv/bin/activate`).
 
 **Unit Tests**:
 Run tests using `pytest`:
+
 ```bash
 pytest
 # For coverage report:
 uv run pytest --cov=src --cov=examples --cov-report=html
 ```
+
 All Pull Requests must introduce or update tests as appropriate and pass the full suite.
 
 **Static Checks**:
 Install pre-commit hooks locally:
+
 ```bash
 uv run pre-commit install
 ```
+
 Hooks will run automatically on `git commit`. Run them manually:
+
 ```bash
 pre-commit run --all-files
 # or via uv
 uv run pre-commit run --all-files
 ```
+
 All PRs must pass these checks.
 
 **Pull Requests**:
-1.  Fork the repository on GitHub.
-2.  Create a feature branch from `main`.
-3.  Make changes, including tests and documentation updates.
-4.  Ensure tests and pre-commit hooks pass.
-5.  Commit and push to your fork.
-6.  Open a PR against the `main` branch of `jlowin/fastmcp`.
+
+1. Fork the repository on GitHub.
+2. Create a feature branch from `main`.
+3. Make changes, including tests and documentation updates.
+4. Ensure tests and pre-commit hooks pass.
+5. Commit and push to your fork.
+6. Open a PR against the `main` branch of `jlowin/fastmcp`.
 
 ---
 
 ## Performance Characteristics
 
--   **Protocol Overhead**: FastMCP aims for minimal overhead, benchmarked favorably against raw MCP implementations [1]. (Specific figures would need current validation if critical).
--   **Concurrency**: Built with an async-first architecture, supporting concurrent requests efficiently.
--   **Payload Handling**: Provides automatic conversion between common data formats like JSON.
+* **Protocol Overhead**: FastMCP aims for minimal overhead, benchmarked favorably against raw MCP implementations [1]. (Specific figures would need current validation if critical).
+* **Concurrency**: Built with an async-first architecture, supporting concurrent requests efficiently.
+* **Payload Handling**: Provides automatic conversion between common data formats like JSON.
 
 ---
 
 ## LLM-Friendly Documentation
 
 The official FastMCP documentation is also available in `llms.txt` format, a simple markdown standard designed for easy consumption by LLMs [2].
-*   `llms.txt`: A sitemap listing all pages in the documentation.
-*   `llms-full.txt`: Contains the entire documentation (note: may exceed some LLM context windows).
+
+* `llms.txt`: A sitemap listing all pages in the documentation.
+* `llms-full.txt`: Contains the entire documentation (note: may exceed some LLM context windows).
 
 ---
 
@@ -422,6 +445,6 @@ This specification demonstrates FastMCP's position as a comprehensive framework 
 
 ## Citations
 
-[1] FastMCP GitHub Repository. URL: https://github.com/jlowin/fastmcp
-[2] Welcome to FastMCP 2.0! - FastMCP Documentation. URL: https://gofastmcp.com/getting-started/welcome
-[3] FastMCP Quickstart - FastMCP Documentation. URL: https://gofastmcp.com/getting-started/quickstart (Note: Content may overlap significantly with [2])
+[1] FastMCP GitHub Repository. URL: <https://github.com/jlowin/fastmcp>
+[2] Welcome to FastMCP 2.0! - FastMCP Documentation. URL: <https://gofastmcp.com/getting-started/welcome>
+[3] FastMCP Quickstart - FastMCP Documentation. URL: <https://gofastmcp.com/getting-started/quickstart> (Note: Content may overlap significantly with [2])

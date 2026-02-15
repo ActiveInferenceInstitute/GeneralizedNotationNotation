@@ -20,6 +20,7 @@ This document outlines comprehensive security considerations, threat models, and
 ### **🚨 Threat Model**
 
 #### **Primary Threat Vectors**
+
 1. **Malicious Model Injection**: Crafted GNN files with harmful payloads
 2. **Privilege Escalation**: Unauthorized access to system resources
 3. **Data Exfiltration**: Unauthorized access to sensitive model data
@@ -586,7 +587,7 @@ RUN apt-get update && apt-get upgrade -y && \
 # Set up application directory
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --no-cache-dir -r requirements.txt
 
 # Copy application code
 COPY --chown=gnn:gnn . .
@@ -860,4 +861,4 @@ incident_response:
 ---
 
 **Status**: Production-Ready Security Framework  
-**Next Steps**: [Security Assessment](security_assessment.md) | [Compliance Guide](compliance_guide.md) 
+**Next Steps**: [Security Assessment](security_assessment.md) | [Compliance Guide](compliance_guide.md)

@@ -1,14 +1,7 @@
 [
   {
-    "name": "get_analysis_capabilities",
-    "description": "Get available intelligent analysis capabilities, tools, and features.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "process_intelligent_analysis",
-    "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
+    "name": "check_ml_frameworks",
+    "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
     "module": "",
     "category": "",
     "version": "1.0.0"
@@ -23,20 +16,6 @@
   {
     "name": "process_research",
     "description": "Process research tasks for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "process_visualization",
-    "description": "Process visualization for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.visualization.call_function",
-    "description": "Call any public function in the src.visualization module with keyword arguments.",
     "module": "",
     "category": "",
     "version": "1.0.0"

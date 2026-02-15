@@ -1020,7 +1020,7 @@ def _generate_statistical_plots(
                         try:
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
-                        except:
+                        except Exception:
                             pass
             
             if matrix_sizes:
@@ -1804,7 +1804,7 @@ def _generate_network_metrics(
                 try:
                     degree_centrality = nx.degree_centrality(G)
                     metrics["max_degree_centrality"] = max(degree_centrality.values()) if degree_centrality else 0
-                except:
+                except Exception:
                     pass
             
             # Visualize network with metrics

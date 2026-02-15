@@ -1166,7 +1166,7 @@ class GNNRoundTripTester:
                     try:
                         binary_data = base64.b64decode(converted_content)
                         temp_file.write_bytes(binary_data)
-                    except:
+                    except Exception:
                         # Fallback to text if decode fails
                         temp_file.write_text(converted_content, encoding='utf-8')
                 else:

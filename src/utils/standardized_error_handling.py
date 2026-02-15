@@ -81,7 +81,7 @@ class StandardizedErrorHandler:
         """
         context = {
             "dependency": dependency_name,
-            "install_hint": install_hint or f"pip install {dependency_name}"
+            "install_hint": install_hint or f"uv pip install {dependency_name}"
         }
         
         pipeline_error = self.pipeline_error_handler.create_error(
@@ -100,7 +100,7 @@ class StandardizedErrorHandler:
         else:
             log_step_warning(
                 self.logger,
-                f"{dependency_name} not available - install with: pip install {dependency_name}"
+                f"{dependency_name} not available - install with: uv pip install {dependency_name}"
             )
         
         # Dependency errors are usually recoverable with graceful degradation

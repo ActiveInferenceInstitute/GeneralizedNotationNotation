@@ -122,7 +122,7 @@ class PickleGNNParser(BaseGNNParser):
                 model.created_at = datetime.fromisoformat(data['created_at'])
             if 'modified_at' in data:
                 model.modified_at = datetime.fromisoformat(data['modified_at'])
-        except:
+        except Exception:
             pass
         
         # Reconstruct variables
@@ -212,7 +212,7 @@ class PickleGNNParser(BaseGNNParser):
                             description=f"Object attribute: {type(attr_value).__name__}"
                         )
                         result.model.parameters.append(parameter)
-                except:
+                except Exception:
                     pass
     
     def _parse_variables_list(self, variables: List[Any], result: ParseResult):

@@ -35,10 +35,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from ontology import process_ontology
 except ImportError:
-    def process_ontology(target_dir, output_dir, **kwargs):
+    def process_ontology(target_dir, output_dir, logger=None, **kwargs):
         """Fallback ontology processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning("Ontology module not available - using fallback")
         return True
 

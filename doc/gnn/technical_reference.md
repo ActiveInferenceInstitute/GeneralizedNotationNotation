@@ -361,4 +361,61 @@ model = actinf_pomdp_agent()
 - **Connection Analysis:** O(m) for m connections
 - **Complexity Estimation:** O(n×m) combined analysis
 
+## Stage 6: Post-Simulation Analysis (Step 16)
+
+### Entry Point and Module Delegation
+
+**Orchestrator:** `src/16_analysis.py` → `src/analysis/processor.py:process_analysis()`
+
+The analysis step consumes outputs from both the GNN source files and the execution results directory (`output/12_execute_output/`).
+
+### Data Flow Dependencies
+
+```mermaid
+flowchart LR
+    GNN_FILES["GNN Files<br>(input/)"] --> S16["Step 16<br>process_analysis()"]
+    S12_OUT["Step 12 Output<br>(12_execute_output/)"] --> S16
+    S16 --> STATS["Statistical Analysis<br>+ Complexity Metrics"]
+    S16 --> POST["Post-Simulation Analysis<br>analyze_execution_results()"]
+    S16 --> FWVIZ["Framework-Specific Viz<br>PyMDP, RxInfer, ActInf, JAX, DisCoPy"]
+    S16 --> CROSS["Cross-Framework<br>analyze_framework_outputs()"]
+```
+
+### Key Analysis Functions
+
+| Function | Module | Signature |
+|----------|--------|-----------|
+| `process_analysis` | `analysis.processor` | `(target_dir, output_dir, verbose, **kwargs) → bool` |
+| `perform_statistical_analysis` | `analysis.analyzer` | `(gnn_file, verbose) → dict` |
+| `calculate_complexity_metrics` | `analysis.analyzer` | `(gnn_file, verbose) → dict` |
+| `run_performance_benchmarks` | `analysis.analyzer` | `(gnn_file, verbose) → dict` |
+| `analyze_execution_results` | `analysis.post_simulation` | `(execution_results_dir, model_name) → dict` |
+| `analyze_active_inference_metrics` | `analysis.post_simulation` | `(beliefs, free_energy, actions, model_name) → dict` |
+| `visualize_all_framework_outputs` | `analysis.post_simulation` | `(execution_dir, output_dir, logger) → list` |
+| `generate_unified_framework_dashboard` | `analysis.post_simulation` | `(framework_data, output_dir, model_name) → list` |
+
+### Output Format
+
+```
+output/16_analysis_output/
+├── analysis_results.json               # Machine-readable results
+├── analysis_summary.md                 # Human-readable summary
+├── {model}_post_simulation_analysis.json
+├── pymdp/                              # PyMDP visualizations
+├── activeinference_jl/                 # ActiveInference.jl visualizations
+├── discopy/                            # DisCoPy visualizations
+├── jax/                                # JAX visualizations
+├── rxinfer/                            # RxInfer visualizations
+└── cross_framework/                    # Cross-framework comparisons
+    └── unified_dashboard/
+```
+
+### Analysis Performance (Step 16)
+
+- **Statistical Analysis:** O(n) for n GNN files
+- **Post-Simulation Loading:** File I/O bound (~10ms per JSON result file)
+- **Active Inference Metrics:** O(T×S) for T timesteps and S states per metric
+- **Cross-Framework Comparison:** O(F×T) for F frameworks and T timesteps
+- **Visualization Generation:** ~200ms per plot (Matplotlib Agg backend)
+
 This technical reference documents actual implementation details rather than speculative capabilities.

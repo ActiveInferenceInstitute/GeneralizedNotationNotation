@@ -2,9 +2,9 @@
   "execution_summary": {
     "success": true,
     "tests_run": 1087,
-    "tests_passed": 1083,
+    "tests_passed": 1085,
     "tests_failed": 0,
-    "tests_skipped": 4,
+    "tests_skipped": 2,
     "execution_time": 0.0,
     "error_message": null
   }

@@ -30,6 +30,7 @@ jupyter notebook tutorials/interactive_notebooks/
 ### **🌟 Beginner Tutorials**
 
 #### **1. GNN Basics - Interactive Walkthrough**
+
 **Duration**: 20 minutes | **Format**: Step-by-step guided experience
 
 ```bash
@@ -44,6 +45,7 @@ python src/tutorials/interactive_system.py --tutorial gnn_basics
 ```
 
 **Learning Path**:
+
 1. **Model Structure**: Build your first GNN file section by section
 2. **Syntax Practice**: Interactive syntax checking with helpful hints
 3. **Variable Definitions**: Drag-and-drop state space creation
@@ -52,6 +54,7 @@ python src/tutorials/interactive_system.py --tutorial gnn_basics
 6. **Pipeline Execution**: One-click pipeline runs with progress tracking
 
 #### **2. Active Inference Fundamentals**
+
 **Duration**: 30 minutes | **Format**: Conceptual + practical
 
 ```bash
@@ -66,6 +69,7 @@ python src/tutorials/interactive_system.py --tutorial active_inference_fundament
 ```
 
 **Interactive Components**:
+
 - **🧠 Belief Dynamics**: Watch beliefs update in real-time as agent receives observations
 - **🎯 Goal Setting**: Adjust preferences and see how agent behavior changes
 - **⚡ Free Energy Landscapes**: 3D visualization of free energy surfaces
@@ -74,6 +78,7 @@ python src/tutorials/interactive_system.py --tutorial active_inference_fundament
 ### **🚀 Intermediate Tutorials**
 
 #### **3. Multi-Modal Agent Construction**
+
 **Duration**: 45 minutes | **Format**: Project-based learning
 
 ```bash
@@ -88,12 +93,14 @@ python src/tutorials/interactive_system.py --tutorial multimodal_agent
 ```
 
 **Interactive Features**:
+
 - **🎨 Model Canvas**: Drag-and-drop model building interface
 - **📊 Real-Time Visualization**: Live updates as you modify the model
 - **🔧 Parameter Playground**: Interactive parameter adjustment tools
 - **🎮 Simulation Environment**: Test your agent in virtual environments
 
 #### **4. Framework Integration Workshop**
+
 **Duration**: 60 minutes | **Format**: Hands-on coding
 
 ```bash
@@ -110,6 +117,7 @@ python src/tutorials/interactive_system.py --tutorial framework_integration
 ### **🎓 Advanced Tutorials**
 
 #### **5. Research Methodology Workshop**
+
 **Duration**: 90 minutes | **Format**: Research simulation
 
 ```bash
@@ -125,6 +133,7 @@ python src/tutorials/interactive_system.py --tutorial research_methodology
 ```
 
 #### **6. Custom Framework Development**
+
 **Duration**: 120 minutes | **Format**: Advanced programming
 
 ```bash
@@ -155,6 +164,7 @@ python src/tutorials/tools/visual_builder.py
 ```
 
 **Interface Components**:
+
 - **📦 Component Palette**: Pre-built model components (states, observations, actions)
 - **🖱️ Canvas Area**: Visual model construction space
 - **⚙️ Property Panel**: Parameter adjustment interface
@@ -175,6 +185,7 @@ python src/tutorials/tools/experiment_sandbox.py
 ```
 
 **Experiment Types**:
+
 1. **Parameter Sensitivity Analysis**: See how changes affect behavior
 2. **Model Comparison Studies**: Side-by-side model evaluation
 3. **Scaling Studies**: Test performance across model sizes
@@ -212,6 +223,7 @@ python src/tutorials/assessment/skill_assessment.py
 ```
 
 **Assessment Results**:
+
 - **📊 Skill Profile**: Strengths and areas for improvement
 - **🎯 Personalized Recommendations**: Suggested learning paths
 - **⏱️ Time Estimates**: Realistic completion times for tutorials
@@ -275,6 +287,7 @@ python src/tutorials/community/challenge_browser.py
 ```
 
 **Example Challenges**:
+
 1. **🎯 "Efficient Navigation"**: Build the most efficient navigation agent
 2. **🧠 "Cognitive Modeling"**: Model a specific psychological phenomenon
 3. **⚡ "Speed Optimization"**: Achieve target performance with minimal resources
@@ -286,7 +299,7 @@ python src/tutorials/community/challenge_browser.py
 
 ```bash
 # Install desktop app
-pip install gnn-tutorials-desktop
+uv pip install gnn-tutorials-desktop
 gnn-tutorials
 
 # Features:
@@ -333,6 +346,7 @@ Complete tutorials and assessments to earn certifications:
 ### **🏅 Skill Badges**
 
 Earn specific skill badges:
+
 - **🎯 Syntax Master**: Perfect GNN syntax proficiency
 - **🧠 Active Inference Expert**: Deep theoretical understanding
 - **⚡ Performance Optimizer**: Optimization and scaling expertise
@@ -405,18 +419,21 @@ python src/tutorials/quick_start_wizard.py
 ### **📚 Tutorial Sequence Recommendations**
 
 **For Complete Beginners**:
+
 1. GNN Basics Interactive Walkthrough (20 min)
 2. Active Inference Fundamentals (30 min)
 3. Your First Agent Project (45 min)
 4. Framework Basics (30 min)
 
 **For Developers**:
+
 1. GNN Syntax Speed Course (10 min)
 2. Framework Integration Workshop (60 min)
 3. Performance Optimization (45 min)
 4. Custom Development Tutorial (120 min)
 
 **For Researchers**:
+
 1. Research Methodology Workshop (90 min)
 2. Advanced Modeling Patterns (60 min)
 3. Publication Preparation Tutorial (45 min)
@@ -431,4 +448,4 @@ python src/tutorials/quick_start_wizard.py
 ---
 
 **Status**: Design Phase - Proposed Interactive Platform  
-**Next Steps**: Launch Tutorials (TBD) | Tutorial Development (TBD) 
+**Next Steps**: Launch Tutorials (TBD) | Tutorial Development (TBD)

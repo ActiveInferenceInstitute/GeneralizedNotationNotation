@@ -38,14 +38,14 @@ sys.path.insert(0, str(Path(__file__).parent))
 from utils.pipeline_template import create_standardized_pipeline_script
 
 # Import module function
-# Import module function
 try:
     from audio import process_audio
 except ImportError as e:
-    def process_audio(target_dir, output_dir, **kwargs):
+    def process_audio(target_dir, output_dir, logger=None, **kwargs):
         """Fallback audio processing when module unavailable."""
         import logging
-        logger = logging.getLogger(__name__)
+        if logger is None:
+            logger = logging.getLogger(__name__)
         logger.warning(f"Audio module not available - using fallback: {e}")
         logger.info("Install audio support with: uv pip install -e .[audio]")
         

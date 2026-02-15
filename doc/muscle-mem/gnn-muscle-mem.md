@@ -85,7 +85,7 @@ Developing these advanced `Check`s requires a deeper understanding of each GNN t
 ### Installation (Original `muscle-mem`)
 
 ```bash
-pip install muscle-mem
+uv pip install muscle-mem
 ```
 
 ### Engine

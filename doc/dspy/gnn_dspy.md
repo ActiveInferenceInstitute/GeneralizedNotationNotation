@@ -73,7 +73,7 @@ DSPy's architecture allows for seamless integration with various LLM providers a
 Installation is straightforward through pip:
 
 ```python
-pip install -U dspy
+uv pip install -U dspy
 ```
 
 DSPy supports multiple LLM providers, including:
@@ -212,6 +212,7 @@ As language models continue to evolve, DSPy's approach provides a more systemati
 The principles and tools offered by DSPy align remarkably well with the goals of Generalized Notation Notation (GNN) and the broader framework of Neurosymbolic Active Inference. GNN provides a standardized, text-based language for specifying the formal structure of generative models in Active Inference, facilitating human readability and machine parsability (`gnn_overview.md`). The integration of DSPy can significantly enhance the LLM-driven aspects of such neurosymbolic systems.
 
 As explored in `gnn_llm_neurosymbolic_active_inference.md`, LLMs play crucial roles in a GNN-backed Active Inference agent, including:
+
 - Natural Language Interfacing (understanding instructions, generating explanations).
 - Knowledge Grounding and Enrichment (semantic interpretation, common-sense reasoning).
 - Parameterization and Initialization suggestions.
@@ -236,14 +237,14 @@ GNN defines the structure of generative models, including state spaces, observat
     # symbolic_observation would be a string parsable by GNN tools
     ```
 
-* **Goal Translation**: Translating a high-level user goal into GNN-compatible preferences (e.g., the `C` matrix/vector or parameters for the Expected Free Energy calculation) can be managed by an LLM component with a clear signature.
+- **Goal Translation**: Translating a high-level user goal into GNN-compatible preferences (e.g., the `C` matrix/vector or parameters for the Expected Free Energy calculation) can be managed by an LLM component with a clear signature.
 
     ```python
     # Signature for translating natural language goal to GNN preference parameters
     "natural_language_goal: str -> gnn_preference_parameters: dict"
     ```
 
-* **Explanation Generation**: An LLM generating natural language explanations from GNN model states or inference traces.
+- **Explanation Generation**: An LLM generating natural language explanations from GNN model states or inference traces.
 
     ```python
     # Signature for LLM explaining GNN model state
@@ -267,10 +268,11 @@ DSPy modules (`dspy.Predict`, `dspy.ChainOfThought`, `dspy.ReAct`, etc.) can imp
     suggest_gnn_params = dspy.ChainOfThought("scenario_description: str -> gnn_parameters_suggestion: dict")
     ```
 
-* **Semantic Evaluation in Action Selection**:
+- **Semantic Evaluation in Action Selection**:
     As described in `gnn_llm_neurosymbolic_active_inference.md` (Section 4.3.D), LLMs can assist in evaluating the pragmatic and epistemic value components of Expected Free Energy (EFE). DSPy modules can structure these LLM-based evaluations.
   - A module could assess if a GNN-predicted state (under a policy) semantically aligns with a complex user goal.
   - Another module could evaluate which GNN-proposed exploratory action is most likely to resolve semantic ambiguity identified by the LLM.
+
 - **Hypothesis Generation for GNN Model Adaptation**:
     When the GNN model shows persistent errors, an LLM (managed by a DSPy module, possibly `dspy.ProgramOfThought` if it involves suggesting GNN syntax modifications) could propose changes to the GNN structure (new states, new connections) based on its broader knowledge.
 
@@ -333,7 +335,8 @@ To further illustrate the synergy, let's consider some more detailed conceptual 
             return prediction
     ```
 
-* **GNN Role**: The GNN syntax rules (`gnn_syntax.md`) and validation tools (e.g., part of `5_type_checker.py` in `gnn_tools.md`) define the target format and correctness criteria for the LLM's output. The GNN specification for the particular model would dictate the valid indices and expected value types for observations.
+- **GNN Role**: The GNN syntax rules (`gnn_syntax.md`) and validation tools (e.g., part of `5_type_checker.py` in `gnn_tools.md`) define the target format and correctness criteria for the LLM's output. The GNN specification for the particular model would dictate the valid indices and expected value types for observations.
+
 - **DSPy Optimization**: The `GNNObservationParser` module could be optimized using a metric that combines successful GNN parsing and downstream task performance of the Active Inference agent.
 
 **2. LLM-Guided Policy Refinement within GNN-EFE Framework**
@@ -364,7 +367,8 @@ To further illustrate the synergy, let's consider some more detailed conceptual 
             )
     ```
 
-* **GNN Role**: The GNN model provides the set of candidate policies, the forward model to predict their outcomes, and the initial EFE calculations. The `gnn_llm_neurosymbolic_active_inference.md` (Section 4.2.C) discusses how GNN defines policies and the EFE components.
+- **GNN Role**: The GNN model provides the set of candidate policies, the forward model to predict their outcomes, and the initial EFE calculations. The `gnn_llm_neurosymbolic_active_inference.md` (Section 4.2.C) discusses how GNN defines policies and the EFE components.
+
 - **DSPy Optimization**: Metrics could involve how well the final chosen policy (after LLM refinement) achieves the high-level goal, or user satisfaction with the agent's decision.
 
 **3. Generating GNN Snippets from Natural Language**
@@ -393,7 +397,8 @@ To further illustrate the synergy, let's consider some more detailed conceptual 
             )
     ```
 
-* **GNN Role**: `gnn_syntax.md` provides the target language. The GNN parser and validator (`gnn_tools.md`) would check the LLM's output. The broader GNN file provides context.
+- **GNN Role**: `gnn_syntax.md` provides the target language. The GNN parser and validator (`gnn_tools.md`) would check the LLM's output. The broader GNN file provides context.
+
 - **DSPy Optimization**: Metrics could include the syntactic validity of the generated GNN snippet and how well it integrates into the larger GNN model.
 
 These examples demonstrate how DSPy can provide a structured, optimizable layer for the complex LLM reasoning tasks required in a sophisticated GNN-based neurosymbolic Active Inference system.

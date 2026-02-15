@@ -256,15 +256,10 @@ class TestDependencyDiscovery:
             assert len(result.stdout) > 0
 
     @pytest.mark.fast
-    def test_requirements_file_exists(self):
-        """Test requirements file exists."""
+    def test_pyproject_toml_exists(self):
+        """Test pyproject.toml dependency file exists (uv-managed)."""
         from pathlib import Path
         
-        # Check common locations
-        locations = [
-            Path(__file__).parent.parent.parent / "requirements.txt",
-            Path(__file__).parent.parent.parent / "pyproject.toml"
-        ]
-        
-        exists = any(loc.exists() for loc in locations)
-        assert exists is True
+        # GNN uses pyproject.toml exclusively for dependency management via uv
+        pyproject = Path(__file__).parent.parent.parent / "pyproject.toml"
+        assert pyproject.exists(), "pyproject.toml must exist for uv-managed dependencies"

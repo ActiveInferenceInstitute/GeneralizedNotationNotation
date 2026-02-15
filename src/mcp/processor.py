@@ -290,7 +290,7 @@ def process_mcp(
             summary_file = output_dir / "mcp_processing_summary.json"
             with open(summary_file, 'w') as f:
                 json.dump(summary, f, indent=2)
-        except:
+        except Exception:
             pass  # If we can't even save the error summary, just log it
         return False
 

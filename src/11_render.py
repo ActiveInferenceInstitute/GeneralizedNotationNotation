@@ -30,24 +30,12 @@ If you encounter errors:
 """
 
 import sys
-import json
 from pathlib import Path
-from datetime import datetime
-from typing import Dict, List, Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from utils.pipeline_template import (
-    setup_step_logging,
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning,
-    create_standardized_pipeline_script,
-)
-from utils.argument_utils import ArgumentParser
-from pipeline.config import get_output_dir_for_script, get_pipeline_config
+from utils.pipeline_template import create_standardized_pipeline_script
 
 from render import (
     process_render,

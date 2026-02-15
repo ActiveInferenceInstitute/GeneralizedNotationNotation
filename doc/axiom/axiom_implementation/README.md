@@ -7,7 +7,7 @@ This directory contains a complete implementation of the AXIOM (Active eXpanding
 AXIOM represents a breakthrough in AI learning efficiency by combining:
 
 - **Object-centric perception** via Slot Mixture Models (sMM)
-- **Identity classification** via Identity Mixture Models (iMM) 
+- **Identity classification** via Identity Mixture Models (iMM)
 - **Dynamics modeling** via Transition Mixture Models (tMM)
 - **Interaction modeling** via Recurrent Mixture Models (rMM)
 - **Online structure learning** with Bayesian Model Reduction (BMR)
@@ -394,8 +394,8 @@ ax.set_title("Object Positions")
 ## Installation Requirements
 
 ```bash
-pip install numpy scipy matplotlib seaborn pandas
-pip install psutil  # For performance monitoring
+uv pip install numpy scipy matplotlib seaborn pandas
+uv pip install psutil  # For performance monitoring
 ```
 
 ## References
@@ -419,4 +419,4 @@ This implementation is provided for research and educational purposes. Please ci
 
 ---
 
-**Note**: This implementation provides the complete framework and mathematical foundations. The individual module implementations (`modules/`) would need to be completed based on the detailed algorithms described in the AXIOM paper and the provided GNN specifications. 
+**Note**: This implementation provides the complete framework and mathematical foundations. The individual module implementations (`modules/`) would need to be completed based on the detailed algorithms described in the AXIOM paper and the provided GNN specifications.

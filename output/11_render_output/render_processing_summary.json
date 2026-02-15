@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-13T11:19:26.427779",
+  "timestamp": "2026-02-15T15:32:32.577242",
   "processing_type": "POMDP-aware rendering",
   "total_files": 1,
   "successful_files": 1,
@@ -10,7 +10,7 @@
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
-    "verbose": false,
+    "verbose": true,
     "pomdp_processing_available": true
   },
   "file_results": {

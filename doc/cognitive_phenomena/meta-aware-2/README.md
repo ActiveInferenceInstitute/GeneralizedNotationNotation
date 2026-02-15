@@ -73,41 +73,48 @@ meta-aware-2/
 ### Component Overview
 
 #### 1. GNN Configuration System (`config/`)
+
 - **`gnn_parser.py`**: Parses TOML configuration files into Python dataclasses
 - **`meta_awareness_gnn.toml`**: Main configuration specifying all model parameters
 - Supports arbitrary dimensionality and hierarchical structure specification
 
 #### 2. Core Model (`core/`)
+
 - **`meta_awareness_model.py`**: Main meta-awareness simulation model
 - Implements hierarchical active inference with generic state spaces
 - Supports both 2-level and 3-level model configurations
 - Fully driven by GNN configuration parameters
 
 #### 3. Mathematical Utilities (`utils/`)
+
 - **`math_utils.py`**: Generic mathematical operations
 - Softmax, normalization, entropy, KL divergence, Bayesian model averaging
 - Precision weighting, attentional charge computation, free energy calculations
 - All functions support arbitrary dimensionality
 
 #### 4. Logging System (`simulation_logging/`)
+
 - **`simulation_logger.py`**: Comprehensive simulation tracking
 - Performance monitoring, error tracking, metrics collection
 - Structured logging with correlation contexts
 - Automatic log file management and metrics export
 
 #### 5. Visualization (`visualization/`)
+
 - **`figure_generator.py`**: Publication-quality figure generation
 - Reproduces Figures 7, 10, and 11 from Sandved-Smith et al. (2021)
 - Additional analysis figures for precision, free energy, and comparative analysis
 - Supports multiple output formats (PNG, PDF, SVG)
 
 #### 6. Execution Pipeline (`execution/`)
+
 - **`simulation_runner.py`**: Main simulation orchestration
 - Integrates all components into complete analysis pipeline
 - Supports multiple simulation modes and comparative analysis
 - Automatic result saving and figure generation
 
 #### 7. Test Suite (`tests/`)
+
 - **`test_simulation.py`**: Comprehensive test coverage
 - Unit tests, integration tests, performance benchmarks
 - Validation against paper results and expected behaviors
@@ -161,6 +168,7 @@ figure_11 = "three_level_meta_awareness"
 ### Key Configuration Sections
 
 #### Model Configuration
+
 - `name`: Model identifier
 - `num_levels`: Number of hierarchical levels (2 or 3)
 - `level_names`: Names for each hierarchical level
@@ -168,17 +176,22 @@ figure_11 = "three_level_meta_awareness"
 - `oddball_pattern`: Stimulus sequence pattern
 
 #### Level Configuration
+
 For each level, specify:
+
 - `state_dim`: Dimension of state space
 - `obs_dim`: Dimension of observation space
 - `action_dim`: Dimension of action space (0 for no actions)
 
 #### Precision Parameters
+
 - `precision_bounds`: [min, max] precision values for each level
 - `policy_precision`: Policy selection precision parameters
 
 #### Simulation Modes
+
 Define different simulation scenarios:
+
 - `figure_7`: Fixed attention schedule (reproduces Figure 7)
 - `figure_10`: Two-level mind-wandering dynamics (reproduces Figure 10)
 - `figure_11`: Three-level meta-awareness (reproduces Figure 11)
@@ -186,17 +199,20 @@ Define different simulation scenarios:
 ## Simulation Modes
 
 ### Figure 7: Fixed Attention Schedule
+
 - Models with predetermined attentional states
 - Demonstrates precision dynamics under controlled conditions
 - Reproduces Figure 7 from Sandved-Smith et al. (2021)
 
 ### Figure 10: Two-Level Mind-Wandering
+
 - Two-level hierarchical model (perception + attention)
 - Natural mind-wandering dynamics through policy selection
 - Shows attention switching and precision modulation
 - Reproduces Figure 10 from the paper
 
 ### Figure 11: Three-Level Meta-Awareness
+
 - Three-level model (perception + attention + meta-awareness)
 - Meta-cognitive control of attentional states
 - Demonstrates meta-awareness influencing attention regulation
@@ -205,6 +221,7 @@ Define different simulation scenarios:
 ## Results and Output
 
 ### Output Directory Structure
+
 ```
 output/
 ├── results/                  # Simulation data
@@ -227,21 +244,25 @@ output/
 The simulation automatically computes comprehensive analysis including:
 
 #### Mind-Wandering Analysis
+
 - Focused vs. distracted percentages
 - Transition counts and episode lengths
 - Attentional stability metrics
 
 #### Precision Dynamics
+
 - Mean, standard deviation, range of precision values
 - Precision change rates and variability coefficients
 - Cross-level precision correlations
 
 #### Free Energy Analysis
+
 - Expected and variational free energy statistics
 - Policy evaluation metrics
 - Free energy distributions and trends
 
 #### Behavioral Patterns
+
 - Stimulus-response relationships
 - Oddball detection performance
 - Response timing and accuracy
@@ -260,21 +281,25 @@ The model implements hierarchical active inference with:
 ### Key Equations
 
 #### Precision-Weighted Likelihood
+
 ```
 A_bar = softmax(γ * log(A))
 ```
 
 #### Attentional Charge
+
 ```
 AtC = sum(|O - A_bar * X| * A)
 ```
 
 #### Expected Free Energy
+
 ```
 G = -sum(P(o) * log(P(o))) + sum(P(s) * H(A))
 ```
 
 #### Policy Posterior
+
 ```
 π = softmax(-γ_G * G + log(π_prior))
 ```
@@ -309,6 +334,7 @@ python -m pytest tests/ --cov=. --cov-report=html
 ### Adding New Levels
 
 1. Update configuration to include new level:
+
 ```toml
 [levels.new_level]
 state_dim = 3
@@ -316,23 +342,26 @@ obs_dim = 3
 action_dim = 2
 ```
 
-2. Add precision bounds:
+1. Add precision bounds:
+
 ```toml
 [precision_bounds]
 new_level = [1.0, 5.0]
 ```
 
-3. The model automatically handles arbitrary numbers of levels
+1. The model automatically handles arbitrary numbers of levels
 
 ### Custom Simulation Modes
 
 1. Define mode in configuration:
+
 ```toml
 [simulation_modes]
 custom_mode = "custom_dynamics"
 ```
 
-2. Implement mode logic in `meta_awareness_model.py`:
+1. Implement mode logic in `meta_awareness_model.py`:
+
 ```python
 def _setup_custom_dynamics(self, mode: str):
     # Custom mode implementation
@@ -348,24 +377,28 @@ def _setup_custom_dynamics(self, mode: str):
 ## Dependencies
 
 ### Required Packages
+
 - `numpy`: Numerical computations
 - `matplotlib`: Figure generation
 - `seaborn`: Statistical visualization
 - `toml`: Configuration file parsing
 
 ### Installation
+
 ```bash
-pip install numpy matplotlib seaborn toml
+uv pip install numpy matplotlib seaborn toml
 ```
 
 ## Performance Considerations
 
 ### Simulation Speed
+
 - Typical simulation (100 time steps): < 1 second
 - Memory usage scales linearly with time steps and dimensions
 - Performance logging tracks computational bottlenecks
 
 ### Optimization Tips
+
 - Reduce time steps for faster testing
 - Use WARNING log level for production runs
 - Enable only necessary simulation modes
@@ -376,33 +409,41 @@ pip install numpy matplotlib seaborn toml
 ### Common Issues
 
 #### Configuration Errors
+
 ```
 Error loading configuration: [details]
 ```
+
 - Check TOML syntax with `--show-config`
 - Validate all required sections are present
 - Ensure dimensions are positive integers
 
 #### Numerical Issues
+
 ```
 Warning: Numerical issue (underflow): [details]
 ```
+
 - Check precision bounds are reasonable
 - Verify matrix initialization
 - Adjust tolerance in validation config
 
 #### Memory Issues
+
 ```
 MemoryError: Unable to allocate array
 ```
+
 - Reduce time steps or state dimensions
 - Use smaller simulation modes for testing
 - Monitor memory usage in performance logs
 
 ### Debug Mode
+
 ```bash
 python run_meta_awareness.py config.toml -l DEBUG
 ```
+
 Provides detailed execution information and error traces.
 
 ## Scientific Validation
@@ -465,4 +506,4 @@ For questions or issues:
 
 ---
 
-**Meta-Aware-2**: A comprehensive, modular, and scientifically validated implementation of computational phenomenology for meta-awareness research. 
+**Meta-Aware-2**: A comprehensive, modular, and scientifically validated implementation of computational phenomenology for meta-awareness research.
