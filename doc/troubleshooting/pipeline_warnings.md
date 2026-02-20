@@ -131,7 +131,7 @@ python src/12_execute.py --frameworks "all" --dry-run
 ##### Ollama Timeouts
 **Error Message**: `Prompt execution timed out after 60 seconds`
 
-**Root Cause**: Small Ollama model (`smollm2:135m-instruct`) too slow for complex prompts
+**Root Cause**: Small Ollama model (`gemma3:4b`) too slow for complex prompts
 
 **Solution Option 1 - Use Larger Ollama Model**:
 ```bash

@@ -58,8 +58,8 @@ THRESHOLDS = {
 }
 
 @pytest.fixture
-def mock_environment():
-    """Create a mock environment for testing."""
+def isolated_environment():
+    """Create an isolated environment for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
         # Create necessary subdirectories
@@ -68,7 +68,7 @@ def mock_environment():
         yield temp_path
 
 @pytest.fixture
-def create_model_file(mock_environment):
+def create_model_file(isolated_environment):
     """Create a GNN model file of specified size."""
     def _create_file(size: str = "small") -> Path:
         sizes = {
@@ -95,7 +95,7 @@ def create_model_file(mock_environment):
         for i in range(num_states - 1):
             content.append(f"s{i} -> s{i+1}")
             
-        file_path = mock_environment / "input" / f"test_model_{size}.md"
+        file_path = isolated_environment / "input" / f"test_model_{size}.md"
         file_path.write_text("\n".join(content))
         return file_path
         
@@ -105,7 +105,7 @@ class TestGNNProcessingPerformance:
     """Test suite for GNN processing performance."""
     
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
-    def test_processing_scaling(self, mock_environment, create_model_file, model_size):
+    def test_processing_scaling(self, isolated_environment, create_model_file, model_size):
         """Test GNN processing performance scaling."""
         from src.gnn import process_gnn_directory
         
@@ -114,7 +114,7 @@ class TestGNNProcessingPerformance:
         with performance_tracker() as tracker:
             result = process_gnn_directory(
                 model_file,
-                mock_environment / "output"
+                isolated_environment / "output"
             )
             
         assert result["status"] == "SUCCESS"
@@ -125,7 +125,7 @@ class TestGNNProcessingPerformance:
         elif hasattr(tracker, 'peak_memory_mb'):
             assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
         
-    def test_parallel_processing(self, mock_environment, create_model_file):
+    def test_parallel_processing(self, isolated_environment, create_model_file):
         """Test parallel GNN processing performance."""
         from src.gnn import process_gnn_directory
         
@@ -135,7 +135,7 @@ class TestGNNProcessingPerformance:
             
         with performance_tracker() as tracker:
             result = process_gnn_directory(
-                mock_environment / "input",
+                isolated_environment / "input",
                 recursive=True,
                 parallel=True
             )
@@ -152,7 +152,7 @@ class TestVisualizationPerformance:
     """Test suite for visualization performance."""
     
     @pytest.mark.parametrize("model_size", ["small", "medium", "large"])
-    def test_visualization_scaling(self, mock_environment, create_model_file, model_size):
+    def test_visualization_scaling(self, isolated_environment, create_model_file, model_size):
         """Test visualization generation performance scaling."""
         from src.visualization import generate_visualizations
         import logging
@@ -164,7 +164,7 @@ class TestVisualizationPerformance:
             result = generate_visualizations(
                 logger,
                 model_file.parent,
-                mock_environment / "output"
+                isolated_environment / "output"
             )
             
         # Handle both dict and bool return types
@@ -180,7 +180,7 @@ class TestVisualizationPerformance:
         elif hasattr(tracker, 'peak_memory_mb'):
             assert tracker.peak_memory_mb < THRESHOLDS[f"{model_size}_model"]["memory_usage"]
         
-    def test_visualization_caching(self, mock_environment, create_model_file):
+    def test_visualization_caching(self, isolated_environment, create_model_file):
         """Test visualization caching performance."""
         from src.visualization import generate_visualizations
         import logging
@@ -193,7 +193,7 @@ class TestVisualizationPerformance:
             result_1 = generate_visualizations(
                 logger,
                 model_file.parent,
-                mock_environment / "output"
+                isolated_environment / "output"
             )
             
         # Second generation (should use cache)
@@ -201,7 +201,7 @@ class TestVisualizationPerformance:
             result_2 = generate_visualizations(
                 logger,
                 model_file.parent,
-                mock_environment / "output"
+                isolated_environment / "output"
             )
             
         # Handle both dict and bool return types
@@ -216,7 +216,7 @@ class TestVisualizationPerformance:
 class TestMemoryUsagePatterns:
     """Test suite for memory usage patterns."""
     
-    def test_memory_cleanup(self, mock_environment, create_model_file):
+    def test_memory_cleanup(self, isolated_environment, create_model_file):
         """Test memory cleanup after processing."""
         from src.gnn import process_gnn_directory
         
@@ -225,7 +225,7 @@ class TestMemoryUsagePatterns:
         
         result = process_gnn_directory(
             model_file,
-            mock_environment / "output"
+            isolated_environment / "output"
         )
         
         # Force garbage collection
@@ -238,7 +238,7 @@ class TestMemoryUsagePatterns:
         assert result["status"] == "SUCCESS"
         assert memory_diff < 300  # Should not leak more than 300MB (realistic for pipeline operations with LLM, visualization, etc.)
         
-    def test_peak_memory_tracking(self, mock_environment, create_model_file):
+    def test_peak_memory_tracking(self, isolated_environment, create_model_file):
         """Test peak memory usage tracking."""
         from src.utils.resource_manager import track_peak_memory
         
@@ -258,7 +258,7 @@ class TestMemoryUsagePatterns:
 class TestDiskIOPerformance:
     """Test suite for disk I/O performance."""
     
-    def test_file_write_performance(self, mock_environment):
+    def test_file_write_performance(self, isolated_environment):
         """Test file write performance with different file sizes."""
         from src.utils.io_utils import batch_write_files
         
@@ -272,13 +272,13 @@ class TestDiskIOPerformance:
         ]
         
         with performance_tracker() as tracker:
-            result = batch_write_files(files_data, mock_environment / "output")
+            result = batch_write_files(files_data, isolated_environment / "output")
             
         assert result["total_files"] == 10
         assert result["successful_writes"] == 10
         assert result["write_time_seconds"] < 1.0  # Should be fast
         
-    def test_export_performance(self, mock_environment, create_model_file):
+    def test_export_performance(self, isolated_environment, create_model_file):
         """Test export performance for different formats."""
         from src.export import export_model
         
@@ -302,7 +302,7 @@ class TestDiskIOPerformance:
         with performance_tracker() as tracker:
             result = export_model(
                 model_data,
-                mock_environment / "output",
+                isolated_environment / "output",
                 formats=["json", "xml", "graphml"]  # Use correct parameter name
             )
             
@@ -316,7 +316,7 @@ class TestNetworkOperationTiming:
     """Test suite for network operation timing using real network requests."""
     
     @pytest.mark.integration
-    def test_api_request_timing(self, mock_environment):
+    def test_api_request_timing(self, isolated_environment):
         """Test API request timing and performance with real requests."""
         from src.utils.network_utils import timed_request
         import requests
@@ -340,7 +340,7 @@ class TestNetworkOperationTiming:
             pytest.skip("Network unavailable, skipping real network test")
             
     @pytest.mark.integration
-    def test_batch_request_performance(self, mock_environment):
+    def test_batch_request_performance(self, isolated_environment):
         """Test batch request performance with real requests."""
         from src.utils.network_utils import batch_request
         import requests
@@ -372,7 +372,7 @@ class TestResourceScaling:
     """Test suite for resource scaling characteristics."""
     
     @pytest.mark.parametrize("model_count", [1, 3, 10])
-    def test_pipeline_scaling(self, mock_environment, create_model_file, model_count):
+    def test_pipeline_scaling(self, isolated_environment, create_model_file, model_count):
         """Test pipeline scaling with different model counts."""
         from src.pipeline.execution import run_pipeline
         
@@ -382,8 +382,8 @@ class TestResourceScaling:
             
         with performance_tracker() as tracker:
             result = run_pipeline(
-                target_dir=mock_environment / "input",
-                output_dir=mock_environment / "output"
+                target_dir=isolated_environment / "input",
+                output_dir=isolated_environment / "output"
             )
             
         assert result["success"] == True
@@ -392,7 +392,7 @@ class TestResourceScaling:
         max_time_per_model = 300  # 5 minutes per model is more realistic
         assert tracker.duration < (model_count * max_time_per_model)
         
-    def test_resource_estimation(self, mock_environment, create_model_file):
+    def test_resource_estimation(self, isolated_environment, create_model_file):
         """Test resource estimation accuracy."""
         from src.pipeline.execution import run_pipeline
         from src.utils.resource_manager import estimate_resources
@@ -403,8 +403,8 @@ class TestResourceScaling:
         
         with performance_tracker() as tracker:
             result = run_pipeline(
-                target_dir=mock_environment / "input",
-                output_dir=mock_environment / "output"
+                target_dir=isolated_environment / "input",
+                output_dir=isolated_environment / "output"
             )
             
         # Estimate should be within reasonable bounds (much more lenient)

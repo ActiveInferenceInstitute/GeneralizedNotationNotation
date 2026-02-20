@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.099629,
-  "timestamp": "2026-02-15T15:32:34.155775",
+  "execution_time": 1.293148,
+  "timestamp": "2026-02-20T14:50:19.648695",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -205,12 +205,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1333,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/actinf_pomdp_agent/jax"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

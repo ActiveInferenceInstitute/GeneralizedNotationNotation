@@ -6,6 +6,9 @@ Analyzes GNN models and estimates computational resources needed for:
 - Memory usage
 - Inference time
 - Storage requirements
+
+Estimation strategy logic lives in estimation_strategies.py; this module
+provides the GNNResourceEstimator class, report generation, and CLI.
 """
 
 import os
@@ -19,6 +22,19 @@ from typing import Dict, List, Set, Tuple, Any, Optional, Union
 
 import matplotlib.pyplot as plt
 import numpy as np
+
+from .estimation_strategies import (
+    estimate_memory as _est_memory,
+    detailed_memory_breakdown as _est_memory_breakdown,
+    estimate_flops as _est_flops,
+    estimate_inference_time as _est_inference_time,
+    estimate_batched_inference as _est_batched_inference,
+    estimate_matrix_operation_costs as _est_matrix_ops,
+    estimate_model_overhead as _est_model_overhead,
+    estimate_inference as _est_inference,
+    estimate_storage as _est_storage,
+    calculate_complexity as _calc_complexity,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -223,714 +239,49 @@ class GNNResourceEstimator:
         }
     
     def _estimate_memory(self, variables: Dict[str, Any]) -> float:
-        """
-        Estimate memory requirements based on variables.
-        
-        Args:
-            variables: Dictionary of model variables
-            
-        Returns:
-            Memory estimate in KB
-        """
-        total_memory = 0.0
-        
-        for var_name, var_info in variables.items():
-            var_type = var_info.get('type', 'float')
-            dims = var_info.get('dimensions', [1])
-            
-            # Calculate size of this variable
-            size_factor = self.MEMORY_FACTORS.get(var_type, self.MEMORY_FACTORS['float'])
-            
-            # Process dimensions with caution - handle symbolic dimensions
-            try:
-                dimension_values = []
-                for d in dims:
-                    if isinstance(d, (int, float)):
-                        dimension_values.append(d)
-                    elif isinstance(d, str) and d.isdigit():
-                        dimension_values.append(int(d))
-                    elif isinstance(d, str) and 'len' in d and 'π' in d:
-                        # Approximate the size for dynamic dimensions referencing policy length
-                        dimension_values.append(3)  # Reasonable default for policy length
-                    elif isinstance(d, str) and d.startswith('='):
-                        # Handle '=[2]' or '=[2,1]' format by extracting numbers
-                        import re
-                        matches = re.findall(r'\d+', d)
-                        if matches:
-                            dimension_values.append(int(matches[0]))
-                        else:
-                            dimension_values.append(1)
-                    else:
-                        dimension_values.append(1)  # Default for unparseable dimensions
-                
-                total_size = size_factor * math.prod(dimension_values)
-            except Exception as e:
-                logger.warning(f"Error calculating size for variable {var_name}: {e}")
-                # Use a default size based on variable type
-                total_size = size_factor * 2  # Assume small dimensions as fallback
-            
-            total_memory += total_size
-        
-        # Convert to KB
-        return total_memory / 1024.0
+        """Estimate memory requirements based on variables (KB)."""
+        return _est_memory(variables, self.MEMORY_FACTORS)
     
     def _detailed_memory_breakdown(self, variables: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Create detailed memory breakdown by variable and type.
-        
-        Args:
-            variables: Dictionary of model variables
-            
-        Returns:
-            Dictionary with detailed memory breakdown
-        """
-        breakdown = {
-            "by_variable": {},
-            "by_type": {t: 0 for t in self.MEMORY_FACTORS.keys()},
-            "total_bytes": 0,
-            "representation_overhead": 0  # Additional overhead for representation
-        }
-        
-        # Fixed overhead for model structure
-        breakdown["representation_overhead"] = 1024  # Approx 1KB for basic model structure
-        
-        for var_name, var_info in variables.items():
-            var_type = var_info.get('type', 'float')
-            dims = var_info.get('dimensions', [1])
-            
-            # Calculate size of this variable
-            size_factor = self.MEMORY_FACTORS.get(var_type, self.MEMORY_FACTORS['float'])
-            
-            # Process dimensions
-            try:
-                dimension_values = []
-                for d in dims:
-                    if isinstance(d, (int, float)):
-                        dimension_values.append(d)
-                    elif isinstance(d, str) and d.isdigit():
-                        dimension_values.append(int(d))
-                    elif isinstance(d, str) and ('len' in d or 'π' in d):
-                        dimension_values.append(3)
-                    elif isinstance(d, str) and d.startswith('='):
-                        import re
-                        matches = re.findall(r'\d+', d)
-                        if matches:
-                            dimension_values.append(int(matches[0]))
-                        else:
-                            dimension_values.append(1)
-                    else:
-                        dimension_values.append(1)
-                
-                element_count = math.prod(dimension_values)
-                var_size = size_factor * element_count
-                
-                # Additional overhead for variable names and metadata
-                var_overhead = len(var_name) + 24  # ~24 bytes overhead per variable
-                
-                breakdown["by_variable"][var_name] = {
-                    "size_bytes": var_size,
-                    "elements": element_count,
-                    "dimensions": dimension_values,
-                    "type": var_type,
-                    "overhead_bytes": var_overhead,
-                    "total_bytes": var_size + var_overhead
-                }
-                
-                # Add to type totals
-                breakdown["by_type"][var_type] = breakdown["by_type"].get(var_type, 0) + var_size
-                
-                # Add to total bytes
-                breakdown["total_bytes"] += var_size + var_overhead
-                
-                # Add to representation overhead
-                breakdown["representation_overhead"] += var_overhead
-                
-            except Exception as e:
-                logger.warning(f"Error in memory breakdown for {var_name}: {e}")
-        
-        # Convert totals to KB for convenience
-        breakdown["total_kb"] = breakdown["total_bytes"] / 1024.0
-        breakdown["overhead_kb"] = breakdown["representation_overhead"] / 1024.0
-        
-        return breakdown
+        """Create detailed memory breakdown by variable and type."""
+        return _est_memory_breakdown(variables, self.MEMORY_FACTORS)
     
-    def _estimate_flops(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], 
+    def _estimate_flops(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
                        equations: str, model_type: str) -> Dict[str, Any]:
-        """
-        Estimate floating-point operations (FLOPS) required for inference.
-        
-        Args:
-            variables: Dictionary of model variables
-            edges: List of edges in the model
-            equations: Equations in the model
-            model_type: Type of model (Static, Dynamic, Hierarchical)
-            
-        Returns:
-            Dictionary with FLOPS estimates
-        """
-        flops_estimate = {
-            "total_flops": 0,
-            "matrix_operations": 0,
-            "element_operations": 0,
-            "nonlinear_operations": 0
-        }
-        
-        # Count matrices and their dimensions
-        matrices = {}
-        for var_name, var_info in variables.items():
-            dims = var_info.get('dimensions', [1])
-            if len(dims) >= 2:  # It's a matrix
-                matrices[var_name] = dims
-        
-        # Estimate matrix multiplication costs (dominant operation)
-        for edge in edges:
-            source = edge.get('source', '')
-            target = edge.get('target', '')
-            
-            if source in matrices and target in matrices:
-                source_dims = matrices[source]
-                target_dims = matrices[target]
-                
-                # Matrix multiply cost: m×n×p operations for m×n * n×p matrices
-                if len(source_dims) >= 2 and len(target_dims) >= 2:
-                    try:
-                        # Extract dimensions as integers when possible
-                        m = int(source_dims[0]) if isinstance(source_dims[0], (int, str)) and (isinstance(source_dims[0], int) or source_dims[0].isdigit()) else 2
-                        n = int(source_dims[1]) if isinstance(source_dims[1], (int, str)) and (isinstance(source_dims[1], int) or source_dims[1].isdigit()) else 2
-                        p = int(target_dims[1]) if len(target_dims) > 1 and isinstance(target_dims[1], (int, str)) and (isinstance(target_dims[1], int) or target_dims[1].isdigit()) else 2
-                        
-                        # 2 FLOPS per element (multiply and add)
-                        flops = m * n * p * self.OPERATION_COSTS['matrix_multiply']
-                        flops_estimate["matrix_operations"] += flops
-                        flops_estimate["total_flops"] += flops
-                    except (ValueError, TypeError) as e:
-                        # Default estimation if conversion fails
-                        flops_estimate["matrix_operations"] += 100  # Assume small matrices
-                        flops_estimate["total_flops"] += 100
-        
-        # Estimate element-wise operations from equations
-        eq_lines = equations.split('\n')
-        for line in eq_lines:
-            element_ops = 0
-            nonlinear_ops = 0
-            
-            # Count arithmetic operations
-            element_ops += line.count('+') * self.OPERATION_COSTS['addition']
-            element_ops += line.count('*') * self.OPERATION_COSTS['scalar_multiply']
-            element_ops += line.count('/') * self.OPERATION_COSTS['division']
-            
-            # Count nonlinear operations (approximate)
-            nonlinear_ops += line.count('exp') * self.OPERATION_COSTS['exp']
-            nonlinear_ops += line.count('log') * self.OPERATION_COSTS['log']
-            nonlinear_ops += line.count('softmax') * self.OPERATION_COSTS['softmax']
-            nonlinear_ops += line.count('sigma') * self.OPERATION_COSTS['sigmoid']
-            
-            flops_estimate["element_operations"] += element_ops
-            flops_estimate["nonlinear_operations"] += nonlinear_ops
-            flops_estimate["total_flops"] += element_ops + nonlinear_ops
-        
-        # Apply model type multiplier
-        if model_type == 'Dynamic':
-            flops_estimate["total_flops"] *= 2.5  # Dynamic models more expensive
-        elif model_type == 'Hierarchical':
-            flops_estimate["total_flops"] *= 3.5  # Hierarchical models most expensive
-        
-        # If no specific operations detected, estimate based on variable count and model type
-        if flops_estimate["total_flops"] == 0:
-            base_flops = len(variables) * 20  # 20 FLOPS per variable as baseline
-            if model_type == 'Static':
-                flops_estimate["total_flops"] = base_flops
-            elif model_type == 'Dynamic':
-                flops_estimate["total_flops"] = base_flops * 2.5
-            else:  # Hierarchical
-                flops_estimate["total_flops"] = base_flops * 3.5
-        
-        return flops_estimate
+        """Estimate floating-point operations (FLOPS) required for inference."""
+        return _est_flops(variables, edges, equations, model_type, self.OPERATION_COSTS)
     
     def _estimate_inference_time(self, flops_estimate: Dict[str, Any]) -> Dict[str, float]:
-        """
-        Estimate inference time based on FLOPS and hardware specs.
-        
-        Args:
-            flops_estimate: Dictionary with FLOPS estimates
-            
-        Returns:
-            Dictionary with inference time estimates in various units
-        """
-        total_flops = flops_estimate["total_flops"]
-        
-        # Calculate time based on hardware specs
-        cpu_time_seconds = total_flops / self.HARDWARE_SPECS["cpu_flops_per_second"]
-        
-        return {
-            "cpu_time_seconds": cpu_time_seconds,
-            "cpu_time_ms": cpu_time_seconds * 1000,
-            "cpu_time_us": cpu_time_seconds * 1_000_000
-        }
+        """Estimate inference time based on FLOPS and hardware specs."""
+        return _est_inference_time(flops_estimate, self.HARDWARE_SPECS)
     
-    def _estimate_batched_inference(self, variables: Dict[str, Any], model_type: str, 
+    def _estimate_batched_inference(self, variables: Dict[str, Any], model_type: str,
                                    flops_estimate: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Estimate batched inference performance.
-        
-        Args:
-            variables: Dictionary of model variables
-            model_type: Type of model (Static, Dynamic, Hierarchical)
-            flops_estimate: Dictionary with FLOPS estimates
-            
-        Returns:
-            Dictionary with batched inference estimates
-        """
-        total_flops = flops_estimate["total_flops"]
-        
-        # Batch sizes to estimate
-        batch_sizes = [1, 8, 32, 128, 512]
-        
-        # Estimate batch throughput
-        batch_estimates = {}
-        for batch_size in batch_sizes:
-            # Batched FLOPS (not perfectly linear due to overhead)
-            if batch_size == 1:
-                batch_flops = total_flops
-            else:
-                # Diminishing returns with larger batches
-                scale_factor = 0.7 + 0.3 / math.log2(batch_size + 1)
-                batch_flops = total_flops * batch_size * scale_factor
-            
-            # Estimate time for batched inference
-            time_seconds = batch_flops / self.HARDWARE_SPECS["cpu_flops_per_second"]
-            
-            # Throughput in samples per second
-            throughput = batch_size / time_seconds if time_seconds > 0 else 0
-            
-            batch_estimates[f"batch_{batch_size}"] = {
-                "flops": batch_flops,
-                "time_seconds": time_seconds,
-                "throughput_per_second": throughput
-            }
-        
-        return batch_estimates
+        """Estimate batched inference performance."""
+        return _est_batched_inference(variables, model_type, flops_estimate, self.HARDWARE_SPECS)
 
-    def _estimate_matrix_operation_costs(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], 
+    def _estimate_matrix_operation_costs(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
                                       equations: str) -> Dict[str, Any]:
-        """
-        Provide detailed estimates of matrix operation costs.
-        
-        Args:
-            variables: Dictionary of model variables
-            edges: List of edges in the model
-            equations: Equations in the model
-            
-        Returns:
-            Dictionary with matrix operation costs
-        """
-        operation_costs = {
-            "matrix_multiply": [],
-            "matrix_transpose": [],
-            "matrix_inversion": [],
-            "element_wise": [],
-            "total_matrix_flops": 0
-        }
-        
-        # Identify matrices and their dimensions
-        matrices = {}
-        for var_name, var_info in variables.items():
-            dims = var_info.get('dimensions', [1])
-            if len(dims) >= 2:  # It's a matrix
-                # Convert dimensions to integers when possible
-                int_dims = []
-                for d in dims:
-                    if isinstance(d, int):
-                        int_dims.append(d)
-                    elif isinstance(d, str) and d.isdigit():
-                        int_dims.append(int(d))
-                    else:
-                        int_dims.append(2)  # Default dimension
-                
-                matrices[var_name] = int_dims
-        
-        # Analyze edge connections for matrix operations
-        for edge in edges:
-            source = edge.get('source', '')
-            target = edge.get('target', '')
-            
-            if source in matrices and target in matrices:
-                source_dims = matrices[source]
-                target_dims = matrices[target]
-                
-                # Matrix multiplication cost
-                if len(source_dims) >= 2 and len(target_dims) >= 2:
-                    m = source_dims[0]
-                    n = source_dims[1] if len(source_dims) > 1 else 1
-                    p = target_dims[1] if len(target_dims) > 1 else 1
-                    
-                    flops = m * n * p * self.OPERATION_COSTS['matrix_multiply']
-                    
-                    operation_costs["matrix_multiply"].append({
-                        "operation": f"{source} × {target}",
-                        "dimensions": f"{m}×{n} * {n}×{p}",
-                        "flops": flops
-                    })
-                    
-                    operation_costs["total_matrix_flops"] += flops
-        
-        # Analyze equations for matrix operations
-        eq_lines = equations.split('\n')
-        for line in eq_lines:
-            # Look for matrix transpose operations (A^T or transpose(A))
-            if '^T' in line or 'transpose' in line:
-                for matrix_name in matrices:
-                    if matrix_name in line and (f"{matrix_name}^T" in line or f"transpose({matrix_name})" in line):
-                        dims = matrices[matrix_name]
-                        m = dims[0]
-                        n = dims[1] if len(dims) > 1 else 1
-                        
-                        # Transpose costs m*n operations
-                        flops = m * n
-                        
-                        operation_costs["matrix_transpose"].append({
-                            "operation": f"{matrix_name}^T",
-                            "dimensions": f"{m}×{n}",
-                            "flops": flops
-                        })
-                        
-                        operation_costs["total_matrix_flops"] += flops
-            
-            # Look for matrix inversion operations (A^-1 or inv(A))
-            if '^-1' in line or 'inv(' in line:
-                for matrix_name in matrices:
-                    if matrix_name in line and (f"{matrix_name}^-1" in line or f"inv({matrix_name})" in line):
-                        dims = matrices[matrix_name]
-                        n = dims[0]  # Assume square matrix for inversion
-                        
-                        # Inversion costs approximately n^3 operations
-                        flops = n**3
-                        
-                        operation_costs["matrix_inversion"].append({
-                            "operation": f"{matrix_name}^-1",
-                            "dimensions": f"{n}×{n}",
-                            "flops": flops
-                        })
-                        
-                        operation_costs["total_matrix_flops"] += flops
-        
-        return operation_costs
+        """Provide detailed estimates of matrix operation costs."""
+        return _est_matrix_ops(variables, edges, equations, self.OPERATION_COSTS)
 
-    def _estimate_model_overhead(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], 
+    def _estimate_model_overhead(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
                                equations: str) -> Dict[str, Any]:
-        """
-        Estimate model overhead including compile-time and optimization costs.
-        
-        Args:
-            variables: Dictionary of model variables
-            edges: List of edges in the model
-            equations: Equations in the model
-            
-        Returns:
-            Dictionary with model overhead estimates
-        """
-        overhead = {
-            "compilation_ms": 0,
-            "optimization_ms": 0,
-            "memory_overhead_kb": 0
-        }
-        
-        # Estimate compilation time based on model complexity
-        var_count = len(variables)
-        edge_count = len(edges)
-        eq_count = len(equations.split('\n'))
-        
-        # Simple heuristic: ~10ms base + 2ms per variable + 1ms per edge + 5ms per equation
-        compilation_ms = 10 + (var_count * 2) + (edge_count * 1) + (eq_count * 5)
-        overhead["compilation_ms"] = compilation_ms
-        
-        # Optimization costs roughly scale with variables^2
-        optimization_ms = 20 + (var_count**2 * 0.5)
-        overhead["optimization_ms"] = optimization_ms
-        
-        # Memory overhead: ~1KB base + 50 bytes per variable + 30 bytes per edge + 100 bytes per equation
-        memory_overhead_bytes = 1024 + (var_count * 50) + (edge_count * 30) + (eq_count * 100)
-        overhead["memory_overhead_kb"] = memory_overhead_bytes / 1024.0
-        
-        return overhead
+        """Estimate model overhead including compile-time and optimization costs."""
+        return _est_model_overhead(variables, edges, equations)
     
-    def _estimate_inference(self, variables: Dict[str, Any], model_type: str, 
+    def _estimate_inference(self, variables: Dict[str, Any], model_type: str,
                             edges: List[Dict[str, Any]], equations: str) -> float:
-        """
-        Estimate inference time requirements based on model complexity.
-        
-        Args:
-            variables: Dictionary of model variables
-            model_type: Type of model (Static, Dynamic, Hierarchical)
-            edges: List of edges in the model
-            equations: Equations in the model
-            
-        Returns:
-            Inference time estimate (arbitrary units)
-        """
-        # Base time depends on model type
-        base_time = self.INFERENCE_FACTORS.get(model_type, self.INFERENCE_FACTORS['Static'])
-        
-        # Add time for variable processing - consider variable types
-        var_time = 0
-        for var_name, var_info in variables.items():
-            var_type = var_info.get('type', 'float')
-            dims = var_info.get('dimensions', [1])
-            
-            # Extract dimensions as integers or defaults
-            try:
-                # Get element count based on dimensions
-                element_count = 1
-                for d in dims:
-                    if isinstance(d, (int, float)):
-                        element_count *= int(d)
-                    elif isinstance(d, str) and d.isdigit():
-                        element_count *= int(d)
-                    elif isinstance(d, str) and 'len' in d:
-                        element_count *= 3  # Reasonable default
-                    elif isinstance(d, str) and d.startswith('='):
-                        import re
-                        matches = re.findall(r'\d+', d)
-                        if matches:
-                            element_count *= int(matches[0])
-                        else:
-                            element_count *= 1
-                    else:
-                        element_count *= 1
-                
-                # Scale by type factor and element count
-                type_factor = self.INFERENCE_FACTORS.get(var_type, self.INFERENCE_FACTORS['float'])
-                var_time += type_factor * math.log2(element_count + 1)  # log scale to avoid explosion
-                
-            except Exception as e:
-                # Use default if calculation fails
-                var_time += self.INFERENCE_FACTORS.get(var_type, 1.0)
-        
-        # Add time for edge traversal - more for complex connections
-        # Each edge represents signal propagation with potential transformations
-        edge_time = 0
-        for edge in edges:
-            source = edge.get('source', '')
-            target = edge.get('target', '')
-            
-            # Temporal connections cost more (Dynamic models)
-            if '+' in source or '+' in target:
-                edge_time += 1.0  # Temporal connection
-            else:
-                edge_time += 0.5  # Standard connection
-        
-        # Add time for equation evaluation
-        equation_lines = equations.split('\n')
-        equation_time = 0
-        
-        for line in equation_lines:
-            # Basic cost per equation
-            eq_cost = 2.0
-            
-            # Additional cost for complex operations
-            if 'softmax' in line or 'sigma' in line:
-                eq_cost += 1.5  # Nonlinear functions cost more
-            if '^' in line:  # Power operations or matrix transposes
-                eq_cost += 1.0
-            if 'sum' in line or '∑' in line:  # Summation operations
-                eq_cost += 1.0
-            
-            equation_time += eq_cost
-        
-        # For models with no equations, assume default complexity
-        if equation_time == 0 and len(equation_lines) > 0:
-            equation_time = len(equation_lines) * 2.0
-        
-        # Combine factors with weights
-        # - Base model type is most important (40%)
-        # - Variables and equations matter significantly (25% each)
-        # - Edge structure has some impact (10%)
-        weighted_time = (
-            base_time * 4.0 +
-            var_time * 2.5 +
-            edge_time * 1.0 +
-            equation_time * 2.5
-        ) / 10.0
-        
-        return weighted_time * 10.0  # Scale to get reasonable units
+        """Estimate inference time requirements (arbitrary units)."""
+        return _est_inference(variables, model_type, edges, equations, self.INFERENCE_FACTORS)
     
     def _estimate_storage(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> float:
-        """
-        Estimate storage requirements based on model structure and size.
-        
-        Args:
-            variables: Dictionary of model variables
-            edges: List of edges in the model
-            equations: Equations in the model
-            
-        Returns:
-            Storage estimate in KB
-        """
-        # Memory footprint forms the base of our storage estimate
-        memory_estimate = self._estimate_memory(variables)
-        
-        # Calculate structural overhead
-        # Model structure, format overhead, metadata, descriptions: ~1KB base + per-item costs
-        structural_overhead_kb = 1.0  
-        
-        # Add overhead for variable names, descriptions, and metadata
-        var_overhead_kb = 0.0
-        for var_name, var_info in variables.items():
-            # Each variable has name, type, dimension info, comments
-            var_desc_length = len(var_info.get('comment', ''))
-            var_overhead_kb += (len(var_name) + 24 + var_desc_length) / 1024.0
-        
-        # Add overhead for edge definitions
-        edge_overhead_kb = len(edges) * 0.1  # ~100 bytes per edge definition
-        
-        # Add overhead for equations (consider actual text length)
-        equation_overhead_kb = len(equations) * 0.001  # ~1 byte per character
-        
-        # Textual representation adds overhead on top of binary storage
-        format_overhead_kb = 0.5  # GNN format markup, spaces, structure
-        
-        # Combine all storage components
-        total_storage_kb = (
-            memory_estimate * 1.2 +  # Binary data storage with padding
-            structural_overhead_kb +
-            var_overhead_kb +
-            edge_overhead_kb +
-            equation_overhead_kb +
-            format_overhead_kb
-        )
-        
-        # Make sure we don't get unreasonably low estimates
-        return max(total_storage_kb, 1.0)
+        """Estimate storage requirements in KB."""
+        return _est_storage(variables, edges, equations, self.MEMORY_FACTORS)
     
     def _calculate_complexity(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> Dict[str, float]:
-        """
-        Calculate detailed complexity metrics for the model.
-        
-        Args:
-            variables: Dictionary of model variables
-            edges: List of edges in the model
-            equations: Equations in the model
-            
-        Returns:
-            Dictionary with complexity metrics
-        """
-        # Get total dimensionality (state space complexity)
-        total_dims = 0
-        max_dim = 0
-        for var_info in variables.values():
-            dims = var_info.get('dimensions', [1])
-            # Convert dimensions to integers when possible
-            int_dims = []
-            for d in dims:
-                if isinstance(d, int):
-                    int_dims.append(d)
-                elif isinstance(d, str) and d.isdigit():
-                    int_dims.append(int(d))
-                else:
-                    int_dims.append(2)  # Default dimension size
-            
-            # Sum up total dimensionality
-            dim_size = math.prod(int_dims)
-            total_dims += dim_size
-            max_dim = max(max_dim, dim_size)
-        
-        # Calculate graph metrics
-        var_count = len(variables)
-        edge_count = len(edges)
-        
-        # Topological complexity
-        # Graph density: 0 (unconnected) to 1 (fully connected)
-        density = 0.0
-        if var_count > 1:
-            max_possible_edges = var_count * (var_count - 1)  # Directed graph
-            density = edge_count / max_possible_edges if max_possible_edges > 0 else 0
-        
-        # Calculate connectivity patterns
-        in_degree = {}
-        out_degree = {}
-        for edge in edges:
-            source = edge.get('source', '').split('+')[0]  # Remove time indices
-            target = edge.get('target', '').split('+')[0]
-            
-            out_degree[source] = out_degree.get(source, 0) + 1
-            in_degree[target] = in_degree.get(target, 0) + 1
-        
-        # Average degrees
-        avg_in_degree = sum(in_degree.values()) / max(len(in_degree), 1)
-        avg_out_degree = sum(out_degree.values()) / max(len(out_degree), 1)
-        
-        # Max degrees
-        max_in_degree = max(in_degree.values()) if in_degree else 0
-        max_out_degree = max(out_degree.values()) if out_degree else 0
-        
-        # Cyclic complexity - check for cyclic patterns (excluding self-loops)
-        # Simple approximation: higher connectivity often means more cycles
-        cyclic_score = 0
-        if edge_count > var_count:
-            cyclic_score = (edge_count - var_count) / max(var_count, 1)
-        
-        # Temporal complexity (look for time indices in edges)
-        temporal_edges = 0
-        for edge in edges:
-            if '+' in edge.get('source', '') or '+' in edge.get('target', ''):
-                temporal_edges += 1
-        
-        temporal_complexity = temporal_edges / max(edge_count, 1)
-        
-        # Equation complexity
-        eq_lines = equations.split('\n')
-        avg_eq_length = sum(len(line) for line in eq_lines) / max(len(eq_lines), 1)
-        
-        # Count operators in equations as a measure of complexity
-        operators = 0
-        for line in eq_lines:
-            operators += line.count('+') + line.count('-') + line.count('*') + line.count('/') + line.count('^')
-        
-        # Higher-order operators indicate more complexity
-        higher_order_ops = 0
-        for line in eq_lines:
-            higher_order_ops += line.count('sum') + line.count('prod') + line.count('log') + line.count('exp')
-            higher_order_ops += line.count('softmax') + line.count('tanh') + line.count('sigma')
-        
-        # Combined equation complexity
-        equation_complexity = 0
-        if eq_lines:
-            equation_complexity = (avg_eq_length + operators + 3*higher_order_ops) / len(eq_lines)
-        
-        # State space complexity (measure of information capacity)
-        state_space_complexity = math.log2(total_dims + 1) if total_dims > 0 else 0
-        
-        # Overall complexity combines several factors:
-        # - State space (information capacity)
-        # - Connectivity (graph structure)
-        # - Temporal aspects (time dependencies)
-        # - Algorithmic complexity (equations)
-        overall_complexity = (
-            state_space_complexity * 0.25 +
-            (density + cyclic_score) * 0.25 +
-            temporal_complexity * 0.2 +
-            equation_complexity * 0.3
-        )
-        
-        # Scale to a reasonable range (0-10)
-        overall_complexity = min(10, overall_complexity * 2)
-        
-        return {
-            "state_space_complexity": state_space_complexity,
-            "graph_density": density,
-            "avg_in_degree": avg_in_degree,
-            "avg_out_degree": avg_out_degree,
-            "max_in_degree": max_in_degree,
-            "max_out_degree": max_out_degree,
-            "cyclic_complexity": cyclic_score,
-            "temporal_complexity": temporal_complexity,
-            "equation_complexity": equation_complexity,
-            "overall_complexity": overall_complexity,
-            "variable_count": var_count,
-            "edge_count": edge_count,
-            "total_state_space_dim": total_dims,
-            "max_variable_dim": max_dim
-        }
+        """Calculate detailed complexity metrics for the model."""
+        return _calc_complexity(variables, edges, equations)
     
     def generate_html_report(self, output_dir: Optional[str] = None) -> str:
         """

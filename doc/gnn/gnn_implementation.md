@@ -3,7 +3,7 @@
 **Version**: v1.1.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,127 Tests Passing  
+**Test Count**: 1,083 Tests Passing  
 
 This document provides guidance on how to implement GNN models in computational environments, with practical code examples and workflows.
 
@@ -220,7 +220,7 @@ flowchart TD
 
 ### Post-Simulation Analysis
 
-The `post_simulation.py` module (2,147 lines) provides framework-agnostic analysis of simulation results:
+The `analysis/` module (split across `post_simulation.py`, `trace_analysis.py`, `math_utils.py`, `framework_extractors.py`, and `visualizations.py`) provides framework-agnostic analysis of simulation results:
 
 | Function | Purpose |
 |----------|---------|
@@ -246,7 +246,7 @@ These are assembled by `analyze_active_inference_metrics()` which takes complete
 
 ### Framework-Specific Data Extraction
 
-Each framework has a dedicated extraction function in `post_simulation.py`:
+Each framework has a dedicated extraction function in `analysis/framework_extractors.py` (re-exported from `post_simulation.py` for backward compatibility):
 
 - `extract_pymdp_data()` — beliefs, actions, free energy, observations from PyMDP output
 - `extract_rxinfer_data()` — posterior distributions from RxInfer JSON/CSV output  

@@ -3,7 +3,7 @@
 **Version**: v1.1.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,127 Tests Passing  
+**Test Count**: 1,083 Tests Passing  
 
 This document provides comprehensive guidance on visualization capabilities for Generalized Notation Notation (GNN) models, including graph visualization, matrix visualization, and interactive plotting techniques.
 
@@ -206,7 +206,7 @@ success = process_advanced_visualization(
 
 ## Analysis Visualization (Step 16)
 
-Post-simulation analysis (Step 16) provides a suite of visualization functions in `src/analysis/post_simulation.py` that generate framework-specific and cross-framework visualizations from execution results.
+Post-simulation analysis (Step 16) provides a suite of visualization functions in the `src/analysis/` module (primarily `visualizations.py`, re-exported from `post_simulation.py` for backward compatibility) that generate framework-specific and cross-framework visualizations from execution results.
 
 ### Per-Framework Visualization Functions
 

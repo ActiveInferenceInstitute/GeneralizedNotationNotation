@@ -3,7 +3,7 @@
 **Version**: v1.1.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,127 Tests Passing  
+**Test Count**: 1,083 Tests Passing  
 
 ## Pipeline Processing Standards
 
@@ -119,7 +119,7 @@ Every documentation file in `doc/gnn/` must include this header:
 **Version**: v1.1.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,127 Tests Passing  
+**Test Count**: 1,083 Tests Passing  
 ```
 
 ### Cross-Referencing

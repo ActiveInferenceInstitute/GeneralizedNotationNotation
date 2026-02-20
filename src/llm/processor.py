@@ -71,7 +71,7 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
                         logger.info(f"   ... and {len(models) - 5} more models")
                 else:
                     logger.warning("⚠️ Ollama is running but no models are installed")
-                    logger.info("To install a model, run: ollama pull smollm2:135m")
+                    logger.info("To install a model, run: ollama pull gemma3:4b")
 
                 return True, models
 
@@ -129,14 +129,14 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
                         # Try to install the default model
                         logger.info("📥 Installing default model...")
                         install_result = subprocess.run(
-                            ['ollama', 'pull', 'ministral-3:3b'],
+                            ['ollama', 'pull', 'gemma3:4b'],
                             capture_output=True,
                             text=True,
                             timeout=60
                         )
                         if install_result.returncode == 0:
                             logger.info("✅ Default model installed successfully")
-                            models = ['ministral-3:3b']
+                            models = ['gemma3:4b']
                         else:
                             logger.warning(f"⚠️ Failed to install default model: {install_result.stderr}")
 
@@ -175,7 +175,7 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
         logger.info("📝 To start Ollama, run in a separate terminal:")
         logger.info("   $ ollama serve")
         logger.info("📝 To install a lightweight model for testing:")
-        logger.info("   $ ollama pull smollm2:135m")
+        logger.info("   $ ollama pull gemma3:4b")
         logger.info("   $ ollama pull tinyllama")
         logger.info("ℹ️ LLM analysis will use fallback mode without live model interaction")
         return False, []
@@ -192,14 +192,9 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
     """
     # Preference order: prioritize smaller/faster models for reliability
     preferred_models = [
-        'smollm2:135m-instruct-q4_K_S',
-        'smollm2:135m',
-        'smollm2:360m',
-        'tinyllama',
-        'smollm2:1.7b',
-        'smollm2',
-        'gemma2:2b',
+        'gemma3:4b',
         'ministral-3:3b',
+        'tinyllama',
         'mistral:7b',
         'llama2:7b',
         'phi3',
@@ -227,7 +222,7 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
         return model
     
     # Ultimate fallback - use the smallest model
-    default_model = 'smollm2:135m-instruct-q4_K_S'
+    default_model = 'gemma3:4b'
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
     return default_model
@@ -402,7 +397,7 @@ async def _process_llm_async(
 
                         prompt_outputs = {}
                         # Use selected model or fallback
-                        ollama_model = selected_model if selected_model else 'ministral-3:3b'
+                        ollama_model = selected_model if selected_model else 'gemma3:4b'
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
                         # Ensure model is available, install if needed

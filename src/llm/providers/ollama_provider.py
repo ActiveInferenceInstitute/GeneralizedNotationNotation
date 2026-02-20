@@ -32,11 +32,7 @@ class OllamaProvider(BaseLLMProvider):
 
     # Include quality local models; smaller/faster ones prioritized for reliability
     AVAILABLE_MODELS = [
-        "smollm2:135m-instruct-q4_K_S",
-        "smollm2:360m",
-        "tinyllama:1.1b",
-        "smollm2:1.7b",
-        "gemma2:2b",
+        "gemma3:4b",
         "ministral-3:3b",
         "mistral:7b",
         "llama3.1:8b",
@@ -44,7 +40,7 @@ class OllamaProvider(BaseLLMProvider):
         "llama3.1:70b",
     ]
 
-    DEFAULT_MODEL = "smollm2:135m-instruct-q4_K_S"
+    DEFAULT_MODEL = "gemma3:4b"
 
     def __init__(self, **kwargs):
         super().__init__(api_key=None, **kwargs)

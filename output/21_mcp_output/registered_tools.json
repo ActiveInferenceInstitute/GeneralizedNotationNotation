@@ -7,6 +7,20 @@
     "version": "1.0.0"
   },
   {
+    "name": "get_analysis_capabilities",
+    "description": "Get available intelligent analysis capabilities, tools, and features.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "process_intelligent_analysis",
+    "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
     "name": "process_ml_integration",
     "description": "Process ML integration for GNN files including model training and inference setup.",
     "module": "",
@@ -16,13 +30,6 @@
   {
     "name": "process_research",
     "description": "Process research tasks for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.visualization.list_functions",
-    "description": "List callable functions exported by the src.visualization module public API.",
     "module": "",
     "category": "",
     "version": "1.0.0"

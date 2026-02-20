@@ -20,6 +20,7 @@ from analysis.post_simulation import (
     analyze_active_inference_metrics,
 )
 from render.processor import normalize_matrices
+from gnn.pomdp_extractor import POMDPStateSpace
 
 
 # =============================================================================
@@ -302,19 +303,13 @@ class TestAnalyzeActiveInferenceMetrics:
 class TestNormalizeMatrices:
     """Tests for normalize_matrices in render/processor.py."""
 
-    class _FakePOMDP:
-        """Minimal POMDP-like object for testing normalization."""
-        def __init__(self, A=None, B=None):
-            self.A_matrix = A
-            self.B_matrix = B
-
     def test_2d_a_matrix_normalization(self):
         """Columns of 2D A matrix should sum to 1 after normalization."""
         import logging
         log = logging.getLogger("test")
 
         A = np.array([[2.0, 1.0], [2.0, 3.0]])  # Columns sum to 4
-        pomdp = self._FakePOMDP(A=A)
+        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A)
         result = normalize_matrices(pomdp, log)
         col_sums = result.A_matrix.sum(axis=0)
         np.testing.assert_allclose(col_sums, [1.0, 1.0], atol=1e-10)
@@ -325,7 +320,7 @@ class TestNormalizeMatrices:
         log = logging.getLogger("test")
 
         B = np.ones((3, 3, 2))  # (next_state, curr_state, action), all ones
-        pomdp = self._FakePOMDP(B=B)
+        pomdp = POMDPStateSpace(num_states=3, num_observations=3, num_actions=2, B_matrix=B)
         result = normalize_matrices(pomdp, log)
         for a in range(2):
             col_sums = result.B_matrix[:, :, a].sum(axis=0)
@@ -337,7 +332,7 @@ class TestNormalizeMatrices:
         log = logging.getLogger("test")
 
         A = np.array([[0.0, 1.0], [0.0, 1.0]])  # Column 0 is all zeros
-        pomdp = self._FakePOMDP(A=A)
+        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A)
         result = normalize_matrices(pomdp, log)
         # Column 0 should now be uniform (0.5, 0.5)
         np.testing.assert_allclose(result.A_matrix[:, 0], [0.5, 0.5], atol=1e-10)
@@ -351,7 +346,7 @@ class TestNormalizeMatrices:
 
         A_list = [np.array([[3.0, 1.0], [1.0, 3.0]]),
                   np.array([[2.0, 2.0], [2.0, 2.0]])]
-        pomdp = self._FakePOMDP(A=A_list)
+        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1, A_matrix=A_list)
         result = normalize_matrices(pomdp, log)
         assert isinstance(result.A_matrix, list)
         for a in result.A_matrix:
@@ -363,7 +358,7 @@ class TestNormalizeMatrices:
         import logging
         log = logging.getLogger("test")
 
-        pomdp = self._FakePOMDP()
+        pomdp = POMDPStateSpace(num_states=2, num_observations=2, num_actions=1)
         result = normalize_matrices(pomdp, log)
         assert result.A_matrix is None
         assert result.B_matrix is None

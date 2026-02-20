@@ -19,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 try:
     from utils.pipeline_dependencies import get_pipeline_dependency_manager
-    from utils.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
+    from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
     from utils.pipeline import get_output_dir_for_script
 except ImportError as e:
     print(f"Warning: Could not import pipeline utilities: {e}")

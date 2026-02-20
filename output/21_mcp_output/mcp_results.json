@@ -1,12 +1,26 @@
 {
-  "timestamp": "2026-02-15T14:33:07.643394",
+  "timestamp": "2026-02-20T13:59:51.525737",
   "mcp_version": "1.1.3",
-  "tools_count": 14,
+  "tools_count": 16,
   "resources_count": 0,
   "tools": [
     {
       "name": "check_ml_frameworks",
       "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "get_analysis_capabilities",
+      "description": "Get available intelligent analysis capabilities, tools, and features.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_intelligent_analysis",
+      "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
       "module": "",
       "category": "",
       "version": "1.0.0"

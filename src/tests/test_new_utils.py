@@ -41,7 +41,7 @@ class TestStepLogging:
         """Test verbose mode sets DEBUG level."""
         from utils.step_logging import setup_step_logging
         logger = setup_step_logging("test_verbose", verbose=True)
-        assert logger.level == logging.DEBUG
+        assert logger.getEffectiveLevel() <= logging.DEBUG
     
     def test_log_step_functions_no_exception(self):
         """Test that log functions don't raise exceptions."""

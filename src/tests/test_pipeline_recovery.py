@@ -40,7 +40,7 @@ pytestmark = [pytest.mark.recovery, pytest.mark.safe_to_fail]
 
 @pytest.fixture
 def test_environment():
-    """Create a mock environment for testing."""
+    """Create an isolated environment for testing."""
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_path = Path(temp_dir)
         # Create necessary subdirectories
@@ -233,7 +233,7 @@ class TestErrorReportingRecovery:
     def test_error_recovery_logging(self, test_environment):
         """Test error recovery logging functionality."""
         import logging
-        from utils.logging_utils import log_step_error
+        from utils.logging.logging_utils import log_step_error
 
         # Create a test logger
         logger = logging.getLogger("test_error_recovery")
@@ -242,10 +242,10 @@ class TestErrorReportingRecovery:
         # It logs the error and doesn't raise an exception
         result = log_step_error(logger, "Test error occurred")
 
-        # The function logs the error and returns None (no return value)
-        # Success is determined by no exception being raised
-        assert result is None  # Function returns None
-        # The function should handle the error gracefully
+        # The structured logging version returns a status dict
+        assert isinstance(result, dict)
+        assert result["status"] == "ERROR"
+        assert result["message"] == "Test error occurred"
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"]) 

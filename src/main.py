@@ -69,7 +69,7 @@ PROJECT_ROOT = SCRIPT_DIR.parent     # project root (one level up from src/)
 # Change working directory to project root if not already there
 if Path.cwd() != PROJECT_ROOT:
     os.chdir(PROJECT_ROOT)
-    print(f"Changed working directory to project root: {PROJECT_ROOT}")
+    logging.getLogger(__name__).info(f"Changed working directory to project root: {PROJECT_ROOT}")
 
 # Add src to path for imports
 sys.path.insert(0, str(SCRIPT_DIR))
@@ -88,7 +88,7 @@ from utils.pipeline_validator import validate_step_prerequisites, validate_pipel
 
 # Optional logging and progress tracking
 try:
-    from utils.logging_utils import (
+    from utils.logging.logging_utils import (
         PipelineProgressTracker,
         VisualLoggingEnhancer,
         PipelineLogger,
@@ -131,14 +131,27 @@ except ImportError as e:
             self.name = name
             self.config = config
             self._correlation_id = None
-        def set_correlation_id(self, cid): self._correlation_id = cid
-        def print_progress(self, current, total, message): print(f"[{current}/{total}] {message}")
-        def print_step_header(self, step_num, description, total): print(f"\n=== Step {step_num}/{total}: {description} ===")
+            self.logger = logging.getLogger(name)
+            
+        def set_correlation_id(self, correlation_id):
+            self._correlation_id = correlation_id
+            
+        def print_progress(self, current, total, message): self.logger.info(f"[{current}/{total}] {message}")
+        def print_step_header(self, step_num, description, total): self.logger.info(f"\n=== Step {step_num}/{total}: {description} ===")
 
-    def create_visual_logger(name, config): return VisualLogger(name, config)
-    def print_pipeline_banner(title, subtitle): print(f"\n{'='*60}\n{title}\n{subtitle}\n{'='*60}")
-    def print_step_summary(step, desc, status, duration, stats): print(f"Step {step}: {desc} - {status} ({duration:.2f}s)")
-    def print_completion_summary(success, duration, stats): print(f"\n{'='*60}\nPipeline {'COMPLETED' if success else 'FAILED'} in {duration:.2f}s\n{stats}\n{'='*60}")
+    def create_visual_logger(name, config):
+        vl = VisualLogger(name, config)
+        return vl
+
+    def print_pipeline_banner(title, subtitle):
+        logging.getLogger("pipeline").info(f"\n{'='*60}\n{title}\n{subtitle}\n{'='*60}")
+        
+    def print_step_summary(step, desc, status, duration, stats):
+        logging.getLogger("pipeline").info(f"Step {step}: {desc} - {status} ({duration:.2f}s)")
+        
+    def print_completion_summary(success, duration, stats):
+        status_msg = 'COMPLETED' if success else 'FAILED'
+        logging.getLogger("pipeline").info(f"\n{'='*60}\nPipeline {status_msg} in {duration:.2f}s\n{stats}\n{'='*60}")
 
 def main():
     """Main pipeline orchestration function."""
@@ -185,7 +198,7 @@ def main():
     else:
         # Use the logging_utils version directly to avoid duplicate setup
         try:
-            from utils.logging_utils import setup_step_logging as _setup_step_logging
+            from utils.logging.logging_utils import setup_step_logging as _setup_step_logging
             logger = _setup_step_logging("pipeline", args.verbose)
         except ImportError:
             logger = setup_step_logging("pipeline", args.verbose)
@@ -330,7 +343,7 @@ def main():
         if STRUCTURED_LOGGING_AVAILABLE:
             progress_tracker = PipelineProgressTracker(len(steps_to_execute))
             # Set global progress tracker so structured logging functions can use it
-            import utils.logging_utils as logging_utils_module
+            import utils.logging.logging_utils as logging_utils_module
             logging_utils_module._global_progress_tracker = progress_tracker
         
         # Validate step sequence before execution
@@ -354,10 +367,9 @@ def main():
 
             # Step start logging with progress tracking
             if STRUCTURED_LOGGING_AVAILABLE and progress_tracker:
-                progress_header = progress_tracker.start_step(actual_step_number, description)
-                logger.info(progress_header)
+                progress_tracker.start_step(actual_step_number, description)
                 # Use structured logging functions that support additional parameters
-                from utils.logging_utils import log_step_start as structured_log_step_start
+                from utils.logging.logging_utils import log_step_start as structured_log_step_start
                 structured_log_step_start(logger, f"Starting {description}",
                                       step_number=actual_step_number,
                                       total_steps=len(steps_to_execute),
@@ -477,19 +489,19 @@ def main():
                 # Use structured logging functions that support additional parameters
                 # These functions will handle progress tracking via the global tracker
                 if status_for_logging.startswith("SUCCESS"):
-                    from utils.logging_utils import log_step_success as structured_log_step_success
+                    from utils.logging.logging_utils import log_step_success as structured_log_step_success
                     structured_log_step_success(logger, f"{description} completed",
                                         step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
                 elif "WARNING" in status_for_logging:
-                    from utils.logging_utils import log_step_warning as structured_log_step_warning
+                    from utils.logging.logging_utils import log_step_warning as structured_log_step_warning
                     structured_log_step_warning(logger, f"{description} completed with warnings",
                                         step_number=actual_step_number,
                                         duration=step_duration,
                                             status=status_for_logging)
                 else:
-                    from utils.logging_utils import log_step_error as structured_log_step_error
+                    from utils.logging.logging_utils import log_step_error as structured_log_step_error
                     structured_log_step_error(logger, f"{description} failed",
                                         step_number=actual_step_number,
                                         duration=step_duration,
@@ -684,21 +696,9 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         # Execute step with timeout
         try:
             # Use appropriate timeout for different step types
-            if script_name == "2_tests.py":
-                # Check if comprehensive testing is requested
-                comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
-                step_timeout_seconds = 1200 if comprehensive_requested else 900  # 20 min for comprehensive, 15 min for others
-            elif script_name == "13_llm.py":
-                # LLM processing can take longer due to API calls and analysis
-                step_timeout_seconds = 600  # 10 minutes for LLM processing
-            elif script_name == "22_gui.py":
-                # GUI step needs more time for initialization even in headless mode
-                step_timeout_seconds = 600  # 10 minutes for GUI initialization
-            elif script_name in ["11_render.py", "12_execute.py"]:
-                # Rendering and execution steps may take longer with multiple frameworks
-                step_timeout_seconds = 300  # 5 minutes for framework operations
-            else:
-                step_timeout_seconds = 120  # 2 minutes default for other steps
+            from pipeline.step_timeouts import get_step_timeout
+            comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
+            step_timeout_seconds = get_step_timeout(script_name, comprehensive=comprehensive_requested)
 
             # Track memory during execution
             process_start_time = time.time()

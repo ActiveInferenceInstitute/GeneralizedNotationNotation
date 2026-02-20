@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.1.3  
-**Last Updated**: 2026-01-22  
+**Version**: 1.1.4  
+**Last Updated**: 2026-02-20  
 **Status**: ✅ Production Ready
 
 ---
@@ -37,6 +37,7 @@ All numbered pipeline scripts (0-24) MUST follow the thin orchestrator pattern:
 ```
 
 **Requirements:**
+
 - Orchestrator scripts: <150 lines
 - No domain logic in orchestrators
 - All processing in module directories
@@ -70,6 +71,7 @@ Every module directory MUST contain:
 ### 25-Step Pipeline (0-24)
 
 **Core Processing (Steps 0-9)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 0 | `0_template.py` | `template/` | Pipeline initialization |
@@ -84,6 +86,7 @@ Every module directory MUST contain:
 | 9 | `9_advanced_viz.py` | `advanced_visualization/` | Interactive plots |
 
 **Simulation & Analysis (Steps 10-16)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 10 | `10_ontology.py` | `ontology/` | Ontology processing |
@@ -95,6 +98,7 @@ Every module directory MUST contain:
 | 16 | `16_analysis.py` | `analysis/` | Statistical analysis |
 
 **Integration & Output (Steps 17-24)**
+
 | Step | Script | Module | Purpose |
 |------|--------|--------|---------|
 | 17 | `17_integration.py` | `integration/` | System integration |
@@ -121,10 +125,12 @@ Every module directory MUST contain:
 ## Technical Requirements
 
 ### Python Version
+
 - **Minimum**: Python 3.11+
 - **Recommended**: Python 3.12.x or 3.13.x
 
 ### Core Dependencies
+
 ```
 numpy>=1.24.0
 networkx>=3.0
@@ -133,6 +139,7 @@ jsonschema>=4.0
 ```
 
 ### Optional Dependencies
+
 | Group | Packages | Purpose |
 |-------|----------|---------|
 | `pymdp` | pymdp, jax | Active Inference simulation |
@@ -174,17 +181,20 @@ def module_operation(input: str, output_path: str) -> dict:
 ## Quality Standards
 
 ### Code Requirements
+
 - Type hints for all public functions
 - Docstrings for all classes and methods
 - >80% test coverage per module
 - No syntax errors (validated on commit)
 
 ### Documentation Requirements
+
 - AGENTS.md: Module capabilities and API reference
 - README.md: Usage examples and quick start
 - Inline comments for complex logic
 
 ### Testing Requirements
+
 - Unit tests in `src/tests/test_{module}_*.py`
 - Integration tests for cross-module flows
 - No mock implementations in production code

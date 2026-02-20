@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-15T15:30:16.317547",
+  "timestamp": "2026-02-20T13:54:58.479017",
   "step_name": "template",
   "input_directory": "input/gnn_files",
   "output_directory": "output/0_template_output",
@@ -7,7 +7,7 @@
   "successful_files": 1,
   "failed_files": 1,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   },

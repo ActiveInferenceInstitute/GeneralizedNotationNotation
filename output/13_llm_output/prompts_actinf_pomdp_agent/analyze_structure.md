@@ -1,33 +1,38 @@
 # ANALYZE_STRUCTURE
 
-You've outlined the key areas you'd like to focus on when analyzing GNN examples in terms of graphical representations and structural analysis of network graphs, as well as potential design patterns. Here's a rewritten summary:
+Okay, let’s dissect this GNN specification for the Active Inference POMDP Agent. This is a well-structured example, clearly designed to illustrate core Active Inference principles. Here’s a detailed analysis, broken down as requested:
 
-1. **Graph Structure**:
-   - Number of variables and their types (dimensionality)
-   - Connection pattern matrices with transparency/bi-linearity properties
-   - Graph topology structures for each variable (directed/unidirectional, etc.)
-   - Graph structure based on specific characteristics like network dimensionality or connectivity patterns
+**1. Graph Structure:**
 
-You've effectively covered the essential points to provide a detailed structural analysis of GNN examples. This includes information about graph representation, matrix dimensions and compatibility, modeling conventions, potential bottlenecks/challenges, design patterns (different perspectives), and various design considerations you've considered throughout your response.
+*   **Nodes:** The GNN defines 16 distinct nodes:
+    *   `A` (Likelihood Matrix)
+    *   `B` (Transition Matrix)
+    *   `C` (Log Preference Vector)
+    *   `D` (Prior Over Hidden States)
+    *   `E` (Habit)
+    *   `s` (Current Hidden State)
+    *   `s_prime` (Next Hidden State)
+    *   `F` (Variational Free Energy)
+    *   `o` (Observation)
+    *   `π` (Policy Vector)
+    *   `u` (Action)
+    *   `G` (Expected Free Energy)
+    *   `t` (Time)
+*   **Edges:** The connections (represented by `>`) define a directed graph. The connections are:
+    *   `D > s`: Prior influences the current hidden state.
+    *   `s - A`: Hidden state influences the likelihood of observations.
+    *   `s > s_prime`: Hidden state transitions to the next state.
+    *   `A - o`: Likelihood matrix maps hidden states to observations.
+    *   `s - B`: Hidden state influences the transition matrix.
+    *   `C > G`: Log preferences drive the expected free energy.
+    *   `E > π`: Habit influences the policy vector.
+    *   `G > π`: Expected free energy shapes the policy.
+    *   `π > u`: Policy dictates the chosen action.
+    *   `B > u`: Transition matrix determines the action.
+    *   `u > s_prime`: Action influences the next hidden state.
+*   **Topology:** The graph is essentially a directed acyclic graph (DAG). It represents a flow of information and influence, reflecting the core Active Inference loop: Perception -> Belief Update -> Action Selection -> Perception.  It’s a relatively simple, linear flow, suitable for illustrating the basic mechanics.
 
-2. **Variable Analysis**:
-   - State space dimensionality for each variable
-   - Dependency relationships between variables
-   - Temporal ordering of the network graph
-   - Symmetries or special properties of the network structure
+**2. Variable Analysis:**
 
-Moving forward, I'd like to focus on identifying potential design patterns that might help simplify and improve the analysis:
-
-3. **Symmetry and Special Properties**:
-   - What designs can you identify in terms of symmetry/special properties? (e.g., connected components using connection operators)
-   - How do these designs impact modeling complexity, computational efficiency, scalability, etc.?
-   - Can you provide insights into how they relate to other design patterns we might encounter or explore elsewhere
-
-4. **Design Patterns**:
-   - What specific aspects of GNN examples in terms of data flow vs. graph structure and network topology?
-   - How do these patterns impact modeling complexity/computational efficiency, scalability, etc.?
-
-Finally, we can revisit potential design choices for simplifying the analysis: 
-
-5. **Recommendations**:
-   - Which design patterns might be suitable to simplify analysis given specific GNN examples or domain-specific constraints (e.g., restricted variables vs. global parameters)?
+*   **State Space Dimensionality:**
+    *   `s` (

@@ -84,7 +84,7 @@ graph TB
 **Numbered Scripts** (`src/N_module.py`):
 
 - Handle argument parsing via `utils.argument_utils.ArgumentParser`
-- Setup logging via `utils.logging_utils.setup_step_logging`
+- Setup logging via `utils.logging.logging_utils.setup_step_logging`
 - Get output directories via `pipeline.config.get_output_dir_for_script`
 - Call module processing functions from `module/__init__.py`
 - Return standardized exit codes (0=success, 1=error, 2=warning)
@@ -200,13 +200,13 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-02-09)
+### Latest Status (2026-02-20)
 
 - **Total Steps**: 25 (all steps 0-24)
 - **Execution Time**: ~3 minutes (172.7s - 180s)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,127 tests passed
+- **Test Suite Status**: ✅ 1,083 tests passed (4 skipped, 84 deselected — optional deps)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -224,13 +224,13 @@ graph TD
 - **Screen Reader Support**: Accessible output with emoji-free alternatives for assistive technologies
 - **Performance Monitoring**: Built-in timing and resource consumption tracking with visual displays
 
-### Recent Validation (2026-01-22)
+### Recent Validation (2026-02-20)
 
 - **Confirmed**: Full pipeline execution with 100% success rate and enhanced visual logging
-- **Performance**: All 24 steps complete in under 3 minutes with comprehensive progress tracking
-- **Tests**: 1,127 passed, 21 skipped (optional dependencies)
+- **Performance**: All 25 steps complete in under 3 minutes with comprehensive progress tracking
+- **Tests**: 1,083 passed, 4 skipped (optional dependencies)
 - **Memory Efficiency**: Peak usage 36.3MB demonstrates good resource management
-- **Package Health**: 148 packages installed and validated via UV
+- **LLM Default Model**: `gemma3:4b` via Ollama (configurable)
 - **Visual Accessibility**: All pipeline steps now include enhanced visual indicators and progress tracking
 
 ---
@@ -520,10 +520,10 @@ Each module provides specialized agent capabilities for different aspects of Act
 
 ---
 
-**Last Updated**: 2026-02-09
-**Pipeline Version**: 1.1.3
+**Last Updated**: 2026-02-20
+**Pipeline Version**: 1.1.4
 **Total Modules**: 29
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 1,127 tests passed
+**Test Status**: ✅ 1,083 tests passed
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

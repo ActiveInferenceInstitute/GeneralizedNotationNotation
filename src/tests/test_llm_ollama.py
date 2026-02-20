@@ -46,7 +46,7 @@ def _ollama_available() -> bool:
         return False
 
 
-OLLAMA_TEST_MODEL = os.getenv("OLLAMA_TEST_MODEL", os.getenv("OLLAMA_MODEL", "smollm2:135m-instruct-q4_K_S"))
+OLLAMA_TEST_MODEL = os.getenv("OLLAMA_TEST_MODEL", os.getenv("OLLAMA_MODEL", "gemma3:4b"))
 
 
 @pytest.mark.unit

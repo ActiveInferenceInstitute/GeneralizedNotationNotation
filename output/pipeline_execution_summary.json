@@ -1,0 +1,52 @@
+{
+    "start_time": "2026-02-20T13:53:37.921985",
+    "arguments": {
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": false,
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "3",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low"
+    },
+    "steps": [],
+    "end_time": "2026-02-20T13:53:37.925531",
+    "overall_status": "FAILED",
+    "total_duration_seconds": 0.003546,
+    "environment_info": {
+        "python_version": "3.13.12 (main, Feb  3 2026, 17:53:27) [Clang 17.0.0 (clang-1700.6.3.2)]",
+        "platform": "darwin",
+        "cpu_count": 14,
+        "working_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation",
+        "user": "4d",
+        "memory_total_gb": "24.0",
+        "disk_free_gb": "18.8"
+    },
+    "performance_summary": {
+        "peak_memory_mb": 0.0,
+        "total_steps": 1,
+        "failed_steps": 0,
+        "critical_failures": 0,
+        "successful_steps": 0,
+        "warnings": 0
+    }
+}

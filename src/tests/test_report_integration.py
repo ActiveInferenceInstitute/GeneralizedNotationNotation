@@ -70,9 +70,20 @@ class TestReportPipelineIntegration:
         viz_dir = tmp_path / "output" / "8_visualization_output"
         viz_dir.mkdir(parents=True, exist_ok=True)
         
-        # Create mock visualization files
-        (viz_dir / "graph.png").write_bytes(b"fake png")
-        (viz_dir / "matrix_heatmap.png").write_bytes(b"fake png")
+        import matplotlib.pyplot as plt
+        import io
+        
+        # Determine genuine minimal PNG bytes
+        fig, ax = plt.subplots(figsize=(1,1))
+        ax.plot([0,1], [0,1])
+        buf = io.BytesIO()
+        fig.savefig(buf, format='png')
+        real_png_bytes = buf.getvalue()
+        plt.close(fig)
+        
+        # Create real visualization files
+        (viz_dir / "graph.png").write_bytes(real_png_bytes)
+        (viz_dir / "matrix_heatmap.png").write_bytes(real_png_bytes)
         
         report_output = tmp_path / "report_output"
         report_output.mkdir(parents=True, exist_ok=True)

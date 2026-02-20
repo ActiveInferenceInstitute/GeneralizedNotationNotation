@@ -3,7 +3,7 @@
 **Version**: v1.1.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,127 Tests Passing  
+**Test Count**: 1,083 Tests Passing  
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
@@ -208,7 +208,7 @@ All GNN documentation follows these principles:
 - ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (28/28 modules)
 - ✅ 100% pipeline success rate (~3 minutes / 172.7 seconds execution time)
-- ✅ 1,127 tests passing
+- ✅ 1,083 tests passing
 - ✅ Enhanced visual logging across all steps
 - ✅ Comprehensive cross-referencing between documentation
 

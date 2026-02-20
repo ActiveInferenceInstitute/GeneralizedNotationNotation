@@ -501,7 +501,7 @@ Please provide analysis in EXACTLY this format:
         messages = [LLMMessage(role="user", content=prompt)]
         response = await processor.get_response(
             messages=messages,
-            model_name="gpt-4o",
+            model_name="gemma3:4b",
             max_tokens=2500
         )
         return response.content

@@ -148,7 +148,7 @@ class TestOllamaModelSelection:
         
         # Test with various model lists
         test_cases = [
-            (["llama2:7b", "smollm2:135m"], "smollm2:135m"),
+            (["llama2:7b", "gemma3:4b"], "gemma3:4b"),
             (["mistral:7b", "tinyllama"], "tinyllama"),
             (["llama2", "gemma2:2b"], "gemma2:2b"),
         ]
@@ -168,7 +168,7 @@ class TestOllamaModelSelection:
         test_model = "my-custom-model:latest"
         monkeypatch.setenv('OLLAMA_MODEL', test_model)
         
-        models = ["smollm2:135m", "llama2:7b"]
+        models = ["gemma3:4b", "llama2:7b"]
         selected = _select_best_ollama_model(models, logger)
         
         # Should use environment variable
@@ -181,7 +181,7 @@ class TestOllamaModelSelection:
         
         logger = logging.getLogger("test_model_selection")
         
-        models = ["smollm2:135m", "llama2:7b"]
+        models = ["gemma3:4b", "llama2:7b"]
         selected = _select_best_ollama_model(models, logger)
         
         log_text = caplog.text

@@ -330,7 +330,7 @@ systemctl start ollama
 **Solution**:
 ```bash
 # Install a lightweight model for testing
-ollama pull smollm2:135m
+ollama pull gemma3:4b
 
 # Or install a more capable model
 ollama pull tinyllama
@@ -338,7 +338,7 @@ ollama pull llama2:7b
 ```
 
 **Recommended Models for GNN Analysis**:
-- **Fast & Small**: `smollm2:135m` (~135MB, 1-2s per prompt)
+- **Fast & Small**: `gemma3:4b` (~135MB, 1-2s per prompt)
 - **Balanced**: `tinyllama` (~637MB, 3-5s per prompt)
 - **High Quality**: `llama2:7b` (~3.8GB, 10-30s per prompt)
 
@@ -359,7 +359,7 @@ ollama list
 
 - Use faster model:
   ```bash
-  export OLLAMA_MODEL=smollm2:135m
+  export OLLAMA_MODEL=gemma3:4b
   ```
 
 **Performance Tips**:
@@ -382,7 +382,7 @@ OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
 **Automatic Selection**:
 - ✅ Module automatically selects best available model
 - Priority: smallest/fastest models first
-- Preference order: smollm2 → tinyllama → llama2 → mistral
+- Preference order: gemma3:4b → tinyllama → llama2 → mistral
 
 **Check Which Model Was Used**:
 ```bash
@@ -419,7 +419,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 **Solutions**:
 1. **Use faster model**:
    ```bash
-   export OLLAMA_MODEL=smollm2:135m  # ~1-2s per prompt
+   export OLLAMA_MODEL=gemma3:4b  # ~1-2s per prompt
    ```
 
 2. **Reduce prompt complexity**:
@@ -440,7 +440,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    ```
 
 **Performance Benchmarks**:
-- `smollm2:135m`: ~1-2s per prompt
+- `gemma3:4b`: ~1-2s per prompt
 - `tinyllama`: ~3-5s per prompt
 - `llama2:7b` (CPU): ~10-30s per prompt
 - `llama2:7b` (GPU): ~2-5s per prompt
@@ -451,7 +451,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 **Solution**:
 1. **Use smaller models**:
    ```bash
-   ollama pull smollm2:135m  # Requires ~200MB RAM
+   ollama pull gemma3:4b  # Requires ~200MB RAM
    ```
 
 2. **Limit concurrent processing**:
@@ -466,7 +466,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    ```
 
 **Memory Requirements**:
-- `smollm2:135m`: ~200MB RAM
+- `gemma3:4b`: ~200MB RAM
 - `tinyllama`: ~700MB RAM
 - `llama2:7b`: ~4-6GB RAM
 - `llama2:13b`: ~8-12GB RAM
@@ -509,7 +509,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
    ```
 
 2. **Use Appropriate Model for Task**:
-   - **Quick Testing**: `smollm2:135m`
+   - **Quick Testing**: `gemma3:4b`
    - **Balanced Analysis**: `tinyllama`
    - **Deep Analysis**: `llama2:7b`
 
@@ -525,7 +525,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 4. **Optimize for Speed**:
    ```bash
    # Use fastest model and limit tokens
-   export OLLAMA_MODEL=smollm2:135m
+   export OLLAMA_MODEL=gemma3:4b
    export OLLAMA_MAX_TOKENS=256
    export OLLAMA_TIMEOUT=30
    ```
@@ -543,7 +543,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 ```bash
 # Model selection
 export OLLAMA_MODEL=tinyllama           # Override automatic selection
-export OLLAMA_TEST_MODEL=smollm2:135m   # Test/CI model
+export OLLAMA_TEST_MODEL=gemma3:4b   # Test/CI model
 
 # Performance tuning
 export OLLAMA_MAX_TOKENS=512            # Maximum response length

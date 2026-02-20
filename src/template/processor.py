@@ -74,7 +74,7 @@ def safe_template_execution(logger, correlation_id: str):
         try:
             from utils.error_recovery import ErrorRecoverySystem
             from utils.resource_manager import ResourceTracker, get_system_info
-            from utils.logging_utils import set_correlation_context
+            from utils.logging.logging_utils import set_correlation_context
             
             # Initialize error recovery system
             error_recovery = ErrorRecoverySystem()
@@ -294,6 +294,21 @@ def process_template_standardized(
                 return True  # Not an error, just no files to process
             
             logger.info(f"Found {len(input_files)} files to process")
+            
+            # Filter out binary and system files (.DS_Store, etc.)
+            SKIP_PATTERNS = {'.DS_Store', 'Thumbs.db', '.gitkeep', '.gitignore'}
+            SKIP_EXTENSIONS = {'.pyc', '.pyo', '.so', '.dylib', '.dll', '.exe', '.bin', '.dat'}
+            filtered_files = [
+                f for f in input_files
+                if f.name not in SKIP_PATTERNS
+                and f.suffix.lower() not in SKIP_EXTENSIONS
+                and not f.name.startswith('.')
+            ]
+            
+            if len(filtered_files) < len(input_files):
+                skipped = len(input_files) - len(filtered_files)
+                logger.info(f"Filtered out {skipped} binary/system files")
+                input_files = filtered_files
             
             # Process files
             successful_files = 0

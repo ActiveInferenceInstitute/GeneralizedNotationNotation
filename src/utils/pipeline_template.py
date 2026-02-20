@@ -38,26 +38,22 @@ try:
     )
     
 except ImportError as e:
-    # Fallback logging setup
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
-    # Create minimal compatibility functions
-    def setup_step_logging(name: str, verbose: bool = False):
-        logger = logging.getLogger(name)
-        logger.setLevel(logging.DEBUG if verbose else logging.INFO)
-        return logger
-    
-    def log_step_start(logger, message): logger.info(f"🚀 {message}")
-    def log_step_success(logger, message): logger.info(f"✅ {message}")
-    def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
-    def log_step_error(logger, message): logger.error(f"❌ {message}")
-    def validate_output_directory(output_dir, step_name): 
+    # Fallback: use step_logging (always importable, no external deps)
+    from utils.step_logging import (
+        setup_step_logging,
+        log_step_start,
+        log_step_success,
+        log_step_warning,
+        log_step_error,
+    )
+
+    def validate_output_directory(output_dir, step_name):
         try:
             (output_dir / f"{step_name}_step").mkdir(parents=True, exist_ok=True)
             return True
         except Exception:
             return False
-    
+
     UTILS_AVAILABLE = False
 
 def create_standard_pipeline_script(

@@ -664,7 +664,7 @@ analysis = analyze_gnn_model_with_llm(content, model_name, debug=True, verbose=T
 Set these environment variables to use small, fast models locally:
 
 ```
-OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
+OLLAMA_MODEL=gemma3:4b
 OLLAMA_MAX_TOKENS=256
 OLLAMA_TIMEOUT=60
 ```
@@ -675,10 +675,10 @@ You can also point to a different host:
 OLLAMA_HOST=http://127.0.0.1:11434
 ```
 
-See models like `smollm2`, `smollm`, and `tinyllama` in the Ollama library.
+See models like `gemma3:4b`, `gemma3:4b`, and `tinyllama` in the Ollama library.
 
-- `smollm2` tiny variants: smollm2:135m-instruct-q4_K_S, 360m, 1.7b
-- `smollm` family (older): smollm:135m, smollm:360m, smollm:1.7b
+- `gemma3:4b` tiny variants: gemma3:4b, 360m, 1.7b
+- `gemma3:4b` family (older): gemma3:4b:135m, gemma3:4b:360m, gemma3:4b:1.7b
 - `tinyllama`: tinyllama:1.1b
 
 ## Future Enhancements

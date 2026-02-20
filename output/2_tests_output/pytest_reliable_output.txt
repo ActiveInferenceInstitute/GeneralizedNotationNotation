@@ -1,0 +1,223 @@
+STDOUT:
+
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_module_imports 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [    INFO] root: GNN module imports validated
+PASSED                                                                   [  1%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_discovery 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [    INFO] root: GNN file discovery validated: 1 files found
+PASSED                                                                   [  2%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_file_parsing 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [ WARNING] root: Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'file_name': 'simple.gnn', 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxv0adj4d/simple.gnn', 'file_size': 152, 'parse_timestamp': '2026-02-20T13:56:04.854381', ...}
+PASSED                                                                   [  4%]
+src/tests/test_core_modules.py::TestGNNModuleComprehensive::test_gnn_validation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [    INFO] root: Validation result for simple.gnn: True
+PASSED                                                                   [  5%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_render_module_imports 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [    INFO] root: Render module imports validated
+PASSED                                                                   [  7%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_pymdp_rendering 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-02-20 13:56:04 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-02-20 13:56:04 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-02-20 13:56:04 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-02-20 13:56:04 [    INFO] root: PyMDP rendering validated
+PASSED                                                                   [  8%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_rxinfer_rendering 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:04 [    INFO] src.render.rxinfer.rxinfer_renderer: Successfully generated RxInfer.jl script for GNN_Model
+2026-02-20 13:56:04 [    INFO] root: RxInfer POMDP validated: 3 actions
+2026-02-20 13:56:04 [    INFO] root: RxInfer POMDP rendering validated
+PASSED                                                                   [ 10%]
+src/tests/test_core_modules.py::TestRenderModuleComprehensive::test_discopy_rendering PASSED [ 11%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execute_module_imports PASSED [ 12%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_execution_environment_validation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:06 [ WARNING] root: Execution environment validation failed: Status should contain python_version
+assert 'python_version' in {'overall_status': 'healthy', 'results': [{'component': 'python_version', 'details': {'version': '3.12.11'}, 'message': 'Python 3.12 is supported', 'status': 'pass', ...}, {'component': 'memory', 'details': {'available_gb': 5.032867431640625, 'total_gb': 24.0}, 'message': 'Sufficient memory: 24.0GB available', 'status': 'pass', ...}, {'component': 'disk_space', 'details': {'free_gb': 19.888885498046875, 'total_gb': 460.4317207336426}, 'message': 'Sufficient disk space: 19.9GB free', 'status': 'pass', ...}, {'component': 'cpu_usage', 'details': {'cpu_count': 14, 'cpu_percent': 21.6}, 'message': 'Normal CPU usage: 21.6%', 'status': 'pass', ...}, {'component': 'dependency_numpy', 'details': {'min_version': '1.19.0', 'package': 'numpy', 'version': '2.3.5'}, 'message': 'numpy 2.3.5 is available', 'status': 'pass', ...}, {'component': 'dependency_matplotlib', 'details': {'min_version': '3.3.0', 'package': 'matplotlib', 'version': '3.10.8'}, 'message': 'matplotlib 3.10.8 is available', 'status': 'pass', ...}, ...], 'summary': {'total_checks': 15, 'total_errors': 0, 'total_passed': 15, 'total_warnings': 0}, 'timestamp': '2026-02-20T13:56:04.948013'}
+PASSED                                                                   [ 14%]
+src/tests/test_core_modules.py::TestExecuteModuleComprehensive::test_safe_script_execution PASSED [ 15%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_module_imports 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:06 [    INFO] src.llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
+2026-02-20 13:56:06 [    INFO] src.llm.llm_operations: Created new LLM processor
+PASSED                                                                   [ 17%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:06 [    INFO] src.llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
+2026-02-20 13:56:06 [    INFO] src.llm.llm_operations: Created new LLM processor
+2026-02-20 13:56:06 [    INFO] httpx: HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-02-20 13:56:06 [    INFO] src.llm.providers.ollama_provider: Ollama provider initialized (python client)
+2026-02-20 13:56:06 [    INFO] src.llm.llm_processor: Initialized ollama provider
+2026-02-20 13:56:06 [    INFO] src.llm.providers.openai_provider: OpenAI provider initialized successfully
+2026-02-20 13:56:06 [    INFO] src.llm.llm_processor: Initialized openai provider
+2026-02-20 13:56:06 [    INFO] src.llm.llm_processor: LLM Processor initialized with 2/4 providers
+2026-02-20 13:56:06 [    INFO] httpx: HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
+2026-02-20 13:56:06 [   ERROR] src.llm.providers.openai_provider: OpenAI API call failed: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-02-20 13:56:06 [   ERROR] src.llm.llm_processor: Analysis failed with openai: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-proj-********************************************************************************************************************************************************psgA. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'code': 'invalid_api_key', 'param': None}, 'status': 401}
+2026-02-20 13:56:16 [    INFO] httpx: HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+PASSED                                                                   [ 18%]
+src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_description_generation PASSED [ 20%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_module_imports 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] mcp: Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-02-20 13:56:16 [    INFO] root: MCP module imports validated
+PASSED                                                                   [ 21%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_tool_registration 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [ WARNING] root: MCP tool registration failed: Tools should be a list
+assert False
+ +  where False = isinstance(True, list)
+PASSED                                                                   [ 22%]
+src/tests/test_core_modules.py::TestMCPModuleComprehensive::test_mcp_request_handling 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] src.mcp.processor: Handling MCP request: tools/list
+2026-02-20 13:56:16 [    INFO] root: MCP request handling validated
+PASSED                                                                   [ 24%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED [ 25%]
+src/tests/test_core_modules.py::TestOntologyModuleComprehensive::test_ontology_term_validation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] ontology: 🚀 Starting step: Processing ontology
+2026-02-20 13:56:16 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-02-20 13:56:16 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+2026-02-20 13:56:16 [    INFO] ontology: ✅ Ontology processing completed successfully
+PASSED                                                                   [ 27%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_module_imports PASSED [ 28%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_website_generation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] website: Website generated successfully with 1 pages
+PASSED                                                                   [ 30%]
+src/tests/test_core_modules.py::TestWebsiteModuleComprehensive::test_html_report_creation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] website: Website generated successfully with 1 pages
+PASSED                                                                   [ 31%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_module_imports 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: SAPF module imports validated successfully
+PASSED                                                                   [ 32%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_gnn_to_sapf_conversion 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: GNN to SAPF conversion validated
+PASSED                                                                   [ 34%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_validation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: SAPF validation functionality confirmed
+PASSED                                                                   [ 35%]
+src/tests/test_core_modules.py::TestSAPFModuleComprehensive::test_sapf_audio_generation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: SAPF audio generation functionality confirmed
+PASSED                                                                   [ 37%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_coordination 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [ WARNING] src.render.pymdp.pymdp_renderer: A matrix (likelihood) not found in initial parameterization
+2026-02-20 13:56:16 [ WARNING] src.render.pymdp.pymdp_renderer: B matrix (transition) not found in initial parameterization
+2026-02-20 13:56:16 [ WARNING] src.render.pymdp.pymdp_renderer: C vector (preferences) not found in initial parameterization
+2026-02-20 13:56:16 [ WARNING] src.render.pymdp.pymdp_renderer: D vector (prior) not found in initial parameterization
+2026-02-20 13:56:16 [ WARNING] root: Core module coordination failed: execute_gnn_model() got an unexpected keyword argument 'timeout'
+PASSED                                                                   [ 38%]
+src/tests/test_core_modules.py::TestCoreModuleIntegration::test_module_data_flow 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Module data flow validated
+PASSED                                                                   [ 40%]
+src/tests/test_core_modules.py::test_core_module_completeness 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Core module completeness: 5/5 modules available
+PASSED                                                                   [ 41%]
+src/tests/test_core_modules.py::test_core_module_performance 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Core module performance test completed
+PASSED                                                                   [ 42%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_python_environment PASSED [ 44%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_test_configuration PASSED [ 45%]
+src/tests/test_fast_suite.py::TestFastEnvironment::test_essential_directories PASSED [ 47%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_module_import PASSED [ 48%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_file_creation PASSED [ 50%]
+src/tests/test_fast_suite.py::TestFastGNNProcessing::test_gnn_content_validation PASSED [ 51%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_utils_module_import PASSED [ 52%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_pipeline_module_import PASSED [ 54%]
+src/tests/test_fast_suite.py::TestFastPipelineComponents::test_type_checker_import PASSED [ 55%]
+src/tests/test_fast_suite.py::TestFastExport::test_export_module_import PASSED [ 57%]
+src/tests/test_fast_suite.py::TestFastExport::test_basic_export_functionality PASSED [ 58%]
+src/tests/test_fast_suite.py::TestFastVisualization::test_visualization_module_import PASSED [ 60%]
+src/tests/test_fast_suite.py::TestFastRender::test_render_module_import PASSED [ 61%]
+src/tests/test_fast_suite.py::TestFastExecute::test_execute_module_import PASSED [ 62%]
+src/tests/test_fast_suite.py::TestFastLLM::test_llm_module_import 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] llm.llm_processor: Loaded API keys for providers: ['openai', 'ollama']
+2026-02-20 13:56:16 [    INFO] llm.llm_operations: Created new LLM processor
+PASSED                                                                   [ 64%]
+src/tests/test_fast_suite.py::TestFastMCP::test_mcp_module_import PASSED [ 65%]
+src/tests/test_fast_suite.py::TestFastOntology::test_ontology_module_import PASSED [ 67%]
+src/tests/test_fast_suite.py::TestFastSAPF::test_sapf_module_import PASSED [ 68%]
+src/tests/test_fast_suite.py::TestFastWebsite::test_website_module_import PASSED [ 70%]
+src/tests/test_fast_suite.py::TestFastIntegration::test_basic_pipeline_flow PASSED [ 71%]
+src/tests/test_fast_suite.py::TestFastIntegration::test_test_environment_setup PASSED [ 72%]
+src/tests/test_fast_suite.py::test_fast_suite_completeness 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Fast test suite completeness: 185 fast tests in 90 files
+PASSED                                                                   [ 74%]
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_file_exists 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Main orchestrator file structure validated
+PASSED                                                                   [ 75%]
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_help_executes PASSED [ 77%]
+src/tests/test_main_orchestrator.py::TestMainOrchestratorImport::test_main_orchestrator_component_availability 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: All 3 main orchestrator components available
+PASSED                                                                   [ 78%]
+src/tests/test_main_orchestrator.py::TestArgumentParsing::test_help PASSED [ 80%]
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_discovery_logic 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Pipeline script discovery logic validated
+PASSED                                                                   [ 81%]
+src/tests/test_main_orchestrator.py::TestPipelineScriptDiscovery::test_pipeline_script_sorting 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:16 [    INFO] root: Pipeline script sorting logic validated
+PASSED                                                                   [ 82%]
+src/tests/test_main_orchestrator.py::TestVirtualEnvironmentHandling::test_python_executable_detection PASSED [ 84%]
+src/tests/test_main_orchestrator.py::TestStepExecution::test_run_core_step PASSED [ 85%]
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution PASSED [ 87%]
+src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_environment_info_function PASSED [ 88%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset PASSED [ 90%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: overall_status
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-02-20 13:56:24 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+PASSED                                                                   [ 91%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_warning_detection PASSED [ 92%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_step_numbering PASSED [ 94%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_validation_comprehensive 
+-------------------------------- live log call ---------------------------------
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary field 'start_time' is None
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: arguments
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: end_time
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: total_duration_seconds
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: environment_info
+2026-02-20 13:56:24 [ WARNING] test_logger: Pipeline summary missing required field: performance_summary
+2026-02-20 13:56:24 [   ERROR] test_logger: Pipeline summary 'steps' should be a list
+PASSED                                                                   [ 95%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_step_execution_order PASSED [ 97%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_pipeline_summary_metadata_completeness PASSED [ 98%]
+src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_enhanced_pipeline_summary_structure PASSED [100%]
+
+============================= slowest 3 durations ==============================
+9.90s call     src/tests/test_core_modules.py::TestLLMModuleComprehensive::test_llm_model_analysis
+5.64s call     src/tests/test_main_orchestrator.py::TestEndToEndIntegration::test_run_pipeline_subset
+1.22s call     src/tests/test_main_orchestrator.py::TestPipelineCoordination::test_minimal_pipeline_execution
+============================= 70 passed in 19.32s ==============================
+
+
+STDERR:
+DEBUG:2026-02-20 13:56:04,723:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.

@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Active Inference POMDP Agent
-Generated: 2026-02-15 15:32:32
+Generated: 2026-02-20 14:50:17
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -270,7 +270,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Active Inference POMDP Agent',
-        'timestamp': '2026-02-15 15:32:32',
+        'timestamp': '2026-02-20 14:50:17',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

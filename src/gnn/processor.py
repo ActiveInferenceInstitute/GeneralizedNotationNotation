@@ -18,7 +18,7 @@ try:
         log_step_error,
         log_step_warning
     )
-except Exception:
+except ImportError:
     def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
     def log_step_success(logger, msg): logger.info(f"✅ {msg}")
     def log_step_error(logger, msg): logger.error(f"❌ {msg}")
@@ -355,8 +355,8 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         try:
             _p.mkdir(parents=True, exist_ok=True)
             (_p / "gnn_processing_results.json").write_text(_json.dumps(result, indent=2))
-        except Exception:
-            pass
+        except Exception as e:
+            logging.getLogger(__name__).debug(f"Error writing GNN processing results: {e}")
     return result
 
 def generate_gnn_report(processing_results: Dict[str, Any], output_path: Union[str, Path] = None) -> str:

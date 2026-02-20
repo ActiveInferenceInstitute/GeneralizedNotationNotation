@@ -54,7 +54,7 @@
 **Last Updated**: 2026-02-09  
 **Version**: 1.1.3  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite**: ✅ 1,127 tests passing  
+**Test Suite**: ✅ 1,083 tests passing  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -1155,7 +1155,7 @@ The GNN project maintains high standards for code quality, testing, and document
 - **Execution Time**: ~3 minutes (172.7s - 180s)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,127 tests passed
+- **Test Suite Status**: ✅ 1,083 tests passed
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)

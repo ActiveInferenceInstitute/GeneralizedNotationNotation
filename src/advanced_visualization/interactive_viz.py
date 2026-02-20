@@ -1,0 +1,310 @@
+"""
+Interactive visualization sub-module.
+
+Provides interactive Plotly dashboards, D2 diagram generation,
+and pipeline D2 diagram generation.
+
+Extracted from processor.py for maintainability.
+"""
+
+import logging
+import json
+import time
+from pathlib import Path
+from typing import Dict, List, Any
+
+from .processor import AdvancedVisualizationAttempt
+
+
+def _generate_interactive_plotly_dashboard(
+    model_name: str,
+    model_data: Dict,
+    output_dir: Path,
+    export_formats: List[str],
+    dependencies: Dict[str, bool],
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate full interactive Plotly dashboard"""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="interactive_dashboard",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        try:
+            import plotly.graph_objects as go
+            import plotly.express as px
+            from plotly.subplots import make_subplots
+            plotly_available = True
+        except ImportError:
+            plotly_available = False
+        
+        if not plotly_available:
+            attempt.status = "skipped"
+            attempt.error_message = "plotly not available"
+            return attempt
+        
+        variables = model_data.get("variables", [])
+        parameters = model_data.get("parameters", [])
+        connections = model_data.get("connections", [])
+        
+        from visualization.matrix_visualizer import MatrixVisualizer
+        mv = MatrixVisualizer()
+        matrices = mv.extract_matrix_data_from_parameters(parameters)
+        
+        fig = make_subplots(
+            rows=2, cols=2,
+            subplot_titles=("Variable Types", "Matrix Overview", "Network Graph", "Model Statistics"),
+            specs=[[{"type": "pie"}, {"type": "bar"}],
+                   [{"type": "scatter"}, {"type": "table"}]]
+        )
+        
+        var_types = {}
+        for var in variables:
+            if isinstance(var, dict):
+                vtype = var.get("var_type", "unknown")
+                var_types[vtype] = var_types.get(vtype, 0) + 1
+        
+        if var_types:
+            fig.add_trace(
+                go.Pie(labels=list(var_types.keys()), values=list(var_types.values()), name="Types"),
+                row=1, col=1
+            )
+        
+        matrix_names = list(matrices.keys())
+        matrix_sizes = [matrices[name].size for name in matrix_names]
+        
+        if matrix_names:
+            fig.add_trace(
+                go.Bar(x=matrix_names, y=matrix_sizes, name="Matrix Sizes"),
+                row=1, col=2
+            )
+        
+        if connections:
+            x_coords = []
+            y_coords = []
+            labels = []
+            
+            for i, conn in enumerate(connections[:20]):
+                if isinstance(conn, dict):
+                    source = str(conn.get("source_variables", [conn.get("source", "")])[0] if conn.get("source_variables") else conn.get("source", ""))
+                    target = str(conn.get("target_variables", [conn.get("target", "")])[0] if conn.get("target_variables") else conn.get("target", ""))
+                    x_coords.append(i % 5)
+                    y_coords.append(i // 5)
+                    labels.append(f"{source}\u2192{target}")
+            
+            if x_coords:
+                fig.add_trace(
+                    go.Scatter(x=x_coords, y=y_coords, mode='markers+text',
+                             text=labels, textposition="middle center",
+                             name="Connections"),
+                    row=2, col=1
+                )
+        
+        stats_data = {
+            "Metric": ["Variables", "Parameters", "Connections", "Matrices"],
+            "Count": [len(variables), len(parameters), len(connections), len(matrices)]
+        }
+        
+        fig.add_trace(
+            go.Table(
+                header=dict(values=list(stats_data.keys())),
+                cells=dict(values=[stats_data[k] for k in stats_data.keys()])
+            ),
+            row=2, col=2
+        )
+        
+        fig.update_layout(
+            title_text=f"Interactive Dashboard: {model_name}",
+            height=800,
+            showlegend=True
+        )
+        
+        if "html" in export_formats:
+            output_file = output_dir / f"{model_name}_interactive_dashboard.html"
+            fig.write_html(str(output_file))
+            attempt.output_files.append(str(output_file))
+        
+        if "png" in export_formats:
+            output_file = output_dir / f"{model_name}_interactive_dashboard.png"
+            fig.write_image(str(output_file), width=1200, height=800)
+            attempt.output_files.append(str(output_file))
+        
+        attempt.status = "success"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate interactive dashboard for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
+
+
+def _generate_d2_visualizations_safe(
+    model_data: Dict[str, Any],
+    output_dir: Path,
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate D2 diagram visualizations for GNN models."""
+    model_name = model_data.get("model_name", "unknown_model")
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="d2_diagrams",
+        model_name=model_name,
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        try:
+            from .d2_visualizer import D2Visualizer
+            d2_available = True
+        except ImportError:
+            logger.warning("D2 visualizer module not available")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 visualizer not available"
+            return attempt
+        
+        logger.info(f"Generating D2 diagrams for {model_name}...")
+        
+        visualizer = D2Visualizer(logger=logger)
+        
+        if not visualizer.d2_available:
+            logger.warning("D2 CLI not available. Install from https://d2lang.com")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 CLI not installed"
+            attempt.fallback_used = True
+            return attempt
+        
+        d2_output_dir = output_dir / "d2_diagrams" / model_name
+        d2_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        results = visualizer.generate_all_diagrams_for_model(
+            model_data,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        successful = 0
+        for result in results:
+            if result.success:
+                successful += 1
+                for output_file in result.output_files:
+                    attempt.output_files.append(str(output_file))
+                logger.info(f"Generated D2 diagram: {result.diagram_name}")
+            else:
+                logger.warning(f"Failed D2 diagram {result.diagram_name}: {result.error_message}")
+        
+        if successful > 0:
+            attempt.status = "success"
+            logger.info(f"Generated {successful} D2 diagrams for {model_name}")
+        else:
+            attempt.status = "failed"
+            attempt.error_message = "No D2 diagrams generated successfully"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate D2 visualizations for {model_name}: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt
+
+
+def _generate_pipeline_d2_diagrams_safe(
+    output_dir: Path,
+    logger: logging.Logger
+) -> AdvancedVisualizationAttempt:
+    """Generate D2 diagrams for GNN pipeline architecture."""
+    attempt = AdvancedVisualizationAttempt(
+        viz_type="d2_pipeline_diagrams",
+        model_name="gnn_pipeline",
+        status="in_progress"
+    )
+    
+    start_time = time.time()
+    
+    try:
+        try:
+            from .d2_visualizer import D2Visualizer
+            d2_available = True
+        except ImportError:
+            logger.warning("D2 visualizer module not available")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 visualizer not available"
+            return attempt
+        
+        logger.info("Generating pipeline D2 diagrams...")
+        
+        visualizer = D2Visualizer(logger=logger)
+        
+        if not visualizer.d2_available:
+            logger.warning("D2 CLI not available. Install from https://d2lang.com")
+            attempt.status = "skipped"
+            attempt.error_message = "D2 CLI not installed"
+            attempt.fallback_used = True
+            return attempt
+        
+        d2_output_dir = output_dir / "d2_diagrams" / "pipeline"
+        d2_output_dir.mkdir(parents=True, exist_ok=True)
+        
+        flow_spec = visualizer.generate_pipeline_flow_diagram(include_frameworks=True)
+        flow_result = visualizer.compile_d2_diagram(
+            flow_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if flow_result.success:
+            for output_file in flow_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated pipeline flow diagram")
+        
+        framework_spec = visualizer.generate_framework_mapping_diagram()
+        framework_result = visualizer.compile_d2_diagram(
+            framework_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if framework_result.success:
+            for output_file in framework_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated framework mapping diagram")
+        
+        concepts_spec = visualizer.generate_active_inference_concepts_diagram()
+        concepts_result = visualizer.compile_d2_diagram(
+            concepts_spec,
+            d2_output_dir,
+            formats=["svg", "png"]
+        )
+        
+        if concepts_result.success:
+            for output_file in concepts_result.output_files:
+                attempt.output_files.append(str(output_file))
+            logger.info("Generated Active Inference concepts diagram")
+        
+        total_results = [flow_result, framework_result, concepts_result]
+        successful = sum(1 for r in total_results if r.success)
+        
+        if successful > 0:
+            attempt.status = "success"
+            logger.info(f"Generated {successful} pipeline D2 diagrams")
+        else:
+            attempt.status = "failed"
+            attempt.error_message = "No pipeline D2 diagrams generated successfully"
+        
+    except Exception as e:
+        logger.error(f"Failed to generate pipeline D2 diagrams: {e}")
+        attempt.status = "failed"
+        attempt.error_message = str(e)
+    finally:
+        attempt.duration_ms = (time.time() - start_time) * 1000
+    
+    return attempt

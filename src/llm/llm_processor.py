@@ -107,8 +107,8 @@ def get_default_provider_configs() -> Dict[str, Dict[str, Any]]:
             # Perplexity-specific configs can be added here
         },
         'ollama': {
-            # Use ministral-3:3b for quality responses; override with OLLAMA_MODEL
-            'default_model': os.getenv('OLLAMA_MODEL', 'ministral-3:3b'),
+            # Use gemma3:4b for quality responses; override with OLLAMA_MODEL
+            'default_model': os.getenv('OLLAMA_MODEL', 'gemma3:4b'),
             # Enforce low latency
             'default_max_tokens': int(os.getenv('OLLAMA_MAX_TOKENS', '256')),
             'timeout': float(os.getenv('OLLAMA_TIMEOUT', '60')),

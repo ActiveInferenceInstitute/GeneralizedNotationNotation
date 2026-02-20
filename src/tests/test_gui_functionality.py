@@ -18,32 +18,34 @@ import json
 from gui import process_gui, generate_html_navigation
 
 
-class _MockLogger:
-    """Mock logger for testing without actual logging output."""
+import io
 
-    def __init__(self):
-        self.msgs = []
-
-    def info(self, m, *a, **k):
-        self.msgs.append(("info", m))
-
-    def warning(self, m, *a, **k):
-        self.msgs.append(("warning", m))
-
-    def error(self, m, *a, **k):
-        self.msgs.append(("error", m))
-
-    def debug(self, m, *a, **k):
-        self.msgs.append(("debug", m))
-
-    def setLevel(self, *_):
-        pass
-
-    def get_messages(self, level=None):
-        """Get all messages, optionally filtered by level."""
-        if level:
-            return [m for l, m in self.msgs if l == level]
-        return [m for _, m in self.msgs]
+def get_real_logger():
+    """Create a real logger that captures output to a StringIO stream."""
+    logger = logging.getLogger("test_gui_logger")
+    logger.setLevel(logging.DEBUG)
+    
+    # Remove existing handlers to avoid duplicate logs in parametrized tests
+    for handler in logger.handlers[:]:
+        logger.removeHandler(handler)
+        
+    stream = io.StringIO()
+    handler = logging.StreamHandler(stream)
+    handler.setFormatter(logging.Formatter('%(levelname)s:%(message)s'))
+    logger.addHandler(handler)
+    
+    logger.stream = stream
+    
+    # Helper to retrieve trapped messages exactly like the mock
+    def get_messages(level=None):
+        content = stream.getvalue().splitlines()
+        if not level:
+            return [line.split(":", 1)[1] for line in content if ":" in line]
+        level_str = level.upper()
+        return [line.split(":", 1)[1] for line in content if line.startswith(f"{level_str}:")]
+    
+    logger.get_messages = get_messages
+    return logger
 
 
 class TestGUIHeadlessMode:
@@ -58,7 +60,7 @@ class TestGUIHeadlessMode:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         result = process_gui(
             target_dir=target,
             output_dir=output,
@@ -77,7 +79,7 @@ class TestGUIHeadlessMode:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -97,7 +99,7 @@ class TestGUIHeadlessMode:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -117,7 +119,7 @@ class TestGUIHeadlessMode:
         output = isolated_temp_dir / "output"
         target.mkdir(parents=True, exist_ok=True)
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         result = process_gui(
             target_dir=target,
             output_dir=output,
@@ -140,7 +142,7 @@ class TestGUIConfiguration:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -162,7 +164,7 @@ class TestGUIConfiguration:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -215,7 +217,7 @@ class TestGUIHTMLNavigation:
         (pipeline_output / "3_gnn_output").mkdir()
         (pipeline_output / "3_gnn_output" / "test.json").write_text("{}")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         result = generate_html_navigation(pipeline_output, gui_output, logger)
 
         nav_file = gui_output / "navigation.html"
@@ -233,7 +235,7 @@ class TestGUIHTMLNavigation:
         (pipeline_output / "3_gnn_output").mkdir()
         (pipeline_output / "3_gnn_output" / "test.json").write_text("{}")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         generate_html_navigation(pipeline_output, gui_output, logger)
 
         nav_file = gui_output / "navigation.html"
@@ -251,7 +253,7 @@ class TestGUIHTMLNavigation:
         gui_output = pipeline_output / "22_gui_output"
         gui_output.mkdir(parents=True, exist_ok=True)
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         result = generate_html_navigation(pipeline_output, gui_output, logger)
 
         # Should still create navigation file
@@ -270,7 +272,7 @@ class TestGUIOutputArtifacts:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -289,7 +291,7 @@ class TestGUIOutputArtifacts:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output,
@@ -315,7 +317,7 @@ class TestGUIErrorHandling:
         target = isolated_temp_dir / "nonexistent"
         output = isolated_temp_dir / "output"
 
-        logger = _MockLogger()
+        logger = get_real_logger()
         result = process_gui(
             target_dir=target,
             output_dir=output,
@@ -335,7 +337,7 @@ class TestGUIErrorHandling:
         target.mkdir(parents=True, exist_ok=True)
         (target / "model.md").write_text("# Test Model\n")
 
-        logger_quiet = _MockLogger()
+        logger_quiet = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output_quiet,
@@ -344,7 +346,7 @@ class TestGUIErrorHandling:
             verbose=False
         )
 
-        logger_verbose = _MockLogger()
+        logger_verbose = get_real_logger()
         process_gui(
             target_dir=target,
             output_dir=output_verbose,
@@ -354,4 +356,4 @@ class TestGUIErrorHandling:
         )
 
         # Verbose should produce at least as many messages
-        assert len(logger_verbose.msgs) >= len(logger_quiet.msgs)
+        assert len(logger_verbose.get_messages()) >= len(logger_quiet.get_messages())

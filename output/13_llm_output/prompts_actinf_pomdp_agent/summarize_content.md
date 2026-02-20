@@ -1,46 +1,27 @@
 # SUMMARIZE_CONTENT
 
-```python
-  # Import necessary packages
-    import numpy as np
-  
-  import torch 
+Okay, here’s a concise and comprehensive summary of the provided GNN specification, designed for someone familiar with Active Inference concepts:
 
-  # Define your code example
-  t = [] 
-  
-  # Generate some random actions by flipping a coin (coin flip)
-  z = torch.randperm(len(np)) + np.random.normal(loc=(0,1), scale=1e-4).unsqueeze(-2)
-  
-  # Apply action selection from policy to state transition matrix
-  s_prime = x.T[x]
+**1. Model Overview:**
 
-  # Apply the initial observation (one possible outcome for each flip in z and t)
-    #  (actions are actions by flipping heads or tails.)
+This GNN specification defines an Active Inference agent designed to solve a discrete POMDP (Partially Observable Markov Decision Process). The agent learns to navigate an environment by actively observing, inferring its hidden state, and taking actions to maximize its expected reward (represented by the log-preference vector). It’s a foundational example illustrating core Active Inference principles within a probabilistic framework.
 
-    return f"Initialization:\n{z}\tAction\n↑\tState\n→\tP(s)\n↓\n\tObservation\n".format("", "time")  
-  
-  # Apply action selection from policy to hidden states
-  actions = x.T[x]
+**2. Key Variables:**
 
-  # Apply actions and habit in state transition matrix
-  s_prime = f"Actions:\t{actions}\tHabit\n↑\tb1\nb1 \TB\tc2\cb3\tc4\tc5\tc6\tc7\tc8\tc9\tca{\z}"
-  
-  # Apply action selection from policy to next states
-    actions = x.T[x]
+*   **Hidden States (s):** Represents the agent’s underlying belief about its location within the environment.  (3 states)
+*   **Observations (o):** The agent’s sensory input, representing the outcome of its observation. (3 outcomes)
+*   **Actions/Controls (u):** Discrete actions the agent can take to influence its environment and move to a new state. (3 actions)
 
-  # Initialize a belief of the current state and its prior
-  π=torch.zeros(len(s), len(π))  
-  π[s_prime,actions]=[0] * 3   
-  
-  # Define some constraints based on observable variables (z)
-    cfg = torch.randperm([np.ones((1,) + z)])
+**3. Critical Parameters:**
 
-    for z in cfg:
-        if np.any(z):
-            σ=torch.mean(((x[s_prime]]-π)/2))  
-             
-          
-          s_(actions, π)[σ]=[0] * 3 
+*   **A (Likelihood Matrix):**  A 3x3 matrix defining the probability of observing a particular state given the agent’s hidden state.  It represents the deterministic mapping between hidden states and observations (identity mapping in this case).
+*   **B (Transition Matrix):** A 3x3x3 matrix representing the transition probabilities between hidden states *given* the previous hidden state and the action taken. Each slice corresponds to a different action.
+*   **C (Log-Preference Vector):** A 3-element vector representing the agent’s log-prior preference for observing each of the three possible observations.
+*   **D (Prior Over Hidden States):** A 3x3 matrix representing the agent’s initial belief about the probability of being in each of the three hidden states. Uniform prior.
+*   **E (Habit):** A 3x3 matrix representing the agent’s initial policy prior (habit) – the distribution over actions it would take even without any observation. Uniform prior.
 
-```
+**4. Notable Features:**
+
+*   **No Planning:** The model explicitly states that the policy (π) is not used for planning, simplifying the model and focusing on the core Active Inference update equations.
+*   **Expected Free Energy (G):** The model utilizes the Expected Free Energy (G) to represent the agent’s policy, directly linking to the variational inference framework.
+*   **Discrete

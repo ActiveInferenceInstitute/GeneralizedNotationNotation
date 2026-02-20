@@ -1,18 +1,18 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-02-15T15:32:20.257867",
+  "updated_at": "2026-02-20T13:56:25.556834",
   "models": {
     "actinf_pomdp_agent": {
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-02-15T14:26:26.584107",
-      "updated_at": "2026-02-15T15:32:20.257813",
+      "created_at": "2026-02-20T13:37:54.776808",
+      "updated_at": "2026-02-20T13:56:25.556766",
       "versions": {
         "1.0": {
           "version": "1.0",
           "file_path": "input/gnn_files/actinf_pomdp_agent.md",
-          "created_at": "2026-02-15T15:32:20.257736",
+          "created_at": "2026-02-20T13:56:25.556684",
           "metadata": {},
           "hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804"
         }

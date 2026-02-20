@@ -308,13 +308,11 @@ def test_analyze_metrics():
 
 def test_normalize_matrices():
     from render.processor import normalize_matrices
-    class FakePOMDP:
-        def __init__(self, A=None, B=None):
-            self.A_matrix = A
-            self.B_matrix = B
+    from gnn.pomdp_extractor import POMDPStateSpace
+    
     A = np.array([[3.0, 1.0], [1.0, 3.0]])
     B = np.ones((3, 3, 2))
-    pomdp = FakePOMDP(A=A, B=B)
+    pomdp = POMDPStateSpace(num_states=3, num_observations=2, num_actions=2, A_matrix=A, B_matrix=B)
     result = normalize_matrices(pomdp, logging.getLogger("test"))
     # A columns should sum to 1
     np.testing.assert_allclose(result.A_matrix.sum(axis=0), [1.0, 1.0], atol=1e-10)

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-15T15:31:25.688575",
+  "timestamp": "2026-02-20T14:51:25.799841",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -14,7 +14,7 @@
       },
       "variables_count": 73,
       "connections_count": 0,
-      "generation_timestamp": "2026-02-15T15:31:26.192152"
+      "generation_timestamp": "2026-02-20T14:51:26.061201"
     }
   ],
   "sonification_results": [
@@ -23,7 +23,7 @@
       "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-02-15T15:31:26.201502"
+      "generation_timestamp": "2026-02-20T14:51:26.072388"
     }
   ],
   "audio_analysis": [
@@ -31,44 +31,16 @@
       "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
       "audio_characteristics": {
         "tonal": {
-          "duration": 5.0,
-          "sample_rate": 44100,
-          "channels": 1,
-          "max_amplitude": 0.039642333984375,
-          "rms_amplitude": 0.008275642484494536
+          "error": "No module named 'soundfile'"
         },
         "rhythmic": {
-          "duration": 5.0,
-          "sample_rate": 44100,
-          "channels": 1,
-          "max_amplitude": 0.0,
-          "rms_amplitude": 0.0
+          "error": "No module named 'soundfile'"
         },
         "ambient": {
-          "duration": 10.0,
-          "sample_rate": 44100,
-          "channels": 1,
-          "max_amplitude": 1.0,
-          "rms_amplitude": 0.12358291570867773
+          "error": "No module named 'soundfile'"
         }
       },
-      "spectral_analysis": {
-        "tonal": {
-          "dominant_frequency": 1760.0,
-          "spectral_centroid": 7109.10436989035,
-          "spectral_bandwidth": 8473.162127439247
-        },
-        "rhythmic": {
-          "dominant_frequency": 0.0,
-          "spectral_centroid": 0.0,
-          "spectral_bandwidth": 0.0
-        },
-        "ambient": {
-          "dominant_frequency": 55.0,
-          "spectral_centroid": 2595.0459214691,
-          "spectral_bandwidth": 3847.827590147729
-        }
-      },
+      "spectral_analysis": {},
       "temporal_analysis": {}
     }
   ]
