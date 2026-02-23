@@ -17,24 +17,16 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import numpy as np
-from typing import Union
-
-# Import matplotlib with error handling for testing
-try:
-    import matplotlib.pyplot as plt
-    import matplotlib.patches as patches
-    import seaborn as sns
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError) as e:
-    plt = None
-    patches = None
-    sns = None
-    MATPLOTLIB_AVAILABLE = False
-from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any
+import logging
 import warnings
 warnings.filterwarnings('ignore')
+
+# Import shared visualization utilities (centralized matplotlib setup)
+from ..viz_base import plt, np, patches, sns, MATPLOTLIB_AVAILABLE
+
+from typing import Union
+from pathlib import Path
+from typing import Dict, List, Tuple, Optional, Any
 
 
 class PyMDPVisualizer:

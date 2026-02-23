@@ -12,17 +12,8 @@ from typing import Dict, Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
-# Try to import visualization dependencies
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import numpy as np
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = None
-    np = None
+# Import shared visualization utilities (centralized matplotlib setup)
+from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
 
 
 def parse_raw_output(raw_output: str) -> Dict[str, Any]:
@@ -269,11 +260,19 @@ def create_visualizations_from_structured_data(
     if efe_history:
         try:
             fig, ax = plt.subplots(figsize=(14, 6))
-            x = range(len(efe_history))
+            
+            # Collapse multi-dimensional EFE arrays (e.g. actions per timestep) into a 1D mean sequence
+            efe_arr = np.array(efe_history)
+            if efe_arr.ndim == 2:
+                efe_1d = np.mean(efe_arr, axis=1)
+            else:
+                efe_1d = efe_arr
+                
+            x = range(len(efe_1d))
             ax.plot(x, efe_history, 'o-', color='coral', linewidth=2, markersize=8)
-            ax.fill_between(x, efe_history, alpha=0.3, color='coral')
-            ax.axhline(y=np.mean(efe_history), color='red', linestyle='--',
-                      linewidth=2, label=f'Mean EFE: {np.mean(efe_history):.4f}')
+            ax.fill_between(x, efe_1d, alpha=0.3, color='coral')
+            ax.axhline(y=np.mean(efe_1d), color='red', linestyle='--',
+                      linewidth=2, label=f'Mean EFE: {np.mean(efe_1d):.4f}')
             ax.set_xlabel("Time Step", fontweight='bold', fontsize=12)
             ax.set_ylabel("Expected Free Energy", fontweight='bold', fontsize=12)
             ax.set_title(f"JAX Expected Free Energy - {model_name}", fontweight='bold', fontsize=14)

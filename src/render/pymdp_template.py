@@ -106,7 +106,7 @@ class POMDPAgent:
         
         return A, B, C, D
     
-    def run_simulation(self, num_steps=15):
+    def run_simulation(self, num_steps={num_timesteps}):
         """Run comprehensive Active Inference simulation with full data collection"""
         
         log_success("Simulation", f"Starting Active Inference simulation - {{num_steps}} steps")
@@ -463,7 +463,7 @@ def main():
         agent = EnhancedPOMDPAgent()
         
         # Run comprehensive simulation
-        results = agent.run_enhanced_simulation(num_steps=15)
+        results = agent.run_enhanced_simulation(num_steps={num_timesteps})
         
         # Set up output directory
         output_dir = Path(".")

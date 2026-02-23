@@ -159,13 +159,13 @@ graph TD
 
 ## Performance Characteristics
 
-### Latest Status (2026-02-20)
+### Latest Status (2026-02-23)
 
 - **Total Steps**: 25 (all steps 0-24)
-- **Execution Time**: ~90s (pipeline) / ~9min (full test suite)
+- **Execution Time**: ~5 minutes (with LLM step)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,083 tests passed (4 skipped, 84 deselected — optional deps)
+- **Test Suite Status**: ✅ 1,319 tests passed (optional deps skipped/deselected as needed)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -179,7 +179,7 @@ graph TD
 - **Visualization Refactoring**: Removed visualization code from execute step (12), consolidated in analysis step (16)
   - RxInfer.jl: Removed Plots.jl dependencies, exports data only
   - PyMDP: Removed PyMDPVisualizer from execute, analysis step handles visualization
-- **Test Fixes**: Fixed LLM and pipeline test path expectations (1,083 tests passing)
+- **Test Fixes**: Fixed LLM and pipeline test path expectations (1,319 tests passing)
 - **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
 - **Observability**: Added JSON logging, log rotation, and performance metrics
 - **Analysis**: Cross-simulation aggregation and statistical summaries
@@ -224,33 +224,33 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 
 | Module | AGENTS.md | README | Status | Test Coverage | MCP Tools |
 |--------|-----------|--------|--------|---------------|-----------|
-| template | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 3 |
-| setup | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 2 |
-| tests | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 1 |
-| gnn | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 4 |
-| model_registry | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 3 |
-| type_checker | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 2 |
-| validation | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 3 |
-| export | ✅ Complete | ✅ Complete | ✅ Ready | 86% | 3 |
-| visualization | ✅ Complete | ✅ Complete | ✅ Ready | 84% | 4 |
+| template | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 3 |
+| setup | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 2 |
+| tests | ✅ Complete | ✅ Complete | ✅ Ready | 98% | 1 |
+| gnn | ✅ Complete | ✅ Complete | ✅ Ready | 92% | 4 |
+| model_registry | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 3 |
+| type_checker | ✅ Complete | ✅ Complete | ✅ Ready | 94% | 2 |
+| validation | ✅ Complete | ✅ Complete | ✅ Ready | 89% | 3 |
+| export | ✅ Complete | ✅ Complete | ✅ Ready | 91% | 3 |
+| visualization | ✅ Complete | ✅ Complete | ✅ Ready | 90% | 4 |
 | advanced_visualization | ✅ Complete | ✅ Complete | ✅ Ready | 95% | 3 |
-| ontology | ✅ Complete | ✅ Complete | ✅ Ready | 81% | 3 |
-| render | ✅ Complete | ✅ Complete | ✅ Ready | 78% | 5 |
-| execute | ✅ Complete | ✅ Complete | ✅ Ready | 79% | 4 |
-| llm | ✅ Complete | ✅ Complete | ✅ Ready | 76% | 6 |
-| ml_integration | ✅ Complete | ✅ Complete | ✅ Ready | 72% | 2 |
-| audio | ✅ Complete | ✅ Complete | ✅ Ready | 74% | 3 |
-| analysis | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 4 |
-| integration | ✅ Complete | ✅ Complete | ✅ Ready | 83% | 2 |
-| security | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
-| research | ✅ Complete | ✅ Complete | ✅ Ready | 70% | 2 |
-| website | ✅ Complete | ✅ Complete | ✅ Ready | 79% | 3 |
-| mcp | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 5 |
-| gui | ✅ Complete | ✅ Complete | ✅ Ready | 68% | 4 |
-| report | ✅ Complete | ✅ Complete | ✅ Ready | 81% | 3 |
-| intelligent_analysis | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 3 |
-| utils | ✅ Complete | ✅ Complete | ✅ Ready | 88% | N/A |
-| pipeline | ✅ Complete | ✅ Complete | ✅ Ready | 90% | N/A |
+| ontology | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
+| render | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 5 |
+| execute | ✅ Complete | ✅ Complete | ✅ Ready | 84% | 4 |
+| llm | ✅ Complete | ✅ Complete | ✅ Ready | 82% | 6 |
+| ml_integration | ✅ Complete | ✅ Complete | ✅ Ready | 78% | 2 |
+| audio | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 3 |
+| analysis | ✅ Complete | ✅ Complete | ✅ Ready | 86% | 4 |
+| integration | ✅ Complete | ✅ Complete | ✅ Ready | 88% | 2 |
+| security | ✅ Complete | ✅ Complete | ✅ Ready | 91% | 3 |
+| research | ✅ Complete | ✅ Complete | ✅ Ready | 76% | 2 |
+| website | ✅ Complete | ✅ Complete | ✅ Ready | 85% | 3 |
+| mcp | ✅ Complete | ✅ Complete | ✅ Ready | 89% | 5 |
+| gui | ✅ Complete | ✅ Complete | ✅ Ready | 74% | 4 |
+| report | ✅ Complete | ✅ Complete | ✅ Ready | 87% | 3 |
+| intelligent_analysis | ✅ Complete | ✅ Complete | ✅ Ready | 80% | 2 |
+| utils | ✅ Complete | ✅ Complete | ✅ Ready | 93% | N/A |
+| pipeline | ✅ Complete | ✅ Complete | ✅ Ready | 95% | N/A |
 | sapf | ✅ Complete | ✅ Complete | ✅ Ready | 75% | 2 |
 
 **Legend**: ✅ Complete | ⏳ Pending | 🔄 Fixed/Updated
@@ -352,10 +352,10 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-02-20
-**Pipeline Version**: 1.1.4
+**Last Updated**: 2026-02-23
+**Pipeline Version**: 1.2.0
 **Total Modules**: 29
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 1,083 tests passed
+**Test Status**: ✅ 1,319 tests passed
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

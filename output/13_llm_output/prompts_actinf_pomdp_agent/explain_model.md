@@ -1,20 +1,20 @@
 # EXPLAIN_MODEL
 
-Okay, let’s dissect this GNN specification for the “Active Inference POMDP Agent.” This model represents a surprisingly simple, yet illustrative, example of how an agent might learn and act in an uncertain environment, a core concept in Active Inference.
+Okay, let’s dissect this GNN specification for the Active Inference POMDP Agent. This model represents a classic scenario in embodied robotics and perception – an agent trying to understand its environment and take actions to achieve a goal, all while dealing with noisy observations.
 
 **1. Model Purpose:**
 
-This model simulates a simple agent navigating an environment with three possible states (e.g., location) and receiving observations that provide clues about its current state. It’s designed to demonstrate the fundamental principles of Active Inference – specifically, how an agent uses its sensory input to update its beliefs about its environment and, consequently, choose actions to reduce uncertainty and achieve a goal (though in this case, the goal is simply to minimize the discrepancy between its predictions and observations).  It’s a foundational example, suitable for introducing the concepts to someone new to Active Inference.
+This model simulates a simple agent navigating an environment where it’s trying to determine its location (hidden state) based on limited, noisy observations. It’s a foundational example for Active Inference, demonstrating how an agent can actively seek out information to reduce uncertainty and guide its actions.  It’s a good starting point for understanding more complex Active Inference models used in robotics, neuroscience, and even decision-making.
 
 **2. Core Components:**
 
-*   **Hidden States (s_f0, s_f1, s_f2):** These represent the agent's internal belief about its location.  We have three discrete states, representing a simple 3-dimensional space (e.g., X, Y, Z coordinates).  Crucially, the agent *actively* controls these states through its actions.
-*   **Observations (o_m0, o_m1, o_m2):** The agent receives observations that are related to its location.  The model defines three possible observation outcomes, which are directly linked to the hidden states.  The observation matrix (A) defines the likelihood of receiving a particular observation given a specific hidden state.
-*   **Actions/Controls (u_c0, π_c0, etc.):** The agent has three discrete actions, each corresponding to a movement in one of the three spatial dimensions. The policy vector (π) represents the probability distribution over these actions.  Because the policy is fixed (no planning), the agent always chooses the same action, making it a deterministic agent.
+*   **Hidden States (s_f0, s_f1, s_f2):** These represent the agent’s belief about its location.  The model has three possible locations (states) – let’s call them s_f0 (location 1), s_f1 (location 2), and s_f2 (location 3). These are discrete states, meaning the agent can only be in one of these three locations at any given time.
+*   **Observations (o_m0, o_m1, o_m2):** The agent receives observations from the environment.  There are also three possible observations – o_m0, o_m1, and o_m2. These observations are likely noisy representations of the agent's location.
+*   **Actions/Controls (u_c0, π_c0, etc.):** The agent has three discrete actions it can take. These actions are represented by the policy vector π.  Each action corresponds to a movement between the three locations. The agent chooses an action based on its policy (π).
 
 **3. Model Dynamics:**
 
-The model’s dynamics are governed by the following key relationships:
+The model’s dynamics are governed by the following key relationships, as defined by the GNN specification:
 
-*   **Transition (B):** The `B` matrix dictates how the agent’s hidden state changes based on the action it takes.  Each row of `B` corresponds to a specific action.  For example, if the agent takes action 0, it moves in the X-dimension, and the corresponding row in `B` specifies the probability of transitioning to a particular location.
-*   
+*   **Transition Dynamics (B):** The `B` matrix dictates how the agent’s hidden state changes based on the action it takes.  `B[i,j,k]` represents the probability of transitioning from state `i` to state `j` when taking action `k`.  Notice that each action (slice of B) has a deterministic effect – moving to a different location.
+*   **Observation Dynamics (A):** The `A` matrix defines the likelihood

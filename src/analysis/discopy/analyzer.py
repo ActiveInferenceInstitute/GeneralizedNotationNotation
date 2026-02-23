@@ -11,17 +11,8 @@ from typing import Dict, Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
-# Try to import visualization dependencies
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import numpy as np
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = None
-    np = None
+# Import shared visualization utilities (centralized matplotlib setup)
+from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
 
 
 def generate_analysis_from_logs(

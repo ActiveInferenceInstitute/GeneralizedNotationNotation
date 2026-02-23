@@ -6,13 +6,14 @@ from typing import Optional
 # Timeout configuration in seconds
 STEP_TIMEOUTS = {
     "2_tests.py": {"default": 900, "comprehensive": 1200},
+    "9_advanced_viz.py": 300,
     "13_llm.py": 600,
     "22_gui.py": 600,
     "11_render.py": 300,
-    "12_execute.py": 300,
+    "12_execute.py": 600,
 }
 
-DEFAULT_TIMEOUT = 120
+DEFAULT_TIMEOUT = 180
 
 
 def get_step_timeout(script_name: str, comprehensive: bool = False) -> int:

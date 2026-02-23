@@ -134,25 +134,52 @@ def extract_variables(content: str) -> List[Dict[str, Any]]:
     return variables
 
 def extract_connections(content: str) -> List[Dict[str, Any]]:
-    """Extract connections from GNN content."""
+    """Extract connections from GNN content.
+    
+    Parses the ## Connections section for GNN operators (>, -, <)
+    and falls back to legacy patterns (->. →, connects).
+    """
     connections = []
     
-    # Look for connection patterns
-    conn_patterns = [
-        r'(\w+)\s*->\s*(\w+)',  # source -> target
-        r'(\w+)\s*→\s*(\w+)',   # source → target
-        r'(\w+)\s*connects\s*(\w+)',  # source connects target
-    ]
+    # Primary: parse ## Connections section for GNN-specific operators
+    conn_section = re.search(
+        r'##\s*Connections\s*\n(.*?)(?=\n##\s|\Z)', content, re.DOTALL
+    )
+    if conn_section:
+        section_text = conn_section.group(1)
+        for line in section_text.strip().split('\n'):
+            line = line.strip()
+            if not line or line.startswith('#'):
+                continue
+            # GNN connection operators: > (directional), - (bidirectional), < (reverse)
+            conn_match = re.match(r'(\w+)\s*([>\-<])\s*(\w+)', line)
+            if conn_match:
+                src, op, tgt = conn_match.group(1), conn_match.group(2), conn_match.group(3)
+                conn_type = {">" : "directional", "-": "bidirectional", "<": "reverse"}.get(op, "unknown")
+                connections.append({
+                    "source": src,
+                    "target": tgt,
+                    "connection": f"{src} {op} {tgt}",
+                    "connection_type": conn_type,
+                    "line": content[:conn_match.start() + conn_section.start()].count('\n') + 1
+                })
     
-    for pattern in conn_patterns:
-        matches = re.finditer(pattern, content)
-        for match in matches:
-            connections.append({
-                "source": match.group(1),
-                "target": match.group(2),
-                "connection": match.group(0),
-                "line": content[:match.start()].count('\n') + 1
-            })
+    # Fallback: legacy patterns throughout the entire file
+    if not connections:
+        conn_patterns = [
+            r'(\w+)\s*->\s*(\w+)',  # source -> target
+            r'(\w+)\s*→\s*(\w+)',   # source → target
+            r'(\w+)\s*connects\s*(\w+)',  # source connects target
+        ]
+        for pattern in conn_patterns:
+            matches = re.finditer(pattern, content)
+            for match in matches:
+                connections.append({
+                    "source": match.group(1),
+                    "target": match.group(2),
+                    "connection": match.group(0),
+                    "line": content[:match.start()].count('\n') + 1
+                })
     
     return connections
 

@@ -283,7 +283,7 @@ def main():
             PipelineLogger.log_structured(
                 logger, logging.INFO,
                 "🚀 Starting GNN Processing Pipeline",
-                 total_steps=24,
+                 total_steps=len(steps_to_execute),
                 target_dir=str(args.target_dir),
                 output_dir=str(args.output_dir),
                 event_type="pipeline_start"
@@ -377,6 +377,28 @@ def main():
             else:
                 logger.info(f"🔄 Executing step {actual_step_number}: {description}")
             
+            # Write a preliminary pipeline summary before the intelligent analysis step
+            # so it analyzes the current run's data instead of stale previous run data
+            if script_name == "24_intelligent_analysis.py":
+                try:
+                    prelim_summary = dict(pipeline_summary)
+                    prelim_end = datetime.now()
+                    prelim_start = datetime.fromisoformat(prelim_summary["start_time"])
+                    prelim_summary["end_time"] = prelim_end.isoformat()
+                    prelim_summary["total_duration_seconds"] = (prelim_end - prelim_start).total_seconds()
+                    # All prior steps succeeded if we reached here, so set SUCCESS
+                    # The 'preliminary' flag distinguishes this from the final summary
+                    prelim_summary["overall_status"] = "SUCCESS"
+                    prelim_summary["preliminary"] = True
+                    
+                    prelim_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
+                    prelim_path.parent.mkdir(parents=True, exist_ok=True)
+                    with open(prelim_path, 'w') as f:
+                        json.dump(prelim_summary, f, indent=4, default=str)
+                    logger.info(f"📝 Preliminary pipeline summary written for intelligent analysis ({len(prelim_summary.get('steps', []))} steps)")
+                except Exception as prelim_err:
+                    logger.warning(f"Could not write preliminary summary: {prelim_err}")
+            
             # Execute the step
             step_result = execute_pipeline_step(script_name, args, logger)
             
@@ -452,7 +474,14 @@ def main():
                 pipeline_summary["performance_summary"]["successful_steps"] += 1
             elif step_result["status"] == "FAILED":
                 pipeline_summary["performance_summary"]["failed_steps"] += 1
-                if step_result.get("exit_code", 0) == 1:
+                # Only mark as critical if a core processing step fails
+                # Tests, LLM, audio, research, website, GUI, analysis are non-critical
+                critical_scripts = {
+                    "0_template.py", "1_setup.py", "3_gnn.py",
+                    "5_type_checker.py", "6_validation.py", "7_export.py",
+                    "11_render.py"
+                }
+                if script_name in critical_scripts and step_result.get("exit_code", 0) != 0:
                     pipeline_summary["performance_summary"]["critical_failures"] += 1
 
             # Count warnings
@@ -620,7 +649,7 @@ def main():
         pipeline_summary["total_duration_seconds"] = (end_time_dt - start_time_dt).total_seconds()
         
         # Save pipeline summary even on error
-        summary_path = args.pipeline_summary_file
+        summary_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)

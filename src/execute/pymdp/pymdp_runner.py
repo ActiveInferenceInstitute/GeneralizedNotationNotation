@@ -126,8 +126,6 @@ def execute_pymdp_script_with_outputs(
         
         # Prepare environment for enhanced execution
         env = os.environ.copy()
-        # Prepare environment for enhanced execution
-        env = os.environ.copy()
         
         # Calculate paths relative to this runner file, not the target script
         # This runner is in src/execute/pymdp/pymdp_runner.py
@@ -337,7 +335,7 @@ def run_pymdp_scripts(
     
     # Find all PyMDP scripts - look directly in the PyMDP subdirectory
     base_path = Path(rendered_simulators_dir)
-    pymdp_dir = base_path / "pymdp_gen"
+    pymdp_dir = base_path / "pymdp"
     
     if not pymdp_dir.exists():
         logger.info(f"PyMDP directory not found: {pymdp_dir}")

@@ -123,6 +123,91 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                         logger.info(f"  Generated: {name} -> {filepath}")
                     
                     logger.info(f"✅ Generated {len(viz_files_map)} visualizations for {model_name}")
+
+                # --- Additional PyMDP-specific visualizations ---
+                # These use data available in simulation_results.json but not
+                # covered by the generic PyMDPVisualizer.
+
+                # Cumulative Preference Plot
+                cumulative_pref = data.get('metrics', {}).get('cumulative_preference', [])
+                if cumulative_pref:
+                    try:
+                        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+                        if MATPLOTLIB_AVAILABLE and plt is not None:
+                            fig, ax = plt.subplots(figsize=(12, 5))
+                            cum_sum = np.cumsum(cumulative_pref)
+                            x = range(len(cumulative_pref))
+                            ax.step(x, cumulative_pref, where='mid', linewidth=2,
+                                    color='#2ECC71', label='Per-Step Preference', alpha=0.7)
+                            ax.fill_between(x, cumulative_pref, step='mid', alpha=0.2, color='#2ECC71')
+                            ax2 = ax.twinx()
+                            ax2.plot(x, cum_sum, 'o-', color='#E74C3C', linewidth=2.5,
+                                     markersize=5, label='Cumulative')
+                            ax2.set_ylabel("Cumulative Preference", fontweight='bold', color='#E74C3C')
+                            ax.set_xlabel("Time Step", fontweight='bold')
+                            ax.set_ylabel("Per-Step Preference", fontweight='bold', color='#2ECC71')
+                            ax.set_title(f"PyMDP Preference Accumulation — {model_name}",
+                                         fontweight='bold', fontsize=13)
+                            ax.grid(True, alpha=0.3)
+                            # Merge legends
+                            lines1, labels1 = ax.get_legend_handles_labels()
+                            lines2, labels2 = ax2.get_legend_handles_labels()
+                            ax.legend(lines1 + lines2, labels1 + labels2, loc='upper left', fontsize=10)
+                            pref_file = model_viz_dir / "cumulative_preference.png"
+                            plt.savefig(str(pref_file), dpi=300, bbox_inches='tight')
+                            plt.close()
+                            generated_files.append(str(pref_file))
+                            logger.info(f"  Generated: cumulative_preference -> {pref_file}")
+                    except Exception as e:
+                        logger.warning(f"Failed to generate cumulative preference plot: {e}")
+
+                # Observation vs True State Scatter
+                if observations and true_states and len(observations) == len(true_states):
+                    try:
+                        from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
+                        if MATPLOTLIB_AVAILABLE and plt is not None:
+                            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 5))
+                            x = range(len(observations))
+                            # Left: timeline comparison
+                            ax1.scatter(x, true_states, label="True States", s=80,
+                                        marker='D', color='#3498DB', zorder=5, alpha=0.8)
+                            ax1.scatter(x, observations, label="Observations", s=50,
+                                        marker='o', color='#E74C3C', zorder=4, alpha=0.7)
+                            ax1.set_xlabel("Time Step", fontweight='bold')
+                            ax1.set_ylabel("State / Observation Index", fontweight='bold')
+                            ax1.set_title("Observations vs True States", fontweight='bold', fontsize=13)
+                            ax1.legend(fontsize=10)
+                            ax1.grid(True, alpha=0.3)
+
+                            # Right: confusion matrix
+                            n_vals = max(max(observations) + 1, max(true_states) + 1, num_observations)
+                            confusion = np.zeros((n_vals, n_vals))
+                            for obs, ts in zip(observations, true_states):
+                                confusion[obs][ts] += 1
+                            im = ax2.imshow(confusion, cmap='Blues', origin='lower')
+                            ax2.set_xlabel("True State", fontweight='bold')
+                            ax2.set_ylabel("Observation", fontweight='bold')
+                            ax2.set_title("Observation Confusion Matrix", fontweight='bold', fontsize=13)
+                            plt.colorbar(im, ax=ax2, label='Count')
+                            for i in range(n_vals):
+                                for j in range(n_vals):
+                                    val = int(confusion[i][j])
+                                    if val > 0:
+                                        ax2.text(j, i, str(val), ha='center', va='center',
+                                                 fontweight='bold', fontsize=12,
+                                                 color='white' if val > confusion.max()/2 else 'black')
+
+                            plt.suptitle(f"PyMDP Observation Analysis — {model_name}",
+                                         fontsize=14, fontweight='bold')
+                            plt.tight_layout()
+                            obs_file = model_viz_dir / "obs_vs_true_state.png"
+                            plt.savefig(str(obs_file), dpi=300, bbox_inches='tight')
+                            plt.close()
+                            generated_files.append(str(obs_file))
+                            logger.info(f"  Generated: obs_vs_true_state -> {obs_file}")
+                    except Exception as e:
+                        logger.warning(f"Failed to generate obs vs true state plot: {e}")
+
                 else:
                     # Fallback: use PyMDPVisualizer directly for individual plots
                     if PyMDPVisualizer:
@@ -185,7 +270,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
     else:
         # FALLBACK: Search for legacy trace files
         logger.info("No simulation_results.json found, searching for legacy trace files...")
-        pymdp_dirs = list(execution_results_dir.glob("*/pymdp")) + list(execution_results_dir.glob("*/pymdp_gen"))
+        pymdp_dirs = list(execution_results_dir.glob("*/pymdp"))
         
         if not pymdp_dirs:
             pymdp_dirs = list(execution_results_dir.glob("**/pymdp"))

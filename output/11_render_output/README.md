@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2026-02-20T14:50:17.716069
+Generated: 2026-02-23T07:43:49.380640
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -20,7 +20,7 @@ Processing Type: **POMDP-aware rendering**
 ## File Results
 
 - ✅ **actinf_pomdp_agent.md** - Successfully processed
-  - ✅ pymdp: Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp_gen/Active Inference POMDP Agent_pymdp.py
+  - ✅ pymdp: Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py
   - ✅ rxinfer: Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl
   - ✅ activeinference_jl: Successfully rendered ActiveInference.jl script to Active Inference POMDP Agent_activeinference.jl
   - ✅ jax: JAX model code generated successfully.

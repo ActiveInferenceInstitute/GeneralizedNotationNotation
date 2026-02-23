@@ -254,7 +254,7 @@ python3 src/3_gnn.py --target-dir input/gnn_files --verbose
 
 ### Pipeline Execution
 
-- **Full 25-step pipeline**: ~40 seconds
+- **Full 25-step pipeline**: ~5 minutes (with LLM step)
 - **GNN parsing**: ~130ms
 - **Code rendering**: ~150ms
 - **Execution (with PyMDP/JAX)**: ~16 seconds
@@ -324,7 +324,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ---
 
-**Last Updated**: February 9, 2026
-**Pipeline Version**: 1.1.3
+**Last Updated**: February 23, 2026
+**Pipeline Version**: 1.2.0
 **Status**: ✅ Production Ready (Linux & macOS)
 **Latest Validation**: 100% Success (25/25 steps)

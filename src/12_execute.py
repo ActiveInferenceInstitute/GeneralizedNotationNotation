@@ -37,30 +37,7 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Import module function
-try:
-    from execute import process_execute
-except ImportError as e:
-    def process_execute(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback execute processing when module unavailable."""
-        import logging
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning(f"Execute module not available - using fallback: {e}")
-        logger.info("Install execute support with: uv pip install -e .[execute]")
-        
-        # Create a fallback result file to let downstream steps know we skipped
-        try:
-            from pathlib import Path
-            import json
-            output_dir = Path(output_dir)
-            output_dir.mkdir(parents=True, exist_ok=True)
-            with open(output_dir / "execute_processing_skipped.json", "w") as f:
-                json.dump({"status": "skipped", "reason": str(e)}, f, indent=2)
-        except Exception:
-            pass
-            
-        return True
+from execute import process_execute
 
 run_script = create_standardized_pipeline_script(
     "12_execute.py",
@@ -72,6 +49,12 @@ run_script = create_standardized_pipeline_script(
             "type": str,
             "default": "all",
             "help": "Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)"
+        },
+        "timeout": {
+            "flag": "--timeout",
+            "type": int,
+            "default": 300,
+            "help": "Maximum execution time in seconds for subprocesses"
         }
     }
 )

@@ -1094,39 +1094,63 @@ def simulate_step(params: Dict[str, jnp.ndarray], belief: jnp.ndarray,
     }}
 
 
-def run_simulation(params: Dict[str, jnp.ndarray], observations: jnp.ndarray, 
-                   initial_belief: jnp.ndarray = None) -> Dict[str, Any]:
+def run_simulation(params: Dict[str, jnp.ndarray], num_steps: int, 
+                   initial_belief: jnp.ndarray = None, seed: int = 42) -> Dict[str, Any]:
     """
-    Run a full Active Inference simulation over a sequence of observations.
+    Run a full Active Inference simulation interacting with a true
+    stochastic POMDP generative environment.
     
     Args:
         params: Model parameters dictionary
-        observations: Sequence of observations [num_steps, num_observations]
+        num_steps: Number of simulation timesteps
         initial_belief: Optional initial belief (default: uniform)
+        seed: Random seed for stochastic environment generation
         
     Returns:
         Dictionary with simulation trajectory
     """
-    num_steps = observations.shape[0]
+    key = jax.random.PRNGKey(seed)
     
     # Initialize belief
     if initial_belief is None:
         belief = params['D_vector'].copy()
     else:
         belief = initial_belief
+        
+    # Initialize true state from Prior
+    key, subkey = jax.random.split(key)
+    true_state_idx = jax.random.categorical(subkey, jnp.log(params['D_vector'] + 1e-8))
     
     # Storage for trajectory
     beliefs = []
     actions = []
     efes = []
+    observations_log = []
     
     # Run simulation
     for t in range(num_steps):
-        result = simulate_step(params, belief, observations[t])
+        # 1. Environment generates observation
+        key, subkey = jax.random.split(key)
+        obs_probs = params['A_matrix'][:, true_state_idx]
+        obs_idx = jax.random.categorical(subkey, jnp.log(obs_probs + 1e-8))
+        
+        # Create one-hot observation for the agent
+        obs_one_hot = jnp.zeros(params['A_matrix'].shape[0])
+        obs_one_hot = obs_one_hot.at[obs_idx].set(1.0)
+        observations_log.append(obs_idx)
+        
+        # 2. Agent perceives and acts
+        result = simulate_step(params, belief, obs_one_hot)
         
         beliefs.append(result['belief'])
         actions.append(result['action'])
-        efes.append(result['expected_free_energy'])
+        efes.append(result['all_efe_values'])
+        action_idx = int(result['action'])
+        
+        # 3. Environment transitions true state
+        key, subkey = jax.random.split(key)
+        next_state_probs = params['B_matrix'][:, true_state_idx, action_idx]
+        true_state_idx = jax.random.categorical(subkey, jnp.log(next_state_probs + 1e-8))
         
         # Update belief for next step (using predicted next state)
         belief = result['predicted_next_state']
@@ -1135,6 +1159,7 @@ def run_simulation(params: Dict[str, jnp.ndarray], observations: jnp.ndarray,
         'beliefs': jnp.stack(beliefs),
         'actions': jnp.array(actions),
         'expected_free_energies': jnp.array(efes),
+        'observations': jnp.array(observations_log),
         'final_belief': belief,
     }}
 
@@ -1187,11 +1212,13 @@ def save_simulation_results(trajectory: Dict[str, Any], params: Dict[str, jnp.nd
         "num_timesteps": int(len(trajectory['actions'])),
         "timestamp": datetime.now().isoformat(),
         "simulation_trace": {{
-            "beliefs": [b.tolist() for b in trajectory['beliefs']],
-            "actions": trajectory['actions'].tolist(),
-            "efe_history": trajectory['expected_free_energies'].tolist(),
-            "belief_confidence": [float(max(b)) for b in trajectory['beliefs']],
+            "observations": trajectory.get('observations', jnp.array([])).tolist(),
+            "beliefs": [b.tolist() for b in trajectory.get('beliefs', [])],
+            "actions": trajectory.get('actions', jnp.array([])).tolist(),
+            "efe_history": trajectory.get('expected_free_energies', jnp.array([])).tolist(),
+            "belief_confidence": [float(max(b)) if len(b) > 0 else 0.0 for b in trajectory.get('beliefs', [])],
         }},
+        "observations": trajectory.get('observations', jnp.array([])).tolist(),
         "beliefs": [b.tolist() for b in trajectory['beliefs']],
         "actions": trajectory['actions'].tolist(),
         "final_belief": trajectory['final_belief'].tolist(),
@@ -1262,12 +1289,7 @@ if __name__ == "__main__":
 
     # Run multi-step simulation
     print("\\n🔄 Running {num_timesteps}-step simulation...")
-    observations = jnp.eye(NUM_OBSERVATIONS)[:min({num_timesteps}, NUM_OBSERVATIONS)]  # Use identity as test observations
-    if observations.shape[0] < {num_timesteps}:
-        # Pad with repeated observations if needed
-        observations = jnp.concatenate([observations] * ({num_timesteps} // observations.shape[0] + 1))[:{num_timesteps}]
-
-    trajectory = run_simulation(params, observations)
+    trajectory = run_simulation(params, num_steps={num_timesteps})
 
     print(f"   Actions taken: {{trajectory['actions']}}")
     print(f"   Final belief: {{trajectory['final_belief']}}")

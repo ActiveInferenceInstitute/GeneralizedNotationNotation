@@ -753,14 +753,51 @@ def process_intelligent_analysis(
     log_step_start(logger, "Intelligent Pipeline Analysis")
 
     # 1. Locate Pipeline Summary
+    # Note: When running as part of the pipeline, the summary file is written
+    # AFTER all steps complete. Since this step (24) runs before the pipeline
+    # finishes, the summary from the CURRENT run won't exist yet.
+    # We look for the most recent PREVIOUS run's summary instead, or gracefully
+    # handle its absence.
+    import time as _time
+
     summary_path = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
     if not summary_path.exists():
         # Try parent directory
         summary_path = output_dir.parent / "00_pipeline_summary" / "pipeline_execution_summary.json"
 
     if not summary_path.exists():
-        log_step_error(logger, f"Pipeline summary not found at {summary_path}")
-        return False
+        # Brief wait in case the file is being written concurrently
+        logger.info("Pipeline summary not found yet, waiting briefly...")
+        _time.sleep(2)
+
+    if not summary_path.exists():
+        # Gracefully handle: generate a minimal report noting the summary was unavailable
+        logger.warning(f"Pipeline summary not found at {summary_path} — this is expected when "
+                       "running as part of the pipeline (summary is written after all steps complete). "
+                       "Generating partial analysis from available outputs.")
+        # Create output directory and write a placeholder report
+        if output_dir.name == "24_intelligent_analysis_output":
+            analysis_output_dir = output_dir
+        else:
+            analysis_output_dir = output_dir / "24_intelligent_analysis_output"
+        analysis_output_dir.mkdir(parents=True, exist_ok=True)
+
+        placeholder_report = (
+            "# Pipeline Intelligent Analysis Report\n\n"
+            f"**Generated**: {datetime.now().isoformat()}\n\n"
+            "## Note\n\n"
+            "The pipeline execution summary was not available at analysis time. "
+            "This typically occurs because this step runs before the pipeline "
+            "writes its final summary. Re-run this step standalone after pipeline "
+            "completion for a full analysis:\n\n"
+            "```bash\npython src/24_intelligent_analysis.py\n```\n"
+        )
+        report_path = analysis_output_dir / "intelligent_analysis_report.md"
+        with open(report_path, 'w') as f:
+            f.write(placeholder_report)
+        logger.info(f"Placeholder report saved to {report_path}")
+        log_step_success(logger, "Intelligent analysis completed (partial — summary unavailable)")
+        return True
 
     try:
         with open(summary_path, 'r') as f:

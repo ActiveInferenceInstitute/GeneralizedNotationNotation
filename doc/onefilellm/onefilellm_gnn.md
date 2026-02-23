@@ -64,7 +64,7 @@ onefilellm \
 4. Adds an alias to pull any spec chapter on demand.  
 5. Outputs a **single XML** ready for LLM analysis.
 
-Average runtime on a 1 Gbps link: **37 s** for 188 MB total payload, 28,430 uncompressed tokens [tested on Ubuntu 22.04, Python 3.11](7).
+Average runtime on a 1 Gbps link: **37 s** for 188 MB total payload, 28,430 uncompressed tokens [tested on Ubuntu 22.04, Python 3.11][7].
 
 ## Generalized Notation Notation (GNN): Technical Specification
 

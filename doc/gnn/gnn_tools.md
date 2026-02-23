@@ -1,9 +1,9 @@
 # GNN Tools and Resources
 
-**Version**: v1.1.0  
+**Version**: v1.2.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,083 Tests Passing  
+**Test Count**: 1,319 Tests Passing  
 
 This document provides information about tools, libraries, and resources for working with Generalized Notation Notation (GNN).
 

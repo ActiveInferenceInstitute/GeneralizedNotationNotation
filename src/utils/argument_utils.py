@@ -113,6 +113,12 @@ class PipelineArguments:
     # MCP/performance mode (used by step 22)
     performance_mode: str = "low"
     
+    # Custom pipeline step configs
+    timesteps: int = 15
+    simulation_params: str = "{}"
+    timeout: int = 300
+    advanced_stats: bool = False
+    
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
@@ -335,6 +341,29 @@ class ArgumentParser:
         'install_optional': ArgumentDefinition(
             flag='--install-optional',
             help_text='Install optional package groups (comma-separated): ml_ai,llm,visualization,audio,graphs,research,active_inference'
+        ),
+        'timesteps': ArgumentDefinition(
+            flag='--timesteps',
+            arg_type=int,
+            default=15,
+            help_text='Number of timesteps for simulation'
+        ),
+        'simulation_params': ArgumentDefinition(
+            flag='--simulation-params',
+            arg_type=str,
+            default='{}',
+            help_text='JSON string containing simulation parameters'
+        ),
+        'timeout': ArgumentDefinition(
+            flag='--timeout',
+            arg_type=int,
+            default=300,
+            help_text='Timeout for execution in seconds'
+        ),
+        'advanced_stats': ArgumentDefinition(
+            flag='--advanced-stats',
+            action='store_true',
+            help_text='Include advanced statistical analysis'
         )
     }
     
@@ -353,12 +382,12 @@ class ArgumentParser:
         "8_visualization.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "9_advanced_viz.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
-        "11_render.py": ["target_dir", "output_dir", "recursive", "verbose"],
-        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "11_render.py": ["target_dir", "output_dir", "recursive", "verbose", "timesteps", "simulation_params"],
+        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose", "timeout"],
         "13_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
         "14_ml_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "15_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],
-        "16_analysis.py": ["target_dir", "output_dir", "recursive", "verbose"],
+        "16_analysis.py": ["target_dir", "output_dir", "recursive", "verbose", "advanced_stats"],
         "17_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "18_security.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "19_research.py": ["target_dir", "output_dir", "recursive", "verbose"],
@@ -464,6 +493,14 @@ class ArgumentParser:
                         setattr(parsed_args, arg_name, False)
                     elif arg_name == 'duration':
                         setattr(parsed_args, arg_name, 30.0)
+                    elif arg_name == 'timesteps':
+                        setattr(parsed_args, arg_name, 15)
+                    elif arg_name == 'simulation_params':
+                        setattr(parsed_args, arg_name, "{}")
+                    elif arg_name == 'timeout':
+                        setattr(parsed_args, arg_name, 300)
+                    elif arg_name == 'advanced_stats':
+                        setattr(parsed_args, arg_name, False)
                     else:
                         setattr(parsed_args, arg_name, None)
                     

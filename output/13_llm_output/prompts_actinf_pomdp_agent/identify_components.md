@@ -1,29 +1,28 @@
 # IDENTIFY_COMPONENTS
 
-Okay, let's meticulously analyze this GNN specification for the Active Inference POMDP Agent. This breakdown will focus on the core Active Inference concepts and the mathematical relationships defined within the GNN.
+Okay, let’s meticulously analyze this GNN specification for the Active Inference POMDP Agent. This breakdown will focus on the core Active Inference concepts and the mathematical relationships defined within the GNN structure.
 
 **1. State Variables (Hidden States)**
 
 *   **Variable Names & Dimensions:**
     *   `s` (Current Hidden State): 3 x 1 x float
     *   `s_prime` (Next Hidden State): 3 x 1 x float
-*   **Conceptual Representation:** The hidden state `s` represents the agent’s underlying belief about its location within a 3-dimensional space.  `s_prime` represents the predicted next state given the current state and action.
-*   **State Space Structure:** Discrete, finite. The state space is defined by 3 discrete locations. This is a fundamental simplification for demonstration purposes, but the framework is designed to accommodate more complex state spaces.
-
+*   **Conceptual Representation:** The hidden state `s` represents the agent’s underlying belief about its location within a 3-state space (labeled 0, 1, and 2).  `s_prime` represents the agent's *prediction* of its location at the next time step, given its current state and action.
+*   **State Space Structure:** Discrete, finite (3 states). This is a fundamental assumption of the POMDP.
 
 **2. Observation Variables**
 
-*   **Observation Modality:** “state_observation” – This represents the agent’s perception of its environment.
-*   **Observation Outcomes:** 3 possible outcomes (indexed 0, 1, 2). These correspond to the 3 states in the hidden state space.
-*   **Sensor Interpretation:** The agent receives an integer index (0, 1, or 2) representing the observed outcome. This is a direct mapping, implying no noise or measurement error is explicitly modeled in this simplified example.  A more sophisticated model would incorporate a noise distribution.
+*   **Observation Modality:** “state_observation” – This is a single observation modality, meaning the agent receives a single, direct measurement of its environment.
+*   **Observation Outcomes:** 3 possible outcomes (indexed 0, 1, and 2). These correspond directly to the hidden state space.
+*   **Sensor Interpretation:** The observation `o` is a direct representation of the agent's location, as determined by the underlying hidden state.
+*   **Noise Models/Uncertainty:** The `A` matrix (likelihood) implicitly encodes the uncertainty in the observation process.  A value of 0.9 in `A[0,0]` indicates a high probability of observing outcome 0 when the agent is in state 0, while a value of 0.05 indicates a lower probability, reflecting the noise in the observation.
 
 **3. Action/Control Variables**
 
-*   **Available Actions:** 3 discrete actions (indexed 0, 1, 2).
-*   **Control Policy:** The policy `π` is a simple, deterministic distribution over actions. It doesn't involve planning or optimization; it simply selects an action with equal probability. This is a key simplification for demonstration.
-*   **Action Space Properties:** Discrete, finite. The action space is defined by 3 actions.
-
+*   **Available Actions:** 3 discrete actions (indexed 0, 1, and 2). These actions are designed to move the agent between the 3 states.
+*   **Control Policy:** The policy `π` is a *deterministic* policy in this case. It simply selects one of the 3 actions with equal probability. This is a simplification for demonstration purposes.
+*   **Action Space Properties:** Discrete, finite (3 actions).
 
 **4. Model Matrices**
 
-*   **A Matrix (Likelihood):** `A[3,3,type=float]` – This is the observation model, P(o|s).  It defines the probability of observing a particular outcome given the agent’s hidden state.  The provided values (0.9, 0.05, 0.05) indicate a strong prior belief that the agent will observe outcome 0 when
+*   **A Matrix (Likelihood):** `A[3,3,

@@ -315,7 +315,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Quality Assurance*: Testing and validation requirements
   - *Security Releases*: Critical vulnerability response process
 - **[Releases](releases/README.md)** - Release management and version history
-  - *Current Version*: v1.1.0 with comprehensive feature additions
+  - *Current Version*: v1.2.0 with comprehensive feature additions
   - *Version History*: Detailed change tracking since project inception
   - *Upgrade Guides*: Migration assistance between major versions
 
@@ -417,7 +417,7 @@ coverage_metrics:
   research_integrations: 5+
   pipeline_steps: 25
   cognitive_phenomena: 22+
-  test_status: 1,083 tests passing
+  test_status: 1,319 tests passing
 status: production_ready
 quality_level: gold_standard
 recent_additions: [poe-world_integration, enhanced_cross_references, improved_research_pathways, 100%_signposting_coverage]

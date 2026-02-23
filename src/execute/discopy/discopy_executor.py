@@ -34,6 +34,109 @@ except ImportError as e:
     DISCOPY_AVAILABLE = False
 
 
+def execute_discopy_script(
+    script_path: Path,
+    verbose: bool = False,
+    output_dir: Optional[Path] = None,
+    timeout: int = 300
+) -> bool:
+    """
+    Execute a single DisCoPy Python script with syntax validation and log persistence.
+    
+    Matches the execution pattern of execute_jax_script() and execute_rxinfer_script()
+    for cross-framework consistency (E-3/D-1).
+    
+    Args:
+        script_path: Path to the DisCoPy Python script
+        verbose: Enable verbose output logging
+        output_dir: Directory for execution logs
+        timeout: Execution timeout in seconds (default: 300)
+        
+    Returns:
+        bool: True if execution was successful, False otherwise
+    """
+    import subprocess
+    import sys
+    import time as time_mod
+    
+    if not script_path.exists():
+        logger.error(f"Script file not found: {script_path}")
+        return False
+    
+    logger.info(f"Executing DisCoPy script: {script_path}")
+    
+    # Validate Python syntax before execution
+    try:
+        with open(script_path, 'r') as f:
+            content = f.read()
+        compile(content, script_path.name, 'exec')
+        logger.debug(f"✅ Script syntax valid: {script_path.name}")
+    except SyntaxError as e:
+        logger.error(f"❌ Syntax error in {script_path.name}: {e}")
+        return False
+    
+    env = os.environ.copy()
+    if output_dir:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        env["DISCOPY_OUTPUT_DIR"] = str(output_dir)
+    
+    start_time = time_mod.time()
+    
+    try:
+        abs_script_path = script_path.resolve()
+        result = subprocess.run(
+            [sys.executable, str(abs_script_path)],
+            capture_output=True,
+            text=True,
+            env=env,
+            cwd=abs_script_path.parent,
+            timeout=timeout
+        )
+        
+        elapsed = time_mod.time() - start_time
+        success = result.returncode == 0
+        
+        if success:
+            logger.info(f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)")
+            if verbose and result.stdout.strip():
+                logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
+        else:
+            logger.error(f"❌ Script execution failed: {script_path.name}")
+            logger.error(f"Return code: {result.returncode}")
+            if result.stderr.strip():
+                logger.error(f"Error output:\n{result.stderr}")
+        
+        # Save execution logs
+        log_dir = output_dir if output_dir else abs_script_path.parent
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            
+            execution_log = {
+                "script": str(abs_script_path),
+                "return_code": result.returncode,
+                "success": success,
+                "elapsed_seconds": round(elapsed, 2),
+                "timeout": timeout,
+                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            log_file = log_dir / "execution_log.json"
+            with open(log_file, 'w') as f:
+                json.dump(execution_log, f, indent=2)
+            
+            logger.debug(f"Execution logs saved to: {log_dir}")
+        except Exception as log_err:
+            logger.warning(f"Could not save execution logs: {log_err}")
+        
+        return success
+    except subprocess.TimeoutExpired:
+        logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
+        return False
+    except Exception as e:
+        logger.error(f"❌ Error executing script {script_path.name}: {e}")
+        return False
+
+
 class DisCoPyExecutor:
     """
     DisCoPy Executor for validating and analyzing rendered DisCoPy diagrams.

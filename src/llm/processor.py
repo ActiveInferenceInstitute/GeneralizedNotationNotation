@@ -304,6 +304,7 @@ async def _process_llm_async(
             "processed_files": 0,
             "success": True,
             "errors": [],
+            "auth_errors": [],
             "provider_matrix": {
                 "ollama": {
                     "available": ollama_available,
@@ -326,6 +327,9 @@ async def _process_llm_async(
             "code_suggestions": [],
             "documentation_generated": [],
         }
+        
+        # Track providers with auth failures to fail-fast on subsequent calls
+        failed_auth_providers = set()
         
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
@@ -453,7 +457,22 @@ async def _process_llm_async(
                                 logger.error(f"  ❌ {error_msg}")
                                 prompt_outputs[ptype.value] = error_msg
                             except Exception as e:
-                                error_msg = f"Prompt execution failed: {e}"
+                                error_str = str(e)
+                                # Fail-fast on auth errors (401/403) to avoid burning time
+                                if any(code in error_str for code in ["401", "403", "invalid_api_key", "Incorrect API key"]):
+                                    auth_err = {"provider": "unknown", "error": error_str[:200]}
+                                    # Detect which provider failed
+                                    for prov_name in ["openai", "anthropic", "openrouter"]:
+                                        if prov_name in error_str.lower():
+                                            auth_err["provider"] = prov_name
+                                            break
+                                    if auth_err["provider"] not in failed_auth_providers:
+                                        results["auth_errors"].append(auth_err)
+                                        failed_auth_providers.add(auth_err["provider"])
+                                        logger.error(f"  🔑 Auth failure for {auth_err['provider']} — skipping future calls to this provider")
+                                    error_msg = f"Auth error ({auth_err['provider']}): {error_str[:100]}"
+                                else:
+                                    error_msg = f"Prompt execution failed: {e}"
                                 logger.error(f"  ❌ {error_msg}")
                                 # Provide a meaningful fallback response
                                 fallback_content = f"LLM analysis for {ptype.value} was not available. Please ensure that Ollama is running and the required model is installed."
@@ -497,7 +516,21 @@ async def _process_llm_async(
                                 logger.error(f"  ❌ {error_msg}")
                                 prompt_outputs[key] = error_msg
                             except Exception as e:
-                                error_msg = f"Custom prompt execution failed: {e}"
+                                error_str = str(e)
+                                # Fail-fast on auth errors (401/403)
+                                if any(code in error_str for code in ["401", "403", "invalid_api_key", "Incorrect API key"]):
+                                    auth_err = {"provider": "unknown", "error": error_str[:200]}
+                                    for prov_name in ["openai", "anthropic", "openrouter"]:
+                                        if prov_name in error_str.lower():
+                                            auth_err["provider"] = prov_name
+                                            break
+                                    if auth_err["provider"] not in failed_auth_providers:
+                                        results["auth_errors"].append(auth_err)
+                                        failed_auth_providers.add(auth_err["provider"])
+                                        logger.error(f"  🔑 Auth failure for {auth_err['provider']} — skipping future calls to this provider")
+                                    error_msg = f"Auth error ({auth_err['provider']}): {error_str[:100]}"
+                                else:
+                                    error_msg = f"Custom prompt execution failed: {e}"
                                 logger.error(f"  ❌ {error_msg}")
                                 # Provide a meaningful fallback response
                                 fallback_content = f"LLM analysis for custom prompt {key} was not available. Please ensure that Ollama is running and the required model is installed."
@@ -534,7 +567,14 @@ async def _process_llm_async(
         with open(summary_file, 'w') as f:
             f.write(summary)
         
-        if results["success"]:
+        # Surface auth errors in final status
+        if results["auth_errors"]:
+            providers_failed = [e["provider"] for e in results["auth_errors"]]
+            log_step_warning(logger, f"LLM processing completed with auth errors for: {', '.join(providers_failed)}")
+            logger.warning("💡 Check your API keys — invalid keys waste time on retries")
+            # Mark as not fully successful so pipeline reports SUCCESS_WITH_WARNINGS
+            return False
+        elif results["success"]:
             log_step_success(logger, "LLM processing completed successfully")
         else:
             log_step_error(logger, "LLM processing failed")

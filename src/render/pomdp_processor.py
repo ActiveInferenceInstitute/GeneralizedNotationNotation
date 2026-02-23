@@ -83,7 +83,7 @@ class POMDPRenderProcessor:
         # Framework-specific configurations
         self.framework_configs = {
             'pymdp': {
-                'output_subdir': 'pymdp_gen',
+                'output_subdir': 'pymdp',
                 'file_extension': '.py',
                 'requires_matrices': ['A', 'B', 'C', 'D'],
                 'optional_matrices': ['E'],
@@ -258,7 +258,7 @@ class POMDPRenderProcessor:
         framework_output_dir.mkdir(parents=True, exist_ok=True)
         
         # Convert POMDP to GNN spec format expected by renderers
-        gnn_spec = self._pomdp_to_gnn_spec(pomdp_space)
+        gnn_spec = self._pomdp_to_gnn_spec(pomdp_space, **kwargs)
         
         # Get framework-specific renderer
         try:
@@ -352,16 +352,29 @@ class POMDPRenderProcessor:
             'warnings': warnings
         }
     
-    def _pomdp_to_gnn_spec(self, pomdp_space: 'POMDPStateSpace') -> Dict[str, Any]:
+    def _pomdp_to_gnn_spec(self, pomdp_space: 'POMDPStateSpace', **kwargs) -> Dict[str, Any]:
         """
         Convert POMDP state space to GNN spec format expected by renderers.
         
         Args:
             pomdp_space: POMDP state space data
+            **kwargs: Additional options like timesteps
             
         Returns:
             GNN specification dictionary
         """
+        # Extract optional config params
+        timesteps = kwargs.get('timesteps')
+        if timesteps is None and hasattr(pomdp_space, 'num_timesteps'):
+            timesteps = pomdp_space.num_timesteps
+            
+        sim_params = kwargs.get('simulation_params', "{}")
+        try:
+            parsed_sim_params = json.loads(sim_params) if isinstance(sim_params, str) else sim_params
+        except json.JSONDecodeError:
+            self.logger.warning(f"Invalid simulation_params string: {sim_params}. Using empty dict.")
+            parsed_sim_params = {}
+
         gnn_spec = {
             'name': pomdp_space.model_name or 'POMDP_Model',
             'model_name': pomdp_space.model_name or 'POMDP_Model',
@@ -370,7 +383,8 @@ class POMDPRenderProcessor:
                 'num_hidden_states': pomdp_space.num_states,
                 'num_obs': pomdp_space.num_observations,
                 'num_actions': pomdp_space.num_actions,
-                **(({'num_timesteps': pomdp_space.num_timesteps} if hasattr(pomdp_space, 'num_timesteps') and pomdp_space.num_timesteps else {}))
+                'simulation_params': parsed_sim_params,
+                **(({'num_timesteps': timesteps} if timesteps else {}))
             },
             'initialparameterization': {},
             'variables': [],

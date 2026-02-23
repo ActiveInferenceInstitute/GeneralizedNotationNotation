@@ -61,7 +61,7 @@ try:
         create_test_gnn_files,
         create_test_files,
         create_sample_gnn_content,
-        get_mock_filesystem_structure,
+        get_test_filesystem_structure,
         run_all_tests,
         
         # Performance tracking functions
@@ -104,7 +104,7 @@ except Exception:
     def create_test_gnn_files(_): return []
     def create_test_files(_, __=3): return []
     def create_sample_gnn_content(): return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
-    def get_mock_filesystem_structure(): return {}
+    def get_test_filesystem_structure(): return {}
     def run_all_tests(*_, **__): return True
     from contextlib import contextmanager
     import time as _time
@@ -253,7 +253,7 @@ __all__ = [
     "create_test_gnn_files",
     "create_test_files",
     "create_sample_gnn_content",
-    "get_mock_filesystem_structure",
+    "get_test_filesystem_structure",
     "run_all_tests",
     
     # Performance tracking functions
@@ -281,6 +281,6 @@ __all__ = [
 ]
 
 # Module metadata
-__version__ = "1.1.3"
+__version__ = "1.1.4"
 __author__ = "Active Inference Institute"
 __description__ = "Comprehensive testing for GNN Processing Pipeline"

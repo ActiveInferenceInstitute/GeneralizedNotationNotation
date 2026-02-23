@@ -168,6 +168,7 @@ class ExperimentConfiguration {
 ### Enhanced Pipeline Steps with Pkl Integration
 
 #### **Step 1-2: Enhanced GNN Parsing and Setup**
+
 ```pkl
 class GNNProcessingConfig {
   inputFormat: "gnn-pkl" | "gnn-markdown" | "hybrid"
@@ -185,6 +186,7 @@ class GNNProcessingConfig {
 ```
 
 #### **Step 4: Advanced Type Checking with Pkl Constraints**
+
 ```pkl
 class GNNTypeChecker {
   validationLevels: "strict" | "standard" | "permissive"
@@ -209,6 +211,7 @@ class GNNTypeChecker {
 ```
 
 #### **Step 5: Multi-Format Export Enhancement**
+
 ```pkl
 class ExportConfiguration {
   targets: new Mapping {
@@ -237,6 +240,7 @@ class ExportConfiguration {
 ## Scientific Computing Integration
 
 ### 1. **JAX Backend Configuration**
+
 ```pkl
 class JAXRenderingConfig {
   precisionMode: "float32" | "float64" | "mixed"
@@ -259,6 +263,7 @@ class JAXRenderingConfig {
 ```
 
 ### 2. **PyMDP Integration**
+
 ```pkl
 class PyMDPRenderingConfig {
   outputStyle: "class-based" | "functional" | "hybrid"
@@ -280,6 +285,7 @@ class PyMDPRenderingConfig {
 ```
 
 ### 3. **RxInfer.jl Configuration**
+
 ```pkl
 class RxInferConfig {
   messagePassingAlgorithm: "loopy_belief_propagation" | "variational_bayes" | "structured_variational"
@@ -300,6 +306,7 @@ class RxInferConfig {
 ## LLM Integration Enhancement (Step 11)
 
 ### AI-Powered Configuration Generation
+
 ```pkl
 class LLMIntegrationConfig {
   providers: new Mapping {
@@ -334,6 +341,7 @@ class LLMIntegrationConfig {
 ## Categorical Diagrams with Pkl (Steps 12-13)
 
 ### DisCoPy Integration Configuration
+
 ```pkl
 class DisCoPyConfig {
   diagramBackend: "matplotlib" | "tikz" | "graphviz"
@@ -360,6 +368,7 @@ class DisCoPyConfig {
 ## Performance and Scalability Benefits
 
 ### 1. **Configuration Caching and Reuse**
+
 ```pkl
 class CachingConfiguration {
   enableCache: Boolean = true
@@ -379,6 +388,7 @@ class CachingConfiguration {
 ```
 
 ### 2. **Parallel Processing Configuration**
+
 ```pkl
 class ParallelProcessingConfig {
   maxWorkers: Int = Runtime.availableProcessors()
@@ -395,6 +405,7 @@ class ParallelProcessingConfig {
 ## Security and Reproducibility
 
 ### 1. **Sandboxed Execution**
+
 ```pkl
 class SecurityConfiguration {
   enableSandbox: Boolean = true
@@ -409,6 +420,7 @@ class SecurityConfiguration {
 ```
 
 ### 2. **Reproducibility Guarantees**
+
 ```pkl
 class ReproducibilityConfig {
   deterministicOutput: Boolean = true
@@ -427,24 +439,28 @@ class ReproducibilityConfig {
 ## Implementation Roadmap
 
 ### Phase 1: Core Integration (Months 1-3)
+
 - Develop Pkl schema definitions for GNN core components
 - Implement basic type validation with Active Inference constraints
 - Create multi-format export templates
 - Integration with steps 1-5 of the GNN pipeline
 
 ### Phase 2: Advanced Features (Months 4-6)
+
 - Template inheritance system for common Active Inference patterns
 - Dynamic configuration with late binding
 - Enhanced LLM integration configurations
 - Performance optimization and caching
 
 ### Phase 3: Ecosystem Integration (Months 7-9)
+
 - Full PyMDP, RxInfer.jl, and JAX rendering configurations
 - DisCoPy categorical diagram integration
 - Advanced security and reproducibility features
 - Comprehensive documentation and examples
 
 ### Phase 4: Community and Extension (Months 10-12)
+
 - Package ecosystem for shared GNN-Pkl templates
 - VS Code and IntelliJ plugin integration
 - Performance benchmarking and optimization
@@ -453,9 +469,11 @@ class ReproducibilityConfig {
 ## Technical Challenges and Solutions
 
 ### 1. **Mathematical Notation Compatibility**
+
 **Challenge**: Pkl's syntax may not naturally support LaTeX mathematical expressions used in GNN equations sections.
 
-**Solution**: 
+**Solution**:
+
 ```pkl
 class MathematicalExpression {
   latex: String
@@ -473,9 +491,11 @@ class MathematicalExpression {
 ```
 
 ### 2. **Legacy Compatibility**
+
 **Challenge**: Existing GNN markdown files need migration path.
 
 **Solution**:
+
 ```pkl
 class MigrationConfig {
   sourceFormat: "markdown"
@@ -518,7 +538,7 @@ The adoption of Pkl represents not just a technical enhancement but a strategic 
 2. [Pkl Language Reference](https://pkl-lang.org/main/current/language-reference/)
 3. [Pkl Package Documentation](https://pkl-lang.org/package-docs/)
 4. [GNN Project Documentation](../README.md)
-5. [Active Inference Ontology Specifications](../ontology/)
+5. Active Inference Ontology Specifications
 6. [Python pickle module documentation](https://docs.python.org/3/library/pickle.html)
 7. [Pkl Evolution Process](https://pkl-lang.org/blog/pkl-evolution.html)
 8. [Pkl Spring Boot Integration](https://pkl-lang.org/spring/current/)

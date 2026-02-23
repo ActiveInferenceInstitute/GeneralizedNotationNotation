@@ -49,7 +49,7 @@ An optimizer typically takes three inputs:
 
 - A DSPy program (single module or complex multi-module program)
 - A metric function that evaluates program output
-- Training inputs [which can be as few as 5-10 examples](9)
+- Training inputs [which can be as few as 5-10 examples][9]
 
 Different optimizers in DSPy work through various mechanisms:
 

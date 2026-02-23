@@ -19,28 +19,36 @@ def is_julia_available() -> bool:
     """
     Check if Julia is available in the system path.
     
+    Delegates to the shared julia_setup module for consistency across runners.
+    
     Returns:
         bool: True if Julia is available, False otherwise
     """
     try:
-        result = subprocess.run(
-            ["julia", "--version"], 
-            capture_output=True, 
-            text=True, 
-            check=False
-        )
-        if result.returncode == 0:
-            logger.info(f"Julia is available: {result.stdout.strip()}")
-            return True
-        else:
-            logger.warning("Julia command returned non-zero exit code")
+        from execute.julia_setup import check_julia_availability
+        available, julia_path = check_julia_availability()
+        return available
+    except ImportError:
+        logger.debug("julia_setup module not available, falling back to local check")
+        try:
+            result = subprocess.run(
+                ["julia", "--version"], 
+                capture_output=True, 
+                text=True, 
+                check=False
+            )
+            if result.returncode == 0:
+                logger.info(f"Julia is available: {result.stdout.strip()}")
+                return True
+            else:
+                logger.warning("Julia command returned non-zero exit code")
+                return False
+        except FileNotFoundError:
+            logger.warning("Julia executable not found in PATH")
             return False
-    except FileNotFoundError:
-        logger.warning("Julia executable not found in PATH")
-        return False
-    except Exception as e:
-        logger.warning(f"Error checking Julia availability: {e}")
-        return False
+        except Exception as e:
+            logger.warning(f"Error checking Julia availability: {e}")
+            return False
 
 def find_rxinfer_scripts(
     base_dir: Union[str, Path], 
@@ -75,7 +83,8 @@ def find_rxinfer_scripts(
 
 def execute_rxinfer_script(
     script_path: Path, 
-    verbose: bool = False
+    verbose: bool = False,
+    timeout: int = 300
 ) -> bool:
     """
     Execute a single RxInfer.jl script.
@@ -83,6 +92,7 @@ def execute_rxinfer_script(
     Args:
         script_path: Path to the RxInfer.jl script or TOML configuration
         verbose: Whether to enable verbose output
+        timeout: Execution timeout in seconds (default: 300)
         
     Returns:
         bool: True if execution was successful, False otherwise
@@ -92,6 +102,19 @@ def execute_rxinfer_script(
         return False
     
     logger.info(f"Executing RxInfer script: {script_path}")
+    
+    # E-2: Validate Julia syntax before execution
+    if script_path.suffix.lower() == '.jl':
+        try:
+            with open(script_path, 'r') as f:
+                content = f.read()
+            if not content.strip():
+                logger.error(f"Script file is empty: {script_path}")
+                return False
+            logger.debug(f"✅ Julia script readable: {script_path.name} ({len(content)} bytes)")
+        except Exception as e:
+            logger.error(f"Could not read script: {e}")
+            return False
     
     try:
         # Different handling based on file type
@@ -105,7 +128,8 @@ def execute_rxinfer_script(
                 cmd,
                 capture_output=True,
                 text=True,
-                check=False
+                check=False,
+                timeout=timeout
             )
         elif script_path.suffix.lower() == '.toml':
             # For TOML configuration files, we need a Julia script that can load and run them
@@ -126,7 +150,8 @@ def execute_rxinfer_script(
                 cmd,
                 capture_output=True,
                 text=True,
-                check=False
+                check=False,
+                timeout=timeout
             )
         else:
             logger.error(f"Unsupported file type: {script_path.suffix}")
@@ -142,6 +167,9 @@ def execute_rxinfer_script(
             logger.error(f"Script execution failed with return code {result.returncode}: {script_path.name}")
             logger.error(f"Error output:\n{result.stderr}")
             return False
+    except subprocess.TimeoutExpired:
+        logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
+        return False
     except Exception as e:
         logger.error(f"Error executing script {script_path.name}: {e}")
         return False

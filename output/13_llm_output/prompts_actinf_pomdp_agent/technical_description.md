@@ -6,26 +6,24 @@ Prompt:
 
 Response:
 
-Okay, let's break down this GNN model specification for the Active Inference POMDP Agent in meticulous detail. This is a fantastic example, and the level of detail provided allows for a deep understanding of the model's design and intended functionality.  I'll focus on the technical aspects, highlighting key concepts and potential implications for implementation and further development.
+Okay, let's break down this GNN model specification for the Active Inference POMDP Agent in meticulous detail. This is a highly structured definition, designed for machine readability and integration into simulation or inference backends.  I'll focus on the technical aspects, highlighting the key components and their relationships within the Active Inference framework.
 
-**1. Core Active Inference Framework & POMDP Formulation**
+**1. Overall Architecture & Purpose:**
 
-This model embodies the core tenets of Active Inference:
+This model represents a classic Active Inference agent designed to solve a discrete POMDP (Partially Observable Markov Decision Process). The core idea is that the agent’s actions are driven by its beliefs about the underlying hidden state, and it actively seeks observations to reduce uncertainty and improve those beliefs. The GNN specification provides a formal representation of this process, suitable for implementation in a GNN-based system.
 
-* **Belief Representation:** The `s` (hidden state) and `s_prime` (next hidden state) distributions are central. These represent the agent’s *belief* about its internal state, incorporating both prior knowledge (the prior distribution `D`) and evidence from observations (`o`).
-* **Action Selection:** The `π` (policy vector) dictates the agent’s actions. The agent doesn’t explicitly *plan* in the traditional sense; instead, it samples actions based on its policy posterior, effectively “exploring” the action space.
-* **Reward/Preference:** The `C` (log-preference vector) encodes the agent’s preferences – what kind of observations it finds most desirable. This drives the policy.
-* **Free Energy:** The `F` (Variational Free Energy) quantifies the difference between the agent’s belief and its prior expectations. Minimizing this free energy is the core of the inference process.
+**2. GNN Version & Key Flags:**
 
-The POMDP structure is clearly defined:
+*   **GNN Version: 1.0:**  This indicates the version of the GNN specification format.  Versioning is crucial for tracking changes and ensuring compatibility.
+*   **ModelName: Active Inference POMDP Agent:**  A clear identifier for the model.
 
-* **Observation Modality:** One observation (`o`) with 3 possible outcomes.
-* **Hidden State Factor:** One hidden state (`s`) with 3 possible states.
-* **Discrete Actions:** 3 discrete actions that directly influence the hidden state.
+**3. StateSpaceBlock – The Core of the Model:**
 
-**2. GNN Specification – The Building Blocks**
+This block defines the fundamental elements of the agent’s state representation:
 
-Let’s dissect the GNN components as defined:
-
-* **StateSpaceBlock:** This is the heart of the model. It defines the relationships between the hidden state, observations, and the underlying dynamics.
-    * **`A` (Likelihood Matrix):**  Crucially, this matrix represents the *deterministic* relationship between the hidden state and the observed outcome.  The identity mapping (as specified) means that given a specific hidden state, the agent *always* observes the same outcome. This is a simplification, but it’s a good starting point. The values (0.9, 0.05, 0.05) likely represent the relative probabilities of
+*   **A (Likelihood Matrix):**  `A[3,3,type=float]` – This is the cornerstone of the model. It represents the *likelihood* of observing a particular outcome (one of the three observations, `o[3]`) given a specific hidden state (one of the three hidden states, `s[3]`).  The values in this matrix are probabilities.  A[i,j] represents the probability of observing outcome `i` when the hidden state is `j`.  The identity mapping (as specified in the initial parameterization) means that each state has an equal probability of producing each observation.
+*   **B (Transition Matrix):** `B[3,3,3,type=float]` – This matrix defines the *transition dynamics* of the hidden state. It specifies the probability of transitioning to a new hidden state given the *previous* hidden state and the *action* taken.  The dimensions reflect:
+    *   3: Number of possible hidden states.
+    *   3: Number of possible previous hidden states.
+    *   3: Number of possible actions.
+    *   The values in this matrix are probabilities. B[i,j,k] represents the

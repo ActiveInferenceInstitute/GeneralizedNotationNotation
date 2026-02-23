@@ -108,6 +108,16 @@ def collect_pipeline_data(pipeline_output_dir: Path, logger: logging.Logger) -> 
                 "status": "missing"
             }
     
+    # Fix self-referencing: step 23 (report) scans its own output directory
+    # before files are written, resulting in 0 files. Annotate accordingly.
+    report_step = pipeline_data["steps"].get("23_report_output")
+    if report_step and report_step.get("exists") and report_step.get("file_count", 0) == 0:
+        # The report step will generate report files (html, md, json + summaries)
+        report_step["note"] = "Report step output (self-referencing — files generated during this step)"
+        report_step["estimated_file_count"] = 6  # html + md + json + summaries
+        report_step["status"] = "generating"
+        logger.debug("Annotated 23_report_output as self-referencing step")
+    
     # Calculate success rate
     total_steps = len(step_directories)
     successful_steps = len([step for step in pipeline_data["steps"].values() if step.get("exists", False)])
@@ -461,7 +471,7 @@ def is_key_file(file_path: Path, step_name: str) -> bool:
         "9_advanced_viz_output": ["*.png", "*.svg", "*.html", "advanced_viz_summary.json"],
         "10_ontology_output": ["ontology_analysis.json", "ontology_summary.md"],
         "11_render_output": ["*.py", "*.jl", "render_processing_summary.json"],
-        "12_execute_output": ["execution_summary.json", "execution_report.md", "*.png"],
+        "12_execute_output": ["summaries/execution_summary.json", "summaries/execution_report.md", "*.png"],
         "13_llm_output": ["llm_analysis.json", "*.md"],
         "14_ml_integration_output": ["ml_integration_summary.json"],
         "15_audio_output": ["*.wav", "*.mp3", "audio_processing_summary.json"],

@@ -26,55 +26,62 @@ logger = logging.getLogger(__name__)
 
 def is_julia_available() -> bool:
     """
-    Check if Julia is available in the system path.
+    Check if Julia is available in the system path with version validation.
+    
+    Delegates to the shared julia_setup module for consistency across runners,
+    with additional version compatibility checking (minimum 1.6.0).
     
     Returns:
-        bool: True if Julia is available, False otherwise
+        bool: True if Julia is available and meets version requirements, False otherwise
     """
     try:
-        result = subprocess.run(
-            ["julia", "--version"], 
-            capture_output=True, 
-            text=True, 
-            check=False,
-            timeout=10
-        )
-        if result.returncode == 0:
-            version_info = result.stdout.strip()
-            logger.info(f"Julia is available: {version_info}")
-            
-            # Extract version number for compatibility check
-            try:
-                import re
-                version_match = re.search(r'julia version (\d+\.\d+\.\d+)', version_info.lower())
-                if version_match:
-                    version_str = version_match.group(1)
-                    version_parts = [int(x) for x in version_str.split('.')]
-                    
-                    # Check minimum version (1.6.0)
-                    if version_parts[0] > 1 or (version_parts[0] == 1 and version_parts[1] >= 6):
-                        logger.info(f"✅ Julia version {version_str} meets minimum requirements (1.6.0)")
-                        return True
-                    else:
-                        logger.warning(f"⚠️ Julia version {version_str} is below minimum (1.6.0)")
-                        return False
-                        
-            except Exception as e:
-                logger.debug(f"Could not parse Julia version, assuming compatible: {e}")
-                return True
-                
-        else:
-            logger.warning("Julia command returned non-zero exit code")
+        from execute.julia_setup import check_julia_availability, check_julia_version
+        available, julia_path = check_julia_availability()
+        if not available or julia_path is None:
             return False
-    except FileNotFoundError:
-        logger.warning("Julia executable not found in PATH")
-        return False
-    except subprocess.TimeoutExpired:
-        logger.warning("Julia version check timed out")
-        return False
-    except Exception as e:
-        logger.warning(f"Error checking Julia availability: {e}")
-        return False
+        
+        # Verify minimum version (1.6.0)
+        version_info = check_julia_version(julia_path)
+        if version_info:
+            import re
+            version_match = re.search(r'(\d+)\.(\d+)\.(\d+)', version_info)
+            if version_match:
+                major, minor, patch = int(version_match.group(1)), int(version_match.group(2)), int(version_match.group(3))
+                if major > 1 or (major == 1 and minor >= 6):
+                    logger.info(f"✅ Julia version {major}.{minor}.{patch} meets minimum requirements (1.6.0)")
+                    return True
+                else:
+                    logger.warning(f"⚠️ Julia version {major}.{minor}.{patch} is below minimum (1.6.0)")
+                    return False
+        
+        # Could not parse version, assume compatible
+        return True
+        
+    except ImportError:
+        logger.debug("julia_setup module not available, falling back to local check")
+        try:
+            result = subprocess.run(
+                ["julia", "--version"], 
+                capture_output=True, 
+                text=True, 
+                check=False,
+                timeout=10
+            )
+            if result.returncode == 0:
+                logger.info(f"Julia is available: {result.stdout.strip()}")
+                return True
+            else:
+                logger.warning("Julia command returned non-zero exit code")
+                return False
+        except FileNotFoundError:
+            logger.warning("Julia executable not found in PATH")
+            return False
+        except subprocess.TimeoutExpired:
+            logger.warning("Julia version check timed out")
+            return False
+        except Exception as e:
+            logger.warning(f"Error checking Julia availability: {e}")
+            return False
 
 def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbose: bool = False) -> bool:
     """

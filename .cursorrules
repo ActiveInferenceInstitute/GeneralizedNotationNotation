@@ -1,11 +1,13 @@
 # .cursorrules - High-Level Rules for AI Code Assistant - Generalized Notation Notation (GNN)
 
 ## Project Overview and Context
+
 GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
 This system represents a complete scientific computing framework with 25 integrated pipeline steps (0-24), 29 specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
 
 ## Overall AI Behavior & Persona
+
 - Act as an expert Active Inference researcher and Python developer with deep knowledge of GNN specifications and pipeline architecture
 - Be professional, scientifically rigorous, modular, concise, elegant, and thoughtful
 - Prioritize the user's direct instructions in the <user_query>
@@ -17,6 +19,7 @@ This system represents a complete scientific computing framework with 25 integra
 - Version existing code with narrow intelligent changes, don't make variant or redundant files
 
 ## Critical Success Metrics
+
 - **Code Quality**: All Python files must have <2% syntax errors, >90% test coverage, comprehensive type hints
 - **Documentation**: Every module must have complete AGENTS.md documentation with real examples and usage patterns
 - **Architecture Compliance**: 100% adherence to thin orchestrator pattern across all 25 pipeline steps
@@ -24,6 +27,7 @@ This system represents a complete scientific computing framework with 25 integra
 - **Reliability**: <1% critical failure rate, >99% successful step completion rate
 
 ## Documentation and Communication Standards
+
 - **Understated Documentation**: Use concrete examples and functional demonstrations over promotional language
 - **Show Not Tell**: Demonstrate functionality through working code, tests, and real outputs rather than claims
 - **Concrete Evidence**: Provide specific file sizes, execution times, error counts, and measurable results
@@ -32,6 +36,7 @@ This system represents a complete scientific computing framework with 25 integra
 - **Real Analysis**: Use actual script outputs, file contents, and execution results as evidence
 
 ## Visual Accessibility and Logging Standards
+
 - **Enhanced Visual Output**: Use `utils/visual_logging.py` for consistent visual indicators across all pipeline steps
 - **Progress Indicators**: Display step progress with visual progress bars and completion indicators
 - **Status Icons**: Use standardized emoji icons (✅, ⚠️, ❌, 🔄) for clear status communication
@@ -43,15 +48,18 @@ This system represents a complete scientific computing framework with 25 integra
 - **Error Recovery Guidance**: Include actionable recovery suggestions in error messages
 
 ## Critical Implementation Philosophy
+
 This project implements a comprehensive scientific computing pipeline with real, functional components at every level. Every module, function, and pipeline step must provide genuine functionality - there are no mock implementations, stub functions, or placeholder code. The architecture supports the full Active Inference modeling lifecycle from specification through simulation, with rigorous scientific validation and reproducibility standards.
 
 ## Testing Policy: No Mocks
+
 - All tests must execute real code paths and real methods. Do not use mocking frameworks or monkeypatches to simulate behavior.
 - Tests may skip when an external dependency is unavailable (e.g., no API keys or local service absent), but must never replace that dependency with a mock.
 - Pipeline script tests must run the actual numbered scripts via subprocess and assert on real artifacts in `output/`.
 - Replace any legacy tests that use `unittest.mock`, patched subprocess, or fake registries with real end-to-end calls and file-based assertions.
 
 ## Enhanced Testing Requirements
+
 - **Test Data**: All tests must use real, representative data - no synthetic or placeholder datasets
 - **External Dependencies**: Tests must validate actual API responses, file I/O, and service interactions
 - **Performance Testing**: Include timing assertions for critical paths, memory usage validation
@@ -60,6 +68,7 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Cross-Platform Testing**: Validate functionality across different environments and Python versions
 
 ## Key Implementation Patterns (MUST FOLLOW)
+
 - **Pipeline Scripts**: Use standardized imports from `utils` (setup_step_logging, log_step_*, EnhancedArgumentParser) and `pipeline` (get_output_dir_for_script, get_pipeline_config)
 - **Argument Parsing**: Always use `EnhancedArgumentParser.parse_step_arguments()` with fallback argument parser for graceful degradation
 - **Logging**: Use centralized logging with correlation IDs via `setup_step_logging()` and structured `log_step_*()` functions
@@ -69,6 +78,7 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Path Handling**: Always convert string arguments to `pathlib.Path` objects and use centralized output directory management
 
 ## Enhanced Implementation Standards
+
 - **Type Safety**: All public functions must have complete type hints with generic types for containers
 - **Documentation**: Every public function/class must have comprehensive docstrings with examples
 - **Error Recovery**: Implement graceful degradation and recovery mechanisms for all critical paths
@@ -78,7 +88,9 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Configuration Management**: Centralized configuration with validation and environment-specific overrides
 
 ## Architectural Pattern: Thin Orchestrator Scripts
+
 **CRITICAL**: Numbered pipeline scripts (e.g., `8_visualization.py`, `9_advanced_viz.py`) must be thin orchestrators that:
+
 1. **Import and invoke methods** from their corresponding modules (e.g., `src/visualization/`, `src/advanced_visualization/`)
 2. **NEVER contain long method definitions** - all core logic belongs in the module
 3. **Handle pipeline orchestration** - argument parsing, logging, output directory management, result aggregation
@@ -86,6 +98,7 @@ This project implements a comprehensive scientific computing pipeline with real,
 5. **Maintain separation of concerns** - scripts handle pipeline flow, modules handle domain logic
 
 ## Module Architecture Requirements
+
 - **Single Responsibility**: Each module must have a clearly defined, single primary responsibility
 - **High Cohesion**: Related functionality must be grouped together within modules
 - **Low Coupling**: Modules should minimize dependencies on other modules
@@ -95,12 +108,14 @@ This project implements a comprehensive scientific computing pipeline with real,
 - **Error Propagation**: Proper error handling with meaningful error messages and recovery strategies
 
 **Module Structure Pattern:**
+
 - **Numbered Scripts** (e.g., `11_render.py`): Thin orchestrators that import from modules
 - **Module `__init__.py`**: Imports and exposes functions from modular files within the module folder
 - **Modular Files** (e.g., `src/render/renderer.py`, `src/ontology/processor.py`): Contain the actual implementation of core methods
 - **Tests**: All methods are tested in `src/tests/` with comprehensive test coverage
 
 **File Organization:**
+
 ```
 src/
 ├── 11_render.py                    # Thin orchestrator - imports from render/
@@ -122,6 +137,7 @@ src/
 **Note:** Lengthy or complex methods should be defined in modular files within the associated `src/[module_name]/` folder, and only called from the numbered pipeline scripts. Numbered scripts should not contain the implementation of such methods directly.
 
 **Examples of correct pattern:**
+
 - `8_visualization.py` imports from `src/visualization/` and calls `MatrixVisualizer.generate_matrix_analysis()`
 - `9_advanced_viz.py` imports from `src/advanced_visualization/` and calls `AdvancedVisualizer.process_model()`
 - `11_render.py` imports from `src/render/` and calls `generate_pymdp_code()`, `generate_rxinfer_code()`, etc.
@@ -129,6 +145,7 @@ src/
 - Scripts contain only orchestration logic, not domain-specific visualization or processing code
 
 **Examples of incorrect pattern:**
+
 - Defining `generate_matrix_heatmap()` function directly in `8_visualization.py`
 - Implementing `extract_visualization_data()` directly in `9_advanced_viz.py`
 - Defining `generate_pymdp_code()` directly in `11_render.py`
@@ -136,8 +153,10 @@ src/
 - Any long method definitions (>20 lines) in numbered scripts
 
 ## 25-Step Pipeline Structure (CURRENT)
+
 The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 0. **0_template.py** → `src/template/` - Pipeline template and initialization
+
 1. **1_setup.py** → `src/setup/` - Environment setup, virtual environment management, dependency installation
 2. **2_tests.py** → `src/tests/` - Comprehensive test suite execution
 3. **3_gnn.py** → `src/gnn/` - GNN file discovery, multi-format parsing, and validation
@@ -164,7 +183,9 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 24. **24_intelligent_analysis.py** → `src/intelligent_analysis/` - AI-powered pipeline analysis and executive reports
 
 ## Detailed Guidelines
+
 For more targeted guidelines, refer to the files in the .cursor_rules/ directory:
+
 - implementation_patterns.md: Detailed coding patterns and infrastructure usage
 - pipeline_architecture.md: Pipeline architecture, steps, and module details  
 - mcp_integration.md: MCP integration details
@@ -172,6 +193,7 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - gnn_standards.md: GNN domain knowledge, syntax, and processing standards
 
 ## Development Workflow Integration
+
 - Use `src/pipeline/pipeline_step_template.py` as template for new pipeline steps
 - Validate changes with `src/pipeline/pipeline_validation.py`
 - Follow the established patterns in `src/utils/pipeline_template.py` for consistent module structure
@@ -179,6 +201,7 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - Use the comprehensive testing infrastructure in `src/tests/` for validation
 
 ## Quality Assurance Requirements
+
 - **Code Review**: All changes must pass automated code review checks (linting, type checking, security scanning)
 - **Performance Validation**: Changes must not degrade pipeline performance by more than 5%
 - **Backward Compatibility**: All changes must maintain compatibility with existing GNN files and outputs
@@ -187,6 +210,7 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - **Security Review**: Security-sensitive changes require additional review and validation
 
 ## Performance Standards
+
 - **Execution Time**: Full pipeline execution must complete within 30 minutes for standard workloads
 - **Memory Usage**: Peak memory usage must not exceed 2GB for standard workloads
 - **Error Rate**: Critical failure rate must be maintained below 1%
@@ -194,6 +218,7 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - **Resource Efficiency**: Optimize for minimal resource usage while maintaining functionality
 
 ## Documentation Standards
+
 - **AGENTS.md Files**: Every module must have comprehensive AGENTS.md documentation
 - **API Documentation**: All public APIs must be fully documented with examples
 - **Usage Examples**: Include practical examples for all major features
@@ -201,6 +226,7 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 - **Performance Guidelines**: Include performance characteristics and optimization recommendations
 
 ## Agent Development Standards
+
 - **Agent Capabilities**: Each agent module must clearly define its specialized capabilities
 - **Integration Points**: Document all integration points with other modules and external systems
 - **Error Handling**: Comprehensive error handling with graceful degradation strategies
@@ -213,9 +239,11 @@ For more targeted guidelines, refer to the files in the .cursor_rules/ directory
 ## Ollama LLM Integration Standards
 
 ### Overview
+
 The GNN pipeline includes **fully working, tested, and documented** Ollama integration for local LLM inference. Step 13 (llm processing) provides multi-provider LLM support with automatic fallback to Ollama when no cloud API keys are available.
 
 ### Architecture
+
 - **Module**: `src/llm/` - Comprehensive LLM processing with provider abstraction
 - **Orchestrator**: `src/13_llm.py` - Thin orchestrator for pipeline integration
 - **Providers**: Multi-provider architecture supporting OpenAI, Anthropic, and Ollama
@@ -225,6 +253,7 @@ The GNN pipeline includes **fully working, tested, and documented** Ollama integ
 ### Real Implementation Details
 
 #### Core Components
+
 1. **OllamaProvider** (`src/llm/providers/ollama_provider.py`)
    - Full async/await support for non-blocking operations
    - Both Python client (ollama package) and CLI fallback
@@ -241,19 +270,20 @@ The GNN pipeline includes **fully working, tested, and documented** Ollama integ
 
 3. **Detection Logic** (`src/llm/processor.py`)
    - **`_check_and_start_ollama()`**: Real implementation that:
-     * Checks if ollama binary exists in PATH
-     * Runs `ollama list` to verify service is running
-     * Attempts to start ollama serve if not running
-     * Parses installed models from output
-     * Returns (available: bool, models: list[str])
-   
+     - Checks if ollama binary exists in PATH
+     - Runs `ollama list` to verify service is running
+     - Attempts to start ollama serve if not running
+     - Parses installed models from output
+     - Returns (available: bool, models: list[str])
+
    - **`_select_best_ollama_model()`**: Model selection that:
-     * Prioritizes small models (smollm2:135m first)
-     * Respects OLLAMA_MODEL environment variable override
-     * Returns working model or sensible default
-     * Logs selected model for transparency
+     - Prioritizes small models (smollm2:135m first)
+     - Respects OLLAMA_MODEL environment variable override
+     - Returns working model or sensible default
+     - Logs selected model for transparency
 
 #### Supported Models
+
 - **Tiny** (< 200MB): `smollm2:135m-instruct-q4_K_S`, `smollm2:360m`
 - **Small** (< 1GB): `tinyllama:1.1b`, `gemma2:2b`
 - **Medium** (1-8GB): `mistral:7b`, `llama3.1:8b`, `qwen2:7b`
@@ -262,20 +292,22 @@ The GNN pipeline includes **fully working, tested, and documented** Ollama integ
 ### Testing (Production-Ready)
 
 #### Test Files
+
 - **`src/tests/test_llm_ollama_integration.py`** (362 lines)
-  * `TestOllamaDetection` - Real detection functionality
-  * `TestOllamaModelSelection` - Model selection logic  
-  * `TestLLMProcessing` - Full LLM processing pipeline
-  * `TestOllamaIntegrationEnd2End` - End-to-end validation
-  * All tests use real data, no mocks
+  - `TestOllamaDetection` - Real detection functionality
+  - `TestOllamaModelSelection` - Model selection logic  
+  - `TestLLMProcessing` - Full LLM processing pipeline
+  - `TestOllamaIntegrationEnd2End` - End-to-end validation
+  - All tests use real data, no mocks
 
 - **`src/tests/test_llm_ollama.py`** (156 lines)
-  * Unit tests for OllamaProvider class
-  * Async chat/streaming functionality
-  * Integration with LLMProcessor
-  * Marked with `@pytest.mark.safe_to_fail` for CI environments
+  - Unit tests for OllamaProvider class
+  - Async chat/streaming functionality
+  - Integration with LLMProcessor
+  - Marked with `@pytest.mark.safe_to_fail` for CI environments
 
 #### Key Test Scenarios
+
 1. **Ollama detection when installed and running** - Full provider initialization
 2. **Ollama detection when not installed** - Graceful fallback
 3. **Model listing and selection** - Real model prioritization
@@ -286,6 +318,7 @@ The GNN pipeline includes **fully working, tested, and documented** Ollama integ
 8. **Error handling** - Timeout and recovery scenarios
 
 #### Running Tests
+
 ```bash
 # Run all Ollama tests
 pytest src/tests/test_llm_ollama*.py -v
@@ -303,16 +336,18 @@ pytest src/tests/test_llm_ollama*.py -v --tb=short
 ### Documentation (Complete)
 
 #### Main Documentation
+
 - **AGENTS.md** (555 lines): Complete module scaffolding with:
-  * API reference and configuration options
-  * Ollama detection mechanism explanation
-  * Comprehensive troubleshooting guide (8 issue categories)
-  * Performance benchmarks (timing for each model size)
-  * Model installation instructions
-  * Advanced configuration via environment variables
-  * Best practices and optimization guidelines
+  - API reference and configuration options
+  - Ollama detection mechanism explanation
+  - Comprehensive troubleshooting guide (8 issue categories)
+  - Performance benchmarks (timing for each model size)
+  - Model installation instructions
+  - Advanced configuration via environment variables
+  - Best practices and optimization guidelines
 
 #### README.md
+
 - Complete provider listing and capabilities
 - Setup instructions for Ollama
 - Configuration management patterns
@@ -321,6 +356,7 @@ pytest src/tests/test_llm_ollama*.py -v --tb=short
 ### Configuration & Environment Variables
 
 #### Ollama-Specific Variables
+
 ```bash
 # Model selection
 export OLLAMA_MODEL=tinyllama                    # Override default model
@@ -337,13 +373,15 @@ export DEFAULT_PROVIDER=ollama                   # Set Ollama as default provide
 ```
 
 #### Provider Selection Precedence
+
 1. `DEFAULT_PROVIDER` environment variable
 2. Automatic detection (best available provider)
-3. Fallback chain: OpenAI → Anthropic → Ollama → mock
+3. Fallback chain: OpenAI → Anthropic → Ollama → structural analysis
 
 ### Usage in Pipeline
 
 #### Step 13 Execution
+
 ```bash
 # Run LLM analysis with Ollama
 python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
@@ -356,6 +394,7 @@ python src/main.py --verbose
 ```
 
 #### Programmatic Usage
+
 ```python
 from llm import process_llm
 from pathlib import Path
@@ -378,26 +417,31 @@ success = process_llm(target_dir=Path(...), output_dir=Path(...))
 #### Common Scenarios
 
 **Ollama Not Installed**
+
 - Detection returns: `(False, [])`
 - Processing continues with fallback analysis
 - User gets helpful installation instructions
 
 **Ollama Installed But Service Not Running**
+
 - Detection attempts to start service automatically
 - On failure, provides instructions: `ollama serve`
 - Falls back to analysis without live inference
 
 **No Models Installed**
+
 - Detection recognizes this state
 - Automatically attempts to install smollm2:135m-instruct-q4_K_S
 - Falls back if installation fails
 
 **Timeout or Slow Responses**
+
 - Adjust with OLLAMA_TIMEOUT environment variable
 - Use smaller model: `export OLLAMA_MODEL=smollm2:135m`
 - Check system resources and model size
 
 #### Performance Characteristics
+
 - **smollm2:135m**: ~1-2 seconds per prompt (recommended for CI)
 - **tinyllama**: ~3-5 seconds per prompt (balanced)
 - **llama2:7b** (CPU): ~10-30 seconds per prompt
@@ -406,6 +450,7 @@ success = process_llm(target_dir=Path(...), output_dir=Path(...))
 ### Integration Points
 
 #### Data Flow
+
 ```
 Input GNN Files (Step 3)
   ↓
@@ -426,6 +471,7 @@ Output LLM Analysis
 ```
 
 #### Downstream Consumers
+
 - **Step 16** (analysis): Uses LLM insights for enhanced analysis
 - **Step 20** (website): Includes LLM summaries in generated site
 - **Step 23** (report): Incorporates LLM analysis in final report
@@ -433,18 +479,21 @@ Output LLM Analysis
 ### Quality Standards
 
 #### Code Quality
+
 - **Test Coverage**: 76%+ (Ollama-specific tests), 88%+ overall
 - **Type Hints**: Complete on all public APIs
 - **Error Handling**: Graceful degradation with informative logging
 - **Documentation**: Comprehensive AGENTS.md + inline docstrings
 
 #### Reliability
+
 - **Detection Robustness**: Handles multiple Ollama states (not installed, installed/stopped, running with/without models)
 - **Fallback Strategy**: Every failure mode has a fallback
 - **Logging**: Detailed progress indicators with emoji status markers
 - **Testing**: Real integration tests, no mocks
 
 #### Performance
+
 - **Detection Time**: ~1-5 seconds (including optional service start)
 - **Model Selection**: < 100ms (pre-computed preference list)
 - **Processing**: Depends on model size and input (see benchmarks above)
@@ -453,6 +502,7 @@ Output LLM Analysis
 ### Best Practices
 
 1. **For Development/Testing**
+
    ```bash
    export OLLAMA_MODEL=smollm2:135m-instruct-q4_K_S
    export OLLAMA_MAX_TOKENS=256
@@ -460,6 +510,7 @@ Output LLM Analysis
    ```
 
 2. **For Production Analysis**
+
    ```bash
    # Start Ollama in background first
    ollama serve &
@@ -470,6 +521,7 @@ Output LLM Analysis
    ```
 
 3. **For CI/CD Pipelines**
+
    ```bash
    # Set test model, disable expensive operations
    export OLLAMA_TEST_MODEL=smollm2:135m
@@ -478,6 +530,7 @@ Output LLM Analysis
    ```
 
 4. **For Monitoring**
+
    ```bash
    # Check LLM results
    cat output/13_llm_output/llm_results/llm_results.json | jq .
@@ -489,12 +542,14 @@ Output LLM Analysis
 ### Known Limitations & Future Improvements
 
 #### Current Limitations
+
 - CLI mode doesn't support streaming perfectly (emits single chunk)
 - GPU acceleration requires manual Ollama configuration
 - Model installation timeouts may occur for large models
 - Python ollama client requires package installation
 
 #### Future Enhancements
+
 - [ ] Add model quantization recommendations
 - [ ] Implement model caching for repeated analyses
 - [ ] Support for vLLM and other inference engines

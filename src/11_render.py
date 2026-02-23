@@ -37,36 +37,27 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-from render import (
-    process_render,
-    render_gnn_spec,
-    get_module_info,
-    get_available_renderers
-)
+from render import process_render
 
 run_script = create_standardized_pipeline_script(
     "11_render.py",
-    lambda target_dir, output_dir, logger, **kwargs: _run_render_processing(
-        target_dir, output_dir, logger, **kwargs
-    ),
+    process_render,
     "Render processing for GNN specifications",
+    additional_arguments={
+        "timesteps": {
+            "flag": "--timesteps",
+            "type": int,
+            "default": 15,
+            "help": "Number of timesteps for generated Active Inference simulations"
+        },
+        "simulation_params": {
+            "flag": "--simulation-params",
+            "type": str,
+            "default": "{}",
+            "help": "JSON string containing additional simulation parameters"
+        }
+    }
 )
-
-def _run_render_processing(target_dir: Path, output_dir: Path, logger, **kwargs) -> bool:
-    """Execute render processing with proper delegation to render module."""
-    try:
-        # Extract verbose flag from kwargs, defaulting to False
-        verbose = kwargs.pop('verbose', False)
-        
-        # Call the render module's main processing function
-        # Note: process_render expects (target_dir, output_dir, verbose, **kwargs)
-        result = process_render(target_dir, output_dir, verbose, **kwargs)
-        return result
-    except Exception as e:
-        logger.error(f"Render processing failed: {e}")
-        import traceback
-        logger.error(f"Traceback:\n{traceback.format_exc()}")
-        return False
 
 def main() -> int:
     """Main entry point for the render step."""

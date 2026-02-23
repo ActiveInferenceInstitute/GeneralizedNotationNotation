@@ -1,0 +1,32 @@
+{
+  "timestamp": "2026-02-22T15:40:40.348296",
+  "processed_files": 0,
+  "success": false,
+  "errors": [
+    "No GNN files found"
+  ],
+  "statistical_analysis": [],
+  "complexity_metrics": [],
+  "performance_benchmarks": [],
+  "model_comparisons": [],
+  "framework_comparison": {
+    "timestamp": "2026-02-22T15:40:40.348446",
+    "frameworks": {},
+    "comparisons": {
+      "success_rates": {},
+      "performance_comparison": {},
+      "metric_agreement": {},
+      "data_coverage": {},
+      "simulation_statistics": {}
+    },
+    "metrics": {
+      "total_frameworks": 0,
+      "total_successful": 0,
+      "total_executions": 0,
+      "overall_success_rate": 0.0
+    }
+  },
+  "framework_comparison_report": "output/16_analysis_output/cross_framework/framework_comparison_report.md",
+  "visualization_files": [],
+  "comprehensive_visualizations": []
+}

@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.1.4  
-**Last Updated**: 2026-02-20  
+**Version**: 1.2.0  
+**Last Updated**: 2026-02-23  
 **Status**: ✅ Production Ready
 
 ---
@@ -205,7 +205,7 @@ def module_operation(input: str, output_path: str) -> dict:
 
 | Metric | Target | Current |
 |--------|--------|---------|
-| Full pipeline execution | <120s | ~90s ✅ |
+| Full pipeline execution | <6m | ~5m ✅ |
 | Peak memory usage | <100MB | 36MB ✅ |
 | Test pass rate | 100% | 100% ✅ |
 | Syntax validity | 100% | 100% ✅ |

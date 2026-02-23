@@ -167,12 +167,14 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             # Infer policy
             q_pi, neg_efe = agent.infer_policies()
             
-            # Store Expected Free Energy for this step
-            if hasattr(neg_efe, 'max'):
-                efe_val = float(neg_efe.max())
+            # Store Expected Free Energy for this step (all policies)
+            if hasattr(neg_efe, 'tolist'):
+                efe_vals = neg_efe.tolist()
+                # If negative EFE is returned (as in PyMDP), negate it back to positive EFE for standard comparision if desired
+                # Let's just keep the raw values but make sure it's a list
             else:
-                efe_val = float(neg_efe)
-            efe_history.append(efe_val)
+                efe_vals = [float(neg_efe)]
+            efe_history.append(efe_vals)
             
             # Sample action
             action = agent.sample_action()

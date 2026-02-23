@@ -91,10 +91,10 @@ Directory structure:
             ├── register.yml
             └── TagBot.yml
 
-
 ================================================
 FILE: README.md
 ================================================
+
 # ActiveInference.jl
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://computationalpsychiatry.github.io/ActiveInference.jl/stable/Introduction/)
@@ -103,20 +103,24 @@ FILE: README.md
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Aqua QA](https://raw.githubusercontent.com/JuliaTesting/Aqua.jl/master/badge.svg)](https://github.com/JuliaTesting/Aqua.jl)
 
-ActiveInference.jl is a new Julia package for the computational modeling of active inference. We provide the necessary infrastructure for defining active inference models, currently implemented as partially observable Markov decision processes. After defining the generative model, you can simulate actions using agent-based simulations. We also provide the functionality to fit experimental data to active inference models for parameter recovery. 
+ActiveInference.jl is a new Julia package for the computational modeling of active inference. We provide the necessary infrastructure for defining active inference models, currently implemented as partially observable Markov decision processes. After defining the generative model, you can simulate actions using agent-based simulations. We also provide the functionality to fit experimental data to active inference models for parameter recovery.
 
 ![Maze Animation](.github/animation_maze.gif)
+
 * Example visualization of an agent navigating a maze, inspired by the one described in [Bruineberg et al., 2018](https://www.sciencedirect.com/science/article/pii/S0022519318303151?via%3Dihub).
 Left: A synthetic agent wants to reach the end of the maze environment while avoiding dark-colored locations.
 Right: The agent's noisy prior expectations about the state of the environment parameterized by Dirichlet distributions are updated dynamically as it moves through the maze.
 
 ## News
+
 #### Version 0.1.1 - December 2024
+
 - Initial release of the package [documentation](https://computationalpsychiatry.github.io/ActiveInference.jl/stable/Introduction/).
 
-
 ## Installation
+
 Install ActiveInference.jl using the Julia package manager:
+
 ````@example Introduction
 using Pkg
 Pkg.add("ActiveInference")
@@ -124,13 +128,14 @@ Pkg.add("ActiveInference")
 using ActiveInference
 ````
 
-
-## Getting Started 
+## Getting Started
 
 ### Understanding Vector Data Types in ActiveInference.jl
-The generative model is defined using vectors of arrays, where each element can itself be a multi-dimensional array or matrix. For example: 
+
+The generative model is defined using vectors of arrays, where each element can itself be a multi-dimensional array or matrix. For example:
 
 * If there is only one modality
+
 ````@example Introduction
 
 # Initialize States, Observations, and Controls
@@ -148,6 +153,7 @@ size(A[1])
 ````
 
 * If there are more modalities
+
 ````@example Introduction
 
 # Initialize States, Observations, and Controls
@@ -164,9 +170,10 @@ size(A[1]) # Array{Float64, 3} with these dimensions: (25, 25, 2)
 size(A[2]) # Array{Float64, 3} with these dimensions: (2, 25, 2)
 
 ````
+
 More detailed description of Julia arrays can be found in the official [Julia Documentation](https://docs.julialang.org/en/v1/base/arrays/)
 
-### Basic Usage 
+### Basic Usage
 
 ````@example Introduction
 # Define some settings as a dictionary.
@@ -181,7 +188,9 @@ aif = init_aif(A,
                settings = settings,
                parameters = parameters);
 ````
+
 ![Agent Output](.github/agent_output.PNG)
+
 ````@example Introduction
 # Give observation to the agent and run state inference.
 observation = [3,1]
@@ -195,11 +204,10 @@ sample_action!(aif)
 
 ````
 
-
-
 ================================================
 FILE: LICENSE
 ================================================
+
 MIT License
 
 Copyright (c) 2023 Jonathan Ehrenreich Laursen, Samuel William Nehrer
@@ -222,11 +230,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-
-
 ================================================
 FILE: Project.toml
 ================================================
+
 name = "ActiveInference"
 uuid = "688b0e7a-0122-4325-8669-5ff08899a59e"
 authors = ["Jonathan Ehrenreich Laursen", "Samuel William Nehrer"]
@@ -251,16 +258,16 @@ Random = "1"
 ReverseDiff = "1.15"
 julia = "1.10"
 
-
-
 ================================================
 FILE: docs/make.jl
 ================================================
+
 using ActiveInference
 using Documenter
 using Literate
 
 # Set project directory
+
 if haskey(ENV, "GITHUB_WORKSPACE")
     project_dir = ENV["GITHUB_WORKSPACE"]
     input_folder = joinpath(project_dir, "docs", "julia_files")
@@ -274,6 +281,7 @@ cd(joinpath(project_dir, "docs", "src"))
 DocMeta.setdocmeta!(ActiveInference, :DocTestSetup, :(using ActiveInference); recursive=true)
 
 # Automating the creating of the markdown files
+
 julia_files = filter(file -> endswith(file, ".jl"), readdir(input_folder))
 
 for file in julia_files
@@ -282,14 +290,15 @@ for file in julia_files
 end
 
 # Creating the documentation
+
 makedocs(;
     modules=[ActiveInference, ActiveInference.Environments],
     authors="Jonathan Ehrenreich Laursen, Samuel William Nehrer",
-    repo="https://github.com/ilabcode/ActiveInference.jl/blob/{commit}{path}#{line}",
+    repo="<https://github.com/ilabcode/ActiveInference.jl/blob/{commit}{path}#{line}>",
     sitename="ActiveInference.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://ilabcode.github.io/ActiveInference.jl",
+        canonical="<https://ilabcode.github.io/ActiveInference.jl>",
         edit_link="master",
         assets=[],
     ),
@@ -339,11 +348,10 @@ deploydocs(;
     devbranch="master",
 )
 
-
-
 ================================================
 FILE: docs/Project.toml
 ================================================
+
 [deps]
 ActionModels = "320cf53b-cc3b-4b34-9a10-0ecb113566a3"
 ActiveInference = "688b0e7a-0122-4325-8669-5ff08899a59e"
@@ -356,77 +364,121 @@ MarkdownTables = "1862ce21-31c7-451e-824c-f20fa3f90fa2"
 Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
 StatsPlots = "f3b207a7-027a-5e70-b257-86293d7955fd"
 
-
-
 ================================================
 FILE: docs/julia_files/AgentCreation.jl
 ================================================
+
 # # Creating the Agent
 
-# Having created the generative model parameters in the precious section, we're not ready to intialise an active inference agent.
-# Firstly, we'll have to specify some settings and hyperparameters that go into the agent struct. We'll begin with the setting:
+# Having created the generative model parameters in the precious section, we're not ready to intialise an active inference agent
+
+# Firstly, we'll have to specify some settings and hyperparameters that go into the agent struct. We'll begin with the setting
 
 # ### Settings
-# The settings are a dictionary that contains the following keys:
+
+# The settings are a dictionary that contains the following keys
 
 # ```julia
+
 # settings = Dict(
-#     "policy_len" => 1, 
-#     "use_utility" => true, 
-#     "use_states_info_gain" => true, 
-#     "use_param_info_gain" => false,
-#     "action_selection" => "stochastic", 
-#     "modalities_to_learn" => "all",
-#     "factors_to_learn" => "all",
-#     "FPI_num_iter" => 10,
-#     "FPI_dF_tol" => 0.001
+
+# "policy_len" => 1
+
+# "use_utility" => true
+
+# "use_states_info_gain" => true
+
+# "use_param_info_gain" => false
+
+# "action_selection" => "stochastic"
+
+# "modalities_to_learn" => "all"
+
+# "factors_to_learn" => "all"
+
+# "FPI_num_iter" => 10
+
+# "FPI_dF_tol" => 0.001
+
 # )
+
 # ```
 
-# The above shown values are the default and will work in most cases. If you're unsure about what to specify in the settings, you can just use the default values by not specifying them in the settings Dict for the agent.
-# Here, we'll briefly describe the keys in the settings dictionary:
+# The above shown values are the default and will work in most cases. If you're unsure about what to specify in the settings, you can just use the default values by not specifying them in the settings Dict for the agent
 
-# - **`policy_len`** - Is the policy length, and as described previously is the number of actions the agent should plan in the future. This is provided as an integer.
-# - **`use_utility`** - Is a boolean that specifies whether the agent should use **C** in the expected free energy calculation, that guides the action selection in active inference. If set to `false`, the agent will not use the parameters specified in **C**.
-# - **`use_states_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over states in the expected free energy calculation. If set to `false`, the agent will not use the information gain over states.
-# - **`use_param_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over parameters in the expected free energy calculation. If set to `false`, the agent will not use the information gain over parameters. Only relevant when learning is included.
-# - **`action_selection`** - Is a string that specifies the action selection method. The options are `"stochastic"` and `"deterministic"`. If set to `"stochastic"`, the agent will sample from the posterior over policies, and if set to `"deterministic"`, the agent will choose the most probable action.
-# - **`modalities_to_learn`** - Is a vector of integers that specifies which modalities the agent should learn. If set to string `"all"`, the agent will learn all modalities. If set to `[1,2]`, the agent will only learn the first and second modality. Only relevant when learning of A is included.
-# - **`factors_to_learn`** - Is a vector of integers that specifies which factors the agent should learn. If set to string `"all"`, the agent will learn all factors. If set to `[1,2]`, the agent will only learn the first and second factor. Only relevant when learning of B and D is included.
-# - **`FPI_num_iter`** - Is an integer that specifies the number of fixed point iterations (FPI) to perform in the free energy minimization. It can be described as a stop function of the FPI algorithm.
-# - **`FPI_dF_tol`** - Is a float that specifies the tolerance of the free energy change in the FPI algorithm over each iteration. If the change in free energy is below this value, the FPI algorithm will also stop.
+# Here, we'll briefly describe the keys in the settings dictionary
 
-# For more information on the specifics of the impact of these settings, look under the `Active Inference Theory` section in the documentation.
+# - **`policy_len`** - Is the policy length, and as described previously is the number of actions the agent should plan in the future. This is provided as an integer
+
+# - **`use_utility`** - Is a boolean that specifies whether the agent should use **C** in the expected free energy calculation, that guides the action selection in active inference. If set to `false`, the agent will not use the parameters specified in **C**
+
+# - **`use_states_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over states in the expected free energy calculation. If set to `false`, the agent will not use the information gain over states
+
+# - **`use_param_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over parameters in the expected free energy calculation. If set to `false`, the agent will not use the information gain over parameters. Only relevant when learning is included
+
+# - **`action_selection`** - Is a string that specifies the action selection method. The options are `"stochastic"` and `"deterministic"`. If set to `"stochastic"`, the agent will sample from the posterior over policies, and if set to `"deterministic"`, the agent will choose the most probable action
+
+# - **`modalities_to_learn`** - Is a vector of integers that specifies which modalities the agent should learn. If set to string `"all"`, the agent will learn all modalities. If set to `[1,2]`, the agent will only learn the first and second modality. Only relevant when learning of A is included
+
+# - **`factors_to_learn`** - Is a vector of integers that specifies which factors the agent should learn. If set to string `"all"`, the agent will learn all factors. If set to `[1,2]`, the agent will only learn the first and second factor. Only relevant when learning of B and D is included
+
+# - **`FPI_num_iter`** - Is an integer that specifies the number of fixed point iterations (FPI) to perform in the free energy minimization. It can be described as a stop function of the FPI algorithm
+
+# - **`FPI_dF_tol`** - Is a float that specifies the tolerance of the free energy change in the FPI algorithm over each iteration. If the change in free energy is below this value, the FPI algorithm will also stop
+
+# For more information on the specifics of the impact of these settings, look under the `Active Inference Theory` section in the documentation
 
 # ### Parameters
-# The parameters are a dictionary that contains the following keys:
+
+# The parameters are a dictionary that contains the following keys
 
 # ```julia
+
 # parameters = Dict(
-# "gamma" => 16.0,
-# "alpha" => 16.0,
-# "lr_pA" => 1.0,
-# "fr_pA" => 1.0,
-# "lr_pB" => 1.0,
-# "fr_pB" => 1.0,
-# "lr_pD" => 1.0,
+
+# "gamma" => 16.0
+
+# "alpha" => 16.0
+
+# "lr_pA" => 1.0
+
+# "fr_pA" => 1.0
+
+# "lr_pB" => 1.0
+
+# "fr_pB" => 1.0
+
+# "lr_pD" => 1.0
+
 # "fr_pD" => 1.0
+
 # )
+
 # ```
 
-# The above shown values are the default. If you're unsure about what to specify in the parameters, you can just use the default values by not specifying them in the parameter Dict for the agent.
-# Here, we'll briefly describe the keys in the parameters dictionary containing the hyperparameters:
-# - **`alpha`** - Is the inverse temperature of the action selection process, and usually takes a value between 1 and 32. This is only relevant when action_selection is set to `"stochastic"`.
-# - **`gamma`** - Is the inverse temperature precision of the expected free energy, and usually takes a value between 1 and 32. If the value is high, the agent will be more certain in its beliefs regarding the posterior probability over policies.
-# - **`lr_pA`** - Is the learning rate of **A**, and usually takes a value between 0 and 1. Only relevant when learning is included, and this goes for all learning and forgetting rates. 
-# - **`fr_pA`** - Is the forgetting rate of **A**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
-# - **`lr_pB`** - Is the learning rate of **B**, and usually takes a value between 0 and 1.
-# - **`fr_pB`** - Is the forgetting rate of **B**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
-# - **`lr_pD`** - Is the learning rate of **D**, and usually takes a value between 0 and 1.
-# - **`fr_pD`** - Is the forgetting rate of **D**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
+# The above shown values are the default. If you're unsure about what to specify in the parameters, you can just use the default values by not specifying them in the parameter Dict for the agent
 
-# 
-# Having now specified the setting and parameters, we can now initialise the active inference agent. This is done by calling the `init_aif` function, which takes the following arguments:
+# Here, we'll briefly describe the keys in the parameters dictionary containing the hyperparameters
+
+# - **`alpha`** - Is the inverse temperature of the action selection process, and usually takes a value between 1 and 32. This is only relevant when action_selection is set to `"stochastic"`
+
+# - **`gamma`** - Is the inverse temperature precision of the expected free energy, and usually takes a value between 1 and 32. If the value is high, the agent will be more certain in its beliefs regarding the posterior probability over policies
+
+# - **`lr_pA`** - Is the learning rate of **A**, and usually takes a value between 0 and 1. Only relevant when learning is included, and this goes for all learning and forgetting rates
+
+# - **`fr_pA`** - Is the forgetting rate of **A**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting
+
+# - **`lr_pB`** - Is the learning rate of **B**, and usually takes a value between 0 and 1
+
+# - **`fr_pB`** - Is the forgetting rate of **B**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting
+
+# - **`lr_pD`** - Is the learning rate of **D**, and usually takes a value between 0 and 1
+
+# - **`fr_pD`** - Is the forgetting rate of **D**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting
+
+#
+
+# Having now specified the setting and parameters, we can now initialise the active inference agent. This is done by calling the `init_aif` function, which takes the following arguments
 
 # ## Initilising the Agent
 
@@ -443,7 +495,7 @@ parameters = Dict( #hide
 "fr_pD" => 1.0 #hide
 ); #hide
 settings = Dict( #hide
-    "policy_len" => 1, #hide 
+    "policy_len" => 1, #hide
     "use_utility" => true, #hide
     "use_states_info_gain" => true,  #hide
     "use_param_info_gain" => false, #hide
@@ -457,37 +509,44 @@ aif_agent = init_aif(
     A, B, C = C, D = D, E = E, settings = settings, parameters = parameters, verbose = false
 );
 
+# You can access the settings and parameters of the agent by calling the agent struct on the agent
 
-# You can access the settings and parameters of the agent by calling the agent struct on the agent:
 aif_agent.parameters
-#-
+# -
 aif_agent.settings
 
-# Having now initialised the agent, we are ready to implement it either in a simulation with a perception-action loop, or for use in model fitting with observed data.
+# Having now initialised the agent, we are ready to implement it either in a simulation with a perception-action loop, or for use in model fitting with observed data
 
 # ## Initialising the Agent with Learning
-# If you want to include learning in the agent, you can do so by specifying the prior parameters `init_aif` function. Here is an example of how to initialise the agent with learning:
+
+# If you want to include learning in the agent, you can do so by specifying the prior parameters `init_aif` function. Here is an example of how to initialise the agent with learning
 
 # ```julia
+
 # aif_agent = init_aif(
-#     A, B, C = C, D = D, E = E, pA = pA, pB = pB, pD = pD, settings = settings, parameters = parameters, verbose = false
-# );
+
+# A, B, C = C, D = D, E = E, pA = pA, pB = pB, pD = pD, settings = settings, parameters = parameters, verbose = false
+
+# )
+
 # ```
 
-# Here, only the prior of the parameters that are to be learned should be specified.
-
-
+# Here, only the prior of the parameters that are to be learned should be specified
 
 ================================================
 FILE: docs/julia_files/Fitting.jl
 ================================================
-# # Model Fitting 
 
-# In many cases, we want to be able to draw conclusions about specific observed phenomena, such as behavioural differences between distinct populations. A conventional approach in this context is model fitting, which involves estimating the parameter values of a model (e.g., prior beliefs) that are most likely given the observed behavior of a participant. This approach is often used in fields such as computational psychiatry or mathematical psychology  to develop more precise models and theories of mental processes, to find mechanistic differences between clinical populations, or to investigate the relationship between computational constructs such as Bayesian beliefs and neuronal dynamics.
+# # Model Fitting
+
+# In many cases, we want to be able to draw conclusions about specific observed phenomena, such as behavioural differences between distinct populations. A conventional approach in this context is model fitting, which involves estimating the parameter values of a model (e.g., prior beliefs) that are most likely given the observed behavior of a participant. This approach is often used in fields such as computational psychiatry or mathematical psychology  to develop more precise models and theories of mental processes, to find mechanistic differences between clinical populations, or to investigate the relationship between computational constructs such as Bayesian beliefs and neuronal dynamics
+
 # ## Quick Start
+
 # #### Model Fitting with ActionModels.jl
 
-# Model fitting in '**ActiveInference**' is mediated through '**ActionModels**', which is our sister package for implementing and fitting various behavioural models to data. The core of '**ActionModels**' is the action model function, which takes a single observation, runs the inference scheme (updating the agent's beliefs), and calculates the probability distribution over actions from which the agent samples its actions.
+# Model fitting in '**ActiveInference**' is mediated through '**ActionModels**', which is our sister package for implementing and fitting various behavioural models to data. The core of '**ActionModels**' is the action model function, which takes a single observation, runs the inference scheme (updating the agent's beliefs), and calculates the probability distribution over actions from which the agent samples its actions
+
 # *(Check out the [ActionModels documentation](https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/) for more details)*
 
 using Pkg#hide
@@ -500,234 +559,380 @@ A,B=create_matrix_templates(n_states, n_observations, n_controls, policy_length)
 aif = init_aif(A, B, verbose=false);#hide
 using Distributions#hide
 priors = Dict("alpha" => Gamma(1, 1));#hide
-using DataFrames#hide 
+using DataFrames#hide
 using ActionModels#hide
-# To demonstrate this, let's define a very simple generative model with a single state factor and two possible actions, and then initialize our active inference object:
+
+# To demonstrate this, let's define a very simple generative model with a single state factor and two possible actions, and then initialize our active inference object
+
 # ```julia
+
 # # Define the number of states, observations, and controls
+
 # n_states = [4]
+
 # n_observations = [4]
+
 # n_controls = [2]
 
 # # Define the policy length
+
 # policy_length = 1
 
-# # Use the create_matrix_templates function to create uniform A and B matrices.
+# # Use the create_matrix_templates function to create uniform A and B matrices
+
 # A, B = create_matrix_templates(n_states, n_observations, n_controls, policy_length)
 
 # # Initialize an active inference object with the created matrices
+
 # aif = init_aif(A, B)
+
 # ```
 
-# We can now use the `action_pomdp!` function (which serves as our active inference "action model") to calculate the probability distribution over actions for a single observation:
+# We can now use the `action_pomdp!` function (which serves as our active inference "action model") to calculate the probability distribution over actions for a single observation
+
 # ```julia
+
 # # Define observation
+
 # observation = [1]
 
 # # Calculate action probabilities
+
 # action_distribution = action_pomdp!(aif, observation)
+
 # ```
 
 # #### Agent in ActionModels.jl
-# Another key component of '**ActionModels**' is an `Agent`, which wraps the action model and active inference object in a more abstract structure. The `Agent` is initialized using a `substruct` to include our active inference object, and the action model is our `action_pomdp!` function.
 
-# Let's first install '**ActionModels**' from the official Julia registry and import it:
+# Another key component of '**ActionModels**' is an `Agent`, which wraps the action model and active inference object in a more abstract structure. The `Agent` is initialized using a `substruct` to include our active inference object, and the action model is our `action_pomdp!` function
+
+# Let's first install '**ActionModels**' from the official Julia registry and import it
+
 # ```julia
+
 # Pkg.add("ActionModels")
+
 # using ActionModels
+
 # ```
 
-# We can now create an `Agent` with the `action_pomdp!` function and the active inference object:
+# We can now create an `Agent` with the `action_pomdp!` function and the active inference object
 
 # ```julia
+
 # # Initialize agent with active inference object as substruct
+
 # agent = init_agent(
-#     action_pomdp!,  # The active inference action model
-#     substruct = aif # The active inference object
+
+# action_pomdp!,  # The active inference action model
+
+# substruct = aif # The active inference object
+
 # )
+
 # ```
-# We use an initialized `Agent` primarily for fitting; however, it can also be used with a set of convenience functions to run simulations, which are described in [Simulation with ActionModels](./SimulationActionModels.md).
+
+# We use an initialized `Agent` primarily for fitting; however, it can also be used with a set of convenience functions to run simulations, which are described in Simulation with ActionModels
 
 # #### Fitting a Single Subject Model
-# We have our `Agent` object defined as above. Next, we need to specify priors for the parameters we want to estimate. 
 
-# For example, let's estimate the action precision parameter `α` and use a Gamma distribution as its prior.
+# We have our `Agent` object defined as above. Next, we need to specify priors for the parameters we want to estimate
+
+# For example, let's estimate the action precision parameter `α` and use a Gamma distribution as its prior
 
 # ```julia
+
 # # Import the Distributions package
+
 # using Distributions
 
 # # Define the prior distribution for the alpha parameters inside a dictionary
+
 # priors = Dict("alpha" => Gamma(1, 1))
+
 # ```
-# We can now use the `create_model` function to instantiate a probabilistic model object with data. This function takes the `Agent` object, the priors, and a set of observations and actions as arguments.
+
+# We can now use the `create_model` function to instantiate a probabilistic model object with data. This function takes the `Agent` object, the priors, and a set of observations and actions as arguments
+
 #
-# First, let's define some observations and actions as vectors:
+
+# First, let's define some observations and actions as vectors
+
 # ```julia
+
 # # Define observations and actions
+
 # observations = [1, 1, 2, 3, 1, 4, 2, 1]
+
 # actions = [2, 1, 2, 2, 2, 1, 2, 2]
+
 # ```
 
-# Now we can instantiate the probabilistic model object:
+# Now we can instantiate the probabilistic model object
+
 # ```julia
+
 # # Create the model object
+
 # single_subject_model = create_model(agent, priors, observations, actions)
+
 # ```
-# The `single_subject_model` can be used as a standard Turing object. Performing inference on this model is as simple as: 
-# ```julia
-# results = fit_model(single_subject_model)
-# ```
-# #### Fitting a Model with Multiple Subjects
-# Often, we have data from multiple subjects that we would like to fit simultaneously. The good news is that this can be done by instantiating our probabilisitc model on an entire dataset containing data from multiple subjects.
-#
-# Let's define some dataset with observations and actions for three subjects:
+
+# The `single_subject_model` can be used as a standard Turing object. Performing inference on this model is as simple as
 
 # ```julia
-# # Import the DataFrames package
-# using DataFrames
-#
-# # Create a DataFrame 
-# data = DataFrame(
-#    subjectID = [1, 1, 1, 2, 2, 2, 3, 3, 3], # Subject IDs
-#    observations = [1, 1, 2, 3, 1, 4, 2, 1, 3], # Observations
-#    actions = [2, 1, 2, 2, 2, 1, 2, 2, 1] # Actions
-# )
+
+# results = fit_model(single_subject_model)
+
 # ```
-data = DataFrame(subjectID = [1, 1, 1, 2, 2, 2, 3, 3, 3], observations = [1, 1, 2, 3, 1, 4, 2, 1, 3], actions = [2, 1, 2, 2, 2, 1, 2, 2, 1] )#hide
+
+# #### Fitting a Model with Multiple Subjects
+
+# Often, we have data from multiple subjects that we would like to fit simultaneously. The good news is that this can be done by instantiating our probabilisitc model on an entire dataset containing data from multiple subjects
+
 #
-# To instantiate the probabilistic model on our dataset, we pass the `data` DataFrame to the `create_model` function along with the names of the columns that contain the subject identifiers, observations, and actions:
+
+# Let's define some dataset with observations and actions for three subjects
+
 # ```julia
-# # Create the model object
-# multi_subject_model = create_model(
-#     agent, 
-#     priors, 
-#     data; # Dataframe
-#     grouping_cols = [:subjectID], # Column with subject IDs
-#     input_cols = ["observations"], # Column with observations
-#     action_cols = ["actions"] # Column with actions
+
+# # Import the DataFrames package
+
+# using DataFrames
+
+#
+
+# # Create a DataFrame
+
+# data = DataFrame(
+
+# subjectID = [1, 1, 1, 2, 2, 2, 3, 3, 3], # Subject IDs
+
+# observations = [1, 1, 2, 3, 1, 4, 2, 1, 3], # Observations
+
+# actions = [2, 1, 2, 2, 2, 1, 2, 2, 1] # Actions
+
 # )
+
 # ```
+
+data = DataFrame(subjectID = [1, 1, 1, 2, 2, 2, 3, 3, 3], observations = [1, 1, 2, 3, 1, 4, 2, 1, 3], actions = [2, 1, 2, 2, 2, 1, 2, 2, 1] )#hide
+
+#
+
+# To instantiate the probabilistic model on our dataset, we pass the `data` DataFrame to the `create_model` function along with the names of the columns that contain the subject identifiers, observations, and actions
+
+# ```julia
+
+# # Create the model object
+
+# multi_subject_model = create_model(
+
+# agent
+
+# priors
+
+# data; # Dataframe
+
+# grouping_cols = [:subjectID], # Column with subject IDs
+
+# input_cols = ["observations"], # Column with observations
+
+# action_cols = ["actions"] # Column with actions
+
+# )
+
+# ```
+
 agent = init_agent(action_pomdp!, substruct = aif);#hide
 multi_subject_model = create_model(agent, priors, data; grouping_cols = [:subjectID], input_cols = ["observations"], action_cols = ["actions"]);#hide
 
-# To fit the model, we use the `fit_model` function as before:
-# ```julia
-# results = fit_model(multi_subject_model)
-# ```
-results=fit_model(multi_subject_model, show_progress=false);#hide
-# #### Customizing the Fitting Procedure
-# The `fit_model` function has several optional arguments that allow us to customize the fitting procedure. For example, you can specify the number of iterations, the number of chains, the sampling algorithm, or to parallelize over chains:
+# To fit the model, we use the `fit_model` function as before
 
 # ```julia
+
+# results = fit_model(multi_subject_model)
+
+# ```
+
+results=fit_model(multi_subject_model, show_progress=false);#hide
+
+# #### Customizing the Fitting Procedure
+
+# The `fit_model` function has several optional arguments that allow us to customize the fitting procedure. For example, you can specify the number of iterations, the number of chains, the sampling algorithm, or to parallelize over chains
+
+# ```julia
+
 # results = fit_model(
-#     multi_subject_model, # The model object
-#     parallelization = MCMCDistributed(), # Run chains in parallel
-#     sampler = NUTS(;adtype=AutoReverseDiff(compile=true)), # Specify the type of sampler
-#     n_itererations = 1000, # Number of iterations, 
-#     n_chains = 4, # Number of chains
+
+# multi_subject_model, # The model object
+
+# parallelization = MCMCDistributed(), # Run chains in parallel
+
+# sampler = NUTS(;adtype=AutoReverseDiff(compile=true)), # Specify the type of sampler
+
+# n_itererations = 1000, # Number of iterations
+
+# n_chains = 4, # Number of chains
+
 # )
+
 # ```
-# '**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turing.ml/dev/docs/using-turing/samplers/). 
-# 
+
+# '**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turing.ml/dev/docs/using-turing/samplers/)
+
+#
+
 # #### Results
-# 
-# The output of the `fit_model` function is an object that contains the standard '**Turing**' chains which we can use to extract the summary statistics of the posterior distribution.
+
 #
-# Let's extract the chains from the results object:
+
+# The output of the `fit_model` function is an object that contains the standard '**Turing**' chains which we can use to extract the summary statistics of the posterior distribution
+
+#
+
+# Let's extract the chains from the results object
+
 chains = results.chains
+
 #
-# Note that the parameter names in the chains are somewhat cryptic. We can use the `rename_chains` function to rename them to something more understandable:
+
+# Note that the parameter names in the chains are somewhat cryptic. We can use the `rename_chains` function to rename them to something more understandable
+
 renamed_chains = rename_chains(chains, multi_subject_model)
+
 #
-# That looks better! We can now use the '**StatsPlots**' package to plot the chain traces and density plots of the posterior distributions for all subjects:
+
+# That looks better! We can now use the '**StatsPlots**' package to plot the chain traces and density plots of the posterior distributions for all subjects
+
 # ```julia
+
 # using StatsPlots # Load the StatsPlots package
+
 #
+
 # plot(renamed_chains)
+
 # ```
+
 #
+
 # > [!WARNING] Image missing: assets/chain_traces.png
+>
 > *(image2)*
+>
 #
-# We can also visualize the posterior distributions against the priors. This can be done by first taking samples from the prior:
+
+# We can also visualize the posterior distributions against the priors. This can be done by first taking samples from the prior
+
 # ```julia
+
 # # Sample from the prior
+
 # prior_chains = sample(multi_subject_model, Prior(), 1000)
+
 # # Rename parameters in the prior chains
+
 # renamed_prior_chains = rename_chains(prior_chains, multi_subject_model)
+
 # ```
-# To plot the posterior distributions against the priors, we use the `plot_parameters` function:
+
+# To plot the posterior distributions against the priors, we use the `plot_parameters` function
+
 # ```julia
+
 # plot_parameters(renamed_prior_chains, renamed_chains)
+
 # ```
 
 # > [!WARNING] Image missing: assets/posteriors.png
+>
 > *(image3)*
-
-
 
 ================================================
 FILE: docs/julia_files/GenerativeModelCreation.jl
 ================================================
+
 # # Creating the POMDP Generative Model
 
-# In this section we will go through the process of creating a generative model and how it should be structured. In this part, we will show the code necessary for correct typing of the generative model.
-# For a theoretical explanation of POMDPs look under the "Theory" section further down in the documentation.
+# In this section we will go through the process of creating a generative model and how it should be structured. In this part, we will show the code necessary for correct typing of the generative model
+
+# For a theoretical explanation of POMDPs look under the "Theory" section further down in the documentation
 
 # ## Typing of the POMDP parameters
 
-# In ActiveInference.jl, it is important that the parameters describing the generative model is typed correctly.
-# The correct typing of the generative model parameters, which often take the shapes of matrices, tensors and vectors.
-# The collections of generative model parameters are colloquially referred to as **A**, **B**, **C**, **D**, and **E**. We will denote these parameters by their letter in bold. For a quick refresher this is the vernacular used to describe these parameter collections:
+# In ActiveInference.jl, it is important that the parameters describing the generative model is typed correctly
+
+# The correct typing of the generative model parameters, which often take the shapes of matrices, tensors and vectors
+
+# The collections of generative model parameters are colloquially referred to as **A**, **B**, **C**, **D**, and **E**. We will denote these parameters by their letter in bold. For a quick refresher this is the vernacular used to describe these parameter collections
 
 # - **A** - Observation Likelihood Model
+
 # - **B** - Transition Likelihood Model
+
 # - **C** - Prior over Observations
+
 # - **D** - Prior over States
+
 # - **E** - Prior over Policies
 
-# These should be typed the following way in ActiveInference.jl:
+# These should be typed the following way in ActiveInference.jl
 
 # ```julia
+
 # A = Vector{Array{Float64, 3}}(undef, n_modalities)
+
 # B = Vector{Array{Float64, 3}}(undef, n_factors)
+
 # C = Vector{Vector{Float64, 3}}(undef, n_modalities)
+
 # D = Vector{Vector{Float64, 3}}(undef, n_factors)
+
 # D = Vector{Float64, 3}(undef, n_policies)
+
 # ```
 
-# Each of the parameter collections are vectors, where each index in the vector contains the parameters associated with a specific modality or factor.
-# However, creating these from scratch is not necessary, as we have created a helper function that can create a template for these parameters.
+# Each of the parameter collections are vectors, where each index in the vector contains the parameters associated with a specific modality or factor
+
+# However, creating these from scratch is not necessary, as we have created a helper function that can create a template for these parameters
 
 # ## Helper Function for GM Templates
-# Luckily, there is a helper function that helps create templates for the generative model parameters. This function is called `create_matrix_templates`.
+
+# Luckily, there is a helper function that helps create templates for the generative model parameters. This function is called `create_matrix_templates`
 
 # ```julia
+
 # A, B, C, D, E = create_matrix_templates(n_states::Vector{Int64}, n_observations::Vector{Int64}, n_controls::Vector{Int64}, policy_length::Int64, template_type::String)
+
 # ```
 
-# This function takes the five arguments `n_states`, `n_observations`, `n_controls`, `policy_length`, and `template_type`, which have all the necessary information to create the 
-# right structure of the generative model parameters. We will go through these arguments one by one:
+# This function takes the five arguments `n_states`, `n_observations`, `n_controls`, `policy_length`, and `template_type`, which have all the necessary information to create the
+
+# right structure of the generative model parameters. We will go through these arguments one by one
 
 # \
 
 # - **n_states** - This is the number of states in the environment. The environment can have different kinds of states, which are often referred to as factors. Could be a location factor and a reward condition factor. It takes a vector of integers, where each integer represents a factor, and the value of the integer is the number of states in that factor. E.g. if we had an environment with two factors, one location factor with 4 states and one reward condition factor with 2 states, the argument would look like this: `[4,2]`
+
 # \
 
 # - **n_observations** - This is the number of observations the agent can make in the environment. The observations are often referred to as modalities. Could be a location modality, a reward modality and a cue modality. Similarly to the first argument, it takes a vector of integers, where each integer represents a modality, and the value of the integer is the number of observations in that modality. E.g. if we had an environment with three modalities, one location modality with 4 observations, one reward modality with 3 observations and one cue modality with 2 observations, the argument would look like this: `[4,3,2]`
+
 # \
 
 # - **n_controls** - This is the number of controls the agent have in the environment. The controls are the actions the agent can take in the different factors. Could be moving left or right, or choosing between two different rewards. It has one control integer for each factor, where the integer represents the number of actions in that factor. If the agent cannot control a factor, the integer should be 1. E.g. if we had an environment with two factors, one location factor with 4 actions and one reward condition factor with 1 action, the argument would look like this: `[4,1]`
+
 # \
   
 # - **policy_length** - This is the length of the policies of the agent, and is taken as an integer. The policy is a sequence of actions the agent can take in the environment. The length of the policy describes how many actions into the future the agent is planning. For example, if the agent is planning two steps into the future, the policy length would be 2, and each policy would consist of 2 actions. In that case the argument would look like this: `2`
+
 # \
 
-# - **template_type** - This is a string that describes the type of template you want to create, or in other words, the initial filling of the generative model structure. There are three options; `"uniform"`, which is default, `"random"`, and `"zeros"`.
+# - **template_type** - This is a string that describes the type of template you want to create, or in other words, the initial filling of the generative model structure. There are three options; `"uniform"`, which is default, `"random"`, and `"zeros"`
 
+# If we were to use the arguments from the examples above, the function call would look like this
 
-# If we were to use the arguments from the examples above, the function call would look like this:
 using ActiveInference #hide
 n_states = [4,2]
 n_observations = [4,3,2]
@@ -737,627 +942,904 @@ template_type = "zeros"
 
 A, B, C, D, E = create_matrix_templates(n_states, n_observations, n_controls, policy_length, template_type);
 
-# When these parameter collections have been made, each factor/modality can be accessed by indexing the collection with the factor/modality index like:
+# When these parameter collections have been made, each factor/modality can be accessed by indexing the collection with the factor/modality index like
 
 # ```julia
+
 # A[1] # Accesses the first modality in the observation likelihood model
+
 # B[2] # Accesses the second factor in the transition likelihood model
+
 # C[3] # Accesses the third modality in the prior over observations
+
 # D[1] # Accesses the first factor in the prior over states
+
 # ```
 
-# The E-parameters are not a divided into modalities or factors, as they are the prior over policies.
+# The E-parameters are not a divided into modalities or factors, as they are the prior over policies
 
 # ## Populating the Parameters
-# Now that the generative model parameter templates ahave been created, they can now be filled with the desired values, ie. populating the parameters.
-# Let's take the example of filling **A** with some valus. To start, let's print out the first modality of the A so we get a sense of the dimensions:
+
+# Now that the generative model parameter templates ahave been created, they can now be filled with the desired values, ie. populating the parameters
+
+# Let's take the example of filling **A** with some valus. To start, let's print out the first modality of the A so we get a sense of the dimensions
+
 A[1]
-# For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](@ref "The Generative Model Conceptually") section further down in the documentation.
 
-# For now, we'll suffice to say that the first modality of **A** is a 3D tensor, where the first dimension are observations in the first modality, the second dimension the first factor, and the third dimension is the second factor.
-# Remember **A** maps the agents beliefs on how states generate observations. In this case, we have two 4x4 matrices, one matrix for each state int the second factor. This could be how location observations (1st dimenstion) map onto location states (2nd dimension) and reward condition (3rd dimension).
-# For the sake of simplicity, let's assume that the agent can infer location states with certainty based on location observations. In this case we could populate the first modality of **A** like this:
+# For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](@ref "The Generative Model Conceptually") section further down in the documentation
+
+# For now, we'll suffice to say that the first modality of **A** is a 3D tensor, where the first dimension are observations in the first modality, the second dimension the first factor, and the third dimension is the second factor
+
+# Remember **A** maps the agents beliefs on how states generate observations. In this case, we have two 4x4 matrices, one matrix for each state int the second factor. This could be how location observations (1st dimenstion) map onto location states (2nd dimension) and reward condition (3rd dimension)
+
+# For the sake of simplicity, let's assume that the agent can infer location states with certainty based on location observations. In this case we could populate the first modality of **A** like this
 
 # ```julia
+
 # # For reward condition right
+
 # A[1][:,:,1] = [ 1.0  0.0  0.0  0.0
-#                 0.0  1.0  0.0  0.0
-#                 0.0  0.0  1.0  0.0
-#                 0.0  0.0  0.0  1.0 ]
+
+# 0.0  1.0  0.0  0.0
+
+# 0.0  0.0  1.0  0.0
+
+# 0.0  0.0  0.0  1.0 ]
 
 # # For reward condition left
+
 # A[1][:,:,2] = [ 1.0  0.0  0.0  0.0
-#                 0.0  1.0  0.0  0.0
-#                 0.0  0.0  1.0  0.0
-#                 0.0  0.0  0.0  1.0 ]
+
+# 0.0  1.0  0.0  0.0
+
+# 0.0  0.0  1.0  0.0
+
+# 0.0  0.0  0.0  1.0 ]
+
 # ```
 
-# In this case the agent would infer the location state with certainty based on the location observations. One could also make the **A** more noisy in this modality, which could look like:
+# In this case the agent would infer the location state with certainty based on the location observations. One could also make the **A** more noisy in this modality, which could look like
 
 # ```julia
+
 # # For reward condition right
+
 # A[1][:,:,1] = [ 0.7  0.1  0.1  0.1
-#                 0.1  0.7  0.1  0.1
-#                 0.1  0.1  0.7  0.1
-#                 0.1  0.1  0.1  0.7 ]
+
+# 0.1  0.7  0.1  0.1
+
+# 0.1  0.1  0.7  0.1
+
+# 0.1  0.1  0.1  0.7 ]
 
 # # For reward condition left
+
 # A[1][:,:,2] = [ 0.7  0.1  0.1  0.1
-#                 0.1  0.7  0.1  0.1
-#                 0.1  0.1  0.7  0.1
-#                 0.1  0.1  0.1  0.7 ]
+
+# 0.1  0.7  0.1  0.1
+
+# 0.1  0.1  0.7  0.1
+
+# 0.1  0.1  0.1  0.7 ]
+
 # ```
 
-# Importantly the columns should always add up to 1, as we are here dealing with categorical probability distributions.
-# For the other parameters, the process is similar, but the dimensions of the matrices will differ. For **B** the dimensions are states to states, and for **C** and **D** the dimensions are states to observations and states to factors respectively.
-# Look up the `T-Maze Simulation` (insert reference here) example for a full example of how to populate the generative model parameters.
+# Importantly the columns should always add up to 1, as we are here dealing with categorical probability distributions
+
+# For the other parameters, the process is similar, but the dimensions of the matrices will differ. For **B** the dimensions are states to states, and for **C** and **D** the dimensions are states to observations and states to factors respectively
+
+# Look up the `T-Maze Simulation` (insert reference here) example for a full example of how to populate the generative model parameters
 
 # ## Creating Dirichlet Priors over Parameters
-# When learning is included, we create Dirichlet priors over the parameters **A**, **B**, and **D**. We usually do this by taking the created **A**, **B**, and **D** parameters and multiplying them with a scalar, which is the concentration parameter of the Dirichlet distribution.
-# For more information on the specifics of learning and Dirichlet priors, look under the `Active Inference Theory` section in the documentation. Note here, that when we implement learning of a parameter, the parameter is going to be defined by its prior and no longer the initial 
-# parameter that we specified. This is because the agent will update the parameter based on the prior and the data it receives. An example of how we would create a Dirichlet prior over **A** could look:
+
+# When learning is included, we create Dirichlet priors over the parameters **A**, **B**, and **D**. We usually do this by taking the created **A**, **B**, and **D** parameters and multiplying them with a scalar, which is the concentration parameter of the Dirichlet distribution
+
+# For more information on the specifics of learning and Dirichlet priors, look under the `Active Inference Theory` section in the documentation. Note here, that when we implement learning of a parameter, the parameter is going to be defined by its prior and no longer the initial
+
+# parameter that we specified. This is because the agent will update the parameter based on the prior and the data it receives. An example of how we would create a Dirichlet prior over **A** could look
 
 # ```julia
+
 # pA = deepcopy(A)
+
 # scale_concentration_parameter = 2.0
+
 # pA .*= scale_concentration_parameter
+
 # ```
 
-# This is not relevant if learning is not included. If learning is not included, the parameters are fixed and the agent will not update them. The value of the scaling parameter determines how much each data observation impacts the update of the parameter.
-# If the scaling is high, e.g. 50, then adding one data point will have a small impact on the parameter. If the scaling is low, e.g. 0.1, then adding one data point will have a large impact on the parameter. The update function updates the parameters by normalising the concentration parameters of the Dirichlet distribution.
+# This is not relevant if learning is not included. If learning is not included, the parameters are fixed and the agent will not update them. The value of the scaling parameter determines how much each data observation impacts the update of the parameter
 
-
-
+# If the scaling is high, e.g. 50, then adding one data point will have a small impact on the parameter. If the scaling is low, e.g. 0.1, then adding one data point will have a large impact on the parameter. The update function updates the parameters by normalising the concentration parameters of the Dirichlet distribution
 
 ================================================
 FILE: docs/julia_files/GenerativeModelTheory.jl
 ================================================
+
 # # The Generative Model Conceptually
 
-# The generative model is the parameters that constitute the agent's beliefs on how the hidden states of the environment generates observations based on states, and how hidden underlying states changes over time.
-# In the generative model is also the beliefs of how the agent through actions can influence the states of the environment. Together this holds the buidling blocks that allows for the perception-action loop.
+# The generative model is the parameters that constitute the agent's beliefs on how the hidden states of the environment generates observations based on states, and how hidden underlying states changes over time
 
-# There are five main buidling blocks of the generative model which are; **A**, **B**, **C**, **D**, and **E**.
-# Each of these contain parameters that describe the agent's beliefs about the environment.
-# We will now go through these conecptually one at a time.
+# In the generative model is also the beliefs of how the agent through actions can influence the states of the environment. Together this holds the buidling blocks that allows for the perception-action loop
+
+# There are five main buidling blocks of the generative model which are; **A**, **B**, **C**, **D**, and **E**
+
+# Each of these contain parameters that describe the agent's beliefs about the environment
+
+# We will now go through these conecptually one at a time
 
 # ## A
-# **A** is the observation likelihood model, and describes the agent's beliefs about how the hidden states of the environment generates observations.
-# Practically in this package, and other POMDP implemantations as well, this is described through a series of categorical distributions, meaning that for each observation, there is a categorical probability distribution over how likely each hidden state is to generate that observation.
-# Let us for example imagine a simple case, where the agent is in a four location state environment, could be a 2x2 gridworld. In this case, there would be one obseration linked to each hidden state, and **A** then maps the agent's belief of how likely each hidden location state is to generate each observation.
-# The agent can then use this belief to infer what state it is in based on the observation it receives. Let's look at an example **A**, which in this case would be a 4x4 matrix:
 
+# **A** is the observation likelihood model, and describes the agent's beliefs about how the hidden states of the environment generates observations
+
+# Practically in this package, and other POMDP implemantations as well, this is described through a series of categorical distributions, meaning that for each observation, there is a categorical probability distribution over how likely each hidden state is to generate that observation
+
+# Let us for example imagine a simple case, where the agent is in a four location state environment, could be a 2x2 gridworld. In this case, there would be one obseration linked to each hidden state, and **A** then maps the agent's belief of how likely each hidden location state is to generate each observation
+
+# The agent can then use this belief to infer what state it is in based on the observation it receives. Let's look at an example **A**, which in this case would be a 4x4 matrix
 
 # ```math
+
 # A =
+
 # \overset{\text{\normalsize States}\vphantom{\begin{array}{c} 0 \\ 0 \end{array}}}{
-#     \begin{array}{cccc}
-#         1 & 0 & 0 & 0 \\
-#         0 & 1 & 0 & 0 \\
-#         0 & 0 & 1 & 0 \\
-#         0 & 0 & 0 & 1
-#     \end{array}
+
+# \begin{array}{cccc}
+
+# 1 & 0 & 0 & 0 \\
+
+# 0 & 1 & 0 & 0 \\
+
+# 0 & 0 & 1 & 0 \\
+
+# 0 & 0 & 0 & 1
+
+# \end{array}
+
 # }
+
 # \quad
+
 # \text{\normalsize Observations}
+
 # ```
 
-# In this case, the agent is quite certain about which states produces which observations. This matrix could be made more uncertain to the point of complete uniformity and it could be made certain in the sense of each column being a one-hot vector.
-# In the case of a certain **A**, the generative model stops being a "partially observable" Markov decision process, and becomes a fully observable one, making it a Markov decision process (MDP). For a more technical and mathematical definition of the observation likelihood model.
+# In this case, the agent is quite certain about which states produces which observations. This matrix could be made more uncertain to the point of complete uniformity and it could be made certain in the sense of each column being a one-hot vector
+
+# In the case of a certain **A**, the generative model stops being a "partially observable" Markov decision process, and becomes a fully observable one, making it a Markov decision process (MDP). For a more technical and mathematical definition of the observation likelihood model
 
 # ## B
-# **B** is the transition likelihood model that encodes the agent's beliefs about how the hidden states of the environment changes over time.
-# This is also made up of categorical distributions, though instead of observations to states, it maps states to states. 
-# If we take the same case again, a 2x2 gridworld, we would have a 4x4 matrix that describes how the agent believes the states evolve over time.
-# An extra addition to **B**, is that it can depend on actions, meaning that it can believe that the hidden states of the environment change differently depending on the action taken by the agent.
-# Due to this fact, we would the have a matrix for each action, making **B** a 3 dimensional tensor, with 2 dimensions for the "from" state and the "to" state, and then an action dimension.
-# Let's look at an example of a slice of **B** for the action "down" in the grid world, which in this case would be a 4x4 matrix:
+
+# **B** is the transition likelihood model that encodes the agent's beliefs about how the hidden states of the environment changes over time
+
+# This is also made up of categorical distributions, though instead of observations to states, it maps states to states
+
+# If we take the same case again, a 2x2 gridworld, we would have a 4x4 matrix that describes how the agent believes the states evolve over time
+
+# An extra addition to **B**, is that it can depend on actions, meaning that it can believe that the hidden states of the environment change differently depending on the action taken by the agent
+
+# Due to this fact, we would the have a matrix for each action, making **B** a 3 dimensional tensor, with 2 dimensions for the "from" state and the "to" state, and then an action dimension
+
+# Let's look at an example of a slice of **B** for the action "down" in the grid world, which in this case would be a 4x4 matrix
 
 # ```math
+
 # B("down") =
+
 # \overset{\text{\normalsize Previous State}\vphantom{\begin{array}{c} 0 \\ 0 \end{array}}}{
-#     \begin{array}{cccc}
-#         0 & 0 & 0 & 0 \\
-#         1 & 1 & 0 & 0 \\
-#         0 & 0 & 0 & 0 \\
-#         0 & 0 & 1 & 1
-#     \end{array}
+
+# \begin{array}{cccc}
+
+# 0 & 0 & 0 & 0 \\
+
+# 1 & 1 & 0 & 0 \\
+
+# 0 & 0 & 0 & 0 \\
+
+# 0 & 0 & 1 & 1
+
+# \end{array}
+
 # }
+
 # \quad
+
 # \text{\normalsize Current State}
+
 # ```
 
 # We could make 3 more similar matrices for the actions "up", "left", and "right", and then we would have the full **B** tensor for the gridworld. But here, the main point is that
-# **B** decsribes the agent's belief of how hidden states change over time, and this can be dependent on actions, but might also be independent of actions, and thus the agent believes that the changes are out of its control.
+
+# **B** decsribes the agent's belief of how hidden states change over time, and this can be dependent on actions, but might also be independent of actions, and thus the agent believes that the changes are out of its control
 
 # ## C
-# **C** is the prior over observations, also called preferences over observations. This is an integral part of the utility of certain observations, i.e. it encodes how much the agent prefers or dislikes certain observations.
-# **C** is a simple vector over observations, where each entry is a value that describes the utility or preference of that specific observation.
-# If we continue with the simple 2x2 gridworld example, we would have 4 observations, one for each location state (same amount of observations as in **A**).
-# Let's say that we would like for the agent to dislike observing the top left location (indexed as 1), and prefer the bottom right location (indexed as 4). We would then create **C** in the following way:
+
+# **C** is the prior over observations, also called preferences over observations. This is an integral part of the utility of certain observations, i.e. it encodes how much the agent prefers or dislikes certain observations
+
+# **C** is a simple vector over observations, where each entry is a value that describes the utility or preference of that specific observation
+
+# If we continue with the simple 2x2 gridworld example, we would have 4 observations, one for each location state (same amount of observations as in **A**)
+
+# Let's say that we would like for the agent to dislike observing the top left location (indexed as 1), and prefer the bottom right location (indexed as 4). We would then create **C** in the following way
 
 # ```math
+
 # C =
+
 # \begin{array}{cccc}
-#     -2 & 0 & 0 & 2 \\
+
+# -2 & 0 & 0 & 2 \\
+
 # \end{array}
+
 # ```
 
-# The magnitude of the values in **C** is arbitrary, and denotes a ratio and amount of dislike/preference. Here, we have chosen the value of -2 and 2 
-# to encode that the agent dislikes the top left location just as much as it likes the bottom right location. The zeros in between just means that the agent has not preference or dislike for these locatin observations.
-# Note that since **C** is not a categorical distribution, it does not need to sum to 1, and the values can be any real number.
+# The magnitude of the values in **C** is arbitrary, and denotes a ratio and amount of dislike/preference. Here, we have chosen the value of -2 and 2
+
+# to encode that the agent dislikes the top left location just as much as it likes the bottom right location. The zeros in between just means that the agent has not preference or dislike for these locatin observations
+
+# Note that since **C** is not a categorical distribution, it does not need to sum to 1, and the values can be any real number
 
 # ## D
-# **D** is the prior over states, and is the agent's beliefs about the initial state of the environment. This is also a simple vector that is a categorical distribution.
-# Note that if **A** is certain, then **D** does not matter a lot for the inference process, as the agent can infer the state from the observation. However, if **A** is uncertain,
+
+# **D** is the prior over states, and is the agent's beliefs about the initial state of the environment. This is also a simple vector that is a categorical distribution
+
+# Note that if **A** is certain, then **D** does not matter a lot for the inference process, as the agent can infer the state from the observation. However, if **A** is uncertain
+
 # then **D** becomes very important, as it serves as the agent's anchor point of where it is initially in the environment. In the case of out
-# 2x2 gridworld, we would have a vector with 4 entries, one for each location state. If we assume that the agent correctly infers it's initial location as upper left corner, **D** would look like:
+
+# 2x2 gridworld, we would have a vector with 4 entries, one for each location state. If we assume that the agent correctly infers it's initial location as upper left corner, **D** would look like
 
 # ```math
+
 # D =
+
 # \begin{array}{cccc}
-#     1 & 0 & 0 & 0 \\
+
+# 1 & 0 & 0 & 0 \\
+
 # \end{array}
+
 # ```
 
 # ## E
-# **E** is the prior over policies, and can be described as the agent's habits. Policies in Active Inference vernacular are sets of actions, with an action for each step in the future, specified by a policy length.
-# It is a categorical distribution over policies, with a probability for each policy. This will have an effect on the agent posterior over policies,
-# which is the probability of taking a certain action at a time step. This will often be set to a uniform distribution, if we are not interested in giving the agent habits.
-# Let us assume that we will give our agent a uniform **E** for a policy length of 2, this mean that we will have a uniform categorical distribution over 16 possible policies ``(4 (actions) ^ {2 (policy length)})``:
+
+# **E** is the prior over policies, and can be described as the agent's habits. Policies in Active Inference vernacular are sets of actions, with an action for each step in the future, specified by a policy length
+
+# It is a categorical distribution over policies, with a probability for each policy. This will have an effect on the agent posterior over policies
+
+# which is the probability of taking a certain action at a time step. This will often be set to a uniform distribution, if we are not interested in giving the agent habits
+
+# Let us assume that we will give our agent a uniform **E** for a policy length of 2, this mean that we will have a uniform categorical distribution over 16 possible policies ``(4 (actions) ^ {2 (policy length)})``
 
 # ```math
+
 # E =
+
 # \begin{array}{cccc}
+
 # 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 & 0.0625 \\
+
 # \end{array}
+
 # ```
-
-
-
-
-
 
 ================================================
 FILE: docs/julia_files/Introduction.jl
 ================================================
+
 # # Introduction to the ActiveInference.jl package
 
-# This package is a Julia implementation of the Active Inference framework, with a specific focus on cognitive modelling.
-# In its current implementation, the package is designed to handle scenarios that can be modelled as discrete state spaces, with 'partially observable Markov decision process' (POMDP).
-# In this documentation we will go through the basic concepts of how to use the package for different purposes; simulation and model inversion with Active Inference, also known as parameter estimation.
+# This package is a Julia implementation of the Active Inference framework, with a specific focus on cognitive modelling
+
+# In its current implementation, the package is designed to handle scenarios that can be modelled as discrete state spaces, with 'partially observable Markov decision process' (POMDP)
+
+# In this documentation we will go through the basic concepts of how to use the package for different purposes; simulation and model inversion with Active Inference, also known as parameter estimation
 
 # ## Installing Package
-# Installing the package is done by adding the package from the julia official package registry in the following way:
+
+# Installing the package is done by adding the package from the julia official package registry in the following way
 
 # ```julia
+
 # using Pkg
+
 # Pkg.add("ActiveInference")
+
 # ```
 
-# Now, having added the package, we simply import the package to start using it:
+# Now, having added the package, we simply import the package to start using it
+
 using ActiveInference
 
-# In the next section we will go over the basic concepts of how to start using the package. We do this by providing instructions on how to create and design a generative model, that can be used for both simulation and parameter estimation.
-
-
+# In the next section we will go over the basic concepts of how to start using the package. We do this by providing instructions on how to create and design a generative model, that can be used for both simulation and parameter estimation
 
 ================================================
 FILE: docs/julia_files/Simulation.jl
 ================================================
+
 # # Simulation with ActiveInference.jl
-# When simulating with active inference we need a perception-action loop. This loop will perform the following steps:
-# 1. The agent will infer the states of the environment based on its generative model and an observation. The inference here is optimized through the minimization of the variational free energy (see `Active Inference Theory Perception`).
-# 2. The agent will infer the best action based on the minimization of the expected free energy (see `Active Inference Theory Action`).
-# 3. The agent will perform the action in the environment and receive an observation for use in the next iteration.
+
+# When simulating with active inference we need a perception-action loop. This loop will perform the following steps
+
+# 1. The agent will infer the states of the environment based on its generative model and an observation. The inference here is optimized through the minimization of the variational free energy (see `Active Inference Theory Perception`)
+
+# 2. The agent will infer the best action based on the minimization of the expected free energy (see `Active Inference Theory Action`)
+
+# 3. The agent will perform the action in the environment and receive an observation for use in the next iteration
 
 # *Note: for learning included, look at the section below.*
 
-# #### The Perception-Action loop:
+# #### The Perception-Action loop
+
 # ```julia
+
 # T = n_iterations
 
 # for t = 1:T
 
-#     infer_states!(aif_agent, observation)
+# infer_states!(aif_agent, observation)
 
-#     infer_policies!(aif_agent)
+# infer_policies!(aif_agent)
 
-#     chosen_action = sample_action!(aif_agent)
+# chosen_action = sample_action!(aif_agent)
 
-#     observation = environment!(env, chosen_action)
+# observation = environment!(env, chosen_action)
 
 # end
+
 # ```
 
-# #### The Perception-Action-Learning loop:
-# When learning is included, the loop is very similar except for the addition of the update functions, which should be implemented at different points in the loop.
-# Below we will show how to include learning of the parameters. It is important that only the parameters which have been provided to the agent as a prior are being updated.
+# #### The Perception-Action-Learning loop
+
+# When learning is included, the loop is very similar except for the addition of the update functions, which should be implemented at different points in the loop
+
+# Below we will show how to include learning of the parameters. It is important that only the parameters which have been provided to the agent as a prior are being updated
+
 # ```julia
+
 # T = n_iterations
 
 # for t = 1:T
 
-#    infer_states!(aif_agent, observation)
+# infer_states!(aif_agent, observation)
 
-#    update_parameters!(aif_agent)
+# update_parameters!(aif_agent)
 
-#    infer_policies!(aif_agent)
+# infer_policies!(aif_agent)
 
-#    chosen_action = sample_action!(aif_agent)
+# chosen_action = sample_action!(aif_agent)
 
-#    observation = environment!(env, chosen_action)
+# observation = environment!(env, chosen_action)
 
 # end
+
 # ```
 
-# The only addition here is the `update_parameters!(aif_agent)` function, which updates the parameters of the agent, based on which priors it has been given. 
-
-
+# The only addition here is the `update_parameters!(aif_agent)` function, which updates the parameters of the agent, based on which priors it has been given
 
 ================================================
 FILE: docs/julia_files/SimulationActionModels.jl
 ================================================
+
 # # Simulation with ActionModels.jl
-
-
 
 ================================================
 FILE: docs/julia_files/TMazeSimulationExample.jl
 ================================================
+
 # # Simulation Example T-Maze
 
-# We will start from the importing of the necessary modules.
+# We will start from the importing of the necessary modules
 
 using ActiveInference
 using ActiveInference.Environments
 
-# We will create a T-Maze environment with a probability of 0.9 for reward in the the reward condition arm.
-# This is a premade environment in the ActiveInference.jl package.
+# We will create a T-Maze environment with a probability of 0.9 for reward in the the reward condition arm
+
+# This is a premade environment in the ActiveInference.jl package
 
 # ```julia
+
 # env = TMazeEnv(0.9)
+
 # initialize_gp(env)
+
 # ```
 
 # ### Creating the Generative Model
+
 # #### The Helper Function
 
-# When creating the generative model we can make use of the helper function, making it convenient to create the correct structure for the generative model parameters.
+# When creating the generative model we can make use of the helper function, making it convenient to create the correct structure for the generative model parameters
 
-# To use the helper function we need to know the following:
+# To use the helper function we need to know the following
 
 # - Number of states in each factor of the environment
+
 # - Number of observations in each modality
+
 # - Number of controls or actions in each factor
+
 # - Policy length of the agent
+
 # - Initial fill for the parameters
 
-# Let's start with the factors of the environment. Let's take a look at the T-Maze environment:
+# Let's start with the factors of the environment. Let's take a look at the T-Maze environment
 
 # > [!WARNING] Image missing: assets/TMazeIllustrationSmaller.png
+>
 > *(image1)*
 
-# We here have two factors with the following number of states:
+# We here have two factors with the following number of states
 
 # |       | Location Factor   |       | Reward Condition Factor   |
+
 # |:------|:------------------|:------|:------------------------- |
+
 # | 1.    | Centre            | 1.    | Reward Condition Left     |
+
 # | 2.    | Left Arm          | 2.    | Reward Condition Right    |
+
 # | 3.    | Right Arm         |       |                           |
+
 # | 4.    | Cue               |       |                           |
 
-# We will define this as a vector the following way:
+# We will define this as a vector the following way
 
 # ```julia
+
 # n_states = [4, 2]
+
 # ```
 
-# We will now define the modalities:
+# We will now define the modalities
 
 # |       | Location Modality |       | Reward Modality           |       | Cue Modality    |
+
 # |:------|:------------------|:------|:------------------------- |:------|:--------------- |
+
 # | 1.    | Centre            | 1.    | No Reward                 | 1.    | Cue Left        |
+
 # | 2.    | Left Arm          | 2.    | Reward                    | 2.    | Cue Right       |
+
 # | 3.    | Right Arm         | 3.    | Loss                      |       |                 |
+
 # | 4.    | Cue               |       |                           |       |                 |
 
-# Here we have 3 modalities, with 4, 3, and 2 observations in each. We will define this as a vector the following way:
+# Here we have 3 modalities, with 4, 3, and 2 observations in each. We will define this as a vector the following way
 
 # ```julia
+
 # n_observations = [4, 3, 2]
+
 # ```
 
-# Now, let's take a look at the actions, or controls:
+# Now, let's take a look at the actions, or controls
 
 # |       | Controls Location Factor       |    | Controls Reward Condition Factor       |
+
 # |:------|:-------------------------------|:-- |:---------------------------------------|
+
 # | 1.    | Go to Centre                   | 1. | No Control                                      |
+
 # | 2.    | Go to Left Arm                 |    |                                       |
+
 # | 3.    | Go to Right Arm                |    |                                       |
+
 # | 4.    | Go to Cue                      |    |                                       |
 
-# As we see here, the agent cannot control the reward condition factor, and it therefore believes that there is only one way states can transition in this factor, which is independent of the agent's actions.
-# We will define this as a vector the following way:
+# As we see here, the agent cannot control the reward condition factor, and it therefore believes that there is only one way states can transition in this factor, which is independent of the agent's actions
+
+# We will define this as a vector the following way
 
 # ```julia
+
 # n_controls = [4, 1]
+
 # ```
 
-# Now we can define the policy length of the agent. In this case we will just set it to 2, meaning that the agent plans two timesteps ahead in the future.
-# We will just specify this as an integer:
+# Now we can define the policy length of the agent. In this case we will just set it to 2, meaning that the agent plans two timesteps ahead in the future
+
+# We will just specify this as an integer
 
 # ```julia
+
 # policy_length = 2
+
 # ```
 
-# The last thing we need to define is the initial fill for the parameters. We will just set this to zeros for now.
+# The last thing we need to define is the initial fill for the parameters. We will just set this to zeros for now
 
 # ```julia
+
 # template_type = "zeros"
+
 # ```
 
-# Having defined all the arguments that go into the helper function, we can now create the templates for the generative model parameters.
+# Having defined all the arguments that go into the helper function, we can now create the templates for the generative model parameters
 
 # ```julia
-# A, B, C, D, E = create_matrix_templates(n_states, n_observations, n_controls, policy_length, template_type);
+
+# A, B, C, D, E = create_matrix_templates(n_states, n_observations, n_controls, policy_length, template_type)
+
 # ```
 
 # #### Populating the Generative Model
+
 # ##### Populating **A**
 
-# Let's take a look at the shape of the first modality in the A parameters:
+# Let's take a look at the shape of the first modality in the A parameters
+
 A, B, C, D, E = create_matrix_templates([4, 2], [4, 3, 2], [4, 1], 2, "zeros");#hide
 A[1]
 
-# For this first modality we provide the agent with certain knowledge on how location observations map onto location states.
-# We do this the following way:
+# For this first modality we provide the agent with certain knowledge on how location observations map onto location states
+
+# We do this the following way
 
 # ```julia
+
 # # For reward condition right
+
 # A[1][:,:,1] = [ 1.0  0.0  0.0  0.0
-#                 0.0  1.0  0.0  0.0
-#                 0.0  0.0  1.0  0.0
-#                 0.0  0.0  0.0  1.0 ]
+
+# 0.0  1.0  0.0  0.0
+
+# 0.0  0.0  1.0  0.0
+
+# 0.0  0.0  0.0  1.0 ]
 
 # # For reward condition left
+
 # A[1][:,:,2] = [ 1.0  0.0  0.0  0.0
-#                 0.0  1.0  0.0  0.0
-#                 0.0  0.0  1.0  0.0
-#                 0.0  0.0  0.0  1.0 ]
+
+# 0.0  1.0  0.0  0.0
+
+# 0.0  0.0  1.0  0.0
+
+# 0.0  0.0  0.0  1.0 ]
+
 # ```
 
-# For the second modality, the reward modality, we want the agent to be able to infer "no reward" with certainty when in the centre and cue locations.
-# In the left and right arm though, the agent should be agnostic as to which arm produces reward and loss. This is the modality that will be learned in this example.
+# For the second modality, the reward modality, we want the agent to be able to infer "no reward" with certainty when in the centre and cue locations
+
+# In the left and right arm though, the agent should be agnostic as to which arm produces reward and loss. This is the modality that will be learned in this example
 
 # ```julia
+
 # # For reward condition right
+
 # A[2][:,:,1] = [ 1.0  0.0  0.0  1.0
-#                 0.0  0.5  0.5  0.0
-#                 0.0  0.5  0.5  0.0 ]
+
+# 0.0  0.5  0.5  0.0
+
+# 0.0  0.5  0.5  0.0 ]
 
 # # For reward condition left
+
 # A[2][:,:,2] = [ 1.0  0.0  0.0  1.0
-#                 0.0  0.5  0.5  0.0
-#                 0.0  0.5  0.5  0.0 ]
+
+# 0.0  0.5  0.5  0.0
+
+# 0.0  0.5  0.5  0.0 ]
+
 # ```
 
-# In the third modality, we want the agent to infer the reward condition state when in the cue location.
-# To do this, we give it an uniform probability for all locations except the cue location, where it veridically will observe the reward condition state. 
+# In the third modality, we want the agent to infer the reward condition state when in the cue location
+
+# To do this, we give it an uniform probability for all locations except the cue location, where it veridically will observe the reward condition state
 
 # ```julia
+
 # # For reward condition right
+
 # A[3][:,:,1] = [ 0.5  0.5  0.5  1.0
-#                 0.5  0.5  0.5  0.0 ]
+
+# 0.5  0.5  0.5  0.0 ]
 
 # # For reward condition left
+
 # A[3][:,:,2] = [ 0.5  0.5  0.5  0.0
-#                 0.5  0.5  0.5  1.0 ]
+
+# 0.5  0.5  0.5  1.0 ]
+
 # ```
 
 # ##### Populating **B**
 
-# For the first factor we populate the **B** with determined beliefs about how the location states change depended on its actions.
-# For each action, it determines where to go, without having to go through any of the other location states.
-# We encode this as:
+# For the first factor we populate the **B** with determined beliefs about how the location states change depended on its actions
+
+# For each action, it determines where to go, without having to go through any of the other location states
+
+# We encode this as
 
 # ```julia
+
 # # For action "Go to Center Location"
-# B[1][:,:,1] = [ 1.0  1.0  1.0  1.0 
-#                 0.0  0.0  0.0  0.0
-#                 0.0  0.0  0.0  0.0
-#                 0.0  0.0  0.0  0.0 ]
+
+# B[1][:,:,1] = [ 1.0  1.0  1.0  1.0
+
+# 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0 ]
 
 # # For action "Go to Right Arm"
-# B[1][:,:,2] = [ 0.0  0.0  0.0  0.0 
-#                 1.0  1.0  1.0  1.0
-#                 0.0  0.0  0.0  0.0
-#                 0.0  0.0  0.0  0.0 ]
+
+# B[1][:,:,2] = [ 0.0  0.0  0.0  0.0
+
+# 1.0  1.0  1.0  1.0
+
+# 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0 ]
 
 # # For action "Go to Left Arm"
-# B[1][:,:,3] = [ 0.0  0.0  0.0  0.0 
-#                 0.0  0.0  0.0  0.0
-#                 1.0  1.0  1.0  1.0
-#                 0.0  0.0  0.0  0.0 ]
+
+# B[1][:,:,3] = [ 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0
+
+# 1.0  1.0  1.0  1.0
+
+# 0.0  0.0  0.0  0.0 ]
 
 # # For action "Go to Cue Location"
-# B[1][:,:,4] = [ 0.0  0.0  0.0  0.0 
-#                 0.0  0.0  0.0  0.0
-#                 0.0  0.0  0.0  0.0
-#                 1.0  1.0  1.0  1.0 ]
+
+# B[1][:,:,4] = [ 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0
+
+# 0.0  0.0  0.0  0.0
+
+# 1.0  1.0  1.0  1.0 ]
+
 # ```
 
-# For the last factor there is no control, so we will just set the **B** to be the identity matrix.
+# For the last factor there is no control, so we will just set the **B** to be the identity matrix
 
 # ```julia
+
 # # For second factor, which is not controlable by the agent
-# B[2][:,:,1] = [ 1.0  0.0 
-#                 0.0  1.0 ] 
+
+# B[2][:,:,1] = [ 1.0  0.0
+
+# 0.0  1.0 ]
+
 # ```
 
 # ##### Populating **C**
-# For the preference parameters **C** we are not interested in the first and third modality, which we will just set to a vector of zeros for each observation in that modality.
-# However, for the second modality, we want the agent to prefer the "reward observation" indexed as 2, and the dislike the "loss observation" indexed as 3.
+
+# For the preference parameters **C** we are not interested in the first and third modality, which we will just set to a vector of zeros for each observation in that modality
+
+# However, for the second modality, we want the agent to prefer the "reward observation" indexed as 2, and the dislike the "loss observation" indexed as 3
 
 # ```julia
+
 # # Preference over locations modality
+
 # C[1] = [0.0, 0.0, 0.0, 0.0]
 
 # # Preference over reward modality
+
 # C[2] = [0.0, 3.0, -3.0]
 
 # # Preference over cue modality
+
 # C[3] = [0.0, 0.0]
-# ```   
+
+# ```
 
 # ##### Populating **D**
-# For the prior over states **D** we will set the agent's belief to be correct in the location state factor and uniform, or agnostic, in the reward condition factor. 
 
-# ```julia	
+# For the prior over states **D** we will set the agent's belief to be correct in the location state factor and uniform, or agnostic, in the reward condition factor
+
+# ```julia 
+
 # # For the location state factor
+
 # D[1] = [1.0, 0.0, 0.0, 0.0]
 
 # # For the reward condition state factor
+
 # D[2] = [0.5, 0.5]
+
 # ```
 
-
 # ##### Populating **E**
-# For the prior over policies **E** we will set it to be uniform, meaning that the agent has no prior preference for any policy.
 
-# ```julia	
-# # Creating a vector of a uniform distribution over the policies. This means no preferences over policies.
+# For the prior over policies **E** we will set it to be uniform, meaning that the agent has no prior preference for any policy
+
+# ```julia 
+
+# # Creating a vector of a uniform distribution over the policies. This means no preferences over policies
+
 # E .= 1.0/length(E)
+
 # ```
 
 # ##### Creating the prior over **A**
-# When creating the prior over **A**, we use **A** as a template, by using 'deepcopy()'.
-# Then we multiply this with a scaling parameter, setting the initial concentration parameters for the Dirichlet prior over **A**, **pA**.
 
-# ```julia	
+# When creating the prior over **A**, we use **A** as a template, by using 'deepcopy()'
+
+# Then we multiply this with a scaling parameter, setting the initial concentration parameters for the Dirichlet prior over **A**, **pA**
+
+# ```julia 
+
 # pA = deepcopy(A)
+
 # scale_concentration_parameter = 2.0
+
 # pA .*= scale_concentration_parameter
+
 # ```
 
 # #### Creating Settings and Parameters Dictionary
 
-# For the settings we set the 'use_param_info_gain' and 'use_states_info_gain' to true, meaning that the agent will take exploration and parameter learning into account when calculating the prior over policies.
-# We set the policy length to 2, and specify modalities to learn, which in our case is the reward modality, indexed as 2.
+# For the settings we set the 'use_param_info_gain' and 'use_states_info_gain' to true, meaning that the agent will take exploration and parameter learning into account when calculating the prior over policies
 
-# ```julia	
+# We set the policy length to 2, and specify modalities to learn, which in our case is the reward modality, indexed as 2
+
+# ```julia 
+
 # settings = Dict(
-#     "use_param_info_gain" => true,
-#     "use_states_info_gain" => true,
-#     "policy_len" => 2,
-#     "modalities_to_learn" => [2]
+
+# "use_param_info_gain" => true
+
+# "use_states_info_gain" => true
+
+# "policy_len" => 2
+
+# "modalities_to_learn" => [2]
+
 # )
+
 # ```
 
-# For the parameters, we just use the default values, but specify the learning rate here, just to point it out.
-# ```julia	
+# For the parameters, we just use the default values, but specify the learning rate here, just to point it out
+
+# ```julia 
+
 # parameters = Dict{String, Real}(
-#     "lr_pA" => 1.0,
+
+# "lr_pA" => 1.0
+
 # )
+
 # ```
 
 # ### Initilising the Agent
-# We can now initialise the agent with the parameters and settings we have just specified. 
+
+# We can now initialise the agent with the parameters and settings we have just specified
 
 # ```julia
+
 # aif_agent = init_aif(
-#     A, B, C = C, D = D, E = E, pA = pA, settings = settings, parameters = parameters
-# );
+
+# A, B, C = C, D = D, E = E, pA = pA, settings = settings, parameters = parameters
+
+# )
+
 # ```
 
 # ### Simulation
-# We are now ready for the perception-action-learning loop:
+
+# We are now ready for the perception-action-learning loop
 
 # ```julia
+
 # # Settting the number of trials
+
 # T = 100
 
 # # Creating an initial observation and resetting environment (reward condition might change)
+
 # obs = reset_TMaze!(Env)
 
 # # Creating a for-loop that loops over the perception-action-learning loop T amount of times
+
 # for t = 1:T
 
-#     # Infer states based on the current observation
-#     infer_states!(aif_agent, obs)
+# # Infer states based on the current observation
 
-#     # Updates the A parameters
-#     update_parameters!(aif_agent)
+# infer_states!(aif_agent, obs)
 
-#     # Infer policies and calculate expected free energy
-#     infer_policies!(aif_agent)
+# # Updates the A parameters
 
-#     # Sample an action based on the inferred policies
-#     chosen_action = sample_action!(aif_agent)
+# update_parameters!(aif_agent)
 
-#     # Feed the action into the environment and get new observation.
-#     obs = step_TMaze!(Env, chosen_action)
+# # Infer policies and calculate expected free energy
+
+# infer_policies!(aif_agent)
+
+# # Sample an action based on the inferred policies
+
+# chosen_action = sample_action!(aif_agent)
+
+# # Feed the action into the environment and get new observation
+
+# obs = step_TMaze!(Env, chosen_action)
+
 # end
+
 # ```
-
-
-
-
-
 
 ================================================
 FILE: docs/julia_files/WhyActiveInference.jl
 ================================================
+
 # # Why Work with Active Inference?
 
 # | Pros             | Cons             |
-# |------------------|------------------|
-# | Easy to use      | Limited features |
-# | Widely supported | Not fully customizable |
-# | Lightweight      | Lacks some advanced formatting |
 
+# |------------------|------------------|
+
+# | Easy to use      | Limited features |
+
+# | Widely supported | Not fully customizable |
+
+# | Lightweight      | Lacks some advanced formatting |
 
 ================================================
 FILE: docs/julia_files/WorkflowsUnfinished.jl
 ================================================
 
 # ## Workflows
-# This package has two main functions that can be used in a variety of workflows; `simulation` and `model fitting`.
-# We will here outline two different kind of workflows that can be implemented using the ActiveInference.jl package.
-# The first one will be a simulation workflow, where we are interested in simulating the agent's behaviour in a given environment.
-# Here, we might be interested in the behevaiour of a simulated active inference agent in an environment, given some specified parameters.
-# The second is a model fitting workflow, which is interesting for people in computational psychiatry/mathematical psychology. Here, we use observed data to fit an active inference mode and we will use a classical bayesian workflow in this regard.
+
+# This package has two main functions that can be used in a variety of workflows; `simulation` and `model fitting`
+
+# We will here outline two different kind of workflows that can be implemented using the ActiveInference.jl package
+
+# The first one will be a simulation workflow, where we are interested in simulating the agent's behaviour in a given environment
+
+# Here, we might be interested in the behevaiour of a simulated active inference agent in an environment, given some specified parameters
+
+# The second is a model fitting workflow, which is interesting for people in computational psychiatry/mathematical psychology. Here, we use observed data to fit an active inference mode and we will use a classical bayesian workflow in this regard
+
 # See [Bayesian Workflow for Generative Modeling in Computational Psychiatry](https://www.biorxiv.org/content/10.1101/2024.02.19.581001v1)
 
 # ### Simulation
-# In the simulation workflow, we are interested in simulating the agent's behaviour in a given environment. We might have some question wrt. behaviour expected under active inference,
-# or we want to figure out whether our experimental task is suitable for active inference modelling. For these purposes, we will use a simple simulation workflow:
+
+# In the simulation workflow, we are interested in simulating the agent's behaviour in a given environment. We might have some question wrt. behaviour expected under active inference
+
+# or we want to figure out whether our experimental task is suitable for active inference modelling. For these purposes, we will use a simple simulation workflow
 
 # - Decide on an environment the agent will interact with
+
 # - Create a generative model based on that environment
+
 # - Simulate the agent's behaviour in that environment
+
 # - Analyse and visualize the agent's behaviour and inferences
+
 # - Potential parameter recovery by model fitting on observed data
 
-# First, deciding on the environment entails that we have some dynamic that we are interested in from an active inference perspective - a specific research question.
-# Classical examples of environments are T-Mazes and Multi-Armed Bandits, that often involves some decision-making, explore-exploit and information seeking dynamics. These environments are easy to encode as POMDPs and are therefore suitable for active inference modelling.
-# Importantly though this can be any kind of environment that provides the active inference agent with observations, and most often will also take actions so that the agent can interact with the environment.
+# First, deciding on the environment entails that we have some dynamic that we are interested in from an active inference perspective - a specific research question
 
-# Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](@ref "Creating the POMDP Generative Model") section for more information on how to do this.
+# Classical examples of environments are T-Mazes and Multi-Armed Bandits, that often involves some decision-making, explore-exploit and information seeking dynamics. These environments are easy to encode as POMDPs and are therefore suitable for active inference modelling
 
-# You then simulate the agent's behaviour in that environment through a perception-action-learning loop, as described under the 'Simulation' section.
-# After this, you can analyse and visualize the agent's behaviour and inferences, and investigate what was important to the research question you had in mind.
+# Importantly though this can be any kind of environment that provides the active inference agent with observations, and most often will also take actions so that the agent can interact with the environment
 
-# Parameter recovery is also a possibility here, if you are interested in seeing whether the parameters you are interested in are in fact recoverable, or there is a dynamic in the agent-environment interaction, where a parameter cannot be specified but only inferred.
-# For an example of the latter, look up the 'As One and Many: Relating Individual and Emergent Group-Level Generative Models in Active Inference' paper, where parameters are inferred from group-level behaviour.
+# Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](@ref "Creating the POMDP Generative Model") section for more information on how to do this
+
+# You then simulate the agent's behaviour in that environment through a perception-action-learning loop, as described under the 'Simulation' section
+
+# After this, you can analyse and visualize the agent's behaviour and inferences, and investigate what was important to the research question you had in mind
+
+# Parameter recovery is also a possibility here, if you are interested in seeing whether the parameters you are interested in are in fact recoverable, or there is a dynamic in the agent-environment interaction, where a parameter cannot be specified but only inferred
+
+# For an example of the latter, look up the 'As One and Many: Relating Individual and Emergent Group-Level Generative Models in Active Inference' paper, where parameters are inferred from group-level behaviour
 
 # ### Model Fitting with observed data
-# For
 
+# For
 
 ================================================
 FILE: docs/src/AgentCreation.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/AgentCreation.jl"
 ```
@@ -1368,6 +1850,7 @@ Having created the generative model parameters in the precious section, we're no
 Firstly, we'll have to specify some settings and hyperparameters that go into the agent struct. We'll begin with the setting:
 
 ### Settings
+
 The settings are a dictionary that contains the following keys:
 
 ```julia
@@ -1387,19 +1870,20 @@ settings = Dict(
 The above shown values are the default and will work in most cases. If you're unsure about what to specify in the settings, you can just use the default values by not specifying them in the settings Dict for the agent.
 Here, we'll briefly describe the keys in the settings dictionary:
 
-- **`policy_len`** - Is the policy length, and as described previously is the number of actions the agent should plan in the future. This is provided as an integer.
-- **`use_utility`** - Is a boolean that specifies whether the agent should use **C** in the expected free energy calculation, that guides the action selection in active inference. If set to `false`, the agent will not use the parameters specified in **C**.
-- **`use_states_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over states in the expected free energy calculation. If set to `false`, the agent will not use the information gain over states.
-- **`use_param_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over parameters in the expected free energy calculation. If set to `false`, the agent will not use the information gain over parameters. Only relevant when learning is included.
-- **`action_selection`** - Is a string that specifies the action selection method. The options are `"stochastic"` and `"deterministic"`. If set to `"stochastic"`, the agent will sample from the posterior over policies, and if set to `"deterministic"`, the agent will choose the most probable action.
-- **`modalities_to_learn`** - Is a vector of integers that specifies which modalities the agent should learn. If set to string `"all"`, the agent will learn all modalities. If set to `[1,2]`, the agent will only learn the first and second modality. Only relevant when learning of A is included.
-- **`factors_to_learn`** - Is a vector of integers that specifies which factors the agent should learn. If set to string `"all"`, the agent will learn all factors. If set to `[1,2]`, the agent will only learn the first and second factor. Only relevant when learning of B and D is included.
-- **`FPI_num_iter`** - Is an integer that specifies the number of fixed point iterations (FPI) to perform in the free energy minimization. It can be described as a stop function of the FPI algorithm.
-- **`FPI_dF_tol`** - Is a float that specifies the tolerance of the free energy change in the FPI algorithm over each iteration. If the change in free energy is below this value, the FPI algorithm will also stop.
+* **`policy_len`** - Is the policy length, and as described previously is the number of actions the agent should plan in the future. This is provided as an integer.
+* **`use_utility`** - Is a boolean that specifies whether the agent should use **C** in the expected free energy calculation, that guides the action selection in active inference. If set to `false`, the agent will not use the parameters specified in **C**.
+* **`use_states_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over states in the expected free energy calculation. If set to `false`, the agent will not use the information gain over states.
+* **`use_param_info_gain`** - Is a boolean that specifies whether the agent should use the information gain over parameters in the expected free energy calculation. If set to `false`, the agent will not use the information gain over parameters. Only relevant when learning is included.
+* **`action_selection`** - Is a string that specifies the action selection method. The options are `"stochastic"` and `"deterministic"`. If set to `"stochastic"`, the agent will sample from the posterior over policies, and if set to `"deterministic"`, the agent will choose the most probable action.
+* **`modalities_to_learn`** - Is a vector of integers that specifies which modalities the agent should learn. If set to string `"all"`, the agent will learn all modalities. If set to `[1,2]`, the agent will only learn the first and second modality. Only relevant when learning of A is included.
+* **`factors_to_learn`** - Is a vector of integers that specifies which factors the agent should learn. If set to string `"all"`, the agent will learn all factors. If set to `[1,2]`, the agent will only learn the first and second factor. Only relevant when learning of B and D is included.
+* **`FPI_num_iter`** - Is an integer that specifies the number of fixed point iterations (FPI) to perform in the free energy minimization. It can be described as a stop function of the FPI algorithm.
+* **`FPI_dF_tol`** - Is a float that specifies the tolerance of the free energy change in the FPI algorithm over each iteration. If the change in free energy is below this value, the FPI algorithm will also stop.
 
 For more information on the specifics of the impact of these settings, look under the `Active Inference Theory` section in the documentation.
 
 ### Parameters
+
 The parameters are a dictionary that contains the following keys:
 
 ```julia
@@ -1417,14 +1901,14 @@ parameters = Dict(
 
 The above shown values are the default. If you're unsure about what to specify in the parameters, you can just use the default values by not specifying them in the parameter Dict for the agent.
 Here, we'll briefly describe the keys in the parameters dictionary containing the hyperparameters:
-- **`alpha`** - Is the inverse temperature of the action selection process, and usually takes a value between 1 and 32. This is only relevant when action_selection is set to `"stochastic"`.
-- **`gamma`** - Is the inverse temperature precision of the expected free energy, and usually takes a value between 1 and 32. If the value is high, the agent will be more certain in its beliefs regarding the posterior probability over policies.
-- **`lr_pA`** - Is the learning rate of **A**, and usually takes a value between 0 and 1. Only relevant when learning is included, and this goes for all learning and forgetting rates.
-- **`fr_pA`** - Is the forgetting rate of **A**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
-- **`lr_pB`** - Is the learning rate of **B**, and usually takes a value between 0 and 1.
-- **`fr_pB`** - Is the forgetting rate of **B**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
-- **`lr_pD`** - Is the learning rate of **D**, and usually takes a value between 0 and 1.
-- **`fr_pD`** - Is the forgetting rate of **D**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
+* **`alpha`** - Is the inverse temperature of the action selection process, and usually takes a value between 1 and 32. This is only relevant when action_selection is set to `"stochastic"`.
+* **`gamma`** - Is the inverse temperature precision of the expected free energy, and usually takes a value between 1 and 32. If the value is high, the agent will be more certain in its beliefs regarding the posterior probability over policies.
+* **`lr_pA`** - Is the learning rate of **A**, and usually takes a value between 0 and 1. Only relevant when learning is included, and this goes for all learning and forgetting rates.
+* **`fr_pA`** - Is the forgetting rate of **A**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
+* **`lr_pB`** - Is the learning rate of **B**, and usually takes a value between 0 and 1.
+* **`fr_pB`** - Is the forgetting rate of **B**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
+* **`lr_pD`** - Is the learning rate of **D**, and usually takes a value between 0 and 1.
+* **`fr_pD`** - Is the forgetting rate of **D**, and usually takes a value between 0 and 1. If forgetting rate is 1 it means no forgetting.
 
 Having now specified the setting and parameters, we can now initialise the active inference agent. This is done by calling the `init_aif` function, which takes the following arguments:
 
@@ -1476,6 +1960,7 @@ Dict{String, Any} with 11 entries:
 Having now initialised the agent, we are ready to implement it either in a simulation with a perception-action loop, or for use in model fitting with observed data.
 
 ## Initialising the Agent with Learning
+
 If you want to include learning in the agent, you can do so by specifying the prior parameters `init_aif` function. Here is an example of how to initialise the agent with learning:
 
 ```julia
@@ -1490,12 +1975,10 @@ Here, only the prior of the parameters that are to be learned should be specifie
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/Fitting.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/Fitting.jl"
 ```
@@ -1503,14 +1986,16 @@ EditURL = "../julia_files/Fitting.jl"
 # Model Fitting
 
 In many cases, we want to be able to draw conclusions about specific observed phenomena, such as behavioural differences between distinct populations. A conventional approach in this context is model fitting, which involves estimating the parameter values of a model (e.g., prior beliefs) that are most likely given the observed behavior of a participant. This approach is often used in fields such as computational psychiatry or mathematical psychology  to develop more precise models and theories of mental processes, to find mechanistic differences between clinical populations, or to investigate the relationship between computational constructs such as Bayesian beliefs and neuronal dynamics.
+
 ## Quick Start
+
 #### Model Fitting with ActionModels.jl
 
 Model fitting in '**ActiveInference**' is mediated through '**ActionModels**', which is our sister package for implementing and fitting various behavioural models to data. The core of '**ActionModels**' is the action model function, which takes a single observation, runs the inference scheme (updating the agent's beliefs), and calculates the probability distribution over actions from which the agent samples its actions.
 *(Check out the [ActionModels documentation](https://ilabcode.github.io/ActionModels.jl/dev/markdowns/Introduction/) for more details)*
 
-
 To demonstrate this, let's define a very simple generative model with a single state factor and two possible actions, and then initialize our active inference object:
+
 ```julia
 # Define the number of states, observations, and controls
 n_states = [4]
@@ -1528,6 +2013,7 @@ aif = init_aif(A, B)
 ```
 
 We can now use the `action_pomdp!` function (which serves as our active inference "action model") to calculate the probability distribution over actions for a single observation:
+
 ```julia
 # Define observation
 observation = [1]
@@ -1537,9 +2023,11 @@ action_distribution = action_pomdp!(aif, observation)
 ```
 
 #### Agent in ActionModels.jl
+
 Another key component of '**ActionModels**' is an `Agent`, which wraps the action model and active inference object in a more abstract structure. The `Agent` is initialized using a `substruct` to include our active inference object, and the action model is our `action_pomdp!` function.
 
 Let's first install '**ActionModels**' from the official Julia registry and import it:
+
 ```julia
 Pkg.add("ActionModels")
 using ActionModels
@@ -1554,9 +2042,11 @@ agent = init_agent(
     substruct = aif # The active inference object
 )
 ```
-We use an initialized `Agent` primarily for fitting; however, it can also be used with a set of convenience functions to run simulations, which are described in [Simulation with ActionModels](./SimulationActionModels.md).
+
+We use an initialized `Agent` primarily for fitting; however, it can also be used with a set of convenience functions to run simulations, which are described in Simulation with ActionModels.
 
 #### Fitting a Single Subject Model
+
 We have our `Agent` object defined as above. Next, we need to specify priors for the parameters we want to estimate.
 
 For example, let's estimate the action precision parameter `α` and use a Gamma distribution as its prior.
@@ -1568,9 +2058,11 @@ using Distributions
 # Define the prior distribution for the alpha parameters inside a dictionary
 priors = Dict("alpha" => Gamma(1, 1))
 ```
+
 We can now use the `create_model` function to instantiate a probabilistic model object with data. This function takes the `Agent` object, the priors, and a set of observations and actions as arguments.
 
 First, let's define some observations and actions as vectors:
+
 ```julia
 # Define observations and actions
 observations = [1, 1, 2, 3, 1, 4, 2, 1]
@@ -1578,15 +2070,20 @@ actions = [2, 1, 2, 2, 2, 1, 2, 2]
 ```
 
 Now we can instantiate the probabilistic model object:
+
 ```julia
 # Create the model object
 single_subject_model = create_model(agent, priors, observations, actions)
 ```
+
 The `single_subject_model` can be used as a standard Turing object. Performing inference on this model is as simple as:
+
 ```julia
 results = fit_model(single_subject_model)
 ```
+
 #### Fitting a Model with Multiple Subjects
+
 Often, we have data from multiple subjects that we would like to fit simultaneously. The good news is that this can be done by instantiating our probabilisitc model on an entire dataset containing data from multiple subjects.
 
 Let's define some dataset with observations and actions for three subjects:
@@ -1603,12 +2100,12 @@ data = DataFrame(
 )
 ```
 
-
 ```@raw html
 <div><div style = "float: left;"><span>9×3 DataFrame</span></div><div style = "clear: both;"></div></div><div class = "data-frame" style = "overflow-x: scroll;"><table class = "data-frame" style = "margin-bottom: 6px;"><thead><tr class = "header"><th class = "rowNumber" style = "font-weight: bold; text-align: right;">Row</th><th style = "text-align: left;">subjectID</th><th style = "text-align: left;">observations</th><th style = "text-align: left;">actions</th></tr><tr class = "subheader headerLastRow"><th class = "rowNumber" style = "font-weight: bold; text-align: right;"></th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th><th title = "Int64" style = "text-align: left;">Int64</th></tr></thead><tbody><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">2</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td><td style = "text-align: right;">1</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">3</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">4</td><td style = "text-align: right;">2</td><td style = "text-align: right;">3</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">5</td><td style = "text-align: right;">2</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">6</td><td style = "text-align: right;">2</td><td style = "text-align: right;">4</td><td style = "text-align: right;">1</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">7</td><td style = "text-align: right;">3</td><td style = "text-align: right;">2</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">8</td><td style = "text-align: right;">3</td><td style = "text-align: right;">1</td><td style = "text-align: right;">2</td></tr><tr><td class = "rowNumber" style = "font-weight: bold; text-align: right;">9</td><td style = "text-align: right;">3</td><td style = "text-align: right;">3</td><td style = "text-align: right;">1</td></tr></tbody></table></div>
 ```
 
 To instantiate the probabilistic model on our dataset, we pass the `data` DataFrame to the `create_model` function along with the names of the columns that contain the subject identifiers, observations, and actions:
+
 ```julia
 # Create the model object
 multi_subject_model = create_model(
@@ -1621,14 +2118,14 @@ multi_subject_model = create_model(
 )
 ```
 
-
 To fit the model, we use the `fit_model` function as before:
+
 ```julia
 results = fit_model(multi_subject_model)
 ```
 
-
 #### Customizing the Fitting Procedure
+
 The `fit_model` function has several optional arguments that allow us to customize the fitting procedure. For example, you can specify the number of iterations, the number of chains, the sampling algorithm, or to parallelize over chains:
 
 ```julia
@@ -1640,6 +2137,7 @@ results = fit_model(
     n_chains = 4, # Number of chains
 )
 ```
+
 '**Turing**' allows us to run distributed `MCMCDistributed()` or threaded `MCMCThreads()` parallel sampling. The default is to run chains serially `MCMCSerial()`. For information on the available samplers see the [Turing documentation](https://turing.ml/dev/docs/using-turing/samplers/).
 
 #### Results
@@ -1717,6 +2215,7 @@ Quantiles
 ````
 
 That looks better! We can now use the '**StatsPlots**' package to plot the chain traces and density plots of the posterior distributions for all subjects:
+
 ```julia
 using StatsPlots # Load the StatsPlots package
 
@@ -1727,13 +2226,16 @@ plot(renamed_chains)
 > *(image2)*
 
 We can also visualize the posterior distributions against the priors. This can be done by first taking samples from the prior:
+
 ```julia
 # Sample from the prior
 prior_chains = sample(multi_subject_model, Prior(), 1000)
 # Rename parameters in the prior chains
 renamed_prior_chains = rename_chains(prior_chains, multi_subject_model)
 ```
+
 To plot the posterior distributions against the priors, we use the `plot_parameters` function:
+
 ```julia
 plot_parameters(renamed_prior_chains, renamed_chains)
 ```
@@ -1745,12 +2247,10 @@ plot_parameters(renamed_prior_chains, renamed_chains)
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/GenerativeModelCreation.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/GenerativeModelCreation.jl"
 ```
@@ -1766,11 +2266,11 @@ In ActiveInference.jl, it is important that the parameters describing the genera
 The correct typing of the generative model parameters, which often take the shapes of matrices, tensors and vectors.
 The collections of generative model parameters are colloquially referred to as **A**, **B**, **C**, **D**, and **E**. We will denote these parameters by their letter in bold. For a quick refresher this is the vernacular used to describe these parameter collections:
 
-- **A** - Observation Likelihood Model
-- **B** - Transition Likelihood Model
-- **C** - Prior over Observations
-- **D** - Prior over States
-- **E** - Prior over Policies
+* **A** - Observation Likelihood Model
+* **B** - Transition Likelihood Model
+* **C** - Prior over Observations
+* **D** - Prior over States
+* **E** - Prior over Policies
 
 These should be typed the following way in ActiveInference.jl:
 
@@ -1786,6 +2286,7 @@ Each of the parameter collections are vectors, where each index in the vector co
 However, creating these from scratch is not necessary, as we have created a helper function that can create a template for these parameters.
 
 ## Helper Function for GM Templates
+
 Luckily, there is a helper function that helps create templates for the generative model parameters. This function is called `create_matrix_templates`.
 
 ```julia
@@ -1797,19 +2298,19 @@ right structure of the generative model parameters. We will go through these arg
 
 \
 
-- **n_states** - This is the number of states in the environment. The environment can have different kinds of states, which are often referred to as factors. Could be a location factor and a reward condition factor. It takes a vector of integers, where each integer represents a factor, and the value of the integer is the number of states in that factor. E.g. if we had an environment with two factors, one location factor with 4 states and one reward condition factor with 2 states, the argument would look like this: `[4,2]`
+* **n_states** - This is the number of states in the environment. The environment can have different kinds of states, which are often referred to as factors. Could be a location factor and a reward condition factor. It takes a vector of integers, where each integer represents a factor, and the value of the integer is the number of states in that factor. E.g. if we had an environment with two factors, one location factor with 4 states and one reward condition factor with 2 states, the argument would look like this: `[4,2]`
 \
 
-- **n_observations** - This is the number of observations the agent can make in the environment. The observations are often referred to as modalities. Could be a location modality, a reward modality and a cue modality. Similarly to the first argument, it takes a vector of integers, where each integer represents a modality, and the value of the integer is the number of observations in that modality. E.g. if we had an environment with three modalities, one location modality with 4 observations, one reward modality with 3 observations and one cue modality with 2 observations, the argument would look like this: `[4,3,2]`
+* **n_observations** - This is the number of observations the agent can make in the environment. The observations are often referred to as modalities. Could be a location modality, a reward modality and a cue modality. Similarly to the first argument, it takes a vector of integers, where each integer represents a modality, and the value of the integer is the number of observations in that modality. E.g. if we had an environment with three modalities, one location modality with 4 observations, one reward modality with 3 observations and one cue modality with 2 observations, the argument would look like this: `[4,3,2]`
 \
 
-- **n_controls** - This is the number of controls the agent have in the environment. The controls are the actions the agent can take in the different factors. Could be moving left or right, or choosing between two different rewards. It has one control integer for each factor, where the integer represents the number of actions in that factor. If the agent cannot control a factor, the integer should be 1. E.g. if we had an environment with two factors, one location factor with 4 actions and one reward condition factor with 1 action, the argument would look like this: `[4,1]`
+* **n_controls** - This is the number of controls the agent have in the environment. The controls are the actions the agent can take in the different factors. Could be moving left or right, or choosing between two different rewards. It has one control integer for each factor, where the integer represents the number of actions in that factor. If the agent cannot control a factor, the integer should be 1. E.g. if we had an environment with two factors, one location factor with 4 actions and one reward condition factor with 1 action, the argument would look like this: `[4,1]`
 \
 
-- **policy_length** - This is the length of the policies of the agent, and is taken as an integer. The policy is a sequence of actions the agent can take in the environment. The length of the policy describes how many actions into the future the agent is planning. For example, if the agent is planning two steps into the future, the policy length would be 2, and each policy would consist of 2 actions. In that case the argument would look like this: `2`
+* **policy_length** - This is the length of the policies of the agent, and is taken as an integer. The policy is a sequence of actions the agent can take in the environment. The length of the policy describes how many actions into the future the agent is planning. For example, if the agent is planning two steps into the future, the policy length would be 2, and each policy would consist of 2 actions. In that case the argument would look like this: `2`
 \
 
-- **template_type** - This is a string that describes the type of template you want to create, or in other words, the initial filling of the generative model structure. There are three options; `"uniform"`, which is default, `"random"`, and `"zeros"`.
+* **template_type** - This is a string that describes the type of template you want to create, or in other words, the initial filling of the generative model structure. There are three options; `"uniform"`, which is default, `"random"`, and `"zeros"`.
 
 If we were to use the arguments from the examples above, the function call would look like this:
 
@@ -1835,6 +2336,7 @@ D[1] # Accesses the first factor in the prior over states
 The E-parameters are not a divided into modalities or factors, as they are the prior over policies.
 
 ## Populating the Parameters
+
 Now that the generative model parameter templates ahave been created, they can now be filled with the desired values, ie. populating the parameters.
 Let's take the example of filling **A** with some valus. To start, let's print out the first modality of the A so we get a sense of the dimensions:
 
@@ -1898,6 +2400,7 @@ For the other parameters, the process is similar, but the dimensions of the matr
 Look up the `T-Maze Simulation` (insert reference here) example for a full example of how to populate the generative model parameters.
 
 ## Creating Dirichlet Priors over Parameters
+
 When learning is included, we create Dirichlet priors over the parameters **A**, **B**, and **D**. We usually do this by taking the created **A**, **B**, and **D** parameters and multiplying them with a scalar, which is the concentration parameter of the Dirichlet distribution.
 For more information on the specifics of learning and Dirichlet priors, look under the `Active Inference Theory` section in the documentation. Note here, that when we implement learning of a parameter, the parameter is going to be defined by its prior and no longer the initial
 parameter that we specified. This is because the agent will update the parameter based on the prior and the data it receives. An example of how we would create a Dirichlet prior over **A** could look:
@@ -1915,12 +2418,10 @@ If the scaling is high, e.g. 50, then adding one data point will have a small im
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/GenerativeModelTheory.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/GenerativeModelTheory.jl"
 ```
@@ -1935,6 +2436,7 @@ Each of these contain parameters that describe the agent's beliefs about the env
 We will now go through these conecptually one at a time.
 
 ## A
+
 **A** is the observation likelihood model, and describes the agent's beliefs about how the hidden states of the environment generates observations.
 Practically in this package, and other POMDP implemantations as well, this is described through a series of categorical distributions, meaning that for each observation, there is a categorical probability distribution over how likely each hidden state is to generate that observation.
 Let us for example imagine a simple case, where the agent is in a four location state environment, could be a 2x2 gridworld. In this case, there would be one obseration linked to each hidden state, and **A** then maps the agent's belief of how likely each hidden location state is to generate each observation.
@@ -1958,6 +2460,7 @@ In this case, the agent is quite certain about which states produces which obser
 In the case of a certain **A**, the generative model stops being a "partially observable" Markov decision process, and becomes a fully observable one, making it a Markov decision process (MDP). For a more technical and mathematical definition of the observation likelihood model.
 
 ## B
+
 **B** is the transition likelihood model that encodes the agent's beliefs about how the hidden states of the environment changes over time.
 This is also made up of categorical distributions, though instead of observations to states, it maps states to states.
 If we take the same case again, a 2x2 gridworld, we would have a 4x4 matrix that describes how the agent believes the states evolve over time.
@@ -1983,6 +2486,7 @@ We could make 3 more similar matrices for the actions "up", "left", and "right",
 **B** decsribes the agent's belief of how hidden states change over time, and this can be dependent on actions, but might also be independent of actions, and thus the agent believes that the changes are out of its control.
 
 ## C
+
 **C** is the prior over observations, also called preferences over observations. This is an integral part of the utility of certain observations, i.e. it encodes how much the agent prefers or dislikes certain observations.
 **C** is a simple vector over observations, where each entry is a value that describes the utility or preference of that specific observation.
 If we continue with the simple 2x2 gridworld example, we would have 4 observations, one for each location state (same amount of observations as in **A**).
@@ -2000,6 +2504,7 @@ to encode that the agent dislikes the top left location just as much as it likes
 Note that since **C** is not a categorical distribution, it does not need to sum to 1, and the values can be any real number.
 
 ## D
+
 **D** is the prior over states, and is the agent's beliefs about the initial state of the environment. This is also a simple vector that is a categorical distribution.
 Note that if **A** is certain, then **D** does not matter a lot for the inference process, as the agent can infer the state from the observation. However, if **A** is uncertain,
 then **D** becomes very important, as it serves as the agent's anchor point of where it is initially in the environment. In the case of out
@@ -2013,6 +2518,7 @@ D =
 ```
 
 ## E
+
 **E** is the prior over policies, and can be described as the agent's habits. Policies in Active Inference vernacular are sets of actions, with an action for each step in the future, specified by a policy length.
 It is a categorical distribution over policies, with a probability for each policy. This will have an effect on the agent posterior over policies,
 which is the probability of taking a certain action at a time step. This will often be set to a uniform distribution, if we are not interested in giving the agent habits.
@@ -2029,12 +2535,10 @@ E =
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/index.md
 ================================================
+
 ```@meta
 CurrentModule = ActiveInference
 ```
@@ -2050,11 +2554,10 @@ Documentation for [ActiveInference](https://github.com/ilabcode/ActiveInference.
 Modules = [ActiveInference, ActiveInference.Environments]
 ```
 
-
-
 ================================================
 FILE: docs/src/Introduction.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/Introduction.jl"
 ```
@@ -2066,6 +2569,7 @@ In its current implementation, the package is designed to handle scenarios that 
 In this documentation we will go through the basic concepts of how to use the package for different purposes; simulation and model inversion with Active Inference, also known as parameter estimation.
 
 ## Installing Package
+
 Installing the package is done by adding the package from the julia official package registry in the following way:
 
 ```julia
@@ -2085,25 +2589,26 @@ In the next section we will go over the basic concepts of how to start using the
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/Simulation.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/Simulation.jl"
 ```
 
 # Simulation with ActiveInference.jl
+
 When simulating with active inference we need a perception-action loop. This loop will perform the following steps:
+
 1. The agent will infer the states of the environment based on its generative model and an observation. The inference here is optimized through the minimization of the variational free energy (see `Active Inference Theory Perception`).
 2. The agent will infer the best action based on the minimization of the expected free energy (see `Active Inference Theory Action`).
 3. The agent will perform the action in the environment and receive an observation for use in the next iteration.
 
 *Note: for learning included, look at the section below.*
 
-#### The Perception-Action loop:
+#### The Perception-Action loop
+
 ```julia
 T = n_iterations
 
@@ -2120,9 +2625,11 @@ for t = 1:T
 end
 ```
 
-#### The Perception-Action-Learning loop:
+#### The Perception-Action-Learning loop
+
 When learning is included, the loop is very similar except for the addition of the update functions, which should be implemented at different points in the loop.
 Below we will show how to include learning of the parameters. It is important that only the parameters which have been provided to the agent as a prior are being updated.
+
 ```julia
 T = n_iterations
 
@@ -2147,12 +2654,10 @@ The only addition here is the `update_parameters!(aif_agent)` function, which up
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/SimulationActionModels.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/SimulationActionModels.jl"
 ```
@@ -2163,12 +2668,10 @@ EditURL = "../julia_files/SimulationActionModels.jl"
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/TMazeSimulationExample.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/TMazeSimulationExample.jl"
 ```
@@ -2191,17 +2694,18 @@ initialize_gp(env)
 ```
 
 ### Creating the Generative Model
+
 #### The Helper Function
 
 When creating the generative model we can make use of the helper function, making it convenient to create the correct structure for the generative model parameters.
 
 To use the helper function we need to know the following:
 
-- Number of states in each factor of the environment
-- Number of observations in each modality
-- Number of controls or actions in each factor
-- Policy length of the agent
-- Initial fill for the parameters
+* Number of states in each factor of the environment
+* Number of observations in each modality
+* Number of controls or actions in each factor
+* Policy length of the agent
+* Initial fill for the parameters
 
 Let's start with the factors of the environment. Let's take a look at the T-Maze environment:
 
@@ -2274,6 +2778,7 @@ A, B, C, D, E = create_matrix_templates(n_states, n_observations, n_controls, po
 ```
 
 #### Populating the Generative Model
+
 ##### Populating **A**
 
 Let's take a look at the shape of the first modality in the A parameters:
@@ -2383,6 +2888,7 @@ B[2][:,:,1] = [ 1.0  0.0
 ```
 
 ##### Populating **C**
+
 For the preference parameters **C** we are not interested in the first and third modality, which we will just set to a vector of zeros for each observation in that modality.
 However, for the second modality, we want the agent to prefer the "reward observation" indexed as 2, and the dislike the "loss observation" indexed as 3.
 
@@ -2398,6 +2904,7 @@ C[3] = [0.0, 0.0]
 ```
 
 ##### Populating **D**
+
 For the prior over states **D** we will set the agent's belief to be correct in the location state factor and uniform, or agnostic, in the reward condition factor.
 
 ```julia
@@ -2409,6 +2916,7 @@ D[2] = [0.5, 0.5]
 ```
 
 ##### Populating **E**
+
 For the prior over policies **E** we will set it to be uniform, meaning that the agent has no prior preference for any policy.
 
 ```julia
@@ -2417,6 +2925,7 @@ E .= 1.0/length(E)
 ```
 
 ##### Creating the prior over **A**
+
 When creating the prior over **A**, we use **A** as a template, by using 'deepcopy()'.
 Then we multiply this with a scaling parameter, setting the initial concentration parameters for the Dirichlet prior over **A**, **pA**.
 
@@ -2441,6 +2950,7 @@ settings = Dict(
 ```
 
 For the parameters, we just use the default values, but specify the learning rate here, just to point it out.
+
 ```julia
 parameters = Dict{String, Real}(
     "lr_pA" => 1.0,
@@ -2448,6 +2958,7 @@ parameters = Dict{String, Real}(
 ```
 
 ### Initilising the Agent
+
 We can now initialise the agent with the parameters and settings we have just specified.
 
 ```julia
@@ -2457,6 +2968,7 @@ aif_agent = init_aif(
 ```
 
 ### Simulation
+
 We are now ready for the perception-action-learning loop:
 
 ```julia
@@ -2490,12 +3002,10 @@ end
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/WhyActiveInference.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/WhyActiveInference.jl"
 ```
@@ -2512,17 +3022,16 @@ EditURL = "../julia_files/WhyActiveInference.jl"
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
 ================================================
 FILE: docs/src/WorkflowsUnfinished.md
 ================================================
+
 ```@meta
 EditURL = "../julia_files/WorkflowsUnfinished.jl"
 ```
 
 ## Workflows
+
 This package has two main functions that can be used in a variety of workflows; `simulation` and `model fitting`.
 We will here outline two different kind of workflows that can be implemented using the ActiveInference.jl package.
 The first one will be a simulation workflow, where we are interested in simulating the agent's behaviour in a given environment.
@@ -2531,14 +3040,15 @@ The second is a model fitting workflow, which is interesting for people in compu
 See [Bayesian Workflow for Generative Modeling in Computational Psychiatry](https://www.biorxiv.org/content/10.1101/2024.02.19.581001v1)
 
 ### Simulation
+
 In the simulation workflow, we are interested in simulating the agent's behaviour in a given environment. We might have some question wrt. behaviour expected under active inference,
 or we want to figure out whether our experimental task is suitable for active inference modelling. For these purposes, we will use a simple simulation workflow:
 
-- Decide on an environment the agent will interact with
-- Create a generative model based on that environment
-- Simulate the agent's behaviour in that environment
-- Analyse and visualize the agent's behaviour and inferences
-- Potential parameter recovery by model fitting on observed data
+* Decide on an environment the agent will interact with
+* Create a generative model based on that environment
+* Simulate the agent's behaviour in that environment
+* Analyse and visualize the agent's behaviour and inferences
+* Potential parameter recovery by model fitting on observed data
 
 First, deciding on the environment entails that we have some dynamic that we are interested in from an active inference perspective - a specific research question.
 Classical examples of environments are T-Mazes and Multi-Armed Bandits, that often involves some decision-making, explore-exploit and information seeking dynamics. These environments are easy to encode as POMDPs and are therefore suitable for active inference modelling.
@@ -2553,19 +3063,17 @@ Parameter recovery is also a possibility here, if you are interested in seeing w
 For an example of the latter, look up the 'As One and Many: Relating Individual and Emergent Group-Level Generative Models in Active Inference' paper, where parameters are inferred from group-level behaviour.
 
 ### Model Fitting with observed data
+
 For
 
 ---
 
 *This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
 
-
-
-
-
 ================================================
 FILE: src/ActiveInference.jl
 ================================================
+
 module ActiveInference
 
 using ActionModels
@@ -2594,7 +3102,7 @@ include("utils/create_matrix_templates.jl")
 
 export # utils/create_matrix_templates.jl
         create_matrix_templates,
-       
+
        # utils/maths.jl
        normalize_distribution,
        softmax_array,
@@ -2646,22 +3154,15 @@ export # utils/create_matrix_templates.jl
     end
 end
 
-
-
-
-
-
-
-
-
 ================================================
 FILE: src/ActionModelsExtensions/get_history.jl
 ================================================
+
 """
 This extends the "get_history" function of the ActionModels package to work specifically with instances of the AIF type.
 
     get_history(aif::AIF, target_states::Vector{String})
-Retrieves a history for multiple states of an AIF agent. 
+Retrieves a history for multiple states of an AIF agent.
 
     get_history(aif::AIF, target_state::String)
 Retrieves a single target state history from an AIF agent.
@@ -2672,8 +3173,8 @@ Retrieves history of all states from an AIF agent.
 
 using ActionModels
 
-
 # Retrieve multiple states history
+
 function ActionModels.get_history(aif::AIF, target_states::Vector{String})
     history = Dict()
 
@@ -2694,6 +3195,7 @@ function ActionModels.get_history(aif::AIF, target_states::Vector{String})
 end
 
 # Retrieve a history from a single state
+
 function ActionModels.get_history(aif::AIF, target_state::String)
     # Check if the state is in the AIF's states
     if haskey(aif.states, target_state)
@@ -2705,21 +3207,21 @@ function ActionModels.get_history(aif::AIF, target_state::String)
     end
 end
 
-
 # Retrieve all states history
+
 function ActionModels.get_history(aif::AIF)
     return aif.states
 end
 
-
 ================================================
 FILE: src/ActionModelsExtensions/get_parameters.jl
 ================================================
+
 """
 This extends the "get_parameters" function of the ActionModels package to work specifically with instances of the AIF type.
 
     get_parameters(aif::AIF, target_parameters::Vector{String})
-Retrieves multiple target parameters from an AIF agent. 
+Retrieves multiple target parameters from an AIF agent.
 
     get_parameters(aif::AIF, target_parameter::String)
 Retrieves a single target parameter from an AIF agent.
@@ -2732,6 +3234,7 @@ Retrieves all parameters from an AIF agent.
 using ActionModels
 
 # Retrieves multiple target parameters
+
 function ActionModels.get_parameters(aif::AIF, target_parameters::Vector{String})
     parameters = Dict()
 
@@ -2751,6 +3254,7 @@ function ActionModels.get_parameters(aif::AIF, target_parameters::Vector{String}
 end
 
 # Retrieves a single parameter
+
 function ActionModels.get_parameters(aif::AIF, target_parameter::String)
     if haskey(aif.parameters, target_parameter)
         return aif.parameters[target_parameter]
@@ -2759,21 +3263,21 @@ function ActionModels.get_parameters(aif::AIF, target_parameter::String)
     end
 end
 
+# Retrieves all parameters
 
-# Retrieves all parameters 
 function ActionModels.get_parameters(aif::AIF)
     return aif.parameters
 end
 
-
 ================================================
 FILE: src/ActionModelsExtensions/get_states.jl
 ================================================
+
 """
 This extends the "get_states" function of the ActionModels package to work specifically with instances of the AIF type.
 
     get_states(aif::AIF, target_states::Vector{String})
-Retrieves multiple states from an AIF agent. 
+Retrieves multiple states from an AIF agent.
 
     get_states(aif::AIF, target_state::String)
 Retrieves a single target state from an AIF agent.
@@ -2784,8 +3288,8 @@ Retrieves all states from an AIF agent.
 
 using ActionModels
 
-
 # Retrieve multiple states
+
 function ActionModels.get_states(aif::AIF, target_states::Vector{String})
     states = Dict()
 
@@ -2806,6 +3310,7 @@ function ActionModels.get_states(aif::AIF, target_states::Vector{String})
 end
 
 # Retrieve a single state
+
 function ActionModels.get_states(aif::AIF, target_state::String)
     if haskey(aif.states, target_state)
         state_history = aif.states[target_state]
@@ -2820,8 +3325,8 @@ function ActionModels.get_states(aif::AIF, target_state::String)
     end
 end
 
-
 # Retrieve all states
+
 function ActionModels.get_states(aif::AIF)
     all_states = Dict()
     for (key, state_history) in aif.states
@@ -2835,27 +3340,23 @@ function ActionModels.get_states(aif::AIF)
     return all_states
 end
 
-
-
-
-
-
 ================================================
 FILE: src/ActionModelsExtensions/give_inputs.jl
 ================================================
+
 """
 
 This is extends the give_inputs! function of ActionsModels.jl to work with instances of the AIF type.
 
     single_input!(aif::AIF, obs)
-Give a single observation to an AIF agent. 
-
+Give a single observation to an AIF agent.
 
 """
 
 using ActionModels
 
 ### Give single observation to the agent
+
 function ActionModels.single_input!(aif::AIF, obs::Vector)
 
     # Running the action model to retrieve the action distributions
@@ -2913,10 +3414,10 @@ function ActionModels.give_inputs!(aif::AIF, observations::Vector)
     return aif.states["action"]
 end
 
-
 ================================================
 FILE: src/ActionModelsExtensions/reset.jl
 ================================================
+
 """
 Resets an AIF type agent to its initial state
 
@@ -2944,10 +3445,10 @@ function ActionModels.reset!(aif::AIF)
     return nothing
 end
 
-
 ================================================
 FILE: src/ActionModelsExtensions/set_parameters.jl
 ================================================
+
 """
 This extends the "set_parameters!" function of the ActionModels package to work with instances of the AIF type.
 
@@ -2962,6 +3463,7 @@ Set multiple parameters in the AIF agent
 using ActionModels
 
 # Setting a single parameter
+
 function ActionModels.set_parameters!(aif::AIF, target_param::String, param_value::Real)
     # Update the parameters dictionary
     aif.parameters[target_param] = param_value
@@ -2989,6 +3491,7 @@ function ActionModels.set_parameters!(aif::AIF, target_param::String, param_valu
 end
 
 # Setting multiple parameters
+
 function ActionModels.set_parameters!(aif::AIF, parameters::Dict)
     # For each parameter in the input dictionary
     for (target_param, param_value) in parameters
@@ -2997,10 +3500,10 @@ function ActionModels.set_parameters!(aif::AIF, parameters::Dict)
     end
 end
 
-
 ================================================
 FILE: src/ActionModelsExtensions/set_save_history.jl
 ================================================
+
 """
 ActionModels - set save history
 """
@@ -3011,10 +3514,10 @@ function ActionModels.set_save_history!(aif::AIF, save_history::Bool)
     aif.save_history = save_history
 end
 
-
 ================================================
 FILE: src/Environments/EpistChainEnv.jl
 ================================================
+
 """ Pre-defined Environment: Epistemic Chaining Grid-World"""
 
 mutable struct EpistChainEnv
@@ -3112,12 +3615,10 @@ function reset_env!(env::EpistChainEnv)
     return env.current_loc
 end
 
-
-
-
 ================================================
 FILE: src/Environments/TMazeEnv.jl
 ================================================
+
 mutable struct TMazeEnv
     reward_prob::Float64
     reward_idx::Int64
@@ -3276,7 +3777,6 @@ function construct_likelihood_dist(env::TMazeEnv)
     return A
 end
 
-
 function sample_dist(probabilities)
 
     probabilities = convert(Vector{Float64}, probabilities)
@@ -3312,13 +3812,13 @@ function construct_state(env::TMazeEnv, state_tuple)
     return state
 end
 
-
 ================================================
 FILE: src/pomdp/inference.jl
 ================================================
+
 """ -------- Inference Functions -------- """
 
-#### State Inference #### 
+#### State Inference ####
 
 """ Get Expected States """
 function get_expected_states(qs::Vector{Vector{T}} where T <: Real, B, policy::Matrix{Int64})
@@ -3339,7 +3839,7 @@ function get_expected_states(qs::Vector{Vector{T}} where T <: Real, B, policy::M
     return qs_pi[2:end]
 end
 
-""" 
+"""
     Multiple dispatch for all expected states given all policies
 
 Multiple dispatch for getting expected states for all policies based on the agents currently
@@ -3351,7 +3851,7 @@ policy: Vector{Matrix{Int64}}
 
 """
 function get_expected_states(qs::Vector{Vector{Float64}}, B, policy::Vector{Matrix{Int64}})
-    
+
     # Extracting the number of steps (policy_length) and factors from the first policy
     n_steps, n_factors = size(policy[1])
 
@@ -3384,47 +3884,55 @@ end
 """
     process_observation(observation::Int, n_modalities::Int, n_observations::Vector{Int})
 
-Process a single modality observation. Returns a one-hot encoded vector. 
+Process a single modality observation. Returns a one-hot encoded vector.
 
 # Arguments
+
 - `observation::Int`: The index of the observed state with a single observation modality.
-- `n_modalities::Int`: The number of observation modalities in the observation. 
-- `n_observations::Vector{Int}`: A vector containing the number of observations for each modality.
+* `n_modalities::Int`: The number of observation modalities in the observation.
+* `n_observations::Vector{Int}`: A vector containing the number of observations for each modality.
 
 # Returns
+
 - `Vector{Vector{Real}}`: A vector containing a single one-hot encoded observation.
 """
 function process_observation(observation::Int, n_modalities::Int, n_observations::Vector{Int})
 
-    # Check if there is only one modality
+  # Check if there is only one modality
+
     if n_modalities == 1
         # Create a one-hot encoded vector for the observation
-        processed_observation = onehot(observation, n_observations[1]) 
+        processed_observation = onehot(observation, n_observations[1])
     end
 
-    # Return the processed observation wrapped in a vector
+  # Return the processed observation wrapped in a vector
+
     return [processed_observation]
 end
 
 """
     process_observation(observation::Union{Array{Int}, Tuple{Vararg{Int}}}, n_modalities::Int, n_observations::Vector{Int})
 
-Process observation with multiple modalities and return them in a one-hot encoded format 
+Process observation with multiple modalities and return them in a one-hot encoded format
 
 # Arguments
+
 - `observation::Union{Array{Int}, Tuple{Vararg{Int}}}`: A collection of indices of the observed states for each modality.
-- `n_modalities::Int`: The number of observation modalities in the observation. 
-- `n_observations::Vector{Int}`: A vector containing the number of observations for each modality.
+* `n_modalities::Int`: The number of observation modalities in the observation.
+* `n_observations::Vector{Int}`: A vector containing the number of observations for each modality.
 
 # Returns
+
 - `Vector{Vector{Real}}`: A vector containing one-hot encoded vectors for each modality.
 """
 function process_observation(observation::Union{Array{Int}, Tuple{Vararg{Int}}}, n_modalities::Int, n_observations::Vector{Int})
 
-    # Initialize the processed_observation vector
+  # Initialize the processed_observation vector
+
     processed_observation = Vector{Vector{Float64}}(undef, n_modalities)
 
-    # Check if the length of observation matches the number of modalities
+  # Check if the length of observation matches the number of modalities
+
     if length(observation) == n_modalities
         for (modality, modality_observation) in enumerate(observation)
             # Create a one-hot encoded vector for the current modality observation
@@ -3439,9 +3947,9 @@ end
 
 """ Update Posterior States """
 function update_posterior_states(
-    A::Vector{Array{T,N}} where {T <: Real, N}, 
-    obs::Vector{Int64}; 
-    prior::Union{Nothing, Vector{Vector{T}}} where T <: Real = nothing, 
+    A::Vector{Array{T,N}} where {T <: Real, N},
+    obs::Vector{Int64};
+    prior::Union{Nothing, Vector{Vector{T}}} where T <: Real = nothing,
     num_iter::Int=num_iter, dF_tol::Float64=dF_tol, kwargs...)
     num_obs, num_states, num_modalities, num_factors = get_model_dimensions(A)
 
@@ -3449,11 +3957,10 @@ function update_posterior_states(
     return fixed_point_iteration(A, obs_processed, num_obs, num_states, prior=prior, num_iter=num_iter, dF_tol = dF_tol)
 end
 
-
 """ Run State Inference via Fixed-Point Iteration """
 function fixed_point_iteration(
     A::Vector{Array{T,N}} where {T <: Real, N}, obs::Vector{Vector{Float64}}, num_obs::Vector{Int64}, num_states::Vector{Int64};
-    prior::Union{Nothing, Vector{Vector{T}}} where T <: Real = nothing, 
+    prior::Union{Nothing, Vector{Vector{T}}} where T <: Real = nothing,
     num_iter::Int=num_iter, dF::Float64=1.0, dF_tol::Float64=dF_tol
 )
     # Get model dimensions (NOTE Sam: We need to save model dimensions in the AIF struct in the future)
@@ -3537,8 +4044,6 @@ function fixed_point_iteration(
     end
 end
 
-
-
 """ Calculate Accuracy Term """
 function compute_accuracy(log_likelihood, qs::Vector{Vector{T}} where T <: Real)
     n_factors = length(qs)
@@ -3554,12 +4059,11 @@ function compute_accuracy(log_likelihood, qs::Vector{Vector{T}} where T <: Real)
     return accuracy
 end
 
-
 """ Calculate Free Energy """
 function calc_free_energy(qs::Vector{Vector{T}} where T <: Real, prior, n_factors, likelihood=nothing)
     # Initialize free energy
     free_energy = 0.0
-    
+
     # Calculate free energy for each factor
     for factor in 1:n_factors
         # Neg-entropy of posterior marginal
@@ -3578,7 +4082,8 @@ function calc_free_energy(qs::Vector{Vector{T}} where T <: Real, prior, n_factor
     return free_energy
 end
 
-#### Policy Inference #### 
+#### Policy Inference ####
+
 """ Update Posterior over Policies """
 function update_posterior_policies(
     qs::Vector{Vector{T}} where T <: Real,
@@ -3765,11 +4270,12 @@ function calc_pB_info_gain(pB, qs_pi, qs_prev, policy)
 end
 
 ### Action Sampling ###
+
 """ Sample Action [Stochastic or Deterministic] """
 function sample_action(q_pi, policies::Vector{Matrix{Int64}}, num_controls; action_selection="stochastic", alpha=16.0)
     num_factors = length(num_controls)
     selected_policy = zeros(Real,num_factors)
-    
+
     eltype_q_pi = eltype(q_pi)
 
     # Initialize action_marginals with the correct element type
@@ -3826,11 +4332,10 @@ function calculate_SAPE(aif::AIF)
     push!(aif.states["bayesian_model_averages"], qs_bma)
 end
 
-
-
 ================================================
 FILE: src/pomdp/learning.jl
 ================================================
+
 """ Update obs likelihood matrix """
 function update_obs_likelihood_dirichlet(pA, A, obs, qs; lr = 1.0, fr = 1.0, modalities = "all")
 
@@ -3913,23 +4418,23 @@ function update_state_prior_dirichlet(pD, qs::Vector{Vector{T}} where T <: Real;
     return qD
 end
 
-
 ================================================
 FILE: src/pomdp/POMDP.jl
 ================================================
+
 """
     action_pomdp!(agent, obs)
 This function wraps the POMDP action-perception loop used for simulating and fitting the data.
 
 Arguments:
-- `agent::Agent`: An instance of ActionModels `Agent` type, which contains AIF type object as a substruct.
-- `obs::Vector{Int64}`: A vector of observations, where each observation is an integer.
-- `obs::Tuple{Vararg{Int}}`: A tuple of observations, where each observation is an integer.
-- `obs::Int64`: A single observation, which is an integer.
-- `aif::AIF`: An instance of the `AIF` type, which contains the agent's state, parameters, and substructures.
+* `agent::Agent`: An instance of ActionModels `Agent` type, which contains AIF type object as a substruct.
+* `obs::Vector{Int64}`: A vector of observations, where each observation is an integer.
+* `obs::Tuple{Vararg{Int}}`: A tuple of observations, where each observation is an integer.
+* `obs::Int64`: A single observation, which is an integer.
+* `aif::AIF`: An instance of the `AIF` type, which contains the agent's state, parameters, and substructures.
 
 Outputs:
-- Returns a `Distributions.Categorical` distribution or a vector of distributions, representing the probability distributions for actions per each state factor.
+* Returns a `Distributions.Categorical` distribution or a vector of distributions, representing the probability distributions for actions per each state factor.
 """
 
 ### Action Model:  Returns probability distributions for actions per factor
@@ -4124,10 +4629,10 @@ function action_pomdp!(agent::Agent, obs::Int64)
     action_pomdp!(agent::Agent, [obs])
 end
 
-
 ================================================
 FILE: src/pomdp/struct.jl
 ================================================
+
 """ -------- AIF Mutable Struct -------- """
 
 mutable struct AIF
@@ -4171,30 +4676,31 @@ mutable struct AIF
     save_history::Bool # Save history boolean flag
 end
 
-# Create ActiveInference Agent 
+# Create ActiveInference Agent
+
 function create_aif(A, B;
                     C = nothing,
                     D = nothing,
                     E = nothing,
-                    pA = nothing, 
-                    pB = nothing, 
-                    pD = nothing, 
-                    lr_pA = 1.0, 
-                    fr_pA = 1.0, 
-                    lr_pB = 1.0, 
-                    fr_pB = 1.0, 
-                    lr_pD = 1.0, 
-                    fr_pD = 1.0, 
-                    modalities_to_learn = "all", 
-                    factors_to_learn = "all", 
-                    gamma=1.0, 
-                    alpha=1.0, 
-                    policy_len=1, 
-                    num_controls=nothing, 
-                    control_fac_idx=nothing, 
-                    use_utility=true, 
-                    use_states_info_gain=true, 
-                    use_param_info_gain = false, 
+                    pA = nothing,
+                    pB = nothing,
+                    pD = nothing,
+                    lr_pA = 1.0,
+                    fr_pA = 1.0,
+                    lr_pB = 1.0,
+                    fr_pB = 1.0,
+                    lr_pD = 1.0,
+                    fr_pD = 1.0,
+                    modalities_to_learn = "all",
+                    factors_to_learn = "all",
+                    gamma=1.0,
+                    alpha=1.0,
+                    policy_len=1,
+                    num_controls=nothing,
+                    control_fac_idx=nothing,
+                    use_utility=true,
+                    use_states_info_gain=true,
+                    use_param_info_gain = false,
                     action_selection="stochastic",
                     FPI_num_iter=10,
                     FPI_dF_tol=0.001,
@@ -4331,24 +4837,25 @@ function init_aif(
         D=nothing,
         E = nothing,
         pA = nothing,
-        pB = nothing, 
+        pB = nothing,
         pD = nothing,
         parameters::Union{Nothing, Dict{String,Real}} = nothing,
         settings::Union{Nothing, Dict} = nothing,
         save_history::Bool = true)
 
 # Arguments
+
 - 'A': Relationship between hidden states and observations.
-- 'B': Transition probabilities.
-- 'C = nothing': Prior preferences over observations.
-- 'D = nothing': Prior over initial hidden states.
-- 'E = nothing': Prior over policies. (habits)
-- 'pA = nothing':
-- 'pB = nothing':
-- 'pD = nothing':
-- 'parameters::Union{Nothing, Dict{String,Real}} = nothing':
-- 'settings::Union{Nothing, Dict} = nothing':
-- 'settings::Union{Nothing, Dict} = nothing':
+* 'B': Transition probabilities.
+* 'C = nothing': Prior preferences over observations.
+* 'D = nothing': Prior over initial hidden states.
+* 'E = nothing': Prior over policies. (habits)
+* 'pA = nothing':
+* 'pB = nothing':
+* 'pD = nothing':
+* 'parameters::Union{Nothing, Dict{String,Real}} = nothing':
+* 'settings::Union{Nothing, Dict} = nothing':
+* 'settings::Union{Nothing, Dict} = nothing':
 
 """
 function init_aif(A, B; C=nothing, D=nothing, E=nothing, pA=nothing, pB=nothing, pD=nothing,
@@ -4521,22 +5028,23 @@ end
 ### Struct related functions ###
 
 """
-    construct_policies(n_states::Vector{T} where T <: Real; n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing, 
+    construct_policies(n_states::Vector{T} where T <: Real; n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing,
                        policy_length::Int=1, controllable_factors_indices::Union{Vector{Int}, Nothing}=nothing)
 
 Construct policies based on the number of states, controls, policy length, and indices of controllable state factors.
 
 # Arguments
+
 - `n_states::Vector{T} where T <: Real`: A vector containing the number of  states for each factor.
-- `n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing`: A vector specifying the number of allowable actions for each state factor. 
-- `policy_length::Int=1`: The length of policies. (planning horizon)
-- `controllable_factors_indices::Union{Vector{Int}, Nothing}=nothing`: A vector of indices identifying which state factors are controllable.
+* `n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing`: A vector specifying the number of allowable actions for each state factor.
+* `policy_length::Int=1`: The length of policies. (planning horizon)
+* `controllable_factors_indices::Union{Vector{Int}, Nothing}=nothing`: A vector of indices identifying which state factors are controllable.
 
 """
 function construct_policies(
-    n_states::Vector{T} where T <: Real; 
-    n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing, 
-    policy_length::Int=1, 
+    n_states::Vector{T} where T <: Real;
+    n_controls::Union{Vector{T}, Nothing} where T <: Real=nothing,
+    policy_length::Int=1,
     controllable_factors_indices::Union{Vector{Int}, Nothing}=nothing
     )
 
@@ -4697,13 +5205,10 @@ end
 
 """ Get the history of the agent """
 
-
-
-
-
 ================================================
 FILE: src/utils/create_matrix_templates.jl
 ================================================
+
 ######################## Create Templates Based on states, observations, controls and policy length  ########################
 
 """
@@ -4712,18 +5217,20 @@ FILE: src/utils/create_matrix_templates.jl
 Creates templates for the A, B, C, D, and E matrices based on the specified parameters.
 
 # Arguments
+
 - `n_states::Vector{Int64}`: A vector specifying the dimensions and number of states.
-- `n_observations::Vector{Int64}`: A vector specifying the dimensions and number of observations.
-- `n_controls::Vector{Int64}`: A vector specifying the number of controls per factor.
-- `policy_length::Int64`: The length of the policy sequence. 
-- `template_type::String`: The type of templates to create. Can be "uniform", "random", or "zeros". Defaults to "uniform".
+* `n_observations::Vector{Int64}`: A vector specifying the dimensions and number of observations.
+* `n_controls::Vector{Int64}`: A vector specifying the number of controls per factor.
+* `policy_length::Int64`: The length of the policy sequence.
+* `template_type::String`: The type of templates to create. Can be "uniform", "random", or "zeros". Defaults to "uniform".
 
 # Returns
+
 - `A, B, C, D, E`: The generative model as matrices and vectors.
 
 """
 function create_matrix_templates(n_states::Vector{Int64}, n_observations::Vector{Int64}, n_controls::Vector{Int64}, policy_length::Int64)
-    
+
     # Calculate the number of policies based on the policy length
     n_policies = prod(n_controls) ^ policy_length
 
@@ -4746,7 +5253,7 @@ function create_matrix_templates(n_states::Vector{Int64}, n_observations::Vector
 end
 
 function create_matrix_templates(n_states::Vector{Int64}, n_observations::Vector{Int64}, n_controls::Vector{Int64}, policy_length::Int64, template_type::String)
-    
+
     # If the template_type is uniform
     if template_type == "uniform"
         return create_matrix_templates(n_states, n_observations, n_controls, policy_length)
@@ -4791,7 +5298,7 @@ end
 
 ######################## Create Templates Based on Shapes ########################
 
-### Single Array Input 
+### Single Array Input
 
 """
     create_matrix_templates(shapes::Vector{Int64})
@@ -4799,9 +5306,11 @@ end
 Creates uniform templates based on the specified shapes vector.
 
 # Arguments
+
 - `shapes::Vector{Int64}`: A vector specifying the dimensions of each template to create.
 
 # Returns
+
 - A vector of normalized arrays.
 
 """
@@ -4817,12 +5326,13 @@ end
 Creates templates based on the specified shapes vector and template type. Templates can be uniform, random, or filled with zeros.
 
 # Arguments
+
 - `shapes::Vector{Int64}`: A vector specifying the dimensions of each template to create.
-- `template_type::String`: The type of templates to create. Can be "uniform" (default), "random", or "zeros".
+* `template_type::String`: The type of templates to create. Can be "uniform" (default), "random", or "zeros".
 
 # Returns
-- A vector of arrays, each corresponding to the shape given by the input vector.
 
+- A vector of arrays, each corresponding to the shape given by the input vector.
 
 """
 function create_matrix_templates(shapes::Vector{Int64}, template_type::String, eltype::Type=Float64)
@@ -4845,7 +5355,7 @@ function create_matrix_templates(shapes::Vector{Int64}, template_type::String, e
     end
 end
 
-### Vector of Arrays Input 
+### Vector of Arrays Input
 
 """
     create_matrix_templates(shapes::Vector{Vector{Int64}})
@@ -4853,9 +5363,11 @@ end
 Creates a uniform, multidimensional template based on the specified shapes vector.
 
 # Arguments
+
 - `shapes::Vector{Vector{Int64}}`: A vector of vectors, where each vector represent a dimension of the template to create.
 
 # Returns
+
 - A vector of normalized arrays (uniform distributions), each having the multi-dimensional shape specified in the input vector.
 
 """
@@ -4871,10 +5383,12 @@ end
 Creates a multidimensional template based on the specified vector of shape vectors and template type. Templates can be uniform, random, or filled with zeros.
 
 # Arguments
+
 - `shapes::Vector{Vector{Int64}}`: A vector of vectors, where each vector represent a dimension of the template to create.
-- `template_type::String`: The type of templates to create. Can be "uniform" (default), "random", or "zeros".
+* `template_type::String`: The type of templates to create. Can be "uniform" (default), "random", or "zeros".
 
 # Returns
+
 - A vector of arrays, each having the multi-dimensional shape specified in the input vector.
 
 """
@@ -4898,39 +5412,37 @@ function create_matrix_templates(shapes::Vector{Vector{Int64}}, template_type::S
     end
 end
 
-
 ================================================
 FILE: src/utils/helper_functions.jl
 ================================================
 
-
-
 ================================================
 FILE: src/utils/maths.jl
 ================================================
+
 """Normalizes a Categorical probability distribution"""
 function normalize_distribution(distribution)
     distribution .= distribution ./ sum(distribution, dims=1)
     return distribution
 end
 
-
 """
     capped_log(x::Real)
 
 # Arguments
+
 - `x::Real`: A real number.
 
 Return the natural logarithm of x, capped at the machine epsilon value of x.
 """
 function capped_log(x::Real)
-    return log(max(x, eps(x))) 
+    return log(max(x, eps(x)))
 end
 
 """
     capped_log(array::Array{Float64})
 """
-function capped_log(array::Array{Float64}) 
+function capped_log(array::Array{Float64})
 
     epsilon = oftype(array[1], 1e-16)
     # Return the log of the array values capped at epsilon
@@ -4940,9 +5452,9 @@ function capped_log(array::Array{Float64})
 end
 
 """
-    capped_log(array::Array{T}) where T <: Real 
+    capped_log(array::Array{T}) where T <: Real
 """
-function capped_log(array::Array{T}) where T <: Real 
+function capped_log(array::Array{T}) where T <: Real
 
     epsilon = oftype(array[1], 1e-16)
     # Return the log of the array values capped at epsilon
@@ -4964,10 +5476,9 @@ end
 
 """ Apply capped_log to array of arrays """
 function capped_log_array(array)
-    
+
     return map(capped_log, array)
 end
-
 
 """ Get Joint Likelihood """
 function get_joint_likelihood(A, obs_processed, num_states)
@@ -4997,10 +5508,9 @@ end
 function softmax_array(array)
     # Use map to apply softmax to each element of arr
     array .= map(x -> softmax(x, dims=1), array)
-    
+
     return array
 end
-
 
 """ Multi-dimensional outer product """
 function outer_product(x, y=nothing; remove_singleton_dims=true, args...)
@@ -5042,9 +5552,11 @@ function outer_product(x, y=nothing; remove_singleton_dims=true, args...)
     return z
 end
 
-#Multidimensional inner product
+# Multidimensional inner product
+
 # Instead of summing over all indices, the function sums over only the last three
-# dimensions of X while keeping the first dimension separate, creating a sum for each "layer" of X.
+
+# dimensions of X while keeping the first dimension separate, creating a sum for each "layer" of X
 
 function dot_product(X, x)
 
@@ -5071,7 +5583,6 @@ function dot_product(X, x)
 
     return Y
 end
-
 
 """ Calculate Bayesian Surprise """
 function calculate_bayesian_surprise(A, x)
@@ -5169,8 +5680,9 @@ end
     kl_divergence(P::Vector{Vector{Vector{Float64}}}, Q::Vector{Vector{Vector{Float64}}})
 
 # Arguments
+
 - `P::Vector{Vector{Vector{Real}}}`
-- `Q::Vector{Vector{Vector{Real}}}`
+* `Q::Vector{Vector{Vector{Real}}}`
 
 Return the Kullback-Leibler (KL) divergence between two probability distributions.
 """
@@ -5188,14 +5700,10 @@ function kl_divergence(P::Vector{Vector{Vector{Real}}}, Q::Vector{Vector{Vector{
     return dkl  # Return KL divergence
 end
 
-
-
-
-
-
 ================================================
 FILE: src/utils/utils.jl
 ================================================
+
 """ -------- Utility Functions -------- """
 
 """ Creates an array of "Any" with the desired number of sub-arrays filled with zeros"""
@@ -5237,7 +5745,6 @@ function get_model_dimensions(A = nothing, B = nothing)
     return num_obs, num_states, num_modalities, num_factors
 end
 
-
 """ Selects the highest value from Array -- used for deterministic action sampling """
 function select_highest(options_array::Vector{T}) where T <: Real
     options_with_idx = [(i, option) for (i, option) in enumerate(options_array)]
@@ -5251,7 +5758,6 @@ function select_highest(options_array::Vector{T}) where T <: Real
     end
 end
 
-
 """ Selects action from computed actions probabilities -- used for stochastic action sampling """
 function action_select(probabilities)
     sample_onehot = rand(Multinomial(1, probabilities))
@@ -5263,7 +5769,7 @@ function get_log_action_marginals(aif)
     num_factors = length(aif.num_controls)
     q_pi = get_states(aif, "posterior_policies")
     policies = get_states(aif, "policies")
-    
+
     # Determine the element type from q_pi
     eltype_q_pi = eltype(q_pi)
 
@@ -5292,11 +5798,11 @@ Check if the vector of arrays is a proper probability distribution.
 
 # Arguments
 
-- (Array::Vector{<:Array{T}}) where T<:Real
+* (Array::Vector{<:Array{T}}) where T<:Real
 
 Throws an error if the array is not a valid probability distribution:
-- The values must be non-negative.
-- The sum of the values must be approximately 1.
+* The values must be non-negative.
+* The sum of the values must be approximately 1.
 """
 function check_probability_distribution(Array::Vector{<:Array{T}}) where T<:Real
     for tensor in Array
@@ -5319,11 +5825,11 @@ Check if the vector of vectors is a proper probability distribution.
 
 # Arguments
 
-- (Array::Vector{Vector{T}}) where T<:Real
+* (Array::Vector{Vector{T}}) where T<:Real
 
 Throws an error if the array is not a valid probability distribution:
-- The values must be non-negative.
-- The sum of the values must be approximately 1.
+* The values must be non-negative.
+* The sum of the values must be approximately 1.
 """
 function check_probability_distribution(Array::Vector{Vector{T}}) where T<:Real
     for vector in Array
@@ -5346,19 +5852,22 @@ Check if the vector is a proper probability distribution.
 
 # Arguments
 
-- (Vector::Vector{T}) where T<:Real : The vector to be checked.
+* (Vector::Vector{T}) where T<:Real : The vector to be checked.
 
 Throws an error if the array is not a valid probability distribution:
-- The values must be non-negative.
-- The sum of the values must be approximately 1.
+* The values must be non-negative.
+* The sum of the values must be approximately 1.
 """
 function check_probability_distribution(Vector::Vector{T}) where T<:Real
-    # Check for non-negativity
+
+  # Check for non-negativity
+
     if any(Vector .< 0)
         throw(ArgumentError("All elements must be non-negative."))
     end
 
-    # Check for normalization
+  # Check for normalization
+
     if !all(isapprox.(sum(Vector, dims=1), 1.0, rtol=1e-5, atol=1e-8))
         throw(ArgumentError("The array is not normalized."))
     end
@@ -5366,10 +5875,10 @@ function check_probability_distribution(Vector::Vector{T}) where T<:Real
     return true
 end
 
-
 ================================================
 FILE: test/Project.toml
 ================================================
+
 [deps]
 ActionModels = "320cf53b-cc3b-4b34-9a10-0ecb113566a3"
 Aqua = "4c88cf16-eb10-579e-8560-4a9242c79595"
@@ -5381,11 +5890,10 @@ IterTools = "c8e1da08-722c-5040-9ed9-7db0dc04731e"
 LinearAlgebra = "37e2e46d-f89d-539d-b4ee-838fcccc9c8e"
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
-
-
 ================================================
 FILE: test/quicktests.jl
 ================================================
+
 using IterTools
 using LinearAlgebra
 using ActiveInference
@@ -5418,10 +5926,10 @@ using Test
     sample_action!(aif)
 end
 
-
 ================================================
 FILE: test/runtests.jl
 ================================================
+
 using ActiveInference
 using Test
 using Glob
@@ -5445,13 +5953,10 @@ ActiveInference_path = dirname(dirname(pathof(ActiveInference)))
     end
 end
 
-
-
-
-
 ================================================
 FILE: test/pymdp_cross_val/cross_val_complete_run/julia_complete_script/complete_run_julia.jl
 ================================================
+
 using ActiveInference
 using ActiveInference.Environments
 using HDF5
@@ -5460,53 +5965,64 @@ using LinearAlgebra
 file_path_gm = "ActiveInference.jl/test/pymdp_cross_val/generative_model_creation/gm_data/gm_matrices.h5"
 
 #############################################
+
 ### Loading Generative Model from h5 file ###
+
 #############################################
 
 # A-matrix
+
 A_cross = array_of_any(4)
 for i in 1:4
     A_cross[i] = h5read(file_path_gm, "A_cross_$i")
 end
 
 # pA-matrix
+
 pA_cross = array_of_any(4)
 for i in 1:4
     pA_cross[i] = h5read(file_path_gm, "pA_cross_$i")
 end
 
 # B-matrix
+
 B_cross = array_of_any(3)
 for i in 1:3
     B_cross[i] = h5read(file_path_gm, "B_cross_$i")
 end
 
 # pB-matrix
+
 pB_cross = array_of_any(3)
 for i in 1:3
     pB_cross[i] = h5read(file_path_gm, "pB_cross_$i")
 end
 
 # C-matrix
+
 C_cross = array_of_any(4)
 for i in 1:4
     C_cross[i] = h5read(file_path_gm, "C_cross_$i")
 end
 
 # D-matrix
+
 D_cross = array_of_any(3)
 for i in 1:3
     D_cross[i] = h5read(file_path_gm, "D_cross_$i")
 end
 
 # pD-matrix
+
 pD_cross = array_of_any(3)
 for i in 1:3
     pD_cross[i] = h5read(file_path_gm, "pD_cross_$i")
 end
 
 ################################
+
 ### Creating cross val agent ###
+
 ################################
 
 settings = Dict("use_param_info_gain" => true,
@@ -5521,7 +6037,9 @@ parameters=Dict{String, Real}("lr_pB" => 0.5,
 cross_agent = init_aif(A_cross, B_cross, C = C_cross, D = D_cross, pA = pA_cross, pB = pB_cross, pD = pD_cross, settings = settings, parameters = parameters);
 
 #############################################
+
 ### Creating and initialising environment ###
+
 #############################################
 
 grid_locations = collect(Iterators.product(1:5, 1:7))
@@ -5544,19 +6062,25 @@ cue2_names = ["Null", "reward_on_top", "reward_on_bottom"]
 reward_names = ["Null", "Cheese", "Shock"]
 
 # Initializing environment
+
 env = EpistChainEnv(start_loc, cue1_location, cue2_loc, reward_cond, grid_locations)
 
 # Getting initial obs
+
 obs = h5read(file_path_gm, "obs")
 
 ##########################
+
 ### Running simulation ###
+
 ##########################
 
 # Time step set to 50 trials
+
 T = 50
 
 # Run simulation
+
 for t in 1:T
 
     qs = infer_states!(cross_agent, obs)
@@ -5585,40 +6109,45 @@ for t in 1:T
 
 end
 
-
 ###########################
+
 ### Storing the results ###
+
 ###########################
 
 # Saving the agent parameters after run for cross validate with pymdp
+
 file_path_results = "ActiveInference.jl/test/pymdp_cross_val/cross_val_results/complete_run_data.h5"
 
 # Storing the A-matrix
+
 h5write(file_path_results, "julia_A_cross_1", cross_agent.A[1])
 h5write(file_path_results, "julia_A_cross_2", cross_agent.A[2])
 h5write(file_path_results, "julia_A_cross_3", cross_agent.A[3])
 h5write(file_path_results, "julia_A_cross_4", cross_agent.A[4])
 
 # Storing the B-matrix
+
 h5write(file_path_results, "julia_B_cross_1", cross_agent.B[1])
 h5write(file_path_results, "julia_B_cross_2", cross_agent.B[2])
 h5write(file_path_results, "julia_B_cross_3", cross_agent.B[3])
 
 # Storing the D-matrix
+
 h5write(file_path_results, "julia_D_cross_1", cross_agent.D[1])
 h5write(file_path_results, "julia_D_cross_2", cross_agent.D[2])
 h5write(file_path_results, "julia_D_cross_3", cross_agent.D[3])
 
 # Storing the posterior states
+
 h5write(file_path_results, "julia_qs_1", Float64.(cross_agent.qs_current[1]))
 h5write(file_path_results, "julia_qs_2", Float64.(cross_agent.qs_current[2]))
 h5write(file_path_results, "julia_qs_3", Float64.(cross_agent.qs_current[3]))
 
-
-
 ================================================
 FILE: test/pymdp_cross_val/cross_val_complete_run/python_complete_script/complete_run_python.py
 ================================================
+
 import h5py
 import numpy as np
 
@@ -5627,78 +6156,92 @@ from pymdp.agent import Agent
 from pymdp.envs import Env
 
 #############################################
+
 ### Loading Generative Model from h5 file ###
+
 #############################################
 
 # Path to file with generative model
+
 file_path_gm = "../../generative_model_creation/gm_data/gm_matrices.h5"
 
 # A-matrix
+
 A_cross = utils.obj_array(4)
 for i in range(1, 5):
     with h5py.File(file_path_gm, 'r') as file:
         A_cross[i-1] = file[f"A_cross_{i}"][:]
-        
+
     # Converting the column-major julia indexing into the row-major python indexing
     A_cross[i-1] = np.transpose(A_cross[i-1], (3, 2, 1, 0))
 
 # pA-matrix
+
 pA_cross = utils.obj_array(4)
 for i in range(1, 5):
     with h5py.File(file_path_gm, 'r') as file:
         pA_cross[i-1] = file[f"pA_cross_{i}"][:]
-        
+
     # Converting the column-major julia indexing into the row-major python indexing
     pA_cross[i-1] = np.transpose(pA_cross[i-1], (3, 2, 1, 0))
 
 # B-matrix
+
 B_cross = utils.obj_array(3)
 for i in range(1, 4):
     with h5py.File(file_path_gm, 'r') as file:
         B_cross[i-1] = file[f"B_cross_{i}"][:]
-        
+
     # Converting the column-major julia indexing into the row-major python indexing
     B_cross[i-1] = np.transpose(B_cross[i-1], (2, 1, 0))
 
 # pB-matrix
+
 pB_cross = utils.obj_array(3)
 for i in range(1, 4):
     with h5py.File(file_path_gm, 'r') as file:
         pB_cross[i-1] = file[f"pB_cross_{i}"][:]
-        
+
     # Converting the column-major julia indexing into the row-major python indexing
     pB_cross[i-1] = np.transpose(pB_cross[i-1], (2, 1, 0))
 
 # C_matrix
+
 C_cross = utils.obj_array(4)
 for i in range(1, 5):
     with h5py.File(file_path_gm, 'r') as file:
         C_cross[i-1] = file[f"C_cross_{i}"][:]
 
 # D-matrix
+
 D_cross = utils.obj_array(3)
 for i in range(1, 4):
     with h5py.File(file_path_gm, 'r') as file:
         D_cross[i-1] = file[f"D_cross_{i}"][:]
-        
+
 # pD-matrix
+
 pD_cross = utils.obj_array(3)
 for i in range(1, 4):
     with h5py.File(file_path_gm, 'r') as file:
         pD_cross[i-1] = file[f"pD_cross_{i}"][:]
-        
+
 ################################
+
 ### Creating cross val agent ###
+
 ################################
 
 cross_agent = Agent(A = A_cross, B = B_cross, C = C_cross, D = D_cross, pA = pA_cross, pB = pB_cross, pD = pD_cross, policy_len = 4, action_selection="deterministic", lr_pA = 0.5, lr_pB = 0.5, lr_pD = 0.5, use_states_info_gain=True, use_param_info_gain=True, save_belief_hist=True)
 
 #############################################
+
 ### Creating and initialising environment ###
+
 #############################################
 
 grid_dims = [5, 7]
-num_grid_points = np.prod(grid_dims) 
+num_grid_points = np.prod(grid_dims)
 
 grid = np.arange(num_grid_points).reshape(grid_dims, order='F')
 
@@ -5708,7 +6251,7 @@ loc_list = []
 while not it.finished:
     loc_list.append(it.multi_index)
     it.iternext()
-    
+
 cue1_location = (2, 0)
 
 cue2_loc_names = ['L1', 'L2', 'L3', 'L4']
@@ -5724,8 +6267,9 @@ reward_locations = [(1, 5), (3, 5)]
 actions = ["UP", "DOWN", "LEFT", "RIGHT", "STAY"]
 
 # Using a custom evironment corresponding to the Julia Epistemic chaining env
+
 class GridWorldEnv():
-    
+
     def __init__(self,starting_loc = (0,0), cue1_loc = (2, 0), cue2 = 'L1', reward_condition = 'TOP'):
 
         self.init_loc = starting_loc
@@ -5806,6 +6350,7 @@ class GridWorldEnv():
 cross_env = GridWorldEnv(starting_loc = (0,0), cue1_loc = (2, 0), cue2 = 'L4', reward_condition = 'BOTTOM')
 
 # Getting initial observation and setting it to correct format
+
 with h5py.File(file_path_gm, 'r') as file:
     obs = file["obs"][:]
 obs = obs - 1
@@ -5818,13 +6363,17 @@ obs = obs_obj_array
 obs = obs.tolist()
 
 ##########################
+
 ### Running simulation ###
+
 ##########################
 
 # Time step set to 50 trials
+
 T = 50
 
 # run simulation
+
 for t in range(T):
 
     qs = cross_agent.infer_states(obs)
@@ -5851,60 +6400,63 @@ for t in range(T):
 
     obs = [loc_list.index(loc_obs), cue1_names.index(cue1_obs), cue2_names.index(cue2_obs), reward_names.index(reward_obs)]
 
-
 ###########################
+
 ### Storing the results ###
+
 ###########################
 
 # Storing the variables into the comparison hdf5 file
+
 file_path_results = "../../cross_val_results/complete_run_data.h5"
 
 with h5py.File(file_path_results, "w") as hdf:
-  # Storing A-matrix results
+
+# Storing A-matrix results
+
   hdf.create_dataset("python_A_cross_1", data=cross_agent.A[0])
   hdf.create_dataset("python_A_cross_2", data=cross_agent.A[1])
   hdf.create_dataset("python_A_cross_3", data=cross_agent.A[2])
   hdf.create_dataset("python_A_cross_4", data=cross_agent.A[3])
   
-  # Storing B-matrix results
+# Storing B-matrix results
+
   hdf.create_dataset("python_B_cross_1", data=cross_agent.B[0])
   hdf.create_dataset("python_B_cross_2", data=cross_agent.B[1])
   hdf.create_dataset("python_B_cross_3", data=cross_agent.B[2])
   
-  # Storing D-matrix results
+# Storing D-matrix results
+
   hdf.create_dataset("python_D_cross_1", data=cross_agent.D[0])
   hdf.create_dataset("python_D_cross_2", data=cross_agent.D[1])
   hdf.create_dataset("python_D_cross_3", data=cross_agent.D[2])
   
-  # Storing posterior states
+# Storing posterior states
+
   hdf.create_dataset("python_qs_1", data=cross_agent.qs[0])
   hdf.create_dataset("python_qs_2", data=cross_agent.qs[1])
   hdf.create_dataset("python_qs_3", data=cross_agent.qs[2])
 
-
-
-
-
 ================================================
 FILE: test/pymdp_cross_val/cross_val_results/complete_run_data.h5
 ================================================
-[Non-text file]
 
+[Non-text file]
 
 ================================================
 FILE: test/pymdp_cross_val/cross_val_results/results_comparison.csv
 ================================================
+
 parameter,equivalence,to_decimal_place
 A,true,7
 B,true,8
 D,true,14
 qs,true,9
 
-
-
 ================================================
 FILE: test/pymdp_cross_val/cross_val_results/results_comparison.jl
 ================================================
+
 using HDF5
 using ActiveInference
 using DataFrames
@@ -5916,33 +6468,40 @@ using CSV
 
 file_path_res = "ActiveInference.jl/test/pymdp_cross_val/cross_val_results/complete_run_data.h5"
 
-#--------------- Loading the complete_run_julia result ----------------
+# --------------- Loading the complete_run_julia result ----------------
+
 # Loading the julia A matrix
+
 A_julia = array_of_any(4)
 for i in 1:4
     A_julia[i] = h5read(file_path_res, "julia_A_cross_$i")
 end
 
 # Loading the julia B matrix
+
 B_julia = array_of_any(3)
 for i in 1:3
     B_julia[i] = h5read(file_path_res, "julia_B_cross_$i")
 end
 
 # Loading the julia D matrix
+
 D_julia = array_of_any(3)
 for i in 1:3
     D_julia[i] = h5read(file_path_res, "julia_D_cross_$i")
 end
 
 # Loading the julia final posterior over states
+
 qs_julia = array_of_any(3)
 for i in 1:3
     qs_julia[i] = h5read(file_path_res, "julia_qs_$i")
 end
 
-#--------------- Loading the complete_run_python result ----------------
+# --------------- Loading the complete_run_python result ----------------
+
 # Loading the python A matrix
+
 A_python = array_of_any(4)
 for i in 1:4
     A_python[i] = h5read(file_path_res, "python_A_cross_$i")
@@ -5950,6 +6509,7 @@ for i in 1:4
 end
 
 # Loading the python B matrix
+
 B_python = array_of_any(3)
 for i in 1:3
     B_python[i] = h5read(file_path_res, "python_B_cross_$i")
@@ -5957,12 +6517,14 @@ for i in 1:3
 end
 
 # Loading the python D matrix
+
 D_python = array_of_any(3)
 for i in 1:3
     D_python[i] = h5read(file_path_res, "python_D_cross_$i")
 end
 
 # Loading the python final posterior over states
+
 qs_python = array_of_any(3)
 for i in 1:3
     qs_python[i] = h5read(file_path_res, "python_qs_$i")
@@ -5971,12 +6533,13 @@ end
 ############################################################
 ############### cross-validating the results ###############
 ############################################################
-#------------------ Defining decimal place of agreement function ------------------
+# ------------------ Defining decimal place of agreement function ------------------
 function round_arrays(arrays, digits)
     [round.(array, digits=digits) for array in arrays]
 end
 
 # Rounding to check A
+
 round_n_A = 15
 while round_n_A != 0 && !isequal(A_julia, A_python)
 
@@ -5987,8 +6550,8 @@ end
 round_n_A
 is_A_equal = isequal(A_julia, A_python)
 
-
 # Rounding to check B
+
 round_n_B = 15
 while round_n_B != 0 && !isequal(B_julia, B_python)
 
@@ -6000,6 +6563,7 @@ round_n_B
 is_B_equal = isequal(B_julia, B_python)
 
 # Rounding to check D
+
 round_n_D = 15
 while round_n_D != 0 && !isequal(D_julia, D_python)
 
@@ -6011,6 +6575,7 @@ round_n_D
 is_D_equal = isequal(D_julia, D_python)
 
 # Rounding to check qs
+
 round_n_qs = 15
 while round_n_qs != 0 && !isequal(qs_julia, qs_python)
 
@@ -6021,42 +6586,47 @@ end
 round_n_qs
 is_qs_equal = isequal(qs_julia, qs_python)
 
-#------------------ Creating a DataFrame to store the results ------------------
+# ------------------ Creating a DataFrame to store the results ------------------
 results_df = DataFrame(
     parameter = ["A", "B", "D", "qs"],
     equivalence = [is_A_equal, is_B_equal, is_D_equal, is_qs_equal],
     to_decimal_place = [round_n_A, round_n_B, round_n_D, round_n_qs]
 )
 
-#------------------ Saving the results ------------------
+# ------------------ Saving the results ------------------
 CSV.write("ActiveInference.jl/test/pymdp_cross_val/cross_val_results/results_comparison.csv", results_df)
-
-
 
 ================================================
 FILE: test/pymdp_cross_val/generative_model_creation/rand_generative_model.jl
 ================================================
+
 using ActiveInference
 using HDF5
 using Random
 
 # Setting seed for reproducibility purposes
+
 Random.seed!(246)
 
 ##########################################
+
 ### Generating random generative model ###
+
 ##########################################
 
 # Setting number of states, observations and controls for the generative model
+
 n_states = [35, 4, 2]
 n_obs = [35, 5, 3, 3]
 n_controls = [5, 1, 1]
 policy_length = 1
 
 # Using function for generating A and B matrices with random inputs
+
 A_cross, B_cross = create_matrix_templates(n_states, n_obs, n_controls, policy_length, "random");
 
 # Generating random C matrix
+
 C_cross = array_of_any(4)
 
 C_cross[1] = Float64.(rand(1:10, 35))
@@ -6065,6 +6635,7 @@ C_cross[3] = Float64.(rand(1:10, 3))
 C_cross[4] = Float64.(rand(1:10, 3))
 
 # Generating random D matrix
+
 D_cross = array_of_any(3)
 
 D_cross[1] = rand(1:10, 35)
@@ -6077,41 +6648,49 @@ D_cross = normalize_arrays(D_cross)
 
 file_path_gm = "ActiveInference.jl/test/pymdp_cross_val/generative_model_creation/gm_data/gm_matrices.h5"
 
-# Storing the layers for each modality in A matrix in an h5 file. HDF5 can't take an array of arrays 
+# Storing the layers for each modality in A matrix in an h5 file. HDF5 can't take an array of arrays
+
 h5write(file_path_gm, "A_cross_1", A_cross[1])
 h5write(file_path_gm, "A_cross_2", A_cross[2])
 h5write(file_path_gm, "A_cross_3", A_cross[3])
 h5write(file_path_gm, "A_cross_4", A_cross[4])
 
-# Storing the layers for each factor in B matrix in an h5 file. HDF5 can't take an array of arrays 
+# Storing the layers for each factor in B matrix in an h5 file. HDF5 can't take an array of arrays
+
 h5write(file_path_gm, "B_cross_1", B_cross[1])
 h5write(file_path_gm, "B_cross_2", B_cross[2])
 h5write(file_path_gm, "B_cross_3", B_cross[3])
 
 # Storing the layers for each modality in C matrix in an h5 file. HDF5 can't take an array of arrays
+
 h5write(file_path_gm, "C_cross_1", C_cross[1])
 h5write(file_path_gm, "C_cross_2", C_cross[2])
 h5write(file_path_gm, "C_cross_3", C_cross[3])
 h5write(file_path_gm, "C_cross_4", C_cross[4])
 
 # Storing the layers for each factor in D matrix in an h5 file. HDF5 can't take an array of arrays
+
 h5write(file_path_gm, "D_cross_1", D_cross[1])
 h5write(file_path_gm, "D_cross_2", D_cross[2])
 h5write(file_path_gm, "D_cross_3", D_cross[3])
 
 #####################################
+
 ### Generating random observation ###
+
 #####################################
 obs = Int[]
 for (i, j) in enumerate(n_obs)
     observation = rand(1:j)
-    push!(obs, observation) 
+    push!(obs, observation)
 end
 
 h5write(file_path_gm, "obs", obs)
 
 #################################################
+
 ### Generating random qs_prev + random action ###
+
 #################################################
 qs_prev = array_of_any(3)
 
@@ -6128,11 +6707,15 @@ action = [rand(1:5), 1, 1]
 h5write(file_path_gm, "action", action)
 
 #################################################################
+
 ### Generating dirichlet distributions for learning functions ###
+
 #################################################################
 
 # pA
+
 # setting the concentration parameter arbitrarily
+
 pA_cross = deepcopy(A_cross)
 for i in 1:length(pA_cross)
     pA_cross[i] = pA_cross[i] .* 10
@@ -6144,6 +6727,7 @@ h5write(file_path_gm, "pA_cross_3", pA_cross[3])
 h5write(file_path_gm, "pA_cross_4", pA_cross[4])
 
 # pB
+
 pB_cross = deepcopy(B_cross)
 for i in 1:length(pB_cross)
     pB_cross[i] = pB_cross[i] .* 10
@@ -6154,6 +6738,7 @@ h5write(file_path_gm, "pB_cross_2", pB_cross[2])
 h5write(file_path_gm, "pB_cross_3", pB_cross[3])
 
 # pD
+
 pD_cross = deepcopy(D_cross)
 
 for (i, j) in enumerate(n_states)
@@ -6164,20 +6749,16 @@ h5write(file_path_gm, "pD_cross_1", pD_cross[1])
 h5write(file_path_gm, "pD_cross_2", pD_cross[2])
 h5write(file_path_gm, "pD_cross_3", pD_cross[3])
 
-
-
-
-
-
 ================================================
 FILE: test/pymdp_cross_val/generative_model_creation/gm_data/gm_matrices.h5
 ================================================
-[Non-text file]
 
+[Non-text file]
 
 ================================================
 FILE: test/testsuite/aif_tests.jl
 ================================================
+
 using IterTools
 using LinearAlgebra
 using ActiveInference
@@ -6210,7 +6791,6 @@ using Test
     action = sample_action!(aif)
 end
 
-
 @testset "If There are more factors - Default Settings" begin
 
     # Initializse States, Observations, and Controls
@@ -6235,7 +6815,6 @@ end
     # Sample action
     action = sample_action!(aif)
 end
-
 
 @testset "Provide custom settings" begin
 
@@ -6271,7 +6850,6 @@ end
     observation = [rand(1:observations[i]) for i in axes(observations, 1)]
     QS_2 = infer_states!(aif, observation)
 end
-
 
 @testset "Learning with custom parameters" begin
 
@@ -6359,20 +6937,19 @@ end
     end
 end
 
-
-
 ================================================
 FILE: test/testsuite/aqua.jl
 ================================================
+
 using ActiveInference
 using Aqua
 
 Aqua.test_all(ActiveInference, ambiguities = false)
 
-
 ================================================
 FILE: test/testsuite/utils_tests.jl
 ================================================
+
 using IterTools
 using LinearAlgebra
 using ActiveInference
@@ -6456,9 +7033,7 @@ end
 
     reset!(aif)
 
-
 end
-
 
 @testset "ActionModels Agent and Multiple Factors" begin
 
@@ -6494,36 +7069,36 @@ end
 
 end
 
-
-
-
 ================================================
 FILE: .github/agent_output.PNG
 ================================================
-[Non-text file]
 
+[Non-text file]
 
 ================================================
 FILE: .github/dependabot.yml
 ================================================
-# Docs: https://docs.github.com/en/github/administering-a-repository/keeping-your-dependencies-updated-automatically
+
+# Docs: <https://docs.github.com/en/github/administering-a-repository/keeping-your-dependencies-updated-automatically>
+
 version: 2
 
 updates:
-  - package-ecosystem: "github-actions"
+
+* package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
     target-branch: "dev"
     allow:
-      - dependency-type: "all"
+  * dependency-type: "all"
     commit-message:
       prefix: ":arrow_up:"
-
 
 ================================================
 FILE: .github/workflows/CI_full.yml
 ================================================
+
 name: CI_full
 on:
   push:
@@ -6535,8 +7110,11 @@ on:
       - master
   workflow_dispatch:
 concurrency:
-  # Skip intermediate builds: always.
-  # Cancel intermediate builds: only if it is a pull request build.
+
+# Skip intermediate builds: always
+
+# Cancel intermediate builds: only if it is a pull request build
+
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
@@ -6570,11 +7148,10 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
 
-
-
 ================================================
 FILE: .github/workflows/CI_small.yml
 ================================================
+
 name: CI_small
 on:
   push:
@@ -6588,8 +7165,11 @@ on:
       - fitting
   workflow_dispatch:
 concurrency:
-  # Skip intermediate builds: always.
-  # Cancel intermediate builds: only if it is a pull request build.
+
+# Skip intermediate builds: always
+
+# Cancel intermediate builds: only if it is a pull request build
+
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ startsWith(github.ref, 'refs/pull/') }}
 jobs:
@@ -6620,14 +7200,14 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: lcov.info
 
-
 ================================================
 FILE: .github/workflows/CompatHelper.yml
 ================================================
+
 name: CompatHelper
 on:
   schedule:
-    - cron: 0 0 * * *
+    - cron: 0 0 ** *
   workflow_dispatch:
 jobs:
   CompatHelper:
@@ -6641,11 +7221,10 @@ jobs:
           COMPATHELPER_PRIV: ${{ secrets.DOCUMENTER_KEY }}
         run: julia -e 'using CompatHelper; CompatHelper.main()'
 
-
-
 ================================================
 FILE: .github/workflows/Documenter.yml
 ================================================
+
 name: Documentation
 
 on:
@@ -6683,10 +7262,10 @@ jobs:
             DocMeta.setdocmeta!(ActiveInference, :DocTestSetup, :(using ActiveInference); recursive=true)
             doctest(ActiveInference)'
 
-
 ================================================
 FILE: .github/workflows/register.yml
 ================================================
+
 name: Register Package
 on:
   workflow_dispatch:
@@ -6702,10 +7281,10 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
 
-
 ================================================
 FILE: .github/workflows/TagBot.yml
 ================================================
+
 name: TagBot
 on:
   issue_comment:
@@ -6737,4 +7316,3 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           ssh: ${{ secrets.DOCUMENTER_KEY }}
-

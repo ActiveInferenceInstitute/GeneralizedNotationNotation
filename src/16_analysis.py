@@ -37,23 +37,19 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Import module function
-try:
-    from analysis import process_analysis
-except ImportError as e:
-    def process_analysis(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback analysis processing when module unavailable."""
-        import logging
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning(f"Analysis module not available - using fallback: {e}")
-        logger.info("Install analysis support with: uv pip install -e .[analysis]")
-        return True
+from analysis import process_analysis
 
 run_script = create_standardized_pipeline_script(
     "16_analysis.py",
     process_analysis,
     "Analysis processing for GNN models",
+    additional_arguments={
+        "advanced_stats": {
+            "flag": "--advanced-stats",
+            "action": "store_true",
+            "help": "Enable advanced statistical distributions and extended visualizations"
+        }
+    }
 )
 
 def main() -> int:

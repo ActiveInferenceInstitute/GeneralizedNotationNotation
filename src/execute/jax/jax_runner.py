@@ -72,8 +72,19 @@ def find_jax_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List
     pattern = "**/*.py" if recursive else "*.py"
     return [f for f in base_path.glob(pattern) if "jax" in f.name.lower() or f.parent.name == "jax"]
 
-def execute_jax_script(script_path: Path, verbose: bool = False, device: Optional[str] = None) -> bool:
-    """Execute a single JAX script with enhanced dependency checking and error handling."""
+def execute_jax_script(script_path: Path, verbose: bool = False, device: Optional[str] = None, output_dir: Optional[Path] = None, timeout: int = 300) -> bool:
+    """Execute a single JAX script with enhanced dependency checking, error handling, and log persistence.
+    
+    Args:
+        script_path: Path to the JAX script to execute
+        verbose: Enable verbose output logging
+        device: JAX device to use ('cpu', 'gpu', 'tpu')
+        output_dir: Directory for execution logs (stdout.txt, stderr.txt, execution_log.json)
+        timeout: Execution timeout in seconds (default: 300)
+    """
+    import json as json_mod
+    import time as time_mod
+
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
         return False
@@ -122,6 +133,14 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
         env["JAX_PLATFORM_NAME"] = device
         logger.info(f"Using JAX device: {device}")
     
+    # Set JAX_OUTPUT_DIR environment variable (matching PYMDP_OUTPUT_DIR pattern)
+    if output_dir:
+        output_dir.mkdir(parents=True, exist_ok=True)
+        env["JAX_OUTPUT_DIR"] = str(output_dir)
+        logger.debug(f"Set JAX_OUTPUT_DIR={output_dir}")
+    
+    start_time = time_mod.time()
+    
     try:
         # Execute with enhanced error capture
         # Convert to absolute path to avoid path resolution issues
@@ -132,14 +151,16 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
             text=True, 
             env=env,
             cwd=abs_script_path.parent,
-            timeout=300  # 5 minute timeout
+            timeout=timeout
         )
         
-        if result.returncode == 0:
-            logger.info(f"✅ Script executed successfully: {script_path.name}")
+        elapsed = time_mod.time() - start_time
+        success = result.returncode == 0
+        
+        if success:
+            logger.info(f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)")
             if verbose and result.stdout.strip():
                 logger.debug(f"Output from {script_path.name}:\n{result.stdout}")
-            return True
         else:
             logger.error(f"❌ Script execution failed: {script_path.name}")
             logger.error(f"Return code: {result.returncode}")
@@ -147,9 +168,43 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
                 logger.error(f"Error output:\n{result.stderr}")
             if result.stdout.strip():
                 logger.debug(f"Standard output:\n{result.stdout}")
-            return False
+        
+        # Save execution logs (E-1/J-1)
+        log_dir = output_dir if output_dir else abs_script_path.parent
+        try:
+            log_dir.mkdir(parents=True, exist_ok=True)
+            
+            # Save stdout and stderr
+            stdout_file = log_dir / "stdout.txt"
+            with open(stdout_file, 'w') as f:
+                f.write(result.stdout or "")
+            
+            stderr_file = log_dir / "stderr.txt"
+            with open(stderr_file, 'w') as f:
+                f.write(result.stderr or "")
+            
+            # Save execution log JSON
+            execution_log = {
+                "script": str(abs_script_path),
+                "return_code": result.returncode,
+                "success": success,
+                "elapsed_seconds": round(elapsed, 2),
+                "device": device or "default",
+                "timeout": timeout,
+                "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S")
+            }
+            
+            log_file = log_dir / "execution_log.json"
+            with open(log_file, 'w') as f:
+                json_mod.dump(execution_log, f, indent=2)
+            
+            logger.debug(f"Execution logs saved to: {log_dir}")
+        except Exception as log_err:
+            logger.warning(f"Could not save execution logs: {log_err}")
+        
+        return success
     except subprocess.TimeoutExpired:
-        logger.error(f"❌ Script execution timed out: {script_path.name}")
+        logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
         return False
     except Exception as e:
         logger.error(f"❌ Error executing script {script_path.name}: {e}")

@@ -1,9 +1,9 @@
 # GNN Repo Coherence Check
 
-**Version**: v1.1.0  
+**Version**: v1.2.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,083 Tests Passing  
+**Test Count**: 1,319 Tests Passing  
 
 ## Pipeline Architecture References
 
@@ -1460,7 +1460,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: v1.1.0
+**Version**: v1.2.0
 **Coverage**: 25 pipeline steps, 28 modules, 41 AGENTS.md files
 
 ---

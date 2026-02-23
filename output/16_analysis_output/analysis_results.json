@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-20T13:59:31.803245",
+  "timestamp": "2026-02-23T07:07:40.841366",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -449,7 +449,85 @@
           "type": "unknown"
         }
       ],
-      "connections": [],
+      "connections": [
+        {
+          "source": "D",
+          "target": "s",
+          "connection": "D>s",
+          "connection_type": "directional",
+          "line": 55
+        },
+        {
+          "source": "s",
+          "target": "A",
+          "connection": "s-A",
+          "connection_type": "bidirectional",
+          "line": 56
+        },
+        {
+          "source": "s",
+          "target": "s_prime",
+          "connection": "s>s_prime",
+          "connection_type": "directional",
+          "line": 57
+        },
+        {
+          "source": "A",
+          "target": "o",
+          "connection": "A-o",
+          "connection_type": "bidirectional",
+          "line": 58
+        },
+        {
+          "source": "s",
+          "target": "B",
+          "connection": "s-B",
+          "connection_type": "bidirectional",
+          "line": 59
+        },
+        {
+          "source": "C",
+          "target": "G",
+          "connection": "C>G",
+          "connection_type": "directional",
+          "line": 60
+        },
+        {
+          "source": "E",
+          "target": "\u03c0",
+          "connection": "E>\u03c0",
+          "connection_type": "directional",
+          "line": 61
+        },
+        {
+          "source": "G",
+          "target": "\u03c0",
+          "connection": "G>\u03c0",
+          "connection_type": "directional",
+          "line": 62
+        },
+        {
+          "source": "\u03c0",
+          "target": "u",
+          "connection": "\u03c0>u",
+          "connection_type": "directional",
+          "line": 63
+        },
+        {
+          "source": "B",
+          "target": "u",
+          "connection": "B>u",
+          "connection_type": "directional",
+          "line": 64
+        },
+        {
+          "source": "u",
+          "target": "s_prime",
+          "connection": "u>s_prime",
+          "connection_type": "directional",
+          "line": 65
+        }
+      ],
       "sections": [
         {
           "name": "GNN Example: Active Inference POMDP Agent",
@@ -611,8 +689,9 @@
         "line_std": 36.6209760985553
       },
       "connection_statistics": {
-        "count": 0,
-        "average_line": 0
+        "count": 11,
+        "average_line": 60.0,
+        "line_std": 3.1622776601683795
       },
       "section_statistics": {
         "count": 35,
@@ -623,66 +702,97 @@
         "variable_distribution": {
           "mean": 67.0,
           "std": 36.6209760985553,
-          "min": 1,
-          "max": 123,
-          "median": 52.0
+          "min": 1.0,
+          "max": 123.0,
+          "median": 52.0,
+          "skewness": 0.16296358626508461,
+          "kurtosis": -1.4691326147358055,
+          "entropy": 3.872672099441027
         },
-        "connection_distribution": {},
+        "connection_distribution": {
+          "mean": 60.0,
+          "std": 3.1622776601683795,
+          "min": 55.0,
+          "max": 65.0,
+          "median": 60.0,
+          "skewness": 0.0,
+          "kurtosis": -1.22,
+          "entropy": 2.3978952727983707
+        },
         "complexity_metrics": {
-          "total_elements": 73,
+          "total_elements": 84,
           "variable_complexity": 73,
-          "connection_complexity": 0,
-          "density": 0.0,
-          "cyclomatic_complexity": -71
+          "connection_complexity": 11,
+          "density": 0.1506849315068493,
+          "cyclomatic_complexity": -60
         }
       },
       "correlations": {
-        "variable_connection_correlation": 0.0,
+        "variable_connection_correlation": 0.1506849315068493,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-02-20T13:59:31.806297"
+      "analysis_timestamp": "2026-02-23T07:07:40.847402"
     }
   ],
   "complexity_metrics": [
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "cyclomatic_complexity": -71,
-      "cognitive_complexity": 36.5,
-      "structural_complexity": 21.9,
+      "cyclomatic_complexity": -60,
+      "cognitive_complexity": 47.5,
+      "structural_complexity": 29.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.300000000000001,
-      "analysis_timestamp": "2026-02-20T13:59:31.808479"
+      "analysis_timestamp": "2026-02-23T07:07:40.849643"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "parse_time": 4.298,
-      "memory_usage": 429.8,
-      "complexity_score": 73,
-      "estimated_runtime": 0.0,
-      "benchmark_timestamp": "2026-02-20T13:59:31.810618"
+      "parse_time": 0.002163458033464849,
+      "memory_usage": 24958,
+      "complexity_score": 84,
+      "estimated_runtime": 0.84,
+      "benchmark_timestamp": "2026-02-23T07:07:40.851851"
     }
   ],
   "model_comparisons": [],
   "visualization_files": [
-    "output/16_analysis_output/actinf_pomdp_agent_jax_belief_trace.png",
-    "output/16_analysis_output/actinf_pomdp_agent_jax_belief_trace.png",
-    "output/16_analysis_output/actinf_pomdp_agent_pymdp_gen_belief_trace.png",
-    "output/16_analysis_output/actinf_pomdp_agent_pymdp_gen_belief_trace.png",
-    "output/16_analysis_output/actinf_pomdp_agent_rxinfer_belief_trace.png",
-    "output/16_analysis_output/actinf_pomdp_agent_rxinfer_belief_trace.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_trace.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_convergence.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_action_frequencies.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_trace.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_belief_convergence.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_action_frequencies.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_trace.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_convergence.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_frequencies.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_trace.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_convergence.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_frequencies.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_trace.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_convergence.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_action_frequencies.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_trace.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_convergence.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_action_frequencies.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_trace.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_convergence.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_frequencies.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_trace.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_convergence.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_frequencies.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_trace.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_convergence.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_frequencies.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/discrete_states_0.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/belief_evolution_1.png",
     "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/performance_2.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_belief_evolution.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_action_analysis.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_A_matrix.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_belief_trajectory_3d.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_preferences_prior.png",
-    "output/16_analysis_output/activeinference_jl/Active Inference POMDP Agent_dashboard.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/cumulative_preference.png",
+    "output/16_analysis_output/pymdp/Active_Inference_POMDP_Agent/obs_vs_true_state.png",
+    "output/16_analysis_output/activeinference_jl/activeinference_jl_trace_reconstruction.png",
+    "output/16_analysis_output/activeinference_jl/activeinference_jl_model_matrices.png",
     "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
     "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_circuit_summary.png",
     "output/16_analysis_output/discopy/actinf_pomdp_agent_discopy_component_flow.png",
@@ -706,20 +816,16 @@
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_heatmap.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_entropy.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_accuracy.png",
-    "output/16_analysis_output/framework_success_rates.png",
-    "output/16_analysis_output/framework_performance_comparison.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_heatmap.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_analysis.png",
-    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_heatmap.png",
-    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_analysis.png",
-    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_belief_heatmap.png",
-    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_observations.png",
-    "output/16_analysis_output/jax/jax_jax_belief_heatmap.png",
-    "output/16_analysis_output/jax/jax_jax_action_analysis.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_belief_heatmap.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_action_analysis.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_observations.png",
+    "output/16_analysis_output/cross_framework/framework_success_rates.png",
+    "output/16_analysis_output/cross_framework/framework_performance_comparison.png",
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_observations.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_observations.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_observations.png",
     "output/16_analysis_output/cross_framework/cross_framework_comparison.png",
+    "output/16_analysis_output/cross_framework/efe_convergence_comparison.png",
+    "output/16_analysis_output/cross_framework/confidence_comparison.png",
+    "output/16_analysis_output/cross_framework/framework_radar.png",
     "output/16_analysis_output/cross_framework/unified_dashboard/unified_belief_comparison.png",
     "output/16_analysis_output/cross_framework/unified_dashboard/unified_action_efe_comparison.png",
     "output/16_analysis_output/cross_framework/unified_dashboard/unified_entropy_comparison.png"
@@ -727,336 +833,26 @@
   "post_simulation_analysis": [
     {
       "model_name": "actinf_pomdp_agent",
-      "analysis_file": "output/16_analysis_output/actinf_pomdp_agent_post_simulation_analysis.json",
+      "analysis_file": "output/16_analysis_output/cross_framework/actinf_pomdp_agent_post_simulation_analysis.json",
       "framework_count": 5,
       "has_comparison": true
     }
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-02-20T13:59:35.842019",
+    "timestamp": "2026-02-23T07:07:47.657552",
     "frameworks": {
-      "jax": {
+      "pymdp": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          1.012669
+          1.740679
         ],
         "output_files": [
-          "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log"
+          "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log"
         ],
         "implementation_dirs": [
-          "output/12_execute_output/actinf_pomdp_agent/jax"
-        ],
-        "beliefs": [
-          [
-            0.8999999761581421,
-            0.04999999701976776,
-            0.04999999701976776
-          ],
-          [
-            0.027027025818824768,
-            0.48648640513420105,
-            0.4864864647388458
-          ],
-          [
-            0.0029154522344470024,
-            0.0524781309068203,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          [
-            0.04999999329447746,
-            0.04999998211860657,
-            0.8999997973442078
-          ],
-          [
-            0.027027027681469917,
-            0.48648640513420105,
-            0.4864864945411682
-          ],
-          [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ]
-        ],
-        "actions": [
-          2,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0
-        ],
-        "observations": [],
-        "free_energy": [
-          -0.15595419704914093,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815,
-          -0.15595418214797974,
-          0.4166618585586548,
-          -0.26686277985572815
-        ],
-        "num_timesteps": 30,
-        "validation": {
-          "all_beliefs_valid": true,
-          "beliefs_sum_to_one": true,
-          "actions_in_range": true
-        },
-        "model_parameters": {
-          "A_shape": [
-            3,
-            3
-          ],
-          "B_shape": [
-            3,
-            3,
-            3
-          ],
-          "C_shape": [
-            3
-          ],
-          "D_shape": [
-            3
-          ],
-          "num_states": 3,
-          "num_observations": 3,
-          "num_actions": 3
-        },
-        "data_source": "output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/simulation_results.json",
-        "belief_confidence": [
-          0.8999999761581421,
-          0.4864864647388458,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355,
-          0.8999997973442078,
-          0.4864864945411682,
-          0.9446064829826355
-        ]
-      },
-      "discopy": {
-        "success_count": 1,
-        "total_count": 1,
-        "execution_times": [
-          0.547745
-        ],
-        "output_files": [
-          "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log"
-        ],
-        "implementation_dirs": [
-          "output/12_execute_output/actinf_pomdp_agent/discopy"
-        ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
-      },
-      "pymdp_gen": {
-        "success_count": 1,
-        "total_count": 1,
-        "execution_times": [
-          1.561287
-        ],
-        "output_files": [
-          "output/12_execute_output/actinf_pomdp_agent/pymdp_gen/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log"
-        ],
-        "implementation_dirs": [
-          "output/12_execute_output/actinf_pomdp_agent/pymdp_gen"
+          "output/12_execute_output/actinf_pomdp_agent/pymdp"
         ],
         "beliefs": [
           [
@@ -1085,128 +881,53 @@
             5.292209338691478e-07
           ],
           [
-            9.525891109327795e-06,
-            0.9999899448927179,
-            5.292161727404347e-07
+            2.940119238888053e-08,
+            0.9999999411976151,
+            2.940119238888053e-08
           ],
           [
-            2.940117769913153e-08,
-            0.9999994413776238,
-            5.292211984899203e-07
+            1.633399673427397e-09,
+            0.9999999967332007,
+            1.633399673427397e-09
           ],
           [
-            1.6333996283801361e-09,
-            0.9999999689654072,
-            2.9401193211150926e-08
+            9.074443213705247e-11,
+            0.999999999818511,
+            9.074443213705247e-11
           ],
           [
-            9.074443201421201e-11,
-            0.9999999982758558,
-            1.6333996762729558e-09
+            5.041362897367038e-12,
+            0.9999999999899174,
+            5.041362897367038e-12
           ],
           [
-            5.041362897887602e-12,
-            0.9999999999042142,
-            9.07444321629288e-11
+            2.8008127207861374e-13,
+            0.99999999999944,
+            2.8008127207861374e-13
           ],
           [
-            2.800812721302049e-13,
-            0.9999999999946787,
-            5.041362898396557e-12
+            1.5565626226597905e-14,
+            0.9999999999999689,
+            1.5565626226597905e-14
           ],
           [
-            0.9999999999997045,
-            1.5565626229534045e-14,
-            2.8008127213454986e-13
+            8.70312568144356e-16,
+            0.9999999999999982,
+            8.70312568144356e-16
           ],
           [
-            1.5565626229701524e-14,
-            8.703125683076922e-16,
-            0.9999999999999836
+            0.9999999999999816,
+            1.7465626226597997e-14,
+            9.70312568144336e-16
           ],
           [
-            8.703125683167652e-16,
-            5.3906253794872596e-17,
-            0.9999999999999991
+            5.946180934135283e-17,
+            9.75868123699907e-16,
+            0.9999999999999989
           ],
           [
-            5.3906253795375945e-17,
-            8.550347433048482e-18,
-            1.0
-          ],
-          [
-            8.55034743307649e-18,
-            6.0305748573915806e-18,
-            1.0
-          ],
-          [
-            6.030574857393166e-18,
-            5.89058749207732e-18,
-            1.0
-          ],
-          [
-            5.890587492077403e-18,
-            5.8828104162265505e-18,
-            1.0
-          ],
-          [
-            5.8828104162265505e-18,
-            5.882378356457027e-18,
-            1.0
-          ],
-          [
-            5.882378356457027e-18,
-            5.882354353136533e-18,
-            1.0
-          ],
-          [
-            1.0588237835645708e-16,
-            1.9058823783564514e-15,
-            0.999999999999998
-          ],
-          [
-            1.1437909908692115e-17,
-            1.1143790990869243e-16,
-            0.9999999999999998
-          ],
-          [
-            6.190994994927376e-18,
-            1.1746550550482977e-17,
-            1.0
-          ],
-          [
-            5.899499721940434e-18,
-            6.208141697249062e-18,
-            1.0
-          ],
-          [
-            5.883305540107803e-18,
-            5.900452316513847e-18,
-            1.0
-          ],
-          [
-            5.8824058633393474e-18,
-            5.883358462028582e-18,
-            1.0
-          ],
-          [
-            1.0588240586333896e-16,
-            1.9059004523165034e-15,
-            0.999999999999998
-          ],
-          [
-            1.143791143685221e-17,
-            1.1143891401758385e-16,
-            0.9999999999999998
-          ],
-          [
-            6.190995079825143e-18,
-            1.1746606334310257e-17,
-            1.0
-          ],
-          [
-            5.899499726656974e-18,
-            6.208144796350589e-18,
+            8.858989407852978e-18,
+            5.977045131666184e-17,
             1.0
           ]
         ],
@@ -1216,29 +937,14 @@
           0,
           0,
           0,
-          2,
+          0,
+          0,
           0,
           0,
           0,
           0,
           1,
           2,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
-          0,
           0,
           0
         ],
@@ -1248,65 +954,95 @@
           1,
           1,
           1,
-          0,
           1,
           1,
           1,
           1,
           1,
-          0,
-          2,
-          2,
-          2,
-          2,
-          2,
-          2,
-          2,
-          2,
           1,
-          2,
-          2,
-          2,
-          2,
-          2,
           1,
-          2,
+          1,
           2,
           2
         ],
         "free_energy": [
-          -1.1990837599296713,
-          -1.4327891191434836,
-          -1.449086538732054,
-          -1.4500053438506906,
-          -1.4500564306907355,
-          -1.4500274457802556,
-          -1.450057701484809,
-          -1.4500593824106678,
-          -1.450059432963468,
-          -1.4500594357719572,
-          -1.4500594359279846,
-          -0.6850594359370936,
-          -0.6850594359371589,
-          -0.6850594359371627,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371625,
-          -0.6850594359371627,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371629,
-          -0.6850594359371625,
-          -0.6850594359371627,
-          -0.6850594359371629,
-          -0.6850594359371629
+          [
+            -1.1990837599296713,
+            -1.1990837599296715,
+            -1.1990837599296713
+          ],
+          [
+            -1.4327891191434836,
+            -1.4327891191434838,
+            -1.4327891191434836
+          ],
+          [
+            -1.449086538732054,
+            -1.449086538732054,
+            -1.449086538732054
+          ],
+          [
+            -1.4500053438506906,
+            -1.4500053438506906,
+            -1.4500053438506906
+          ],
+          [
+            -1.4500564306907355,
+            -1.4500564306907355,
+            -1.4500564306907355
+          ],
+          [
+            -1.4500593546428873,
+            -1.4500593546428873,
+            -1.4500593546428873
+          ],
+          [
+            -1.450059431420814,
+            -1.450059431420814,
+            -1.450059431420814
+          ],
+          [
+            -1.4500594356862537,
+            -1.450059435686254,
+            -1.4500594356862537
+          ],
+          [
+            -1.4500594359232235,
+            -1.4500594359232235,
+            -1.4500594359232235
+          ],
+          [
+            -1.450059435936388,
+            -1.450059435936388,
+            -1.450059435936388
+          ],
+          [
+            -1.4500594359371195,
+            -1.4500594359371195,
+            -1.4500594359371195
+          ],
+          [
+            -1.4500594359371601,
+            -1.45005943593716,
+            -1.4500594359371601
+          ],
+          [
+            -1.4500594359371433,
+            -1.4500594359371433,
+            -0.6850594359371587
+          ],
+          [
+            -0.6850594359371625,
+            -0.6850594359371625,
+            -1.4500594359371612
+          ],
+          [
+            -0.6850594359371629,
+            -0.6850594359371629,
+            -1.4500594359371626
+          ]
         ],
-        "num_timesteps": 30,
+        "num_timesteps": 15,
         "validation": {
           "all_beliefs_valid": true,
           "beliefs_sum_to_one": true,
@@ -1332,45 +1068,319 @@
           "num_observations": 3,
           "num_actions": 3
         },
-        "data_source": "output/12_execute_output/actinf_pomdp_agent/pymdp_gen/simulation_data/simulation_results.json",
+        "data_source": "output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/simulation_results.json",
         "belief_confidence": [
           0.8999999999999999,
           0.9938650306748466,
           0.9996571820363388,
           0.9999809483891864,
           0.9999989415581324,
-          0.9999899448927179,
-          0.9999994413776238,
-          0.9999999689654072,
-          0.9999999982758558,
-          0.9999999999042142,
-          0.9999999999946787,
-          0.9999999999997045,
-          0.9999999999999836,
-          0.9999999999999991,
+          0.9999999411976151,
+          0.9999999967332007,
+          0.999999999818511,
+          0.9999999999899174,
+          0.99999999999944,
+          0.9999999999999689,
+          0.9999999999999982,
+          0.9999999999999816,
+          0.9999999999999989,
+          1.0
+        ]
+      },
+      "jax": {
+        "success_count": 1,
+        "total_count": 1,
+        "execution_times": [
+          1.153787
+        ],
+        "output_files": [
+          "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/12_execute_output/actinf_pomdp_agent/jax"
+        ],
+        "beliefs": [
+          [
+            0.04999999701976776,
+            0.8999999761581421,
+            0.04999999701976776
+          ],
+          [
+            0.003067484823986888,
+            0.9938650131225586,
+            0.003067484823986888
+          ],
+          [
+            0.00017140900308731943,
+            0.9996572136878967,
+            0.00017140900308731943
+          ],
+          [
+            9.52580649027368e-06,
+            0.9999809265136719,
+            9.52580649027368e-06
+          ],
+          [
+            5.29221040324046e-07,
+            0.999998927116394,
+            5.29221040324046e-07
+          ],
+          [
+            1.0,
+            2.9401201473433503e-08,
+            2.9401201473433503e-08
+          ],
+          [
+            1.6334000818574168e-09,
+            1.6334000818574168e-09,
+            1.0
+          ],
+          [
+            9.074445361800798e-11,
+            9.074445361800798e-11,
+            1.0
+          ],
+          [
+            5.041358389773487e-12,
+            5.041358389773487e-12,
+            1.0
+          ],
+          [
+            2.8007546911019976e-13,
+            2.8007546911019976e-13,
+            1.0
+          ],
+          [
+            1.5559749601506793e-14,
+            1.5559749601506793e-14,
+            1.0
+          ],
+          [
+            8.6443058047443e-16,
+            8.6443058047443e-16,
+            1.0
+          ],
+          [
+            4.8023922608011647e-17,
+            4.8023922608011647e-17,
+            1.0
+          ],
+          [
+            2.6679957923540484e-18,
+            2.6679957923540484e-18,
+            1.0
+          ],
+          [
+            1.4822198990019125e-19,
+            1.4822198990019125e-19,
+            1.0
+          ]
+        ],
+        "actions": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "observations": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2
+        ],
+        "free_energy": [
+          [
+            0.49429577589035034,
+            0.49429577589035034,
+            0.49429577589035034
+          ],
+          [
+            0.36767512559890747,
+            0.36767512559890747,
+            0.36767512559890747
+          ],
+          [
+            0.3596389591693878,
+            0.3596389591693878,
+            0.3596389591693878
+          ],
+          [
+            0.35927554965019226,
+            0.35927554965019226,
+            0.35927554965019226
+          ],
+          [
+            0.3592604398727417,
+            0.3592604100704193,
+            0.3592604398727417
+          ],
+          [
+            0.3592599034309387,
+            0.3592599332332611,
+            -0.405739963054657
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ],
+          [
+            -0.40573999285697937,
+            -0.40573999285697937,
+            0.3592599034309387
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "beliefs_sum_to_one": true,
+          "actions_in_range": true
+        },
+        "model_parameters": {
+          "A_shape": [
+            3,
+            3
+          ],
+          "B_shape": [
+            3,
+            3,
+            3
+          ],
+          "C_shape": [
+            3
+          ],
+          "D_shape": [
+            3
+          ],
+          "num_states": 3,
+          "num_observations": 3,
+          "num_actions": 3
+        },
+        "data_source": "output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/simulation_results.json",
+        "belief_confidence": [
+          0.8999999761581421,
+          0.9938650131225586,
+          0.9996572136878967,
+          0.9999809265136719,
+          0.999998927116394,
           1.0,
           1.0,
           1.0,
           1.0,
           1.0,
           1.0,
-          0.999999999999998,
-          0.9999999999999998,
           1.0,
           1.0,
-          1.0,
-          1.0,
-          0.999999999999998,
-          0.9999999999999998,
           1.0,
           1.0
         ]
+      },
+      "discopy": {
+        "success_count": 1,
+        "total_count": 1,
+        "execution_times": [
+          0.374223
+        ],
+        "output_files": [
+          "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log"
+        ],
+        "implementation_dirs": [
+          "output/12_execute_output/actinf_pomdp_agent/discopy"
+        ],
+        "beliefs": [],
+        "actions": [],
+        "observations": [],
+        "free_energy": [],
+        "num_timesteps": null,
+        "validation": {},
+        "model_parameters": {
+          "num_states": 3,
+          "num_observations": 3,
+          "num_actions": 3
+        },
+        "data_source": "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json",
+        "circuit_info": {
+          "model_name": "Active Inference POMDP Agent",
+          "components": [
+            "A_matrix",
+            "B_matrix",
+            "C_vector",
+            "D_vector",
+            "E_vector",
+            "state_inference",
+            "policy_inference",
+            "action_selection"
+          ],
+          "num_components": 8,
+          "parameters": {
+            "num_states": 3,
+            "num_observations": 3,
+            "num_actions": 3
+          }
+        }
       },
       "rxinfer": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          24.031767
+          19.397854
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log"
@@ -1380,192 +1390,138 @@
         ],
         "beliefs": [
           [
-            5.013677436199211e-07,
-            0.947367946657142,
-            0.05263155197511436
+            0.05000000000000001,
+            0.9,
+            0.05000000000000001
           ],
           [
-            0.9473679466562999,
-            5.013676383663427e-07,
-            0.05263155197606173
+            0.9938650306748466,
+            0.0030674846625766876,
+            0.0030674846625766876
           ],
           [
-            0.947367946639253,
-            5.013675829737597e-07,
-            0.052631551993164036
+            0.000171408981830648,
+            0.000171408981830648,
+            0.9996571820363387
           ],
           [
-            5.013675331042414e-07,
-            0.9473679463323031,
-            0.05263155230016371
+            9.525805406847153e-06,
+            9.525805406847153e-06,
+            0.9999809483891863
           ],
           [
-            0.05263155782526612,
-            0.9473679408072008,
-            5.01367533095718e-07
+            5.292209338632603e-07,
+            5.292209338632603e-07,
+            0.9999989415581323
           ],
           [
-            0.9473679405002011,
-            0.05263155813221608,
-            5.013675828032946e-07
+            2.9401192382997833e-08,
+            2.9401192382997833e-08,
+            0.9999999411976153
           ],
           [
-            0.9473679404830987,
-            0.052631558149265775,
-            5.013676354258219e-07
+            1.6333996675450201e-09,
+            1.6333996675450201e-09,
+            0.9999999967332006
           ],
           [
-            0.052631558150157604,
-            0.9473679404821514,
-            5.013676909633003e-07
+            9.07444262546981e-11,
+            9.07444262546981e-11,
+            0.9999999998185112
           ],
           [
-            0.05263155816720439,
-            0.9473679404641544,
-            5.013686412456853e-07
+            5.041357015014015e-12,
+            5.041357015014015e-12,
+            0.9999999999899173
           ],
           [
-            5.013696412441762e-07,
-            0.9473679404623123,
-            0.05263155816804649
+            1.111111111119845e-12,
+            1.111111111119845e-12,
+            0.9999999999977778
           ],
           [
-            0.05263155818504356,
-            0.94736794042821,
-            5.01386746498045e-07
+            1.111111111111111e-12,
+            1.111111111111111e-12,
+            0.9999999999977778
           ],
           [
-            0.052631558184990906,
-            0.9473679404102626,
-            5.014047464888765e-07
+            1.999999999924444e-11,
+            1.999999999924444e-11,
+            0.9999999999600001
           ],
           [
-            0.05263155816704355,
-            0.9473679403941047,
-            5.014388517365395e-07
+            1.1111111111530864e-12,
+            1.1111111111530864e-12,
+            0.9999999999977778
           ],
           [
-            5.014407464719932e-07,
-            0.947367940394052,
-            0.052631558165201466
+            1.111111111111111e-12,
+            1.111111111111111e-12,
+            0.9999999999977778
           ],
           [
-            5.014408517255759e-07,
-            0.9473679403948941,
-            0.0526315581642541
-          ],
-          [
-            0.9473679403930522,
-            5.014418517240667e-07,
-            0.052631558165096196
-          ],
-          [
-            5.014419072615423e-07,
-            0.9473679403921047,
-            0.05263155816598801
-          ],
-          [
-            0.9473679403741078,
-            5.014428575439259e-07,
-            0.052631558183034804
-          ],
-          [
-            0.9473679403570053,
-            5.014429101664274e-07,
-            0.05263155820008449
-          ],
-          [
-            0.052631558507031516,
-            5.014438575338364e-07,
-            0.947367940049111
-          ],
-          [
-            0.05263156403208131,
-            5.014609101566058e-07,
-            0.9473679345070085
-          ],
-          [
-            0.052631564339025425,
-            5.014779656943488e-07,
-            0.9473679341830089
-          ],
-          [
-            5.014789130617456e-07,
-            0.05263156464597246,
-            0.9473679338751144
-          ],
-          [
-            0.9473679338571174,
-            0.05263156466301926,
-            5.014798633441276e-07
-          ],
-          [
-            5.014808633426234e-07,
-            0.05263156466386137,
-            0.9473679338552752
-          ],
-          [
-            0.9473679338552227,
-            0.05263156466201927,
-            5.014827580781913e-07
-          ],
-          [
-            5.015007580725563e-07,
-            0.052631564627916946,
-            0.947367933871325
-          ],
-          [
-            0.9473679338883221,
-            0.05263156460991987,
-            5.015017580632162e-07
-          ],
-          [
-            5.015018134557679e-07,
-            0.05263156459281753,
-            0.947367933905369
-          ],
-          [
-            0.05263156459187016,
-            5.015019187093558e-07,
-            0.9473679339062111
+            1.111111111111111e-12,
+            1.111111111111111e-12,
+            0.9999999999977778
           ]
         ],
-        "actions": [],
+        "actions": [
+          2,
+          3,
+          1,
+          2,
+          2,
+          1,
+          1,
+          2,
+          1,
+          2,
+          2,
+          1,
+          2,
+          1,
+          1
+        ],
         "observations": [
           2,
           1,
-          1,
-          2,
-          1,
-          2,
-          2,
-          2,
-          1,
-          2,
-          1,
-          1,
           3,
-          1,
-          2,
-          2,
-          2,
-          2,
-          1,
           3,
-          1,
-          2,
-          2,
-          2,
-          2,
-          2,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
           1,
           3,
           3,
           3
         ],
-        "free_energy": [],
-        "num_timesteps": 30,
-        "validation": {},
+        "free_energy": [
+          1.1990840975349357,
+          0.6748293340493614,
+          0.6844802599506191,
+          0.6850275431793631,
+          0.6850579828580426,
+          0.6850596740596255,
+          0.6850597680156032,
+          0.685059773235381,
+          0.6850597735253687,
+          0.685059773538667,
+          0.685059773538667,
+          0.6850597734747538,
+          0.685059773538667,
+          0.685059773538667,
+          0.685059773538667
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "all_beliefs_valid": true,
+          "actions_in_range": true,
+          "beliefs_sum_to_one": true
+        },
         "model_parameters": {},
         "data_source": "output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/simulation_results.json"
       },
@@ -1573,7 +1529,7 @@
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          27.847602
+          19.104289
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log"
@@ -1581,77 +1537,293 @@
         "implementation_dirs": [
           "output/12_execute_output/actinf_pomdp_agent/activeinference_jl"
         ],
-        "beliefs": [],
-        "actions": [],
-        "observations": [],
-        "free_energy": [],
-        "num_timesteps": null,
-        "validation": {},
-        "model_parameters": {},
-        "data_source": null
+        "beliefs": [
+          [
+            0.21641548718854609,
+            0.5671690256229078,
+            0.21641548718854609
+          ],
+          [
+            0.11276136802747035,
+            0.7744772639450591,
+            0.11276136802747035
+          ],
+          [
+            0.05000000000000001,
+            0.8999999999999999,
+            0.05000000000000001
+          ],
+          [
+            0.020336220732036857,
+            0.9593275585359263,
+            0.020336220732036857
+          ],
+          [
+            0.9840801264044055,
+            0.007959936797797376,
+            0.007959936797797376
+          ],
+          [
+            0.003067484662576688,
+            0.003067484662576688,
+            0.9938650306748466
+          ],
+          [
+            0.0011749221628456073,
+            0.0011749221628456073,
+            0.9976501556743087
+          ],
+          [
+            0.00044896915810941994,
+            0.00044896915810941994,
+            0.9991020616837812
+          ],
+          [
+            0.00017140898183064815,
+            0.00017140898183064815,
+            0.9996571820363386
+          ],
+          [
+            6.541863690343787e-05,
+            6.541863690343787e-05,
+            0.9998691627261931
+          ],
+          [
+            2.496390171417971e-05,
+            2.496390171417971e-05,
+            0.9999500721965716
+          ],
+          [
+            9.52580540684714e-06,
+            9.52580540684714e-06,
+            0.9999809483891864
+          ],
+          [
+            3.6348178659813324e-06,
+            3.6348178659813324e-06,
+            0.999992730364268
+          ],
+          [
+            1.3869488288013344e-06,
+            1.3869488288013344e-06,
+            0.9999972261023424
+          ],
+          [
+            5.2922093386326e-07,
+            5.2922093386326e-07,
+            0.9999989415581324
+          ]
+        ],
+        "actions": [
+          3,
+          3,
+          3,
+          2,
+          3,
+          2,
+          2,
+          1,
+          1,
+          2,
+          2,
+          1,
+          2,
+          2,
+          2
+        ],
+        "observations": [
+          2,
+          2,
+          2,
+          2,
+          1,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3,
+          3
+        ],
+        "free_energy": [
+          [
+            -0.6634855713698024,
+            -0.6634855713698024,
+            -0.6634855713698024
+          ],
+          [
+            -0.9523457898860066,
+            -0.9523457898860066,
+            -0.9523457898860066
+          ],
+          [
+            -1.1990837599296713,
+            -1.1990837599296713,
+            -1.1990837599296713
+          ],
+          [
+            -1.3406364163577855,
+            -1.3406364163577855,
+            -1.3406364163577855
+          ],
+          [
+            -1.405836975879218,
+            -1.405836975879218,
+            -0.659105030830163
+          ],
+          [
+            -0.6748289964440973,
+            -0.6748289964440973,
+            -1.432789119143484
+          ],
+          [
+            -0.6811059656321992,
+            -0.6811059656321992,
+            -1.4434095192684682
+          ],
+          [
+            -0.6835435186125836,
+            -0.6835435186125836,
+            -1.4475131343947223
+          ],
+          [
+            -0.6844799223453549,
+            -0.6844799223453549,
+            -1.4490865387320535
+          ],
+          [
+            -0.6848381520333929,
+            -0.6848381520333929,
+            -1.4496880162616992
+          ],
+          [
+            -0.6849749772852732,
+            -0.6849749772852732,
+            -1.4499176851308393
+          ],
+          [
+            -0.6850272055740995,
+            -0.6850272055740995,
+            -1.4500053438506908
+          ],
+          [
+            -0.6850471372632796,
+            -0.6850471372632796,
+            -1.4500387953562774
+          ],
+          [
+            -0.685054743043624,
+            -0.685054743043624,
+            -1.450051559996062
+          ],
+          [
+            -0.685057645252779,
+            -0.685057645252779,
+            -1.4500564306907358
+          ]
+        ],
+        "num_timesteps": 15,
+        "validation": {
+          "beliefs_in_range": true,
+          "actions_in_range": true,
+          "all_valid": true,
+          "beliefs_sum_to_one": true
+        },
+        "model_parameters": {
+          "num_states": 3,
+          "num_observations": 3,
+          "num_actions": 3
+        },
+        "data_source": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.json"
       }
     },
     "comparisons": {
       "success_rates": {
+        "pymdp": 1.0,
         "jax": 1.0,
         "discopy": 1.0,
-        "pymdp_gen": 1.0,
         "rxinfer": 1.0,
         "activeinference_jl": 1.0
       },
       "performance_comparison": {
-        "jax": {
-          "mean": 1.012669,
+        "pymdp": {
+          "mean": 1.740679,
           "std": 0.0,
-          "min": 1.012669,
-          "max": 1.012669
+          "min": 1.740679,
+          "max": 1.740679
+        },
+        "jax": {
+          "mean": 1.153787,
+          "std": 0.0,
+          "min": 1.153787,
+          "max": 1.153787
         },
         "discopy": {
-          "mean": 0.547745,
+          "mean": 0.374223,
           "std": 0.0,
-          "min": 0.547745,
-          "max": 0.547745
-        },
-        "pymdp_gen": {
-          "mean": 1.561287,
-          "std": 0.0,
-          "min": 1.561287,
-          "max": 1.561287
+          "min": 0.374223,
+          "max": 0.374223
         },
         "rxinfer": {
-          "mean": 24.031767,
+          "mean": 19.397854,
           "std": 0.0,
-          "min": 24.031767,
-          "max": 24.031767
+          "min": 19.397854,
+          "max": 19.397854
         },
         "activeinference_jl": {
-          "mean": 27.847602,
+          "mean": 19.104289,
           "std": 0.0,
-          "min": 27.847602,
-          "max": 27.847602
+          "min": 19.104289,
+          "max": 19.104289
         }
       },
       "metric_agreement": {
-        "jax_vs_pymdp_gen": {
-          "confidence_correlation": -0.09525098150295788,
+        "pymdp_vs_jax": {
+          "confidence_correlation": 0.9999999999997151,
+          "same_dimensions": true
+        },
+        "pymdp_vs_rxinfer": {
+          "confidence_correlation": 1.0,
+          "same_dimensions": true
+        },
+        "pymdp_vs_activeinference_jl": {
+          "confidence_correlation": 0.8909793233092984,
           "same_dimensions": true
         },
         "jax_vs_rxinfer": {
-          "confidence_correlation": -0.009145236655040233,
+          "confidence_correlation": 0.9999999999997153,
           "same_dimensions": true
         },
-        "pymdp_gen_vs_rxinfer": {
-          "confidence_correlation": -0.36110488752605036,
+        "jax_vs_activeinference_jl": {
+          "confidence_correlation": 0.8909793666157863,
+          "same_dimensions": true
+        },
+        "rxinfer_vs_activeinference_jl": {
+          "confidence_correlation": 0.8909793232800454,
           "same_dimensions": true
         }
       },
       "data_coverage": {
+        "pymdp": {
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
+          "has_circuit_info": false,
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/simulation_results.json"
+        },
         "jax": {
           "has_beliefs": true,
           "has_actions": true,
-          "has_observations": false,
+          "has_observations": true,
           "has_free_energy": true,
-          "num_timesteps": 30,
+          "has_circuit_info": false,
+          "num_timesteps": 15,
           "validation_passed": true,
           "data_source": "output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/simulation_results.json"
         },
@@ -1660,82 +1832,96 @@
           "has_actions": false,
           "has_observations": false,
           "has_free_energy": false,
+          "has_circuit_info": true,
           "num_timesteps": null,
           "validation_passed": null,
-          "data_source": null
+          "data_source": "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json"
         },
-        "pymdp_gen": {
+        "rxinfer": {
           "has_beliefs": true,
           "has_actions": true,
           "has_observations": true,
           "has_free_energy": true,
-          "num_timesteps": 30,
+          "has_circuit_info": false,
+          "num_timesteps": 15,
           "validation_passed": true,
-          "data_source": "output/12_execute_output/actinf_pomdp_agent/pymdp_gen/simulation_data/simulation_results.json"
-        },
-        "rxinfer": {
-          "has_beliefs": true,
-          "has_actions": false,
-          "has_observations": true,
-          "has_free_energy": false,
-          "num_timesteps": 30,
-          "validation_passed": null,
           "data_source": "output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/simulation_results.json"
         },
         "activeinference_jl": {
-          "has_beliefs": false,
-          "has_actions": false,
-          "has_observations": false,
-          "has_free_energy": false,
-          "num_timesteps": null,
-          "validation_passed": null,
-          "data_source": null
+          "has_beliefs": true,
+          "has_actions": true,
+          "has_observations": true,
+          "has_free_energy": true,
+          "has_circuit_info": false,
+          "num_timesteps": 15,
+          "validation_passed": true,
+          "data_source": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.json"
         }
       },
       "simulation_statistics": {
-        "jax": {
+        "pymdp": {
           "belief_dims": [
-            30,
+            15,
             3
           ],
-          "mean_confidence": 0.7770309299230576,
+          "mean_confidence": 0.9929001360264759,
           "final_belief": [
-            0.0029154522344470024,
-            0.05247812718153,
-            0.9446064829826355
-          ],
-          "efe_mean": -0.0020517016450564067,
-          "efe_std": 0.299517348749163,
-          "efe_min": -0.26686277985572815,
-          "efe_max": 0.4166618585586548
-        },
-        "pymdp_gen": {
-          "belief_dims": [
-            30,
-            3
-          ],
-          "mean_confidence": 0.9964497152022894,
-          "final_belief": [
-            5.899499726656974e-18,
-            6.208144796350589e-18,
+            8.858989407852978e-18,
+            5.977045131666184e-17,
             1.0
           ],
-          "efe_mean": -0.9565824436497264,
-          "efe_std": 0.3594893019626773,
-          "efe_min": -1.4500594359279846,
-          "efe_max": -0.6850594359370936
+          "efe_mean": -1.3471076977094636,
+          "efe_std": 0.2421675862141707,
+          "efe_min": -1.4500594359371626,
+          "efe_max": -0.6850594359371587
+        },
+        "jax": {
+          "belief_dims": [
+            15,
+            3
+          ],
+          "mean_confidence": 0.9929001371065775,
+          "final_belief": [
+            1.4822198990019125e-19,
+            1.4822198990019125e-19,
+            1.0
+          ],
+          "efe_mean": 0.045849703417883976,
+          "efe_std": 0.38741367421149997,
+          "efe_min": -0.40573999285697937,
+          "efe_max": 0.49429577589035034
         },
         "rxinfer": {
           "belief_dims": [
-            30,
+            15,
             3
           ],
-          "mean_confidence": 0.9473679390924998,
+          "mean_confidence": 0.9929001360231092,
           "final_belief": [
-            0.05263156459187016,
-            5.015019187093558e-07,
-            0.9473679339062111
-          ]
+            1.111111111111111e-12,
+            1.111111111111111e-12,
+            0.9999999999977778
+          ],
+          "efe_mean": 0.7186051231717592,
+          "efe_std": 0.1284384800075846,
+          "efe_min": 0.6748293340493614,
+          "efe_max": 1.1990840975349357
+        },
+        "activeinference_jl": {
+          "belief_dims": [
+            15,
+            3
+          ],
+          "mean_confidence": 0.9450078323942847,
+          "final_belief": [
+            5.2922093386326e-07,
+            5.2922093386326e-07,
+            0.9999989415581324
+          ],
+          "efe_mean": -0.9795090281114841,
+          "efe_std": 0.34143049562976774,
+          "efe_min": -1.4500564306907358,
+          "efe_max": -0.659105030830163
         }
       }
     },
@@ -1746,19 +1932,15 @@
       "overall_success_rate": 1.0
     }
   },
-  "framework_comparison_report": "output/16_analysis_output/framework_comparison_report.md",
+  "framework_comparison_report": "output/16_analysis_output/cross_framework/framework_comparison_report.md",
   "comprehensive_visualizations": [
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_heatmap.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_analysis.png",
-    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_belief_heatmap.png",
-    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_action_analysis.png",
-    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_belief_heatmap.png",
-    "output/16_analysis_output/rxinfer/rxinfer_rxinfer_observations.png",
-    "output/16_analysis_output/jax/jax_jax_belief_heatmap.png",
-    "output/16_analysis_output/jax/jax_jax_action_analysis.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_belief_heatmap.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_action_analysis.png",
-    "output/16_analysis_output/pymdp/pymdp_gen_pymdp_observations.png",
-    "output/16_analysis_output/cross_framework/cross_framework_comparison.png"
+    "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_observations.png",
+    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_observations.png",
+    "output/16_analysis_output/pymdp/actinf_pomdp_agent_pymdp_observations.png",
+    "output/16_analysis_output/jax/actinf_pomdp_agent_jax_observations.png",
+    "output/16_analysis_output/cross_framework/cross_framework_comparison.png",
+    "output/16_analysis_output/cross_framework/efe_convergence_comparison.png",
+    "output/16_analysis_output/cross_framework/confidence_comparison.png",
+    "output/16_analysis_output/cross_framework/framework_radar.png"
   ]
 }

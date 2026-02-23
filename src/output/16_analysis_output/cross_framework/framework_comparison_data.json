@@ -1,0 +1,17 @@
+{
+  "timestamp": "2026-02-22T15:40:40.348446",
+  "frameworks": {},
+  "comparisons": {
+    "success_rates": {},
+    "performance_comparison": {},
+    "metric_agreement": {},
+    "data_coverage": {},
+    "simulation_statistics": {}
+  },
+  "metrics": {
+    "total_frameworks": 0,
+    "total_successful": 0,
+    "total_executions": 0,
+    "overall_success_rate": 0.0
+  }
+}

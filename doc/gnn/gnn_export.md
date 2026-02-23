@@ -1,9 +1,9 @@
 # GNN Export Guide
 
-**Version**: v1.1.0  
+**Version**: v1.2.0  
 **Last Updated**: February 9, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,083 Tests Passing  
+**Test Count**: 1,319 Tests Passing  
 
 This document provides comprehensive guidance on multi-format export capabilities for Generalized Notation Notation (GNN) models, including export formats, validation, and semantic preservation.
 
@@ -225,4 +225,4 @@ Export integrates throughout the pipeline:
 
 **Status**: ✅ Production Ready  
 **Last Updated**: February 9, 2026  
-**Version**: v1.1.0
+**Version**: v1.2.0

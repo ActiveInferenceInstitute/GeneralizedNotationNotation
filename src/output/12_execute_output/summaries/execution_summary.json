@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-02-22T15:40:38.566921",
+  "target_directory": "input/gnn_files",
+  "output_directory": "output/12_execute_output",
+  "total_scripts_found": 0,
+  "successful_executions": 0,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [],
+  "framework_status": {},
+  "success": true,
+  "message": "No rendered implementations found"
+}

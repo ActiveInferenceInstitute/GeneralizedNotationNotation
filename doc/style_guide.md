@@ -135,7 +135,7 @@ def gnn_parse_example():
 ```yaml
 # Configuration examples
 gnn_config:
-  version: "1.1.0"
+  version: "1.2.0"
   features: [validation, visualization]
 ```
 
@@ -548,7 +548,7 @@ Clear explanation of what we're modeling...
 #### GNN Implementation
 ```gnn
 ## GNNVersionAndFlags
-version: 1.1.0
+version: 1.2.0
 
 ## ModelName
 ExampleModel

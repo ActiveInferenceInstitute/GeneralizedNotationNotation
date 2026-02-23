@@ -41,41 +41,24 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from type_checker import GNNTypeChecker
 except ImportError:
-    def GNNTypeChecker():
+    def _fallback_type_check(target_dir, output_dir, logger=None, **kwargs):
         """Fallback type checker when module unavailable."""
-        class FallbackTypeChecker:
-            def validate_gnn_files(self, target_dir, output_dir, **kwargs):
-                import logging
-                logger = logging.getLogger(__name__)
-                logger.warning("Type checker module not available - using fallback checks")
-                
-                # Basic validation: Check if files exist and are not empty
-                target_path = Path(target_dir)
-                if not target_path.exists():
-                     logger.error(f"Target directory {target_dir} does not exist")
-                     return False
-                     
-                gnn_files = list(target_path.glob("**/*.md"))
-                if not gnn_files:
-                    logger.warning(f"No GNN files found in {target_dir}")
-                    return True # Nothing to validate is technically valid
-                    
-                valid_count = 0
-                for f in gnn_files:
-                    if f.stat().st_size > 0:
-                        valid_count += 1
-                    else:
-                        logger.warning(f"Empty file found: {f}")
-                        
-                logger.info(f"Fallback validation: scanned {len(gnn_files)} files, {valid_count} non-empty.")
-                return True
-        return FallbackTypeChecker()
+        import logging
+        if logger is None:
+            logger = logging.getLogger(__name__)
+        logger.warning("Type checker module not available - using fallback")
+        return True
+    GNNTypeChecker = None
+
+def _type_check_dispatch(target_dir, output_dir, logger, **kwargs):
+    """Dispatch to GNNTypeChecker or fallback."""
+    if GNNTypeChecker is not None:
+        return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
+    return _fallback_type_check(target_dir, output_dir, logger, **kwargs)
 
 run_script = create_standardized_pipeline_script(
     "5_type_checker.py",
-    lambda target_dir, output_dir, logger, **kwargs: GNNTypeChecker().validate_gnn_files(
-        target_dir, output_dir, **kwargs
-    ),
+    _type_check_dispatch,
     "Type checking and validation of GNN files",
     additional_arguments={
         "strict": {"type": bool, "help": "Enable strict validation mode"},

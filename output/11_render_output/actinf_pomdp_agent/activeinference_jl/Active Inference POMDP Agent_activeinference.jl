@@ -24,7 +24,7 @@ using Pkg
 println("📦 Ensuring required packages are installed...")
 try
     # Try to precompile key packages - will add if missing
-    Pkg.add(["JSON", "Plots", "StatsBase", "ActiveInference", "Distributions"])
+    Pkg.add(["JSON", "ActiveInference", "Distributions"])
     println("✅ Package installation complete")
 catch e
     println("⚠️  Some packages may need manual installation: $e")
@@ -40,7 +40,6 @@ using LinearAlgebra
 using ActiveInference
 using Distributions
 using JSON
-using Plots
 using StatsBase
 
 # Global configuration
@@ -49,7 +48,7 @@ const MODEL_NAME = "Active Inference POMDP Agent"
 const N_STATES = 3
 const N_OBSERVATIONS = 3
 const N_CONTROLS = 3
-const POLICY_LENGTH = 1
+# POLICY_LEN is defined below after E-vector setup
 
 println("="^70)
 println("ActiveInference.jl Script for GNN Model: $MODEL_NAME")
@@ -149,7 +148,7 @@ try
     
     # Agent settings
     settings = Dict(
-        "policy_len" => POLICY_LENGTH,
+        "policy_len" => POLICY_LEN,
         "n_states" => [N_STATES],
         "n_observations" => [N_OBSERVATIONS],
         "n_controls" => [N_CONTROLS]
@@ -170,7 +169,7 @@ try
     
     # Run simulation
     println("🚀 Running simulation...")
-    n_steps = 30  # From GNN ModelParameters (num_timesteps)
+    n_steps = 15  # From GNN ModelParameters (num_timesteps)
     observations_log = []
     actions_log = []
     beliefs_log = []
@@ -183,19 +182,20 @@ try
     
     Random.seed!(42)  # Reproducibility
     
+    # Generative Environment (True State tracking)
+    # Initialize from the agent's prior D matrix
+    true_state = rand(Categorical(D_vector))
+    
     for step in 1:n_steps
-        # Generate observation (simplified)
-        if step == 1
-            observation = [1]  # Start with first observation
-        else
-            # Generate observation based on current state belief
-            state_prob = aif_agent.qs_current[1]
-            obs_prob = A_matrix[:, argmax(state_prob)]
-            observation = [rand(Categorical(obs_prob))]
-        end
+        # 1. Environment generates observation
+        # Sample observation stochastically from the Likelihood matrix A conditioned on the true state
+        obs_prob = A_matrix[:, true_state]
+        # Categorical sampling to generate an observation integer
+        observation = [rand(Categorical(obs_prob))]
+        
         push!(observations_log, observation[1])
         
-        # Agent inference and action
+        # 2. Agent perceives observation, infers state, selects action
         infer_states!(aif_agent, observation)
         infer_policies!(aif_agent)
         sample_action!(aif_agent)
@@ -205,15 +205,23 @@ try
         push!(beliefs_full_log, copy(aif_agent.qs_current[1]))  # All states
         push!(beliefs_log, aif_agent.qs_current[1][1])  # First state only
         
+        # 3. Environment transitions true hidden state
+        # Sample next state stochastically from the Transition matrix B conditioned on current true state and selected action
+        next_probs = B_matrix[:, true_state, aif_agent.action[1]]
+        # Safety catch for numerical zero bounds before categorical sampling
+        next_probs = max.(next_probs, 1e-16)
+        next_probs = next_probs ./ sum(next_probs)
+        true_state = rand(Categorical(next_probs))
+        
         # Try to log EFE if available
         try
-            if hasfield(typeof(aif_agent), :EFE) && !isnothing(aif_agent.EFE)
-                push!(efe_log, minimum(aif_agent.EFE))
+            if hasfield(typeof(aif_agent), :G) && !isnothing(aif_agent.G)
+                push!(efe_log, copy(aif_agent.G))
             else
-                push!(efe_log, NaN)
+                push!(efe_log, [NaN])
             end
         catch
-            push!(efe_log, NaN)
+            push!(efe_log, [NaN])
         end
         
         # Log policy if available
@@ -235,204 +243,7 @@ try
     end
     
     println("✅ Simulation completed: $n_steps timesteps")
-    println("📊 Generating comprehensive visualizations...")
-    
-    # Create visualization directory
-    viz_dir = joinpath(output_dir, "visualizations")
-    mkpath(viz_dir)
-    
-    # Convert beliefs_full_log to matrix for easier plotting
-    beliefs_matrix = hcat([b for b in beliefs_full_log]...)'  # timesteps x states
-    
-    # Set Plots backend
-    gr()  # Use GR backend for non-interactive plotting
-    
-    # 1. Belief Evolution Plot
-    try
-        state_labels = reshape(["State " * string(i) for i in 1:N_STATES], 1, N_STATES)
-        p1 = plot(steps_log, beliefs_matrix, 
-                 xlabel="Timestep", ylabel="Belief (Posterior Probability)",
-                 title="ActiveInference.jl Belief Evolution Over Time\nModel: $MODEL_NAME",
-                 label=state_labels,
-                 linewidth=2, marker=:circle, markersize=4, alpha=0.8,
-                 legend=:best, size=(1200, 600), dpi=300,
-                 ylim=(0, 1), grid=true, gridstyle=:dot, gridalpha=0.3)
-        
-        # Add observation markers
-        for (t, obs) in enumerate(observations_log)
-            vline!([t], color=:gray, linestyle=:dash, alpha=0.3, linewidth=1, label="")
-            annotate!(t, -0.05, text("O$obs", 8, :gray))
-        end
-        
-        belief_file = joinpath(viz_dir, "$(MODEL_NAME)_belief_evolution.png")
-        savefig(p1, belief_file)
-        println("✅ Generated belief evolution plot: $belief_file")
-    catch e
-        println("⚠️  Error generating belief evolution plot: $e")
-    end
-    
-    # 2. Action Distribution Plot
-    try
-        action_counts = countmap(actions_log)
-        unique_actions = sort(collect(keys(action_counts)))
-        counts = [action_counts[a] for a in unique_actions]
-        
-        p2_1 = plot(steps_log, actions_log,
-                   xlabel="Timestep", ylabel="Action Selected",
-                   title="Action Selection Over Time",
-                   linewidth=2, marker=:square, markersize=6, color=:coral,
-                   legend=false, size=(700, 450), dpi=300,
-                   grid=true, gridstyle=:dot)
-        
-        p2_2 = bar(unique_actions, counts,
-                   xlabel="Action", ylabel="Frequency",
-                   title="Action Distribution",
-                   color=:coral, alpha=0.7, edgecolor=:black, linewidth=1,
-                   legend=false, size=(700, 450), dpi=300,
-                   grid=true, gridstyle=:dot, gridalpha=0.3)
-        
-        p2 = plot(p2_1, p2_2, layout=(1, 2), size=(1400, 500))
-        action_file = joinpath(viz_dir, "$(MODEL_NAME)_action_analysis.png")
-        savefig(p2, action_file)
-        println("✅ Generated action analysis plot: $action_file")
-    catch e
-        println("⚠️  Error generating action analysis plot: $e")
-    end
-    
-    # 3. A Matrix Heatmap
-    try
-        p3 = heatmap(A_matrix, 
-                    xlabel="Hidden State", ylabel="Observation",
-                    title="ActiveInference.jl Observation Model (A Matrix)\nLikelihood: P(observation | state)",
-                    color=:YlOrRd, aspect_ratio=:equal,
-                    size=(800, 600), dpi=300,
-                    clim=(0, 1), colorbar_title="P(obs|state)")
-        
-        # Annotate with values
-        for i in 1:size(A_matrix, 1)
-            for j in 1:size(A_matrix, 2)
-                annotate!(j, i, text(round(A_matrix[i,j], digits=3), 10, :black))
-            end
-        end
-        
-        a_matrix_file = joinpath(viz_dir, "$(MODEL_NAME)_A_matrix.png")
-        savefig(p3, a_matrix_file)
-        println("✅ Generated A matrix heatmap: $a_matrix_file")
-    catch e
-        println("⚠️  Error generating A matrix heatmap: $e")
-    end
-    
-    # 4. Preferences (C) and Prior (D) Plot
-    try
-        p4_1 = bar(1:length(C_vector), C_vector,
-                   xlabel="Observation", ylabel="Preference (log probability)",
-                   title="Observation Preferences (C vector)",
-                   color=:skyblue, alpha=0.7, edgecolor=:black, linewidth=1,
-                   legend=false, size=(600, 500), dpi=300,
-                   grid=true, gridstyle=:dot, gridalpha=0.3)
-        
-        p4_2 = bar(1:length(D_vector), D_vector,
-                   xlabel="State", ylabel="Prior Probability",
-                   title="State Prior (D vector)",
-                   color=:lightgreen, alpha=0.7, edgecolor=:black, linewidth=1,
-                   legend=false, size=(600, 500), dpi=300,
-                   ylim=(0, 1), grid=true, gridstyle=:dot, gridalpha=0.3)
-        
-        p4 = plot(p4_1, p4_2, layout=(1, 2), size=(1200, 500))
-        prefs_file = joinpath(viz_dir, "$(MODEL_NAME)_preferences_prior.png")
-        savefig(p4, prefs_file)
-        println("✅ Generated preferences/prior plot: $prefs_file")
-    catch e
-        println("⚠️  Error generating preferences/prior plot: $e")
-    end
-    
-    # 5. 3D Belief Trajectory (only for 3-state models)
-    if N_STATES == 3
-        try
-            p5 = plot3d(beliefs_matrix[:, 1], beliefs_matrix[:, 2], beliefs_matrix[:, 3],
-                       xlabel="P(State 0)", ylabel="P(State 1)", zlabel="P(State 2)",
-                       title="Belief State Space Trajectory\n(Simplex in 3D)",
-                       linewidth=2, marker=:circle, markersize=6, alpha=0.7, color=:purple,
-                       legend=false, size=(1000, 800), dpi=300,
-                       camera=(30, 30))
-            
-            # Mark start and end
-            scatter3d!([beliefs_matrix[1, 1]], [beliefs_matrix[1, 2]], [beliefs_matrix[1, 3]],
-                      markersize=15, color=:green, marker=:star5, label="Start")
-            scatter3d!([beliefs_matrix[end, 1]], [beliefs_matrix[end, 2]], [beliefs_matrix[end, 3]],
-                      markersize=15, color=:red, marker=:xcross, label="End")
-            
-            trajectory_file = joinpath(viz_dir, "$(MODEL_NAME)_belief_trajectory_3d.png")
-            savefig(p5, trajectory_file)
-            println("✅ Generated 3D belief trajectory: $trajectory_file")
-        catch e
-            println("⚠️  Error generating 3D belief trajectory: $e")
-        end
-    end
-    
-    # 6. Expected Free Energy Plot (if available)
-    if !all(isnan.(efe_log))
-        try
-            p6 = plot(steps_log, efe_log,
-                     xlabel="Timestep", ylabel="Expected Free Energy",
-                     title="Expected Free Energy Over Time",
-                     linewidth=2, marker=:diamond, markersize=5, color=:purple,
-                     legend=false, size=(1200, 600), dpi=300,
-                     grid=true, gridstyle=:dot)
-            
-            efe_file = joinpath(viz_dir, "$(MODEL_NAME)_efe_evolution.png")
-            savefig(p6, efe_file)
-            println("✅ Generated EFE evolution plot: $efe_file")
-        catch e
-            println("⚠️  Error generating EFE evolution plot: $e")
-        end
-    end
-    
-    # 7. Summary Dashboard
-    try
-        # Create comprehensive dashboard
-        # Top row: Belief evolution (larger)
-        state_labels_dash = reshape(["State " * string(i) for i in 1:N_STATES], 1, N_STATES)
-        p_beliefs = plot(steps_log, beliefs_matrix,
-                        xlabel="Timestep", ylabel="Belief",
-                        title="Belief Evolution",
-                        label=state_labels_dash,
-                        linewidth=2, marker=:circle, markersize=3,
-                        legend=:best, ylim=(0, 1), grid=true)
-        
-        # Middle row: Actions and observations
-        p_actions = plot(steps_log, actions_log,
-                        xlabel="Time", ylabel="Action",
-                        title="Actions", linewidth=2, marker=:square,
-                        color=:coral, legend=false, grid=true)
-        
-        p_obs = plot(steps_log, observations_log,
-                    xlabel="Time", ylabel="Observation",
-                    title="Observations", linewidth=2, marker=:circle,
-                    color=:steelblue, legend=false, grid=true)
-        
-        # Bottom row: Matrices and vectors
-        p_a = heatmap(A_matrix, title="A Matrix", color=:YlOrRd, colorbar=false)
-        p_c = bar(1:length(C_vector), C_vector, title="C Vector",
-                 color=:skyblue, legend=false)
-        p_d = bar(1:length(D_vector), D_vector, title="D Vector",
-                 color=:lightgreen, legend=false, ylim=(0,1))
-        
-        # Combine into dashboard
-        layout = @layout [a{0.4h}; [b c]; [d e f]]
-        dashboard = plot(p_beliefs, p_actions, p_obs, p_a, p_c, p_d,
-                        layout=layout, size=(1600, 1000), dpi=300,
-                        plot_title="ActiveInference.jl Active Inference Dashboard - $MODEL_NAME",
-                        plot_titlefontsize=16)
-        
-        dashboard_file = joinpath(viz_dir, "$(MODEL_NAME)_dashboard.png")
-        savefig(dashboard, dashboard_file)
-        println("✅ Generated summary dashboard: $dashboard_file")
-    catch e
-        println("⚠️  Error generating summary dashboard: $e")
-    end
-    
-    println("✅ Visualization generation complete!")
+    println("📊 Visualizations will be generated by the analysis step")
     
     # Save results
     println("💾 Saving results...")
@@ -447,6 +258,50 @@ try
         println(f, "# Steps: $n_steps")
         println(f, "# Columns: step, observation, action, belief_state_1")
         writedlm(f, results_data, ',')
+    end
+    
+    # Validation checks (must run before saving JSON results that reference validation_status)
+    println("🔍 Running validation checks...")
+    beliefs_valid = all([all(0 .<= b .<= 1) for b in beliefs_full_log])
+    beliefs_sum_to_one = all([isapprox(sum(b), 1.0, atol=0.01) for b in beliefs_full_log])
+    actions_valid = all(1 .<= actions_log .<= N_CONTROLS)
+    
+    validation_status = Dict(
+        "beliefs_in_range" => beliefs_valid,
+        "beliefs_sum_to_one" => beliefs_sum_to_one,
+        "actions_in_range" => actions_valid,
+        "all_valid" => beliefs_valid && beliefs_sum_to_one && actions_valid
+    )
+    
+    println("✅ Validation: beliefs_valid=$beliefs_valid, sum_to_one=$beliefs_sum_to_one, actions_valid=$actions_valid")
+    
+    # Helper function to sanitize NaNs before JSON serialization
+    safe_float(x) = isnan(x) ? 0.0 : Float64(x)
+    
+    # Convert Julia arrays of arrays to standard forms that JSON.jl handles natively
+    json_beliefs_log = [[safe_float(v) for v in b] for b in beliefs_full_log]
+    json_efe_log = [[safe_float(v) for v in e] for e in efe_log]
+    json_policy_log = [Ref(p)[] for p in policy_log] # Handle policy structure
+
+    # Save comprehensive JSON results matching cross-framework standard
+    comp_results = Dict(
+        "framework" => "activeinference_jl",
+        "model_name" => MODEL_NAME,
+        "time_steps" => n_steps,
+        "observations" => observations_log,
+        "actions" => actions_log,
+        "beliefs" => json_beliefs_log,
+        "efe_history" => json_efe_log,
+        "policy_history" => json_policy_log,
+        "num_states" => N_STATES,
+        "num_observations" => N_OBSERVATIONS,
+        "num_actions" => N_CONTROLS,
+        "validation" => validation_status
+    )
+    
+    comp_file = joinpath(output_dir, "simulation_results.json")
+    open(comp_file, "w") do f
+        JSON.print(f, comp_results, 2)
     end
     
     # Save model parameters
@@ -481,24 +336,7 @@ try
         write(f, JSON.json(json_model_params, 2))
     end
     
-    # Validation checks
-    println("🔍 Running validation checks...")
-    beliefs_valid = all([all(0 .<= b .<= 1) for b in beliefs_full_log])
-    beliefs_sum_to_one = all([isapprox(sum(b), 1.0, atol=0.01) for b in beliefs_full_log])
-    actions_valid = all(1 .<= actions_log .<= N_CONTROLS)
-    
-    validation_status = Dict(
-        "beliefs_in_range" => beliefs_valid,
-        "beliefs_sum_to_one" => beliefs_sum_to_one,
-        "actions_in_range" => actions_valid,
-        "all_valid" => beliefs_valid && beliefs_sum_to_one && actions_valid
-    )
-    
-    println("✅ Validation: beliefs_valid=$beliefs_valid, sum_to_one=$beliefs_sum_to_one, actions_valid=$actions_valid")
-    
-    # Count visualizations
-    viz_files = filter(f -> endswith(f, ".png"), readdir(viz_dir, join=false))
-    n_visualizations = length(viz_files)
+    # (Validation already computed above before JSON export)
     
     # Create summary
     summary_file = joinpath(output_dir, "summary.txt")
@@ -527,9 +365,9 @@ try
         println(f, "  - Overall status: $(validation_status["all_valid"] ? "PASS" : "FAIL")")
         println(f, "")
         println(f, "Outputs:")
-        println(f, "  - Visualizations generated: $n_visualizations")
         println(f, "  - Data files: simulation_results.csv, model_parameters.json")
         println(f, "  - Summary: summary.txt")
+        println(f, "  - Visualizations: generated by analysis step")
         println(f, "="^70)
     end
     
@@ -539,7 +377,6 @@ try
     println("📊 Results saved to: $output_dir")
     println("📈 Final belief: $(round(beliefs_log[end], digits=3))")
     println("🎯 Action distribution: $(countmap(actions_log))")
-    println("🎨 Visualizations: $n_visualizations files in $viz_dir")
     println("✅ Validation: ALL CHECKS PASSED" * (validation_status["all_valid"] ? "" : " (WITH WARNINGS)"))
     
 catch e

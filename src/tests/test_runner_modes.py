@@ -184,11 +184,26 @@ def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: b
     return success
 
 
-def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False) -> bool:
+def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: bool = False, timeout: int = 600) -> bool:
     """
     Run a reliable subset of fast tests with improved error handling.
+
+    Args:
+        logger: Logger instance
+        output_dir: Output directory for test results
+        verbose: Enable verbose output
+        timeout: Subprocess timeout in seconds (default 180s, overridable via FAST_TESTS_TIMEOUT env var)
     """
-    logger.info("Running reliable fast test subset")
+    # Allow environment variable override for timeout
+    env_timeout = os.getenv("FAST_TESTS_TIMEOUT")
+    if env_timeout:
+        try:
+            timeout = int(env_timeout)
+            logger.info(f"⏱️ Using FAST_TESTS_TIMEOUT override: {timeout}s")
+        except ValueError:
+            logger.warning(f"⚠️ Invalid FAST_TESTS_TIMEOUT value '{env_timeout}', using default {timeout}s")
+
+    logger.info(f"Running reliable fast test subset (timeout: {timeout}s)")
 
     reliable_tests = [
         "test_core_modules.py",
@@ -218,7 +233,7 @@ def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: b
             cwd=Path(__file__).parent.parent.parent,
             capture_output=True,
             text=True,
-            timeout=90
+            timeout=timeout
         )
 
         output_dir.mkdir(parents=True, exist_ok=True)

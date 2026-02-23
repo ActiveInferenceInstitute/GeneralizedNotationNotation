@@ -3,9 +3,14 @@
   "success": true,
   "errors": [],
   "system_graph_stats": {
-    "nodes": 0,
-    "edges": 0,
-    "cycles": 0
+    "nodes": 13,
+    "edges": 14,
+    "cycles": 3,
+    "isolated_nodes": 2,
+    "components": 3
   },
-  "issues": []
+  "issues": [
+    "Circular dependencies detected: [['s', 'A'], ['s', 'B'], ['A', 'o']]",
+    "Isolated components (no connections): ['F', 't']"
+  ]
 }

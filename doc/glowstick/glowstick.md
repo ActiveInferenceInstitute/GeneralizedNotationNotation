@@ -1,4 +1,4 @@
-https://github.com/nicksenger/glowstick
+<https://github.com/nicksenger/glowstick>
 
 Repository: nicksenger/glowstick
 Files analyzed: 86
@@ -111,10 +111,10 @@ Directory structure:
         └── workflows/
             └── ci.yml
 
-
 ================================================
 FILE: README.md
 ================================================
+
 # glowstick
 
 This crate makes working with tensors in Rust safe, **easy**, and _fun_ by tracking their shapes in the type system!
@@ -186,12 +186,10 @@ The project is currently pre-1.0: breaking changes will be made!
 - [x] Manually check type-level shapes (`debug_tensor!(_)`)
 - [ ] Support for all ONNX operations
 
-
-
-
 ================================================
 FILE: Cargo.toml
 ================================================
+
 [package]
 name = "glowstick"
 description = "Gradual typing for tensor shapes"
@@ -219,7 +217,7 @@ version = "0.2.0"
 authors = ["Nick Senger <dev@nsenger.com>"]
 edition = "2024"
 license = "MIT"
-repository = "https://github.com/nicksenger/glowstick"
+repository = "<https://github.com/nicksenger/glowstick>"
 categories = ["science"]
 keywords = ["science", "math", "machine-learning", "metaprogramming", "types"]
 rust-version = "1.85"
@@ -230,12 +228,10 @@ glowstick-burn = { path = "./glowstick-burn", version = "0.2.0" }
 glowstick-candle = { path = "./glowstick-candle", version = "0.2.0" }
 thiserror = "2"
 
-
-
-
 ================================================
 FILE: LICENSE
 ================================================
+
 Copyright 2025 Nick Senger
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -255,11 +251,10 @@ COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
 IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-
-
 ================================================
 FILE: examples/burn-llama/README.md
 ================================================
+
 ## burn-llama
 
 This example implements Meta's Llama 3.2 architecture using the [burn](https://github.com/tracel-ai/burn) framework, leveraging glowstick where possible for compile-time tensor shapes. It was largely copied from the corresponding [burn llama example](https://github.com/tracel-ai/models/tree/main/llama-burn).
@@ -270,12 +265,10 @@ Use the following command to test using Llama 3.2 1B:
 
 Note that most of the typed shape usage can be found in the model implementation (`src/transformer.rs`).
 
-
-
-
 ================================================
 FILE: examples/burn-llama/Cargo.toml
 ================================================
+
 [package]
 name = "burn-llama"
 edition = "2021"
@@ -302,11 +295,10 @@ tiktoken-rs = { version = "0.5" }
 [[bin]]
 name = "chat"
 
-
-
 ================================================
 FILE: examples/burn-llama/src/cache.rs
 ================================================
+
 use burn::tensor::{backend::Backend as BurnBackend, Device, Tensor as BurnTensor};
 
 use crate::shape::*;
@@ -387,11 +379,10 @@ impl<Backend: BurnBackend> AutoregressiveCache<Backend> {
     }
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/lib.rs
 ================================================
+
 pub(crate) mod cache;
 pub mod llama;
 pub mod pretrained;
@@ -400,17 +391,17 @@ pub mod shape;
 pub mod tokenizer;
 mod transformer;
 
-#[derive(Debug, thiserror::Error)]
+# [derive(Debug, thiserror::Error)]
+
 pub enum Error {
     #[error("Glowstick error: {0}")]
     Glowstick(#[from] glowstick_burn::Error),
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/llama.rs
 ================================================
+
 use std::time::Instant;
 
 use burn::{
@@ -436,7 +427,8 @@ use crate::{
 
 use crate::pretrained::{self, ModelMeta};
 
-#[derive(Config, Debug)]
+# [derive(Config, Debug)]
+
 pub struct LlamaConfig {
     /// The size of the model.
     #[config(default = "4096")]
@@ -470,7 +462,9 @@ pub struct LlamaConfig {
 }
 
 /// Rotary positional encoding (RoPE)
-#[derive(Config, Debug)]
+
+# [derive(Config, Debug)]
+
 pub struct RopeConfig {
     pub theta: f32,
     #[config(default = "None")]
@@ -478,7 +472,9 @@ pub struct RopeConfig {
 }
 
 /// RoPE frequency scaling.
-#[derive(Config, Debug)]
+
+# [derive(Config, Debug)]
+
 pub struct RopeFrequencyScaling {
     #[config(default = "8.")]
     pub scale_factor: f32,
@@ -507,7 +503,7 @@ impl LlamaConfig {
         )
     }
 
-    /// Initialize a new [Llama](Llama) module.
+    /// Initialize a new Llama module.
     pub fn init<Backend: BurnBackend, T: Tokenizer>(
         &self,
         device: &Device<Backend>,
@@ -764,7 +760,7 @@ impl<Backend: BurnBackend, T: Tokenizer> Llama<Backend, T> {
 impl RopeFrequencyScaling {
     /// Applies frequency scaling by parts following Llama 3.1's scheme.
     ///
-    /// Adapted from: https://github.com/meta-llama/llama-models/blob/main/models/llama3/reference_impl/model.py#L45
+    /// Adapted from: <https://github.com/meta-llama/llama-models/blob/main/models/llama3/reference_impl/model.py#L45>
     pub fn freq_scaling_by_parts<Backend: BurnBackend>(
         &self,
         freqs: BurnTensor<Backend, 1>,
@@ -808,11 +804,10 @@ pub(crate) fn temperature_scaled_softmax<Backend: BurnBackend>(
     softmax!(logits / temperature, U1)
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/pretrained.rs
 ================================================
+
 /// Pre-trained model metadata.
 pub struct Pretrained {
     pub(super) name: &'static str,
@@ -886,23 +881,22 @@ impl ModelMeta for Llama {
         match self {
             Self::Llama321bInstruct => Pretrained {
                 name: "Llama-3.2-1B-Instruct",
-                model: "https://huggingface.co/tracel-ai/llama-3.2-1b-instruct-burn/resolve/main/model.mpk?download=true",
-                tokenizer: "https://huggingface.co/tracel-ai/llama-3.2-1b-instruct-burn/resolve/main/tokenizer.model?download=true",
+                model: "<https://huggingface.co/tracel-ai/llama-3.2-1b-instruct-burn/resolve/main/model.mpk?download=true>",
+                tokenizer: "<https://huggingface.co/tracel-ai/llama-3.2-1b-instruct-burn/resolve/main/tokenizer.model?download=true>",
             },
             Self::Llama323bInstruct => Pretrained {
                 name: "Llama-3.2-3B-Instruct",
-                model: "https://huggingface.co/tracel-ai/llama-3.2-3b-instruct-burn/resolve/main/model.mpk?download=true",
-                tokenizer: "https://huggingface.co/tracel-ai/llama-3.2-3b-instruct-burn/resolve/main/tokenizer.model?download=true",
+                model: "<https://huggingface.co/tracel-ai/llama-3.2-3b-instruct-burn/resolve/main/model.mpk?download=true>",
+                tokenizer: "<https://huggingface.co/tracel-ai/llama-3.2-3b-instruct-burn/resolve/main/tokenizer.model?download=true>",
             },
         }
     }
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/sampling.rs
 ================================================
+
 use burn::tensor::backend::Backend as BurnBackend;
 use glowstick::num::{U0, U1};
 use glowstick_burn::{argmax, narrow, sort_descending_with_indices};
@@ -989,11 +983,10 @@ impl Sampling for TopP {
     }
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/shape.rs
 ================================================
+
 use std::ops::{Add, Div, Mul};
 
 use burn::tensor::{Int, Tensor as BurnTensor};
@@ -1021,7 +1014,8 @@ pub type Q = S;
 pub type KV = <<S as Div<A>>::Output as Mul<K>>::Output;
 pub type R = <A as Div<K>>::Output;
 
-#[cfg(not(feature = "3b"))]
+# [cfg(not(feature = "3b"))]
+
 mod config_dims {
     use glowstick::num::{U2048, U32, U8, U8192};
 
@@ -1033,7 +1027,8 @@ mod config_dims {
     pub const ROPE_THETA: f32 = 500000.;
 }
 
-#[cfg(feature = "3b")]
+# [cfg(feature = "3b")]
+
 mod config_dims {
     use glowstick::num::{U10, U24, U300, U72, U8, U8192};
 
@@ -1048,11 +1043,10 @@ mod config_dims {
 
 pub use config_dims::*;
 
-
-
 ================================================
 FILE: examples/burn-llama/src/transformer.rs
 ================================================
+
 use burn::{
     config::Config,
     module::Module,
@@ -1069,8 +1063,10 @@ use glowstick_burn::{expand, matmul, reshape, softmax, transpose, tril_mask, uns
 use crate::cache::AutoregressiveCache;
 use crate::shape::{Rank2IntTensor, Rank3Tensor, Rank4Tensor, A, B as BS, C, H, K, KV, N, Q, R, S};
 
-/// Configuration to create a Llama [decoder-only transformer](Transformer).
-#[derive(Config)]
+/// Configuration to create a Llama decoder-only transformer.
+
+# [derive(Config)]
+
 pub struct TransformerConfig {
     /// The size of the vocabulary.
     pub vocab_size: usize,
@@ -1093,7 +1089,7 @@ pub struct TransformerConfig {
 }
 
 impl TransformerConfig {
-    /// Initialize a new [decoder-only transformer](Transformer).
+    /// Initialize a new decoder-only transformer.
     pub fn init<B: Backend>(&self, device: &Device<B>) -> Transformer<B> {
         let tok_embeddings = EmbeddingConfig::new(self.vocab_size, self.d_model).init(device);
         let layers = (0..self.n_layers)
@@ -1126,7 +1122,9 @@ impl TransformerConfig {
 }
 
 /// Llama decoder-only transformer.
-#[derive(Module, Debug)]
+
+# [derive(Module, Debug)]
+
 pub struct Transformer<B: Backend> {
     tok_embeddings: Embedding<B>,
     layers: Vec<TransformerBlock<B>>,
@@ -1154,8 +1152,10 @@ impl<Backend: burn::tensor::backend::Backend> Transformer<Backend> {
     }
 }
 
-/// Configuration to create a [decoder-only transformer block](TransformerBlock).
-#[derive(Config)]
+/// Configuration to create a decoder-only transformer block.
+
+# [derive(Config)]
+
 pub struct TransformerBlockConfig {
     /// The number of transformer blocks.
     pub n_layers: usize,
@@ -1172,7 +1172,7 @@ pub struct TransformerBlockConfig {
 }
 
 impl TransformerBlockConfig {
-    /// Initialize a new [decoder-only transformer block](TransformerBlock).
+    /// Initialize a new decoder-only transformer block.
     pub fn init<B: Backend>(&self, device: &Device<B>) -> TransformerBlock<B> {
         let attention =
             MultiHeadAttentionConfig::new(self.d_model, self.n_heads, self.n_kv_heads).init(device);
@@ -1194,7 +1194,9 @@ impl TransformerBlockConfig {
 }
 
 /// Decoder-only transformer block.
-#[derive(Module, Debug)]
+
+# [derive(Module, Debug)]
+
 pub struct TransformerBlock<B: Backend> {
     /// Self-attention.
     attention: MultiHeadAttention<B>,
@@ -1226,8 +1228,10 @@ impl<B: Backend> TransformerBlock<B> {
     }
 }
 
-/// Configuration to create a [feed-forward transformation network](FeedForward).
-#[derive(Config)]
+/// Configuration to create a feed-forward transformation network.
+
+# [derive(Config)]
+
 pub struct FeedForwardConfig {
     /// The size of the model.
     pub d_model: usize,
@@ -1236,7 +1240,7 @@ pub struct FeedForwardConfig {
 }
 
 impl FeedForwardConfig {
-    /// Initialize a new [feed-forward transformation network](FeedForward).
+    /// Initialize a new feed-forward transformation network.
     pub fn init<B: Backend>(&self, device: &Device<B>) -> FeedForward<B> {
         let swiglu = SwiGluConfig::new(self.d_model, self.hidden_size)
             .with_bias(false)
@@ -1250,7 +1254,9 @@ impl FeedForwardConfig {
 }
 
 /// Feed-forward transformation network.
-#[derive(Module, Debug)]
+
+# [derive(Module, Debug)]
+
 pub struct FeedForward<B: Backend> {
     // Swish gated linear unit with trainable parameters.
     swiglu: SwiGlu<B>,
@@ -1284,7 +1290,7 @@ pub struct KeyValueCache<B: Backend> {
 
 type KVCacheTensor<B> = Rank4Tensor<BS, K, N, H, B>;
 impl<B: Backend> KeyValueCache<B> {
-    /// Create a new [key-value cache](KeyValueCache).
+    /// Create a new key-value cache.
     pub fn new(
         max_batch_size: usize,
         num_heads: usize,
@@ -1330,8 +1336,10 @@ impl<B: Backend> KeyValueCache<B> {
     }
 }
 
-/// Configuration to create a [multi-head attention](MultiHeadAttention) module.
-#[derive(Config)]
+/// Configuration to create a multi-head attention module.
+
+# [derive(Config)]
+
 pub struct MultiHeadAttentionConfig {
     /// The size of the model.
     pub d_model: usize,
@@ -1342,7 +1350,7 @@ pub struct MultiHeadAttentionConfig {
 }
 
 impl MultiHeadAttentionConfig {
-    /// Initialize a new [multi-head attention](MultiHeadAttention) module.
+    /// Initialize a new multi-head attention module.
     pub fn init<B: Backend>(&self, device: &Device<B>) -> MultiHeadAttention<B> {
         let head_dim = self.d_model / self.n_heads;
 
@@ -1371,7 +1379,8 @@ impl MultiHeadAttentionConfig {
     }
 }
 
-#[derive(Module, Debug)]
+# [derive(Module, Debug)]
+
 pub struct MultiHeadAttention<B: Backend> {
     /// Query projection.
     wq: Linear<B>,
@@ -1403,7 +1412,7 @@ impl<B: Backend> MultiHeadAttention<B> {
         rope: &RotaryEncoding<B>,
     ) -> Result<Rank3Tensor<BS, N, S, B>, crate::Error> {
         let device = input.device();
-        let [_batch_size, seq_len, _hidden_size] = input.dims();
+        let [_batch_size, seq_len,_hidden_size] = input.dims();
 
         let q: Rank3Tensor<BS, N, Q, B> = self.wq.forward(input.clone().into_inner()).try_into()?;
         let k: Rank3Tensor<BS, N, KV, B> =
@@ -1467,12 +1476,11 @@ impl<B: Backend> MultiHeadAttention<B> {
     }
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/bin/chat.rs
 ================================================
-#![recursion_limit = "256"]
+
+# ![recursion_limit = "256"]
 
 use std::time::Instant;
 
@@ -1486,8 +1494,10 @@ use clap::Parser;
 
 const DEFAULT_PROMPT: &str = "GPU go brrr";
 
-#[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+# [derive(Parser, Debug)]
+
+# [command(version, about, long_about = None)]
+
 pub struct Config {
     /// Top-p probability threshold.
     #[arg(long, default_value_t = 0.9)]
@@ -1563,7 +1573,8 @@ pub fn chat<B: Backend>(args: Config, device: Device<B>) {
     );
 }
 
-#[cfg(feature = "wgpu")]
+# [cfg(feature = "wgpu")]
+
 mod wgpu {
     use super::*;
     use burn::backend::wgpu::{Wgpu, WgpuDevice};
@@ -1575,7 +1586,8 @@ mod wgpu {
     }
 }
 
-#[cfg(feature = "cuda")]
+# [cfg(feature = "cuda")]
+
 mod cuda {
     use super::*;
     use burn::{
@@ -1603,11 +1615,10 @@ pub fn main() {
     println!("No backend enabled.");
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/tokenizer/base.rs
 ================================================
+
 pub trait Tokenizer {
     /// Load the tokenizer from the provided path.
     fn new(tokenizer_path: &str) -> Result<Self, String>
@@ -1640,22 +1651,20 @@ pub trait Tokenizer {
     fn stop_ids(&self) -> Vec<u32>;
 }
 
-
-
 ================================================
 FILE: examples/burn-llama/src/tokenizer/mod.rs
 ================================================
+
 pub mod base;
 pub use base::*;
 
 pub mod tiktoken;
 pub use tiktoken::*;
 
-
-
 ================================================
 FILE: examples/burn-llama/src/tokenizer/tiktoken.rs
 ================================================
+
 use std::{
     fs::File,
     io::{BufRead, BufReader},
@@ -1686,9 +1695,10 @@ const SPECIAL_TOKENS: [&str; 11] = [
     EOT_TOKEN, // end of turn
     "<|python_tag|>",
 ];
-const PATTERN: &str = r#"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n]*|\s*[\r\n]+|\s+(?!\S)|\s+"#;
+const PATTERN: &str = r#"(?i:'s|'t|'re|'ve|'m|'ll|'d)|[^\r\n\p{L}\p{N}]?\p{L}+|\p{N}{1,3}| ?[^\s\p{L}\p{N}]+[\r\n]_|\s_[\r\n]+|\s+(?!\S)|\s+"#;
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 pub struct Tiktoken {
     bpe: CoreBPE,
     bos_token_id: usize,
@@ -1787,11 +1797,10 @@ impl Tokenizer for Tiktoken {
     }
 }
 
-
-
 ================================================
 FILE: examples/candle-llama/README.md
 ================================================
+
 ## candle-llama
 
 This example implements Meta's Llama 3.2 architecture using the [candle](https://github.com/huggingface/candle) framework, leveraging glowstick where possible for compile-time tensor shapes. It was largely copied from the corresponding [candle llama example](https://github.com/huggingface/candle/tree/main/candle-examples/examples/llama).
@@ -1802,12 +1811,10 @@ Use the following command to test using SmolLM2 135M:
 
 Note that most of the typed shape usage can be found in the model implementation (`src/llama.rs`).
 
-
-
-
 ================================================
 FILE: examples/candle-llama/Cargo.toml
 ================================================
+
 [package]
 name = "candle-llama"
 edition = "2021"
@@ -1850,11 +1857,10 @@ flash-attn = ["dep:candle-flash-attn", "candle-transformers/flash-attn"]
 mkl = ["dep:intel-mkl-src", "candle/mkl", "candle-nn/mkl", "candle-transformers/mkl"]
 metal = ["candle/metal", "candle-nn/metal"]
 
-
-
 ================================================
 FILE: examples/candle-llama/src/llama.rs
 ================================================
+
 //! Llama inference implementation.
 //!
 //! See ["LLaMA: Open and Efficient Foundation Language Models"](https://arxiv.org/abs/2302.13971)
@@ -1873,7 +1879,8 @@ use std::{collections::HashMap, f32::consts::PI};
 
 use crate::shape::{A, B, C, H, K, KV, N, Q, S};
 
-#[derive(Debug, Clone, serde::Deserialize, Default)]
+# [derive(Debug, Clone, serde::Deserialize, Default)]
+
 pub enum Llama3RopeType {
     #[serde(rename = "llama3")]
     Llama3,
@@ -1882,7 +1889,8 @@ pub enum Llama3RopeType {
     Default,
 }
 
-#[derive(Debug, Clone, serde::Deserialize, Default)]
+# [derive(Debug, Clone, serde::Deserialize, Default)]
+
 pub struct Llama3RopeConfig {
     pub factor: f32,
     pub low_freq_factor: f32,
@@ -1890,14 +1898,18 @@ pub struct Llama3RopeConfig {
     pub original_max_position_embeddings: usize,
     pub rope_type: Llama3RopeType,
 }
-#[derive(Debug, Clone, serde::Deserialize)]
-#[serde(untagged)]
+
+# [derive(Debug, Clone, serde::Deserialize)]
+
+# [serde(untagged)]
+
 pub enum LlamaEosToks {
     Single(u32),
     Multiple(Vec<u32>),
 }
 
-#[derive(Debug, Clone, serde::Deserialize)]
+# [derive(Debug, Clone, serde::Deserialize)]
+
 pub struct LlamaConfig {
     pub hidden_size: usize,
     pub intermediate_size: usize,
@@ -1944,7 +1956,8 @@ impl LlamaConfig {
     }
 }
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 pub struct Config {
     pub hidden_size: usize,
     pub intermediate_size: usize,
@@ -1962,7 +1975,9 @@ pub struct Config {
 }
 
 type CacheTensor = Tensor<Shape4<B, K, N, H>>;
-#[derive(Clone)]
+
+# [derive(Clone)]
+
 pub struct Cache {
     masks: HashMap<usize, Tensor<Shape2<N, N>>>,
     pub use_kv_cache: bool,
@@ -2055,7 +2070,8 @@ impl Cache {
     }
 }
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 struct CausalSelfAttention {
     q_proj: Linear,
     k_proj: Linear,
@@ -2070,7 +2086,8 @@ struct CausalSelfAttention {
     max_position_embeddings: usize,
 }
 
-#[cfg(feature = "flash-attn")]
+# [cfg(feature = "flash-attn")]
+
 fn flash_attn(
     q: &Tensor<Shape4<B, N, A, H>>,
     k: &Tensor<Shape4<B, N, A, H>>,
@@ -2082,7 +2099,8 @@ fn flash_attn(
         .try_into()
 }
 
-#[cfg(not(feature = "flash-attn"))]
+# [cfg(not(feature = "flash-attn"))]
+
 fn flash_attn(
     _: &Tensor<Shape4<B, N, A, H>>,
     _: &Tensor<Shape4<B, N, A, H>>,
@@ -2100,8 +2118,8 @@ impl CausalSelfAttention {
         index_pos: usize,
         cache: &Cache,
     ) -> Result<Tensor<Shape4<B, A, N, H>>, Error> {
-        let _enter = self.span_rot.enter();
-        let (_b_sz, _, seq_len, _hidden_size) = x.inner().dims4()?;
+        let_enter = self.span_rot.enter();
+        let (_b_sz,_, seq_len,_hidden_size) = x.inner().dims4()?;
         let cos = narrow!(&cache.cos, U0: [{ index_pos }, { seq_len }] => N)?;
         let sin = narrow!(&cache.sin, U0: [{ index_pos }, { seq_len }] => N)?;
         candle_nn::rotary_emb::rope(x.inner(), cos.inner(), sin.inner())?.try_into()
@@ -2250,7 +2268,8 @@ fn masked_fill(
     Ok(m)
 }
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 struct Mlp {
     c_fc1: Linear,
     c_fc2: Linear,
@@ -2282,7 +2301,8 @@ impl Mlp {
     }
 }
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 struct Block {
     rms_1: RmsNorm,
     attn: CausalSelfAttention,
@@ -2330,7 +2350,8 @@ impl Block {
     }
 }
 
-#[derive(Debug, Clone)]
+# [derive(Debug, Clone)]
+
 pub struct Llama {
     wte: Embedding,
     blocks: Vec<Block>,
@@ -2379,11 +2400,10 @@ impl Llama {
     }
 }
 
-
-
 ================================================
 FILE: examples/candle-llama/src/main.rs
 ================================================
+
 use anyhow::{Error as E, Result};
 use clap::Parser;
 
@@ -2405,7 +2425,8 @@ mod shape;
 
 use shape::*;
 
-#[derive(Debug, thiserror::Error)]
+# [derive(Debug, thiserror::Error)]
+
 pub enum Error {
     #[error("Rank mismatch: runtime ({runtime}) vs type-level ({type_level})")]
     RankMismatch { runtime: usize, type_level: usize },
@@ -2690,7 +2711,8 @@ impl<'a> TextGeneration<'a> {
     }
 }
 
-#[derive(Clone, Copy, Debug, clap::ValueEnum, PartialEq, Eq)]
+# [derive(Clone, Copy, Debug, clap::ValueEnum, PartialEq, Eq)]
+
 enum WhichModel {
     #[value(name = "smol-135m")]
     S135m,
@@ -2700,8 +2722,10 @@ enum WhichModel {
     S1_7b,
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+# [derive(Parser, Debug)]
+
+# [command(author, version, about, long_about = None)]
+
 struct Args {
     /// Run on CPU rather than on GPU.
     #[arg(long)]
@@ -3007,11 +3031,10 @@ pub fn hub_load_safetensors(
     Ok(safetensors_files)
 }
 
-
-
 ================================================
 FILE: examples/candle-llama/src/shape.rs
 ================================================
+
 use std::ops::{Add, Div, Mul};
 
 use glowstick::dyndims;
@@ -3028,7 +3051,8 @@ pub type H = <S as Div<A>>::Output; // Head-dim
 pub type Q = S;
 pub type KV = <<S as Div<A>>::Output as Mul<K>>::Output;
 
-#[cfg(all(not(feature = "smaller"), not(feature = "smallest")))]
+# [cfg(all(not(feature = "smaller"), not(feature = "smallest")))]
+
 mod config_dims {
     use glowstick::num::{U2048, U32};
 
@@ -3037,7 +3061,8 @@ mod config_dims {
     pub type S = U2048; // Hidden Size
 }
 
-#[cfg(all(feature = "smaller", not(feature = "smallest")))]
+# [cfg(all(feature = "smaller", not(feature = "smallest")))]
+
 mod config_dims {
     use glowstick::num::{U15, U5, U960};
 
@@ -3046,7 +3071,8 @@ mod config_dims {
     pub type S = U960; // Hidden Size
 }
 
-#[cfg(feature = "smallest")]
+# [cfg(feature = "smallest")]
+
 mod config_dims {
     use glowstick::num::{U3, U576, U9};
 
@@ -3057,11 +3083,10 @@ mod config_dims {
 
 pub use config_dims::*;
 
-
-
 ================================================
 FILE: glowstick-burn/Cargo.toml
 ================================================
+
 [package]
 name = "glowstick-burn"
 description = "Integration of glowstick with the burn tensor"
@@ -3081,22 +3106,19 @@ thiserror.workspace = true
 [dev-dependencies]
 burn = { version = "0.17", default-features = false, features = ["ndarray"] }
 
-
-
-
 ================================================
 FILE: glowstick-burn/src/lib.rs
 ================================================
+
 pub mod op;
 pub mod tensor;
 
 pub use tensor::{Error, Tensor};
 
-
-
 ================================================
 FILE: glowstick-burn/src/tensor.rs
 ================================================
+
 use std::marker::PhantomData;
 use std::ops::Range;
 
@@ -3116,7 +3138,8 @@ pub const fn rank<B: Backend, const N: usize>(_t: &BTensor<B, N>) -> usize {
     N
 }
 
-#[derive(Debug, thiserror::Error)]
+# [derive(Debug, thiserror::Error)]
+
 pub enum Error {
     #[error(
         "Rank mismatch: the const generic rank provided to burn does not match the type-level rank associated with the glowstick shape. Const: ({const_level}) Type-level: ({type_level})"
@@ -3474,11 +3497,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/argmax.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, Int, Numeric, Tensor as BTensor};
@@ -3512,8 +3534,10 @@ use crate::Tensor;
 /// assert_eq!(argmaxed.dims(), [2, 1, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! argmax {
     [$t:expr,$i:ty] => {{
         use $crate::op::argmax::ArgMax;
@@ -3546,11 +3570,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/cat.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::{
@@ -3586,8 +3609,10 @@ use crate::Tensor;
 /// assert_eq!(concatenated.dims(), [2, 4, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! cat {
     ($ts:expr,$i:ty => $d:ty) => {{
         use $crate::op::cat::Cat;
@@ -3629,11 +3654,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/expand.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, BroadcastArgs, Tensor as BTensor};
@@ -3666,7 +3690,7 @@ use crate::Tensor;
 /// assert_eq!(d.dims(), [1, 4, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When expanding to a shape, a combination of type-level integers and
 /// expressions bound to dynamic dimensions may be provided.
@@ -3692,8 +3716,10 @@ use crate::Tensor;
 /// assert_eq!(b.dims(), [4, 12, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! expand {
     ($t:expr,[$($ds:tt)+]) => {{
         type S = glowstick::TensorShape<$crate::reshape_tys!($($ds)+)>;
@@ -3753,11 +3779,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/flatten.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -3787,8 +3812,10 @@ use crate::Tensor;
 /// assert_eq!(flattened.dims(), [12, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! flatten {
     ($t:expr,[$d1:ty,$d2:ty]) => {{
         use $crate::op::flatten::Flatten;
@@ -3841,11 +3868,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/gather.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::{
@@ -3876,8 +3902,10 @@ use crate::Tensor;
 /// assert_eq!(gathered.inner().to_data().to_vec::<f32>().unwrap(), vec![2., 3.]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! gather {
     ($t1:expr,$t2:expr,$d:ty) => {{
         use $crate::op::gather::Gather;
@@ -3923,11 +3951,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/log_softmax.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -3958,8 +3985,10 @@ use crate::Tensor;
 /// assert_eq!(logsoftmaxed.dims(), [2, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! log_softmax {
     [$t:expr,$i:ty] => {{
         use $crate::op::log_softmax::LogSoftmax;
@@ -3990,11 +4019,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/matmul.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -4023,8 +4051,10 @@ use crate::Tensor;
 /// assert_eq!(flattened.dims(), [12, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! matmul {
     ($t1:expr,$t2:expr) => {{
         use $crate::op::matmul::Matmul;
@@ -4052,11 +4082,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/mean_dim.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -4089,8 +4118,10 @@ use crate::Tensor;
 /// assert_eq!(meaned.dims(), [2, 1, 4, 5]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! mean_dim {
     [$t:expr,$i:ty] => {{
         use $crate::op::mean_dim::MeanDim;
@@ -4121,11 +4152,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/mod.rs
 ================================================
+
 pub mod argmax;
 pub mod cat;
 pub mod expand;
@@ -4144,11 +4174,10 @@ pub mod tril_mask;
 pub mod unsqueeze;
 pub mod var_mean;
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/narrow.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, Tensor as BTensor};
@@ -4181,7 +4210,7 @@ use crate::Tensor;
 /// assert_eq!(narrowed.dims(), [1, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When using dynamic start and length, the resulting tensor's shape will be determined by the provided expressions.
 ///
@@ -4205,8 +4234,10 @@ use crate::Tensor;
 /// assert_eq!(narrowed.dims(), [2, 2, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! narrow {
     ($t:expr,$d:ty:[$s:ty,$l:ty]) => {{
         glowstick::op::narrow::check::<_, _, $d, $s, $l>(&$t);
@@ -4230,7 +4261,7 @@ macro_rules! narrow {
             .narrow_dyn_start()
     }};
     ($t:expr,$d:ty:[$s:expr,$l:expr] => $y:ty) => {{
-        glowstick::op::narrow::check::<_, _, $d, glowstick::num::U0, $y>(&$t);
+        glowstick::op::narrow::check::<_,_, $d, glowstick::num::U0, $y>(&$t);
         use $crate::op::narrow::NarrowDyn;
         (
             $t,
@@ -4374,11 +4405,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/reshape.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, ReshapeArgs, Tensor as BTensor};
@@ -4408,7 +4438,7 @@ use crate::Tensor;
 /// assert_eq!(reshaped.dims(), [1, 6]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When using dynamic dimensions, the resulting tensor's shape will be determined by the provided expressions.
 ///
@@ -4433,12 +4463,14 @@ use crate::Tensor;
 /// assert_eq!(reshaped.dims(), [2, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! reshape {
     ($t:expr,[$($ds:tt)+]) => {{
         type TS = glowstick::TensorShape<$crate::reshape_tys!($($ds)+)>;
-        glowstick::op::reshape::check::<_, _, TS>(&$t);
+        glowstick::op::reshape::check::<_,_, TS>(&$t);
         use $crate::op::reshape::Reshape;
         (
             $t,
@@ -4447,7 +4479,9 @@ macro_rules! reshape {
             .reshape($crate::reshape_val!($($ds)+).into_array())
     }};
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! reshape_tys {
     ($e:expr => $d:ty) => {
         glowstick::Shp<(<$d as glowstick::dynamic::Dim>::Id, glowstick::Empty)>
@@ -4462,7 +4496,9 @@ macro_rules! reshape_tys {
         glowstick::Shp<($d, $crate::reshape_tys!($($ds)+))>
     };
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! reshape_val {
     ($e:expr => $d:ty) => {
         glowstick::ValueList(($e, glowstick::ValueList(())))
@@ -4499,11 +4535,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/softmax.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -4533,8 +4568,10 @@ use crate::Tensor;
 /// assert_eq!(softmaxed.dims(), [2, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! softmax {
     [$t:expr,$i:ty] => {{
         use $crate::op::softmax::Softmax;
@@ -4565,11 +4602,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/sort_descending_with_indices.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{
@@ -4605,8 +4641,10 @@ use crate::Tensor;
 /// assert_eq!(indices.dims(), [2, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! sort_descending_with_indices {
     [$t:expr,$i:ty] => {{
         use $crate::op::sort_descending_with_indices::SortDescendingWithIndices;
@@ -4640,11 +4678,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/squeeze.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, Tensor as BTensor};
@@ -4673,11 +4710,13 @@ use crate::Tensor;
 /// assert_eq!(squeezed.dims(), [2, 3]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! squeeze {
     [$t:expr,$i:ty] => {{
-        glowstick::op::squeeze::check::<_, _, $i>(&$t);
+        glowstick::op::squeeze::check::<_,_, $i>(&$t);
         use $crate::op::squeeze::Squeeze;
         ($t, std::marker::PhantomData::<$i>).squeeze()
     }};
@@ -4685,7 +4724,9 @@ macro_rules! squeeze {
         $crate::squeeze_next![$crate::squeeze![$t,$i],$($is),+]
     }};
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! squeeze_next {
     [$t:expr,$i:ty] => {{
         use $crate::op::squeeze::Squeeze;
@@ -4728,11 +4769,10 @@ squeeze_impl!(4 => 3);
 squeeze_impl!(3 => 2);
 squeeze_impl!(2 => 1);
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/transpose.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -4761,8 +4801,10 @@ use crate::Tensor;
 /// assert_eq!(transposed.dims(), [2, 4, 3]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! transpose {
     ($t:expr,$d1:ty,$d2:ty) => {{
         use $crate::op::transpose::Transpose;
@@ -4822,11 +4864,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/tril_mask.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::prelude::Backend;
@@ -4865,8 +4906,10 @@ use crate::Tensor;
 /// );
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! tril_mask {
     ($o:expr,$d:expr,$b:ty,[$($ds:tt)+]) => {{
         use $crate::op::tril_mask::TrilMask;
@@ -4899,11 +4942,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/unsqueeze.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::{BasicOps, Tensor as BTensor};
@@ -4932,8 +4974,10 @@ use crate::Tensor;
 /// assert_eq!(unsqueezed.dims(), [1, 2, 1, 4, 1]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! unsqueeze {
     [$t:expr,$i:ty] => {{
         use $crate::op::unsqueeze::Unsqueeze;
@@ -4976,11 +5020,10 @@ unsqueeze_impl!(3 => 4);
 unsqueeze_impl!(2 => 3);
 unsqueeze_impl!(1 => 2);
 
-
-
 ================================================
 FILE: glowstick-burn/src/op/var_mean.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use burn::tensor::Tensor as BTensor;
@@ -5013,8 +5056,10 @@ use crate::Tensor;
 /// assert_eq!(mean.dims(), [2, 1, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! var_mean {
     [$t:expr,$i:ty] => {{
         use $crate::op::var_mean::VarMean;
@@ -5043,11 +5088,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/Cargo.toml
 ================================================
+
 [package]
 name = "glowstick-candle"
 description = "Integration of glowstick with the candle tensor"
@@ -5065,33 +5109,33 @@ candle-nn = { version = "0.9" }
 glowstick.workspace = true
 thiserror.workspace = true
 
-
-
-
 ================================================
 FILE: glowstick-candle/src/lib.rs
 ================================================
+
 pub mod op;
 pub mod tensor;
 
 pub use tensor::{Error, Tensor};
 
-#[doc = include_str!("../../README.md")]
-#[cfg(doctest)]
+# [doc = include_str!("../../README.md")]
+
+# [cfg(doctest)]
+
 pub struct ReadmeDoctests;
-
-
 
 ================================================
 FILE: glowstick-candle/src/tensor.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use candle::{DType, Device};
 
 use glowstick::Shape;
 
-#[derive(Debug, thiserror::Error)]
+# [derive(Debug, thiserror::Error)]
+
 pub enum Error {
     #[error("Rank mismatch: runtime ({runtime}) vs type-level ({type_level})")]
     RankMismatch { runtime: usize, type_level: usize },
@@ -5107,8 +5151,10 @@ pub enum Error {
     Candle(#[from] candle::Error),
 }
 
-#[allow(unused)]
-#[derive(Debug)]
+# [allow(unused)]
+
+# [derive(Debug)]
+
 pub struct Tensor<S: Shape>(pub(crate) candle::Tensor, pub(crate) PhantomData<S>);
 impl<S: Shape> AsRef<candle::Tensor> for Tensor<S> {
     fn as_ref(&self) -> &candle::Tensor {
@@ -5213,7 +5259,7 @@ where
 {
     type Output = Result<Tensor<S>, Error>;
     fn mul(self, rhs: Tensor<S>) -> Result<Tensor<S>, Error> {
-        Ok(Tensor((&self.0 * rhs.0)?, PhantomData))
+        Ok(Tensor((&self.0 _rhs.0)?, PhantomData))
     }
 }
 impl<S> std::ops::Mul<&Tensor<S>> for Tensor<S>
@@ -5222,7 +5268,7 @@ where
 {
     type Output = Result<Tensor<S>, Error>;
     fn mul(self, rhs: &Tensor<S>) -> Result<Tensor<S>, Error> {
-        Ok(Tensor((&self.0 * &rhs.0)?, PhantomData))
+        Ok(Tensor((&self.0_ &rhs.0)?, PhantomData))
     }
 }
 impl<S> std::ops::Mul<&Tensor<S>> for &Tensor<S>
@@ -5356,11 +5402,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/broadcast_add.rs
 ================================================
+
 use std::borrow::Borrow;
 
 use glowstick::{op::broadcast, Shape};
@@ -5392,8 +5437,10 @@ use crate::{Error, Tensor};
 /// );
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! broadcast_add {
     ($t1:expr,$t2:expr) => {{
         use $crate::op::broadcast_add::BroadcastAdd;
@@ -5462,11 +5509,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/cat.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{num::Unsigned, op::cat_dyn, Shape};
@@ -5496,8 +5542,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(concatenated.dims(), &[2, 4, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! cat {
     ($ts:expr,$i:ty => $d:ty) => {{
         use $crate::op::cat::Cat;
@@ -5542,11 +5590,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/conv.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use crate::{Error, Tensor};
@@ -5576,8 +5623,10 @@ use glowstick::{
 /// assert_eq!(convolved.dims(), &[2, 4, 3, 3]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! conv2d {
     ($t:expr,$kernel:expr,$padding:ty,$dilation:ty,$stride:ty,$groups:expr) => {{
         use std::marker::PhantomData;
@@ -5681,11 +5730,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/expand.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{op::broadcast, Shape};
@@ -5713,7 +5761,7 @@ use crate::{Error, Tensor};
 /// assert_eq!(d.dims(), &[1, 4, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When broadcasting to a shape, a combination of type-level integers and
 /// expressions bound to dynamic dimensions may be provided.
@@ -5737,8 +5785,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(b.dims(), &[4, 12, 3, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! expand {
     ($t:expr,[$($ds:tt)+]) => {{
         use $crate::op::expand::BroadcastAs;
@@ -5823,11 +5873,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/flatten.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{num::Unsigned, op::flatten, Shape};
@@ -5852,8 +5901,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(flattened.dims(), &[12, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! flatten {
     ($t:expr,[$d1:ty,$d2:ty]) => {{
         use $crate::op::flatten::Flatten;
@@ -5916,11 +5967,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/gather.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use glowstick::{num::Unsigned, op::gather, Shape};
@@ -5945,8 +5995,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(gathered.inner().to_vec3::<f32>()?, vec![vec![vec![2., 3.]]]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! gather {
     ($t1:expr,$t2:expr,$d:ty) => {{
         use $crate::op::gather::Gather;
@@ -5984,7 +6036,8 @@ where
     }
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test_gather {
     #[test]
     fn gather() {
@@ -6001,11 +6054,10 @@ mod test_gather {
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/log_softmax.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::cmp::Greater;
@@ -6031,8 +6083,10 @@ use crate::Tensor;
 /// assert_eq!(logsoftmaxed.dims(), &[2, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! log_softmax {
     ($t:expr,$i:ty) => {{
         use $crate::op::log_softmax::LogSoftmax;
@@ -6062,7 +6116,8 @@ where
     }
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test_logsoft {
     #[test]
     fn logsoft() {
@@ -6085,11 +6140,10 @@ mod test_logsoft {
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/matmul.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use glowstick::{op::matmul, Shape, TensorShape};
@@ -6120,8 +6174,10 @@ use crate::{Error, Tensor};
 /// );
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! matmul {
     ($t1:expr,$t2:expr) => {{
         use $crate::op::matmul::Matmul;
@@ -6167,11 +6223,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/mod.rs
 ================================================
+
 pub mod broadcast_add;
 pub mod cat;
 pub mod conv;
@@ -6189,11 +6244,10 @@ pub mod squeeze;
 pub mod transpose;
 pub mod unsqueeze;
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/narrow.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use glowstick::{num::Unsigned, op::narrow, Shape};
@@ -6217,7 +6271,7 @@ use crate::{Error, Tensor};
 /// assert_eq!(narrowed.dims(), &[1, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When using dynamic start and length, the resulting tensor's shape will be determined by the provided expressions.
 ///
@@ -6239,8 +6293,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(narrowed.dims(), &[2, 2, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! narrow {
     ($t:expr,$d:ty:[$s:ty,$l:ty]) => {{
         glowstick::op::narrow::check::<_, _, $d, $s, $l>(&$t);
@@ -6266,7 +6322,7 @@ macro_rules! narrow {
             .narrow_dyn_start()
     }};
     ($t:expr,$d:ty:[$s:expr,$l:expr] => $y:ty) => {{
-        glowstick::op::narrow::check::<_, _, $d, glowstick::num::U0, $y>(&$t);
+        glowstick::op::narrow::check::<_,_, $d, glowstick::num::U0, $y>(&$t);
         use $crate::op::narrow_dyn::NarrowDyn;
         (
             $t,
@@ -6313,7 +6369,8 @@ macro_rules! narrow {
     }};
 }
 
-#[allow(unused)]
+# [allow(unused)]
+
 pub trait Narrow {
     type Out;
     fn narrow(&self) -> Self::Out;
@@ -6348,18 +6405,18 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/narrow_dyn.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{num::Unsigned, op::narrow_dyn, Shape};
 
 use crate::{Error, Tensor};
 
-#[allow(unused)]
+# [allow(unused)]
+
 pub trait NarrowDyn {
     type Out;
     fn narrow_dyn(&self) -> Self::Out;
@@ -6407,11 +6464,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/narrow_dyn_start.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use glowstick::{Shape, num::Unsigned, op::narrow_dyn_start};
@@ -6441,11 +6497,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/reshape.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use candle::shape::ShapeWithOneHole;
@@ -6470,7 +6525,7 @@ use crate::{Error, Tensor};
 /// assert_eq!(reshaped.dims(), &[1, 6]);
 /// # Ok(())
 /// # }
-/// ```
+///```
 ///
 /// When using dynamic dimensions, the resulting tensor's shape will be determined by the provided expressions.
 ///
@@ -6493,12 +6548,14 @@ use crate::{Error, Tensor};
 /// assert_eq!(reshaped.dims(), &[2, 2]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! reshape {
     ($t:expr,[$($ds:tt)+]) => {{
         type TS = glowstick::TensorShape<$crate::reshape_tys!($($ds)+)>;
-        glowstick::op::reshape::check::<_, _, TS>(&$t);
+        glowstick::op::reshape::check::<_,_, TS>(&$t);
         use $crate::op::reshape::Reshape;
         (
             $t,
@@ -6527,7 +6584,8 @@ where
     }
 }
 
-#[macro_export]
+# [macro_export]
+
 macro_rules! reshape_tys {
     ($e:expr => $d:ty) => {
         glowstick::Shp<(<$d as glowstick::dynamic::Dim>::Id, glowstick::Empty)>
@@ -6542,7 +6600,9 @@ macro_rules! reshape_tys {
         glowstick::Shp<($d, $crate::reshape_tys!($($ds)+))>
     };
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! reshape_val {
     ($e:expr => $d:ty) => {
         glowstick::ValueList(($e, glowstick::ValueList(())))
@@ -6558,11 +6618,10 @@ macro_rules! reshape_val {
     };
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/softmax.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::cmp::Greater;
@@ -6588,8 +6647,10 @@ use crate::Tensor;
 /// assert_eq!(softmaxed.dims(), &[2, 3, 4]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! softmax {
     ($t:expr,$i:ty) => {{
         use $crate::op::softmax::Softmax;
@@ -6619,11 +6680,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/squeeze.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{num::Unsigned, op::squeeze, Shape};
@@ -6647,11 +6707,13 @@ use crate::{Error, Tensor};
 /// assert_eq!(squeezed.dims(), &[2, 3]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! squeeze {
     [$t:expr,$i:ty] => {{
-        glowstick::op::squeeze::check::<_, _, $i>(&$t);
+        glowstick::op::squeeze::check::<_,_, $i>(&$t);
         use $crate::op::squeeze::Squeeze;
         ($t, std::marker::PhantomData::<$i>).squeeze()
     }};
@@ -6661,7 +6723,9 @@ macro_rules! squeeze {
             .and_then(|t| $crate::squeeze_next![t, $($is),+])
     }};
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! squeeze_next {
     [$t:expr,$i:ty] => {{
         use $crate::op::squeeze::Squeeze;
@@ -6701,11 +6765,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/transpose.rs
 ================================================
+
 use std::{borrow::Borrow, marker::PhantomData};
 
 use glowstick::{num::Unsigned, op::transpose, Shape};
@@ -6729,8 +6792,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(transposed.dims(), &[2, 4, 3]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! transpose {
     ($t:expr,$d1:ty,$d2:ty) => {{
         use $crate::op::transpose::Transpose;
@@ -6789,11 +6854,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: glowstick-candle/src/op/unsqueeze.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use glowstick::{num::Unsigned, op::unsqueeze, Shape};
@@ -6817,8 +6881,10 @@ use crate::{Error, Tensor};
 /// assert_eq!(unsqueezed.dims(), &[1, 2, 1, 4, 1]);
 /// # Ok(())
 /// # }
-/// ```
-#[macro_export]
+///```
+
+# [macro_export]
+
 macro_rules! unsqueeze {
     [$t:expr,$i:ty] => {{
         use $crate::op::unsqueeze::Unsqueeze;
@@ -6831,7 +6897,8 @@ macro_rules! unsqueeze {
     }};
 }
 
-#[allow(unused)]
+# [allow(unused)]
+
 pub trait Unsqueeze {
     type Out;
     fn unsqueeze(&self) -> Self::Out;
@@ -6865,11 +6932,10 @@ where
     }
 }
 
-
-
 ================================================
 FILE: src/cmp.rs
 ================================================
+
 use typosaurus::num::{self, Bit, UInt, UTerm, Unsigned};
 
 use crate::Dyn;
@@ -7104,31 +7170,37 @@ where
     type Out = <(<(T, U) as IsLess>::Out, <(T, U) as IsEqual>::Out) as Or>::Out;
 }
 
-
-
 ================================================
 FILE: src/diagnostic.rs
 ================================================
+
 use crate::{False, True};
 
 pub trait Operation {}
 
-#[diagnostic::on_unimplemented(
+# [diagnostic::on_unimplemented(
+
     message = "Incompatible dimensions for operation \"{Op}\": {A}",
     label = "Shape Mismatch"
 )]
 pub trait Truthy1<Op: Operation, A> {}
-#[diagnostic::on_unimplemented(
+
+# [diagnostic::on_unimplemented(
+
     message = "Incompatible dimensions for operation \"{Op}\": {A}, {B}",
     label = "Shape Mismatch"
 )]
 pub trait Truthy<Op: Operation, A, B> {}
-#[diagnostic::on_unimplemented(
+
+# [diagnostic::on_unimplemented(
+
     message = "Incompatible dimensions for operation \"{Op}\": {A}, {B}, {C}",
     label = "Shape Mismatch"
 )]
 pub trait Truthy3<Op: Operation, A, B, C> {}
-#[diagnostic::on_unimplemented(
+
+# [diagnostic::on_unimplemented(
+
     message = "Incompatible dimensions for operation \"{Op}\": {A}, {B}, {C}, {D}",
     label = "Shape Mismatch"
 )]
@@ -7138,21 +7210,27 @@ impl<Op: Operation, A, B> Truthy<Op, A, B> for True {}
 impl<Op: Operation, A, B, C> Truthy3<Op, A, B, C> for True {}
 impl<Op: Operation, A, B, C, D> Truthy4<Op, A, B, C, D> for True {}
 
-#[allow(unused)]
-#[diagnostic::on_unimplemented(
+# [allow(unused)]
+
+# [diagnostic::on_unimplemented(
+
     message = "Incompatible dimension for operation \"{Op}\": {Lhs}, {Rhs}",
     label = "Shape Mismatch"
 )]
 pub(crate) trait Falsy<Op: Operation, Lhs, Rhs> {}
 impl<Op: Operation, Lhs, Rhs> Falsy<Op, Lhs, Rhs> for False {}
 
-#[allow(unused)]
-#[diagnostic::on_unimplemented(
+# [allow(unused)]
+
+# [diagnostic::on_unimplemented(
+
     message = "[glowstick shape]: {T}",
     label = "glowstick::debug_tensor!()",
     note = "This error is due to a `debug_tensor!()` macro invocation."
 )]
-#[allow(private_bounds)]
+
+# [allow(private_bounds)]
+
 pub trait Diagnostic<T>: DebugTensorInvocation {
     crate::private!();
 }
@@ -7160,13 +7238,16 @@ trait DebugTensorInvocation {
     crate::private!();
 }
 
-#[macro_export]
+# [macro_export]
+
 macro_rules! dbg_shape {
     ($t:ty) => {
         diagnostic_msg::<$t>();
     };
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! debug_tensor {
     ($t:ident) => {
         fn diagnostic_msg<T>(t: &T)
@@ -7181,11 +7262,10 @@ macro_rules! debug_tensor {
     };
 }
 
-
-
 ================================================
 FILE: src/dynamic.rs
 ================================================
+
 use std::marker::PhantomData;
 
 use typosaurus::bool::{And, True};
@@ -7327,7 +7407,9 @@ impl<T, U> IsDynEqual<DynProduct<T, U>> for DynProduct<T, U> {
 }
 
 // TODO: explore type-level map/counter for this
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! dyndims {
     {$id:ident:$label:ident} => {
         pub struct $label;
@@ -7355,11 +7437,10 @@ macro_rules! dyndims {
     };
 }
 
-
-
 ================================================
 FILE: src/lib.rs
 ================================================
+
 use core::marker::PhantomData;
 
 use dynamic::Dynamic;
@@ -7397,12 +7478,15 @@ pub use typosaurus::collections::{
 pub use typosaurus::list;
 pub use typosaurus::traits::semigroup::Mappend;
 
-#[macro_export]
+# [macro_export]
+
 macro_rules! shape {
     [$a:ident] => { $crate::TensorShape<$crate::Shp<(<$a as $crate::ValidDim>::Out, $crate::Empty)>> };
     [$a:ident,$($bs:ident),+] => { $crate::TensorShape<<($crate::Shp<(<$a as $crate::ValidDim>::Out, $crate::Empty)>, $crate::fragment![$($bs),+]) as $crate::Mappend>::Out> };
 }
-#[macro_export]
+
+# [macro_export]
+
 macro_rules! fragment {
     [$a:ident] => { $crate::Shp<(<$a as $crate::ValidDim>::Out, $crate::Empty)> };
     [$a:ident,$($bs:ident),+] => { <($crate::Shp<(<$a as $crate::ValidDim>::Out, $crate::Empty)>, $crate::fragment![$($bs),+]) as $crate::Mappend>::Out };
@@ -7427,14 +7511,14 @@ macro_rules! private {
         /// and the authors keep it.
         #[doc(hidden)]
         #[allow(private_interfaces)]
-        fn __glowstick_private__(&self) -> crate::Private;
+        fn **glowstick_private**(&self) -> crate::Private;
     };
 }
 macro_rules! private_impl {
     () => {
         /// The trait is sealed.
         #[allow(private_interfaces)]
-        fn __glowstick_private__(&self) -> crate::Private {
+        fn **glowstick_private**(&self) -> crate::Private {
             crate::Private
         }
     };
@@ -7871,45 +7955,45 @@ where
 pub struct IDX<T>(PhantomData<T>);
 pub struct RANK<T>(PhantomData<T>);
 pub struct _0;
-pub struct _1;
+pub struct_1;
 pub struct _2;
-pub struct _3;
+pub struct_3;
 pub struct _4;
-pub struct _5;
+pub struct_5;
 pub struct _6;
-pub struct _7;
+pub struct_7;
 pub struct _8;
-pub struct _9;
+pub struct_9;
 
 impl Tuplify for _0 {
-    type Out = _0;
+    type Out =_0;
 }
 impl Tuplify for _1 {
-    type Out = _1;
+    type Out =_1;
 }
 impl Tuplify for _2 {
-    type Out = _2;
+    type Out =_2;
 }
 impl Tuplify for _3 {
-    type Out = _3;
+    type Out =_3;
 }
 impl Tuplify for _4 {
-    type Out = _4;
+    type Out =_4;
 }
 impl Tuplify for _5 {
-    type Out = _5;
+    type Out =_5;
 }
 impl Tuplify for _6 {
-    type Out = _6;
+    type Out =_6;
 }
 impl Tuplify for _7 {
-    type Out = _7;
+    type Out =_7;
 }
 impl Tuplify for _8 {
-    type Out = _8;
+    type Out =_8;
 }
 impl Tuplify for _9 {
-    type Out = _9;
+    type Out =_9;
 }
 
 pub trait DimensionDiagnostic {
@@ -8005,15 +8089,15 @@ macro_rules! decimpl {
 }
 decimpl![
     (U0, _0),
-    (U1, _1),
+    (U1,_1),
     (U2, _2),
-    (U3, _3),
+    (U3,_3),
     (U4, _4),
-    (U5, _5),
+    (U5,_5),
     (U6, _6),
-    (U7, _7),
+    (U7,_7),
     (U8, _8),
-    (U9, _9)
+    (U9,_9)
 ];
 pub struct Dec<T>(PhantomData<T>);
 impl<L> DecimalDiagnostic for Dyn<L>
@@ -8054,7 +8138,8 @@ where
     private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -8114,11 +8199,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/num.rs
 ================================================
+
 use crate::Dyn;
 use crate::dynamic::DynAdd;
 use crate::dynamic::DynMul;
@@ -8329,11 +8413,10 @@ pub mod monoid {
     }
 }
 
-
-
 ================================================
 FILE: src/op/broadcast.rs
 ================================================
+
 use typosaurus::traits::semigroup::Mappend;
 
 use crate::{
@@ -8350,8 +8433,8 @@ impl diagnostic::Operation for Broadcast {}
 /// Boolean type operator for `Broadcast` compatibility.
 ///
 /// If shape `U` may be expanded to shape `T`, then the `Out`
-/// associated type of this trait for `(T, U) is `True`.
-/// Otherwise, it is `False`.
+/// associated type of this trait for `(T, U) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -8564,7 +8647,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use core::marker::PhantomData;
 
@@ -8656,11 +8740,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/cat.rs
 ================================================
+
 use typosaurus::{
     bool::And,
     collections::list::{Empty, List},
@@ -8682,8 +8765,8 @@ impl diagnostic::Operation for Cat {}
 /// Boolean type operator for `Cat` compatibility.
 ///
 /// If shape `U` may be concatenated with shape `T` on dimension `I`, then
-/// the `Out` associated type of this trait for `(T, U, I) is `True`.
-/// Otherwise, it is `False`.
+/// the `Out` associated type of this trait for `(T, U, I) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -8841,7 +8924,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -8886,11 +8970,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/cat_dyn.rs
 ================================================
+
 use typosaurus::{
     collections::list::{Empty, List},
     num::consts::U1,
@@ -8911,8 +8994,8 @@ impl diagnostic::Operation for Cat {}
 /// Boolean type operator for `Cat` compatibility.
 ///
 /// If shape `U` may be concatenated with shape `T` on dimension `I`, then
-/// the `Out` associated type of this trait for `(T, U, I) is `True`.
-/// Otherwise, it is `False`.
+/// the `Out` associated type of this trait for `(T, U, I) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -8977,7 +9060,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -9001,11 +9085,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/convolution.rs
 ================================================
+
 use typosaurus::bool::And;
 use typosaurus::bool::monoid::Both;
 use typosaurus::collections::{
@@ -11541,7 +11624,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq, list,
@@ -11577,11 +11661,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/flatten.rs
 ================================================
+
 use typosaurus::{
     bool::And,
     collections::list::{Empty, List},
@@ -11603,8 +11686,8 @@ impl diagnostic::Operation for Flatten {}
 /// Boolean type operator for `Flatten` compatibility.
 ///
 /// If shape `T` may be flattened from dimensions `D1` (inclusive) to `D2` (inclusive),
-/// then the `Out` associated type of this trait for `(T, D1, D2) is `True`.
-/// Otherwise, it is `False`.
+/// then the `Out` associated type of this trait for `(T, D1, D2) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -11720,7 +11803,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -11754,11 +11838,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/gather.rs
 ================================================
+
 use core::ops::Add;
 
 use typosaurus::{bool::And, num::consts::U1};
@@ -11831,7 +11914,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -11872,11 +11956,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/matmul.rs
 ================================================
+
 use core::ops::Sub;
 
 use typosaurus::bool::And;
@@ -11999,7 +12082,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12130,11 +12214,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/mod.rs
 ================================================
+
 pub mod broadcast;
 pub mod cat;
 pub mod cat_dyn;
@@ -12153,11 +12236,10 @@ pub mod stack;
 pub mod transpose;
 pub mod unsqueeze;
 
-
-
 ================================================
 FILE: src/op/narrow.rs
 ================================================
+
 use typosaurus::{
     bool::And,
     collections::list::{Empty, List},
@@ -12191,8 +12273,8 @@ where
 ///
 /// If shape `T` may be narrowed at dim `I` to length `L` starting
 /// from element `S`, then the `Out` associated type of this trait for
-/// `(T, I, S, L) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I, S, L) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -12279,7 +12361,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12321,11 +12404,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/narrow_dyn.rs
 ================================================
+
 use core::ops::Add;
 
 use typosaurus::{
@@ -12348,8 +12430,8 @@ impl diagnostic::Operation for Narrow {}
 ///
 /// If shape `T` may be narrowed at dim `I` to length `L` starting
 /// from element 0, then the `Out` associated type of this trait for
-/// `(T, I, L) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I, L) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -12420,7 +12502,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12456,11 +12539,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/narrow_dyn_start.rs
 ================================================
+
 use core::ops::Add;
 
 use typosaurus::{
@@ -12484,8 +12566,8 @@ impl diagnostic::Operation for Narrow {}
 ///
 /// If shape `T` may be narrowed at dim `I` to length `L` starting
 /// from element 0, then the `Out` associated type of this trait for
-/// `(T, I, L) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I, L) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -12554,7 +12636,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12593,11 +12676,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/pad.rs
 ================================================
+
 use typosaurus::{
     collections::list::{Empty, List},
     num::consts::U1,
@@ -12619,8 +12701,8 @@ impl diagnostic::Operation for Pad {}
 ///
 /// If shape `T` may be narrowed at dim `I` to length `L` starting
 /// from element `S`, then the `Out` associated type of this trait for
-/// `(T, I, S, L) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I, S, L) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -12721,7 +12803,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12758,11 +12841,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/permute.rs
 ================================================
+
 use typosaurus::{
     bool::{And, monoid::Both},
     collections::{
@@ -12861,7 +12943,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -12927,11 +13010,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/reshape.rs
 ================================================
+
 use typosaurus::{collections::Container, traits::fold::Foldable};
 
 use crate::{
@@ -12958,8 +13040,8 @@ where
 /// Boolean type operator for `Reshape` compatibility.
 ///
 /// If shape `T` may be reshaped to shape `U`, then the `Out`
-/// associated type of this trait for `(T, U) is `True`.
-/// Otherwise, it is `False`.
+/// associated type of this trait for `(T, U) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -13004,7 +13086,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -13081,11 +13164,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/squeeze.rs
 ================================================
+
 use core::ops::Add;
 
 use typosaurus::num::consts::U1;
@@ -13117,8 +13199,8 @@ where
 ///
 /// If shape `T` may be squeezed at dim `I`,
 /// then the `Out` associated type of this trait for
-/// `(T, I) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -13185,7 +13267,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -13251,11 +13334,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/stack.rs
 ================================================
+
 use typosaurus::{
     collections::list::{Empty, List},
     num::consts::U2,
@@ -13275,8 +13357,8 @@ impl diagnostic::Operation for Stack {}
 ///
 /// If shapes `T` and `U` may be stacked,
 /// then the `Out` associated type of this trait for
-/// `(T, U) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, U) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -13319,7 +13401,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::bool::{False, True};
     use typosaurus::{
@@ -13362,11 +13445,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/transpose.rs
 ================================================
+
 use typosaurus::{
     bool::And,
     collections::list::{Empty, List},
@@ -13389,8 +13471,8 @@ impl diagnostic::Operation for Transpose {}
 ///
 /// If shape `T` may be transposed at dims `D1` and `D2`,
 /// then the `Out` associated type of this trait for
-/// `(T, D1, D2) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, D1, D2) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -13531,7 +13613,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::bool::True;
     use typosaurus::{
@@ -13565,11 +13648,10 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: src/op/unsqueeze.rs
 ================================================
+
 use typosaurus::{
     collections::list::{Empty, List},
     num::consts::U1,
@@ -13590,8 +13672,8 @@ impl diagnostic::Operation for Unsqueeze {}
 ///
 /// If shape `T` may be unsqueezed at dim `I`,
 /// then the `Out` associated type of this trait for
-/// `(T, I) is `True`.
-/// Otherwise, it is `False`.
+/// `(T, I) is`True`.
+/// Otherwise, it is`False`.
 pub trait IsCompatible {
     type Out;
     crate::private!();
@@ -13660,7 +13742,8 @@ where
     crate::private_impl!();
 }
 
-#[cfg(test)]
+# [cfg(test)]
+
 mod test {
     use typosaurus::{
         assert_type_eq,
@@ -13716,18 +13799,17 @@ mod test {
     }
 }
 
-
-
 ================================================
 FILE: .github/workflows/ci.yml
 ================================================
+
 name: Cargo Check & Test
 
 on:
   push:
   pull_request:
 
-env: 
+env:
   CARGO_TERM_COLOR: always
 
 jobs:
@@ -13742,5 +13824,3 @@ jobs:
       - uses: actions/checkout@v4
       - run: cargo check --workspace
       - run: cargo test --workspace
-
-

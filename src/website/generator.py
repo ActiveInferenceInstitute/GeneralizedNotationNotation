@@ -99,7 +99,9 @@ class WebsiteGenerator:
             if execution_dir.exists():
                 try:
                     import json as _json
-                    exec_file = execution_dir / "execution_summary.json"
+                    exec_file = execution_dir / "summaries" / "execution_summary.json"
+                    if not exec_file.exists():
+                        exec_file = execution_dir / "execution_summary.json"
                     if exec_file.exists():
                         with open(exec_file, 'r') as f:
                             exec_json = _json.load(f)
@@ -340,11 +342,14 @@ def generate_website(logger, input_dir: Path, output_dir: Path, *, pipeline_outp
     try:
         generator = WebsiteGenerator()
         
+        # Determine pipeline output root
+        p_root = pipeline_output_root if pipeline_output_root else output_dir.parent
+        
         # Collect website data
         website_data = {
             "input_dir": input_dir,
             "output_dir": output_dir,
-            "pipeline_output_root": str(pipeline_output_root) if pipeline_output_root else str(output_dir.parent),
+            "pipeline_output_root": str(p_root),
             "analysis_results": [],
             "visualization_results": [],
             "render_results": []
@@ -358,28 +363,63 @@ def generate_website(logger, input_dir: Path, output_dir: Path, *, pipeline_outp
                 "warnings": []
             }
         
-        # Find analysis results
-        analysis_dir = input_dir / "analysis"
-        if analysis_dir.exists():
-            for json_file in analysis_dir.glob("*.json"):
-                try:
-                    with open(json_file, 'r') as f:
-                        data = json.load(f)
-                    website_data["analysis_results"].append(data)
-                except Exception as e:
-                    logger.warning(f"Could not read analysis file {json_file}: {e}")
+        # Count processed GNN source files from input directory
+        gnn_input_dir = p_root.parent / "input" / "gnn_files"
+        if gnn_input_dir.exists():
+            website_data["processed_files"] = len(list(gnn_input_dir.glob("*.md")))
+        else:
+            # Fallback: count from target_dir
+            website_data["processed_files"] = len(list(input_dir.glob("*.md")))
         
-        # Find visualization results
-        viz_dir = input_dir / "visualization"
-        if viz_dir.exists():
-            for html_file in viz_dir.glob("*.html"):
-                website_data["visualization_results"].append({
-                    "title": html_file.stem,
-                    "file_path": str(html_file.relative_to(output_dir)),
-                    "description": f"Visualization from {html_file.stem}"
-                })
+        # Scan numbered pipeline output directories for real artifact counts
+        # Analysis results from 16_analysis_output
+        # Check both the analysis_results/ subdirectory and root-level JSON files
+        analysis_base = p_root / "16_analysis_output"
+        analysis_subdirs = [
+            analysis_base / "analysis_results",
+            analysis_base,  # Root-level (actual output location: analysis_results.json)
+        ]
+        seen_analysis_files = set()
+        for analysis_dir in analysis_subdirs:
+            if analysis_dir.exists():
+                for json_file in analysis_dir.glob("*.json"):
+                    if json_file.name in seen_analysis_files:
+                        continue
+                    seen_analysis_files.add(json_file.name)
+                    try:
+                        with open(json_file, 'r') as f:
+                            data = json.load(f)
+                        website_data["analysis_results"].append(data)
+                    except Exception as e:
+                        logger.warning(f"Could not read analysis file {json_file}: {e}")
         
-        # Generate website
+        # Visualizations from 8_visualization_output and 9_advanced_viz_output
+        viz_dirs = [
+            p_root / "08_visualization_output" / "visualization_results",
+            p_root / "8_visualization_output" / "visualization_results",
+            p_root / "09_advanced_viz_output",
+            p_root / "9_advanced_viz_output",
+        ]
+        for viz_dir in viz_dirs:
+            if viz_dir.exists():
+                for img_file in viz_dir.rglob("*.png"):
+                    website_data["visualization_results"].append({
+                        "title": img_file.stem,
+                        "file_path": str(img_file),
+                        "description": f"Visualization: {img_file.stem}"
+                    })
+                for html_file in viz_dir.rglob("*.html"):
+                    website_data["visualization_results"].append({
+                        "title": html_file.stem,
+                        "file_path": str(html_file),
+                        "description": f"Interactive visualization: {html_file.stem}"
+                    })
+        
+        logger.info(f"Website data collected: {website_data.get('processed_files', 0)} files, "
+                    f"{len(website_data['analysis_results'])} analyses, "
+                    f"{len(website_data['visualization_results'])} visualizations")
+        
+        # Generate website (class method handles pipeline root scanning too)
         result = generator.generate_website(website_data)
         
         return {

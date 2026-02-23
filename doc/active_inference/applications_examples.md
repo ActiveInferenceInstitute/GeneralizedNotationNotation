@@ -31,7 +31,8 @@ The T-maze is the classic Active Inference benchmark:
 **Challenge**: Use cue to infer which arm has reward.
 
 **Files**:
-- Examples: [`examples/`](../../examples/)
+
+- Examples: `examples/`
 - Documentation: [`doc/pymdp/pymdp_pomdp/`](../pymdp/pymdp_pomdp/)
 
 ### Grid World Exploration
@@ -39,6 +40,7 @@ The T-maze is the classic Active Inference benchmark:
 Agent navigates 2D grid seeking goals:
 
 **Skills Demonstrated**:
+
 - Epistemic foraging (exploration)
 - Goal-directed navigation
 - Uncertainty reduction
@@ -202,12 +204,14 @@ Located in: [`output/16_analysis_output/`](../../output/16_analysis_output/)
 ## Related Resources
 
 ### Documentation
+
 - **[GNN Examples](../gnn/gnn_examples_doc.md)**
 - **[PyMDP Tutorials](../pymdp/pymdp_advanced_tutorials.md)**
 - **[POMDP Examples](../pymdp/pymdp_pomdp/)**
 
 ### Source Code
-- **[Examples](../../examples/)**
+
+- **Examples**
 - **[Output](../../output/)**
 
 ---

@@ -489,7 +489,7 @@ def execute_rendered_simulators(
                     logger.info("🚀 Executing PyMDP scripts...")
                     
                     # Use target_dir to find rendered simulators
-                    pymdp_dir = target_dir / "pymdp_gen"
+                    pymdp_dir = target_dir / "pymdp"
                     
                     # Pre-validate PyMDP scripts for syntax errors
                     if pymdp_dir.exists():
@@ -716,12 +716,14 @@ def execute_rendered_simulators(
             })
         
         # Save execution summary with enhanced details
-        summary_file = execution_output_dir / "execution_summary.json"
+        summaries_dir = execution_output_dir / "summaries"
+        summaries_dir.mkdir(parents=True, exist_ok=True)
+        summary_file = summaries_dir / "execution_summary.json"
         with open(summary_file, 'w') as f:
             json.dump(execution_results, f, indent=2)
         
         # Generate enhanced markdown report
-        report_file = execution_output_dir / "execution_report.md"
+        report_file = summaries_dir / "execution_report.md"
         with open(report_file, 'w') as f:
             f.write("# Enhanced Execution Results Report\n\n")
             f.write(f"**Generated:** {execution_results['timestamp']}\n")

@@ -56,7 +56,7 @@ Blocking sections are wrapped in `Py_BEGIN_ALLOW_THREADS`/`Py_END_ALLOW_THREADS`
 |-------------------|----------------------------------------|---------------------------------------|-------------------|
 | Read              | AIFF, FLAC, MP3, OGG, WAV[5][7]        | AAC, AC3, WMA, others[5]              | 64-bit PCM only   |
 | Write             | AIFF, FLAC, OGG, WAV[5][7]             | —                                     | MP3 write omitted |
-| Live Streams      | `AudioStream` class [UNIX & macOS](1)  | —                                     | 512-sample block  |
+| Live Streams      | `AudioStream` class [UNIX & macOS][1]  | —                                     | 512-sample block  |
 | On-the-fly Resamp | Any rate → Any rate with O(1) RAM[1]   | —                                     | sinc windowed     |
 
 Pedalboard's file loader outperforms `librosa.load` by roughly 4× on 44.1 kHz 2-channel WAVs thanks to vectorized SIMD decoding[3].

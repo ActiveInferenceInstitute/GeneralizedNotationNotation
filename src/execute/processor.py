@@ -236,9 +236,12 @@ def process_execute(
             else:
                 logger.info(f"Found {len(executable_scripts)} executable scripts to run")
                 
+                # Extract timeout from kwargs
+                timeout = kwargs.get('timeout', 300)
+                
                 # Execute each script
                 for script_info in executable_scripts:
-                    exec_result = execute_single_script(script_info, results_dir, verbose, logger)
+                    exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
                     execution_results["execution_details"].append(exec_result)
                     
                     # Update framework status
@@ -257,8 +260,10 @@ def process_execute(
                         if "error" in exec_result:
                             execution_results["framework_status"][framework]["error"] = exec_result["error"]
         
-        # Save detailed results
-        results_file = results_dir / "execution_summary.json"
+        # Save detailed results to summaries subfolder
+        summaries_dir = results_dir / "summaries"
+        summaries_dir.mkdir(parents=True, exist_ok=True)
+        results_file = summaries_dir / "execution_summary.json"
         with open(results_file, 'w') as f:
             json.dump(execution_results, f, indent=2, default=str)
             
@@ -366,7 +371,7 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
     return executable_scripts
 
 
-def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbose: bool, logger) -> Dict[str, Any]:
+def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbose: bool, logger, timeout: int = 300) -> Dict[str, Any]:
     """
     Execute a single script using subprocess.
     
@@ -484,7 +489,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 [executor, script_name],
                 capture_output=True,
                 text=True,
-                timeout=300,  # Increased timeout to 5 minutes for complex simulations
+                timeout=timeout,
                 cwd=script_path.parent,  # Run in the script's directory
                 env=env
             )
@@ -520,11 +525,11 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         except subprocess.TimeoutExpired:
             end_time = datetime.now()
             exec_result['execution_time'] = (end_time - start_time).total_seconds()
-            exec_result['error'] = f"Script execution timed out after 300 seconds"
+            exec_result['error'] = f"Script execution timed out after {timeout} seconds"
             exec_result['return_code'] = -1
             exec_result['stdout'] = ""
             exec_result['stderr'] = "Timeout"
-            logger.warning(f"⏰ Script {script_info['name']} timed out after 300 seconds")
+            logger.warning(f"⏰ Script {script_info['name']} timed out after {timeout} seconds")
             result = ErrorResult(-1, "", "Timeout")
 
         except Exception as e:
@@ -596,23 +601,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             f.write("\n\nSTDERR:\n")
             f.write(result.stderr)
             
-        # Also save to centralized location for backward compatibility
-        script_output_dir = results_dir / 'individual_outputs' / framework
-        script_output_dir.mkdir(parents=True, exist_ok=True)
-        
-        centralized_output = script_output_dir / f"{script_info['name']}_output.txt"
-        with open(centralized_output, 'w') as f:
-            f.write(f"Execution Results for {script_info['name']}\n")
-            f.write(f"Timestamp: {exec_result['timestamp']}\n")
-            f.write(f"Return Code: {result.returncode}\n")
-            f.write(f"Execution Time: {exec_result['execution_time']:.2f} seconds\n\n")
-            f.write("STDOUT:\n")
-            f.write(result.stdout)
-            f.write("\n\nSTDERR:\n")
-            f.write(result.stderr)
-            
         exec_result['output_file'] = str(output_file)
-        exec_result['centralized_output_file'] = str(centralized_output)
         exec_result['implementation_directory'] = str(impl_specific_dir.parent)
         
         # Collect execution outputs (visualizations, simulation data, traces)
@@ -662,7 +651,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 logger.debug(traceback.format_exc())
         
     except subprocess.TimeoutExpired:
-        exec_result['error'] = 'Script execution timed out (5 minutes)'
+        exec_result['error'] = f'Script execution timed out ({timeout} seconds)'
         logger.error(f"Script {script_info['name']} timed out")
         
     except Exception as e:
@@ -702,7 +691,9 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
         results_dir: Directory to save the report
         logger: Logger instance
     """
-    report_file = results_dir / "execution_report.md"
+    summaries_dir = results_dir / "summaries"
+    summaries_dir.mkdir(parents=True, exist_ok=True)
+    report_file = summaries_dir / "execution_report.md"
     
     try:
         with open(report_file, 'w') as f:

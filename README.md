@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-01-23
+**Last Updated**: 2026-02-23
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-25-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
-[![Tests](https://img.shields.io/badge/Tests-777%20Passed-brightgreen.svg)](#-repository-health)
+[![Tests](https://img.shields.io/badge/Tests-1,319%20Passed-brightgreen.svg)](#-repository-health)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -51,10 +51,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-02-09  
-**Version**: 1.1.3  
+**Last Updated**: 2026-02-23  
+**Version**: 1.2.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite**: ✅ 1,083 tests passing  
+**Test Suite**: ✅ 1,319 tests passing  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -1152,10 +1152,10 @@ The GNN project maintains high standards for code quality, testing, and document
 ### 📊 Current Metrics (2026-02-09)
 
 - **Total Steps**: 25 (0-24)
-- **Execution Time**: ~3 minutes (172.7s - 180s)
+- **Execution Time**: ~5 minutes (with LLM step)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,083 tests passed
+- **Test Suite Status**: ✅ 1,319 tests passed
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)

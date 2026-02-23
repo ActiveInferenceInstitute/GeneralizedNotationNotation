@@ -1,9 +1,9 @@
 # GNN Documentation Index
 
-**Version**: v1.1.0  
-**Last Updated**: February 9, 2026  
+**Version**: v1.2.0  
+**Last Updated**: February 23, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,083 Tests Passing  
+**Test Count**: 1,319 Tests Passing  
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
@@ -25,6 +25,7 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 - **[src/README.md](../../src/README.md)** - Pipeline architecture and thin orchestrator pattern
 - **[src/main.py](../../src/main.py)** - Pipeline orchestrator implementation
 - [Architecture Reference](architecture_reference.md) - Implementation patterns and cross-module data flow
+- [Module Reference](modules/README.md) - Per-module documentation for all 25 steps, with architecture, CLI args, and output details
 - [GNN Tools and Resources](gnn_tools.md) - Complete pipeline usage and examples
 - [Technical Reference](technical_reference.md) - Round-trip data flow and entry points
 
@@ -207,8 +208,8 @@ All GNN documentation follows these principles:
 
 - ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (28/28 modules)
-- ✅ 100% pipeline success rate (~3 minutes / 172.7 seconds execution time)
-- ✅ 1,083 tests passing
+- ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
+- ✅ 1,319 tests passing
 - ✅ Enhanced visual logging across all steps
 - ✅ Comprehensive cross-referencing between documentation
 
@@ -244,8 +245,8 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: v1.1.0
-**Pipeline Version**: 1.1.0
+**GNN Version**: v1.2.0
+**Pipeline Version**: 1.2.0
 **Total Pipeline Steps**: 25 (0-24)
-**Last Updated**: 2026-02-09
+**Last Updated**: 2026-02-23
 **Status**: ✅ All Documentation Complete
