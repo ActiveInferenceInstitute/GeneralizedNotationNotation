@@ -68,4 +68,11 @@ def main() -> int:
     return run_script()
 
 if __name__ == "__main__":
-    sys.exit(main())
+    # This file is a developer template — it must not be run directly.
+    # Copy it to a new file (e.g. src/25_my_step.py), fill in the
+    # module import and description, then run the copy.
+    raise SystemExit(
+        "\n[pipeline_step_template.py] This is a copy-and-fill template.\n"
+        "Do not run it directly. Copy it to src/N_stepname.py and fill in\n"
+        "the module import ( from mymodule import my_function ) and description."
+    )

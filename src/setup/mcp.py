@@ -23,43 +23,8 @@ from .utils import (
 
 import inspect, importlib
 
-def _get_module_pkg():
-    try:
-        return importlib.import_module(__package__)
-    except Exception:
-        import sys
-        return sys.modules.get(__package__)
 
-def list_functions_mcp() -> Dict[str, Any]:
-    module_pkg = _get_module_pkg()
-    public_names = getattr(module_pkg, "__all__", []) or [n for n in dir(module_pkg) if not n.startswith("_")]
-    funcs = []
-    for name in public_names:
-        obj = getattr(module_pkg, name, None)
-        if inspect.isfunction(obj):
-            funcs.append(name)
-    return {"success": True, "module": __package__, "functions": sorted(set(funcs))}
 
-def call_function_mcp(function_name: str, arguments: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    from pathlib import Path
-    module_pkg = _get_module_pkg()
-    func = getattr(module_pkg, function_name, None)
-    if not callable(func):
-        return {"success": False, "error": f"Function not found or not callable: {function_name}"}
-    arguments = arguments or {}
-    converted: Dict[str, Any] = {}
-    for key, value in arguments.items():
-        if isinstance(value, str) and any(token in key.lower() for token in ["dir", "path", "file", "output", "input"]):
-            converted[key] = Path(value)
-        else:
-            converted[key] = value
-    try:
-        result = func(**converted)
-        return {"success": True, "result": result}
-    except TypeError as e:
-        return {"success": False, "error": f"TypeError: {e}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
 # MCP Tools for UV-based Setup Utilities Module
 
@@ -320,22 +285,6 @@ def register_tools(mcp_instance):
     """Register UV-based setup utility tools with the MCP."""
     
     # Generic namespaced tools
-    mcp_instance.register_tool(
-        f"{__package__}.list_functions",
-        list_functions_mcp,
-        {},
-        f"List callable functions exported by the {__package__} module public API."
-    )
-    mcp_instance.register_tool(
-        f"{__package__}.call_function",
-        call_function_mcp,
-        {
-            "function_name": {"type": "string", "description": "Function name exported by the module"},
-            "arguments": {"type": "object", "description": "Keyword arguments for the function", "default": {}}
-        },
-        f"Call any public function in the {__package__} module with keyword arguments."
-    )
-
     mcp_instance.register_tool(
         "ensure_directory_exists",
         ensure_directory_exists_mcp,

@@ -114,10 +114,10 @@ Every module directory MUST contain:
 
 | Module | Purpose | Files |
 |--------|---------|-------|
-| `utils/` | Shared utilities | 42 |
-| `pipeline/` | Orchestration config | 20 |
-| `tests/` | Test suite | 89 |
-| `sapf/` | Audio framework | 1 |
+| `utils/` | Shared utilities | 49 |
+| `pipeline/` | Orchestration config | 25 |
+| `tests/` | Test suite | 111 |
+| `sapf/` | Audio framework | 5 |
 | `output/` | Generated artifacts | — |
 
 ---

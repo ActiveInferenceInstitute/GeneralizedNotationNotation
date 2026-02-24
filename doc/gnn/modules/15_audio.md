@@ -45,6 +45,19 @@ Install with: `uv pip install -e .[audio]`
 - **Directory**: `output/15_audio_output/`
 - Audio files (`.wav`, `.mp3`), spectrograms, and analysis reports
 
+## MCP Tools (audio module — 6 real tools)
+
+Registered by `src/audio/mcp.py` via `register_tools()`:
+
+| Tool | Description |
+|------|-------------|
+| `process_audio` | Run GNN audio processing pipeline: convert GNN models to audio files |
+| `check_audio_backends` | Check which audio backends are available (SAPF, Pedalboard, soundfile) |
+| `get_audio_generation_options` | List all configurable audio generation options |
+| `analyze_audio_characteristics` | Analyse characteristics of a GNN model for sonification |
+| `validate_audio_content` | Validate audio content derived from GNN specifications |
+| `get_audio_module_info` | Return audio module version and capabilities |
+
 ## Source
 
 - **Script**: [src/15_audio.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/15_audio.py)

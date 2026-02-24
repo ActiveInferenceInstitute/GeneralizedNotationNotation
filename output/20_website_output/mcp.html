@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GNN Pipeline Results — MCP Tools">
+  <title>MCP Tools — GNN Pipeline</title>
+  <style>
+/* ── GNN Pipeline Design System ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-base:    #0d1117;
+  --bg-surface: #161b22;
+  --bg-card:    #1c2230;
+  --bg-hover:   #21273a;
+  --border:     #30363d;
+  --accent:     #7c5cbf;
+  --accent-2:   #2ea8c4;
+  --success:    #3fb950;
+  --warning:    #d29922;
+  --error:      #f85149;
+  --text-1:     #e6edf3;
+  --text-2:     #8b949e;
+  --text-3:     #484f58;
+  --radius:     8px;
+  --radius-lg:  14px;
+  --shadow:     0 4px 24px rgba(0,0,0,0.45);
+  --glow:       0 0 20px rgba(124,92,191,0.25);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h2 {
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sidebar-logo p { color: var(--text-2); font-size: 11px; margin-top: 2px; }
+.sidebar-nav { padding: 12px 8px; flex: 1; }
+.nav-section { margin-bottom: 8px; }
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 4px 8px;
+  margin-bottom: 2px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.nav-link:hover, .nav-link.active {
+  background: var(--bg-card);
+  color: var(--text-1);
+}
+.nav-link.active { color: var(--accent-2); }
+.nav-link .icon { font-size: 14px; width: 18px; text-align: center; }
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  overflow-x: hidden;
+}
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.page-header .subtitle {
+  color: var(--text-2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ── Stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--glow); }
+.stat-card .label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+.stat-card .sub   { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.stat-card.success .value { color: var(--success); }
+.stat-card.accent  .value { color: var(--accent); }
+.stat-card.accent2 .value { color: var(--accent-2); }
+.stat-card.warning .value { color: var(--warning); }
+
+/* ── Step grid ── */
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: all 0.15s;
+  cursor: default;
+}
+.step-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+.step-card .step-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+}
+.step-card .step-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 8px;
+  color: var(--text-1);
+}
+.step-card .step-desc {
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.step-card .step-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.badge-ok      { background: rgba(63,185,80,0.15);    color: var(--success); }
+.badge-skip    { background: rgba(210,153,34,0.15);   color: var(--warning); }
+.badge-error   { background: rgba(248,81,73,0.15);    color: var(--error); }
+.badge-pending { background: rgba(139,148,158,0.15);  color: var(--text-2); }
+
+/* ── Table ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--bg-surface);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-1);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-hover); }
+
+/* ── Code ── */
+pre, code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+pre {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+code { color: var(--accent-2); }
+
+/* ── Section ── */
+.section      { margin-bottom: 32px; }
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.card p  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* ── Visualization gallery ── */
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.viz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.viz-card:hover { box-shadow: var(--glow); }
+.viz-card img  { width: 100%; display: block; border-bottom: 1px solid var(--border); }
+.viz-card .viz-info { padding: 12px 14px; }
+.viz-card .viz-title { font-size: 12px; font-weight: 600; }
+.viz-card .viz-desc  { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+/* ── MCP tool card ── */
+.tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-2); }
+.tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.tool-card .tool-desc { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+
+/* ── Pill badge ── */
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Collapsible ── */
+details { margin-bottom: 8px; }
+summary {
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '▸'; color: var(--text-3); }
+details[open] summary::after { content: '▾'; }
+details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
+.details-body {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 12px 14px;
+  background: var(--bg-surface);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>GNN Pipeline</h2>
+      <p>Generated 2026-02-24 07:44</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-link"><span class="icon">🏠</span>Dashboard</a>
+<a href="pipeline.html" class="nav-link"><span class="icon">⚡</span>Pipeline</a>
+<a href="gnn_files.html" class="nav-link"><span class="icon">📂</span>GNN Files</a>
+<a href="analysis.html" class="nav-link"><span class="icon">📊</span>Analysis</a>
+<a href="visualization.html" class="nav-link"><span class="icon">🖼️</span>Visualizations</a>
+<a href="reports.html" class="nav-link"><span class="icon">📋</span>Reports</a>
+<a href="mcp.html" class="nav-link active"><span class="icon">🔧</span>MCP Tools</a>
+
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="main">
+    
+<div class="page-header">
+  <h1>🔧 MCP Tools Registry</h1>
+  <p class="subtitle">126 tools registered across all modules via the Model Context Protocol</p>
+</div>
+
+<div class="section">
+  <div class="section-title">core <span class="pill badge-pending" style="margin-left:6px">47</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_uv_project_status</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Checks the status of a UV project including pyproject.toml, uv.lock, and virtual environment.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">ensure_directory_exists</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Ensures a directory exists, creating it if necessary. Returns the absolute path.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">find_project_gnn_files</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Finds all GNN (.md) files in a specified directory within the project.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_environment_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get environment information including Python packages, environment variables, and paths.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_file_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get detailed information about a file or directory including size, permissions, and contents.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_gnn_documentation</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Retrieve the content of a GNN documentation file, schema definition, or grammar specification.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_gnn_module_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get comprehensive information about the GNN module capabilities and features.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_gnn_schema_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get comprehensive information about the GNN schema structure and validation rules.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_logging_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get current logging configuration and status for all loggers.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_config_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get detailed pipeline configuration information and settings.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_status</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get current pipeline execution status, recent logs, and execution statistics.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_pipeline_steps</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get information about all available pipeline steps, their metadata, and dependencies.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_standard_output_paths</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Gets a dictionary of standard output directory paths (e.g., for type_check, visualization), creating them if needed.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_system_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get comprehensive system information including CPU, memory, disk, and platform details.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_uv_environment_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Gets information about the current UV environment including paths and status.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">install_uv_dependency</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Installs a dependency using UV with optional extras support.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">model_registry.get_model</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get a model from the registry by ID</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">model_registry.list_models</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">List all models in the registry</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">model_registry.register_model</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Register a model in the model registry</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">model_registry.search_models</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Search models in the registry by name, description, or tags</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">parse_gnn_content</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Parse GNN content with enhanced multi-format support and return structured model representation.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_gnn_directory</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Process a directory of GNN files with enhanced validation and testing capabilities.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_all_tests</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Run comprehensive test suite for the GNN pipeline.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_integration_tests</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Run integration test suite for the GNN pipeline.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_round_trip_tests</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Run comprehensive round-trip tests on GNN files across all supported formats.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">run_unit_tests</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Run unit test suite for the GNN pipeline.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">setup_uv_project_structure</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Sets up a new UV project structure with standard directories and configuration.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_analyze_stability</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Analyze system stability using eigenvalue analysis</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_cleanup</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Clean up SymPy MCP integration and reset state</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_get_latex</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Convert a mathematical expression to LaTeX format</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_initialize</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Initialize SymPy MCP integration</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_simplify_expression</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Simplify a mathematical expression to canonical form</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_solve_equation</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Solve an equation algebraically for a specified variable</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_validate_equation</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate a mathematical equation using SymPy symbolic processing</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sympy_validate_matrix</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate matrix properties including stochasticity constraints</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">sync_uv_dependencies</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Syncs dependencies using UV from pyproject.toml and updates the lock file.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">template.get_info</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Get information about the template step</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">template.process_directory</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Process all files in a directory using the template processor</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">template.process_file</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Process a file using the template processor</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_cross_format_consistency_content</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate cross-format consistency for GNN content across all supported formats.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_dependencies</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate system dependencies and required packages for the GNN pipeline.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_directory_cross_format_consistency</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate cross-format consistency for files in a directory with comprehensive analysis.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_gnn_content</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Enhanced validation of GNN file content with comprehensive testing capabilities.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_gnn_files</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate GNN files for syntax and type correctness.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_pipeline_dependencies</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate pipeline step dependencies and identify missing or circular dependencies.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_schema_definitions_consistency</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate consistency between GNN schema definition files across different formats.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_single_gnn_file</div>
+  <div class="tool-mod">core</div>
+  <div class="tool-desc">Validate a single GNN file for syntax and type correctness.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.advanced_visualization <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_visualization_capabilities</div>
+  <div class="tool-mod">src.advanced_visualization · advanced_visualization</div>
+  <div class="tool-desc">Check available advanced visualization capabilities (D2, dashboard, network backends).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_advanced_visualization_module_info</div>
+  <div class="tool-mod">src.advanced_visualization · advanced_visualization</div>
+  <div class="tool-desc">Return version, feature flags, and tool inventory of the advanced visualization module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_d2_visualization_types</div>
+  <div class="tool-mod">src.advanced_visualization · advanced_visualization</div>
+  <div class="tool-desc">Return all D2 diagram types supported for GNN model visualization.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_advanced_visualization</div>
+  <div class="tool-mod">src.advanced_visualization · advanced_visualization</div>
+  <div class="tool-desc">Process advanced visualization for GNN files: D2 diagrams, dashboards, network visualizations.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.analysis <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">compute_complexity_metrics</div>
+  <div class="tool-mod">src.analysis · analysis</div>
+  <div class="tool-desc">Compute complexity metrics (variables, connections, cyclomatic complexity) for GNN content.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_analysis_results</div>
+  <div class="tool-mod">src.analysis · analysis</div>
+  <div class="tool-desc">Read and return saved analysis results from a previous analysis run.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_analysis_tools</div>
+  <div class="tool-mod">src.analysis · analysis</div>
+  <div class="tool-desc">Return information about available GNN analysis tools and capabilities.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_analysis</div>
+  <div class="tool-mod">src.analysis · analysis</div>
+  <div class="tool-desc">Run statistical and complexity analysis on GNN files in a directory.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.audio <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">analyze_audio_characteristics</div>
+  <div class="tool-mod">src.audio · audio</div>
+  <div class="tool-desc">Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_audio_generation_options</div>
+  <div class="tool-mod">src.audio · audio</div>
+  <div class="tool-desc">Return all configurable audio generation options with defaults and valid ranges.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_audio_module_info</div>
+  <div class="tool-mod">src.audio · audio</div>
+  <div class="tool-desc">Return version, feature flags, supported backends and formats of the GNN audio module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_audio</div>
+  <div class="tool-mod">src.audio · audio</div>
+  <div class="tool-desc">Run GNN audio processing pipeline: convert GNN models to audio files.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_audio_content</div>
+  <div class="tool-mod">src.audio · audio</div>
+  <div class="tool-desc">Validate a GNN-generated audio file: header, sample count, amplitude bounds.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.execute <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_execute_dependencies</div>
+  <div class="tool-mod">src.execute · execute</div>
+  <div class="tool-desc">Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">execute_gnn_model</div>
+  <div class="tool-mod">src.execute · execute</div>
+  <div class="tool-desc">Execute a single GNN model file: parse, construct POMDP, run N inference steps.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">execute_pymdp_simulation</div>
+  <div class="tool-mod">src.execute · execute</div>
+  <div class="tool-desc">Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices → Agent → perception-action loop).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_execute_module_info</div>
+  <div class="tool-mod">src.execute · execute</div>
+  <div class="tool-desc">Return version, feature flags, and API surface of the GNN execute module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_execute</div>
+  <div class="tool-mod">src.execute · execute</div>
+  <div class="tool-desc">Run GNN execution processing: validate and execute all GNN model files in a directory.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.export <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">export_single_gnn_file</div>
+  <div class="tool-mod">src.export · export</div>
+  <div class="tool-desc">Export a single GNN file to one or more target formats.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_export_formats</div>
+  <div class="tool-mod">src.export · export</div>
+  <div class="tool-desc">List all supported GNN export formats and their descriptions.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_export</div>
+  <div class="tool-mod">src.export · export</div>
+  <div class="tool-desc">Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_export_format</div>
+  <div class="tool-mod">src.export · export</div>
+  <div class="tool-desc">Check whether a given export format is supported.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.gui <span class="pill badge-pending" style="margin-left:6px">3</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_gui_module_info</div>
+  <div class="tool-mod">src.gui · gui</div>
+  <div class="tool-desc">Return version, feature flags, GUI types, and tool inventory of the GUI module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_available_guis</div>
+  <div class="tool-mod">src.gui · gui</div>
+  <div class="tool-desc">List all available GUI implementations (gui_1, gui_2, gui_3, oxdraw) with capabilities.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_gui</div>
+  <div class="tool-mod">src.gui · gui</div>
+  <div class="tool-desc">Process GUI generation for GNN files: form editors, visual constructors, OxDraw diagram tools.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.integration <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_integration_dependencies</div>
+  <div class="tool-mod">src.integration · integration</div>
+  <div class="tool-desc">Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_integration_status</div>
+  <div class="tool-mod">src.integration · integration</div>
+  <div class="tool-desc">Check status and inventory of a previous integration run.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_supported_integrations</div>
+  <div class="tool-mod">src.integration · integration</div>
+  <div class="tool-desc">Return all supported third-party integration targets and their availability.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_integration</div>
+  <div class="tool-mod">src.integration · integration</div>
+  <div class="tool-desc">Run GNN integration processing: export to ActiveInference.jl, pymdp, Pyro, Stan, etc.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.intelligent_analysis <span class="pill badge-pending" style="margin-left:6px">3</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_analysis_capabilities</div>
+  <div class="tool-mod">src.intelligent_analysis · intelligent_analysis</div>
+  <div class="tool-desc">Get intelligent analysis capabilities, supported types, available tools, and feature flags.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_intelligent_analysis_module_info</div>
+  <div class="tool-mod">src.intelligent_analysis · intelligent_analysis</div>
+  <div class="tool-desc">Return version, feature flags, and tool inventory of the intelligent analysis module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_intelligent_analysis</div>
+  <div class="tool-mod">src.intelligent_analysis · intelligent_analysis</div>
+  <div class="tool-desc">Process AI-powered intelligent analysis of GNN pipeline results: failure analysis, performance optimization.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.llm <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">analyze_gnn_with_llm</div>
+  <div class="tool-mod">src.llm · llm</div>
+  <div class="tool-desc">Run LLM-based analysis on a single GNN model file: summary, complexity, connections.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">generate_llm_documentation</div>
+  <div class="tool-mod">src.llm · llm</div>
+  <div class="tool-desc">Generate human-readable Markdown documentation for a GNN model using an LLM.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_llm_module_info</div>
+  <div class="tool-mod">src.llm · llm</div>
+  <div class="tool-desc">Return version, analysis types, output formats, and tool list of the GNN LLM module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_llm_providers</div>
+  <div class="tool-mod">src.llm · llm</div>
+  <div class="tool-desc">Return available LLM providers and their API key / configuration status.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_llm</div>
+  <div class="tool-mod">src.llm · llm</div>
+  <div class="tool-desc">Run LLM analysis pipeline for all GNN files in a directory.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.ml_integration <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_ml_frameworks</div>
+  <div class="tool-mod">src.ml_integration · ml_integration</div>
+  <div class="tool-desc">Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_ml_module_info</div>
+  <div class="tool-mod">src.ml_integration · ml_integration</div>
+  <div class="tool-desc">Return version, feature flags, and tool inventory of the ML integration module.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_ml_integration_targets</div>
+  <div class="tool-mod">src.ml_integration · ml_integration</div>
+  <div class="tool-desc">Return GNN-compatible ML integration targets and their dependency availability.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_ml_integration</div>
+  <div class="tool-mod">src.ml_integration · ml_integration</div>
+  <div class="tool-desc">Process ML integration for GNN files: model training, inference setup, and framework export.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.ontology <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">extract_ontology_annotations</div>
+  <div class="tool-mod">src.ontology · ontology</div>
+  <div class="tool-desc">Extract ActInfOntologyAnnotation variable-to-term mappings from GNN model content.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_standard_ontology_terms</div>
+  <div class="tool-mod">src.ontology · ontology</div>
+  <div class="tool-desc">Return the canonical list of Active Inference Ontology (ActInfO) terms and descriptions.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_ontology</div>
+  <div class="tool-mod">src.ontology · ontology</div>
+  <div class="tool-desc">Map GNN variables to Active Inference Ontology terms and produce an ontology report.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_ontology_terms</div>
+  <div class="tool-mod">src.ontology · ontology</div>
+  <div class="tool-desc">Validate ontology term names against the Active Inference Ontology.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.render <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_render_module_info</div>
+  <div class="tool-mod">src.render · render</div>
+  <div class="tool-desc">Return metadata about the render module: supported frameworks and input/output formats.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_render_frameworks</div>
+  <div class="tool-mod">src.render · render</div>
+  <div class="tool-desc">Return all supported rendering frameworks (Python, Julia, JAX, PyTorch, RxInfer) and their availability.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_render</div>
+  <div class="tool-mod">src.render · render</div>
+  <div class="tool-desc">Render GNN models in a directory to all supported code frameworks.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">render_gnn_to_format</div>
+  <div class="tool-mod">src.render · render</div>
+  <div class="tool-desc">Render a single GNN file to a specific target framework (Python, Julia, etc.).</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.report <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">generate_report</div>
+  <div class="tool-mod">src.report · report</div>
+  <div class="tool-desc">Generate a comprehensive pipeline execution report with statistics and summaries.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_report_module_info</div>
+  <div class="tool-mod">src.report · report</div>
+  <div class="tool-desc">Return metadata about the report module (version, supported formats).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_report_formats</div>
+  <div class="tool-mod">src.report · report</div>
+  <div class="tool-desc">Return all supported report output formats (JSON, HTML, Markdown, etc.).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_report</div>
+  <div class="tool-mod">src.report · report</div>
+  <div class="tool-desc">Run the full report pipeline step.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">read_report</div>
+  <div class="tool-mod">src.report · report</div>
+  <div class="tool-desc">Read and return the contents of a generated pipeline report file.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.research <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_research_module_info</div>
+  <div class="tool-mod">src.research · research</div>
+  <div class="tool-desc">Return metadata about the research module capabilities.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_research_topics</div>
+  <div class="tool-mod">src.research · research</div>
+  <div class="tool-desc">Return Active Inference and GNN research topic taxonomy.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_research</div>
+  <div class="tool-mod">src.research · research</div>
+  <div class="tool-desc">Run GNN research processing: generate experiment metadata and cross-references.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">read_research_results</div>
+  <div class="tool-mod">src.research · research</div>
+  <div class="tool-desc">Read and return research output files from a previous research processing run.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.sapf <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_audio_backends</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_sapf_module_info</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">Return metadata about the SAPF audio synthesis module (version, formats, capabilities).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_audio_artifacts</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">List audio and SAPF script artifacts in an output directory.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_sapf</div>
+  <div class="tool-mod">src.sapf · audio</div>
+  <div class="tool-desc">Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.security <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_security_report</div>
+  <div class="tool-mod">src.security · security</div>
+  <div class="tool-desc">Read and return saved security scan reports from a previous security processing run.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_security_checks</div>
+  <div class="tool-mod">src.security · security</div>
+  <div class="tool-desc">Return the list of security checks performed (CVE scan, injection detection, path traversal, etc.).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_security</div>
+  <div class="tool-mod">src.security · security</div>
+  <div class="tool-desc">Run security scanning and compliance checks on GNN pipeline files.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">scan_gnn_file</div>
+  <div class="tool-mod">src.security · security</div>
+  <div class="tool-desc">Perform a lightweight security scan of a single GNN file for injection patterns.</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.validation <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">check_schema_compliance</div>
+  <div class="tool-mod">src.validation · validation</div>
+  <div class="tool-desc">Check a GNN model string against canonical GNN schema requirements.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_validation_report</div>
+  <div class="tool-mod">src.validation · validation</div>
+  <div class="tool-desc">Read and return saved validation reports from a previous validation run.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_validation</div>
+  <div class="tool-mod">src.validation · validation</div>
+  <div class="tool-desc">Run full GNN validation pipeline on a directory of GNN files.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">validate_gnn_file</div>
+  <div class="tool-mod">src.validation · validation</div>
+  <div class="tool-desc">Validate a single GNN file at a given level (basic/standard/strict).</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.visualization <span class="pill badge-pending" style="margin-left:6px">4</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">get_visualization_module_info</div>
+  <div class="tool-mod">src.visualization · visualization</div>
+  <div class="tool-desc">Return metadata about the visualization module (version, backends, output formats).</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_visualization_options</div>
+  <div class="tool-mod">src.visualization · visualization</div>
+  <div class="tool-desc">Return available visualization types and their configuration options.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_visualization_artifacts</div>
+  <div class="tool-mod">src.visualization · visualization</div>
+  <div class="tool-desc">List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_visualization</div>
+  <div class="tool-mod">src.visualization · visualization</div>
+  <div class="tool-desc">Generate static PNGs/SVGs for all GNN models (state-space, connection matrix, parameters).</div>
+</div>
+</div>
+<div class="section">
+  <div class="section-title">src.website <span class="pill badge-pending" style="margin-left:6px">5</span></div>
+  
+<div class="tool-card">
+  <div class="tool-name">build_website_from_pipeline_output</div>
+  <div class="tool-mod">src.website · website</div>
+  <div class="tool-desc">Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_website_module_info</div>
+  <div class="tool-mod">src.website · website</div>
+  <div class="tool-desc">Return metadata about the website module: version, supported file types, and available MCP tools.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">get_website_status</div>
+  <div class="tool-mod">src.website · website</div>
+  <div class="tool-desc">Inspect an existing generated website: list pages, sizes, and check completeness of key pages.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">list_generated_website_pages</div>
+  <div class="tool-mod">src.website · website</div>
+  <div class="tool-desc">List all HTML pages in a generated website directory with sizes and timestamps.</div>
+</div>
+<div class="tool-card">
+  <div class="tool-name">process_website</div>
+  <div class="tool-mod">src.website · website</div>
+  <div class="tool-desc">Generate a premium 7-page static HTML website from GNN pipeline artifacts.</div>
+</div>
+</div>
+  </main>
+</body>
+</html>

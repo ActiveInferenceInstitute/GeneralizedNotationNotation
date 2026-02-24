@@ -75,7 +75,7 @@ if Path.cwd() != PROJECT_ROOT:
 sys.path.insert(0, str(SCRIPT_DIR))
 
 from utils.pipeline_template import (
-    setup_step_logging,
+    setup_step_logging as _basic_setup_step_logging,
     log_step_start,
     log_step_success,
     log_step_error,
@@ -86,7 +86,9 @@ from pipeline.config import get_output_dir_for_script, get_pipeline_config
 from utils.resource_manager import get_current_memory_usage
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
 
-# Optional logging and progress tracking
+# Optional structured logging and visual progress tracking.
+# setup_step_logging is resolved here; falls back to the basic version from
+# utils.pipeline_template (_basic_setup_step_logging) when unavailable.
 try:
     from utils.logging.logging_utils import (
         PipelineProgressTracker,
@@ -94,7 +96,7 @@ try:
         PipelineLogger,
         log_pipeline_summary,
         reset_progress_tracker,
-        setup_step_logging,
+        setup_step_logging,  # structured version — preferred
         rotate_logs
     )
     from utils.visual_logging import (
@@ -109,6 +111,8 @@ try:
     )
     STRUCTURED_LOGGING_AVAILABLE = True
 except ImportError as e:
+    # Fall back to the basic version imported above under its alias.
+    setup_step_logging = _basic_setup_step_logging
     STRUCTURED_LOGGING_AVAILABLE = False
     # Provide fallback implementations when visual logging is not available
     from dataclasses import dataclass
@@ -196,12 +200,7 @@ def main():
         # Reset progress tracker for new pipeline run
         reset_progress_tracker()
     else:
-        # Use the logging_utils version directly to avoid duplicate setup
-        try:
-            from utils.logging.logging_utils import setup_step_logging as _setup_step_logging
-            logger = _setup_step_logging("pipeline", args.verbose)
-        except ImportError:
-            logger = setup_step_logging("pipeline", args.verbose)
+        logger = setup_step_logging("pipeline", args.verbose)
 
     # Set correlation ID for tracking
     import uuid

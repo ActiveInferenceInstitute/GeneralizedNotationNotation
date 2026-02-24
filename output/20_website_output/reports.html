@@ -1,0 +1,2390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GNN Pipeline Results — Reports">
+  <title>Reports — GNN Pipeline</title>
+  <style>
+/* ── GNN Pipeline Design System ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-base:    #0d1117;
+  --bg-surface: #161b22;
+  --bg-card:    #1c2230;
+  --bg-hover:   #21273a;
+  --border:     #30363d;
+  --accent:     #7c5cbf;
+  --accent-2:   #2ea8c4;
+  --success:    #3fb950;
+  --warning:    #d29922;
+  --error:      #f85149;
+  --text-1:     #e6edf3;
+  --text-2:     #8b949e;
+  --text-3:     #484f58;
+  --radius:     8px;
+  --radius-lg:  14px;
+  --shadow:     0 4px 24px rgba(0,0,0,0.45);
+  --glow:       0 0 20px rgba(124,92,191,0.25);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h2 {
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sidebar-logo p { color: var(--text-2); font-size: 11px; margin-top: 2px; }
+.sidebar-nav { padding: 12px 8px; flex: 1; }
+.nav-section { margin-bottom: 8px; }
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 4px 8px;
+  margin-bottom: 2px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.nav-link:hover, .nav-link.active {
+  background: var(--bg-card);
+  color: var(--text-1);
+}
+.nav-link.active { color: var(--accent-2); }
+.nav-link .icon { font-size: 14px; width: 18px; text-align: center; }
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  overflow-x: hidden;
+}
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.page-header .subtitle {
+  color: var(--text-2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ── Stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--glow); }
+.stat-card .label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+.stat-card .sub   { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.stat-card.success .value { color: var(--success); }
+.stat-card.accent  .value { color: var(--accent); }
+.stat-card.accent2 .value { color: var(--accent-2); }
+.stat-card.warning .value { color: var(--warning); }
+
+/* ── Step grid ── */
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: all 0.15s;
+  cursor: default;
+}
+.step-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+.step-card .step-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+}
+.step-card .step-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 8px;
+  color: var(--text-1);
+}
+.step-card .step-desc {
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.step-card .step-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.badge-ok      { background: rgba(63,185,80,0.15);    color: var(--success); }
+.badge-skip    { background: rgba(210,153,34,0.15);   color: var(--warning); }
+.badge-error   { background: rgba(248,81,73,0.15);    color: var(--error); }
+.badge-pending { background: rgba(139,148,158,0.15);  color: var(--text-2); }
+
+/* ── Table ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--bg-surface);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-1);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-hover); }
+
+/* ── Code ── */
+pre, code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+pre {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+code { color: var(--accent-2); }
+
+/* ── Section ── */
+.section      { margin-bottom: 32px; }
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.card p  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* ── Visualization gallery ── */
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.viz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.viz-card:hover { box-shadow: var(--glow); }
+.viz-card img  { width: 100%; display: block; border-bottom: 1px solid var(--border); }
+.viz-card .viz-info { padding: 12px 14px; }
+.viz-card .viz-title { font-size: 12px; font-weight: 600; }
+.viz-card .viz-desc  { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+/* ── MCP tool card ── */
+.tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-2); }
+.tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.tool-card .tool-desc { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+
+/* ── Pill badge ── */
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Collapsible ── */
+details { margin-bottom: 8px; }
+summary {
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '▸'; color: var(--text-3); }
+details[open] summary::after { content: '▾'; }
+details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
+.details-body {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 12px 14px;
+  background: var(--bg-surface);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>GNN Pipeline</h2>
+      <p>Generated 2026-02-24 07:44</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-link"><span class="icon">🏠</span>Dashboard</a>
+<a href="pipeline.html" class="nav-link"><span class="icon">⚡</span>Pipeline</a>
+<a href="gnn_files.html" class="nav-link"><span class="icon">📂</span>GNN Files</a>
+<a href="analysis.html" class="nav-link"><span class="icon">📊</span>Analysis</a>
+<a href="visualization.html" class="nav-link"><span class="icon">🖼️</span>Visualizations</a>
+<a href="reports.html" class="nav-link active"><span class="icon">📋</span>Reports</a>
+<a href="mcp.html" class="nav-link"><span class="icon">🔧</span>MCP Tools</a>
+
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="main">
+    
+<div class="page-header">
+  <h1>📋 Reports</h1>
+  <p class="subtitle">53 report artifacts collected from pipeline output</p>
+</div>
+<div class="section">
+<details>
+  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 15863 bytes</span></summary>
+  <div class="details-body"><pre>{
+    "start_time": "2026-02-24T07:41:48.375524",
+    "arguments": {
+        "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
+        "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output",
+        "recursive": true,
+        "verbose": true,
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "3,5,7,8,12,15",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+    },
+    "steps": [
+        {
+            "status": "SUCCESS",
+            "stdout": "2026-02-24 07:41:48,784 - 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format genera</pre></div>
+</details>
+<details>
+  <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 372 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:03:28.672276",
+  "step_name": "template",
+  "input_directory": "input/gnn_files",
+  "output_directory": "output/0_template_output",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  },
+  "performance_metrics": {}
+}</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 366 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "input_file": "input/gnn_files/actinf_pomdp_agent.md",
+  "output_file": "output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
+  "timestamp": "2026-02-23T07:03:28.672166",
+  "file_size_bytes": 4298,
+  "file_size_lines": 130,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5994 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+  "file_name": "actinf_pomdp_agent.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A=LikelihoodMatrix",
+      "B=TransitionMatrix",
+      "C=LogPreferenceVector",
+      "D=PriorOverHiddenStates",
+      "E=Habit",
+      "F=VariationalFreeEnergy",
+      "G=ExpectedFreeEnergy",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "\u03c0=PolicyVector # Distribution over actions",
+      "u=Action       # Chosen action",
+      "t=Time"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "A=LikelihoodMatrix",
+      "B=TransitionMatrix",
+      "C=LogPreferenceVector",
+      "D=PriorOverHiddenStates",
+      "E=Habit",
+      "F=VariationalFreeEnergy",
+      "G=ExpectedFreeEnergy",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "\u03c0=PolicyVector # Distribution over actions",
+      "u=Action       # Chosen action",
+      "t=Time"
+    ],
+    "invalid_annotations": [],
+    "matched_terms": {
+      "A": {
+        "annotation": "A=LikelihoodMatrix",
+        "term_name": "LikelihoodMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
+        "uri": "obo:TEMP_000061",
+        "key": "A",
+        "value": "LikelihoodMatrix",
+        "comment": null
+      },
+      "B": {</pre></div>
+</details>
+<details>
+  <summary>ontology_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 153 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 1,
+  "reports": [
+    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json"
+  ],
+  "success": true,
+  "errors": []
+}</pre></div>
+</details>
+<details>
+  <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 4828 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:41:52.018810",
+  "processing_type": "POMDP-aware rendering",
+  "total_files": 1,
+  "successful_files": 1,
+  "failed_files": 0,
+  "total_framework_attempts": 5,
+  "successful_framework_renderings": 5,
+  "framework_success_rate": 100.0,
+  "configuration": {
+    "frameworks": "all",
+    "strict_validation": true,
+    "verbose": true,
+    "pomdp_processing_available": true
+  },
+  "file_results": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md": {
+      "overall_success": true,
+      "framework_results": {
+        "pymdp": {
+          "success": true,
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py",
+          "output_files": [
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py"
+          ],
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp",
+          "warnings": [],
+          "code_metrics": {
+            "lines_of_code": 413,
+            "total_lines": 476,
+            "functions": 1,
+            "classes": 0
+          }
+        },
+        "rxinfer": {
+          "success": true,
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/Gi</pre></div>
+</details>
+<details>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 557 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:41:52.007220",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+  "model_name": "Active Inference POMDP Agent",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy"
+  ],
+  "frameworks_failed": []
+}</pre></div>
+</details>
+<details>
+  <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 6792 bytes</span></summary>
+  <div class="details-body"><pre>{
+    "num_observations": 3,
+    "time_steps": 15,
+    "efe_per_action": [
+        [
+            1.1990840975349357,
+            1.1990840975349357,
+            1.1990840975349357
+        ],
+        [
+            1.4327894567487478,
+            1.4327894567487478,
+            0.6748293340493614
+        ],
+        [
+            0.6844802599506191,
+            0.6844802599506191,
+            1.449086876337318
+        ],
+        [
+            0.6850275431793631,
+            0.6850275431793631,
+            1.4500056814559548
+        ],
+        [
+            0.6850579828580426,
+            0.6850579828580426,
+            1.4500567682959995
+        ],
+        [
+            0.6850596740596255,
+            0.6850596740596255,
+            1.450059606583889
+        ],
+        [
+            0.6850597680156032,
+            0.6850597680156032,
+            1.4500597642669513
+        ],
+        [
+            0.685059773235381,
+            0.685059773235381,
+            1.450059773027122
+        ],
+        [
+            0.6850597735253687,
+            0.6850597735253687,
+            1.4500597735137986
+        ],
+        [
+            0.685059773538667,
+            0.685059773538667,
+            1.4500597735361174
+        ],
+        [
+            0.685059773538667,
+            0.685059773538667,
+            1.4500597735361174
+        ],
+        [
+            0.6850597734747538,
+            0.6850597734747538,
+            1.4500597734288543
+        ],
+        [
+            0.685059773538667,
+ </pre></div>
+</details>
+<details>
+  <summary>circuit_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 119 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "num_components": 8,
+  "loop_domain": "O",
+  "loop_codomain": "A",
+  "model_domain": "O",
+  "model_codomain": "A"
+}</pre></div>
+</details>
+<details>
+  <summary>circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 500 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Active Inference POMDP Agent",
+  "timestamp": "2026-02-24 07:41:52",
+  "parameters": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 54513 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:43:12.313613",
+  "target_directory": "input/gnn_files",
+  "output_directory": "output/12_execute_output",
+  "total_scripts_found": 5,
+  "successful_executions": 5,
+  "failed_executions": 0,
+  "skipped_executions": 0,
+  "execution_details": [
+    {
+      "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py",
+      "script_name": "Active Inference POMDP Agent_pymdp.py",
+      "framework": "pymdp",
+      "model_name": "actinf_pomdp_agent",
+      "executor": "/opt/homebrew/opt/python@3.13/bin/python3.13",
+      "success": true,
+      "return_code": 0,
+      "stdout": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
+      "stderr": "2026-02-24 07:43:13,497 - INFO - A matrix shape: (3, 3)\n2026-02-24 07:43:13,497 - INFO - B matrix shape: (3, 3, 3)\n2026-02-24 07:43:13,497 - INFO - C vector shape: (3,)\n2026-02-24 07:43:13,497 - INFO - D vector shape: (3,)\n2026-02-24 07:43:13,497 - INFO - E vector shape: (3,)\n2026-02-24 07:43:13,497 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-02-24 07:43:13,497 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-02-24 07:43:13,497 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-02</pre></div>
+</details>
+<details>
+  <summary>Active Inference POMDP Agent_discopy.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3531 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "framework": "discopy",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "Active Inference POMDP Agent_discopy.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.370048,
+  "timestamp": "2026-02-24T07:43:14.596572",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Active Inference POMDP Agent\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: </pre></div>
+</details>
+<details>
+  <summary>circuit_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 119 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "num_components": 8,
+  "loop_domain": "O",
+  "loop_codomain": "A",
+  "model_domain": "O",
+  "model_codomain": "A"
+}</pre></div>
+</details>
+<details>
+  <summary>discopy_diagrams_circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 500 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Active Inference POMDP Agent",
+  "timestamp": "2026-02-24 07:41:52",
+  "parameters": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>circuit_info.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 500 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Active Inference POMDP Agent",
+  "timestamp": "2026-02-23 06:43:44",
+  "parameters": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 3
+  },
+  "components": [
+    "A_matrix",
+    "B_matrix",
+    "C_vector",
+    "D_vector",
+    "E_vector",
+    "state_inference",
+    "policy_inference",
+    "action_selection"
+  ],
+  "analysis": {
+    "num_components": 8,
+    "loop_domain": "O",
+    "loop_codomain": "A",
+    "model_domain": "O",
+    "model_codomain": "A"
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 57670 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:05:42.481563",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "auth_errors": [],
+  "provider_matrix": {
+    "ollama": {
+      "available": false,
+      "models": [],
+      "selected_model": null
+    },
+    "openai": {
+      "available": true,
+      "models": [
+        "gpt-4",
+        "gpt-3.5-turbo"
+      ],
+      "selected_model": null
+    },
+    "anthropic": {
+      "available": true,
+      "models": [
+        "claude-3",
+        "claude-2"
+      ],
+      "selected_model": null
+    }
+  },
+  "analysis_results": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 4306,
+      "line_count": 130,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35
+       </pre></div>
+</details>
+<details>
+  <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 431 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "status": "completed",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/14_ml_integration_output",
+  "models_trained": [
+    {
+      "source": "actinf_pomdp_agent.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available or no dimensions found",
+      "dimensions": []
+    }
+  ],
+  "framework_status": {
+    "sklearn": "available"
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 1787 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:42:37.220144",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "audio_files_generated": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "audio_files": {
+        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_tonal.wav",
+        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
+        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_ambient.wav"
+      },
+      "variables_count": 73,
+      "connections_count": 0,
+      "generation_timestamp": "2026-02-24T07:42:37.439850"
+    }
+  ],
+  "sonification_results": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_sonification.wav",
+      "dynamics_analyzed": 1,
+      "sonification_type": "model_dynamics",
+      "generation_timestamp": "2026-02-24T07:42:37.447790"
+    }
+  ],
+  "audio_analysis": [
+    {
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "audio_characteristics": {
+        "tonal": {
+          "error</pre></div>
+</details>
+<details>
+  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 53947 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:07:40.841366",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "statistical_analysis": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_size": 4306,
+      "line_count": 130,
+      "variables": [
+        {
+          "name": "Example",
+          "definition": "Example: Active",
+          "line": 1,
+          "type": "Active"
+        },
+        {
+          "name": "Version",
+          "definition": "Version: 1",
+          "line": 2,
+          "type": "1"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: A",
+          "line": 23,
+          "type": "A"
+        },
+        {
+          "name": "matrix",
+          "definition": "matrix: B",
+          "line": 26,
+          "type": "B"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: C",
+          "line": 29,
+          "type": "C"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: D",
+          "line": 32,
+          "type": "D"
+        },
+        {
+          "name": "vector",
+          "definition": "vector: E",
+          "line": 35,
+          "type": "E"
+        },
+        {
+          "name": "A",
+          "definition": "A: 3",
+          "line": 68,
+          "type": "3"
+        },
+        {
+          "name": "B",
+          "definition": "B: 3",
+          "line": 75,
+          "type": "3"
+        },
+        {
+          "na</pre></div>
+</details>
+<details>
+  <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 24967 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:07:47.657552",
+  "frameworks": {
+    "pymdp": {
+      "success_count": 1,
+      "total_count": 1,
+      "execution_times": [
+        1.740679
+      ],
+      "output_files": [
+        "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log"
+      ],
+      "implementation_dirs": [
+        "output/12_execute_output/actinf_pomdp_agent/pymdp"
+      ],
+      "beliefs": [
+        [
+          0.05000000000000008,
+          0.8999999999999999,
+          0.05000000000000008
+        ],
+        [
+          0.0030674846625767045,
+          0.9938650306748466,
+          0.0030674846625767045
+        ],
+        [
+          0.0001714089818306549,
+          0.9996571820363388,
+          0.0001714089818306549
+        ],
+        [
+          9.525805406853113e-06,
+          0.9999809483891864,
+          9.525805406853113e-06
+        ],
+        [
+          5.292209338691478e-07,
+          0.9999989415581324,
+          5.292209338691478e-07
+        ],
+        [
+          2.940119238888053e-08,
+          0.9999999411976151,
+          2.940119238888053e-08
+        ],
+        [
+          1.633399673427397e-09,
+          0.9999999967332007,
+          1.633399673427397e-09
+        ],
+        [
+          9.074443213705247e-11,
+          0.999999999818511,
+          9.074443213705247e-11
+        ],
+        [
+          5.041362897367038e-12,
+          0.9999999999899174,
+          5.041362897367038e-12
+        ],</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 1933 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:07:41.773281",
+  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "framework_results": {
+    "rxinfer": {
+      "framework": "rxinfer",
+      "result_count": 1,
+      "analyses": []
+    },
+    "activeinference_jl": {
+      "framework": "activeinference_jl",
+      "result_count": 1,
+      "analyses": []
+    },
+    "pymdp": {
+      "framework": "pymdp",
+      "result_count": 1,
+      "analyses": []
+    },
+    "jax": {
+      "framework": "jax",
+      "result_count": 1,
+      "analyses": [
+        {
+          "framework": "jax",
+          "model_name": "actinf_pomdp_agent",
+          "free_energy_count": 1,
+          "free_energy_values": [
+            0.0458
+          ],
+          "mean_free_energy": 0.0458,
+          "std_free_energy": 0.0,
+          "min_free_energy": 0.0458,
+          "max_free_energy": 0.0458
+        }
+      ]
+    },
+    "discopy": {
+      "framework": "discopy",
+      "result_count": 1,
+      "analyses": []
+    }
+  },
+  "cross_framework_comparison": {
+    "model_name": "actinf_pomdp_agent",
+    "frameworks_compared": [
+      "rxinfer",
+      "activeinference_jl",
+      "pymdp",
+      "jax",
+      "discopy"
+    ],
+    "framework_count": 5,
+    "comparisons": {
+      "free_energy": {
+        "jax": {
+          "mean": 0.0458,
+          "min": 0.0458,
+          "max": 0.0458
+        }
+      },
+      "best_free_energy": {
+        "framework": "jax",
+        "mean_fe": 0.0458
+      },
+      "execution_time</pre></div>
+</details>
+<details>
+  <summary>integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 338 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "system_graph_stats": {
+    "nodes": 13,
+    "edges": 14,
+    "cycles": 3,
+    "isolated_nodes": 2,
+    "components": 3
+  },
+  "issues": [
+    "Circular dependencies detected: [['s', 'A'], ['s', 'B'], ['A', 'o']]",
+    "Isolated components (no connections): ['F', 't']"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 1136 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:07:51.467601",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "security_checks": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+      "file_size": 4306,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-02-23T07:07:51.467956"
+    }
+  ],
+  "vulnerabilities": [],
+  "recommendations": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    }
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>research_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">19_research_output · 436 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 1,
+  "success": true,
+  "hypotheses_generated": [
+    {
+      "file": "actinf_pomdp_agent.md",
+      "hypotheses": [
+        {
+          "type": "dimensionality_reduction",
+          "description": "Apply PCA or Factor Analysis to actinf_pomdp_agent",
+          "rationale": "Detected dimension size 33333, which exceeds recommended baseline for tractable inference."
+        }
+      ]
+    }
+  ],
+  "errors": []
+}</pre></div>
+</details>
+<details>
+  <summary>installed_packages.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 4899 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "absl-py": "2.3.1",
+  "aiofiles": "24.1.0",
+  "aiohappyeyeballs": "2.6.1",
+  "aiohttp": "3.13.3",
+  "aiosignal": "1.4.0",
+  "alabaster": "1.0.0",
+  "altair": "6.0.0",
+  "annotated-doc": "0.0.4",
+  "annotated-types": "0.7.0",
+  "anyio": "4.12.1",
+  "appnope": "0.1.4",
+  "asttokens": "3.0.1",
+  "attrs": "25.4.0",
+  "authlib": "1.6.6",
+  "autograd": "1.8.0",
+  "babel": "2.17.0",
+  "bandit": "1.9.3",
+  "black": "26.1.0",
+  "brotli": "1.2.0",
+  "certifi": "2026.1.4",
+  "cffi": "2.0.0",
+  "charset-normalizer": "3.4.4",
+  "chex": "0.1.91",
+  "click": "8.3.1",
+  "comm": "0.2.3",
+  "contourpy": "1.3.3",
+  "coverage": "7.13.1",
+  "cryptography": "46.0.5",
+  "cycler": "0.12.1",
+  "debugpy": "1.8.19",
+  "decorator": "5.2.1",
+  "defusedxml": "0.7.1",
+  "discopy": "1.2.2",
+  "docutils": "0.22.4",
+  "dparse": "0.6.4",
+  "et-xmlfile": "2.0.0",
+  "etils": "1.13.0",
+  "execnet": "2.1.2",
+  "executing": "2.2.1",
+  "fastapi": "0.128.0",
+  "fastjsonschema": "2.21.2",
+  "ffmpy": "1.0.0",
+  "filelock": "3.20.3",
+  "flake8": "7.3.0",
+  "flax": "0.12.2",
+  "fonttools": "4.61.1",
+  "frozenlist": "1.8.0",
+  "fsspec": "2026.1.0",
+  "generalized-notation-notation": "1.2.0",
+  "gradio": "6.3.0",
+  "gradio-client": "2.0.3",
+  "groovy": "0.1.2",
+  "h11": "0.16.0",
+  "hf-xet": "1.2.0",
+  "httpcore": "1.0.9",
+  "httpx": "0.28.1",
+  "huggingface-hub": "0.36.0",
+  "humanize": "4.15.0",
+  "idna": "3.11",
+  "imagesize": "1.4.1",
+  "importlib-metadata": "8.7.1",
+  "importlib-resources": "6.5.2",
+  "inferactive</pre></div>
+</details>
+<details>
+  <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 6879 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:41:44.788117",
+  "validation": {
+    "system_requirements": true,
+    "uv_environment": true,
+    "dependencies": true,
+    "jax_installation": true,
+    "overall_status": true,
+    "python_version": "3.13.12"
+  },
+  "configuration": {
+    "extras_installed": [],
+    "dev_dependencies": false,
+    "venv_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv",
+    "python_version": "3.13.12 (main, Feb  3 2026, 17:53:27) [Clang 17.0.0 (clang-1700.6.3.2)]"
+  },
+  "uv_info": {
+    "project_root": "/Users/4d/Documents/GitHub/generalizednotationnotation",
+    "uv_environment_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv",
+    "python_version": "3.13.12",
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "uv_setup_status": {
+      "system_requirements": true,
+      "uv_environment": true,
+      "dependencies": true,
+      "jax_installation": true,
+      "overall_status": true,
+      "python_version": "3.13.12"
+    },
+    "installed_packages": {
+      "absl-py": "2.3.1",
+      "aiofiles": "24.1.0",
+      "aiohappyeyeballs": "2.6.1",
+      "aiohttp": "3.13.3",
+      "aiosignal": "1.4.0",
+      "alabaster": "1.0.0",
+      "altair": "6.0.0",
+      "annotated-doc": "0.0.4",
+      "annotated-types": "0.7.0",
+      "anyio": "4.12.1",
+      "appnope": "0.1.4",
+      "asttokens": "3.0.1",
+      "attrs": "25.4.0",
+      "authlib": "1.6.6",
+      "autograd": "1.8.0",
+      "babel": "2.17.0",
+      "bandit": "1.9.3",
+  </pre></div>
+</details>
+<details>
+  <summary>website_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">20_website_output · 37 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "success": true,
+  "pages_created": 1
+}</pre></div>
+</details>
+<details>
+  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 392 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:08:02.484279",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/21_mcp_output",
+  "processing_status": "completed",
+  "mcp_version": "1.1.3",
+  "tools_registered": 16,
+  "registered_modules_count": 1,
+  "registered_modules": [
+    "sympy_mcp"
+  ],
+  "resources_count": 0,
+  "message": "MCP processing completed - 16 tools registered from 1 modules"
+}</pre></div>
+</details>
+<details>
+  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 3147 bytes</span></summary>
+  <div class="details-body"><pre>[
+  {
+    "name": "check_ml_frameworks",
+    "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "get_analysis_capabilities",
+    "description": "Get available intelligent analysis capabilities, tools, and features.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "process_intelligent_analysis",
+    "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "process_ml_integration",
+    "description": "Process ML integration for GNN files including model training and inference setup.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "process_research",
+    "description": "Process research tasks for GNN files in the specified directory.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "process_visualization",
+    "description": "Process visualization for GNN files in the specified directory.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "name": "src.visualization.call_function",
+    "description": "Call any public function in the src.visualization module with keyword arguments.",
+    "module": "",
+    "category": "",
+    "version": "1.0.0"
+  },
+  {
+    "</pre></div>
+</details>
+<details>
+  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 3700 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:08:02.483751",
+  "mcp_version": "1.1.3",
+  "tools_count": 16,
+  "resources_count": 0,
+  "tools": [
+    {
+      "name": "check_ml_frameworks",
+      "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "get_analysis_capabilities",
+      "description": "Get available intelligent analysis capabilities, tools, and features.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_intelligent_analysis",
+      "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_ml_integration",
+      "description": "Process ML integration for GNN files including model training and inference setup.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_research",
+      "description": "Process research tasks for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "name": "process_visualization",
+      "description": "Process visualization for GNN files in the specified directory.",
+      "module": "",
+      "category": "",
+      "version": "1.0.0"
+    },
+    {
+      "nam</pre></div>
+</details>
+<details>
+  <summary>gui_status.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 473 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "backend": "gradio",
+  "launched": false,
+  "export_file": "output/22_gui_output/visual_model_gui2.md",
+  "gui_type": "visual_matrix_editor",
+  "status": "headless_mode",
+  "visual_data_file": "output/22_gui_output/visual_matrices.json",
+  "features": [
+    "Visual matrix editing",
+    "Drag-and-drop interface",
+    "Real-time GNN generation",
+    "POMDP template-based"
+  ],
+  "recommendations": [
+    "Run with --interactive to launch GUI server on port 7861"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>gui_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 1052 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "mode": "headless",
+  "gui_types": [
+    "gui_1",
+    "gui_2"
+  ],
+  "results": {
+    "gui_1": {
+      "gui_type": "gui_1",
+      "description": "Form-based Interactive GNN Constructor",
+      "success": true,
+      "output_file": "output/22_gui_output/constructed_model_gui1.md",
+      "backend": "headless",
+      "features": [
+        "Component management via forms",
+        "State space editing",
+        "Live markdown synchronization",
+        "Two-pane interface"
+      ]
+    },
+    "gui_2": {
+      "gui_type": "gui_2",
+      "description": "Visual Matrix Editor for GNN Models",
+      "success": true,
+      "output_file": "output/22_gui_output/visual_model_gui2.md",
+      "backend": "headless",
+      "features": [
+        "Visual matrix representation and editing",
+        "Drag-and-drop state space modification",
+        "Real-time GNN markdown generation",
+        "POMDP template-based initialization",
+        "Interactive heatmaps and plots",
+        "Matrix dimension validation"
+      ]
+    }
+  },
+  "overall_success": true
+}</pre></div>
+</details>
+<details>
+  <summary>visual_matrices.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 2431 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "visual_matrices": {
+    "A": {
+      "type": "matrix",
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "description": "Likelihood matrix",
+      "editable": true
+    },
+    "B": {
+      "type": "tensor",
+      "depth": 3,
+      "rows": 3,
+      "cols": 3,
+      "values": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "description": "Transition matrices",
+      "editable": true,
+      "current_slice": 0
+    },
+    "C": {
+      "type": "vector",
+      "size": 3,
+      "values": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "description": "Preference vector",
+      </pre></div>
+</details>
+<details>
+  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 80505 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_time": "2026-02-23T07:08:09.413799",
+  "pipeline_output_directory": "output",
+  "steps": {
+    "0_template_output": {
+      "directory": "output/0_template_output",
+      "exists": true,
+      "file_count": 3,
+      "total_size_mb": 0.01,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.0007038116455078125
+        },
+        ".md": {
+          "count": 1,
+          "total_size_mb": 0.004317283630371094
+        }
+      },
+      "last_modified": "2026-02-23T07:03:28.672334",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": [
+        {
+          "name": "template_processing_summary.json",
+          "size_mb": 0.0,
+          "type": ".json"
+        }
+      ]
+    },
+    "1_setup_output": {
+      "directory": "output/1_setup_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.02,
+      "file_types": {
+        ".json": {
+          "count": 2,
+          "total_size_mb": 0.018258094787597656
+        }
+      },
+      "last_modified": "2026-02-23T07:03:31.806715",
+      "status": "success",
+      "performance_metrics": {},
+      "error_logs": [],
+      "key_files": []
+    },
+    "2_tests_output": {
+      "directory": "output/2_tests_output",
+      "exists": true,
+      "file_count": 2,
+      "total_size_mb": 0.04,
+      "file_types": {
+        ".log": {
+          "count": 1,
+          "total_size_mb": 0.0161590576171875
+        },
+        ".t</pre></div>
+</details>
+<details>
+  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 536 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "report_generation_summary": {
+    "generation_time": "2026-02-23T07:08:09.429861",
+    "pipeline_directory": "output",
+    "report_directory": "output/23_report_output",
+    "health_score": 95.0,
+    "generated_files": [
+      "comprehensive_analysis_report.html",
+      "comprehensive_analysis_report.md",
+      "report_summary.json"
+    ],
+    "pipeline_summary": {
+      "total_steps": 24,
+      "successful_steps": 24,
+      "total_files": 237,
+      "total_size_mb": 14.249999999999998,
+      "success_rate": 100.0
+    }
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 595 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:08:09.430924",
+  "target_dir": "input/gnn_files",
+  "output_dir": "output/23_report_output",
+  "pipeline_output_dir": "output",
+  "processing_status": "completed",
+  "report_format": "comprehensive",
+  "reports_generated": [
+    "comprehensive_analysis_report.html",
+    "comprehensive_analysis_report.md",
+    "report_summary.json"
+  ],
+  "report_count": 3,
+  "visualizations_discovered": 29,
+  "html_reports_generated": 1,
+  "html_validation_status": "valid",
+  "html_validation_errors": [],
+  "formats_generated": [
+    "html",
+    "markdown",
+    "json"
+  ]
+}</pre></div>
+</details>
+<details>
+  <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 390 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:08:27.335745",
+  "overall_status": "SUCCESS",
+  "health_score": 100,
+  "failure_count": 0,
+  "red_flag_count": 0,
+  "yellow_flag_count": 3,
+  "bottleneck_count": 3,
+  "recommendation_count": 6,
+  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+}</pre></div>
+</details>
+<details>
+  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 9957 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:08:27.333126",
+  "analysis": {
+    "overall_status": "SUCCESS",
+    "total_duration": 281.167121,
+    "step_count": 24,
+    "failures": [],
+    "warnings": [],
+    "performance_metrics": {
+      "peak_memory_mb": 75.578125,
+      "successful_steps": 24,
+      "failed_steps": 0,
+      "warning_count": 0
+    },
+    "health_score": 100
+  },
+  "step_analyses": [
+    {
+      "step_number": 1,
+      "script_name": "0_template.py",
+      "description": "Template initialization",
+      "status": "SUCCESS",
+      "duration_seconds": 0.4411599636077881,
+      "memory_mb": 75.515625,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.44s"
+    },
+    {
+      "step_number": 2,
+      "script_name": "1_setup.py",
+      "description": "Environment setup",
+      "status": "SUCCESS",
+      "duration_seconds": 3.126905918121338,
+      "memory_mb": 75.578125,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 3.13s"
+    },
+    {
+      "step_number": 3,
+      "script_name": "2_tests.py",
+      "description": "Test suite execution",
+      "status": "SUCCESS",
+      "duration_seconds": 72.9669680595398,
+      "memory_mb": 75.578125,
+      "exit_code": 0,
+      "flags": [
+        "Slow: 73.0s (&gt;60.0s threshold)"
+      ],
+      "flag_type": "yellow",
+      "summary": "Completed with 1 flag(s) in 72.97s"
+    },
+    {
+      "step_number": 4,
+      "</pre></div>
+</details>
+<details>
+  <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 6179 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:43:03.769001",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/3_gnn_output",
+  "processing_config": {
+    "recursive": true,
+    "verbose": false,
+    "supported_formats": [
+      "markdown",
+      "scala",
+      "lean",
+      "coq",
+      "python",
+      "bnf",
+      "ebnf",
+      "isabelle",
+      "maxima",
+      "xml",
+      "json",
+      "protobuf",
+      "yaml",
+      "xsd",
+      "asn1",
+      "pkl",
+      "alloy",
+      "z_notation",
+      "tla_plus",
+      "agda",
+      "haskell",
+      "pickle"
+    ],
+    "available_serializers": {
+      "markdown": "MarkdownSerializer",
+      "json": "JSONSerializer",
+      "xml": "XMLSerializer",
+      "yaml": "YAMLSerializer",
+      "scala": "ScalaSerializer",
+      "protobuf": "ProtobufSerializer",
+      "pkl": "PKLSerializer",
+      "xsd": "XSDSerializer",
+      "asn1": "ASN1Serializer",
+      "lean": "LeanSerializer",
+      "coq": "CoqSerializer",
+      "python": "PythonSerializer",
+      "bnf": "GrammarSerializer",
+      "ebnf": "GrammarSerializer",
+      "isabelle": "IsabelleSerializer",
+      "maxima": "MaximaSerializer",
+      "alloy": "AlloySerializer",
+      "z_notation": "ZNotationSerializer",
+      "tla_plus": "TLASerializer",
+      "agda": "AgdaSerializer",
+      "haskell": "FunctionalSerializer",
+      "pickle": "BinarySerializer"
+    }
+  },
+  "processed_files": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_a</pre></div>
+</details>
+<details>
+  <summary>gnn_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 164 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "total_files": 1,
+  "successful_parses": 1,
+  "failed_parses": 0,
+  "total_formats_generated": 22,
+  "formats_per_file": {
+    "actinf_pomdp_agent.md": 22
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>format_statistics.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 1747 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "markdown": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 1821
+  },
+  "scala": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5160
+  },
+  "lean": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5529
+  },
+  "coq": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5289
+  },
+  "python": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 9208
+  },
+  "bnf": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5538
+  },
+  "ebnf": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5538
+  },
+  "isabelle": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5325
+  },
+  "maxima": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5884
+  },
+  "xml": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 9661
+  },
+  "json": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 9476
+  },
+  "protobuf": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 7351
+  },
+  "yaml": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5805
+  },
+  "xsd": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 6265
+  },
+  "asn1": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 8161
+  },
+  "pkl": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 12133
+  },
+  "alloy": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 8323
+  },
+  "z_notation": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 5854
+  },
+  "tla_plus": {
+    "successful": 1,
+    "failed": 0,
+    "total_size": 47</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_parsed.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 20180 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Active Inference POMDP Agent",
+  "version": "1.0",
+  "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8d7e2a9b-d93e-4088-b96a-1dab7c6b3433",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Likelihood mapping hidden states to observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "714c54f6-9af5-49bc-906f-e0b502e3ae4c",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "State transitions given previous state and action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba7253c0-7cb1-4aba-a9e9-9bdfb01b1e92",
+      "name": "</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 9476 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "weight": nul</pre></div>
+</details>
+<details>
+  <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 742 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "version": "1.0.0",
+  "updated_at": "2026-02-24T07:43:04.095479",
+  "models": {
+    "actinf_pomdp_agent": {
+      "model_id": "actinf_pomdp_agent",
+      "name": "GNN Example: Active Inference POMDP Agent",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-02-23T06:44:51.464044",
+      "updated_at": "2026-02-24T07:43:04.095383",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+          "created_at": "2026-02-24T07:43:04.095273",
+          "metadata": {},
+          "hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    }
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 24508 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:43:04.397578",
+  "processed_files": 1,
+  "success": true,
+  "errors": [],
+  "validation_results": [
+    {
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "valid": false,
+      "errors": [
+        "Duplicate variable names: s_prime, G, type, t, \u03c0, vector, u, A, E, C, matrix, D, o, F, s, B"
+      ],
+      "warnings": [
+        "Type issue: Unknown type 'Active' for variable 'Example'",
+        "Type issue: Unknown type '1' for variable 'Version'",
+        "Type issue: Unknown type 'A' for variable 'matrix'",
+        "Type issue: Unknown type 'B' for variable 'matrix'",
+        "Type issue: Unknown type 'C' for variable 'vector'",
+        "Type issue: Unknown type 'D' for variable 'vector'",
+        "Type issue: Unknown type 'E' for variable 'vector'",
+        "Type issue: Unknown type '3' for variable 'A'",
+        "Type issue: Unknown type '3' for variable 'B'",
+        "Type issue: Unknown type '3' for variable 'C'",
+        "Type issue: Unknown type '3' for variable 'D'",
+        "Type issue: Unknown type '3' for variable 'E'",
+        "Type issue: Unknown type '3' for variable 'num_hidden_states'",
+        "Type issue: Unknown type '3' for variable 'num_obs'",
+        "Type issue: Unknown type '3' for variable 'num_actions'",
+        "Type issue: Unknown type '30' for variable 'num_timesteps'",
+        "Type issue: Unknown type 'observation_outcomes, hidden_states' for variabl</pre></div>
+</details>
+<details>
+  <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 319 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "total_files": 1,
+  "successful_validations": 1,
+  "failed_validations": 0,
+  "validation_scores": {
+    "semantic": [
+      1.0
+    ],
+    "performance": [
+      0.7
+    ],
+    "consistency": [
+      1.0
+    ],
+    "avg_semantic_score": 1.0,
+    "avg_performance_score": 0.7,
+    "avg_consistency_score": 1.0
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 2208 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:04:46.134745",
+  "source_directory": "input/gnn_files",
+  "output_directory": "output/6_validation_output",
+  "files_validated": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
+      "validations": {
+        "semantic": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "valid": true,
+          "errors": [],
+          "warnings": [],
+          "semantic_score": 1.0,
+          "fallback": false
+        },
+        "performance": {
+          "file_path": "unknown",
+          "file_name": "unknown",
+          "metrics": {
+            "state_block_count": 0,
+            "connection_count": 0,
+            "total_dimensions": 0,
+            "max_dimension": 0,
+            "avg_dimension": 0,
+            "estimated_memory_bytes": 0,
+            "estimated_memory_mb": 0.0,
+            "computational_complexity": {
+              "inference_operations": 0,
+              "learning_operations": 0,
+              "complexity_class": "O(1)",
+              "bottleneck_block": null,
+              "bottleneck_operations": 0
+            },
+            "parallelization_potential": {
+              "parallelizable_blocks": 0,
+              "sequential_dependencies": 0,
+              "parallel_efficiency": 0.0,
+              "gpu_amenable": false,
+              "distributed_amenable": false
+            }
+          },
+          "warnings": [
+            "Low parallelization pot</pre></div>
+</details>
+<details>
+  <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 1910 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-24T07:41:49.557007",
+  "source_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
+  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output",
+  "files_exported": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "exports": {
+        "json": {
+          "success": true,
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_json.json",
+          "file_size": 20124
+        },
+        "xml": {
+          "success": true,
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_xml.xml",
+          "file_size": 978
+        },
+        "graphml": {
+          "success": true,
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_graphml.graphml",
+          "file_size": 1516
+        },
+        "gexf": {
+          "success": true,
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/actinf_pomdp_agent/actinf_pomdp_agent_gexf.gexf",
+          "file_size": 1223
+        },
+        "pickle": {
+          "success": true,
+          "export_file": "/Users/4d/Documen</pre></div>
+</details>
+<details>
+  <summary>export_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 180 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "total_files": 1,
+  "successful_exports": 1,
+  "failed_exports": 0,
+  "formats_generated": {
+    "json": 1,
+    "xml": 1,
+    "graphml": 1,
+    "gexf": 1,
+    "pickle": 1
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 20124 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Active Inference POMDP Agent",
+  "version": "1.0",
+  "annotation": "This model describes a classic Active Inference agent for a discrete POMDP:\n- One observation modality (\"state_observation\") with 3 possible outcomes.\n- One hidden state factor (\"location\") with 3 possible states.\n- The hidden state is fully controllable via 3 discrete actions.\n- The agent's preferences are encoded as log-probabilities over observations.\n- The agent has an initial policy prior (habit) encoded as log-probabilities over actions.",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "19c9f548-abda-45f3-af84-e6e5694cb848",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Likelihood mapping hidden states to observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f69b3f41-fc8d-4bfd-8252-05356e7d6802",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "State transitions given previous state and action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2ec10c48-4d66-47bc-ac88-f0c24b48c4b5",
+      "name": "</pre></div>
+</details>
+<details>
+  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 1898 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "processed_files": 1,
+  "total_visualizations": 12,
+  "visualization_files": [
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_A_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_analysis.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_B_tensor.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_C_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_D_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_E_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_combined_analysis.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_generative_model.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/actinf_pomdp_agent/actinf_pomdp_agent_matrix_size_distribution.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/a</pre></div>
+</details>
+<details>
+  <summary>actinf_pomdp_agent_network_stats.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 511 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "total_variables": 28,
+  "total_connections": 11,
+  "variable_types": {
+    "unknown": 28
+  },
+  "connection_types": {
+    "D-&gt;s": 1,
+    "s-&gt;A": 1,
+    "s-&gt;s_prime": 1,
+    "A-&gt;o": 1,
+    "s-&gt;B": 1,
+    "C-&gt;G": 1,
+    "E-&gt;\u03c0": 1,
+    "G-&gt;\u03c0": 1,
+    "\u03c0-&gt;u": 1,
+    "B-&gt;u": 1,
+    "u-&gt;s_prime": 1
+  },
+  "network_properties": {
+    "num_nodes": 11,
+    "num_edges": 11,
+    "density": 0.1,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}</pre></div>
+</details>
+<details>
+  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 5595 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-02-23T07:04:57.223937",
+  "total_attempts": 10,
+  "successful": 10,
+  "failed": 0,
+  "skipped": 0,
+  "total_duration_ms": 0.0,
+  "output_files": [
+    "output/9_advanced_viz_output/actinf_pomdp_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_matrix_correlations.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_pomdp_transitions.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_policy_visualization.png",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/actinf_pomdp_agent_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/Active Inference POMDP Agent/active_inference_pomdp_agent_structure.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pi</pre></div>
+</details></div>
+  </main>
+</body>
+</html>

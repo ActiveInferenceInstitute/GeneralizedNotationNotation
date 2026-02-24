@@ -1,121 +1,211 @@
 """
-MCP (Model Context Protocol) integration for ontology utilities.
+MCP integration for the ontology module.
 
-This module exposes utility functions from the ontology module through MCP.
+Exposes GNN ontology tools: term validation, ontology mapping,
+annotation extraction, and ontology report generation through MCP.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
 
-from . import process_ontology
+from . import process_ontology, validate_ontology_terms
 
 import inspect, importlib
 
-def _get_module_pkg():
-    try:
-        return importlib.import_module(__package__)
-    except Exception:
-        import sys
-        return sys.modules.get(__package__)
 
-def list_functions_mcp() -> Dict[str, Any]:
-    module_pkg = _get_module_pkg()
-    public_names = getattr(module_pkg, "__all__", []) or [n for n in dir(module_pkg) if not n.startswith("_")]
-    funcs = []
-    for name in public_names:
-        obj = getattr(module_pkg, name, None)
-        if inspect.isfunction(obj):
-            funcs.append(name)
-    return {"success": True, "module": __package__, "functions": sorted(set(funcs))}
 
-def call_function_mcp(function_name: str, arguments: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    from pathlib import Path
-    module_pkg = _get_module_pkg()
-    func = getattr(module_pkg, function_name, None)
-    if not callable(func):
-        return {"success": False, "error": f"Function not found or not callable: {function_name}"}
-    arguments = arguments or {}
-    converted: Dict[str, Any] = {}
-    for key, value in arguments.items():
-        if isinstance(value, str) and any(token in key.lower() for token in ["dir", "path", "file", "output", "input"]):
-            converted[key] = Path(value)
-        else:
-            converted[key] = value
-    try:
-        result = func(**converted)
-        return {"success": True, "result": result}
-    except TypeError as e:
-        return {"success": False, "error": f"TypeError: {e}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
-# MCP Tools for $module Utilities Module
 
-def process_ontology_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_ontology_mcp(target_directory: str, output_directory: str,
+                         verbose: bool = False) -> Dict[str, Any]:
     """
-    Process ontology for GNN files. Exposed via MCP.
-    
+    Run ontology processing on a directory of GNN files.
+
+    Maps GNN variables to Active Inference Ontology (ActInfO) terms,
+    validates annotations, and produces an ontology mapping report.
+
     Args:
-        target_directory: Directory containing GNN files to process
-        output_directory: Directory to save results
-        verbose: Enable verbose output
-        
+        target_directory: Directory containing GNN files
+        output_directory: Directory to save ontology results
+        verbose: Enable verbose logging
+
     Returns:
-        Dictionary with operation status and results.
+        Dictionary with success status and mapping summary.
     """
     try:
         success = process_ontology(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            verbose=verbose
+            verbose=verbose,
         )
         return {
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"Ontology processing {'completed successfully' if success else 'failed'}"
+            "message": f"Ontology processing {'completed successfully' if success else 'completed with issues'}",
         }
     except Exception as e:
-        logger.error(f"Error in process_ontology_mcp for {target_directory}: {e}", exc_info=True)
-        return {
-            "success": False,
-            "error": str(e)
-        }
+        logger.error(f"process_ontology_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
 
-# MCP Registration Function
-def register_tools(mcp_instance):
-    """Register ontology utility tools with the MCP."""
-    
-    # Generic namespaced tools
-    mcp_instance.register_tool(
-        f"{__package__}.list_functions",
-        list_functions_mcp,
-        {},
-        f"List callable functions exported by the {__package__} module public API."
-    )
-    mcp_instance.register_tool(
-        f"{__package__}.call_function",
-        call_function_mcp,
-        {
-            "function_name": {"type": "string", "description": "Function name exported by the module"},
-            "arguments": {"type": "object", "description": "Keyword arguments for the function", "default": {}}
-        },
-        f"Call any public function in the {__package__} module with keyword arguments."
-    )
+
+def validate_ontology_terms_mcp(terms: Union[str, List[str]]) -> Dict[str, Any]:
+    """
+    Validate one or more ontology term names against the Active Inference Ontology.
+
+    Args:
+        terms: A single term string or list of term strings to validate
+
+    Returns:
+        Dictionary with validation results for each term.
+    """
+    try:
+        if isinstance(terms, str):
+            terms_list = [t.strip() for t in terms.split(",") if t.strip()]
+        else:
+            terms_list = list(terms)
+
+        is_valid = validate_ontology_terms(terms_list)
+        return {
+            "success": True,
+            "terms":   terms_list,
+            "is_valid": is_valid,
+            "message": f"{len(terms_list)} term(s) {'all valid' if is_valid else 'contain invalid entries'}",
+        }
+    except Exception as e:
+        logger.error(f"validate_ontology_terms_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def extract_ontology_annotations_mcp(gnn_content: str) -> Dict[str, Any]:
+    """
+    Extract ActInfOntologyAnnotation entries from GNN model content.
+
+    Parses the ## ActInfOntologyAnnotation section and returns all
+    variable-to-term mappings found.
+
+    Args:
+        gnn_content: GNN model content as a string
+
+    Returns:
+        Dictionary with extracted annotations and variable-term pairs.
+    """
+    try:
+        lines = gnn_content.splitlines()
+        in_annotation = False
+        annotations: Dict[str, str] = {}
+
+        for line in lines:
+            stripped = line.strip()
+            if stripped == "## ActInfOntologyAnnotation":
+                in_annotation = True
+                continue
+            if in_annotation:
+                if stripped.startswith("##"):
+                    break
+                if "=" in stripped and not stripped.startswith("#"):
+                    parts = stripped.split("=", 1)
+                    var_name = parts[0].strip()
+                    term     = parts[1].strip()
+                    if var_name:
+                        annotations[var_name] = term
+
+        standard_terms = {
+            "HiddenState", "Observation", "Action", "PolicyVector",
+            "LikelihoodMatrix", "TransitionMatrix", "LogPreferenceVector",
+            "PriorOverHiddenStates", "VariationalFreeEnergy", "ExpectedFreeEnergy",
+        }
+        validated = {k: v for k, v in annotations.items() if v in standard_terms}
+        unknown   = {k: v for k, v in annotations.items() if v not in standard_terms}
+
+        return {
+            "success":              True,
+            "annotations":          annotations,
+            "validated_mappings":   validated,
+            "unknown_terms":        unknown,
+            "total_annotations":    len(annotations),
+            "valid_count":          len(validated),
+        }
+    except Exception as e:
+        logger.error(f"extract_ontology_annotations_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def list_standard_ontology_terms_mcp() -> Dict[str, Any]:
+    """
+    Return the list of standard Active Inference Ontology (ActInfO) terms.
+
+    Returns:
+        Dictionary with term names and their descriptions.
+    """
+    terms = {
+        "HiddenState":            "Latent state variable s",
+        "NextHiddenState":         "Next latent state s'",
+        "Observation":            "Observable variable o",
+        "Action":                 "Action variable u",
+        "PolicyVector":           "Policy distribution π",
+        "LikelihoodMatrix":       "Observation likelihood A",
+        "TransitionMatrix":       "State transition B",
+        "LogPreferenceVector":    "Log preference C",
+        "PriorOverHiddenStates":  "Prior beliefs D",
+        "Habit":                  "Habitual policy E",
+        "VariationalFreeEnergy":  "VFE F",
+        "ExpectedFreeEnergy":     "EFE G",
+        "Time":                   "Discrete time t",
+        "Precision":              "Precision parameter γ/β",
+    }
+    return {"success": True, "terms": terms, "count": len(terms)}
+
+
+# ── MCP Registration ────────────────────────────────────────────────────────
+
+def register_tools(mcp_instance) -> None:
+    """Register ontology tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_ontology",
         process_ontology_mcp,
-        {
-            "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save ontology results."},
-            "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
-        },
-        f"Process ontology for GNN files in the specified directory."
+        {"type": "object", "properties": {
+            "target_directory": {"type": "string", "description": "Directory with GNN files"},
+            "output_directory": {"type": "string", "description": "Directory for ontology results"},
+            "verbose":          {"type": "boolean", "default": False},
+        }, "required": ["target_directory", "output_directory"]},
+        "Map GNN variables to Active Inference Ontology terms and produce an ontology report.",
+        module=__package__, category="ontology",
     )
-    
-    logger.info("Ontology module MCP tools registered.")
+
+    mcp_instance.register_tool(
+        "validate_ontology_terms",
+        validate_ontology_terms_mcp,
+        {"type": "object", "properties": {
+            "terms": {"oneOf": [
+                {"type": "string", "description": "Comma-separated term names"},
+                {"type": "array", "items": {"type": "string"}},
+            ]},
+        }, "required": ["terms"]},
+        "Validate ontology term names against the Active Inference Ontology.",
+        module=__package__, category="ontology",
+    )
+
+    mcp_instance.register_tool(
+        "extract_ontology_annotations",
+        extract_ontology_annotations_mcp,
+        {"type": "object", "properties": {
+            "gnn_content": {"type": "string", "description": "GNN model content as a string"},
+        }, "required": ["gnn_content"]},
+        "Extract ActInfOntologyAnnotation variable-to-term mappings from GNN model content.",
+        module=__package__, category="ontology",
+    )
+
+    mcp_instance.register_tool(
+        "list_standard_ontology_terms",
+        list_standard_ontology_terms_mcp,
+        {},
+        "Return the canonical list of Active Inference Ontology (ActInfO) terms and descriptions.",
+        module=__package__, category="ontology",
+    )
+
+    logger.info("ontology module MCP tools registered (5 tools).")

@@ -55,46 +55,127 @@ def process_ml_integration_mcp(
 
 def check_ml_frameworks_mcp() -> Dict[str, Any]:
     """
-    Check available ML frameworks. Exposed via MCP.
+    Check available ML frameworks and their versions.
+
+    Probes for PyTorch, TensorFlow, JAX, scikit-learn, and pymdp using
+    importlib.util.find_spec (metadata-only, no heavy import execution).
 
     Returns:
-        Dictionary with available ML frameworks and their status.
+        Dictionary with framework names, availability flags, and versions where detectable.
     """
     try:
         frameworks = check_ml_frameworks()
         return {
-            "success": True,
+            "success":    True,
             "frameworks": frameworks,
-            "features": FEATURES
+            "features":   FEATURES,
         }
     except Exception as e:
-        logger.error(f"Error checking ML frameworks: {e}", exc_info=True)
+        logger.error(f"check_ml_frameworks_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def list_ml_integration_targets_mcp() -> Dict[str, Any]:
+    """
+    Return the list of GNN-compatible ML integration targets.
+
+    Integration targets are downstream tools that can consume GNN model
+    outputs: pymdp, JAX, NumPy, graph-neural-network libraries, etc.
+
+    Returns:
+        Dictionary with integration target names and their dependency status.
+    """
+    import importlib.util
+    targets = {
+        "pymdp":         importlib.util.find_spec("pymdp")         is not None,
+        "numpy":         importlib.util.find_spec("numpy")         is not None,
+        "jax":           importlib.util.find_spec("jax")           is not None,
+        "torch":         importlib.util.find_spec("torch")         is not None,
+        "tensorflow":    importlib.util.find_spec("tensorflow")    is not None,
+        "scikit_learn":  importlib.util.find_spec("sklearn")       is not None,
+        "numpyro":       importlib.util.find_spec("numpyro")       is not None,
+    }
+    available = [t for t, v in targets.items() if v]
+    return {
+        "success":   True,
+        "targets":   targets,
+        "available": available,
+        "count":     len(available),
+    }
+
+
+def get_ml_module_info_mcp() -> Dict[str, Any]:
+    """
+    Return version, feature flags, and API surface of the ML integration module.
+
+    Returns:
+        Dictionary with module metadata, supported frameworks, and tool inventory.
+    """
+    try:
+        import importlib
+        mod = importlib.import_module(__package__)
+        version  = getattr(mod, "__version__", "unknown")
         return {
-            "success": False,
-            "error": str(e)
+            "success": True,
+            "module":  __package__,
+            "version": version,
+            "features": FEATURES,
+            "tools": [
+                "process_ml_integration",
+                "check_ml_frameworks",
+                "list_ml_integration_targets",
+                "get_ml_module_info",
+            ],
         }
+    except Exception as e:
+        logger.error(f"get_ml_module_info_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
 
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register ML integration utility tools with the MCP."""
+    """Register ML integration domain tools with the MCP."""
 
     mcp_instance.register_tool(
         "process_ml_integration",
         process_ml_integration_mcp,
         {
-            "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save ML integration results."},
-            "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
+            "type": "object",
+            "properties": {
+                "target_directory": {"type": "string", "description": "Directory containing GNN files to process"},
+                "output_directory": {"type": "string", "description": "Directory to save ML integration results"},
+                "verbose":          {"type": "boolean", "default": False},
+            },
+            "required": ["target_directory", "output_directory"],
         },
-        "Process ML integration for GNN files including model training and inference setup."
+        "Process ML integration for GNN files: model training, inference setup, and framework export.",
+        module=__package__, category="ml_integration",
     )
 
     mcp_instance.register_tool(
         "check_ml_frameworks",
         check_ml_frameworks_mcp,
         {},
-        "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions."
+        "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
+        module=__package__, category="ml_integration",
     )
 
-    logger.info("ML integration module MCP tools registered.")
+    mcp_instance.register_tool(
+        "list_ml_integration_targets",
+        list_ml_integration_targets_mcp,
+        {},
+        "Return GNN-compatible ML integration targets and their dependency availability.",
+        module=__package__, category="ml_integration",
+    )
+
+    mcp_instance.register_tool(
+        "get_ml_module_info",
+        get_ml_module_info_mcp,
+        {},
+        "Return version, feature flags, and tool inventory of the ML integration module.",
+        module=__package__, category="ml_integration",
+    )
+
+    logger.info("ml_integration module MCP tools registered (4 domain tools).")
+

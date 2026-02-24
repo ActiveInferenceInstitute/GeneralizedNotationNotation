@@ -68,48 +68,92 @@ def process_intelligent_analysis_mcp(
 
 def get_analysis_capabilities_mcp() -> Dict[str, Any]:
     """
-    Get intelligent analysis capabilities. Exposed via MCP.
+    Get intelligent analysis capabilities and available tools.
+
+    Returns the full module info, all supported analysis types, tool
+    availability status, and active feature flags.
 
     Returns:
-        Dictionary with available analysis features and tools.
+        Dictionary with capabilities, analysis types, and feature inventory.
     """
     try:
         return {
-            "success": True,
-            "module_info": get_module_info(),
+            "success":                True,
+            "module_info":            get_module_info(),
             "supported_analysis_types": get_supported_analysis_types(),
-            "available_tools": check_analysis_tools(),
-            "features": FEATURES
+            "available_tools":        check_analysis_tools(),
+            "features":               FEATURES,
         }
     except Exception as e:
-        logger.error(f"Error getting analysis capabilities: {e}", exc_info=True)
+        logger.error(f"get_analysis_capabilities_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def get_intelligent_analysis_module_info_mcp() -> Dict[str, Any]:
+    """
+    Return version, feature flags, and API surface of the intelligent analysis module.
+
+    Returns:
+        Dictionary with module metadata, supported analysis types, and tool list.
+    """
+    try:
+        import importlib
+        mod     = importlib.import_module(__package__)
+        version = getattr(mod, "__version__", "unknown")
         return {
-            "success": False,
-            "error": str(e)
+            "success":                True,
+            "module":                 __package__,
+            "version":                version,
+            "features":               FEATURES,
+            "supported_analysis_types": get_supported_analysis_types(),
+            "tools": [
+                "process_intelligent_analysis",
+                "get_analysis_capabilities",
+                "get_intelligent_analysis_module_info",
+            ],
         }
+    except Exception as e:
+        logger.error(f"get_intelligent_analysis_module_info_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
 
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register intelligent analysis utility tools with the MCP."""
+    """Register intelligent analysis domain tools with the MCP."""
 
     mcp_instance.register_tool(
         "process_intelligent_analysis",
         process_intelligent_analysis_mcp,
         {
-            "target_directory": {"type": "string", "description": "Directory containing pipeline results to analyze."},
-            "output_directory": {"type": "string", "description": "Directory to save analysis results."},
-            "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True},
-            "analysis_types": {"type": "string", "description": "Comma-separated analysis types to run. Defaults to all.", "optional": True}
+            "type": "object",
+            "properties": {
+                "target_directory": {"type": "string", "description": "Directory containing pipeline results to analyze"},
+                "output_directory": {"type": "string", "description": "Directory to save analysis results"},
+                "verbose":          {"type": "boolean", "default": False},
+                "analysis_types":   {"type": "string", "description": "Comma-separated analysis types (optional)", "nullable": True},
+            },
+            "required": ["target_directory", "output_directory"],
         },
-        "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization."
+        "Process AI-powered intelligent analysis of GNN pipeline results: failure analysis, performance optimization.",
+        module=__package__, category="intelligent_analysis",
     )
 
     mcp_instance.register_tool(
         "get_analysis_capabilities",
         get_analysis_capabilities_mcp,
         {},
-        "Get available intelligent analysis capabilities, tools, and features."
+        "Get intelligent analysis capabilities, supported types, available tools, and feature flags.",
+        module=__package__, category="intelligent_analysis",
     )
 
-    logger.info("Intelligent analysis module MCP tools registered.")
+    mcp_instance.register_tool(
+        "get_intelligent_analysis_module_info",
+        get_intelligent_analysis_module_info_mcp,
+        {},
+        "Return version, feature flags, and tool inventory of the intelligent analysis module.",
+        module=__package__, category="intelligent_analysis",
+    )
+
+    logger.info("intelligent_analysis module MCP tools registered (3 domain tools).")
+

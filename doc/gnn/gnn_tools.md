@@ -1,9 +1,9 @@
 # GNN Tools and Resources
 
 **Version**: v1.2.0  
-**Last Updated**: February 9, 2026  
+**Last Updated**: February 24, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,319 Tests Passing  
+**Test Count**: 1,506 Tests Passing  
 
 This document provides information about tools, libraries, and resources for working with Generalized Notation Notation (GNN).
 
@@ -527,7 +527,34 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 23. **`23_report.py` (Report Generation)** → `src/report/`
     - Purpose: Comprehensive analysis report generation
 
-### Key Pipeline Tools
+24. **`24_intelligent_analysis.py` (Intelligent Analysis)** → `src/intelligent_analysis/`
+    - Purpose: AI-enhanced analysis of GNN models and pipeline outputs
+
+### MCP Tools (Step 21)
+
+The MCP step exposes every pipeline module as a callable tool. As of v1.2.0 there are **76 real tools** (no stubs, no lambdas) across 22 domains:
+
+```bash
+# Run the MCP audit to list all tools
+PYTHONPATH=src python src/mcp/validate_tools.py
+# → generates src/tests/mcp_audit_report.json
+
+# Or via pytest (203 tests, 0 skips)
+PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
+```
+
+Key tool groups:
+
+| Domain | Example Tools |
+|--------|---------------|
+| audio | `process_audio`, `check_audio_backends`, `get_audio_generation_options` |
+| execute | `execute_gnn_model`, `execute_pymdp_simulation`, `check_execute_dependencies` |
+| llm | `analyze_gnn_with_llm`, `generate_llm_documentation`, `get_llm_providers` |
+| validation | `validate_gnn_file`, `check_schema_compliance`, `get_validation_report` |
+| render | `render_gnn_to_format`, `list_render_frameworks` |
+| gnn | `parse_gnn_content`, `validate_gnn_content` |
+
+For the complete tool inventory, see **[modules/21_mcp.md](modules/21_mcp.md)**.
 
 #### GNN Parser and Type Checker (Steps 3 & 5)
 

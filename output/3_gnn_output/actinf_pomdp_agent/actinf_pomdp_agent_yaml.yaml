@@ -89,10 +89,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-02-23T07:44:55.577129'
+created_at: '2026-02-24T11:11:44.797320'
 equations: []
 model_name: Active Inference POMDP Agent
-modified_at: '2026-02-23T07:44:55.577129'
+modified_at: '2026-02-24T11:11:44.797322'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

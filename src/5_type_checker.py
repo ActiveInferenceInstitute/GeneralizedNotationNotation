@@ -37,24 +37,13 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Import module function
-try:
-    from type_checker import GNNTypeChecker
-except ImportError:
-    def _fallback_type_check(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback type checker when module unavailable."""
-        import logging
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("Type checker module not available - using fallback")
-        return True
-    GNNTypeChecker = None
+# Hard import: type_checker is a core module and must always be available.
+# ImportError here means the module is broken or missing — fail loudly.
+from type_checker import GNNTypeChecker
 
 def _type_check_dispatch(target_dir, output_dir, logger, **kwargs):
-    """Dispatch to GNNTypeChecker or fallback."""
-    if GNNTypeChecker is not None:
-        return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
-    return _fallback_type_check(target_dir, output_dir, logger, **kwargs)
+    """Dispatch to GNNTypeChecker."""
+    return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
 
 run_script = create_standardized_pipeline_script(
     "5_type_checker.py",

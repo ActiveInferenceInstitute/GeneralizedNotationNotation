@@ -63,48 +63,92 @@ def process_gui_mcp(
 
 def list_available_guis_mcp() -> Dict[str, Any]:
     """
-    List available GUI implementations. Exposed via MCP.
+    List all available GUI implementations and their capabilities.
+
+    Returns the list of supported GUI types (gui_1, gui_2, gui_3, oxdraw),
+    their display names, dependency requirements, and feature flags.
 
     Returns:
-        Dictionary with available GUI types and their information.
+        Dictionary with GUI types, capabilities, and feature inventory.
     """
     try:
         guis = get_available_guis()
         return {
-            "success": True,
+            "success":        True,
             "available_guis": guis,
-            "features": FEATURES
+            "features":       FEATURES,
         }
     except Exception as e:
-        logger.error(f"Error listing available GUIs: {e}", exc_info=True)
+        logger.error(f"list_available_guis_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def get_gui_module_info_mcp() -> Dict[str, Any]:
+    """
+    Return version, feature flags, and API surface of the GUI module.
+
+    Returns:
+        Dictionary with module metadata, GUI types, and tool inventory.
+    """
+    try:
+        import importlib
+        mod     = importlib.import_module(__package__)
+        version = getattr(mod, "__version__", "unknown")
         return {
-            "success": False,
-            "error": str(e)
+            "success":   True,
+            "module":    __package__,
+            "version":   version,
+            "features":  FEATURES,
+            "gui_types": ["gui_1", "gui_2", "gui_3", "oxdraw"],
+            "tools": [
+                "process_gui",
+                "list_available_guis",
+                "get_gui_module_info",
+            ],
         }
+    except Exception as e:
+        logger.error(f"get_gui_module_info_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
 
 
 # MCP Registration Function
 def register_tools(mcp_instance):
-    """Register GUI utility tools with the MCP."""
+    """Register GUI domain tools with the MCP."""
 
     mcp_instance.register_tool(
         "process_gui",
         process_gui_mcp,
         {
-            "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save GUI outputs."},
-            "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True},
-            "gui_types": {"type": "string", "description": "Comma-separated GUI types (gui_1,gui_2,gui_3,oxdraw). Defaults to gui_1,gui_2.", "optional": True},
-            "headless": {"type": "boolean", "description": "Run in headless mode. Defaults to true.", "optional": True}
+            "type": "object",
+            "properties": {
+                "target_directory": {"type": "string", "description": "Directory containing GNN files to process"},
+                "output_directory": {"type": "string", "description": "Directory to save GUI outputs"},
+                "verbose":          {"type": "boolean", "default": False},
+                "gui_types":        {"type": "string", "default": "gui_1,gui_2", "description": "Comma-separated GUI types"},
+                "headless":         {"type": "boolean", "default": True, "description": "Run in headless mode"},
+            },
+            "required": ["target_directory", "output_directory"],
         },
-        "Process GUI generation for GNN files including form-based constructors, visual editors, and diagram tools."
+        "Process GUI generation for GNN files: form editors, visual constructors, OxDraw diagram tools.",
+        module=__package__, category="gui",
     )
 
     mcp_instance.register_tool(
         "list_available_guis",
         list_available_guis_mcp,
         {},
-        "List all available GUI implementations with their capabilities."
+        "List all available GUI implementations (gui_1, gui_2, gui_3, oxdraw) with capabilities.",
+        module=__package__, category="gui",
     )
 
-    logger.info("GUI module MCP tools registered.")
+    mcp_instance.register_tool(
+        "get_gui_module_info",
+        get_gui_module_info_mcp,
+        {},
+        "Return version, feature flags, GUI types, and tool inventory of the GUI module.",
+        module=__package__, category="gui",
+    )
+
+    logger.info("gui module MCP tools registered (3 domain tools).")
+

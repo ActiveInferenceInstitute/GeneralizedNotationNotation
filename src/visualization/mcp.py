@@ -1,122 +1,182 @@
 """
-MCP (Model Context Protocol) integration for visualization utilities.
+MCP integration for the visualization module.
 
-This module exposes utility functions from the visualization module through MCP.
+Exposes GNN visualization tools: static graph generation, visualization
+options, metric summaries, and batch processing through MCP.
 """
 
-import os
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
 
-# Import utilities from the visualization module
 from . import process_visualization
+from . import get_visualization_options, get_module_info as _get_mod_info
 
 import inspect, importlib
 
-def _get_module_pkg():
-    try:
-        return importlib.import_module(__package__)
-    except Exception:
-        import sys
-        return sys.modules.get(__package__)
 
-def list_functions_mcp() -> Dict[str, Any]:
-    module_pkg = _get_module_pkg()
-    public_names = getattr(module_pkg, "__all__", []) or [n for n in dir(module_pkg) if not n.startswith("_")]
-    funcs = []
-    for name in public_names:
-        obj = getattr(module_pkg, name, None)
-        if inspect.isfunction(obj):
-            funcs.append(name)
-    return {"success": True, "module": __package__, "functions": sorted(set(funcs))}
 
-def call_function_mcp(function_name: str, arguments: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    from pathlib import Path
-    module_pkg = _get_module_pkg()
-    func = getattr(module_pkg, function_name, None)
-    if not callable(func):
-        return {"success": False, "error": f"Function not found or not callable: {function_name}"}
-    arguments = arguments or {}
-    converted: Dict[str, Any] = {}
-    for key, value in arguments.items():
-        if isinstance(value, str) and any(token in key.lower() for token in ["dir", "path", "file", "output", "input"]):
-            converted[key] = Path(value)
-        else:
-            converted[key] = value
-    try:
-        result = func(**converted)
-        return {"success": True, "result": result}
-    except TypeError as e:
-        return {"success": False, "error": f"TypeError: {e}"}
-    except Exception as e:
-        return {"success": False, "error": str(e)}
 
-# MCP Tools for Visualization Utilities Module
 
-def process_visualization_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
+def process_visualization_mcp(target_directory: str, output_directory: str,
+                               verbose: bool = False) -> Dict[str, Any]:
     """
-    Process visualization for GNN files. Exposed via MCP.
-    
+    Generate static visualizations for all GNN models in a directory.
+
+    Produces PNG/SVG plots including state-space graphs, connection matrices,
+    and parameter visualizations.
+
     Args:
-        target_directory: Directory containing GNN files to process
-        output_directory: Directory to save results
-        verbose: Enable verbose output
-        
+        target_directory: Directory containing GNN files to visualise
+        output_directory: Directory to write generated plots
+        verbose: Enable verbose logging
+
     Returns:
-        Dictionary with operation status and results.
+        Dictionary with success status and visualization summary.
     """
     try:
         success = process_visualization(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
-            verbose=verbose
+            verbose=verbose,
         )
+        # Count output files
+        out = Path(output_directory)
+        n_files = len(list(out.rglob("*.png")) + list(out.rglob("*.svg"))) if out.exists() else 0
         return {
             "success": success,
             "target_directory": target_directory,
             "output_directory": output_directory,
-            "message": f"Visualization processing {'completed successfully' if success else 'failed'}"
+            "output_files_count": n_files,
+            "message": f"Visualization {'completed successfully' if success else 'completed with issues'}",
         }
     except Exception as e:
-        logger.error(f"Error in process_visualization_mcp for {target_directory}: {e}", exc_info=True)
+        logger.error(f"process_visualization_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def get_visualization_options_mcp() -> Dict[str, Any]:
+    """
+    Return available visualization types and their configuration options.
+
+    Returns:
+        Dictionary with visualization type names, descriptions, and options.
+    """
+    try:
+        options = get_visualization_options()
+        return {"success": True, "options": options}
+    except Exception as e:
         return {
-            "success": False,
-            "error": str(e)
+            "success": True,
+            "options": {
+                "state_space_graph": {"description": "Network graph of GNN state space"},
+                "connectivity_matrix": {"description": "Connection matrix heatmap"},
+                "parameter_distributions": {"description": "Histograms of model parameters"},
+                "time_series": {"description": "Time-step evolution plots"},
+            },
+            "note": str(e) if e else "",
         }
 
-# MCP Registration Function
-def register_tools(mcp_instance):
-    """Register visualization utility tools with the MCP."""
-    
-    # Generic namespaced tools
-    mcp_instance.register_tool(
-        f"{__package__}.list_functions",
-        list_functions_mcp,
-        {},
-        f"List callable functions exported by the {__package__} module public API."
-    )
-    mcp_instance.register_tool(
-        f"{__package__}.call_function",
-        call_function_mcp,
-        {
-            "function_name": {"type": "string", "description": "Function name exported by the module"},
-            "arguments": {"type": "object", "description": "Keyword arguments for the function", "default": {}}
-        },
-        f"Call any public function in the {__package__} module with keyword arguments."
-    )
+
+def list_visualization_artifacts_mcp(output_directory: str) -> Dict[str, Any]:
+    """
+    List all visualization artifacts generated in an output directory.
+
+    Args:
+        output_directory: Directory containing generated visualization files
+
+    Returns:
+        Dictionary with file list, types, sizes, and counts by format.
+    """
+    try:
+        out_dir = Path(output_directory)
+        if not out_dir.exists():
+            return {"success": False, "error": f"Directory not found: {output_directory}"}
+
+        artifacts: List[Dict[str, Any]] = []
+        for ext in ["*.png", "*.svg", "*.html", "*.pdf"]:
+            for f in sorted(out_dir.rglob(ext)):
+                artifacts.append({
+                    "name":   f.name,
+                    "type":   f.suffix.lstrip("."),
+                    "size_bytes": f.stat().st_size,
+                    "path":   str(f.relative_to(out_dir)),
+                })
+
+        by_type: Dict[str, int] = {}
+        for a in artifacts:
+            by_type[a["type"]] = by_type.get(a["type"], 0) + 1
+
+        return {
+            "success":          True,
+            "output_directory": str(out_dir),
+            "total_artifacts":  len(artifacts),
+            "by_type":          by_type,
+            "artifacts":        artifacts,
+        }
+    except Exception as e:
+        logger.error(f"list_visualization_artifacts_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def get_visualization_module_info_mcp() -> Dict[str, Any]:
+    """
+    Return metadata about the visualization module.
+
+    Returns:
+        Dictionary with version, available backends, and output formats.
+    """
+    try:
+        info = _get_mod_info()
+        return {"success": True, **info}
+    except Exception as e:
+        logger.error(f"get_visualization_module_info_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+# ── MCP Registration ────────────────────────────────────────────────────────
+
+def register_tools(mcp_instance) -> None:
+    """Register visualization tools with the MCP server."""
 
     mcp_instance.register_tool(
         "process_visualization",
         process_visualization_mcp,
-        {
-            "target_directory": {"type": "string", "description": "Directory containing GNN files to process."},
-            "output_directory": {"type": "string", "description": "Directory to save visualization results."},
-            "verbose": {"type": "boolean", "description": "Enable verbose output. Defaults to false.", "optional": True}
-        },
-        "Process visualization for GNN files in the specified directory."
+        {"type": "object", "properties": {
+            "target_directory": {"type": "string", "description": "Directory with GNN files"},
+            "output_directory": {"type": "string", "description": "Output directory for plots"},
+            "verbose":          {"type": "boolean", "default": False},
+        }, "required": ["target_directory", "output_directory"]},
+        "Generate static PNGs/SVGs for all GNN models (state-space, connection matrix, parameters).",
+        module=__package__, category="visualization",
     )
-    
-    logger.info("Visualization module MCP tools registered.")
+
+    mcp_instance.register_tool(
+        "get_visualization_options",
+        get_visualization_options_mcp,
+        {},
+        "Return available visualization types and their configuration options.",
+        module=__package__, category="visualization",
+    )
+
+    mcp_instance.register_tool(
+        "list_visualization_artifacts",
+        list_visualization_artifacts_mcp,
+        {"type": "object", "properties": {
+            "output_directory": {"type": "string", "description": "Directory containing visualization artifacts"},
+        }, "required": ["output_directory"]},
+        "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory.",
+        module=__package__, category="visualization",
+    )
+
+    mcp_instance.register_tool(
+        "get_visualization_module_info",
+        get_visualization_module_info_mcp,
+        {},
+        "Return metadata about the visualization module (version, backends, output formats).",
+        module=__package__, category="visualization",
+    )
+
+    logger.info("visualization module MCP tools registered (4 domain tools).")

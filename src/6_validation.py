@@ -26,14 +26,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Import module function
-try:
-    from validation import process_validation
-except ImportError:
-    def process_validation(target_dir, output_dir, logger, **kwargs):
-        """Fallback validation when module unavailable."""
-        logger.warning("Validation module not available - using fallback")
-        return True
+# Hard import: validation is a core module and must always be available.
+from validation import process_validation
 
 run_script = create_standardized_pipeline_script(
     "6_validation.py",

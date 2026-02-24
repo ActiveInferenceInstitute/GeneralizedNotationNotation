@@ -17,6 +17,9 @@ This directory contains comprehensive technical documentation for each Active In
 | RxInfer | `render/rxinfer/rxinfer_renderer.py` | Julia | [rxinfer.md](rxinfer.md) |
 | ActiveInference.jl | `render/activeinference_jl/activeinference_renderer.py` | Julia | [activeinference_jl.md](activeinference_jl.md) |
 | DisCoPy | `render/discopy/discopy_renderer.py` | Python | [discopy.md](discopy.md) |
+| CatColab | `export/catcolab/catcolab_exporter.py` | Python | [catcolab.md](catcolab.md) |
+| PyTorch | `render/pytorch/pytorch_renderer.py` | Python | [pytorch.md](pytorch.md) |
+| NumPyro | `render/numpyro/numpyro_renderer.py` | Python/JAX | [numpyro.md](numpyro.md) |
 
 ### Execution Layer (Step 12: Script Execution)
 
@@ -27,6 +30,9 @@ This directory contains comprehensive technical documentation for each Active In
 | RxInfer | `execute/rxinfer/rxinfer_runner.py` | `julia` | 600s |
 | ActiveInference.jl | `execute/activeinference_jl/activeinference_runner.py` | `julia` | 600s |
 | DisCoPy | `execute/discopy/discopy_executor.py` | `sys.executable` (Python) | 300s |
+| CatColab | `export/catcolab/catcolab_exporter.py` | N/A (export only) | N/A |
+| PyTorch | `execute/pytorch/pytorch_runner.py` | `sys.executable` (Python) | 300s |
+| NumPyro | `execute/numpyro/numpyro_runner.py` | `sys.executable` (Python) | 600s |
 
 ### Analysis Layer (Step 16: Visualization & Comparison)
 

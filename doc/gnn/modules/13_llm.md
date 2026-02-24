@@ -33,6 +33,18 @@ python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
 - **Directory**: `output/13_llm_output/`
 - LLM analysis reports and summaries
 
+## MCP Tools (llm module — 5 real tools)
+
+Registered by `src/llm/mcp.py` via `register_tools()`:
+
+| Tool | Description |
+|------|-------------|
+| `process_llm` | Run LLM analysis pipeline for all GNN files in a directory |
+| `analyze_gnn_with_llm` | Analyse a single GNN file with the configured LLM provider |
+| `generate_llm_documentation` | Generate LLM-powered documentation for a GNN model |
+| `get_llm_providers` | List available LLM providers and their status (Ollama, OpenAI, Anthropic, Google) |
+| `get_llm_module_info` | Return LLM module version and capabilities |
+
 ## Source
 
 - **Script**: [src/13_llm.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/13_llm.py)

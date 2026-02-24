@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="GNN Pipeline Results — Pipeline">
+  <title>Pipeline — GNN Pipeline</title>
+  <style>
+/* ── GNN Pipeline Design System ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+  --bg-base:    #0d1117;
+  --bg-surface: #161b22;
+  --bg-card:    #1c2230;
+  --bg-hover:   #21273a;
+  --border:     #30363d;
+  --accent:     #7c5cbf;
+  --accent-2:   #2ea8c4;
+  --success:    #3fb950;
+  --warning:    #d29922;
+  --error:      #f85149;
+  --text-1:     #e6edf3;
+  --text-2:     #8b949e;
+  --text-3:     #484f58;
+  --radius:     8px;
+  --radius-lg:  14px;
+  --shadow:     0 4px 24px rgba(0,0,0,0.45);
+  --glow:       0 0 20px rgba(124,92,191,0.25);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg-base);
+  color: var(--text-1);
+  min-height: 100vh;
+  display: flex;
+}
+
+/* ── Sidebar ── */
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+.sidebar-logo {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo h2 {
+  font-size: 16px;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.sidebar-logo p { color: var(--text-2); font-size: 11px; margin-top: 2px; }
+.sidebar-nav { padding: 12px 8px; flex: 1; }
+.nav-section { margin-bottom: 8px; }
+.nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+  padding: 4px 8px;
+  margin-bottom: 2px;
+}
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 10px;
+  border-radius: var(--radius);
+  color: var(--text-2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.15s;
+}
+.nav-link:hover, .nav-link.active {
+  background: var(--bg-card);
+  color: var(--text-1);
+}
+.nav-link.active { color: var(--accent-2); }
+.nav-link .icon { font-size: 14px; width: 18px; text-align: center; }
+
+/* ── Main content ── */
+.main {
+  flex: 1;
+  min-width: 0;
+  padding: 32px;
+  overflow-x: hidden;
+}
+
+/* ── Page header ── */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-header h1 {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--text-1);
+}
+.page-header .subtitle {
+  color: var(--text-2);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ── Stat cards ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.stat-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 18px 20px;
+  transition: box-shadow 0.2s;
+}
+.stat-card:hover { box-shadow: var(--glow); }
+.stat-card .label { font-size: 11px; color: var(--text-2); text-transform: uppercase; letter-spacing: 0.06em; }
+.stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+.stat-card .sub   { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+.stat-card.success .value { color: var(--success); }
+.stat-card.accent  .value { color: var(--accent); }
+.stat-card.accent2 .value { color: var(--accent-2); }
+.stat-card.warning .value { color: var(--warning); }
+
+/* ── Step grid ── */
+.step-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 12px;
+  margin-bottom: 32px;
+}
+.step-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  transition: all 0.15s;
+  cursor: default;
+}
+.step-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--glow);
+  transform: translateY(-1px);
+}
+.step-card .step-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-3);
+  letter-spacing: 0.1em;
+}
+.step-card .step-name {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 4px 0 8px;
+  color: var(--text-1);
+}
+.step-card .step-desc {
+  font-size: 11px;
+  color: var(--text-2);
+  line-height: 1.5;
+}
+.step-card .step-badge {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.05em;
+}
+.badge-ok      { background: rgba(63,185,80,0.15);    color: var(--success); }
+.badge-skip    { background: rgba(210,153,34,0.15);   color: var(--warning); }
+.badge-error   { background: rgba(248,81,73,0.15);    color: var(--error); }
+.badge-pending { background: rgba(139,148,158,0.15);  color: var(--text-2); }
+
+/* ── Table ── */
+.table-wrap { overflow-x: auto; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th {
+  background: var(--bg-surface);
+  color: var(--text-2);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 10px 14px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-1);
+  vertical-align: top;
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--bg-hover); }
+
+/* ── Code ── */
+pre, code {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
+pre {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 16px;
+  overflow-x: auto;
+  line-height: 1.6;
+  color: var(--text-2);
+}
+code { color: var(--accent-2); }
+
+/* ── Section ── */
+.section      { margin-bottom: 32px; }
+.section-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 14px;
+  color: var(--text-1);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.section-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ── Cards ── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  margin-bottom: 12px;
+}
+.card h3 { font-size: 14px; font-weight: 600; margin-bottom: 8px; }
+.card p  { font-size: 13px; color: var(--text-2); line-height: 1.6; }
+
+/* ── Visualization gallery ── */
+.viz-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.viz-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.viz-card:hover { box-shadow: var(--glow); }
+.viz-card img  { width: 100%; display: block; border-bottom: 1px solid var(--border); }
+.viz-card .viz-info { padding: 12px 14px; }
+.viz-card .viz-title { font-size: 12px; font-weight: 600; }
+.viz-card .viz-desc  { font-size: 11px; color: var(--text-2); margin-top: 2px; }
+
+/* ── MCP tool card ── */
+.tool-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin-bottom: 8px;
+}
+.tool-card .tool-name { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-2); }
+.tool-card .tool-mod  { font-size: 11px; color: var(--text-3); margin-top: 2px; }
+.tool-card .tool-desc { font-size: 12px; color: var(--text-2); margin-top: 6px; line-height: 1.5; }
+
+/* ── Pill badge ── */
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 1px 7px;
+  border-radius: 12px;
+  letter-spacing: 0.04em;
+}
+
+/* ── Collapsible ── */
+details { margin-bottom: 8px; }
+summary {
+  cursor: pointer;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  list-style: none;
+  display: flex;
+  justify-content: space-between;
+}
+summary::-webkit-details-marker { display: none; }
+summary::after { content: '▸'; color: var(--text-3); }
+details[open] summary::after { content: '▾'; }
+details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
+.details-body {
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 12px 14px;
+  background: var(--bg-surface);
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .main { padding: 16px; }
+}
+</style>
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <h2>GNN Pipeline</h2>
+      <p>Generated 2026-02-24 07:44</p>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">
+        <div class="nav-label">Navigation</div>
+        <a href="index.html" class="nav-link"><span class="icon">🏠</span>Dashboard</a>
+<a href="pipeline.html" class="nav-link active"><span class="icon">⚡</span>Pipeline</a>
+<a href="gnn_files.html" class="nav-link"><span class="icon">📂</span>GNN Files</a>
+<a href="analysis.html" class="nav-link"><span class="icon">📊</span>Analysis</a>
+<a href="visualization.html" class="nav-link"><span class="icon">🖼️</span>Visualizations</a>
+<a href="reports.html" class="nav-link"><span class="icon">📋</span>Reports</a>
+<a href="mcp.html" class="nav-link"><span class="icon">🔧</span>MCP Tools</a>
+
+      </div>
+      
+    </nav>
+  </aside>
+  <main class="main">
+    
+<div class="page-header">
+  <h1>⚡ Pipeline Steps</h1>
+  <p class="subtitle">Full 25-step GNN processing pipeline status</p>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead><tr><th>#</th><th>Step</th><th>Description</th><th>Status</th><th>Script</th></tr></thead>
+    <tbody><tr>
+  <td><code>00</code></td>
+  <td>Setup</td>
+  <td>Environment setup, dependency checking</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">0_setup.py</code></td>
+</tr><tr>
+  <td><code>01</code></td>
+  <td>GNN File Discovery</td>
+  <td>Discover and index all GNN source files</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">1_gnn_file_discovery.py</code></td>
+</tr><tr>
+  <td><code>02</code></td>
+  <td>File Listing</td>
+  <td>List and catalog GNN files for processing</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">2_file_listing.py</code></td>
+</tr><tr>
+  <td><code>03</code></td>
+  <td>GNN Parsing</td>
+  <td>Parse GNN files into structured models</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">3_gnn_parsing.py</code></td>
+</tr><tr>
+  <td><code>04</code></td>
+  <td>MCP Parsing</td>
+  <td>Parse MCP-format specifications</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">4_mcp_parsing.py</code></td>
+</tr><tr>
+  <td><code>05</code></td>
+  <td>Type Checking</td>
+  <td>Validate types and dimensions in GNN models</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">5_type_checking.py</code></td>
+</tr><tr>
+  <td><code>06</code></td>
+  <td>Validation</td>
+  <td>Schema and semantic validation of GNN content</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">6_validation.py</code></td>
+</tr><tr>
+  <td><code>07</code></td>
+  <td>Export</td>
+  <td>Export GNN to Julia, Python, and other formats</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">7_export.py</code></td>
+</tr><tr>
+  <td><code>08</code></td>
+  <td>Visualization</td>
+  <td>Generate static visualizations and plots</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">8_visualization.py</code></td>
+</tr><tr>
+  <td><code>09</code></td>
+  <td>Advanced Visualization</td>
+  <td>Interactive HTML plots and dashboards</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">9_advanced_visualization.py</code></td>
+</tr><tr>
+  <td><code>10</code></td>
+  <td>Ontology Processing</td>
+  <td>Map variables to Active Inference ontology</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">10_ontology_processing.py</code></td>
+</tr><tr>
+  <td><code>11</code></td>
+  <td>Rendering</td>
+  <td>Render GNN models to target code</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">11_rendering.py</code></td>
+</tr><tr>
+  <td><code>12</code></td>
+  <td>Execution</td>
+  <td>Execute rendered GNN simulations</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">12_execution.py</code></td>
+</tr><tr>
+  <td><code>13</code></td>
+  <td>LLM Integration</td>
+  <td>LLM-assisted annotation and analysis</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">13_llm_integration.py</code></td>
+</tr><tr>
+  <td><code>14</code></td>
+  <td>ML Integration</td>
+  <td>Machine learning model integration</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">14_ml_integration.py</code></td>
+</tr><tr>
+  <td><code>15</code></td>
+  <td>Audio Generation</td>
+  <td>SAPF audio synthesis from GNN models</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">15_audio_generation.py</code></td>
+</tr><tr>
+  <td><code>16</code></td>
+  <td>Analysis</td>
+  <td>Statistical and complexity analysis</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">16_analysis.py</code></td>
+</tr><tr>
+  <td><code>17</code></td>
+  <td>Integration</td>
+  <td>Third-party system integration</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">17_integration.py</code></td>
+</tr><tr>
+  <td><code>18</code></td>
+  <td>Security</td>
+  <td>Security scanning and compliance checks</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">18_security.py</code></td>
+</tr><tr>
+  <td><code>19</code></td>
+  <td>Research</td>
+  <td>Research query and literature processing</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">19_research.py</code></td>
+</tr><tr>
+  <td><code>20</code></td>
+  <td>Website Generation</td>
+  <td>Static website from pipeline artifacts</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">20_website_generation.py</code></td>
+</tr><tr>
+  <td><code>21</code></td>
+  <td>MCP Processing</td>
+  <td>Model Context Protocol server setup</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">21_mcp_processing.py</code></td>
+</tr><tr>
+  <td><code>22</code></td>
+  <td>GUI</td>
+  <td>Interactive GUI interfaces</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">22_gui.py</code></td>
+</tr><tr>
+  <td><code>23</code></td>
+  <td>Report Generation</td>
+  <td>Comprehensive PDF/HTML report creation</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">23_report_generation.py</code></td>
+</tr><tr>
+  <td><code>24</code></td>
+  <td>Intelligent Analysis</td>
+  <td>LLM-powered pipeline executive summary</td>
+  <td><span class="step-badge badge-ok">Complete</span></td>
+  <td><code style="font-size:11px;color:var(--text-3)">24_intelligent_analysis.py</code></td>
+</tr></tbody>
+  </table>
+</div>
+  </main>
+</body>
+</html>

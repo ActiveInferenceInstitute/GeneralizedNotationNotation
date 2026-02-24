@@ -1,0 +1,1177 @@
+{
+  "generated_at": "2026-02-24T06:51:00",
+  "modules_total": 29,
+  "modules_loaded": 29,
+  "modules_errored": 0,
+  "modules_loaded_names": [
+    "advanced_visualization",
+    "analysis",
+    "audio",
+    "execute",
+    "export",
+    "gnn",
+    "gui",
+    "integration",
+    "intelligent_analysis",
+    "llm",
+    "mcp",
+    "ml_integration",
+    "model_registry",
+    "ontology",
+    "pipeline",
+    "render",
+    "report",
+    "research",
+    "sapf",
+    "security",
+    "setup",
+    "sympy_mcp",
+    "template",
+    "tests",
+    "type_checker",
+    "utils",
+    "validation",
+    "visualization",
+    "website"
+  ],
+  "modules_errored_names": [],
+  "tools_total": 126,
+  "tools_real": 126,
+  "tools_documented": 126,
+  "tools": [
+    {
+      "name": "analyze_audio_characteristics",
+      "module": "src.audio",
+      "category": "audio",
+      "fn": "analyze_audio_characteristics_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Analyse characteristics of a GNN-generated audio file (duration, RMS, spectral centroid, etc.)."
+    },
+    {
+      "name": "analyze_gnn_with_llm",
+      "module": "src.llm",
+      "category": "llm",
+      "fn": "analyze_gnn_with_llm_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run LLM-based analysis on a single GNN model file: summary, complexity, connections."
+    },
+    {
+      "name": "build_website_from_pipeline_output",
+      "module": "src.website",
+      "category": "website",
+      "fn": "build_from_pipeline_output_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Build the full GNN website by auto-discovering all pipeline artifacts from numbered output directories."
+    },
+    {
+      "name": "check_audio_backends",
+      "module": "src.sapf",
+      "category": "audio",
+      "fn": "check_audio_backends_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available."
+    },
+    {
+      "name": "check_execute_dependencies",
+      "module": "src.execute",
+      "category": "execute",
+      "fn": "check_execute_dependencies_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed."
+    },
+    {
+      "name": "check_integration_dependencies",
+      "module": "src.integration",
+      "category": "integration",
+      "fn": "check_integration_dependencies_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed."
+    },
+    {
+      "name": "check_ml_frameworks",
+      "module": "src.ml_integration",
+      "category": "ml_integration",
+      "fn": "check_ml_frameworks_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions."
+    },
+    {
+      "name": "check_schema_compliance",
+      "module": "src.validation",
+      "category": "validation",
+      "fn": "check_schema_compliance_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check a GNN model string against canonical GNN schema requirements."
+    },
+    {
+      "name": "check_uv_project_status",
+      "module": "",
+      "category": "",
+      "fn": "check_uv_project_status_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Checks the status of a UV project including pyproject.toml, uv.lock, and virtual environment."
+    },
+    {
+      "name": "check_visualization_capabilities",
+      "module": "src.advanced_visualization",
+      "category": "advanced_visualization",
+      "fn": "check_visualization_capabilities_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check available advanced visualization capabilities (D2, dashboard, network backends)."
+    },
+    {
+      "name": "compute_complexity_metrics",
+      "module": "src.analysis",
+      "category": "analysis",
+      "fn": "compute_complexity_metrics_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Compute complexity metrics (variables, connections, cyclomatic complexity) for GNN content."
+    },
+    {
+      "name": "ensure_directory_exists",
+      "module": "",
+      "category": "",
+      "fn": "ensure_directory_exists_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Ensures a directory exists, creating it if necessary. Returns the absolute path."
+    },
+    {
+      "name": "execute_gnn_model",
+      "module": "src.execute",
+      "category": "execute",
+      "fn": "execute_gnn_model_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps."
+    },
+    {
+      "name": "execute_pymdp_simulation",
+      "module": "src.execute",
+      "category": "execute",
+      "fn": "execute_pymdp_simulation_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop)."
+    },
+    {
+      "name": "export_single_gnn_file",
+      "module": "src.export",
+      "category": "export",
+      "fn": "export_single_file_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Export a single GNN file to one or more target formats."
+    },
+    {
+      "name": "extract_ontology_annotations",
+      "module": "src.ontology",
+      "category": "ontology",
+      "fn": "extract_ontology_annotations_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Extract ActInfOntologyAnnotation variable-to-term mappings from GNN model content."
+    },
+    {
+      "name": "find_project_gnn_files",
+      "module": "",
+      "category": "",
+      "fn": "find_project_gnn_files_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Finds all GNN (.md) files in a specified directory within the project."
+    },
+    {
+      "name": "generate_llm_documentation",
+      "module": "src.llm",
+      "category": "llm",
+      "fn": "generate_llm_documentation_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Generate human-readable Markdown documentation for a GNN model using an LLM."
+    },
+    {
+      "name": "generate_report",
+      "module": "src.report",
+      "category": "report",
+      "fn": "generate_report_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Generate a comprehensive pipeline execution report with statistics and summaries."
+    },
+    {
+      "name": "get_advanced_visualization_module_info",
+      "module": "src.advanced_visualization",
+      "category": "advanced_visualization",
+      "fn": "get_advanced_visualization_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, and tool inventory of the advanced visualization module."
+    },
+    {
+      "name": "get_analysis_capabilities",
+      "module": "src.intelligent_analysis",
+      "category": "intelligent_analysis",
+      "fn": "get_analysis_capabilities_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Get intelligent analysis capabilities, supported types, available tools, and feature flags."
+    },
+    {
+      "name": "get_analysis_results",
+      "module": "src.analysis",
+      "category": "analysis",
+      "fn": "get_analysis_results_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Read and return saved analysis results from a previous analysis run."
+    },
+    {
+      "name": "get_audio_generation_options",
+      "module": "src.audio",
+      "category": "audio",
+      "fn": "get_audio_generation_options_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return all configurable audio generation options with defaults and valid ranges."
+    },
+    {
+      "name": "get_audio_module_info",
+      "module": "src.audio",
+      "category": "audio",
+      "fn": "get_audio_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, supported backends and formats of the GNN audio module."
+    },
+    {
+      "name": "get_environment_info",
+      "module": "",
+      "category": "",
+      "fn": "get_environment_info_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get environment information including Python packages, environment variables, and paths."
+    },
+    {
+      "name": "get_execute_module_info",
+      "module": "src.execute",
+      "category": "execute",
+      "fn": "get_execute_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, and API surface of the GNN execute module."
+    },
+    {
+      "name": "get_file_info",
+      "module": "",
+      "category": "",
+      "fn": "get_file_info_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get detailed information about a file or directory including size, permissions, and contents."
+    },
+    {
+      "name": "get_gnn_documentation",
+      "module": "",
+      "category": "",
+      "fn": "get_gnn_documentation",
+      "is_real": true,
+      "documented": true,
+      "description": "Retrieve the content of a GNN documentation file, schema definition, or grammar specification."
+    },
+    {
+      "name": "get_gnn_module_info",
+      "module": "",
+      "category": "",
+      "fn": "get_gnn_module_info",
+      "is_real": true,
+      "documented": true,
+      "description": "Get comprehensive information about the GNN module capabilities and features."
+    },
+    {
+      "name": "get_gnn_schema_info",
+      "module": "",
+      "category": "",
+      "fn": "get_gnn_schema_info",
+      "is_real": true,
+      "documented": true,
+      "description": "Get comprehensive information about the GNN schema structure and validation rules."
+    },
+    {
+      "name": "get_gui_module_info",
+      "module": "src.gui",
+      "category": "gui",
+      "fn": "get_gui_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, GUI types, and tool inventory of the GUI module."
+    },
+    {
+      "name": "get_integration_status",
+      "module": "src.integration",
+      "category": "integration",
+      "fn": "get_integration_status_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check status and inventory of a previous integration run."
+    },
+    {
+      "name": "get_intelligent_analysis_module_info",
+      "module": "src.intelligent_analysis",
+      "category": "intelligent_analysis",
+      "fn": "get_intelligent_analysis_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, and tool inventory of the intelligent analysis module."
+    },
+    {
+      "name": "get_llm_module_info",
+      "module": "src.llm",
+      "category": "llm",
+      "fn": "get_llm_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, analysis types, output formats, and tool list of the GNN LLM module."
+    },
+    {
+      "name": "get_llm_providers",
+      "module": "src.llm",
+      "category": "llm",
+      "fn": "get_llm_providers_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return available LLM providers and their API key / configuration status."
+    },
+    {
+      "name": "get_logging_info",
+      "module": "",
+      "category": "",
+      "fn": "get_logging_info_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get current logging configuration and status for all loggers."
+    },
+    {
+      "name": "get_ml_module_info",
+      "module": "src.ml_integration",
+      "category": "ml_integration",
+      "fn": "get_ml_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return version, feature flags, and tool inventory of the ML integration module."
+    },
+    {
+      "name": "get_pipeline_config_info",
+      "module": "",
+      "category": "",
+      "fn": "get_config_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get detailed pipeline configuration information and settings."
+    },
+    {
+      "name": "get_pipeline_status",
+      "module": "",
+      "category": "",
+      "fn": "get_status_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get current pipeline execution status, recent logs, and execution statistics."
+    },
+    {
+      "name": "get_pipeline_steps",
+      "module": "",
+      "category": "",
+      "fn": "get_steps_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get information about all available pipeline steps, their metadata, and dependencies."
+    },
+    {
+      "name": "get_render_module_info",
+      "module": "src.render",
+      "category": "render",
+      "fn": "get_render_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the render module: supported frameworks and input/output formats."
+    },
+    {
+      "name": "get_report_module_info",
+      "module": "src.report",
+      "category": "report",
+      "fn": "get_report_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the report module (version, supported formats)."
+    },
+    {
+      "name": "get_research_module_info",
+      "module": "src.research",
+      "category": "research",
+      "fn": "get_research_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the research module capabilities."
+    },
+    {
+      "name": "get_sapf_module_info",
+      "module": "src.sapf",
+      "category": "audio",
+      "fn": "get_sapf_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the SAPF audio synthesis module (version, formats, capabilities)."
+    },
+    {
+      "name": "get_security_report",
+      "module": "src.security",
+      "category": "security",
+      "fn": "get_security_report_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Read and return saved security scan reports from a previous security processing run."
+    },
+    {
+      "name": "get_standard_output_paths",
+      "module": "",
+      "category": "",
+      "fn": "get_standard_output_paths_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Gets a dictionary of standard output directory paths (e.g., for type_check, visualization), creating them if needed."
+    },
+    {
+      "name": "get_system_info",
+      "module": "",
+      "category": "",
+      "fn": "get_system_info_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Get comprehensive system information including CPU, memory, disk, and platform details."
+    },
+    {
+      "name": "get_uv_environment_info",
+      "module": "",
+      "category": "",
+      "fn": "get_uv_environment_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Gets information about the current UV environment including paths and status."
+    },
+    {
+      "name": "get_validation_report",
+      "module": "src.validation",
+      "category": "validation",
+      "fn": "get_validation_report_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Read and return saved validation reports from a previous validation run."
+    },
+    {
+      "name": "get_visualization_module_info",
+      "module": "src.visualization",
+      "category": "visualization",
+      "fn": "get_visualization_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the visualization module (version, backends, output formats)."
+    },
+    {
+      "name": "get_visualization_options",
+      "module": "src.visualization",
+      "category": "visualization",
+      "fn": "get_visualization_options_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return available visualization types and their configuration options."
+    },
+    {
+      "name": "get_website_module_info",
+      "module": "src.website",
+      "category": "website",
+      "fn": "get_website_module_info_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return metadata about the website module: version, supported file types, and available MCP tools."
+    },
+    {
+      "name": "get_website_status",
+      "module": "src.website",
+      "category": "website",
+      "fn": "get_website_status_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Inspect an existing generated website: list pages, sizes, and check completeness of key pages."
+    },
+    {
+      "name": "install_uv_dependency",
+      "module": "",
+      "category": "",
+      "fn": "install_uv_dependency_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Installs a dependency using UV with optional extras support."
+    },
+    {
+      "name": "list_analysis_tools",
+      "module": "src.analysis",
+      "category": "analysis",
+      "fn": "list_analysis_tools_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return information about available GNN analysis tools and capabilities."
+    },
+    {
+      "name": "list_audio_artifacts",
+      "module": "src.sapf",
+      "category": "audio",
+      "fn": "list_audio_artifacts_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List audio and SAPF script artifacts in an output directory."
+    },
+    {
+      "name": "list_available_guis",
+      "module": "src.gui",
+      "category": "gui",
+      "fn": "list_available_guis_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List all available GUI implementations (gui_1, gui_2, gui_3, oxdraw) with capabilities."
+    },
+    {
+      "name": "list_d2_visualization_types",
+      "module": "src.advanced_visualization",
+      "category": "advanced_visualization",
+      "fn": "list_d2_visualization_types_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return all D2 diagram types supported for GNN model visualization."
+    },
+    {
+      "name": "list_export_formats",
+      "module": "src.export",
+      "category": "export",
+      "fn": "list_export_formats_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List all supported GNN export formats and their descriptions."
+    },
+    {
+      "name": "list_generated_website_pages",
+      "module": "src.website",
+      "category": "website",
+      "fn": "list_generated_pages_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List all HTML pages in a generated website directory with sizes and timestamps."
+    },
+    {
+      "name": "list_ml_integration_targets",
+      "module": "src.ml_integration",
+      "category": "ml_integration",
+      "fn": "list_ml_integration_targets_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return GNN-compatible ML integration targets and their dependency availability."
+    },
+    {
+      "name": "list_render_frameworks",
+      "module": "src.render",
+      "category": "render",
+      "fn": "list_render_frameworks_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return all supported rendering frameworks (Python, Julia, JAX, PyTorch, RxInfer) and their availability."
+    },
+    {
+      "name": "list_report_formats",
+      "module": "src.report",
+      "category": "report",
+      "fn": "list_report_formats_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return all supported report output formats (JSON, HTML, Markdown, etc.)."
+    },
+    {
+      "name": "list_research_topics",
+      "module": "src.research",
+      "category": "research",
+      "fn": "list_research_topics_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return Active Inference and GNN research topic taxonomy."
+    },
+    {
+      "name": "list_security_checks",
+      "module": "src.security",
+      "category": "security",
+      "fn": "list_security_checks_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return the list of security checks performed (CVE scan, injection detection, path traversal, etc.)."
+    },
+    {
+      "name": "list_standard_ontology_terms",
+      "module": "src.ontology",
+      "category": "ontology",
+      "fn": "list_standard_ontology_terms_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return the canonical list of Active Inference Ontology (ActInfO) terms and descriptions."
+    },
+    {
+      "name": "list_supported_integrations",
+      "module": "src.integration",
+      "category": "integration",
+      "fn": "list_supported_integrations_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Return all supported third-party integration targets and their availability."
+    },
+    {
+      "name": "list_visualization_artifacts",
+      "module": "src.visualization",
+      "category": "visualization",
+      "fn": "list_visualization_artifacts_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "List all visualization artifacts (PNG, SVG, HTML, PDF) in an output directory."
+    },
+    {
+      "name": "model_registry.get_model",
+      "module": "",
+      "category": "",
+      "fn": "get_model",
+      "is_real": true,
+      "documented": true,
+      "description": "Get a model from the registry by ID"
+    },
+    {
+      "name": "model_registry.list_models",
+      "module": "",
+      "category": "",
+      "fn": "list_models",
+      "is_real": true,
+      "documented": true,
+      "description": "List all models in the registry"
+    },
+    {
+      "name": "model_registry.register_model",
+      "module": "",
+      "category": "",
+      "fn": "register_model",
+      "is_real": true,
+      "documented": true,
+      "description": "Register a model in the model registry"
+    },
+    {
+      "name": "model_registry.search_models",
+      "module": "",
+      "category": "",
+      "fn": "search_models",
+      "is_real": true,
+      "documented": true,
+      "description": "Search models in the registry by name, description, or tags"
+    },
+    {
+      "name": "parse_gnn_content",
+      "module": "",
+      "category": "",
+      "fn": "parse_gnn_content",
+      "is_real": true,
+      "documented": true,
+      "description": "Parse GNN content with enhanced multi-format support and return structured model representation."
+    },
+    {
+      "name": "process_advanced_visualization",
+      "module": "src.advanced_visualization",
+      "category": "advanced_visualization",
+      "fn": "process_advanced_visualization_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Process advanced visualization for GNN files: D2 diagrams, dashboards, network visualizations."
+    },
+    {
+      "name": "process_analysis",
+      "module": "src.analysis",
+      "category": "analysis",
+      "fn": "process_analysis_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run statistical and complexity analysis on GNN files in a directory."
+    },
+    {
+      "name": "process_audio",
+      "module": "src.audio",
+      "category": "audio",
+      "fn": "process_audio_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run GNN audio processing pipeline: convert GNN models to audio files."
+    },
+    {
+      "name": "process_execute",
+      "module": "src.execute",
+      "category": "execute",
+      "fn": "process_execute_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run GNN execution processing: validate and execute all GNN model files in a directory."
+    },
+    {
+      "name": "process_export",
+      "module": "src.export",
+      "category": "export",
+      "fn": "process_export_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.)."
+    },
+    {
+      "name": "process_gnn_directory",
+      "module": "",
+      "category": "",
+      "fn": "process_gnn_directory",
+      "is_real": true,
+      "documented": true,
+      "description": "Process a directory of GNN files with enhanced validation and testing capabilities."
+    },
+    {
+      "name": "process_gui",
+      "module": "src.gui",
+      "category": "gui",
+      "fn": "process_gui_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Process GUI generation for GNN files: form editors, visual constructors, OxDraw diagram tools."
+    },
+    {
+      "name": "process_integration",
+      "module": "src.integration",
+      "category": "integration",
+      "fn": "process_integration_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run GNN integration processing: export to ActiveInference.jl, pymdp, Pyro, Stan, etc."
+    },
+    {
+      "name": "process_intelligent_analysis",
+      "module": "src.intelligent_analysis",
+      "category": "intelligent_analysis",
+      "fn": "process_intelligent_analysis_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Process AI-powered intelligent analysis of GNN pipeline results: failure analysis, performance optimization."
+    },
+    {
+      "name": "process_llm",
+      "module": "src.llm",
+      "category": "llm",
+      "fn": "process_llm_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run LLM analysis pipeline for all GNN files in a directory."
+    },
+    {
+      "name": "process_ml_integration",
+      "module": "src.ml_integration",
+      "category": "ml_integration",
+      "fn": "process_ml_integration_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Process ML integration for GNN files: model training, inference setup, and framework export."
+    },
+    {
+      "name": "process_ontology",
+      "module": "src.ontology",
+      "category": "ontology",
+      "fn": "process_ontology_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Map GNN variables to Active Inference Ontology terms and produce an ontology report."
+    },
+    {
+      "name": "process_render",
+      "module": "src.render",
+      "category": "render",
+      "fn": "process_render_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Render GNN models in a directory to all supported code frameworks."
+    },
+    {
+      "name": "process_report",
+      "module": "src.report",
+      "category": "report",
+      "fn": "process_report_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run the full report pipeline step."
+    },
+    {
+      "name": "process_research",
+      "module": "src.research",
+      "category": "research",
+      "fn": "process_research_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run GNN research processing: generate experiment metadata and cross-references."
+    },
+    {
+      "name": "process_sapf",
+      "module": "src.sapf",
+      "category": "audio",
+      "fn": "process_sapf_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Generate SAPF audio from GNN Active Inference models using SuperCollider synthesis."
+    },
+    {
+      "name": "process_security",
+      "module": "src.security",
+      "category": "security",
+      "fn": "process_security_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run security scanning and compliance checks on GNN pipeline files."
+    },
+    {
+      "name": "process_validation",
+      "module": "src.validation",
+      "category": "validation",
+      "fn": "process_validation_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run full GNN validation pipeline on a directory of GNN files."
+    },
+    {
+      "name": "process_visualization",
+      "module": "src.visualization",
+      "category": "visualization",
+      "fn": "process_visualization_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Generate static PNGs/SVGs for all GNN models (state-space, connection matrix, parameters)."
+    },
+    {
+      "name": "process_website",
+      "module": "src.website",
+      "category": "website",
+      "fn": "process_website_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Generate a premium 7-page static HTML website from GNN pipeline artifacts."
+    },
+    {
+      "name": "read_report",
+      "module": "src.report",
+      "category": "report",
+      "fn": "read_report_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Read and return the contents of a generated pipeline report file."
+    },
+    {
+      "name": "read_research_results",
+      "module": "src.research",
+      "category": "research",
+      "fn": "read_research_results_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Read and return research output files from a previous research processing run."
+    },
+    {
+      "name": "render_gnn_to_format",
+      "module": "src.render",
+      "category": "render",
+      "fn": "render_gnn_to_format_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Render a single GNN file to a specific target framework (Python, Julia, etc.)."
+    },
+    {
+      "name": "run_all_tests",
+      "module": "",
+      "category": "",
+      "fn": "run_all_tests_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run comprehensive test suite for the GNN pipeline."
+    },
+    {
+      "name": "run_integration_tests",
+      "module": "",
+      "category": "",
+      "fn": "run_integration_tests_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run integration test suite for the GNN pipeline."
+    },
+    {
+      "name": "run_round_trip_tests",
+      "module": "",
+      "category": "",
+      "fn": "run_round_trip_tests",
+      "is_real": true,
+      "documented": true,
+      "description": "Run comprehensive round-trip tests on GNN files across all supported formats."
+    },
+    {
+      "name": "run_unit_tests",
+      "module": "",
+      "category": "",
+      "fn": "run_unit_tests_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Run unit test suite for the GNN pipeline."
+    },
+    {
+      "name": "scan_gnn_file",
+      "module": "src.security",
+      "category": "security",
+      "fn": "scan_gnn_file_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Perform a lightweight security scan of a single GNN file for injection patterns."
+    },
+    {
+      "name": "setup_uv_project_structure",
+      "module": "",
+      "category": "",
+      "fn": "setup_uv_project_structure_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Sets up a new UV project structure with standard directories and configuration."
+    },
+    {
+      "name": "sympy_analyze_stability",
+      "module": "",
+      "category": "",
+      "fn": "analyze_stability_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Analyze system stability using eigenvalue analysis"
+    },
+    {
+      "name": "sympy_cleanup",
+      "module": "",
+      "category": "",
+      "fn": "cleanup_sympy_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Clean up SymPy MCP integration and reset state"
+    },
+    {
+      "name": "sympy_get_latex",
+      "module": "",
+      "category": "",
+      "fn": "get_latex_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Convert a mathematical expression to LaTeX format"
+    },
+    {
+      "name": "sympy_initialize",
+      "module": "",
+      "category": "",
+      "fn": "initialize_sympy_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Initialize SymPy MCP integration"
+    },
+    {
+      "name": "sympy_simplify_expression",
+      "module": "",
+      "category": "",
+      "fn": "simplify_expression_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Simplify a mathematical expression to canonical form"
+    },
+    {
+      "name": "sympy_solve_equation",
+      "module": "",
+      "category": "",
+      "fn": "solve_equation_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Solve an equation algebraically for a specified variable"
+    },
+    {
+      "name": "sympy_validate_equation",
+      "module": "",
+      "category": "",
+      "fn": "validate_equation_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate a mathematical equation using SymPy symbolic processing"
+    },
+    {
+      "name": "sympy_validate_matrix",
+      "module": "",
+      "category": "",
+      "fn": "validate_matrix_tool_sync",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate matrix properties including stochasticity constraints"
+    },
+    {
+      "name": "sync_uv_dependencies",
+      "module": "",
+      "category": "",
+      "fn": "sync_uv_dependencies_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Syncs dependencies using UV from pyproject.toml and updates the lock file."
+    },
+    {
+      "name": "template.get_info",
+      "module": "",
+      "category": "",
+      "fn": "get_template_info",
+      "is_real": true,
+      "documented": true,
+      "description": "Get information about the template step"
+    },
+    {
+      "name": "template.process_directory",
+      "module": "",
+      "category": "",
+      "fn": "process_directory",
+      "is_real": true,
+      "documented": true,
+      "description": "Process all files in a directory using the template processor"
+    },
+    {
+      "name": "template.process_file",
+      "module": "",
+      "category": "",
+      "fn": "process_file",
+      "is_real": true,
+      "documented": true,
+      "description": "Process a file using the template processor"
+    },
+    {
+      "name": "validate_audio_content",
+      "module": "src.audio",
+      "category": "audio",
+      "fn": "validate_audio_content_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate a GNN-generated audio file: header, sample count, amplitude bounds."
+    },
+    {
+      "name": "validate_cross_format_consistency_content",
+      "module": "",
+      "category": "",
+      "fn": "validate_cross_format_consistency_content",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate cross-format consistency for GNN content across all supported formats."
+    },
+    {
+      "name": "validate_dependencies",
+      "module": "",
+      "category": "",
+      "fn": "validate_dependencies_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate system dependencies and required packages for the GNN pipeline."
+    },
+    {
+      "name": "validate_directory_cross_format_consistency",
+      "module": "",
+      "category": "",
+      "fn": "validate_directory_cross_format_consistency",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate cross-format consistency for files in a directory with comprehensive analysis."
+    },
+    {
+      "name": "validate_export_format",
+      "module": "src.export",
+      "category": "export",
+      "fn": "validate_export_format_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Check whether a given export format is supported."
+    },
+    {
+      "name": "validate_gnn_content",
+      "module": "",
+      "category": "",
+      "fn": "validate_gnn_content",
+      "is_real": true,
+      "documented": true,
+      "description": "Enhanced validation of GNN file content with comprehensive testing capabilities."
+    },
+    {
+      "name": "validate_gnn_file",
+      "module": "src.validation",
+      "category": "validation",
+      "fn": "validate_gnn_file_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate a single GNN file at a given level (basic/standard/strict)."
+    },
+    {
+      "name": "validate_gnn_files",
+      "module": "",
+      "category": "",
+      "fn": "validate_gnn_files_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate GNN files for syntax and type correctness."
+    },
+    {
+      "name": "validate_ontology_terms",
+      "module": "src.ontology",
+      "category": "ontology",
+      "fn": "validate_ontology_terms_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate ontology term names against the Active Inference Ontology."
+    },
+    {
+      "name": "validate_pipeline_dependencies",
+      "module": "",
+      "category": "",
+      "fn": "validate_deps_wrapper",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate pipeline step dependencies and identify missing or circular dependencies."
+    },
+    {
+      "name": "validate_schema_definitions_consistency",
+      "module": "",
+      "category": "",
+      "fn": "validate_schema_definitions_consistency",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate consistency between GNN schema definition files across different formats."
+    },
+    {
+      "name": "validate_single_gnn_file",
+      "module": "",
+      "category": "",
+      "fn": "validate_single_gnn_file_mcp",
+      "is_real": true,
+      "documented": true,
+      "description": "Validate a single GNN file for syntax and type correctness."
+    }
+  ]
+}

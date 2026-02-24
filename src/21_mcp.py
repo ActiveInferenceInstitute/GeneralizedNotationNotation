@@ -37,17 +37,8 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
 
-# Import module function
-try:
-    from mcp import process_mcp
-except ImportError:
-    def process_mcp(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback mcp processing when module unavailable."""
-        import logging
-        if logger is None:
-            logger = logging.getLogger(__name__)
-        logger.warning("MCP module not available - using fallback")
-        return True
+# Hard import: mcp is a core module and must always be available.
+from mcp import process_mcp
 
 run_script = create_standardized_pipeline_script(
     "21_mcp.py",

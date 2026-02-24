@@ -1,43 +1,96 @@
 # Step 2: Tests — Test Suite Execution
 
+**Script**: `src/2_tests.py` (86 lines, thin orchestrator)  
+**Module**: `src/tests/` (91 test files, 734+ functions, 24 categories)  
+**Last Updated**: February 24, 2026
+
 ## Overview
 
-Orchestrates the project test suite using pytest, supporting fast (default) and comprehensive execution modes. Respects environment variable overrides for CI/pipeline integration.
+Step 2 orchestrates the GNN test suite. It follows the **Thin Orchestrator** pattern: the script itself is 86 lines and delegates all logic to `tests.run_tests()` in `src/tests/runner.py` (618 lines).
 
 ## Usage
 
 ```bash
-python src/2_tests.py --fast-only --verbose      # Fast tests (default)
-python src/2_tests.py --comprehensive --verbose   # All tests
+# Fast tests (default) — 1-3 min
+python src/2_tests.py --fast-only --verbose
+
+# Comprehensive — 5-15 min (all 91 test files)
+python src/2_tests.py --comprehensive --verbose
+
+# Skip tests entirely (e.g., for rapid iteration)
+SKIP_TESTS_IN_PIPELINE=1 python src/main.py
 ```
 
 ## Architecture
 
-| Component | Path |
-|-----------|------|
-| Orchestrator | `src/2_tests.py` (86 lines) |
-| Module | `src/tests/` |
-| Module function | `run_tests()` |
+```
+src/2_tests.py                          ← thin orchestrator (86 lines)
+    └── tests.run_tests()               ← runner.py (618 lines)
+            ├── run_fast_pipeline_tests()   ← test_runner_modes.py
+            ├── run_comprehensive_tests()   ← test_runner_modes.py
+            └── run_fast_reliable_tests()   ← test_runner_modes.py (fallback)
+```
+
+Auto-fallback: if fast mode collects 0 tests, it automatically escalates to comprehensive.
 
 ## CLI Arguments
 
-| Argument | Type | Description |
-|----------|------|-------------|
-| `--fast-only` | flag | Run only fast tests (default) |
-| `--comprehensive` | flag | Run all tests including slow/integration |
+| Argument | Type | Default | Description |
+|----------|------|---------|-------------|
+| `--fast-only` | flag | ✅ | Run only fast tests |
+| `--comprehensive` | flag | ❌ | Run all 91 test files |
 
 ## Environment Variables
 
 | Variable | Effect |
 |----------|--------|
-| `SKIP_TESTS_IN_PIPELINE` | Skip test execution entirely |
+| `SKIP_TESTS_IN_PIPELINE` | Skip test execution entirely (returns True) |
 | `FAST_TESTS_TIMEOUT` | Override timeout (default: 600 seconds) |
+
+## Test Suite at a Glance
+
+| Metric | Value |
+|--------|-------|
+| Test files | 91 |
+| Test functions | 1,522 |
+| Test categories | 24 (in `categories.py`) |
+| Pytest markers | 21 (in `conftest.py`) |
+| MCP audit tests | 125 (in `test_mcp_audit.py`) |
+| Execution modes | 3 (fast, comprehensive, reliable) |
 
 ## Output
 
-- **Directory**: `output/2_tests_output/`
-- Test results, coverage reports, and execution logs
+Pipeline step output directory: `output/2_tests_output/`
 
-## Source
+```
+output/2_tests_output/
+├── test_execution_report.json       ← structured results
+├── pytest_stdout.txt                ← raw pytest stdout  
+├── pytest_stderr.txt                ← raw pytest stderr  
+└── htmlcov/                         ← coverage report (if --cov enabled)
+```
 
-- **Script**: [src/2_tests.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/2_tests.py)
+## MCP Tools
+
+Step 2 registers 3 MCP tools (via `src/tests/mcp.py`):
+
+| Tool | Description |
+|------|-------------|
+| `process_tests` | Run the GNN test suite |
+| `get_test_results` | Retrieve the latest test execution results |
+| `get_tests_module_info` | Return tests module version and capabilities |
+
+## Source Code Connections
+
+| Component | File | Key Function |
+|-----------|------|-------------|
+| Thin orchestrator | [2_tests.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/2_tests.py) | `_test_runner_wrapper()` |
+| Core runner | [tests/runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/runner.py) | `run_tests()` |
+| Category definitions | [tests/categories.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/categories.py) | `MODULAR_TEST_CATEGORIES` |
+| Fixtures & markers | [tests/conftest.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/conftest.py) | `PYTEST_MARKERS`, fixtures |
+| MCP tools | [tests/mcp.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/mcp.py) | `register_tools()` |
+| MCP audit | [tests/test_mcp_audit.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_audit.py) | `TestMCPModuleDiscovery`, `TestMCPDomainTools` |
+
+## Deep Dive
+
+See the full testing documentation hub: **[doc/gnn/testing/README.md](../testing/README.md)**

@@ -1,0 +1,12 @@
+{
+  "modules_total": 29,
+  "modules_loaded": 0,
+  "modules_errored": 29,
+  "tools_total": 0,
+  "tools_list": [],
+  "spot_checks_ok": 0,
+  "spot_checks_err": 0,
+  "logging_ok": 27,
+  "logging_miss": 0,
+  "issues": []
+}

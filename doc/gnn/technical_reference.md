@@ -1,9 +1,9 @@
 # GNN Technical Reference
 
 **Version**: v1.2.0  
-**Last Updated**: February 9, 2026  
+**Last Updated**: February 24, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,319 Tests Passing  
+**Test Count**: 1,506 Tests Passing  
 
 Comprehensive reference for GNN processing pipeline implementation.
 
@@ -34,7 +34,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `15_audio.py` → `src/audio/AGENTS.md`
 - `16_analysis.py` → `src/analysis/AGENTS.md`
 
-### Integration & Output (17-23)
+### Integration & Output (17-24)
 
 - `17_integration.py` → `src/integration/AGENTS.md`
 - `18_security.py` → `src/security/AGENTS.md`
@@ -43,6 +43,7 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 - `21_mcp.py` → `src/mcp/AGENTS.md`
 - `22_gui.py` → `src/gui/AGENTS.md`
 - `23_report.py` → `src/report/AGENTS.md`
+- `24_intelligent_analysis.py` → `src/intelligent_analysis/AGENTS.md`
 
 ### Main Documentation
 

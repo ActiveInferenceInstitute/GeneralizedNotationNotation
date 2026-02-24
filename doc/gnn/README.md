@@ -3,7 +3,7 @@
 **Version**: v1.2.0  
 **Last Updated**: February 23, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,319 Tests Passing  
+**Test Count**: 1,506 Tests Passing  
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
@@ -28,6 +28,7 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 - [Module Reference](modules/README.md) - Per-module documentation for all 25 steps, with architecture, CLI args, and output details
 - [GNN Tools and Resources](gnn_tools.md) - Complete pipeline usage and examples
 - [Technical Reference](technical_reference.md) - Round-trip data flow and entry points
+- **[Testing Hub](testing/README.md)** — Test architecture, patterns, MCP audit (1,522 tests)
 
 **Quick Start:**
 
@@ -43,6 +44,7 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **GNN Syntax and Structure:**
 
+- **[Language Hub](language/README.md)** — Quick syntax cheatsheet + links to all 7 language docs
 - [GNN Syntax Reference](gnn_syntax.md) - Complete syntax guide with examples
 - [GNN DSL Manual](gnn_dsl_manual.md) - Domain-Specific Language specification
 - [GNN Schema Specification](gnn_schema.md) - Parsing and validation schemas
@@ -68,8 +70,10 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **Framework Integration:**
 
+- **[MCP Hub](mcp/README.md)** — 76 tools, client setup, tool development guide
 - [Framework Integration Guide](framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 - [GNN Implementation Guide](gnn_implementation.md) - Implementation workflows and patterns
+- **[Framework Implementations](implementations/README.md)** — 8 frameworks: PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, CatColab, PyTorch, NumPyro
 - [PyMDP Integration](../pymdp/gnn_pymdp.md) - Python POMDP framework
 - [RxInfer Integration](../rxinfer/gnn_rxinfer.md) - Julia Bayesian inference
 - [ActiveInference.jl Integration](../activeinference_jl/activeinference-jl.md) - Julia Active Inference
@@ -209,7 +213,8 @@ All GNN documentation follows these principles:
 - ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (28/28 modules)
 - ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
-- ✅ 1,319 tests passing
+- ✅ 1,506 tests passing
+
 - ✅ Enhanced visual logging across all steps
 - ✅ Comprehensive cross-referencing between documentation
 
@@ -248,5 +253,6 @@ All GNN documentation follows these principles:
 **GNN Version**: v1.2.0
 **Pipeline Version**: 1.2.0
 **Total Pipeline Steps**: 25 (0-24)
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-02-24
+
 **Status**: ✅ All Documentation Complete

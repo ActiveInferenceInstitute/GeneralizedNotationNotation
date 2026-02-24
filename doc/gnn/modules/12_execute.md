@@ -42,6 +42,18 @@ python src/12_execute.py --target-dir input/gnn_files --output-dir output --verb
   - `<model>/<framework>/execution_logs/` — Per-script logs
   - `<model>/<framework>/simulation_data/` — Extracted simulation results
 
+## MCP Tools (execute module — 5 real tools)
+
+Registered by `src/execute/mcp.py` via `register_tools()`:
+
+| Tool | Description |
+|------|-------------|
+| `process_execute` | Run GNN execution pipeline across all frameworks in a directory |
+| `execute_gnn_model` | Execute a single GNN model file and capture results |
+| `execute_pymdp_simulation` | Run a PyMDP simulation from a rendered Python script |
+| `check_execute_dependencies` | Check availability of execution framework dependencies |
+| `get_execute_module_info` | Return execute module version and capabilities |
+
 ## Source
 
 - **Script**: [src/12_execute.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py)

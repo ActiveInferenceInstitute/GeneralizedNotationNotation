@@ -19,7 +19,7 @@ from .renderer import (
     validate_website_config
 )
 
-__version__ = "1.1.3"
+__version__ = "1.2.0"
 
 # Feature flags/constants expected by tests
 FEATURES = {
@@ -27,6 +27,9 @@ FEATURES = {
     "embedding": True,
     "basic_processing": True,
     "mcp_integration": True,
+    "multi_page": True,
+    "dark_mode": True,
+    "premium_design": True,
 }
 SUPPORTED_FILE_TYPES = {
     "html": ["html", "htm", "css", "js"],

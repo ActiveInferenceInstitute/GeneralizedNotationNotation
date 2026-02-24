@@ -11,6 +11,9 @@ Comprehensive technical documentation for each Active Inference framework implem
 | **RxInfer.jl** | Julia | Probabilistic Programming | [rxinfer.md](rxinfer.md) |
 | **ActiveInference.jl** | Julia | Discrete Active Inference | [activeinference_jl.md](activeinference_jl.md) |
 | **DisCoPy** | Python | Categorical Semantics | [discopy.md](discopy.md) |
+| **CatColab** | Julia / Web | Categorical / Structural | [catcolab.md](catcolab.md) |
+| **PyTorch** | Python / CUDA | Neural Active Inference | [pytorch.md](pytorch.md) |
+| **NumPyro** | Python / JAX | Probabilistic Programming | [numpyro.md](numpyro.md) |
 
 ## Architecture Overview
 
@@ -52,7 +55,7 @@ GNN Specification (JSON)
 
 ## Unified POMDP Generative Environment
 
-All four numerical frameworks (PyMDP, JAX, RxInfer, ActiveInference.jl) implement an identical true POMDP generative process:
+All numerical frameworks (PyMDP, JAX, RxInfer, ActiveInference.jl, PyTorch, NumPyro) implement an identical true POMDP generative process:
 
 1. **Initialize true state**: `true_state ~ Categorical(D)`
 2. **Generate observation**: `observation ~ Categorical(A[:, true_state])`
@@ -92,8 +95,10 @@ Latest pipeline run confidence correlations:
 | PyMDP ↔ JAX | **1.0000** |
 | PyMDP ↔ RxInfer | **1.0000** |
 | JAX ↔ RxInfer | **1.0000** |
+| PyMDP ↔ PyTorch | ~1.0000 (identical matrices) |
+| PyMDP ↔ NumPyro (posterior mean) | ~1.0000 |
 | PyMDP ↔ ActiveInference.jl | *pending* |
 | JAX ↔ ActiveInference.jl | *pending* |
 | RxInfer ↔ ActiveInference.jl | *pending* |
 
-> DisCoPy is excluded from correlation analysis as it provides structural (not numerical) output.
+> DisCoPy and CatColab are excluded from numerical correlation — they provide structural output only.

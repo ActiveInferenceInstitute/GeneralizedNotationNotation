@@ -1,421 +1,232 @@
 """
-Validation MCP Integration
+MCP integration for the validation module.
 
-This module provides Model Context Protocol integration for the validation step.
-It registers tools that can be used by MCP-enabled applications to validate GNN models.
+Exposes GNN validation tools: schema validation, semantic checks,
+validation report retrieval, and configuration validation through MCP.
 """
 
-import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List, Optional
+import logging
 
-# Set up logging
 logger = logging.getLogger(__name__)
 
-import inspect, importlib
+from . import process_validation
 
-def _get_module_pkg():
+
+def process_validation_mcp(target_directory: str, output_directory: str,
+                            verbose: bool = False) -> Dict[str, Any]:
+    """
+    Run full GNN validation on files in a directory.
+
+    Performs schema validation, semantic checks, and produces a detailed
+    validation report saved to the output directory.
+
+    Args:
+        target_directory: Directory containing GNN files to validate
+        output_directory: Directory to save validation reports
+        verbose: Enable verbose logging
+
+    Returns:
+        Dictionary with success status and validation summary.
+    """
     try:
-        return importlib.import_module(__package__)
-    except Exception:
-        import sys
-        return sys.modules.get(__package__)
-
-def list_functions_mcp() -> Dict[str, Any]:
-    module_pkg = _get_module_pkg()
-    public_names = getattr(module_pkg, "__all__", []) or [n for n in dir(module_pkg) if not n.startswith("_")]
-    funcs = []
-    for name in public_names:
-        obj = getattr(module_pkg, name, None)
-        if inspect.isfunction(obj):
-            funcs.append(name)
-    return {"success": True, "module": __package__, "functions": sorted(set(funcs))}
-
-def call_function_mcp(function_name: str, arguments: Dict[str, Any] | None = None) -> Dict[str, Any]:
-    from pathlib import Path
-    module_pkg = _get_module_pkg()
-    func = getattr(module_pkg, function_name, None)
-    if not callable(func):
-        return {"success": False, "error": f"Function not found or not callable: {function_name}"}
-    arguments = arguments or {}
-    converted: Dict[str, Any] = {}
-    for key, value in arguments.items():
-        if isinstance(value, str) and any(token in key.lower() for token in ["dir", "path", "file", "output", "input"]):
-            converted[key] = Path(value)
-        else:
-            converted[key] = value
-    try:
-        result = func(**converted)
-        return {"success": True, "result": result}
-    except TypeError as e:
-        return {"success": False, "error": f"TypeError: {e}"}
+        success = process_validation(
+            target_dir=Path(target_directory),
+            output_dir=Path(output_directory),
+            verbose=verbose,
+        )
+        return {
+            "success": success,
+            "target_directory": target_directory,
+            "output_directory": output_directory,
+            "message": f"Validation {'completed successfully' if success else 'completed with issues'}",
+        }
     except Exception as e:
+        logger.error(f"process_validation_mcp error: {e}", exc_info=True)
         return {"success": False, "error": str(e)}
 
-def register_tools(registry):
-    """
-    Register all validation tools with the MCP registry.
-    
-    Args:
-        registry: The MCP tool registry
-    """
-    try:
-        # Generic namespaced tools
-        registry.register_tool(
-            name=f"{__package__}.list_functions",
-            description=f"List callable functions exported by the {__package__} module public API.",
-            function=list_functions_mcp,
-            parameters=[],
-            returns={"type": "object"}
-        )
-        registry.register_tool(
-            name=f"{__package__}.call_function",
-            description=f"Call any public function in the {__package__} module with keyword arguments.",
-            function=call_function_mcp,
-            parameters=[
-                {"name": "function_name", "description": "Function name exported by the module", "type": "string", "required": True},
-                {"name": "arguments", "description": "Keyword arguments for the function", "type": "object", "required": False, "default": {}}
-            ],
-            returns={"type": "object"}
-        )
 
-        # Register validate_model tool
-        registry.register_tool(
-            name="validation.validate_model",
-            description="Validate a GNN model for semantic correctness, performance, and consistency",
-            function=validate_model,
-            parameters=[
-                {
-                    "name": "model_path",
-                    "description": "Path to the GNN model file",
-                    "type": "string",
-                    "required": True
-                },
-                {
-                    "name": "validation_level",
-                    "description": "Validation level (basic, standard, strict, research)",
-                    "type": "string",
-                    "required": False,
-                    "default": "standard"
-                },
-                {
-                    "name": "profile_performance",
-                    "description": "Whether to profile performance",
-                    "type": "boolean",
-                    "required": False,
-                    "default": True
-                },
-                {
-                    "name": "check_consistency",
-                    "description": "Whether to check consistency",
-                    "type": "boolean",
-                    "required": False,
-                    "default": True
-                }
-            ],
-            returns={
-                "type": "object",
-                "description": "Validation result with errors, warnings, and metrics"
-            },
-            examples=[
-                {
-                    "description": "Validate a model with standard validation",
-                    "code": 'validation.validate_model("input/gnn_files/model.md")'
-                },
-                {
-                    "description": "Validate a model with strict validation",
-                    "code": 'validation.validate_model("input/gnn_files/model.md", validation_level="strict")'
-                }
-            ]
-        )
-        
-        # Register validate_semantic tool
-        registry.register_tool(
-            name="validation.validate_semantic",
-            description="Validate the semantic aspects of a GNN model",
-            function=validate_semantic,
-            parameters=[
-                {
-                    "name": "model_path",
-                    "description": "Path to the GNN model file",
-                    "type": "string",
-                    "required": True
-                },
-                {
-                    "name": "validation_level",
-                    "description": "Validation level (basic, standard, strict, research)",
-                    "type": "string",
-                    "required": False,
-                    "default": "standard"
-                }
-            ],
-            returns={
-                "type": "object",
-                "description": "Semantic validation result with errors and warnings"
-            },
-            examples=[
-                {
-                    "description": "Validate the semantics of a model",
-                    "code": 'validation.validate_semantic("input/gnn_files/model.md")'
-                }
-            ]
-        )
-        
-        # Register profile_performance tool
-        registry.register_tool(
-            name="validation.profile_performance",
-            description="Profile the performance characteristics of a GNN model",
-            function=profile_performance,
-            parameters=[
-                {
-                    "name": "model_path",
-                    "description": "Path to the GNN model file",
-                    "type": "string",
-                    "required": True
-                }
-            ],
-            returns={
-                "type": "object",
-                "description": "Performance profile with metrics and warnings"
-            },
-            examples=[
-                {
-                    "description": "Profile the performance of a model",
-                    "code": 'validation.profile_performance("input/gnn_files/model.md")'
-                }
-            ]
-        )
-        
-        # Register check_consistency tool
-        registry.register_tool(
-            name="validation.check_consistency",
-            description="Check the consistency of a GNN model",
-            function=check_consistency,
-            parameters=[
-                {
-                    "name": "model_path",
-                    "description": "Path to the GNN model file",
-                    "type": "string",
-                    "required": True
-                }
-            ],
-            returns={
-                "type": "object",
-                "description": "Consistency check result with warnings"
-            },
-            examples=[
-                {
-                    "description": "Check the consistency of a model",
-                    "code": 'validation.check_consistency("input/gnn_files/model.md")'
-                }
-            ]
-        )
-        
-        logger.info("Successfully registered validation MCP tools")
-        return True
-        
-    except Exception as e:
-        logger.error(f"Failed to register validation MCP tools: {e}")
-        return False
-
-def validate_model(model_path: str, validation_level: str = "standard", profile_performance: bool = True, check_consistency: bool = True) -> Dict[str, Any]:
+def validate_gnn_file_mcp(gnn_file_path: str,
+                           validation_level: str = "standard") -> Dict[str, Any]:
     """
-    Validate a GNN model for semantic correctness, performance, and consistency.
-    
+    Validate a single GNN file at a specified validation level.
+
     Args:
-        model_path: Path to the GNN model file
-        validation_level: Validation level (basic, standard, strict, research)
-        profile_performance: Whether to profile performance
-        check_consistency: Whether to check consistency
-        
+        gnn_file_path:    Path to the GNN file to validate
+        validation_level: Validation depth ('basic', 'standard', 'strict')
+
     Returns:
-        Validation result with errors, warnings, and metrics
+        Dictionary with is_valid flag, errors, warnings, and suggestions.
     """
     try:
-        from .semantic_validator import SemanticValidator
-        from .performance_profiler import PerformanceProfiler
-        from .consistency_checker import ConsistencyChecker
-        
-        # Convert string path to Path object
-        model_path = Path(model_path)
-        
-        # Read model content
-        with open(model_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        result = {
-            "file_path": str(model_path),
-            "file_name": model_path.name,
+        gnn_path = Path(gnn_file_path)
+        if not gnn_path.exists():
+            return {"success": False, "error": f"File not found: {gnn_file_path}"}
+
+        content = gnn_path.read_text(encoding="utf-8", errors="replace")
+        lines   = content.splitlines()
+
+        # Structural checks
+        section_headers = [l for l in lines if l.startswith("## ")]
+        required_sections = ["ModelName", "StateSpaceBlock", "Connections"]
+        missing = [s for s in required_sections if not any(s in h for h in section_headers)]
+        warnings: List[str] = []
+        errors:   List[str] = []
+
+        if missing:
+            if validation_level == "basic":
+                warnings.extend([f"Missing recommended section: {s}" for s in missing])
+            else:
+                errors.extend([f"Missing required section: {s}" for s in missing])
+
+        if not content.strip():
+            errors.append("File is empty")
+
+        # GNN syntax checks
+        connections = [l for l in lines if "->" in l or "<->" in l]
+        variables   = [l for l in lines if "[" in l and "]" in l
+                       and not l.strip().startswith("#")]
+        if validation_level in ("strict",) and not connections:
+            warnings.append("No connections defined in GNN model")
+
+        is_valid = len(errors) == 0
+        return {
+            "success":          True,
+            "file":             str(gnn_path),
+            "is_valid":         is_valid,
             "validation_level": validation_level,
-            "semantic_validation": {},
-            "performance_profile": {},
-            "consistency_check": {},
-            "warnings": [],
-            "errors": [],
-            "status": "unknown"
+            "errors":           errors,
+            "warnings":         warnings,
+            "sections_found":   [h.lstrip("# ").strip() for h in section_headers],
+            "variables_count":  len(variables),
+            "connections_count":len(connections),
         }
-        
-        # Semantic validation
-        semantic_validator = SemanticValidator(validation_level)
-        semantic_result = semantic_validator.validate(content)
-        result["semantic_validation"] = semantic_result
-        
-        if not semantic_result.get("is_valid", False):
-            result["errors"].extend(semantic_result.get("errors", []))
-        
-        # Performance profiling
-        if profile_performance:
-            performance_profiler = PerformanceProfiler()
-            profile_result = performance_profiler.profile(content)
-            result["performance_profile"] = profile_result
-            
-            if profile_result.get("warnings", []):
-                result["warnings"].extend(profile_result.get("warnings", []))
-        
-        # Consistency checking
-        if check_consistency:
-            consistency_checker = ConsistencyChecker()
-            consistency_result = consistency_checker.check(content)
-            result["consistency_check"] = consistency_result
-            
-            if not consistency_result.get("is_consistent", False):
-                result["warnings"].extend(consistency_result.get("warnings", []))
-        
-        # Determine overall status
-        if result["errors"]:
-            result["status"] = "failed"
-        elif result["warnings"]:
-            result["status"] = "warnings"
-        else:
-            result["status"] = "passed"
-        
-        return result
-        
     except Exception as e:
-        logger.error(f"Failed to validate model {model_path}: {e}")
-        return {
-            "status": "error",
-            "file_path": str(model_path),
-            "error": str(e)
-        }
+        logger.error(f"validate_gnn_file_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
 
-def validate_semantic(model_path: str, validation_level: str = "standard") -> Dict[str, Any]:
+
+def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
     """
-    Validate the semantic aspects of a GNN model.
-    
+    Read and return the saved validation report from a previous validation run.
+
     Args:
-        model_path: Path to the GNN model file
-        validation_level: Validation level (basic, standard, strict, research)
-        
+        output_directory: Directory where validation results were saved
+
     Returns:
-        Semantic validation result with errors and warnings
+        Dictionary with validation report contents.
     """
     try:
-        from .semantic_validator import SemanticValidator
-        
-        # Convert string path to Path object
-        model_path = Path(model_path)
-        
-        # Read model content
-        with open(model_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Semantic validation
-        semantic_validator = SemanticValidator(validation_level)
-        semantic_result = semantic_validator.validate(content)
-        
-        return {
-            "file_path": str(model_path),
-            "file_name": model_path.name,
-            "validation_level": validation_level,
-            "is_valid": semantic_result.get("is_valid", False),
-            "errors": semantic_result.get("errors", []),
-            "warnings": semantic_result.get("warnings", [])
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to validate semantics of model {model_path}: {e}")
-        return {
-            "status": "error",
-            "file_path": str(model_path),
-            "error": str(e)
-        }
+        import json
+        out_dir = Path(output_directory)
+        if not out_dir.exists():
+            return {"success": False, "error": f"Directory not found: {output_directory}"}
 
-def profile_performance(model_path: str) -> Dict[str, Any]:
+        reports = []
+        for jf in sorted(out_dir.rglob("*validation*.json"))[:10]:
+            try:
+                reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
+            except Exception:
+                pass
+        txt_reports = []
+        for tf in sorted(out_dir.rglob("*validation*.txt"))[:5]:
+            try:
+                txt_reports.append({"file": tf.name, "content": tf.read_text()[:2000]})
+            except Exception:
+                pass
+
+        return {
+            "success": True,
+            "output_directory": str(out_dir),
+            "json_reports": reports,
+            "text_reports": txt_reports,
+            "reports_found": len(reports) + len(txt_reports),
+        }
+    except Exception as e:
+        logger.error(f"get_validation_report_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+def check_schema_compliance_mcp(gnn_content: str) -> Dict[str, Any]:
     """
-    Profile the performance characteristics of a GNN model.
-    
+    Check a GNN model string against the canonical GNN schema requirements.
+
+    Performs a lightweight structural compliance check without requiring file I/O.
+
     Args:
-        model_path: Path to the GNN model file
-        
+        gnn_content: GNN model content as a string
+
     Returns:
-        Performance profile with metrics and warnings
+        Dictionary with compliance status, missing sections, and issue count.
     """
     try:
-        from .performance_profiler import PerformanceProfiler
-        
-        # Convert string path to Path object
-        model_path = Path(model_path)
-        
-        # Read model content
-        with open(model_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Performance profiling
-        performance_profiler = PerformanceProfiler()
-        profile_result = performance_profiler.profile(content)
-        
-        return {
-            "file_path": str(model_path),
-            "file_name": model_path.name,
-            "metrics": profile_result.get("metrics", {}),
-            "warnings": profile_result.get("warnings", [])
-        }
-        
-    except Exception as e:
-        logger.error(f"Failed to profile performance of model {model_path}: {e}")
-        return {
-            "status": "error",
-            "file_path": str(model_path),
-            "error": str(e)
-        }
+        lines = gnn_content.splitlines()
+        section_headers = {l.lstrip("# ").strip() for l in lines if l.startswith("## ")}
+        required = {"ModelName", "StateSpaceBlock", "Connections", "InitialParameterization"}
+        optional = {"Equations", "Time", "Footer", "Signature", "ActInfOntologyAnnotation"}
+        missing  = required - section_headers
+        extra    = section_headers - required - optional
 
-def check_consistency(model_path: str) -> Dict[str, Any]:
-    """
-    Check the consistency of a GNN model.
-    
-    Args:
-        model_path: Path to the GNN model file
-        
-    Returns:
-        Consistency check result with warnings
-    """
-    try:
-        from .consistency_checker import ConsistencyChecker
-        
-        # Convert string path to Path object
-        model_path = Path(model_path)
-        
-        # Read model content
-        with open(model_path, 'r', encoding='utf-8') as f:
-            content = f.read()
-        
-        # Consistency checking
-        consistency_checker = ConsistencyChecker()
-        consistency_result = consistency_checker.check(content)
-        
         return {
-            "file_path": str(model_path),
-            "file_name": model_path.name,
-            "is_consistent": consistency_result.get("is_consistent", False),
-            "warnings": consistency_result.get("warnings", []),
-            "checks": consistency_result.get("checks", {})
+            "success":         True,
+            "is_compliant":    len(missing) == 0,
+            "sections_found":  sorted(section_headers),
+            "missing_required": sorted(missing),
+            "unrecognised_sections": sorted(extra),
+            "total_lines":     len(lines),
         }
-        
     except Exception as e:
-        logger.error(f"Failed to check consistency of model {model_path}: {e}")
-        return {
-            "status": "error",
-            "file_path": str(model_path),
-            "error": str(e)
-        } 
+        logger.error(f"check_schema_compliance_mcp error: {e}", exc_info=True)
+        return {"success": False, "error": str(e)}
+
+
+# ── MCP Registration ────────────────────────────────────────────────────────
+
+def register_tools(mcp_instance) -> None:
+    """Register validation tools with the MCP server."""
+
+    mcp_instance.register_tool(
+        "process_validation",
+        process_validation_mcp,
+        {"type": "object", "properties": {
+            "target_directory": {"type": "string", "description": "Directory with GNN files"},
+            "output_directory": {"type": "string", "description": "Directory to save validation reports"},
+            "verbose":          {"type": "boolean", "default": False},
+        }, "required": ["target_directory", "output_directory"]},
+        "Run full GNN validation pipeline on a directory of GNN files.",
+        module=__package__, category="validation",
+    )
+
+    mcp_instance.register_tool(
+        "validate_gnn_file",
+        validate_gnn_file_mcp,
+        {"type": "object", "properties": {
+            "gnn_file_path":    {"type": "string", "description": "Path to GNN file"},
+            "validation_level": {"type": "string", "enum": ["basic", "standard", "strict"], "default": "standard"},
+        }, "required": ["gnn_file_path"]},
+        "Validate a single GNN file at a given level (basic/standard/strict).",
+        module=__package__, category="validation",
+    )
+
+    mcp_instance.register_tool(
+        "get_validation_report",
+        get_validation_report_mcp,
+        {"type": "object", "properties": {
+            "output_directory": {"type": "string", "description": "Directory with saved validation results"},
+        }, "required": ["output_directory"]},
+        "Read and return saved validation reports from a previous validation run.",
+        module=__package__, category="validation",
+    )
+
+    mcp_instance.register_tool(
+        "check_schema_compliance",
+        check_schema_compliance_mcp,
+        {"type": "object", "properties": {
+            "gnn_content": {"type": "string", "description": "GNN model content as a string"},
+        }, "required": ["gnn_content"]},
+        "Check a GNN model string against canonical GNN schema requirements.",
+        module=__package__, category="validation",
+    )
+
+    logger.info("validation module MCP tools registered (4 tools).")
