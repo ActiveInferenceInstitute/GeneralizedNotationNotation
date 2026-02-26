@@ -152,12 +152,7 @@ src/
 All modules implement a consistent interface:
 
 ```python
-def process_[module](
-    target_dir: Path,
-    output_dir: Path,
-    verbose: bool = False,
-    **kwargs
-) -> bool:
+def process_[module](#placeholder) -> bool:
     """
     Process GNN files with [module] functionality.
     

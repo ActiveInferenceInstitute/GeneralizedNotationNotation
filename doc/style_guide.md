@@ -83,7 +83,7 @@ Implementation specifics
 ```markdown
 > **📋 Document Metadata**  
 > **Type**: [Guide|Reference|Tutorial|API|Examples] | **Audience**: [Beginners|Practitioners|Developers|Researchers] | **Complexity**: [Beginner|Intermediate|Advanced]  
-> **Cross-References**: [Link 1](path) | [Link 2](path) | [Link 3](path)
+> **Cross-References**: [Link 1](#placeholder) | [Link 2](#placeholder) | [Link 3](#placeholder)
 ```
 
 ### **Headings and Structure**
@@ -157,9 +157,9 @@ python main.py --only-steps 1_gnn
 
 **Internal Links**:
 ```markdown
-[Document Title](relative/path/to/document.md)
-[Specific Section](document.md#section-anchor)
-[Cross-Reference](../other/document.md#relevant-section)
+[Document Title](#placeholder)
+[Specific Section](#placeholder)
+[Cross-Reference](#placeholder)
 ```
 
 **External Links**:
@@ -187,9 +187,9 @@ See [FR23] for foundational theory and [SM24] for implementation details.
 ```markdown
 | Component | Purpose | Status | Documentation |
 |-----------|---------|--------|---------------|
-| Type Checker | Validation | ✅ Complete | [Link](path) |
-| Visualizer | Diagrams | 🔄 In Progress | [Link](path) |
-| Renderer | Code Gen | ✅ Complete | [Link](path) |
+| Type Checker | Validation | ✅ Complete | [Link](#placeholder) |
+| Visualizer | Diagrams | 🔄 In Progress | [Link](#placeholder) |
+| Renderer | Code Gen | ✅ Complete | [Link](#placeholder) |
 ```
 
 **Callout Boxes**:
@@ -357,7 +357,7 @@ print(f"Model has {len(model.state_space)} state variables")
 ```
 
 Try it yourself:
-[🚀 Run in Colab](link) | [📝 Edit on GitHub](link)
+[🚀 Run in Colab](#placeholder) | [📝 Edit on GitHub](#placeholder)
 
 ```
 
@@ -397,9 +397,9 @@ graph TD
     B --> C[Result]
 ```
 
-**🎥 Video Tutorial**: [Watch explanation](link)  
-**🎮 Interactive Demo**: [Try it yourself](link)  
-**📊 Infographic**: [Visual summary](link)
+**🎥 Video Tutorial**: [Watch explanation](#placeholder)  
+**🎮 Interactive Demo**: [Try it yourself](#placeholder)  
+**📊 Infographic**: [Visual summary](#placeholder)
 
 ```
 
@@ -422,7 +422,7 @@ graph TD
 
 > **📋 Document Metadata**  
 > **Type**: Guide | **Audience**: Developers | **Complexity**: Intermediate  
-> **Cross-References**: [Link 1](path) | [Link 2](path)
+> **Cross-References**: [Link 1](#placeholder) | [Link 2](#placeholder)
 
 ## Overview
 

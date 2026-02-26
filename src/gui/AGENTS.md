@@ -555,3 +555,11 @@ def construct_model_tool(components: List[Dict]) -> Dict[str, Any]:
 **Status**: ✅ Production Ready
 **Version**: 1.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

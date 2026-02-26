@@ -298,3 +298,11 @@ def train_ml_model(gnn_file, framework="auto", model_type="auto"):
 ```
 
 ---
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

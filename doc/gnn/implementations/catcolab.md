@@ -134,9 +134,9 @@ CatColab/DisCoPy provides structural output only and is **excluded** from numeri
 
 | Stage | Module | Key Function |
 |-------|--------|-------------|
-| Export | [discopy_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` |
-| Execute | [discopy_executor.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` |
-| Analysis | [analysis/discopy/analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` |
+| Export | [discopy_renderer.py](#placeholder) | `render_gnn_to_discopy()` |
+| Execute | [discopy_executor.py](#placeholder) | `execute_discopy_script()` |
+| Analysis | [analysis/discopy/analyzer.py](#placeholder) | `generate_analysis_from_logs()` |
 
 ## Deep Dive
 

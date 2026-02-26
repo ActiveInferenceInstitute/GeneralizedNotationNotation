@@ -105,7 +105,7 @@ FILE: README.md
 
 ActiveInference.jl is a new Julia package for the computational modeling of active inference. We provide the necessary infrastructure for defining active inference models, currently implemented as partially observable Markov decision processes. After defining the generative model, you can simulate actions using agent-based simulations. We also provide the functionality to fit experimental data to active inference models for parameter recovery.
 
-![Maze Animation](.github/animation_maze.gif)
+![Maze Animation](#placeholder)
 
 * Example visualization of an agent navigating a maze, inspired by the one described in [Bruineberg et al., 2018](https://www.sciencedirect.com/science/article/pii/S0022519318303151?via%3Dihub).
 Left: A synthetic agent wants to reach the end of the maze environment while avoiding dark-colored locations.
@@ -189,7 +189,7 @@ aif = init_aif(A,
                parameters = parameters);
 ````
 
-![Agent Output](.github/agent_output.PNG)
+![Agent Output](#placeholder)
 
 ````@example Introduction
 # Give observation to the agent and run state inference.
@@ -966,7 +966,7 @@ A, B, C, D, E = create_matrix_templates(n_states, n_observations, n_controls, po
 
 A[1]
 
-# For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](@ref "The Generative Model Conceptually") section further down in the documentation
+# For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](#placeholder) section further down in the documentation
 
 # For now, we'll suffice to say that the first modality of **A** is a 3D tensor, where the first dimension are observations in the first modality, the second dimension the first factor, and the third dimension is the second factor
 
@@ -1822,7 +1822,7 @@ FILE: docs/julia_files/WorkflowsUnfinished.jl
 
 # Importantly though this can be any kind of environment that provides the active inference agent with observations, and most often will also take actions so that the agent can interact with the environment
 
-# Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](@ref "Creating the POMDP Generative Model") section for more information on how to do this
+# Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](#placeholder) section for more information on how to do this
 
 # You then simulate the agent's behaviour in that environment through a perception-action-learning loop, as described under the 'Simulation' section
 
@@ -2359,7 +2359,7 @@ A[1]
  0.0  0.0  0.0  0.0
 ````
 
-For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](@ref "The Generative Model Conceptually") section further down in the documentation.
+For a quick recap on the POMDP generative model parameteres look up the [`POMDP Theory`](#placeholder) section further down in the documentation.
 
 For now, we'll suffice to say that the first modality of **A** is a 3D tensor, where the first dimension are observations in the first modality, the second dimension the first factor, and the third dimension is the second factor.
 Remember **A** maps the agents beliefs on how states generate observations. In this case, we have two 4x4 matrices, one matrix for each state int the second factor. This could be how location observations (1st dimenstion) map onto location states (2nd dimension) and reward condition (3rd dimension).
@@ -3054,7 +3054,7 @@ First, deciding on the environment entails that we have some dynamic that we are
 Classical examples of environments are T-Mazes and Multi-Armed Bandits, that often involves some decision-making, explore-exploit and information seeking dynamics. These environments are easy to encode as POMDPs and are therefore suitable for active inference modelling.
 Importantly though this can be any kind of environment that provides the active inference agent with observations, and most often will also take actions so that the agent can interact with the environment.
 
-Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](@ref "Creating the POMDP Generative Model") section for more information on how to do this.
+Based on an environment, you then create the generative model of the agent. Look under the [`Creating the POMDP Generative Model`](#placeholder) section for more information on how to do this.
 
 You then simulate the agent's behaviour in that environment through a perception-action-learning loop, as described under the 'Simulation' section.
 After this, you can analyse and visualize the agent's behaviour and inferences, and investigate what was important to the research question you had in mind.

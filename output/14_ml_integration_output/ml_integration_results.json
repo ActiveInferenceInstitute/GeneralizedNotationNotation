@@ -8,11 +8,66 @@
       "type": "structural_analysis",
       "framework": "internal_stats",
       "accuracy": 1.0,
-      "note": "sklearn not available or no dimensions found",
-      "dimensions": []
+      "note": "Need >=2 GNN files for ML classification (have 1)",
+      "model_family": "pomdp",
+      "num_states": 3,
+      "total_parameters": 56
     }
   ],
+  "feature_importance": {},
+  "cross_validation": {},
   "framework_status": {
     "sklearn": "available"
-  }
+  },
+  "extracted_features": [
+    {
+      "file_name": "actinf_pomdp_agent.md",
+      "model_family": "pomdp",
+      "num_variables": 10,
+      "num_states": 3,
+      "num_observations": 3,
+      "num_actions": 3,
+      "max_dimension": 3,
+      "total_parameters": 56,
+      "connectivity_ratio": 0.12222222222222222,
+      "directed_connections": 8,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    }
+  ],
+  "feature_statistics": {
+    "num_states": {
+      "min": 3,
+      "max": 3,
+      "mean": 3.0
+    },
+    "num_observations": {
+      "min": 3,
+      "max": 3,
+      "mean": 3.0
+    },
+    "num_actions": {
+      "min": 3,
+      "max": 3,
+      "mean": 3.0
+    },
+    "total_parameters": {
+      "min": 56,
+      "max": 56,
+      "mean": 56.0
+    },
+    "connectivity_ratio": {
+      "min": 0.12222222222222222,
+      "max": 0.12222222222222222,
+      "mean": 0.12222222222222222
+    }
+  },
+  "model_families": [
+    "pomdp"
+  ]
 }

@@ -44,3 +44,11 @@ from export import get_supported_formats, get_module_info
 ```bash
 uv run python -m pytest src/tests/test_export_integration.py -v
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

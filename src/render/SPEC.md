@@ -21,3 +21,11 @@ Multi-framework rendering and code generation from GNN models.
 ```python
 from render import process_render, JaxRenderer, PyMDPConverter
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

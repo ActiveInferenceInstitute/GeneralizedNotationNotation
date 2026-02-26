@@ -280,3 +280,11 @@ output/4_model_registry_output/
 - **Target**: 85%+
 
 ---
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

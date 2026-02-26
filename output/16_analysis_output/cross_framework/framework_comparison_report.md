@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-02-23T07:07:47.657552
+Generated: 2026-02-25T14:42:24.495515
 
 ## Summary
 
@@ -14,7 +14,7 @@ Generated: 2026-02-23T07:07:47.657552
 ### PYMDP
 
 - Success Rate: 100.0% (1/1)
-- Execution Time: 1.74s
+- Execution Time: 1.73s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -23,7 +23,7 @@ Generated: 2026-02-23T07:07:47.657552
 ### JAX
 
 - Success Rate: 100.0% (1/1)
-- Execution Time: 1.15s
+- Execution Time: 0.94s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -32,13 +32,13 @@ Generated: 2026-02-23T07:07:47.657552
 ### DISCOPY
 
 - Success Rate: 100.0% (1/1)
-- Execution Time: 0.37s
+- Execution Time: 0.36s
 - Data Source: `output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/circuit_info.json`
 
 ### RXINFER
 
 - Success Rate: 100.0% (1/1)
-- Execution Time: 19.40s
+- Execution Time: 18.30s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, actions_in_range=✅, beliefs_sum_to_one=✅)
@@ -47,7 +47,7 @@ Generated: 2026-02-23T07:07:47.657552
 ### ACTIVEINFERENCE_JL
 
 - Success Rate: 100.0% (1/1)
-- Execution Time: 19.10s
+- Execution Time: 17.61s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, actions_in_range=✅, all_valid=✅, beliefs_sum_to_one=✅)
@@ -85,8 +85,8 @@ Generated: 2026-02-23T07:07:47.657552
 
 | Framework | Mean Time (s) | Std Dev | Min | Max |
 |-----------|---------------|---------|-----|-----|
-| pymdp | 1.741 | 0.000 | 1.741 | 1.741 |
-| jax | 1.154 | 0.000 | 1.154 | 1.154 |
-| discopy | 0.374 | 0.000 | 0.374 | 0.374 |
-| rxinfer | 19.398 | 0.000 | 19.398 | 19.398 |
-| activeinference_jl | 19.104 | 0.000 | 19.104 | 19.104 |
+| pymdp | 1.729 | 0.000 | 1.729 | 1.729 |
+| jax | 0.936 | 0.000 | 0.936 | 0.936 |
+| discopy | 0.359 | 0.000 | 0.359 | 0.359 |
+| rxinfer | 18.296 | 0.000 | 18.296 | 18.296 |
+| activeinference_jl | 17.612 | 0.000 | 17.612 | 17.612 |

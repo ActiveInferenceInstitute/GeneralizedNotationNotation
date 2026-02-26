@@ -103,7 +103,7 @@ def register_tools(server: Any) -> None:
 ## Running the Audit
 
 ```bash
-# Full MCP audit — 203 tests
+# Full MCP audit — 1,522+ tests
 PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
 
 # Focus on your new module

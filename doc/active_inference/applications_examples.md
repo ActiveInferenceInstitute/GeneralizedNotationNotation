@@ -182,7 +182,7 @@ After finding goal: Low uncertainty → Agent exploits
 
 ### Simulation Outputs
 
-Located in: [`output/12_execution_output/`](../../output/12_execution_output/)
+Located in: [`output/12_execution_output/`](#placeholder)
 
 | Output | Description |
 |--------|-------------|

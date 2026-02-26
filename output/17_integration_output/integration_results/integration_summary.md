@@ -9,5 +9,5 @@ Scanned 1 files.
 
 ## Issues (2)
 
-- Circular dependencies detected: [['s', 'A'], ['s', 'B'], ['A', 'o']]
+- Circular dependencies detected: [['B', 's'], ['A', 's'], ['A', 'o']]
 - Isolated components (no connections): ['F', 't']

@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-02-23T07:08:09.413799",
+  "report_generation_time": "2026-02-25T14:42:42.944011",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -17,7 +17,7 @@
           "total_size_mb": 0.004317283630371094
         }
       },
-      "last_modified": "2026-02-23T07:03:28.672334",
+      "last_modified": "2026-02-25T14:38:26.283557",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -37,10 +37,10 @@
       "file_types": {
         ".json": {
           "count": 2,
-          "total_size_mb": 0.018258094787597656
+          "total_size_mb": 0.018454551696777344
         }
       },
-      "last_modified": "2026-02-23T07:03:31.806715",
+      "last_modified": "2026-02-25T14:38:29.118420",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -54,14 +54,14 @@
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 0.0161590576171875
+          "total_size_mb": 0.016237258911132812
         },
         ".txt": {
           "count": 1,
-          "total_size_mb": 0.0196380615234375
+          "total_size_mb": 0.01970386505126953
         }
       },
-      "last_modified": "2026-02-23T07:04:44.753339",
+      "last_modified": "2026-02-25T14:39:40.820088",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [
@@ -169,7 +169,7 @@
           "total_size_mb": 0.007782936096191406
         }
       },
-      "last_modified": "2026-02-23T07:04:45.138319",
+      "last_modified": "2026-02-25T14:39:41.191496",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -192,7 +192,7 @@
           "total_size_mb": 0.0007076263427734375
         }
       },
-      "last_modified": "2026-02-23T07:04:45.447520",
+      "last_modified": "2026-02-25T14:39:41.499527",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -212,14 +212,14 @@
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.023372650146484375
+          "total_size_mb": 0.02421855926513672
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.00032711029052734375
         }
       },
-      "last_modified": "2026-02-23T07:04:45.794409",
+      "last_modified": "2026-02-25T14:39:41.829303",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -236,7 +236,7 @@
           "total_size_mb": 0.0024099349975585938
         }
       },
-      "last_modified": "2026-02-23T07:04:46.135336",
+      "last_modified": "2026-02-25T14:39:42.119009",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -275,7 +275,7 @@
           "total_size_mb": 0.010608673095703125
         }
       },
-      "last_modified": "2026-02-23T07:04:46.480329",
+      "last_modified": "2026-02-25T14:39:42.408240",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -331,7 +331,7 @@
           "total_size_mb": 2.681675910949707
         }
       },
-      "last_modified": "2026-02-23T07:04:48.026623",
+      "last_modified": "2026-02-25T14:39:43.945204",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -425,7 +425,7 @@
           "total_size_mb": 0.1119527816772461
         }
       },
-      "last_modified": "2026-02-23T07:04:57.224341",
+      "last_modified": "2026-02-25T14:39:52.606395",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -523,7 +523,7 @@
           "total_size_mb": 0.005862236022949219
         }
       },
-      "last_modified": "2026-02-23T07:04:57.731286",
+      "last_modified": "2026-02-25T14:39:53.111246",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -532,7 +532,7 @@
     "11_render_output": {
       "directory": "output/11_render_output",
       "exists": true,
-      "file_count": 30,
+      "file_count": 26,
       "total_size_mb": 0.11,
       "file_types": {
         ".md": {
@@ -540,8 +540,8 @@
           "total_size_mb": 0.009533882141113281
         },
         ".json": {
-          "count": 13,
-          "total_size_mb": 0.03850746154785156
+          "count": 11,
+          "total_size_mb": 0.0346832275390625
         },
         ".jl": {
           "count": 2,
@@ -552,15 +552,15 @@
           "total_size_mb": 0.03677845001220703
         },
         ".csv": {
-          "count": 3,
-          "total_size_mb": 0.0016880035400390625
+          "count": 2,
+          "total_size_mb": 0.001125335693359375
         },
         ".txt": {
-          "count": 3,
-          "total_size_mb": 0.0024662017822265625
+          "count": 2,
+          "total_size_mb": 0.001644134521484375
         }
       },
-      "last_modified": "2026-02-23T07:05:41.421420",
+      "last_modified": "2026-02-25T14:40:33.769453",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -600,12 +600,12 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 31,
+      "file_count": 28,
       "total_size_mb": 0.13,
       "file_types": {
         ".json": {
-          "count": 22,
-          "total_size_mb": 0.11493301391601562
+          "count": 20,
+          "total_size_mb": 0.11025810241699219
         },
         ".md": {
           "count": 1,
@@ -613,14 +613,14 @@
         },
         ".log": {
           "count": 5,
-          "total_size_mb": 0.011096954345703125
+          "total_size_mb": 0.011102676391601562
         },
         ".csv": {
-          "count": 3,
-          "total_size_mb": 0.0016880035400390625
+          "count": 2,
+          "total_size_mb": 0.001125335693359375
         }
       },
-      "last_modified": "2026-02-23T07:05:41.784883",
+      "last_modified": "2026-02-25T14:40:34.067871",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -630,18 +630,18 @@
       "directory": "output/13_llm_output",
       "exists": true,
       "file_count": 11,
-      "total_size_mb": 0.08,
+      "total_size_mb": 0.07,
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.05499839782714844
+          "total_size_mb": 0.05425739288330078
         },
         ".md": {
           "count": 10,
-          "total_size_mb": 0.020071029663085938
+          "total_size_mb": 0.020050048828125
         }
       },
-      "last_modified": "2026-02-23T07:07:34.954281",
+      "last_modified": "2026-02-25T14:42:14.152110",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -706,10 +706,10 @@
       "file_types": {
         ".json": {
           "count": 1,
-          "total_size_mb": 0.00041103363037109375
+          "total_size_mb": 0.00157928466796875
         }
       },
-      "last_modified": "2026-02-23T07:07:38.341996",
+      "last_modified": "2026-02-25T14:42:16.356746",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -734,7 +734,7 @@
           "total_size_mb": 0.000370025634765625
         }
       },
-      "last_modified": "2026-02-23T07:07:39.024297",
+      "last_modified": "2026-02-25T14:42:16.994636",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -765,11 +765,11 @@
       "directory": "output/16_analysis_output",
       "exists": true,
       "file_count": 50,
-      "total_size_mb": 6.43,
+      "total_size_mb": 6.51,
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.0771017074584961
+          "total_size_mb": 0.07682037353515625
         },
         ".md": {
           "count": 2,
@@ -777,10 +777,10 @@
         },
         ".png": {
           "count": 45,
-          "total_size_mb": 6.350346565246582
+          "total_size_mb": 6.430914878845215
         }
       },
-      "last_modified": "2026-02-23T07:07:50.467055",
+      "last_modified": "2026-02-25T14:42:27.044799",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -812,7 +812,7 @@
           "total_size_mb": 0.0002651214599609375
         }
       },
-      "last_modified": "2026-02-23T07:07:51.154655",
+      "last_modified": "2026-02-25T14:42:27.671762",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -833,7 +833,7 @@
           "total_size_mb": 0.00045108795166015625
         }
       },
-      "last_modified": "2026-02-23T07:07:51.468806",
+      "last_modified": "2026-02-25T14:42:28.026374",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -847,14 +847,14 @@
       "file_types": {
         ".md": {
           "count": 1,
-          "total_size_mb": 0.00026035308837890625
+          "total_size_mb": 0.0007658004760742188
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.000415802001953125
+          "total_size_mb": 0.001270294189453125
         }
       },
-      "last_modified": "2026-02-23T07:07:51.807504",
+      "last_modified": "2026-02-25T14:42:28.358177",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -863,31 +863,65 @@
     "20_website_output": {
       "directory": "output/20_website_output",
       "exists": true,
-      "file_count": 3,
-      "total_size_mb": 0.01,
+      "file_count": 19,
+      "total_size_mb": 2.02,
       "file_types": {
         ".html": {
-          "count": 2,
-          "total_size_mb": 0.005539894104003906
+          "count": 8,
+          "total_size_mb": 0.20111656188964844
         },
         ".json": {
           "count": 1,
           "total_size_mb": 3.528594970703125e-05
+        },
+        ".png": {
+          "count": 10,
+          "total_size_mb": 1.8172712326049805
         }
       },
-      "last_modified": "2026-02-23T07:07:52.108827",
+      "last_modified": "2026-02-25T14:42:28.721073",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
+          "name": "mcp.html",
+          "size_mb": 0.01,
+          "type": ".html"
+        },
+        {
+          "name": "pipeline.html",
+          "size_mb": 0.02,
+          "type": ".html"
+        },
+        {
           "name": "index.html",
-          "size_mb": 0.0,
+          "size_mb": 0.02,
+          "type": ".html"
+        },
+        {
+          "name": "analysis.html",
+          "size_mb": 0.04,
+          "type": ".html"
+        },
+        {
+          "name": "gnn_files.html",
+          "size_mb": 0.01,
           "type": ".html"
         },
         {
           "name": "visualization.html",
-          "size_mb": 0.0,
+          "size_mb": 0.01,
+          "type": ".html"
+        },
+        {
+          "name": "reports.html",
+          "size_mb": 0.06,
+          "type": ".html"
+        },
+        {
+          "name": "actinf_pomdp_agent_interactive_dashboard.html",
+          "size_mb": 0.03,
           "type": ".html"
         }
       ]
@@ -900,10 +934,10 @@
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.006903648376464844
+          "total_size_mb": 0.007187843322753906
         }
       },
-      "last_modified": "2026-02-23T07:08:02.484341",
+      "last_modified": "2026-02-25T14:42:39.071950",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -936,10 +970,10 @@
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.04529380798339844
+          "total_size_mb": 0.044922828674316406
         }
       },
-      "last_modified": "2026-02-23T07:08:08.943294",
+      "last_modified": "2026-02-25T14:42:42.521320",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -951,7 +985,7 @@
         },
         {
           "name": "navigation.html",
-          "size_mb": 0.05,
+          "size_mb": 0.04,
           "type": ".html"
         }
       ]
@@ -959,46 +993,24 @@
     "23_report_output": {
       "directory": "output/23_report_output",
       "exists": true,
-      "file_count": 5,
-      "total_size_mb": 0.12,
-      "file_types": {
-        ".json": {
-          "count": 3,
-          "total_size_mb": 0.07653999328613281
-        },
-        ".html": {
-          "count": 1,
-          "total_size_mb": 0.033084869384765625
-        },
-        ".md": {
-          "count": 1,
-          "total_size_mb": 0.010169029235839844
-        }
-      },
-      "last_modified": "2026-02-23T06:47:40.052240",
-      "status": "success",
+      "file_count": 0,
+      "total_size_mb": 0.0,
+      "file_types": {},
+      "last_modified": null,
+      "status": "generating",
       "performance_metrics": {},
       "error_logs": [],
-      "key_files": [
-        {
-          "name": "report_summary.json",
-          "size_mb": 0.08,
-          "type": ".json"
-        },
-        {
-          "name": "comprehensive_analysis_report.html",
-          "size_mb": 0.03,
-          "type": ".html"
-        }
-      ]
+      "key_files": [],
+      "note": "Report step output (self-referencing \u2014 files generated during this step)",
+      "estimated_file_count": 6
     }
   },
   "summary": {
-    "total_files_processed": 237,
+    "total_files_processed": 241,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 14.249999999999998,
+    "total_size_mb": 16.21,
     "success_rate": 100.0
   },
   "performance_metrics": {},
@@ -1006,19 +1018,19 @@
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 75,
-        "total_size_mb": 0.49
+        "count": 68,
+        "total_size_mb": 0.41
       },
       ".md": {
-        "count": 29,
-        "total_size_mb": 0.06
+        "count": 28,
+        "total_size_mb": 0.05
       },
       ".log": {
         "count": 6,
         "total_size_mb": 0.03
       },
       ".txt": {
-        "count": 4,
+        "count": 3,
         "total_size_mb": 0.02
       },
       ".tla": {
@@ -1106,16 +1118,16 @@
         "total_size_mb": 0.0
       },
       ".csv": {
-        "count": 10,
+        "count": 8,
         "total_size_mb": 0.0
       },
       ".png": {
-        "count": 67,
-        "total_size_mb": 10.85
+        "count": 77,
+        "total_size_mb": 12.75
       },
       ".html": {
-        "count": 5,
-        "total_size_mb": 0.11
+        "count": 10,
+        "total_size_mb": 0.27
       },
       ".d2": {
         "count": 4,
@@ -1143,7 +1155,7 @@
         },
         "1_setup_output": {
           "count": 2,
-          "size_mb": 0.018258094787597656
+          "size_mb": 0.018454551696777344
         },
         "3_gnn_output": {
           "count": 5,
@@ -1155,7 +1167,7 @@
         },
         "5_type_checker_output": {
           "count": 1,
-          "size_mb": 0.023372650146484375
+          "size_mb": 0.02421855926513672
         },
         "6_validation_output": {
           "count": 2,
@@ -1178,20 +1190,20 @@
           "size_mb": 0.005862236022949219
         },
         "11_render_output": {
-          "count": 13,
-          "size_mb": 0.03850746154785156
+          "count": 11,
+          "size_mb": 0.0346832275390625
         },
         "12_execute_output": {
-          "count": 22,
-          "size_mb": 0.11493301391601562
+          "count": 20,
+          "size_mb": 0.11025810241699219
         },
         "13_llm_output": {
           "count": 1,
-          "size_mb": 0.05499839782714844
+          "size_mb": 0.05425739288330078
         },
         "14_ml_integration_output": {
           "count": 1,
-          "size_mb": 0.00041103363037109375
+          "size_mb": 0.00157928466796875
         },
         "15_audio_output": {
           "count": 1,
@@ -1199,7 +1211,7 @@
         },
         "16_analysis_output": {
           "count": 3,
-          "size_mb": 0.0771017074584961
+          "size_mb": 0.07682037353515625
         },
         "17_integration_output": {
           "count": 1,
@@ -1211,7 +1223,7 @@
         },
         "19_research_output": {
           "count": 1,
-          "size_mb": 0.000415802001953125
+          "size_mb": 0.001270294189453125
         },
         "20_website_output": {
           "count": 1,
@@ -1219,15 +1231,11 @@
         },
         "21_mcp_output": {
           "count": 3,
-          "size_mb": 0.006903648376464844
+          "size_mb": 0.007187843322753906
         },
         "22_gui_output": {
           "count": 3,
           "size_mb": 0.003772735595703125
-        },
-        "23_report_output": {
-          "count": 3,
-          "size_mb": 0.07653999328613281
         }
       },
       ".md": {
@@ -1253,7 +1261,7 @@
         },
         "13_llm_output": {
           "count": 10,
-          "size_mb": 0.020071029663085938
+          "size_mb": 0.020050048828125
         },
         "15_audio_output": {
           "count": 1,
@@ -1273,35 +1281,31 @@
         },
         "19_research_output": {
           "count": 1,
-          "size_mb": 0.00026035308837890625
+          "size_mb": 0.0007658004760742188
         },
         "22_gui_output": {
           "count": 2,
           "size_mb": 0.008213043212890625
-        },
-        "23_report_output": {
-          "count": 1,
-          "size_mb": 0.010169029235839844
         }
       },
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.0161590576171875
+          "size_mb": 0.016237258911132812
         },
         "12_execute_output": {
           "count": 5,
-          "size_mb": 0.011096954345703125
+          "size_mb": 0.011102676391601562
         }
       },
       ".txt": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.0196380615234375
+          "size_mb": 0.01970386505126953
         },
         "11_render_output": {
-          "count": 3,
-          "size_mb": 0.0024662017822265625
+          "count": 2,
+          "size_mb": 0.001644134521484375
         }
       },
       ".tla": {
@@ -1448,12 +1452,12 @@
           "size_mb": 0.000400543212890625
         },
         "11_render_output": {
-          "count": 3,
-          "size_mb": 0.0016880035400390625
+          "count": 2,
+          "size_mb": 0.001125335693359375
         },
         "12_execute_output": {
-          "count": 3,
-          "size_mb": 0.0016880035400390625
+          "count": 2,
+          "size_mb": 0.001125335693359375
         }
       },
       ".png": {
@@ -1467,7 +1471,11 @@
         },
         "16_analysis_output": {
           "count": 45,
-          "size_mb": 6.350346565246582
+          "size_mb": 6.430914878845215
+        },
+        "20_website_output": {
+          "count": 10,
+          "size_mb": 1.8172712326049805
         }
       },
       ".html": {
@@ -1476,16 +1484,12 @@
           "size_mb": 0.02762603759765625
         },
         "20_website_output": {
-          "count": 2,
-          "size_mb": 0.005539894104003906
+          "count": 8,
+          "size_mb": 0.20111656188964844
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.04529380798339844
-        },
-        "23_report_output": {
-          "count": 1,
-          "size_mb": 0.033084869384765625
+          "size_mb": 0.044922828674316406
         }
       },
       ".d2": {
@@ -1710,7 +1714,7 @@
     "missing_prerequisites": []
   },
   "visualizations": {
-    "total_count": 29,
+    "total_count": 35,
     "by_step": {
       "8_visualization_output": {
         "step": "8_visualization_output",
@@ -1996,16 +2000,56 @@
       },
       "20_website_output": {
         "step": "20_website_output",
-        "count": 2,
+        "count": 8,
         "files": [
+          {
+            "name": "mcp.html",
+            "path": "output/20_website_output/mcp.html",
+            "relative_path": "20_website_output/mcp.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 10005,
+            "size_mb": 0.01,
+            "step": "20_website_output"
+          },
+          {
+            "name": "pipeline.html",
+            "path": "output/20_website_output/pipeline.html",
+            "relative_path": "20_website_output/pipeline.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 16499,
+            "size_mb": 0.02,
+            "step": "20_website_output"
+          },
           {
             "name": "index.html",
             "path": "output/20_website_output/index.html",
             "relative_path": "20_website_output/index.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 1262,
-            "size_mb": 0.0,
+            "size_bytes": 16647,
+            "size_mb": 0.02,
+            "step": "20_website_output"
+          },
+          {
+            "name": "analysis.html",
+            "path": "output/20_website_output/analysis.html",
+            "relative_path": "20_website_output/analysis.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 45059,
+            "size_mb": 0.04,
+            "step": "20_website_output"
+          },
+          {
+            "name": "gnn_files.html",
+            "path": "output/20_website_output/gnn_files.html",
+            "relative_path": "20_website_output/gnn_files.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 13093,
+            "size_mb": 0.01,
             "step": "20_website_output"
           },
           {
@@ -2014,8 +2058,28 @@
             "relative_path": "20_website_output/visualization.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 4547,
-            "size_mb": 0.0,
+            "size_bytes": 13298,
+            "size_mb": 0.01,
+            "step": "20_website_output"
+          },
+          {
+            "name": "reports.html",
+            "path": "output/20_website_output/reports.html",
+            "relative_path": "20_website_output/reports.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 67317,
+            "size_mb": 0.06,
+            "step": "20_website_output"
+          },
+          {
+            "name": "actinf_pomdp_agent_interactive_dashboard.html",
+            "path": "output/20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+            "relative_path": "20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+            "type": "html",
+            "extension": ".html",
+            "size_bytes": 28968,
+            "size_mb": 0.03,
             "step": "20_website_output"
           }
         ]
@@ -2296,13 +2360,53 @@
           "step": "9_advanced_viz_output"
         },
         {
+          "name": "mcp.html",
+          "path": "output/20_website_output/mcp.html",
+          "relative_path": "20_website_output/mcp.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 10005,
+          "size_mb": 0.01,
+          "step": "20_website_output"
+        },
+        {
+          "name": "pipeline.html",
+          "path": "output/20_website_output/pipeline.html",
+          "relative_path": "20_website_output/pipeline.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 16499,
+          "size_mb": 0.02,
+          "step": "20_website_output"
+        },
+        {
           "name": "index.html",
           "path": "output/20_website_output/index.html",
           "relative_path": "20_website_output/index.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 1262,
-          "size_mb": 0.0,
+          "size_bytes": 16647,
+          "size_mb": 0.02,
+          "step": "20_website_output"
+        },
+        {
+          "name": "analysis.html",
+          "path": "output/20_website_output/analysis.html",
+          "relative_path": "20_website_output/analysis.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 45059,
+          "size_mb": 0.04,
+          "step": "20_website_output"
+        },
+        {
+          "name": "gnn_files.html",
+          "path": "output/20_website_output/gnn_files.html",
+          "relative_path": "20_website_output/gnn_files.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 13093,
+          "size_mb": 0.01,
           "step": "20_website_output"
         },
         {
@@ -2311,8 +2415,28 @@
           "relative_path": "20_website_output/visualization.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 4547,
-          "size_mb": 0.0,
+          "size_bytes": 13298,
+          "size_mb": 0.01,
+          "step": "20_website_output"
+        },
+        {
+          "name": "reports.html",
+          "path": "output/20_website_output/reports.html",
+          "relative_path": "20_website_output/reports.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 67317,
+          "size_mb": 0.06,
+          "step": "20_website_output"
+        },
+        {
+          "name": "actinf_pomdp_agent_interactive_dashboard.html",
+          "path": "output/20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+          "relative_path": "20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+          "type": "html",
+          "extension": ".html",
+          "size_bytes": 28968,
+          "size_mb": 0.03,
           "step": "20_website_output"
         }
       ]
@@ -2589,13 +2713,53 @@
         "step": "9_advanced_viz_output"
       },
       {
+        "name": "mcp.html",
+        "path": "output/20_website_output/mcp.html",
+        "relative_path": "20_website_output/mcp.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 10005,
+        "size_mb": 0.01,
+        "step": "20_website_output"
+      },
+      {
+        "name": "pipeline.html",
+        "path": "output/20_website_output/pipeline.html",
+        "relative_path": "20_website_output/pipeline.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 16499,
+        "size_mb": 0.02,
+        "step": "20_website_output"
+      },
+      {
         "name": "index.html",
         "path": "output/20_website_output/index.html",
         "relative_path": "20_website_output/index.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 1262,
-        "size_mb": 0.0,
+        "size_bytes": 16647,
+        "size_mb": 0.02,
+        "step": "20_website_output"
+      },
+      {
+        "name": "analysis.html",
+        "path": "output/20_website_output/analysis.html",
+        "relative_path": "20_website_output/analysis.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 45059,
+        "size_mb": 0.04,
+        "step": "20_website_output"
+      },
+      {
+        "name": "gnn_files.html",
+        "path": "output/20_website_output/gnn_files.html",
+        "relative_path": "20_website_output/gnn_files.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 13093,
+        "size_mb": 0.01,
         "step": "20_website_output"
       },
       {
@@ -2604,15 +2768,35 @@
         "relative_path": "20_website_output/visualization.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 4547,
-        "size_mb": 0.0,
+        "size_bytes": 13298,
+        "size_mb": 0.01,
+        "step": "20_website_output"
+      },
+      {
+        "name": "reports.html",
+        "path": "output/20_website_output/reports.html",
+        "relative_path": "20_website_output/reports.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 67317,
+        "size_mb": 0.06,
+        "step": "20_website_output"
+      },
+      {
+        "name": "actinf_pomdp_agent_interactive_dashboard.html",
+        "path": "output/20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+        "relative_path": "20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html",
+        "type": "html",
+        "extension": ".html",
+        "size_bytes": 28968,
+        "size_mb": 0.03,
         "step": "20_website_output"
       }
     ]
   },
   "health_score": 95.0,
   "report_metadata": {
-    "generation_time": "2026-02-23T07:08:09.427591",
+    "generation_time": "2026-02-25T14:42:42.958415",
     "formats_generated": [
       "html",
       "markdown",

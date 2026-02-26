@@ -21,3 +21,11 @@ Core visualization generation for GNN models.
 ```python
 from visualization import process_visualization_main, MatrixVisualizer
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

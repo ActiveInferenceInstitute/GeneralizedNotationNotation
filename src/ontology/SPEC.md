@@ -17,3 +17,11 @@ Ontology processing and validation for GNN models.
 ```python
 from ontology import process_ontology
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

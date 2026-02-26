@@ -21,3 +21,11 @@ Audio processing and SAPF (Structured Audio Processing Format) generation.
 ```python
 from audio import process_audio
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

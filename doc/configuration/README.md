@@ -5,6 +5,7 @@
 > **Cross-References**: [Pipeline Architecture](../gnn/gnn_tools.md) | [Deployment Guide](../deployment/README.md)
 
 ## Overview
+
 This guide covers all configuration options for the GeneralizedNotationNotation (GNN) pipeline, from basic settings to advanced customization.
 
 ## Configuration Hierarchy
@@ -20,6 +21,7 @@ GNN uses a layered configuration system with the following precedence (highest t
 ## Main Configuration File
 
 ### Location
+
 Primary configuration file: `config.yaml` (create in project root)
 
 ### Complete Configuration Template
@@ -400,6 +402,7 @@ integrations:
 ## Environment Variables
 
 ### Required Variables
+
 ```bash
 # LLM Integration (choose one or more)
 export OPENAI_API_KEY="your-openai-key"
@@ -411,6 +414,7 @@ export WANDB_API_KEY="your-wandb-key"
 ```
 
 ### System Configuration
+
 ```bash
 # Java/Julia paths (if not in PATH)
 export JAVA_HOME="/usr/lib/jvm/java-11"
@@ -427,6 +431,7 @@ export GNN_MAX_PROCESSES="4"
 ## Command Line Configuration
 
 ### Override Any Config Setting
+
 ```bash
 # Override pipeline settings
 python src/main.py --config pipeline.parallel=false --config validation.strict_mode=true
@@ -442,6 +447,7 @@ python src/main.py \
 ```
 
 ### Common Command Patterns
+
 ```bash
 # Development mode (more verbose, less strict)
 python src/main.py --profile development
@@ -465,6 +471,7 @@ python src/main.py --debug --verbose
 ## Profile-Based Configuration
 
 ### Creating Profiles
+
 Create profile-specific config files:
 
 ```yaml
@@ -490,6 +497,7 @@ export:
 ```
 
 ### Using Profiles
+
 ```bash
 python src/main.py --profile development
 python src/main.py --profile production
@@ -498,6 +506,7 @@ python src/main.py --profile production
 ## Step-Specific Configuration
 
 ### Individual Step Configuration Files
+
 ```yaml
 # config.step4.yaml - Type checker specific
 validation:
@@ -511,14 +520,16 @@ visualization:
 ```
 
 ### Loading Step Configuration
+
 ```bash
-python src/5_type_checker.py --config config.step4.yaml
-python src/6_visualization.py --config config.step6.yaml
+python src/5_type_checker.py --config config.step5.yaml
+python src/8_visualization.py --config config.step8.yaml
 ```
 
 ## Advanced Configuration Patterns
 
 ### Dynamic Configuration
+
 ```python
 # Python code can modify config at runtime
 import src.utils.config as config
@@ -536,6 +547,7 @@ config.apply_config(cfg)
 ```
 
 ### Conditional Configuration
+
 ```yaml
 # Conditional based on environment
 pipeline:
@@ -547,6 +559,7 @@ pipeline:
 ```
 
 ### Template Variables
+
 ```yaml
 # Using template variables
 directories:
@@ -560,6 +573,7 @@ model_settings:
 ## Validation and Testing
 
 ### Validate Configuration
+
 ```bash
 # Check config syntax and completeness
 python src/main.py --validate-config
@@ -572,7 +586,9 @@ python src/main.py --show-config
 ```
 
 ### Configuration Schema
+
 The configuration follows a JSON Schema for validation:
+
 ```bash
 # Validate against schema
 python -m src.utils.validate_config config.yaml
@@ -581,28 +597,33 @@ python -m src.utils.validate_config config.yaml
 ## Best Practices
 
 ### 1. Environment Separation
+
 - Use different config files for dev/test/prod
 - Keep sensitive data in environment variables
 - Use profiles for common configuration sets
 
 ### 2. Version Control
+
 - Track config files in version control
 - Use `.env.example` for environment variables
 - Document configuration changes
 
 ### 3. Security
+
 - Never commit API keys to version control
 - Use environment variables for secrets
 - Restrict file permissions on config files
 
 ### 4. Performance
+
 - Adjust resource limits based on your hardware
 - Use parallel processing when available
 - Skip unnecessary steps for faster iteration
 
 ### 5. Debugging
+
 - Enable debug logging for troubleshooting
 - Use dry-run mode to test configurations
 - Validate configuration before running pipeline
 
-This comprehensive configuration system allows fine-tuned control over every aspect of the GNN pipeline while maintaining sensible defaults for common use cases. 
+This comprehensive configuration system allows fine-tuned control over every aspect of the GNN pipeline while maintaining sensible defaults for common use cases.

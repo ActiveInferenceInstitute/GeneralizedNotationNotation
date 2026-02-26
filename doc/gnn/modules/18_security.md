@@ -26,4 +26,4 @@ python src/18_security.py --target-dir input/gnn_files --output-dir output --ver
 
 ## Source
 
-- **Script**: [src/18_security.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/18_security.py)
+- **Script**: [src/18_security.py](#placeholder)

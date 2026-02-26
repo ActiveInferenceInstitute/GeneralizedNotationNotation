@@ -20,3 +20,11 @@ Post-simulation analysis and metrics for GNN model execution.
 ```python
 from analysis import process_analysis, PostSimulationAnalyzer
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

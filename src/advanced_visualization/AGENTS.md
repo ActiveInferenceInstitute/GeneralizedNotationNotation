@@ -19,6 +19,7 @@
 ## Core Functionality
 
 ### Primary Responsibilities
+
 1. Generate interactive 3D visualizations
 2. Create dynamic dashboard interfaces
 3. Produce advanced statistical plots
@@ -27,6 +28,7 @@
 6. Generate professional D2 (Declarative Diagramming) diagrams
 
 ### Key Capabilities
+
 - 3D network topology visualization
 - Interactive Plotly dashboards
 - Time-series animation
@@ -41,9 +43,11 @@
 ### Public Functions
 
 #### `process_advanced_viz_standardized_impl(target_dir, output_dir, logger, **kwargs) -> bool`
+
 **Description**: Main advanced visualization processing function called by orchestrator (9_advanced_viz.py)
 
 **Parameters**:
+
 - `target_dir` (Path): Directory containing GNN files
 - `output_dir` (Path): Output directory for visualizations
 - `logger` (Logger): Logger instance
@@ -55,6 +59,7 @@
 **Returns**: `True` if visualization succeeded
 
 **Example**:
+
 ```python
 from advanced_visualization.processor import process_advanced_viz_standardized_impl
 
@@ -73,12 +78,14 @@ success = process_advanced_viz_standardized_impl(
 ## Visualization Types
 
 ### 3D Visualization
+
 - Network topology in 3D space with semantic positioning
 - State space visualization with force-directed layout
 - Connection strength representation with real POMDP data
 - Interactive hover information with variable details
 
 ### Statistical Analysis Plots
+
 - Variable type distribution pie charts
 - Variable dimension distribution analysis
 - Scalar parameter value histograms
@@ -87,12 +94,14 @@ success = process_advanced_viz_standardized_impl(
 - Comprehensive statistical overview panels
 
 ### POMDP-Specific Visualizations
+
 - **Transition Matrix Analysis**: B matrix visualization with action-specific slices
 - **Policy Visualization**: Policy distribution over actions (π and E matrices)
 - **3D Transition Visualization**: Multi-action transition matrix heatmaps
 - **State-Action Relationships**: Visual representation of POMDP dynamics
 
 ### Network Analysis Visualizations
+
 - **Network Metrics**: Node count, edge count, density, clustering coefficients
 - **Centrality Analysis**: Degree centrality and node importance rankings
 - **Network Graph Visualization**: Force-directed layout with connection visualization
@@ -100,6 +109,7 @@ success = process_advanced_viz_standardized_impl(
 - **Network Statistics**: Comprehensive network topology metrics
 
 ### Interactive Plotly Dashboards
+
 - **Multi-Panel Dashboard**: Variable types, matrix overview, network graph, statistics
 - **Interactive Matrix Explorer**: Zoom, pan, and explore matrix heatmaps
 - **Real-Time Updates**: Dynamic visualization updates based on model data
@@ -107,15 +117,17 @@ success = process_advanced_viz_standardized_impl(
 - **Responsive Design**: Adapts to different screen sizes
 
 ### Interactive Dashboard
+
 - Real-time model exploration (when plotly available)
 - Parameter adjustment interface
 - Multi-view synchronized displays
 - HTML-based interactive reports
 
 ### D2 Diagram Generation (NEW)
+
 - **GNN Model Structure**: Visualize state space components, connections, and Active Inference ontology
 - **POMDP Diagrams**: Generative model components (A, B, C, D, E matrices) and inference processes
-- **Pipeline Architecture**: Complete 24-step pipeline flow with data dependencies
+- **Pipeline Architecture**: Complete 25-step pipeline flow with data dependencies
 - **Framework Integration**: Mapping of GNN models to PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX
 - **Active Inference Concepts**: Free Energy Principle, perception-action loops, belief updating
 - **Multiple Output Formats**: SVG, PNG, PDF with professional themes
@@ -130,6 +142,7 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 ### Configuration Options
 
 #### Visualization Type Selection
+
 - `viz_type` (str): Type of visualization to generate
   - `"all"`: Generate all visualization types (default)
   - `"3d"`: Only 3D network visualizations
@@ -142,22 +155,26 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
   - `"network"`: Network analysis visualizations (metrics, centrality, connection strength)
 
 #### Interactive Features
+
 - `interactive` (bool): Enable interactive features (default: `True`)
   - When `True`: Generates Plotly-based interactive visualizations
   - When `False`: Generates static matplotlib visualizations
 
 #### Export Formats
+
 - `export_formats` (List[str]): Formats to export (default: `["html", "json"]`)
   - Supported: `["html", "json", "png", "svg", "pdf"]`
   - D2 diagrams support: `["svg", "png", "pdf"]`
 
 #### D2 Configuration
+
 - `d2_layout_engine` (str): Layout engine for D2 diagrams (default: `"dagre"`)
   - Options: `"dagre"` (fast), `"elk"` (quality), `"tala"` (advanced)
 - `d2_theme` (str): Theme for D2 diagrams (default: `"default"`)
   - Options: `"default"`, `"dark"`, `"light"`, `"professional"`
 
 #### Performance Tuning
+
 - `max_nodes` (int): Maximum nodes for 3D visualization (default: `1000`)
 - `simplify_large_models` (bool): Simplify large models automatically (default: `True`)
 - `enable_animations` (bool): Enable animated visualizations (default: `False`)
@@ -167,10 +184,12 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 ## Dependencies
 
 ### Required Dependencies
+
 - `matplotlib` - Basic plotting
 - `numpy` - Numerical operations
 
 ### Optional Dependencies
+
 - `plotly` - Interactive visualizations (fallback: static plots)
 - `seaborn` - Enhanced statistical plots (fallback: matplotlib)
 - `bokeh` - Interactive dashboards (fallback: HTML report)
@@ -181,6 +200,7 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 ## Usage Examples
 
 ### Basic Usage
+
 ```python
 from advanced_visualization.processor import process_advanced_viz_standardized_impl
 
@@ -193,6 +213,7 @@ success = process_advanced_viz_standardized_impl(
 ```
 
 ### Interactive Dashboard
+
 ```python
 success = process_advanced_viz_standardized_impl(
     target_dir=Path("input/gnn_files"),
@@ -205,6 +226,7 @@ success = process_advanced_viz_standardized_impl(
 ```
 
 ### D2 Diagram Generation (NEW)
+
 ```python
 # Generate only D2 diagrams
 success = process_advanced_viz_standardized_impl(
@@ -232,6 +254,7 @@ if visualizer.d2_available:
 ## Output Specification
 
 ### Output Products
+
 - `{model}_3d_visualization.html` - 3D interactive plot
 - `{model}_dashboard.html` - Interactive dashboard
 - `{model}_statistical_analysis.png` - Statistical plots
@@ -241,6 +264,7 @@ if visualizer.d2_available:
 - `advanced_viz_summary.json` - Processing summary
 
 ### Output Directory Structure
+
 ```
 output/9_advanced_viz_output/
 ├── model_name_3d_visualization.html
@@ -270,6 +294,7 @@ output/9_advanced_viz_output/
 ## Performance Characteristics
 
 ### Latest Execution (After Comprehensive Fixes)
+
 - **Duration**: ~1-2s for complete visualization pipeline
 - **Status**: ✅ FULLY OPERATIONAL
 - **Fixes Applied**:
@@ -280,11 +305,13 @@ output/9_advanced_viz_output/
   - ✅ Added comprehensive error handling and fallbacks
 
 ### Expected Performance
+
 - **Fast Path**: ~1-2s for basic visualizations (3D, statistical)
 - **Slow Path**: ~2-5s for comprehensive analysis with multiple formats
 - **Memory**: ~50-100MB for large models
 
 ### Real-World Performance (Latest Test)
+
 - **3D Visualization**: Generated successfully in ~400ms
 - **Statistical Analysis**: Generated successfully in ~850ms
 - **State Transitions**: Generated successfully in ~200ms
@@ -301,6 +328,7 @@ output/9_advanced_viz_output/
 ## Error Handling
 
 ### Graceful Degradation
+
 - **No Plotly**: Generate matplotlib-based 3D visualizations ✅
 - **No Bokeh**: Create static HTML reports ✅
 - **Large Models**: Simplify visualization, provide warnings ✅
@@ -308,6 +336,7 @@ output/9_advanced_viz_output/
 - **Missing Dependencies**: Use available libraries with fallbacks ✅
 
 ### Robust Error Recovery
+
 - **Data Loading**: Multiple fallback paths for finding GNN models
 - **Visualization Generation**: Individual method error isolation
 - **File I/O**: Safe file operations with proper cleanup
@@ -318,7 +347,9 @@ output/9_advanced_viz_output/
 ## Recent Improvements
 
 ### Comprehensive Module Enhancement ✅
+
 **Major Fixes Applied**:
+
 1. **Data Loading**: Fixed GNN model discovery and loading from processing results
 2. **Visualization Implementation**: Replaced stubs with real matplotlib-based visualizations
 3. **Import Structure**: Corrected module imports and dependencies
@@ -326,6 +357,7 @@ output/9_advanced_viz_output/
 5. **Test Coverage**: Created 17 comprehensive tests covering all functionality
 
 **Key Improvements**:
+
 - ✅ Real 3D scatter plots with variable type color coding
 - ✅ Statistical analysis with pie charts, bar charts, and model metrics
 - ✅ Proper data extraction with graceful error handling
@@ -333,6 +365,7 @@ output/9_advanced_viz_output/
 - ✅ Performance optimization with matplotlib backend configuration
 
 ### Latest Major Enhancement (October 13, 2025)
+
 **Expanded from 2 to 8 comprehensive visualization types:**
 
 1. **3D Visualization** - Network topology in 3D space with semantic positioning and real connections
@@ -350,21 +383,25 @@ output/9_advanced_viz_output/
 ## Integration Points
 
 ### Pipeline Integration
+
 - **Input**: Receives processed GNN models from Step 3 (gnn processing)
 - **Output**: Generates visualizations consumed by Step 20 (website generation) and Step 23 (report generation)
 - **Dependencies**: Requires GNN parsing results from `3_gnn.py` output
 
 ### Module Dependencies
+
 - **gnn/**: Reads parsed GNN model data and structure
 - **visualization/**: Complements basic visualization with advanced features
 - **export/**: Uses export formats for visualization data serialization
 
 ### External Integration
+
 - **D2 CLI**: Integrates with D2 diagramming tool for professional diagrams
 - **Plotly**: Optional integration for interactive visualizations
 - **Bokeh**: Optional integration for advanced dashboards
 
 ### Data Flow
+
 ```
 3_gnn.py (GNN parsing)
   ↓
@@ -380,10 +417,12 @@ output/9_advanced_viz_output/
 ## Testing
 
 ### Test Files
+
 - `src/tests/test_advanced_visualization_overall.py` ✅
 - `src/tests/test_comprehensive_api.py` (integration tests)
 
 ### Test Coverage
+
 - **Current**: 95%+ ✅
 - **Test Categories**:
   - ✅ Unit Tests: Module imports, instantiation, basic functionality
@@ -393,6 +432,7 @@ output/9_advanced_viz_output/
   - ✅ Pipeline Integration: End-to-end workflow testing
 
 ### Test Results (Latest Run)
+
 - **Total Tests**: 17
 - **Passed**: 16 ✅
 - **Skipped**: 1 (MCP integration - optional)
@@ -404,12 +444,14 @@ output/9_advanced_viz_output/
 ## MCP Integration
 
 ### Tools Registered
+
 - `advanced_visualization.generate_3d` - Generate 3D visualizations
 - `advanced_visualization.create_dashboard` - Create interactive dashboards
 - `advanced_visualization.generate_d2` - Generate D2 diagrams
 - `advanced_visualization.analyze_statistics` - Generate statistical plots
 
 ### Tool Endpoints
+
 ```python
 @mcp_tool("advanced_visualization.generate_3d")
 def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]:
@@ -418,6 +460,7 @@ def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]
 ```
 
 ### MCP File Location
+
 - `src/advanced_visualization/mcp.py` - MCP tool registrations
 
 ---
@@ -427,26 +470,32 @@ def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]
 ### Common Issues
 
 #### Issue 1: D2 diagram generation fails
+
 **Symptom**: D2 diagrams not generated or errors during generation  
 **Cause**: Missing D2 CLI tool or invalid diagram syntax  
-**Solution**: 
+**Solution**:
+
 - Install D2: `brew install d2` (macOS) or download from [d2lang.com](https://d2lang.com)
 - Verify D2 installation: `d2 --version`
 - Check diagram syntax in generated D2 files
 - Use `--verbose` flag for detailed error messages
 
 #### Issue 2: Interactive visualizations not displaying
+
 **Symptom**: HTML files generated but visualizations not interactive  
 **Cause**: Missing Plotly JavaScript or browser compatibility  
 **Solution**:
+
 - Ensure Plotly is installed: `uv pip install plotly`
 - Open HTML files in modern browser (Chrome, Firefox, Safari)
 - Check browser console for JavaScript errors
 
 #### Issue 3: 3D visualizations fail to render
+
 **Symptom**: 3D visualization generation errors  
 **Cause**: Missing 3D plotting dependencies or insufficient resources  
 **Solution**:
+
 - Install required dependencies: `uv pip install plotly numpy`
 - Reduce model complexity for 3D rendering
 - Use 2D fallback visualizations
@@ -454,14 +503,17 @@ def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]
 ### Performance Issues
 
 #### Slow Dashboard Generation
+
 **Symptoms**: Dashboard generation takes longer than expected  
 **Diagnosis**:
+
 ```bash
 # Enable verbose logging
 python src/9_advanced_viz.py --target-dir input/ --verbose
 ```
 
 **Solutions**:
+
 - Generate specific visualization types instead of "all"
 - Disable interactive features if not needed
 - Process files individually instead of batch
@@ -473,6 +525,7 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 ### Current Version: 1.0.0
 
 **Features**:
+
 - 3D network visualization
 - Interactive Plotly dashboards
 - D2 diagram generation
@@ -481,9 +534,11 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 - Network analysis visualizations
 
 **Known Issues**:
+
 - None currently
 
 ### Roadmap
+
 - **Next Version**: Enhanced D2 diagram features
 - **Future**: Real-time visualization streaming
 
@@ -492,12 +547,14 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 ## References
 
 ### Related Documentation
+
 - [Pipeline Overview](../../README.md)
 - [Architecture Guide](../../ARCHITECTURE.md)
 - [Visualization Module](../visualization/AGENTS.md)
 - [D2 Documentation](../../doc/d2/)
 
 ### External Resources
+
 - [D2 Language](https://d2lang.com)
 - [Plotly Documentation](https://plotly.com/python/)
 - [Active Inference Ontology](https://activeinference.org)
@@ -509,3 +566,11 @@ python src/9_advanced_viz.py --target-dir input/ --verbose
 **Status**: ✅ Production Ready
 **Version**: 1.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

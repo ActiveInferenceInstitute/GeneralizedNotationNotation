@@ -720,3 +720,10 @@ This module is part of the GeneralizedNotationNotation project. See the main rep
 - Comprehensive docs: ../../DOCS.md
 - Architecture guide: ../../ARCHITECTURE.md
 - Pipeline details: ../../doc/pipeline/README.md
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

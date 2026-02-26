@@ -21,7 +21,7 @@ The ActiveInference.jl implementation consists of three interconnected layers:
 
 ### Source File
 
-[activeinference_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/activeinference_jl/activeinference_renderer.py)
+[activeinference_renderer.py](#placeholder)
 
 ---
 
@@ -300,15 +300,15 @@ The slightly lower confidence correlation (compared to the 1.0000 achieved by Py
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Matrix Conversion | [activeinference_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` | L17-66 |
-| Model Extraction | [activeinference_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` | L110-260 |
-| Script Generation | [activeinference_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` | L262-734 |
-| Env Setup | [activeinference_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` | L89-162 |
-| Execution | [activeinference_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` | L283-391 |
-| Julia Check | [activeinference_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/activeinference_jl/activeinference_runner.py) | `is_julia_available()` | L27-88 (delegates to `julia_setup`) |
-| Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` | L20-131 |
-| Trace Reconstruction | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` | L134-211 |
-| Matrix Heatmaps | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` | L214-348 |
+| Matrix Conversion | [activeinference_renderer.py](#placeholder) | `_matrix_to_julia()` | L17-66 |
+| Model Extraction | [activeinference_renderer.py](#placeholder) | `extract_model_info()` | L110-260 |
+| Script Generation | [activeinference_renderer.py](#placeholder) | `generate_activeinference_script()` | L262-734 |
+| Env Setup | [activeinference_runner.py](#placeholder) | `setup_julia_environment()` | L89-162 |
+| Execution | [activeinference_runner.py](#placeholder) | `execute_activeinference_script()` | L283-391 |
+| Julia Check | [activeinference_runner.py](#placeholder) | `is_julia_available()` | L27-88 (delegates to `julia_setup`) |
+| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L20-131 |
+| Trace Reconstruction | [analyzer.py](#placeholder) | `create_trace_reconstruction()` | L134-211 |
+| Matrix Heatmaps | [analyzer.py](#placeholder) | `create_model_matrix_heatmaps()` | L214-348 |
 
 ---
 

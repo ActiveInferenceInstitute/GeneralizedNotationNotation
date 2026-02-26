@@ -535,3 +535,11 @@ This implementation follows the GNN specification v1.0+ and is part of the Gener
 - Comprehensive docs: ../../DOCS.md
 - Architecture guide: ../../ARCHITECTURE.md
 - Pipeline details: ../../doc/pipeline/README.md
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

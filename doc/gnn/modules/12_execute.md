@@ -56,4 +56,4 @@ Registered by `src/execute/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/12_execute.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py)
+- **Script**: [src/12_execute.py](#placeholder)

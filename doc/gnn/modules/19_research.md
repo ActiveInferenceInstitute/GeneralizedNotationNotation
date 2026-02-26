@@ -26,4 +26,4 @@ python src/19_research.py --target-dir input/gnn_files --output-dir output --ver
 
 ## Source
 
-- **Script**: [src/19_research.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/19_research.py)
+- **Script**: [src/19_research.py](#placeholder)

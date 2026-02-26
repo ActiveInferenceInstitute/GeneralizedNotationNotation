@@ -21,7 +21,7 @@ The RxInfer implementation consists of three interconnected layers:
 
 ### Source File
 
-[rxinfer_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/rxinfer/rxinfer_renderer.py)
+[rxinfer_renderer.py](#placeholder)
 
 ---
 
@@ -252,13 +252,13 @@ RxInfer exports a comprehensive JSON artifact to `simulation_results.json`:
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [rxinfer_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/rxinfer/rxinfer_renderer.py) | `_generate_rxinfer_simulation_code()` | L167-531 |
-| Entry Point | [rxinfer_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/rxinfer/rxinfer_renderer.py) | `render_gnn_to_rxinfer()` | L538-598 |
-| Execution | [rxinfer_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/rxinfer/rxinfer_runner.py) | `execute_rxinfer_script()` | L84-168 |
-| Julia Check | [rxinfer_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/rxinfer/rxinfer_runner.py) | `is_julia_available()` | L18-51 (delegates to `julia_setup`) |
-| Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/rxinfer/analyzer.py) | `generate_analysis_from_logs()` | L18-62 |
-| Visualizations | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/rxinfer/analyzer.py) | `create_rxinfer_visualizations()` | L65-240 |
-| Data Extraction | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/rxinfer/analyzer.py) | `extract_simulation_data()` | L245-280 |
+| Rendering | [rxinfer_renderer.py](#placeholder) | `_generate_rxinfer_simulation_code()` | L167-531 |
+| Entry Point | [rxinfer_renderer.py](#placeholder) | `render_gnn_to_rxinfer()` | L538-598 |
+| Execution | [rxinfer_runner.py](#placeholder) | `execute_rxinfer_script()` | L84-168 |
+| Julia Check | [rxinfer_runner.py](#placeholder) | `is_julia_available()` | L18-51 (delegates to `julia_setup`) |
+| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L18-62 |
+| Visualizations | [analyzer.py](#placeholder) | `create_rxinfer_visualizations()` | L65-240 |
+| Data Extraction | [analyzer.py](#placeholder) | `extract_simulation_data()` | L245-280 |
 
 ---
 

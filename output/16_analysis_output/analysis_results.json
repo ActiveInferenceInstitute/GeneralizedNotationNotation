@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-23T07:07:40.841366",
+  "timestamp": "2026-02-25T14:42:18.294258",
   "processed_files": 1,
   "success": true,
   "errors": [],
@@ -731,7 +731,7 @@
         "variable_connection_correlation": 0.1506849315068493,
         "line_position_correlation": 0.0
       },
-      "analysis_timestamp": "2026-02-23T07:07:40.847402"
+      "analysis_timestamp": "2026-02-25T14:42:18.298766"
     }
   ],
   "complexity_metrics": [
@@ -743,18 +743,18 @@
       "structural_complexity": 29.599999999999998,
       "maintainability_index": 100.0,
       "technical_debt": 5.300000000000001,
-      "analysis_timestamp": "2026-02-23T07:07:40.849643"
+      "analysis_timestamp": "2026-02-25T14:42:18.301161"
     }
   ],
   "performance_benchmarks": [
     {
       "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
-      "parse_time": 0.002163458033464849,
+      "parse_time": 0.002249249955639243,
       "memory_usage": 24958,
       "complexity_score": 84,
       "estimated_runtime": 0.84,
-      "benchmark_timestamp": "2026-02-23T07:07:40.851851"
+      "benchmark_timestamp": "2026-02-25T14:42:18.303476"
     }
   ],
   "model_comparisons": [],
@@ -777,9 +777,6 @@
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_trace.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_belief_convergence.png",
     "output/16_analysis_output/rxinfer/actinf_pomdp_agent_rxinfer_action_frequencies.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_trace.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_convergence.png",
-    "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_frequencies.png",
     "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_trace.png",
     "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_belief_convergence.png",
     "output/16_analysis_output/activeinference_jl/actinf_pomdp_agent_activeinference_jl_action_frequencies.png",
@@ -840,13 +837,13 @@
   ],
   "overall_statistics": {},
   "framework_comparison": {
-    "timestamp": "2026-02-23T07:07:47.657552",
+    "timestamp": "2026-02-25T14:42:24.495515",
     "frameworks": {
       "pymdp": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          1.740679
+          1.728796
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log"
@@ -916,19 +913,19 @@
             8.70312568144356e-16
           ],
           [
-            0.9999999999999816,
-            1.7465626226597997e-14,
-            9.70312568144336e-16
+            1.0,
+            5.390625378579759e-17,
+            5.390625378579759e-17
           ],
           [
-            5.946180934135283e-17,
-            9.75868123699907e-16,
-            0.9999999999999989
+            1.5390625378579735e-16,
+            2.770312568144345e-15,
+            0.9999999999999971
           ],
           [
-            8.858989407852978e-18,
-            5.977045131666184e-17,
-            1.0
+            4.570312568144301e-15,
+            2.8703125681443264e-15,
+            0.9999999999999925
           ]
         ],
         "actions": [
@@ -961,9 +958,9 @@
           1,
           1,
           1,
+          0,
           1,
-          2,
-          2
+          0
         ],
         "free_energy": [
           [
@@ -1027,19 +1024,19 @@
             -1.4500594359371601
           ],
           [
-            -1.4500594359371433,
-            -1.4500594359371433,
-            -0.6850594359371587
+            -1.4500594359371626,
+            -1.4500594359371626,
+            -0.6850594359371629
           ],
           [
-            -0.6850594359371625,
-            -0.6850594359371625,
-            -1.4500594359371612
+            -0.6850594359371622,
+            -0.6850594359371622,
+            -1.4500594359371597
           ],
           [
-            -0.6850594359371629,
-            -0.6850594359371629,
-            -1.4500594359371626
+            -0.6850594359371609,
+            -0.6850594359371609,
+            -1.4500594359371513
           ]
         ],
         "num_timesteps": 15,
@@ -1082,16 +1079,16 @@
           0.99999999999944,
           0.9999999999999689,
           0.9999999999999982,
-          0.9999999999999816,
-          0.9999999999999989,
-          1.0
+          1.0,
+          0.9999999999999971,
+          0.9999999999999925
         ]
       },
       "jax": {
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          1.153787
+          0.936245
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log"
@@ -1336,7 +1333,7 @@
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          0.374223
+          0.359066
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log"
@@ -1380,7 +1377,7 @@
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          19.397854
+          18.296351
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log"
@@ -1529,7 +1526,7 @@
         "success_count": 1,
         "total_count": 1,
         "execution_times": [
-          19.104289
+          17.611818
         ],
         "output_files": [
           "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log"
@@ -1750,39 +1747,39 @@
       },
       "performance_comparison": {
         "pymdp": {
-          "mean": 1.740679,
+          "mean": 1.728796,
           "std": 0.0,
-          "min": 1.740679,
-          "max": 1.740679
+          "min": 1.728796,
+          "max": 1.728796
         },
         "jax": {
-          "mean": 1.153787,
+          "mean": 0.936245,
           "std": 0.0,
-          "min": 1.153787,
-          "max": 1.153787
+          "min": 0.936245,
+          "max": 0.936245
         },
         "discopy": {
-          "mean": 0.374223,
+          "mean": 0.359066,
           "std": 0.0,
-          "min": 0.374223,
-          "max": 0.374223
+          "min": 0.359066,
+          "max": 0.359066
         },
         "rxinfer": {
-          "mean": 19.397854,
+          "mean": 18.296351,
           "std": 0.0,
-          "min": 19.397854,
-          "max": 19.397854
+          "min": 18.296351,
+          "max": 18.296351
         },
         "activeinference_jl": {
-          "mean": 19.104289,
+          "mean": 17.611818,
           "std": 0.0,
-          "min": 19.104289,
-          "max": 19.104289
+          "min": 17.611818,
+          "max": 17.611818
         }
       },
       "metric_agreement": {
         "pymdp_vs_jax": {
-          "confidence_correlation": 0.9999999999997151,
+          "confidence_correlation": 0.999999999999715,
           "same_dimensions": true
         },
         "pymdp_vs_rxinfer": {
@@ -1790,7 +1787,7 @@
           "same_dimensions": true
         },
         "pymdp_vs_activeinference_jl": {
-          "confidence_correlation": 0.8909793233092984,
+          "confidence_correlation": 0.8909793233093035,
           "same_dimensions": true
         },
         "jax_vs_rxinfer": {
@@ -1864,16 +1861,16 @@
             15,
             3
           ],
-          "mean_confidence": 0.9929001360264759,
+          "mean_confidence": 0.9929001360264764,
           "final_belief": [
-            8.858989407852978e-18,
-            5.977045131666184e-17,
-            1.0
+            4.570312568144301e-15,
+            2.8703125681443264e-15,
+            0.9999999999999925
           ],
-          "efe_mean": -1.3471076977094636,
-          "efe_std": 0.2421675862141707,
+          "efe_mean": -1.3471076977094643,
+          "efe_std": 0.24216758621417095,
           "efe_min": -1.4500594359371626,
-          "efe_max": -0.6850594359371587
+          "efe_max": -0.6850594359371609
         },
         "jax": {
           "belief_dims": [

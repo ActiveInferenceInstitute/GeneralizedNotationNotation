@@ -21,7 +21,7 @@ This module provides comprehensive D2 (Declarative Diagramming) integration for 
    - Data flow between components
 
 3. **Pipeline Architecture Diagrams**
-   - Complete 24-step pipeline flow
+   - Complete 25-step pipeline flow
    - Core processing modules (steps 0-9)
    - Simulation & analysis modules (steps 10-16)
    - Integration & output modules (steps 17-23)
@@ -58,6 +58,7 @@ curl -fsSL https://d2lang.com/install.sh | sh -s --
 ```
 
 **Verify Installation:**
+
 ```bash
 d2 version
 ```
@@ -247,6 +248,7 @@ spec = D2DiagramSpec(
 ```
 
 List available themes:
+
 ```bash
 d2 list-themes
 ```
@@ -254,6 +256,7 @@ d2 list-themes
 ### Output Formats
 
 Supported output formats:
+
 - **SVG**: Scalable vector graphics (default, best for web)
 - **PNG**: Raster image (good for presentations)
 - **PDF**: Vector PDF (good for documents)
@@ -300,6 +303,7 @@ Main class for D2 diagram generation.
 Dataclass representing a D2 diagram specification.
 
 **Fields:**
+
 - `name: str` - Diagram name (used for output filenames)
 - `description: str` - Human-readable description
 - `d2_content: str` - D2 diagram source code
@@ -316,6 +320,7 @@ Dataclass representing a D2 diagram specification.
 Dataclass representing D2 diagram generation result.
 
 **Fields:**
+
 - `success: bool` - Whether generation succeeded
 - `diagram_name: str` - Name of the diagram
 - `d2_file: Optional[Path]` - Path to D2 source file
@@ -331,6 +336,7 @@ The D2 visualizer implements comprehensive error handling with graceful degradat
 ### D2 CLI Not Available
 
 If D2 CLI is not installed, the visualizer will:
+
 1. Log a warning message
 2. Skip D2 diagram generation
 3. Continue with other visualizations
@@ -347,6 +353,7 @@ if not visualizer.d2_available:
 ### Compilation Errors
 
 If D2 compilation fails for a specific format:
+
 1. Error is logged with details
 2. Other formats are still attempted
 3. Partial success is possible (e.g., SVG succeeds but PNG fails)
@@ -374,6 +381,7 @@ pytest src/tests/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visua
 ```
 
 **Test Coverage:**
+
 - D2Visualizer initialization and CLI checking
 - Model structure diagram generation
 - POMDP diagram generation
@@ -420,10 +428,12 @@ python src/main.py --only-steps "9" --target-dir input/gnn_files
 ### Step Dependencies
 
 D2 visualization depends on:
+
 - **Step 3**: GNN parsing (provides model data)
 - **Step 5**: Type checking (validates model structure)
 
 D2 diagrams are used by:
+
 - **Step 20**: Website generation (embeds D2 diagrams)
 - **Step 23**: Report generation (includes D2 diagrams)
 
@@ -443,6 +453,7 @@ D2 diagrams are used by:
 **Problem**: D2 CLI is not installed or not in PATH
 
 **Solution**:
+
 ```bash
 # Install D2 CLI
 curl -fsSL https://d2lang.com/install.sh | sh -s --
@@ -456,6 +467,7 @@ d2 version
 **Problem**: D2 compilation takes too long (>30 seconds)
 
 **Solution**:
+
 - Use simpler layout engine (dagre instead of elk)
 - Reduce model complexity
 - Check system resources
@@ -465,6 +477,7 @@ d2 version
 **Problem**: Diagram layout doesn't look good
 
 **Solution**:
+
 - Try different layout engines (elk, dagre, tala)
 - Adjust padding with `pad` parameter
 - Customize D2 content with explicit positioning
@@ -474,6 +487,7 @@ d2 version
 **Problem**: No D2 diagrams generated
 
 **Solution**:
+
 1. Check D2 CLI availability: `d2 version`
 2. Verify GNN models were parsed (step 3)
 3. Check logs for specific errors
@@ -482,11 +496,13 @@ d2 version
 ## References
 
 ### D2 Documentation
+
 - [Official D2 Documentation](https://d2lang.com)
 - [D2 Language Tour](https://d2lang.com/tour/)
 - [D2 GitHub Repository](https://github.com/terrastruct/d2)
 
 ### GNN Pipeline Documentation
+
 - [Advanced Visualization Module](AGENTS.md)
 - [Pipeline Architecture](../../ARCHITECTURE.md)
 - [D2 Integration Guide](../../doc/d2/gnn_d2.md)
@@ -496,4 +512,3 @@ d2 version
 **Last Updated**: October 28, 2025  
 **Module Version**: 1.0.0  
 **Status**: ✅ Production Ready
-

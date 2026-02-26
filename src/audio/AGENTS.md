@@ -331,3 +331,11 @@ def generate_audio_tool(gnn_content: str, duration: float = 30.0) -> Dict[str, A
 **Status**: 🔄 In Development
 **Version**: 1.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

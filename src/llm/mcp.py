@@ -215,6 +215,32 @@ def get_llm_module_info_mcp() -> Dict[str, Any]:
 # ── MCP Registration ──────────────────────────────────────────────────────────
 
 
+def initialize_llm_module(mcp_instance) -> None:
+    """
+    Initialize the LLM module prior to tool registration.
+    Loads API keys and configures the default LLM processor.
+    """
+    try:
+        from src.llm import create_processor_from_env
+        import asyncio
+        logger.info("Initializing LLM module prior to MCP registration...")
+        
+        # create_processor_from_env is a coroutine; must be awaited
+        try:
+            loop = asyncio.get_running_loop()
+            # If there's an active loop, wrap in a task
+            processor = loop.create_task(create_processor_from_env())
+        except RuntimeError:
+            processor = asyncio.run(create_processor_from_env())
+
+        if processor:
+            logger.info("LLM processor initialized successfully.")
+        else:
+            logger.warning("LLM processor initialized but returned False/None.")
+    except Exception as e:
+        logger.error(f"Failed to initialize LLM module: {e}")
+
+
 def register_tools(mcp_instance) -> None:
     """Register LLM domain tools with the MCP server."""
 

@@ -41,3 +41,11 @@ from model_registry import ModelRegistry, process_model_registry
 ```bash
 uv run python -m pytest src/tests/test_model_registry_integration.py -v
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

@@ -160,7 +160,7 @@ graph LR
 - **Execution Time**: ~5 minutes (with LLM step)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,319 tests passed
+- **Test Suite Status**: ✅ 1,522+ tests passed
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -321,7 +321,7 @@ Each agent implements comprehensive performance monitoring:
 ## References
 
 - **Main Documentation**: [README.md](README.md) — Project overview and quick start
-- **Pipeline Documentation**: [doc/pipeline/README.md](doc/pipeline/README.md) — Detailed step-by-step descriptions
+- **Pipeline Documentation**: [doc/pipeline/README.md](#placeholder) — Detailed step-by-step descriptions
 - **Development Rules**: [.cursorrules](.cursorrules) — Canonical rules for scripts and modules
 - **Agent Registry**: [AGENTS.md](AGENTS.md) — Master agent scaffolding and module registry
 - **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Enhanced template for new modules

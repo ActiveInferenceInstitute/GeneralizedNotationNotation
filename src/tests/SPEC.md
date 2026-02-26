@@ -57,3 +57,11 @@ from tests import run_tests
 from tests.categories import MODULAR_TEST_CATEGORIES, get_all_test_files
 from tests.helpers import load_sample_gnn_spec
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

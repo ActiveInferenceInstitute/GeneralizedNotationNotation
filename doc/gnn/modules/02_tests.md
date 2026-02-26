@@ -84,12 +84,12 @@ Step 2 registers 3 MCP tools (via `src/tests/mcp.py`):
 
 | Component | File | Key Function |
 |-----------|------|-------------|
-| Thin orchestrator | [2_tests.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/2_tests.py) | `_test_runner_wrapper()` |
-| Core runner | [tests/runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/runner.py) | `run_tests()` |
-| Category definitions | [tests/categories.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/categories.py) | `MODULAR_TEST_CATEGORIES` |
-| Fixtures & markers | [tests/conftest.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/conftest.py) | `PYTEST_MARKERS`, fixtures |
-| MCP tools | [tests/mcp.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/mcp.py) | `register_tools()` |
-| MCP audit | [tests/test_mcp_audit.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_audit.py) | `TestMCPModuleDiscovery`, `TestMCPDomainTools` |
+| Thin orchestrator | [2_tests.py](#placeholder) | `_test_runner_wrapper()` |
+| Core runner | [tests/runner.py](#placeholder) | `run_tests()` |
+| Category definitions | [tests/categories.py](#placeholder) | `MODULAR_TEST_CATEGORIES` |
+| Fixtures & markers | [tests/conftest.py](#placeholder) | `PYTEST_MARKERS`, fixtures |
+| MCP tools | [tests/mcp.py](#placeholder) | `register_tools()` |
+| MCP audit | [tests/test_mcp_audit.py](#placeholder) | `TestMCPModuleDiscovery`, `TestMCPDomainTools` |
 
 ## Deep Dive
 

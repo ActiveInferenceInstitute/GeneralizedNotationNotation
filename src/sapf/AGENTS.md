@@ -258,3 +258,10 @@ def convert_gnn_to_sapf_tool(gnn_content, output_dir):
 
 **Last Updated**: 2026-01-21
 **Status**: ✅ Production Ready
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

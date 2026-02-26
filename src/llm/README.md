@@ -702,3 +702,10 @@ The LLM module provides comprehensive LLM integration capabilities for GNN model
 ## License and Citation
 
 This module is part of the GeneralizedNotationNotation project. See the main repository for license and citation information. 
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

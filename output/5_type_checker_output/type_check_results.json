@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-02-24T11:11:45.143236",
+  "timestamp": "2026-02-25T14:39:41.826428",
   "processed_files": 1,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: matrix, E, B, \u03c0, u, s_prime, type, s, vector, C, G, D, A, o, t, F"
+        "Duplicate variable names: matrix, E, D, u, C, B, \u03c0, s, type, A, G, o, vector, F, s_prime, t"
       ],
       "warnings": [
         "Type issue: Unknown type 'Active' for variable 'Example'",
@@ -519,12 +519,67 @@
           "type": "3 (controlled by \u03c0)"
         }
       ],
-      "validation_timestamp": "2026-02-24T11:11:45.143525"
+      "validation_timestamp": "2026-02-25T14:39:41.826564",
+      "dimension_compatibility": {
+        "compatible": true,
+        "issues": [],
+        "warnings": [],
+        "variables_checked": [
+          "A",
+          "B",
+          "C",
+          "D",
+          "E",
+          "s",
+          "s_prime",
+          "o",
+          "u",
+          "t"
+        ],
+        "dimension_map": {
+          "A": [
+            3,
+            3
+          ],
+          "B": [
+            3,
+            3,
+            3
+          ],
+          "C": [
+            3
+          ],
+          "D": [
+            3
+          ],
+          "E": [
+            3
+          ],
+          "s": [
+            3,
+            1
+          ],
+          "s_prime": [
+            3,
+            1
+          ],
+          "o": [
+            3,
+            1
+          ],
+          "u": [
+            1
+          ],
+          "t": [
+            1
+          ]
+        }
+      }
     }
   ],
   "type_analysis": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "types_found": [
         {
@@ -738,7 +793,7 @@
         "1,type=int": 2
       },
       "total_variables": 37,
-      "analysis_timestamp": "2026-02-24T11:11:45.145663"
+      "analysis_timestamp": "2026-02-25T14:39:41.828703"
     }
   ]
 }

@@ -607,7 +607,7 @@ If issues persist:
 
 ### Test Coverage
 
-- **652 test functions** across **54 test files**
+- **1,522+ tests functions** across **54 test files**
 - **Comprehensive module coverage** for all major modules
 - **Specialized test areas** for specific functionality
 - **Integration tests** for cross-module functionality
@@ -621,7 +621,7 @@ If issues persist:
 - **Test Categories**: 24 organized categories
 - **Test Markers**: 25+ markers for selective execution
 - **Success Rate**: 100% (516/516 passed, 0 failed, 0 skipped)
-- **Latest Execution**: 516 tests run, 0 failures, ~92 seconds duration
+- **Latest Execution**: 1,522+ tests run, 0 failures, ~92 seconds duration
 
 ### Test Quality Metrics
 
@@ -665,7 +665,7 @@ If issues persist:
 - **Test Suite**: Comprehensive mode
 - **Execution Mode**: Parallel (10 workers)
 - **Test Categories**: 24 categories executed
-- **Status**: 516/516 tests passed with SUCCESS
+- **Status**: 516/1,522+ tests passed with SUCCESS
 - **Infrastructure**: ✅ Working correctly
 
 ### Test Infrastructure Status
@@ -702,3 +702,11 @@ This test infrastructure provides a solid foundation for comprehensive testing o
 - Comprehensive docs: ../../DOCS.md
 - Architecture guide: ../../ARCHITECTURE.md
 - Pipeline details: ../../doc/pipeline/README.md
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

@@ -28,4 +28,4 @@ Uses direct import — no try/except fallback.
 
 ## Source
 
-- **Script**: [src/8_visualization.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/8_visualization.py)
+- **Script**: [src/8_visualization.py](#placeholder)

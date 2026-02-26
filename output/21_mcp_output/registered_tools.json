@@ -2,57 +2,57 @@
   {
     "name": "check_ml_frameworks",
     "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
-    "module": "",
-    "category": "",
+    "module": "src.ml_integration",
+    "category": "ml_integration",
     "version": "1.0.0"
   },
   {
-    "name": "get_analysis_capabilities",
-    "description": "Get available intelligent analysis capabilities, tools, and features.",
-    "module": "",
-    "category": "",
+    "name": "get_ml_module_info",
+    "description": "Return version, feature flags, and tool inventory of the ML integration module.",
+    "module": "src.ml_integration",
+    "category": "ml_integration",
     "version": "1.0.0"
   },
   {
-    "name": "process_intelligent_analysis",
-    "description": "Process intelligent AI-powered analysis of pipeline results including failure analysis and performance optimization.",
-    "module": "",
-    "category": "",
+    "name": "get_research_module_info",
+    "description": "Return metadata about the research module capabilities.",
+    "module": "src.research",
+    "category": "research",
+    "version": "1.0.0"
+  },
+  {
+    "name": "list_ml_integration_targets",
+    "description": "Return GNN-compatible ML integration targets and their dependency availability.",
+    "module": "src.ml_integration",
+    "category": "ml_integration",
+    "version": "1.0.0"
+  },
+  {
+    "name": "list_research_topics",
+    "description": "Return Active Inference and GNN research topic taxonomy.",
+    "module": "src.research",
+    "category": "research",
     "version": "1.0.0"
   },
   {
     "name": "process_ml_integration",
-    "description": "Process ML integration for GNN files including model training and inference setup.",
-    "module": "",
-    "category": "",
+    "description": "Process ML integration for GNN files: model training, inference setup, and framework export.",
+    "module": "src.ml_integration",
+    "category": "ml_integration",
     "version": "1.0.0"
   },
   {
     "name": "process_research",
-    "description": "Process research tasks for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
+    "description": "Run GNN research processing: generate experiment metadata and cross-references.",
+    "module": "src.research",
+    "category": "research",
     "version": "1.0.0"
   },
   {
-    "name": "process_visualization",
-    "description": "Process visualization for GNN files in the specified directory.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.visualization.call_function",
-    "description": "Call any public function in the src.visualization module with keyword arguments.",
-    "module": "",
-    "category": "",
-    "version": "1.0.0"
-  },
-  {
-    "name": "src.visualization.list_functions",
-    "description": "List callable functions exported by the src.visualization module public API.",
-    "module": "",
-    "category": "",
+    "name": "read_research_results",
+    "description": "Read and return research output files from a previous research processing run.",
+    "module": "src.research",
+    "category": "research",
     "version": "1.0.0"
   },
   {

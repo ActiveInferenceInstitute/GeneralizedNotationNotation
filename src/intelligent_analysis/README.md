@@ -146,3 +146,11 @@ This module produces:
 **Version**: 2.0.0
 **Last Updated**: 2026-01-23
 **Status**: Production Ready
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

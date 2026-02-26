@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-02-24T11:11:48.905945",
-  "target_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output",
+  "timestamp": "2026-02-25T14:39:55.118903",
+  "target_directory": "input/gnn_files",
+  "output_directory": "output/12_execute_output",
   "total_scripts_found": 5,
   "successful_executions": 5,
   "failed_executions": 0,
@@ -16,42 +16,42 @@
       "success": true,
       "return_code": 0,
       "stdout": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-      "stderr": "2026-02-24 11:11:50,116 - INFO - A matrix shape: (3, 3)\n2026-02-24 11:11:50,116 - INFO - B matrix shape: (3, 3, 3)\n2026-02-24 11:11:50,116 - INFO - C vector shape: (3,)\n2026-02-24 11:11:50,116 - INFO - D vector shape: (3,)\n2026-02-24 11:11:50,116 - INFO - E vector shape: (3,)\n2026-02-24 11:11:50,117 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-02-24 11:11:50,117 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-02-24 11:11:50,117 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-02-24 11:11:50,117 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-02-24 11:11:50,117 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-02-24 11:11:50,117 - INFO - Starting simple PyMDP simulation\n2026-02-24 11:11:50,117 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-02-24 11:11:50,117 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-02-24 11:11:50,117 - INFO - Wrapped arrays in obj_array format (except E)\n2026-02-24 11:11:50,117 - INFO - Successfully created PyMDP agent\n2026-02-24 11:11:50,117 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-02-24 11:11:50,118 - INFO - Step 0: true_s=2, obs=2, belief=[0.05 0.05 0.9 ], action=0.0\n2026-02-24 11:11:50,119 - INFO - Step 1: true_s=2, obs=0, belief=[0.49 0.03 0.49], action=2.0\n2026-02-24 11:11:50,119 - INFO - Step 2: true_s=0, obs=0, belief=[0.94 0.   0.05], action=2.0\n2026-02-24 11:11:50,120 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=1.0\n2026-02-24 11:11:50,120 - INFO - Step 4: true_s=2, obs=1, belief=[0.   0.05 0.95], action=1.0\n2026-02-24 11:11:50,120 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,120 - INFO - Step 6: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 7: true_s=2, obs=0, belief=[0.05 0.   0.95], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=1.0\n2026-02-24 11:11:50,122 - INFO - Step 11: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,122 - INFO - Step 12: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,122 - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,123 - INFO - Step 14: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,123 - INFO - Saving raw simulation data for analysis step...\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-02-24 11:11:50,123 - INFO - PyMDP simulation completed successfully\n2026-02-24 11:11:50,123 - INFO - \u2713 Simulation completed successfully!\n2026-02-24 11:11:50,123 - INFO - Results summary:\n2026-02-24 11:11:50,123 - INFO -   Correlation ID: render_generated_script\n2026-02-24 11:11:50,123 - INFO -   Success: True\n2026-02-24 11:11:50,123 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
-      "execution_time": 1.384374,
-      "timestamp": "2026-02-24T11:11:48.914001",
+      "stderr": "2026-02-25 14:39:56,628 - INFO - A matrix shape: (3, 3)\n2026-02-25 14:39:56,628 - INFO - B matrix shape: (3, 3, 3)\n2026-02-25 14:39:56,628 - INFO - C vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - D vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - E vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-02-25 14:39:56,628 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-02-25 14:39:56,628 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-02-25 14:39:56,628 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-02-25 14:39:56,629 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-02-25 14:39:56,629 - INFO - Starting simple PyMDP simulation\n2026-02-25 14:39:56,629 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-02-25 14:39:56,629 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-02-25 14:39:56,629 - INFO - Wrapped arrays in obj_array format (except E)\n2026-02-25 14:39:56,629 - INFO - Successfully created PyMDP agent\n2026-02-25 14:39:56,629 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-02-25 14:39:56,630 - INFO - Step 0: true_s=0, obs=1, belief=[0.05 0.9  0.05], action=0.0\n2026-02-25 14:39:56,630 - INFO - Step 1: true_s=0, obs=0, belief=[0.49 0.49 0.03], action=2.0\n2026-02-25 14:39:56,631 - INFO - Step 2: true_s=2, obs=2, belief=[0.   0.05 0.94], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 4: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 14: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Saving raw simulation data for analysis step...\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-02-25 14:39:56,634 - INFO - PyMDP simulation completed successfully\n2026-02-25 14:39:56,634 - INFO - \u2713 Simulation completed successfully!\n2026-02-25 14:39:56,634 - INFO - Results summary:\n2026-02-25 14:39:56,634 - INFO -   Correlation ID: render_generated_script\n2026-02-25 14:39:56,634 - INFO -   Success: True\n2026-02-25 14:39:56,634 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
+      "execution_time": 1.728796,
+      "timestamp": "2026-02-25T14:39:55.121867",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
         "states": [],
         "observations": [
-          2,
-          0,
-          0,
-          2,
-          1,
-          2,
           1,
           0,
           2,
           2,
           2,
-          0,
-          1,
           2,
-          1
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          2,
+          0
         ],
         "actions": [
           0,
           2,
-          2,
-          1,
-          1,
           0,
           0,
           0,
           0,
           0,
-          1,
+          0,
+          0,
+          0,
+          0,
           0,
           0,
           0,
@@ -59,93 +59,93 @@
         ],
         "policy": [],
         "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-        "raw_error": "2026-02-24 11:11:50,116 - INFO - A matrix shape: (3, 3)\n2026-02-24 11:11:50,116 - INFO - B matrix shape: (3, 3, 3)\n2026-02-24 11:11:50,116 - INFO - C vector shape: (3,)\n2026-02-24 11:11:50,116 - INFO - D vector shape: (3,)\n2026-02-24 11:11:50,116 - INFO - E vector shape: (3,)\n2026-02-24 11:11:50,117 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-02-24 11:11:50,117 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-02-24 11:11:50,117 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-02-24 11:11:50,117 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-02-24 11:11:50,117 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-02-24 11:11:50,117 - INFO - Starting simple PyMDP simulation\n2026-02-24 11:11:50,117 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-02-24 11:11:50,117 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-02-24 11:11:50,117 - INFO - Wrapped arrays in obj_array format (except E)\n2026-02-24 11:11:50,117 - INFO - Successfully created PyMDP agent\n2026-02-24 11:11:50,117 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-02-24 11:11:50,118 - INFO - Step 0: true_s=2, obs=2, belief=[0.05 0.05 0.9 ], action=0.0\n2026-02-24 11:11:50,119 - INFO - Step 1: true_s=2, obs=0, belief=[0.49 0.03 0.49], action=2.0\n2026-02-24 11:11:50,119 - INFO - Step 2: true_s=0, obs=0, belief=[0.94 0.   0.05], action=2.0\n2026-02-24 11:11:50,120 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=1.0\n2026-02-24 11:11:50,120 - INFO - Step 4: true_s=2, obs=1, belief=[0.   0.05 0.95], action=1.0\n2026-02-24 11:11:50,120 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,120 - INFO - Step 6: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 7: true_s=2, obs=0, belief=[0.05 0.   0.95], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,121 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=1.0\n2026-02-24 11:11:50,122 - INFO - Step 11: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,122 - INFO - Step 12: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,122 - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,123 - INFO - Step 14: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-02-24 11:11:50,123 - INFO - Saving raw simulation data for analysis step...\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-02-24 11:11:50,123 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-02-24 11:11:50,123 - INFO - PyMDP simulation completed successfully\n2026-02-24 11:11:50,123 - INFO - \u2713 Simulation completed successfully!\n2026-02-24 11:11:50,123 - INFO - Results summary:\n2026-02-24 11:11:50,123 - INFO -   Correlation ID: render_generated_script\n2026-02-24 11:11:50,123 - INFO -   Success: True\n2026-02-24 11:11:50,123 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
+        "raw_error": "2026-02-25 14:39:56,628 - INFO - A matrix shape: (3, 3)\n2026-02-25 14:39:56,628 - INFO - B matrix shape: (3, 3, 3)\n2026-02-25 14:39:56,628 - INFO - C vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - D vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - E vector shape: (3,)\n2026-02-25 14:39:56,628 - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-02-25 14:39:56,628 - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-02-25 14:39:56,628 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-02-25 14:39:56,628 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-02-25 14:39:56,629 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-02-25 14:39:56,629 - INFO - Starting simple PyMDP simulation\n2026-02-25 14:39:56,629 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-02-25 14:39:56,629 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-02-25 14:39:56,629 - INFO - Wrapped arrays in obj_array format (except E)\n2026-02-25 14:39:56,629 - INFO - Successfully created PyMDP agent\n2026-02-25 14:39:56,629 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-02-25 14:39:56,630 - INFO - Step 0: true_s=0, obs=1, belief=[0.05 0.9  0.05], action=0.0\n2026-02-25 14:39:56,630 - INFO - Step 1: true_s=0, obs=0, belief=[0.49 0.49 0.03], action=2.0\n2026-02-25 14:39:56,631 - INFO - Step 2: true_s=2, obs=2, belief=[0.   0.05 0.94], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 4: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,631 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,632 - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Step 14: true_s=2, obs=0, belief=[0. 0. 1.], action=0.0\n2026-02-25 14:39:56,633 - INFO - Saving raw simulation data for analysis step...\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-02-25 14:39:56,634 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-02-25 14:39:56,634 - INFO - PyMDP simulation completed successfully\n2026-02-25 14:39:56,634 - INFO - \u2713 Simulation completed successfully!\n2026-02-25 14:39:56,634 - INFO - Results summary:\n2026-02-25 14:39:56,634 - INFO -   Correlation ID: render_generated_script\n2026-02-25 14:39:56,634 - INFO -   Success: True\n2026-02-25 14:39:56,634 - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
         "beliefs": [
           [
-            0.050000000000000065,
-            0.050000000000000065,
-            0.8999999999999998
+            0.05000000000000008,
+            0.8999999999999999,
+            0.05000000000000008
           ],
           [
-            0.48648648648648674,
-            0.027027027027027084,
-            0.48648648648648607
+            0.48648648648648685,
+            0.48648648648648596,
+            0.027027027027027098
           ],
           [
-            0.9446064139941689,
-            0.0029154518950437556,
-            0.05247813411078733
+            0.0029154518950437534,
+            0.05247813411078715,
+            0.9446064139941691
           ],
           [
-            0.003076397197060349,
             0.00017091095539224817,
+            0.003076397197060341,
             0.9967526918475474
           ],
           [
-            0.0001624167614098795,
-            0.05262303069676972,
-            0.9472145525418204
+            9.524263060151733e-06,
+            0.0001714367350826293,
+            0.9998190390018571
           ],
           [
-            0.003076893856658652,
-            9.496585977352993e-06,
-            0.996913609557364
+            5.292161726404406e-07,
+            9.525891107427815e-06,
+            0.9999899448927199
           ],
           [
-            0.0030763971970605448,
-            0.00017091095539425275,
-            0.9967526918475452
+            2.9401177693576154e-08,
+            5.292211983843639e-07,
+            0.999999441377624
           ],
           [
-            0.052623030696772925,
-            0.000162416761411784,
-            0.9472145525418154
+            1.6333996280714976e-09,
+            2.9401193205286563e-08,
+            0.9999999689654072
           ],
           [
-            0.003076893856658856,
-            9.496585977464395e-06,
-            0.9969136095573637
+            9.074443199706542e-11,
+            1.6333996759471579e-09,
+            0.9999999982758558
           ],
           [
-            0.00017143827719349471,
-            5.29130485177473e-07,
-            0.9998280325923212
+            5.041362896935014e-12,
+            9.074443214482891e-11,
+            0.9999999999042142
           ],
           [
-            9.525895868617052e-06,
-            2.940091318097039e-08,
-            0.9999904447032182
+            2.8008127207728315e-13,
+            5.041362897391006e-12,
+            0.9999999999946785
           ],
           [
-            5.292161745470055e-07,
-            9.525891107528783e-06,
-            0.9999899448927179
+            1.556562622659395e-14,
+            2.8008127207868584e-13,
+            0.9999999999997045
           ],
           [
-            5.291304871771605e-07,
-            0.00017143827719719328,
-            0.9998280325923157
+            8.703125681443494e-16,
+            1.5565626226597965e-14,
+            0.9999999999999836
           ],
           [
-            2.940091329208239e-08,
-            9.525895868822608e-06,
-            0.9999904447032177
+            5.390625378579792e-17,
+            8.703125681443444e-16,
+            0.9999999999999991
           ],
           [
-            2.9396152972315634e-08,
-            0.0001714383628727313,
-            0.9998285322409743
+            2.770312568144342e-15,
+            9.703125681443433e-16,
+            0.9999999999999962
           ]
         ],
         "num_timesteps": 15
       },
-      "structured_result_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_results.json",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp",
+      "structured_result_file": "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_results.json",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/pymdp/execution_logs/Active Inference POMDP Agent_pymdp.py_execution.log",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/pymdp",
       "collected_outputs": {
         "visualizations": [],
         "simulation_data": [
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/Active Inference POMDP Agent_simulation_results.json"
+          "output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/Active Inference POMDP Agent_simulation_results.json"
         ],
         "traces": [],
         "other": []
@@ -161,8 +161,8 @@
       "return_code": 0,
       "stdout": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (3, 3)\n   B matrix shape: (3, 3, 3)\n   C vector shape: (3,)\n   D vector shape: (3,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 3\n- Number of observations: 3\n- Number of actions: 3\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.33333 0.33333 0.33333]\n   Updated belief: [0.9  0.05 0.05]\n   Selected action: 2\n   Expected free energy: -0.1560\n   EFE for all actions: [ 0.49429578  0.49429578 -0.1559542 ]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 1 2 0 0 0 0 0 0 0 0 0]\n   Final belief: [1.4822199e-19 1.4822199e-19 1.0000000e+00]\n   Average EFE: 0.0458\n\n\ud83d\udcbe Saved simulation results to: jax_outputs/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
       "stderr": "",
-      "execution_time": 1.495619,
-      "timestamp": "2026-02-24T11:11:50.301075",
+      "execution_time": 0.936245,
+      "timestamp": "2026-02-25T14:39:56.853442",
       "simulation_data": {
         "traces": [],
         "free_energy": [
@@ -285,13 +285,13 @@
         ],
         "num_timesteps": 15
       },
-      "structured_result_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_results.json",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax",
+      "structured_result_file": "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_results.json",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/jax/execution_logs/Active Inference POMDP Agent_jax.py_execution.log",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/jax",
       "collected_outputs": {
         "visualizations": [],
         "simulation_data": [
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json"
+          "output/12_execute_output/actinf_pomdp_agent/jax/simulation_data/jax_outputs_simulation_results.json"
         ],
         "traces": [],
         "other": []
@@ -307,8 +307,8 @@
       "return_code": 0,
       "stdout": "\u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 3 states, 3 observations, 3 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Active Inference POMDP Agent\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n  - A_matrix: S \u2192 O @ P\n  - B_matrix: S @ A \u2192 S @ P\n  - C_vector: Ty() \u2192 O @ P\n  - D_vector: Ty() \u2192 S @ P\n  - E_vector: Ty() \u2192 A @ P\n  - state_inference: O \u2192 S @ P\n  - policy_inference: S @ P \u2192 A @ P\n  - action_selection: A @ P \u2192 A\n\n\ud83d\udd17 Compositional Structure:\n  - Loop composition depth: 3\n  - Model composition depth: 3\n\n\ud83d\udcbe Exporting circuit data to discopy_diagrams/...\n\u2713 Exported analysis: discopy_diagrams/circuit_analysis.json\n\u2713 Exported circuit info: discopy_diagrams/circuit_info.json\n\n\u2705 DisCoPy categorical diagram generation completed successfully!\n\ud83d\udcca Circuit analysis and data export successful\n\n\ud83c\udf89 Categorical representation of Active Inference model complete!\n",
       "stderr": "",
-      "execution_time": 0.359473,
-      "timestamp": "2026-02-24T11:11:51.798695",
+      "execution_time": 0.359066,
+      "timestamp": "2026-02-25T14:39:57.791819",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
@@ -350,14 +350,14 @@
           "num_actions": 3
         }
       },
-      "structured_result_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_results.json",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy",
+      "structured_result_file": "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_results.json",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/discopy/execution_logs/Active Inference POMDP Agent_discopy.py_execution.log",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/discopy",
       "collected_outputs": {
         "visualizations": [],
         "simulation_data": [
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+          "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+          "output/12_execute_output/actinf_pomdp_agent/discopy/simulation_data/discopy_diagrams_circuit_info.json"
         ],
         "traces": [],
         "other": []
@@ -373,8 +373,8 @@
       "return_code": 0,
       "stdout": "\ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 3)\nC vector (preferences): [0.1, 0.1, 1.0]\nC preferred (softmax): [0.22423520099764466, 0.22423520099764466, 0.5515295980047107]\nD vector size: (3,)\n\n\ud83e\udde0 Running Active Inference simulation with EFE-based action selection...\n  Step 1: obs=2, action=2, belief_max=0.9, EFE=[1.199, 1.199, 1.199]\n  Step 2: obs=1, action=3, belief_max=0.994, EFE=[1.433, 1.433, 0.675]\n  Step 3: obs=3, action=1, belief_max=1.0, EFE=[0.684, 0.684, 1.449]\n  Step 4: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 5: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 6: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 7: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 8: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 9: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 10: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 11: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 12: obs=1, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 13: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 14: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 15: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n\n\u2705 Active Inference simulation complete\nAction distribution: Dict(2 => 7, 3 => 1, 1 => 7)\n\u2705 Standardized results saved to simulation_results.json\n\u2705 RxInfer Active Inference simulation successful\n\ud83d\udcca Visualizations will be generated by the analysis step\n",
       "stderr": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n",
-      "execution_time": 19.42459,
-      "timestamp": "2026-02-24T11:11:52.160873",
+      "execution_time": 18.296351,
+      "timestamp": "2026-02-25T14:39:58.153195",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
@@ -385,13 +385,13 @@
         "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (3, 3)\nB matrix size: (3, 3, 3)\nC vector (preferences): [0.1, 0.1, 1.0]\nC preferred (softmax): [0.22423520099764466, 0.22423520099764466, 0.5515295980047107]\nD vector size: (3,)\n\n\ud83e\udde0 Running Active Inference simulation with EFE-based action selection...\n  Step 1: obs=2, action=2, belief_max=0.9, EFE=[1.199, 1.199, 1.199]\n  Step 2: obs=1, action=3, belief_max=0.994, EFE=[1.433, 1.433, 0.675]\n  Step 3: obs=3, action=1, belief_max=1.0, EFE=[0.684, 0.684, 1.449]\n  Step 4: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 5: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 6: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 7: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 8: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 9: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 10: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 11: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 12: obs=1, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 13: obs=3, action=2, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 14: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n  Step 15: obs=3, action=1, belief_max=1.0, EFE=[0.685, 0.685, 1.45]\n\n\u2705 Active Inference simulation complete\nAction distribution: Dict(2 => 7, 3 => 1, 1 => 7)\n\u2705 Standardized results saved to simulation_results.json\n\u2705 RxInfer Active Inference simulation successful\n\ud83d\udcca Visualizations will be generated by the analysis step\n",
         "raw_error": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n"
       },
-      "structured_result_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_results.json",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer",
+      "structured_result_file": "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_results.json",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/rxinfer/execution_logs/Active Inference POMDP Agent_rxinfer.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/rxinfer",
       "collected_outputs": {
         "visualizations": [],
         "simulation_data": [
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
+          "output/12_execute_output/actinf_pomdp_agent/rxinfer/simulation_data/rxinfer_simulation_results.json"
         ],
         "traces": [],
         "other": []
@@ -405,10 +405,10 @@
       "executor": "julia",
       "success": true,
       "return_code": 0,
-      "stdout": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Active Inference POMDP Agent\n======================================================================\nJulia version: 1.12.1\nDate: 2026-02-24T11:12:22.975\nModel dimensions: States=3, Observations=3, Actions=3\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-02-24_11-12-23\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n\u2705 B matrix created: (3, 3, 3)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u2705 E vector created: 3 (matches 3 policies)\n\ud83d\udd27 Normalizing matrices...\n\u2705 All matrices normalized\n\ud83e\udd16 Creating ActiveInference.jl agent...\n\u2705 Agent initialized successfully\n\ud83d\ude80 Running simulation...\nStep 5: obs=1, action=3, belief=0.984\nStep 10: obs=3, action=2, belief=0.0\nStep 15: obs=3, action=2, belief=0.0\n\u2705 Simulation completed: 15 timesteps\n\ud83d\udcca Visualizations will be generated by the analysis step\n\ud83d\udcbe Saving results...\n\ud83d\udd0d Running validation checks...\n\u2705 Validation: beliefs_valid=true, sum_to_one=true, actions_valid=true\n======================================================================\n\u2705 Simulation completed successfully!\n======================================================================\n\ud83d\udcca Results saved to: activeinference_outputs_2026-02-24_11-12-23\n\ud83d\udcc8 Final belief: 0.0\n\ud83c\udfaf Action distribution: Dict{Any, Int64}(2 => 8, 3 => 4, 1 => 3)\n\u2705 Validation: ALL CHECKS PASSED\n\nActiveInference.jl script completed!\nModel: Active Inference POMDP Agent\n",
+      "stdout": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Active Inference POMDP Agent\n======================================================================\nJulia version: 1.12.1\nDate: 2026-02-25T14:40:27.609\nModel dimensions: States=3, Observations=3, Actions=3\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-02-25_14-40-27\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n\u2705 B matrix created: (3, 3, 3)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u2705 E vector created: 3 (matches 3 policies)\n\ud83d\udd27 Normalizing matrices...\n\u2705 All matrices normalized\n\ud83e\udd16 Creating ActiveInference.jl agent...\n\u2705 Agent initialized successfully\n\ud83d\ude80 Running simulation...\nStep 5: obs=1, action=3, belief=0.984\nStep 10: obs=3, action=2, belief=0.0\nStep 15: obs=3, action=2, belief=0.0\n\u2705 Simulation completed: 15 timesteps\n\ud83d\udcca Visualizations will be generated by the analysis step\n\ud83d\udcbe Saving results...\n\ud83d\udd0d Running validation checks...\n\u2705 Validation: beliefs_valid=true, sum_to_one=true, actions_valid=true\n======================================================================\n\u2705 Simulation completed successfully!\n======================================================================\n\ud83d\udcca Results saved to: activeinference_outputs_2026-02-25_14-40-27\n\ud83d\udcc8 Final belief: 0.0\n\ud83c\udfaf Action distribution: Dict{Any, Int64}(2 => 8, 3 => 4, 1 => 3)\n\u2705 Validation: ALL CHECKS PASSED\n\nActiveInference.jl script completed!\nModel: Active Inference POMDP Agent\n",
       "stderr": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n",
-      "execution_time": 17.768873,
-      "timestamp": "2026-02-24T11:12:11.589378",
+      "execution_time": 17.611818,
+      "timestamp": "2026-02-25T14:40:16.451301",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
@@ -416,7 +416,7 @@
         "observations": [],
         "actions": [],
         "policy": [],
-        "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Active Inference POMDP Agent\n======================================================================\nJulia version: 1.12.1\nDate: 2026-02-24T11:12:22.975\nModel dimensions: States=3, Observations=3, Actions=3\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-02-24_11-12-23\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n\u2705 B matrix created: (3, 3, 3)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u2705 E vector created: 3 (matches 3 policies)\n\ud83d\udd27 Normalizing matrices...\n\u2705 All matrices normalized\n\ud83e\udd16 Creating ActiveInference.jl agent...\n\u2705 Agent initialized successfully\n\ud83d\ude80 Running simulation...\nStep 5: obs=1, action=3, belief=0.984\nStep 10: obs=3, action=2, belief=0.0\nStep 15: obs=3, action=2, belief=0.0\n\u2705 Simulation completed: 15 timesteps\n\ud83d\udcca Visualizations will be generated by the analysis step\n\ud83d\udcbe Saving results...\n\ud83d\udd0d Running validation checks...\n\u2705 Validation: beliefs_valid=true, sum_to_one=true, actions_valid=true\n======================================================================\n\u2705 Simulation completed successfully!\n======================================================================\n\ud83d\udcca Results saved to: activeinference_outputs_2026-02-24_11-12-23\n\ud83d\udcc8 Final belief: 0.0\n\ud83c\udfaf Action distribution: Dict{Any, Int64}(2 => 8, 3 => 4, 1 => 3)\n\u2705 Validation: ALL CHECKS PASSED\n\nActiveInference.jl script completed!\nModel: Active Inference POMDP Agent\n",
+        "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\n\u2705 Package installation complete\n======================================================================\nActiveInference.jl Script for GNN Model: Active Inference POMDP Agent\n======================================================================\nJulia version: 1.12.1\nDate: 2026-02-25T14:40:27.609\nModel dimensions: States=3, Observations=3, Actions=3\n\n\ud83d\udcc1 Output directory: activeinference_outputs_2026-02-25_14-40-27\n\ud83d\udd27 Creating model matrices from GNN specification...\n\u2705 A matrix created: (3, 3)\n\u2705 B matrix created: (3, 3, 3)\n\u2705 C vector created: 3\n\u2705 D vector created: 3\n\u2705 E vector created: 3 (matches 3 policies)\n\ud83d\udd27 Normalizing matrices...\n\u2705 All matrices normalized\n\ud83e\udd16 Creating ActiveInference.jl agent...\n\u2705 Agent initialized successfully\n\ud83d\ude80 Running simulation...\nStep 5: obs=1, action=3, belief=0.984\nStep 10: obs=3, action=2, belief=0.0\nStep 15: obs=3, action=2, belief=0.0\n\u2705 Simulation completed: 15 timesteps\n\ud83d\udcca Visualizations will be generated by the analysis step\n\ud83d\udcbe Saving results...\n\ud83d\udd0d Running validation checks...\n\u2705 Validation: beliefs_valid=true, sum_to_one=true, actions_valid=true\n======================================================================\n\u2705 Simulation completed successfully!\n======================================================================\n\ud83d\udcca Results saved to: activeinference_outputs_2026-02-25_14-40-27\n\ud83d\udcc8 Final belief: 0.0\n\ud83c\udfaf Action distribution: Dict{Any, Int64}(2 => 8, 3 => 4, 1 => 3)\n\u2705 Validation: ALL CHECKS PASSED\n\nActiveInference.jl script completed!\nModel: Active Inference POMDP Agent\n",
         "raw_error": "   Resolving package versions...\n     Project No packages added to or removed from `~/.julia/environments/v1.12/Project.toml`\n    Manifest No packages added to or removed from `~/.julia/environments/v1.12/Manifest.toml`\n",
         "beliefs": [
           [
@@ -496,141 +496,18 @@
           ]
         ]
       },
-      "structured_result_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_results.json",
-      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log",
-      "implementation_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl",
+      "structured_result_file": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_results.json",
+      "output_file": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/execution_logs/Active Inference POMDP Agent_activeinference.jl_execution.log",
+      "implementation_directory": "output/12_execute_output/actinf_pomdp_agent/activeinference_jl",
       "collected_outputs": {
         "visualizations": [],
         "simulation_data": [
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-12-23_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-12-23_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-41-31_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-41-31_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-04-13_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-04-13_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-09-30_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-09-30_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-03-27_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-03-27_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-34-36_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-34-36_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-42-28_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-42-28_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-00-30_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-00-30_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-30-48_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-30-48_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-53-51_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-53-51_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-59-05_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-59-05_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-57-26_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-57-26_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-36-33_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-36-33_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-15-53_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-15-53_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-55-25_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-55-25_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-10-35_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-10-35_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-44-25_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-44-25_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-06-26_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-06-26_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-12-58_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-12-58_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-28-20_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-28-20_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-45-37_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-45-37_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-33-51_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-33-51_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-37-11_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-37-11_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-42-17_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-42-17_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-04-41_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-04-41_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-07-59_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-07-59_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-14-24_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-14-24_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-58-57_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-58-57_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-57-08_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-57-08_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-31-35_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-31-35_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-43-30_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-43-30_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-43-48_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-43-48_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-08-33_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-08-33_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-32-47_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-32-47_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-35-33_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-35-33_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-05-35_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-05-35_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-01-43_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-01-43_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-09-13_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-09-13_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-40-18_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-40-18_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-27-07_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-27-07_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-10-45_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-10-45_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-11-14_simulation_results.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-11-14_model_parameters.json",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-12-23_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-41-31_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-04-13_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-09-30_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-03-27_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-34-36_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-42-28_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-00-30_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-30-48_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-53-51_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-59-05_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_05-57-26_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-36-33_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-15-53_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-55-25_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-10-35_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-44-25_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-06-26_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-12-58_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-28-20_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-45-37_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-33-51_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-37-11_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-42-17_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-04-41_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-07-59_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-14-24_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-58-57_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_06-57-08_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-31-35_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-43-30_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-43-48_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-08-33_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-32-47_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-35-33_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-23_07-05-35_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-01-43_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-09-13_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-40-18_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-27-07_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_07-10-45_simulation_results.csv",
-          "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-24_11-11-14_simulation_results.csv"
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.json",
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/model_parameters.json",
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-25_14-40-27_simulation_results.json",
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-25_14-40-27_model_parameters.json",
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/simulation_results.csv",
+          "output/12_execute_output/actinf_pomdp_agent/activeinference_jl/simulation_data/activeinference_outputs_2026-02-25_14-40-27_simulation_results.csv"
         ],
         "traces": [],
         "other": []

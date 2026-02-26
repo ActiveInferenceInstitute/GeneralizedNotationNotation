@@ -3,7 +3,7 @@
 **Version**: v1.2.0  
 **Last Updated**: February 24, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,506 Tests Passing  
+**Test Count**: 1,522+ tests Passing  
 
 This document provides information about tools, libraries, and resources for working with Generalized Notation Notation (GNN).
 
@@ -539,7 +539,7 @@ The MCP step exposes every pipeline module as a callable tool. As of v1.2.0 ther
 PYTHONPATH=src python src/mcp/validate_tools.py
 # → generates src/tests/mcp_audit_report.json
 
-# Or via pytest (203 tests, 0 skips)
+# Or via pytest (1,522+ tests, 0 skips)
 PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
 ```
 

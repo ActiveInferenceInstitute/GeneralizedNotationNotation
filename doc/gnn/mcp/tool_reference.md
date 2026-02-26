@@ -87,4 +87,4 @@ Sorted alphabetically by domain. For full per-domain documentation see **[../mod
 | website | `process_website` | Generate static HTML website from pipeline output |
 
 **Total: 76 tools across 22 domains**  
-Verified by `src/tests/test_mcp_audit.py` — 203 tests, 0 failures, 0 skips.
+Verified by `src/tests/test_mcp_audit.py` — 1,522+ tests, 0 failures, 0 skips.

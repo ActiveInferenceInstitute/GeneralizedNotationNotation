@@ -122,12 +122,12 @@ The telemetry package operates with extremely high resilience, guaranteeing zero
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [pymdp_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp()` | Entry point |
-| Execution | [pymdp_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_runner.py) | `execute_pymdp_script_with_outputs()` | L77-220 |
-| Pre-validation | [pymdp_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_runner.py) | `validate_and_clean_pymdp_script()` | L22-75 |
-| Trace Generation | [pymdp_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_runner.py) | `generate_simulation_trace()` | L266-306 |
-| Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs()` | L32-345 |
-| Cross-Framework | [visualizations.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/visualizations.py) | `generate_unified_comparison()` | L730-986 |
+| Rendering | [pymdp_renderer.py](#placeholder) | `render_gnn_to_pymdp()` | Entry point |
+| Execution | [pymdp_runner.py](#placeholder) | `execute_pymdp_script_with_outputs()` | L77-220 |
+| Pre-validation | [pymdp_runner.py](#placeholder) | `validate_and_clean_pymdp_script()` | L22-75 |
+| Trace Generation | [pymdp_runner.py](#placeholder) | `generate_simulation_trace()` | L266-306 |
+| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L32-345 |
+| Cross-Framework | [visualizations.py](#placeholder) | `generate_unified_comparison()` | L730-986 |
 
 ---
 

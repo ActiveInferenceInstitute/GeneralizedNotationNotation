@@ -3,7 +3,7 @@
 **Version**: v1.2.0  
 **Last Updated**: February 24, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,506 Tests Passing  
+**Test Count**: 1,522+ tests Passing  
 
 This document provides comprehensive guidance on type checking and the type system for Generalized Notation Notation (GNN) models, including type inference, validation, and resource estimation.
 

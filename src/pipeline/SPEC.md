@@ -25,3 +25,11 @@ from pipeline.config import PipelineConfig, get_step_config
 
 ## Step Naming Convention
 Steps follow `N_name.py` pattern (0-24)
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

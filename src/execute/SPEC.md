@@ -22,3 +22,11 @@ GNN model execution across multiple frameworks.
 ```python
 from execute import process_execute, ExecutionResult
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

@@ -4,23 +4,23 @@ Okay, here’s a concise and comprehensive summary of the provided GNN specifica
 
 **1. Model Overview:**
 
-This GNN specification defines an Active Inference agent designed to solve a discrete POMDP (Partially Observable Markov Decision Process). The agent learns to navigate an environment by actively observing, predicting, and acting to minimize its expected free energy – essentially, it’s learning to minimize its uncertainty about its hidden state. This model provides a foundational example for building more complex Active Inference models.
+This GNN specification defines an Active Inference agent designed to solve a discrete POMDP (Partially Observable Markov Decision Process). The agent learns to navigate an environment by actively observing, inferring its hidden state, and taking actions to maximize its expected reward (implicitly defined through the preference vector C). It’s a foundational example illustrating core Active Inference principles within a probabilistic framework.
 
 **2. Key Variables:**
 
-*   **Hidden States (s):**  Represents the agent’s internal belief about its location within the environment (3 states). This is the primary factor the agent attempts to control and infer.
-*   **Observations (o):** The agent’s sensory input, representing the observed state of the environment (3 possible outcomes).
-*   **Actions/Controls (u):** The discrete actions the agent can take to influence its environment and, consequently, its hidden state (3 actions).
+*   **Hidden States (s):** Represents the agent’s underlying belief about its location within the environment (3 states).
+*   **Observations (o):** The agent’s sensory input, representing the outcome of the hidden state (3 outcomes).
+*   **Actions/Controls (u):** Discrete actions the agent can take to influence its environment and move to a new state (3 actions).
 
 **3. Critical Parameters:**
 
-*   **A (Likelihood Matrix):** A 3x3 matrix defining the probability of observing a particular state given the agent’s hidden state.  It represents the agent’s prior belief about the relationship between its internal state and the sensory data it receives.  Identifies a deterministic mapping.
-*   **B (Transition Matrix):** A 3x3x3 matrix that dictates how the agent’s hidden state transitions to the next state based on the chosen action. Each slice corresponds to a different action.
-*   **C (Log-Preference Vector):** A 3-element vector representing the agent’s preference (as a log-probability) for observing each of the three possible observations.
-*   **D (Prior Over Hidden States):** A 3-element vector representing the agent’s initial prior belief about the probability of being in each of the three hidden states. Uniform prior.
-*   **E (Habit):** A 3-element vector representing the agent’s initial policy – the distribution over actions it would take without any observation. Uniform prior.
-*   **G (Expected Free Energy):** Calculated based on the belief and policy, representing the agent’s expected cost of action.
+*   **A (Likelihood Matrix):**  A 3x3 matrix defining the likelihood of observing a particular outcome given the agent’s hidden state.  It represents the agent’s prior belief about the relationship between its internal state and the sensory data it receives.
+*   **B (Transition Matrix):** A 3x3x3 matrix that governs the state transitions based on the chosen action. Each slice corresponds to a different action, defining the deterministic movement between states.
+*   **C (Log-Preference Vector):** A 3-element vector representing the agent’s preference for observing specific outcomes. Higher values indicate a stronger preference.
+*   **D (Prior Over Hidden States):** A 3-element vector representing the agent’s initial belief about the probability of being in each hidden state. Uniform prior in this case.
+*   **E (Habit):**  A 3-element vector representing the agent’s initial policy prior – the default action the agent would take if it didn’t observe anything. Uniform prior in this case.
+*   **Key Hyperparameters:** `num_hidden_states=3`, `num_obs=3`, `num_actions=3`, `num_timesteps=30`. The model operates on a single time step, with a horizon of 1.
 
 **4. Notable Features:**
 
-*   **Simple POMDP:** This model uses a very basic POMDP structure with only one observation
+*   **Fully Controllable Hidden State:** The agent directly controls its hidden

@@ -45,4 +45,4 @@ This step uses a `setup_orchestrator()` wrapper (not direct delegation) to parse
 
 ## Source
 
-- **Script**: [src/1_setup.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/1_setup.py)
+- **Script**: [src/1_setup.py](#placeholder)

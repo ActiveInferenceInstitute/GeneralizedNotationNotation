@@ -47,4 +47,4 @@ Registered by `src/llm/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/13_llm.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/13_llm.py)
+- **Script**: [src/13_llm.py](#placeholder)

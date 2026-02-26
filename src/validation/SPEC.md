@@ -22,3 +22,11 @@ GNN model validation including semantic, structural, and mathematical validation
 ```python
 from validation import process_validation, SemanticValidator
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

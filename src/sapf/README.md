@@ -69,3 +69,11 @@ This module integrates with the GNN pipeline as Step 15: Audio processing.
 ## Status
 
 ✅ Production Ready
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

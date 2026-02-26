@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-02-23T07:07:41.773281",
+  "timestamp": "2026-02-25T14:42:19.057769",
   "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "rxinfer": {
@@ -64,15 +64,15 @@
         "mean_fe": 0.0458
       },
       "execution_time": {
-        "rxinfer": 19.397854,
-        "activeinference_jl": 19.104289,
-        "pymdp": 1.740679,
-        "jax": 1.153787,
-        "discopy": 0.374223
+        "rxinfer": 18.296351,
+        "activeinference_jl": 17.611818,
+        "pymdp": 1.728796,
+        "jax": 0.936245,
+        "discopy": 0.359066
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.374223
+        "time": 0.359066
       },
       "success_rates": {
         "rxinfer": true,

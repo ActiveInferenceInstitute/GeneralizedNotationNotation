@@ -411,3 +411,10 @@ def validate_model_security_tool(file_path, security_level="standard"):
 **Status**: ✅ Production Ready
 **Version**: 1.0.0
 **Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

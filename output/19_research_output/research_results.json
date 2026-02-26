@@ -4,14 +4,33 @@
   "hypotheses_generated": [
     {
       "file": "actinf_pomdp_agent.md",
+      "model_family": "pomdp",
+      "dimension_count": 10,
       "hypotheses": [
         {
-          "type": "dimensionality_reduction",
-          "description": "Apply PCA or Factor Analysis to actinf_pomdp_agent",
-          "rationale": "Detected dimension size 33333, which exceeds recommended baseline for tractable inference."
+          "type": "connectivity_enrichment",
+          "description": "Investigate potential missing causal links between model components",
+          "rationale": "Graph density is 0.12 (11 connections, 10 variables). Sparse graphs may miss important dependencies.",
+          "priority": "medium"
+        },
+        {
+          "type": "planning_horizon",
+          "description": "Define explicit planning horizon T for tractable policy inference",
+          "rationale": "Unbounded time horizon requires truncation for policy selection. Setting T=3-5 enables efficient Expected Free Energy computation.",
+          "priority": "medium"
+        },
+        {
+          "type": "parameter_learning",
+          "description": "Add Dirichlet concentration parameters for online model learning",
+          "rationale": "Static A and B matrices cannot adapt. Adding concentration parameters (a, b) enables Bayesian learning from experience.",
+          "priority": "medium"
         }
       ]
     }
   ],
-  "errors": []
+  "model_families_detected": {
+    "actinf_pomdp_agent.md": "pomdp"
+  },
+  "errors": [],
+  "analysis_mode": "rule_based"
 }

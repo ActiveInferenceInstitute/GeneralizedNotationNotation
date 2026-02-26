@@ -21,7 +21,7 @@ The DisCoPy implementation consists of three interconnected layers:
 
 ### Source File
 
-[discopy_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/discopy/discopy_renderer.py)
+[discopy_renderer.py](#placeholder)
 
 ---
 
@@ -212,15 +212,15 @@ DisCoPy does **not** produce `beliefs`, `actions`, `observations`, or `efe_histo
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [discopy_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/discopy/discopy_renderer.py) | `_generate_discopy_diagram_code()` | L115-420 |
-| Entry Point | [discopy_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` | L427-471 |
-| GNN Parsing | [discopy_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/discopy/discopy_renderer.py) | `_parse_gnn_content()` | L75-113 |
-| Execution | [discopy_executor.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` | L37-137 |
-| Validation | [discopy_executor.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/discopy/discopy_executor.py) | `DisCoPyExecutor.validate_diagram()` | L155-181 |
-| Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` | L18-90 |
-| Visualization | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/discopy/analyzer.py) | `create_discopy_visualizations()` | L93-343 |
-| Data Extraction | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/discopy/analyzer.py) | `extract_circuit_data()` | L349-385 |
-| Structure Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/discopy/analyzer.py) | `analyze_diagram_structure()` | L388-418 |
+| Rendering | [discopy_renderer.py](#placeholder) | `_generate_discopy_diagram_code()` | L115-420 |
+| Entry Point | [discopy_renderer.py](#placeholder) | `render_gnn_to_discopy()` | L427-471 |
+| GNN Parsing | [discopy_renderer.py](#placeholder) | `_parse_gnn_content()` | L75-113 |
+| Execution | [discopy_executor.py](#placeholder) | `execute_discopy_script()` | L37-137 |
+| Validation | [discopy_executor.py](#placeholder) | `DisCoPyExecutor.validate_diagram()` | L155-181 |
+| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L18-90 |
+| Visualization | [analyzer.py](#placeholder) | `create_discopy_visualizations()` | L93-343 |
+| Data Extraction | [analyzer.py](#placeholder) | `extract_circuit_data()` | L349-385 |
+| Structure Analysis | [analyzer.py](#placeholder) | `analyze_diagram_structure()` | L388-418 |
 
 ---
 

@@ -18,3 +18,11 @@ Graphical user interface for GNN pipeline.
 ```python
 from gui import launch_gui, process_gui
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

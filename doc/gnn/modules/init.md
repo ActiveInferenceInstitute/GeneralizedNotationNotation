@@ -19,5 +19,5 @@ The `_discover_top_level_modules()` function scans `src/` for subdirectories con
 
 ## Source
 
-- **Script**: [src/\_\_init\_\_.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/__init__.py)
+- **Script**: [src/\_\_init\_\_.py](#placeholder)
 - **Lines**: 75

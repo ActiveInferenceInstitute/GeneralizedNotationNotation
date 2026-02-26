@@ -459,7 +459,7 @@ def test_new_module_complex():
 
 ### Test Files
 - **54 test files** covering all modules
-- **652 test functions** providing comprehensive coverage
+- **1,522+ tests functions** providing comprehensive coverage
 - **20+ test categories** for organized execution
 - **25+ test markers** for selective execution
 
@@ -512,3 +512,10 @@ def run_test_suite_tool(output_dir):
 ```
 
 ---
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

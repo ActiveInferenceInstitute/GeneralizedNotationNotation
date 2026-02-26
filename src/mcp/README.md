@@ -398,3 +398,10 @@ When contributing to the MCP implementation:
 - Project overview: ../../README.md
 - Comprehensive docs: ../../DOCS.md
 - Pipeline details (Step 22): ../../doc/pipeline/README.md
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

@@ -285,7 +285,7 @@ This index provides a comprehensive mapping of all cross-references within the G
 |------|-----------|---------------------|------------------|---------------------|
 | 1 | **GNN Parsing** | [Pipeline Step 1](gnn/gnn_tools.md#step-1-gnn-parsing) | [Syntax Guide](gnn/gnn_syntax.md), [File Structure](gnn/gnn_file_structure_doc.md) | Universal |
 | 2 | **Setup** | [Setup Guide](SETUP.md), [Pipeline Step 2](gnn/gnn_tools.md#step-2-setup) | [Configuration](configuration/README.md), [Dependencies](SETUP.md#dependencies-explained) | Environment |
-| 3 | **Testing** | [Testing Guide](testing/README.md), [Pipeline Step 3](gnn/gnn_tools.md#step-3-testing) | [Test Examples](../tests/), [Quality Assurance](testing/README.md#quality-assurance) | Validation |
+| 3 | **Testing** | [Testing Guide](testing/README.md), [Pipeline Step 3](gnn/gnn_tools.md#step-3-testing) | [Test Examples](#placeholder), [Quality Assurance](testing/README.md#quality-assurance) | Validation |
 | 4 | **Type Checking** | [Type Checker](gnn/gnn_tools.md#validation-tools), [Pipeline Step 4](gnn/gnn_tools.md#step-4-type-checking) | [Resource Metrics](gnn/resource_metrics.md), [Common Errors](troubleshooting/common_errors.md) | Validation |
 | 5 | **Export** | [Export Guide](gnn/gnn_tools.md#export-formats), [Pipeline Step 5](gnn/gnn_tools.md#step-5-export) | [Format Converters](README.md#format-converters), [Multi-Format](pkl/pkl_gnn.md) | Universal |
 | 6 | **Visualization** | [Visualization Guide](gnn/gnn_tools.md#visualization-tools), [Pipeline Step 6](gnn/gnn_tools.md#step-6-visualization) | [DisCoPy Diagrams](discopy/gnn_discopy.md), [Advanced Patterns](gnn/advanced_modeling_patterns.md) | Universal |

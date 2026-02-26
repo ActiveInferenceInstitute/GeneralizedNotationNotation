@@ -20,3 +20,11 @@ LLM (Large Language Model) integration for GNN processing.
 ```python
 from llm import process_llm
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

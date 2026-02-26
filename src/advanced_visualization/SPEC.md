@@ -22,3 +22,11 @@ Advanced visualization generation including 3D, interactive dashboards, and D2 d
 ```python
 from advanced_visualization import process_advanced_viz_standardized_impl
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

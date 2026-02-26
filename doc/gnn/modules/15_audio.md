@@ -60,4 +60,4 @@ Registered by `src/audio/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/15_audio.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/15_audio.py)
+- **Script**: [src/15_audio.py](#placeholder)

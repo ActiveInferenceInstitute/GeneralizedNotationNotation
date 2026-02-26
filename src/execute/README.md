@@ -194,3 +194,10 @@ The `pymdp_runner.py` can also be run standalone for testing purposes, provided 
 
 -   Support for executing other types of rendered simulators (e.g., RxInfer.jl scripts).
 -   More sophisticated control over execution parameters passed to individual simulations. 
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

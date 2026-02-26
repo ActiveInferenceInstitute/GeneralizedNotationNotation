@@ -55,3 +55,11 @@ from gnn import (
 ```bash
 python -m pytest src/tests/test_gnn_overall.py src/tests/test_gnn_validation.py src/tests/test_gnn_parsing.py src/tests/test_gnn_processing.py -v
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

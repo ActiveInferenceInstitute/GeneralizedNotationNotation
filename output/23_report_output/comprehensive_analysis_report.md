@@ -1,14 +1,14 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-02-23T07:08:09.413799  
+**Generated:** 2026-02-25T14:42:42.944011  
 **Pipeline Output Directory:** output  
 **Health Score:** 95.0/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 237
-- **Total Size:** 14.249999999999998 MB
+- **Total Files Processed:** 241
+- **Total Size:** 16.21 MB
 - **Success Rate:** 100.0%
 
 ## ⚡ Performance Metrics
@@ -21,7 +21,7 @@
 
 - **Files:** 3
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-02-23T07:03:28.672334
+- **Last Modified:** 2026-02-25T14:38:26.283557
 - **Status:** success
 
 - **File Types:** .json: 2, .md: 1
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-02-23T07:03:31.806715
+- **Last Modified:** 2026-02-25T14:38:29.118420
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -42,7 +42,7 @@
 
 - **Files:** 2
 - **Size:** 0.04 MB
-- **Last Modified:** 2026-02-23T07:04:44.753339
+- **Last Modified:** 2026-02-25T14:39:40.820088
 - **Status:** success
 
 - **File Types:** .log: 1, .txt: 1
@@ -54,7 +54,7 @@
 
 - **Files:** 26
 - **Size:** 0.16 MB
-- **Last Modified:** 2026-02-23T07:04:45.138319
+- **Last Modified:** 2026-02-25T14:39:41.191496
 - **Status:** success
 
 - **File Types:** .json: 5, .tla: 1, .max: 1, .proto: 1, .lean: 1, .thy: 1, .als: 1, .pkl: 2, .md: 1, .hs: 1, .ebnf: 1, .bnf: 1, .scala: 1, .py: 1, .yaml: 1, .z: 1, .xsd: 1, .agda: 1, .xml: 1, .v: 1, .asn1: 1
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:04:45.447520
+- **Last Modified:** 2026-02-25T14:39:41.499527
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-02-23T07:04:45.794409
+- **Last Modified:** 2026-02-25T14:39:41.829303
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:04:46.135336
+- **Last Modified:** 2026-02-25T14:39:42.119009
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -100,7 +100,7 @@
 
 - **Files:** 7
 - **Size:** 0.03 MB
-- **Last Modified:** 2026-02-23T07:04:46.480329
+- **Last Modified:** 2026-02-25T14:39:42.408240
 - **Status:** success
 
 - **File Types:** .json: 3, .graphml: 1, .gexf: 1, .xml: 1, .pkl: 1
@@ -114,7 +114,7 @@
 
 - **Files:** 18
 - **Size:** 2.68 MB
-- **Last Modified:** 2026-02-23T07:04:48.026623
+- **Last Modified:** 2026-02-25T14:39:43.945204
 - **Status:** success
 
 - **File Types:** .json: 2, .csv: 4, .png: 12
@@ -128,7 +128,7 @@
 
 - **Files:** 20
 - **Size:** 1.97 MB
-- **Last Modified:** 2026-02-23T07:04:57.224341
+- **Last Modified:** 2026-02-25T14:39:52.606395
 - **Status:** success
 
 - **File Types:** .png: 10, .html: 1, .json: 1, .d2: 4, .svg: 4
@@ -142,7 +142,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-02-23T07:04:57.731286
+- **Last Modified:** 2026-02-25T14:39:53.111246
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -150,12 +150,12 @@
 
 ### ✅ 11 Render Output
 
-- **Files:** 30
+- **Files:** 26
 - **Size:** 0.11 MB
-- **Last Modified:** 2026-02-23T07:05:41.421420
+- **Last Modified:** 2026-02-25T14:40:33.769453
 - **Status:** success
 
-- **File Types:** .md: 6, .json: 13, .jl: 2, .py: 3, .csv: 3, .txt: 3
+- **File Types:** .md: 6, .json: 11, .jl: 2, .py: 3, .csv: 2, .txt: 2
 - **Key Files:**
   - render_processing_summary.json (0.0 MB)
   - Active Inference POMDP Agent_rxinfer.jl (0.01 MB)
@@ -164,19 +164,19 @@
 
 ### ✅ 12 Execute Output
 
-- **Files:** 31
+- **Files:** 28
 - **Size:** 0.13 MB
-- **Last Modified:** 2026-02-23T07:05:41.784883
+- **Last Modified:** 2026-02-25T14:40:34.067871
 - **Status:** success
 
-- **File Types:** .json: 22, .md: 1, .log: 5, .csv: 3
+- **File Types:** .json: 20, .md: 1, .log: 5, .csv: 2
 - **Dependencies:** Complete
 
 ### ✅ 13 Llm Output
 
 - **Files:** 11
-- **Size:** 0.08 MB
-- **Last Modified:** 2026-02-23T07:07:34.954281
+- **Size:** 0.07 MB
+- **Last Modified:** 2026-02-25T14:42:14.152110
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 10
@@ -190,7 +190,7 @@
 
 - **Files:** 1
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:07:38.341996
+- **Last Modified:** 2026-02-25T14:42:16.356746
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -200,7 +200,7 @@
 
 - **Files:** 6
 - **Size:** 2.36 MB
-- **Last Modified:** 2026-02-23T07:07:39.024297
+- **Last Modified:** 2026-02-25T14:42:16.994636
 - **Status:** success
 
 - **File Types:** .json: 1, .wav: 4, .md: 1
@@ -213,8 +213,8 @@
 ### ✅ 16 Analysis Output
 
 - **Files:** 50
-- **Size:** 6.43 MB
-- **Last Modified:** 2026-02-23T07:07:50.467055
+- **Size:** 6.51 MB
+- **Last Modified:** 2026-02-25T14:42:27.044799
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .png: 45
@@ -227,7 +227,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:07:51.154655
+- **Last Modified:** 2026-02-25T14:42:27.671762
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -237,7 +237,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:07:51.468806
+- **Last Modified:** 2026-02-25T14:42:28.026374
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -247,7 +247,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-02-23T07:07:51.807504
+- **Last Modified:** 2026-02-25T14:42:28.358177
 - **Status:** success
 
 - **File Types:** .md: 1, .json: 1
@@ -255,22 +255,23 @@
 
 ### ✅ 20 Website Output
 
-- **Files:** 3
-- **Size:** 0.01 MB
-- **Last Modified:** 2026-02-23T07:07:52.108827
+- **Files:** 19
+- **Size:** 2.02 MB
+- **Last Modified:** 2026-02-25T14:42:28.721073
 - **Status:** success
 
-- **File Types:** .html: 2, .json: 1
+- **File Types:** .html: 8, .json: 1, .png: 10
 - **Key Files:**
-  - index.html (0.0 MB)
-  - visualization.html (0.0 MB)
+  - mcp.html (0.01 MB)
+  - pipeline.html (0.02 MB)
+  - index.html (0.02 MB)
 - **Dependencies:** Complete
 
 ### ✅ 21 Mcp Output
 
 - **Files:** 3
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-02-23T07:08:02.484341
+- **Last Modified:** 2026-02-25T14:42:39.071950
 - **Status:** success
 
 - **File Types:** .json: 3
@@ -283,26 +284,22 @@
 
 - **Files:** 6
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-02-23T07:08:08.943294
+- **Last Modified:** 2026-02-25T14:42:42.521320
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
 - **Key Files:**
   - gui_processing_summary.json (0.0 MB)
-  - navigation.html (0.05 MB)
+  - navigation.html (0.04 MB)
 - **Dependencies:** Complete
 
-### ✅ 23 Report Output
+### ❌ 23 Report Output
 
-- **Files:** 5
-- **Size:** 0.12 MB
-- **Last Modified:** 2026-02-23T06:47:40.052240
-- **Status:** success
+- **Files:** 0
+- **Size:** 0.0 MB
+- **Last Modified:** None
+- **Status:** generating
 
-- **File Types:** .json: 3, .html: 1, .md: 1
-- **Key Files:**
-  - report_summary.json (0.08 MB)
-  - comprehensive_analysis_report.html (0.03 MB)
 - **Dependencies:** Complete
 
 
@@ -310,10 +307,10 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 75 | 0.49 |
-| .md | 29 | 0.06 |
+| .json | 68 | 0.41 |
+| .md | 28 | 0.05 |
 | .log | 6 | 0.03 |
-| .txt | 4 | 0.02 |
+| .txt | 3 | 0.02 |
 | .tla | 1 | 0.0 |
 | .max | 1 | 0.01 |
 | .proto | 1 | 0.01 |
@@ -335,9 +332,9 @@
 | .asn1 | 1 | 0.01 |
 | .graphml | 1 | 0.0 |
 | .gexf | 1 | 0.0 |
-| .csv | 10 | 0.0 |
-| .png | 67 | 10.85 |
-| .html | 5 | 0.11 |
+| .csv | 8 | 0.0 |
+| .png | 77 | 12.75 |
+| .html | 10 | 0.27 |
 | .d2 | 4 | 0.0 |
 | .svg | 4 | 0.11 |
 | .jl | 2 | 0.02 |
@@ -345,7 +342,7 @@
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 29
+**Total Visualizations:** 35
 
 ### 8 Visualization
 
@@ -383,9 +380,15 @@
 
 ### 20 Website
 
-**Count:** 2
+**Count:** 8
 
 **Files:**
-- [index.html](../20_website_output/index.html) (0.0 MB)
-- [visualization.html](../20_website_output/visualization.html) (0.0 MB)
+- [mcp.html](../20_website_output/mcp.html) (0.01 MB)
+- [pipeline.html](../20_website_output/pipeline.html) (0.02 MB)
+- [index.html](../20_website_output/index.html) (0.02 MB)
+- [analysis.html](../20_website_output/analysis.html) (0.04 MB)
+- [gnn_files.html](../20_website_output/gnn_files.html) (0.01 MB)
+- [visualization.html](../20_website_output/visualization.html) (0.01 MB)
+- [reports.html](../20_website_output/reports.html) (0.06 MB)
+- [actinf_pomdp_agent_interactive_dashboard.html](../20_website_output/assets/actinf_pomdp_agent_interactive_dashboard.html) (0.03 MB)
 

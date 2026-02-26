@@ -310,7 +310,7 @@ graph TB
 | Component | Source |
 |-----------|--------|
 | Parser | [`src/gnn/`](../../src/gnn/) |
-| Examples | [`examples/`](../../examples/) |
+| Examples | [`examples/`](#placeholder) |
 
 ---
 

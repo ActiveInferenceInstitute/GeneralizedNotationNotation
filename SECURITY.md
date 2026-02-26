@@ -22,7 +22,7 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | 0.1.x   | ⚠️ Legacy support | Critical fixes only |
 | < 0.1.0 | ❌ Unsupported | No security support |
 
-> **🔄 Version Updates**: This table is updated with each release. See [Changelog](CHANGELOG.md) for version history.
+> **🔄 Version Updates**: This table is updated with each release. See [Changelog](#) for version history.
 
 ## 📋 Recent CVE Remediation History
 
@@ -232,7 +232,7 @@ Once a security vulnerability is reported, we commit to:
 ### Security Updates
 
 - **Security Announcements**: Subscribe to repository notifications
-- **Release Notes**: Check [Changelog](CHANGELOG.md) for security fixes
+- **Release Notes**: Check [Changelog](#) for security fixes
 - **Community Forum**: Engage in security discussions
 - **Best Practices**: Share security configurations and patterns
 

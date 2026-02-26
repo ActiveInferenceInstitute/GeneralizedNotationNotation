@@ -899,3 +899,11 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 **Status**: Production Ready
 **Version**: 2.0.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

@@ -6,24 +6,25 @@ Prompt:
 
 Response:
 
-Okay, let's break down this GNN model specification for the Active Inference POMDP Agent in meticulous detail. This is a highly structured definition, designed for machine readability and integration into simulation or inference backends.  I'll focus on the technical aspects, highlighting the key components and their relationships within the Active Inference framework.
+Okay, let's break down this GNN model specification for the Active Inference POMDP Agent in detail. This is a meticulously designed representation, and understanding it requires a grasp of Active Inference, POMDPs, and how GNNs can be used to represent and reason about these systems.
 
-**1. Overall Architecture & Purpose:**
+**1. Core Concept: Active Inference & POMDPs**
 
-This model represents a classic Active Inference agent designed to solve a discrete POMDP (Partially Observable Markov Decision Process). The core idea is that the agent’s actions are driven by its beliefs about the underlying hidden state, and it actively seeks observations to reduce uncertainty and improve those beliefs. The GNN specification provides a formal representation of this process, suitable for implementation in a GNN-based system.
+This model embodies the core principles of Active Inference, a framework that posits agents actively construct their perception of the world by generating models of it and then acting to minimize the difference between their predictions and what they actually observe.  It’s implemented within the context of a POMDP (Partially Observable Markov Decision Process).
 
-**2. GNN Version & Key Flags:**
+* **POMDP:** A POMDP is a mathematical framework for representing decision-making under uncertainty. It’s characterized by:
+    * **Hidden States (s):** The underlying true state of the world that the agent doesn't directly observe. Here, it's a 3-state location ("location") factor.
+    * **Observations (o):** The agent’s sensory input, which is noisy and incomplete.  Here, it’s a single observation modality with 3 possible outcomes.
+    * **Actions (u):** The agent’s choices, which influence the transition to the next hidden state. Here, there are 3 discrete actions.
+    * **Transition Dynamics (B):** The probability of transitioning to a new hidden state given the previous state and the action taken.
+    * **Observation Model (A):** The probability of observing a particular outcome given the current hidden state.
+    * **Reward Function (C):**  The agent’s preference for different observations (represented as log-probabilities).
 
-*   **GNN Version: 1.0:**  This indicates the version of the GNN specification format.  Versioning is crucial for tracking changes and ensuring compatibility.
-*   **ModelName: Active Inference POMDP Agent:**  A clear identifier for the model.
+**2. GNN Specification – The Technical Details**
 
-**3. StateSpaceBlock – The Core of the Model:**
+This GNN model is designed to *represent* the dynamics of this POMDP. It’s not a full-fledged simulator, but a structured data representation suitable for a GNN to learn and reason with. Let's dissect the components:
 
-This block defines the fundamental elements of the agent’s state representation:
-
-*   **A (Likelihood Matrix):**  `A[3,3,type=float]` – This is the cornerstone of the model. It represents the *likelihood* of observing a particular outcome (one of the three observations, `o[3]`) given a specific hidden state (one of the three hidden states, `s[3]`).  The values in this matrix are probabilities.  A[i,j] represents the probability of observing outcome `i` when the hidden state is `j`.  The identity mapping (as specified in the initial parameterization) means that each state has an equal probability of producing each observation.
-*   **B (Transition Matrix):** `B[3,3,3,type=float]` – This matrix defines the *transition dynamics* of the hidden state. It specifies the probability of transitioning to a new hidden state given the *previous* hidden state and the *action* taken.  The dimensions reflect:
-    *   3: Number of possible hidden states.
-    *   3: Number of possible previous hidden states.
-    *   3: Number of possible actions.
-    *   The values in this matrix are probabilities. B[i,j,k] represents the
+* **`GNNSection` & `GNNVersionAndFlags`:** Standard metadata for the GNN model.
+* **`ModelName` & `ModelAnnotation`:**  Clearly defines the purpose of the model.
+* **`StateSpaceBlock`:** This is the heart of the model. It defines the core probabilistic relationships:
+    * **`A[3,3,type=float]` (Likelihood Matrix):** This matrix

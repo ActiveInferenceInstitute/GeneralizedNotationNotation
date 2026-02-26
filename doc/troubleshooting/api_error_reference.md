@@ -565,7 +565,7 @@ class ErrorRecoveryManager:
         
         if error.error_code in self.recovery_strategies:
             try:
-                return self.recovery_strategies[error.error_code](error)
+                return self.recovery_strategies[error.error_code](#placeholder)
             except Exception as recovery_error:
                 print(f"Recovery failed: {recovery_error}")
                 return False

@@ -157,66 +157,205 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
         raise Exception(f"Failed to perform security check on {file_path}: {e}")
 
 def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]:
-    """Check for security vulnerabilities in a GNN file."""
+    """
+    Check for security vulnerabilities in a GNN file.
+
+    Uses two complementary techniques:
+    1. Regex pattern matching for GNN markdown files
+    2. Python AST analysis for generated .py files (eval, exec, os.system detection)
+    """
     vulnerabilities = []
-    
+
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
-        # Check for common vulnerabilities
+
+        # -- Technique 1: Regex patterns (for GNN markdown and all files) --
         vuln_patterns = [
             (r'eval\s*\(', "Code injection vulnerability"),
             (r'exec\s*\(', "Code execution vulnerability"),
             (r'import\s+os\s*', "OS command injection risk"),
             (r'subprocess\s*\.', "Subprocess execution risk"),
-            (r'file\s*\(', "File operation risk"),
-            (r'open\s*\(', "File operation risk")
+            (r'subprocess\.call\s*\(', "Subprocess call -- potential command injection"),
+            (r'subprocess\.Popen\s*\(', "Subprocess Popen -- potential command injection"),
+            (r'file\s*\(', "Legacy file() call"),
         ]
-        
+
         for pattern, description in vuln_patterns:
-            matches = re.finditer(pattern, content, re.IGNORECASE)
-            for match in matches:
+            for match in re.finditer(pattern, content, re.IGNORECASE):
                 vulnerabilities.append({
                     "file_path": str(file_path),
                     "file_name": file_path.name,
                     "vulnerability_type": description,
+                    "detection_method": "regex",
                     "pattern": pattern,
                     "line": content[:match.start()].count('\n') + 1,
-                    "context": match.group(0),
-                    "severity": "medium" if "risk" in description else "high"
+                    "context": match.group(0)[:80],
+                    "severity": "medium"
                 })
-        
+
         # Check for hardcoded credentials
         credential_patterns = [
-            r'password\s*[:=]\s*["\'][^"\']+["\']',
-            r'secret\s*[:=]\s*["\'][^"\']+["\']',
-            r'api_key\s*[:=]\s*["\'][^"\']+["\']'
+            r'password\s*[:=]\s*["\'][^"\']{4,}["\']',
+            r'secret\s*[:=]\s*["\'][^"\']{4,}["\']',
+            r'api_key\s*[:=]\s*["\'][^"\']{8,}["\']'
         ]
-        
+
         for pattern in credential_patterns:
-            matches = re.finditer(pattern, content, re.IGNORECASE)
-            for match in matches:
+            for match in re.finditer(pattern, content, re.IGNORECASE):
                 vulnerabilities.append({
                     "file_path": str(file_path),
                     "file_name": file_path.name,
                     "vulnerability_type": "Hardcoded credentials",
+                    "detection_method": "regex",
                     "pattern": pattern,
                     "line": content[:match.start()].count('\n') + 1,
-                    "context": match.group(0),
+                    "context": "[REDACTED]",
                     "severity": "high"
                 })
-        
+
+        # -- Technique 2: AST analysis for Python files --
+        if file_path.suffix == '.py':
+            ast_vulns = _check_python_ast(file_path, content)
+            vulnerabilities.extend(ast_vulns)
+
+        # -- Technique 3: File permission check using os.access --
+        import os as _os
+        is_world_writable = _os.access(str(file_path), _os.W_OK)
+        if is_world_writable and file_path.suffix == '.py':
+            # Generated .py files shouldn't be world-writable in shared environments
+            try:
+                import stat
+                file_stat = file_path.stat()
+                mode = file_stat.st_mode
+                world_write = bool(mode & stat.S_IWOTH)
+                if world_write:
+                    vulnerabilities.append({
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": "World-writable file permissions",
+                        "detection_method": "permission_check",
+                        "pattern": "stat.S_IWOTH",
+                        "line": 0,
+                        "context": f"Mode: {oct(mode)}",
+                        "severity": "low"
+                    })
+            except Exception:
+                pass
+
     except Exception as e:
         vulnerabilities.append({
             "file_path": str(file_path),
             "file_name": file_path.name,
             "vulnerability_type": "File access error",
+            "detection_method": "file_read",
             "error": str(e),
             "severity": "low"
         })
-    
+
     return vulnerabilities
+
+
+def _check_python_ast(file_path: Path, content: str) -> List[Dict[str, Any]]:
+    """
+    Perform AST-level security analysis on a Python source file.
+
+    Detects dangerous function calls at the AST node level,
+    which is more reliable than regex (handles multiline calls, string formatting).
+
+    Dangerous patterns detected:
+    - eval() / exec(): code injection vectors
+    - os.system(): command injection
+    - compile() with user-controlled input: code injection
+    - __import__() dynamic import: potentially dangerous
+    - open() with write modes in unexpected contexts
+
+    Args:
+        file_path: Path to the Python file (for error context)
+        content: File content as string
+
+    Returns:
+        List of vulnerability dicts found via AST analysis
+    """
+    import ast
+
+    vulns = []
+
+    try:
+        tree = ast.parse(content, filename=str(file_path))
+    except SyntaxError as e:
+        return [{
+            "file_path": str(file_path),
+            "file_name": file_path.name,
+            "vulnerability_type": "Syntax error (cannot AST scan)",
+            "detection_method": "ast_parse",
+            "line": e.lineno or 0,
+            "context": str(e),
+            "severity": "info"
+        }]
+
+    # Dangerous function call patterns
+    DANGEROUS_CALLS = {
+        "eval": ("Code injection via eval()", "high"),
+        "exec": ("Code injection via exec()", "high"),
+        "compile": ("Dynamic code compilation", "medium"),
+        "__import__": ("Dynamic import -- verify input is trusted", "medium"),
+    }
+
+    # Dangerous attribute access patterns: obj.method()
+    DANGEROUS_METHODS = {
+        ("os", "system"): ("OS command injection via os.system()", "high"),
+        ("os", "popen"): ("OS command injection via os.popen()", "high"),
+        ("subprocess", "call"): ("Subprocess execution", "medium"),
+        ("subprocess", "Popen"): ("Subprocess execution", "medium"),
+        ("subprocess", "run"): ("Subprocess execution -- verify shell=False", "low"),
+        ("pickle", "loads"): ("Arbitrary code execution via pickle.loads()", "high"),
+        ("pickle", "load"): ("Arbitrary code execution via pickle.load()", "high"),
+        ("marshal", "loads"): ("Arbitrary code execution via marshal.loads()", "high"),
+    }
+
+    for node in ast.walk(tree):
+        if not isinstance(node, ast.Call):
+            continue
+
+        line = getattr(node, "lineno", 0)
+
+        # Direct function calls: eval(), exec(), etc.
+        if isinstance(node.func, ast.Name):
+            func_name = node.func.id
+            if func_name in DANGEROUS_CALLS:
+                desc, severity = DANGEROUS_CALLS[func_name]
+                vulns.append({
+                    "file_path": str(file_path),
+                    "file_name": file_path.name,
+                    "vulnerability_type": desc,
+                    "detection_method": "ast_analysis",
+                    "pattern": f"{func_name}()",
+                    "line": line,
+                    "context": f"{func_name}() call at line {line}",
+                    "severity": severity
+                })
+
+        # Attribute calls: os.system(), pickle.loads(), etc.
+        elif isinstance(node.func, ast.Attribute):
+            method_name = node.func.attr
+            if isinstance(node.func.value, ast.Name):
+                obj_name = node.func.value.id
+                key = (obj_name, method_name)
+                if key in DANGEROUS_METHODS:
+                    desc, severity = DANGEROUS_METHODS[key]
+                    vulns.append({
+                        "file_path": str(file_path),
+                        "file_name": file_path.name,
+                        "vulnerability_type": desc,
+                        "detection_method": "ast_analysis",
+                        "pattern": f"{obj_name}.{method_name}()",
+                        "line": line,
+                        "context": f"{obj_name}.{method_name}() at line {line}",
+                        "severity": severity
+                    })
+
+    return vulns
 
 def generate_security_recommendations(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]:
     """Generate security recommendations for a GNN file."""

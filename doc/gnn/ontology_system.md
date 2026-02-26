@@ -3,7 +3,7 @@
 **Version**: v1.2.0  
 **Last Updated**: February 24, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,506 Tests Passing  
+**Test Count**: 1,522+ tests Passing  
 
 This document describes the ontology system used in conjunction with GNN files, focusing on the Active Inference Ontology.
 

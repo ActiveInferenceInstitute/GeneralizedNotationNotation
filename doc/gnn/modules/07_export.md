@@ -38,4 +38,4 @@ Uses direct import (no try/except fallback) — one of the cleanest orchestrator
 
 ## Source
 
-- **Script**: [src/7_export.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/7_export.py)
+- **Script**: [src/7_export.py](#placeholder)

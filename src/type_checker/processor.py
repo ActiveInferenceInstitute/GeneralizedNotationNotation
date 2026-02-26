@@ -163,7 +163,19 @@ class GNNTypeChecker:
             if not consistency_check["consistent"]:
                 validation_result["errors"].append(consistency_check["message"])
                 validation_result["valid"] = False
-            
+
+            # Validate dimension compatibility
+            gnn_dims = extract_gnn_dimensions(content)
+            if gnn_dims:
+                dim_check = validate_dimension_compatibility(gnn_dims)
+                validation_result["dimension_compatibility"] = dim_check
+                if not dim_check["compatible"]:
+                    for issue in dim_check["issues"]:
+                        validation_result["errors"].append(issue)
+                    validation_result["valid"] = False
+                for warning in dim_check["warnings"]:
+                    validation_result["warnings"].append(warning)
+
             return validation_result
             
         except Exception as e:
@@ -314,32 +326,229 @@ class GNNTypeChecker:
         return summary
 
 def estimate_file_resources(content: str) -> Dict[str, Any]:
-    """Estimate computational resources needed for a GNN file."""
+    """Estimate computational resources needed for a GNN file.
+
+    Uses framework-aware complexity tiers based on variable dimensions
+    rather than naive variable*connection multiplication.
+    """
     try:
-        # Count variables and connections
-        variables = len(re.findall(r'(\w+)\s*[:=]', content))
-        connections = len(re.findall(r'(\w+)\s*[->→]\s*(\w+)', content))
-        
-        # Estimate memory usage
-        estimated_memory = variables * 8 + connections * 16  # bytes
-        
-        # Estimate computation time
-        estimated_time = variables * connections * 0.001  # seconds
-        
+        # Extract structured dimensions
+        variables_with_dims = extract_gnn_dimensions(content)
+
+        # Count connections (directed and undirected)
+        directed_connections = len(re.findall(r'(\w+)\s*>\s*(\w+)', content))
+        undirected_connections = len(re.findall(r'(\w+)\s*-\s*(\w+)', content))
+        total_connections = directed_connections + undirected_connections
+
+        # Compute total parameter count from actual dimensions
+        total_parameters = 0
+        max_single_var = 0
+        for name, dims in variables_with_dims.items():
+            elements = 1
+            for d in dims:
+                elements *= d
+            total_parameters += elements
+            max_single_var = max(max_single_var, elements)
+
+        # Fallback: use regex variable count if no structured dims found
+        if total_parameters == 0:
+            var_count = len(re.findall(r'(\w+)\s*[:=]', content))
+            total_parameters = var_count * 9  # assume 3x3 average
+
+        # Framework-aware complexity tiers
+        if total_parameters < 100:
+            complexity_tier = "minimal"
+            estimated_time = 0.1
+            estimated_memory = total_parameters * 8
+        elif total_parameters < 1000:
+            complexity_tier = "small"
+            estimated_time = 0.5
+            estimated_memory = total_parameters * 8 + 1024 * 1024  # 1MB overhead
+        elif total_parameters < 10000:
+            complexity_tier = "medium"
+            estimated_time = 5.0
+            estimated_memory = total_parameters * 8 + 10 * 1024 * 1024  # 10MB overhead
+        elif total_parameters < 100000:
+            complexity_tier = "large"
+            estimated_time = 30.0
+            estimated_memory = total_parameters * 8 + 100 * 1024 * 1024  # 100MB overhead
+        else:
+            complexity_tier = "very_large"
+            estimated_time = 120.0
+            estimated_memory = total_parameters * 8 + 500 * 1024 * 1024  # 500MB overhead
+
         return {
-            "variables": variables,
-            "connections": connections,
-            "estimated_memory_bytes": estimated_memory,
+            "variables": len(variables_with_dims),
+            "connections": total_connections,
+            "total_parameters": total_parameters,
+            "max_single_variable_elements": max_single_var,
+            "estimated_memory_bytes": int(estimated_memory),
             "estimated_time_seconds": estimated_time,
-            "complexity_score": variables * connections
+            "complexity_score": total_parameters * (1 + total_connections * 0.1),
+            "complexity_tier": complexity_tier,
+            "dimension_map": variables_with_dims
         }
-        
+
     except Exception as e:
         return {
             "error": str(e),
             "variables": 0,
             "connections": 0,
+            "total_parameters": 0,
             "estimated_memory_bytes": 0,
             "estimated_time_seconds": 0,
-            "complexity_score": 0
+            "complexity_score": 0,
+            "complexity_tier": "unknown"
         }
+
+
+def validate_dimension_compatibility(variables: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Validate that matrix/tensor dimensions are compatible in a GNN model.
+
+    Checks Active Inference POMDP constraints:
+    - Likelihood matrix A[obs, states]: columns must match hidden state count
+    - Transition tensor B[states, states, actions]: first two dims must match
+    - Preference C[obs]: length must match A's first dimension
+    - Prior D[states]: length must match A's second dimension
+
+    Args:
+        variables: Dict mapping variable names to their dimension specs
+                   e.g. {"A": [3,3], "B": [3,3,3], "s": [3,1]}
+
+    Returns:
+        Dict with keys: compatible (bool), issues (list of str), warnings (list of str)
+    """
+    issues = []
+    warnings = []
+
+    # Parse dimension specs: extract variables with numeric dimensions
+    dims = {}
+    for name, spec in variables.items():
+        if isinstance(spec, (list, tuple)) and all(isinstance(d, int) for d in spec):
+            dims[name] = list(spec)
+
+    # Check A-s compatibility: A[obs, states], s[states, 1]
+    if "A" in dims and "s" in dims:
+        a_dims = dims["A"]
+        s_dims = dims["s"]
+        if len(a_dims) >= 2 and len(s_dims) >= 1:
+            if a_dims[1] != s_dims[0]:
+                issues.append(
+                    f"Dimension mismatch: A[{a_dims[0]},{a_dims[1]}] column count ({a_dims[1]}) "
+                    f"!= s[{s_dims[0]},...] row count ({s_dims[0]}). "
+                    f"A's columns must equal the number of hidden states."
+                )
+
+    # Check B symmetry: B[states, states, actions] -- first two dims must match
+    if "B" in dims:
+        b_dims = dims["B"]
+        if len(b_dims) >= 2 and b_dims[0] != b_dims[1]:
+            issues.append(
+                f"Transition matrix B[{','.join(str(d) for d in b_dims)}]: "
+                f"first two dimensions must match (got {b_dims[0]} != {b_dims[1]}). "
+                f"B[next_states, prev_states, actions] requires next_states == prev_states."
+            )
+
+    # Check A-B state dimension consistency
+    if "A" in dims and "B" in dims:
+        a_dims = dims["A"]
+        b_dims = dims["B"]
+        if len(a_dims) >= 2 and len(b_dims) >= 1:
+            if a_dims[1] != b_dims[0]:
+                issues.append(
+                    f"State dimension mismatch between A and B: "
+                    f"A has {a_dims[1]} hidden states, B has {b_dims[0]} states. "
+                    f"Must be equal."
+                )
+
+    # Check C-A observation compatibility
+    if "C" in dims and "A" in dims:
+        c_dims = dims["C"]
+        a_dims = dims["A"]
+        if len(c_dims) >= 1 and len(a_dims) >= 1:
+            c_obs = c_dims[0]
+            a_obs = a_dims[0]
+            if c_obs != a_obs:
+                issues.append(
+                    f"Preference vector C[{c_obs}] length != A observation dimension A[{a_obs},...]. "
+                    f"C must have one entry per observation outcome."
+                )
+
+    # Check D-s prior compatibility
+    if "D" in dims and "s" in dims:
+        d_dims = dims["D"]
+        s_dims = dims["s"]
+        if len(d_dims) >= 1 and len(s_dims) >= 1:
+            if d_dims[0] != s_dims[0]:
+                issues.append(
+                    f"Prior D[{d_dims[0]}] length != hidden state s[{s_dims[0]},...] count. "
+                    f"D must have one entry per hidden state."
+                )
+
+    # Warn about very large dimensions (tractability)
+    for name, d in dims.items():
+        total_elements = 1
+        for dim in d:
+            total_elements *= dim
+        if total_elements > 10000:
+            warnings.append(
+                f"Variable {name} with dimensions {d} has {total_elements} total elements. "
+                f"Consider dimensionality reduction for tractable inference."
+            )
+
+    return {
+        "compatible": len(issues) == 0,
+        "issues": issues,
+        "warnings": warnings,
+        "variables_checked": list(dims.keys()),
+        "dimension_map": dims
+    }
+
+
+def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
+    """
+    Extract variable dimensions from GNN StateSpaceBlock content.
+
+    Parses patterns like: A[3,3,type=float], s[3,1,type=float]
+
+    Args:
+        content: Full GNN file content as string
+
+    Returns:
+        Dict mapping variable names to their dimension lists
+    """
+    variables = {}
+
+    # Match: varname[dim1,dim2,...,type=xxx] or varname[dim1,dim2,...]
+    pattern = r'^([A-Za-z_][A-Za-z0-9_\']*)\s*\[([^\]]+)\]'
+
+    in_state_space = False
+    for line in content.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("## StateSpaceBlock"):
+            in_state_space = True
+            continue
+        elif stripped.startswith("##") and in_state_space:
+            in_state_space = False
+            continue
+
+        if in_state_space:
+            match = re.match(pattern, stripped)
+            if match:
+                var_name = match.group(1)
+                dim_str = match.group(2)
+                # Parse dimensions (skip type=xxx entries)
+                dims = []
+                for part in dim_str.split(","):
+                    part = part.strip()
+                    if part.startswith("type=") or part.startswith("π") or not part:
+                        continue
+                    try:
+                        dims.append(int(part))
+                    except ValueError:
+                        pass  # Skip non-integer dimensions (e.g., π)
+                if dims:
+                    variables[var_name] = dims
+
+    return variables

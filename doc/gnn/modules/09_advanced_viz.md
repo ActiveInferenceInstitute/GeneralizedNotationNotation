@@ -41,4 +41,4 @@ Uses direct import — no try/except fallback.
 
 ## Source
 
-- **Script**: [src/9_advanced_viz.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/9_advanced_viz.py)
+- **Script**: [src/9_advanced_viz.py](#placeholder)

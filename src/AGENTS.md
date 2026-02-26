@@ -165,7 +165,7 @@ graph TD
 - **Execution Time**: ~5 minutes (with LLM step)
 - **Memory Usage**: 36.3MB peak
 - **Success Rate**: 100% (25/25 steps successful)
-- **Test Suite Status**: ✅ 1,522 tests passed (optional deps skipped/deselected as needed)
+- **Test Suite Status**: ✅ 1,522+ tests passed (optional deps skipped/deselected as needed)
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
@@ -179,7 +179,7 @@ graph TD
 - **Visualization Refactoring**: Removed visualization code from execute step (12), consolidated in analysis step (16)
   - RxInfer.jl: Removed Plots.jl dependencies, exports data only
   - PyMDP: Removed PyMDPVisualizer from execute, analysis step handles visualization
-- **Test Fixes**: Fixed LLM and pipeline test path expectations (1,522 tests passing)
+- **Test Fixes**: Fixed LLM and pipeline test path expectations (1,522+ tests passing)
 - **Method Robustness**: Enhanced metadata extraction, PyMDP error recovery, and render validation
 - **Observability**: Added JSON logging, log rotation, and performance metrics
 - **Analysis**: Cross-simulation aggregation and statistical summaries
@@ -356,6 +356,6 @@ pytest --cov=src --cov-report=term-missing
 **Pipeline Version**: 1.2.0
 **Total Modules**: 29
 **Total Steps**: 25 (0-24)
-**Test Status**: ✅ 1,522 tests passed
+**Test Status**: ✅ 1,522+ tests passed
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

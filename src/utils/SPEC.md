@@ -50,3 +50,11 @@ from utils import BaseProcessor, ProcessingResult, PipelineLogger
 ## Testing
 
 Tests in: `tests/test_new_utils.py` (11 passing tests)
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

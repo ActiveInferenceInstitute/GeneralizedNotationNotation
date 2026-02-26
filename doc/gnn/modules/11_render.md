@@ -44,4 +44,4 @@ python src/11_render.py --target-dir input/gnn_files --output-dir output --verbo
 
 ## Source
 
-- **Script**: [src/11_render.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/11_render.py)
+- **Script**: [src/11_render.py](#placeholder)

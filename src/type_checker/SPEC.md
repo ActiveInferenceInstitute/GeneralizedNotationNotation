@@ -24,3 +24,11 @@ GNN model type checking and resource estimation.
 ```python
 from type_checker import GNNTypeChecker, GNNResourceEstimator
 ```
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

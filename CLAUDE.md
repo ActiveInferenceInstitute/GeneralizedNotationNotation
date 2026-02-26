@@ -50,8 +50,19 @@ All 25 pipeline steps follow a consistent pattern:
 - **Numbered scripts** (`src/N_module.py`): Thin orchestrators (<150 lines) that handle CLI args, logging, and delegate to modules
 - **Module directories** (`src/module/`): Contain all domain logic
   - `__init__.py`: Public API
-  - `processor.py`: Core logic
+  - `processor.py`: Core logic (preferred; see accepted alternatives below)
   - `mcp.py`: MCP tool registration (if applicable)
+
+**Accepted `processor.py` alternatives** (5 modules use these patterns):
+- `setup/`, `tests/`, `validation/`: Logic lives directly in `__init__.py` — functionally equivalent
+- `model_registry/`: Uses `registry.py` as primary logic file — clearly named
+- `website/`: Uses `renderer.py` + `generator.py`; `processor.py` is a thin shim that re-exports from renderer
+
+**Hard imports** (steps 20, 21, 24): The website, mcp, and intelligent_analysis step scripts use direct (non-try/except) imports because these modules are pipeline-required and must always be present. All three document this with an inline `# Hard import: X is a core module` comment. All other steps use soft imports with graceful degradation fallbacks.
+
+**`src/sapf/` module**: This is a compatibility shim, not a numbered pipeline step. It re-exports functions from `audio.sapf` so that `import sapf` works without duplicating code. The actual SAPF implementation lives in `src/audio/sapf/`.
+
+**Research module (Step 19)**: Uses rule-based static analysis (no external LLM required). The `FEATURES = {'fallback_mode': True}` flag in `__init__.py` indicates it operates without LLM dependencies, not that it is incomplete.
 
 ### 25-Step Pipeline (0-24)
 
@@ -96,7 +107,7 @@ python src/12_execute.py --frameworks "pymdp,jax" --verbose
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (~1,319 tests across ~90 files) |
+| `src/tests/` | Test suite (~1,522+ tests across ~90 files) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/gnn_syntax.md` | Complete GNN syntax specification |
@@ -134,7 +145,7 @@ s=HiddenState
 - Python 3.11+ required
 - Type hints for all public functions
 - Exit codes: 0=success, 1=error, 2=warnings
-- All modules need `__init__.py`, `processor.py`, and `AGENTS.md`
+- All modules need `__init__.py`, `AGENTS.md`, and either `processor.py` or a clearly-named alternative (see Thin Orchestrator Pattern above)
 - Tests in `src/tests/test_{module}_*.py`
 
 ## Optional Dependency Groups
@@ -142,6 +153,7 @@ s=HiddenState
 ```bash
 # Install specific optional groups using UV
 uv sync --extra dev             # Development tools
+uv sync --extra api             # REST API server (FastAPI + uvicorn)
 uv sync --extra llm             # LLM integration (openai, anthropic, ollama)
 uv sync --extra visualization   # Enhanced visualization
 uv sync --extra audio           # Audio processing

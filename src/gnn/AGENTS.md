@@ -652,3 +652,11 @@ cat output/3_gnn_output/gnn_processing_summary.json | python -m json.tool
 - [Active Inference Papers](https://en.wikipedia.org/wiki/Active_inference)
 
 ---
+
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

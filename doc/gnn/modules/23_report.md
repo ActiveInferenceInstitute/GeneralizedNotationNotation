@@ -26,4 +26,4 @@ python src/23_report.py --target-dir input/gnn_files --output-dir output --verbo
 
 ## Source
 
-- **Script**: [src/23_report.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/23_report.py)
+- **Script**: [src/23_report.py](#placeholder)

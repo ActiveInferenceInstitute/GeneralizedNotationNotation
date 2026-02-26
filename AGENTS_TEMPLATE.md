@@ -614,9 +614,9 @@ cat output/[N]_[module]_output/[module]_processing_summary.json
 
 ### Related Documentation
 
-- [Pipeline Overview](../../README.md)
-- [Architecture Guide](../../ARCHITECTURE.md)
-- [.cursorrules](../../.cursorrules)
+- [Pipeline Overview](README.md)
+- [Architecture Guide](ARCHITECTURE.md)
+- [.cursorrules](.cursorrules)
 
 ### External Resources
 

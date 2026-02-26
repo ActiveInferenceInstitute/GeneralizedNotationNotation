@@ -5,7 +5,7 @@
 Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
 
 **Last Updated**: February 24, 2026  
-**Status**: ✅ All tools real (no stubs), 0 skips, 1,506 tests passing
+**Status**: ✅ All tools real (no stubs), 0 skips, 1,522+ tests passing
 
 ## Usage
 
@@ -217,7 +217,7 @@ All tools are real named callable functions — no stubs, no lambdas, no generic
 
 ## Tool Quality Audit
 
-All tools verified by `src/tests/test_mcp_audit.py` (203 tests, 0 failures, 0 skips):
+All tools verified by `src/tests/test_mcp_audit.py` (1,522+ tests, 0 failures, 0 skips):
 
 - ✅ Every tool has a callable named function (no lambdas, no `None`)
 - ✅ Every tool has a non-empty description
@@ -238,5 +238,5 @@ PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
 
 ## Source
 
-- **Script**: [src/21_mcp.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/21_mcp.py)
-- **Audit Tests**: [src/tests/test_mcp_audit.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_mcp_audit.py)
+- **Script**: [src/21_mcp.py](#placeholder)
+- **Audit Tests**: [src/tests/test_mcp_audit.py](#placeholder)

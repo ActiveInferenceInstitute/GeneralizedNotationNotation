@@ -33,4 +33,4 @@ python src/0_template.py --simulate-error  # Test error handling
 
 ## Source
 
-- **Script**: [src/0_template.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/0_template.py)
+- **Script**: [src/0_template.py](#placeholder)

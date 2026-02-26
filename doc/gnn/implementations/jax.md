@@ -129,14 +129,14 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [jax_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/jax/jax_renderer.py) | `render_gnn_to_jax()` | Entry point |
-| Simulation Code Gen | [jax_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/jax/jax_renderer.py) | `run_simulation` (template) | L1097-1139 |
-| Results Serialization | [jax_renderer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/render/jax/jax_renderer.py) | `save_simulation_results` (template) | L1186-1250 |
-| Execution | [jax_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/jax/jax_runner.py) | `execute_jax_script()` | L75-210 |
-| Device Selection | [jax_runner.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/jax/jax_runner.py) | `initialize_jax_devices()` | L20-33 |
-| Analysis | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/jax/analyzer.py) | `generate_analysis_from_logs()` | L132-188 |
-| Raw Output Parsing | [analyzer.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/jax/analyzer.py) | `parse_raw_output()` | L19-99 |
-| Cross-Framework | [visualizations.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/visualizations.py) | `generate_efe_convergence_comparison()` | L1110-1183 |
+| Rendering | [jax_renderer.py](#placeholder) | `render_gnn_to_jax()` | Entry point |
+| Simulation Code Gen | [jax_renderer.py](#placeholder) | `run_simulation` (template) | L1097-1139 |
+| Results Serialization | [jax_renderer.py](#placeholder) | `save_simulation_results` (template) | L1186-1250 |
+| Execution | [jax_runner.py](#placeholder) | `execute_jax_script()` | L75-210 |
+| Device Selection | [jax_runner.py](#placeholder) | `initialize_jax_devices()` | L20-33 |
+| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L132-188 |
+| Raw Output Parsing | [analyzer.py](#placeholder) | `parse_raw_output()` | L19-99 |
+| Cross-Framework | [visualizations.py](#placeholder) | `generate_efe_convergence_comparison()` | L1110-1183 |
 
 ---
 

@@ -57,6 +57,6 @@ Saved to `output/00_pipeline_summary/pipeline_execution_summary.json` with:
 
 ## Source
 
-- **Script**: [src/main.py](file:///Users/4d/Documents/GitHub/generalizednotationnotation/src/main.py)
+- **Script**: [src/main.py](#placeholder)
 - **Lines**: 902
 - **Key functions**: `main()`, `execute_pipeline_step()`, `parse_step_list()`, `get_environment_info()`

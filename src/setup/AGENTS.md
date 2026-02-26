@@ -356,3 +356,10 @@ def add_dependency_tool(package: str, dev: bool = False):
 ```
 
 ---
+
+---
+## Documentation
+- **[README](README.md)**: Module Overview
+- **[AGENTS](AGENTS.md)**: Agentic Workflows
+- **[SPEC](SPEC.md)**: Architectural Specification
+- **[SKILL](SKILL.md)**: Capability API

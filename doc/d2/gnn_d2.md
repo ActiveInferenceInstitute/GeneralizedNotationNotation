@@ -844,7 +844,7 @@ The combination of GNN's formal model specifications with D2's professional diag
 - [Pipeline Architecture](../../ARCHITECTURE.md)
 - [GNN Syntax Guide](../gnn/gnn_syntax.md)
 - [.cursorrules](../../.cursorrules)
-- [Pipeline Execution Summary](../../output/pipeline_execution_summary.json)
+- [Pipeline Execution Summary](#placeholder)
 
 ### Active Inference Resources
 - [Active Inference Wikipedia](https://en.wikipedia.org/wiki/Active_inference)
