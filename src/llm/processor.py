@@ -273,10 +273,18 @@ async def _process_llm_async(
     **kwargs
 ) -> bool:
     """Async implementation of process_llm."""
+    import time as _time
     logger = logging.getLogger("llm")
     
     # Initialize processor variable for cleanup in finally block
     processor = None
+    
+    # Total budget: leave margin before pipeline kills us (pipeline timeout is 900s)
+    TOTAL_BUDGET_SECONDS = kwargs.get('total_budget', 800)
+    budget_start = _time.monotonic()
+    
+    def _budget_remaining() -> float:
+        return max(0.0, TOTAL_BUDGET_SECONDS - (_time.monotonic() - budget_start))
     
     try:
         log_step_start(logger, "Processing LLM with enhanced Ollama integration")
@@ -331,8 +339,8 @@ async def _process_llm_async(
         # Track providers with auth failures to fail-fast on subsequent calls
         failed_auth_providers = set()
         
-        # Find GNN files
-        gnn_files = list(target_dir.glob("*.md"))
+        # Find GNN files (recursive to handle subdirectory structure)
+        gnn_files = list(target_dir.rglob("*.md"))
         if not gnn_files:
             logger.warning("No GNN files found for LLM processing")
             results["success"] = False
@@ -357,7 +365,13 @@ async def _process_llm_async(
                 processor = None
 
             # Process each GNN file
-            for gnn_file in gnn_files:
+            for file_idx, gnn_file in enumerate(gnn_files, 1):
+                # Check total budget before starting a new file
+                remaining = _budget_remaining()
+                if remaining < 30:
+                    logger.warning(f"⏱️ Budget exhausted after {file_idx-1}/{len(gnn_files)} files — skipping remaining")
+                    break
+                logger.info(f"📄 File {file_idx}/{len(gnn_files)}: {gnn_file.name} (budget: {remaining:.0f}s remaining)")
                 try:
                     # Await the coroutine since we're in an async context
                     file_analysis = await analyze_gnn_file_with_llm(gnn_file, verbose)
@@ -422,6 +436,10 @@ async def _process_llm_async(
                                 logger.warning(f"⚠️ Could not install model '{ollama_model}': {e}")
 
                         for idx, ptype in enumerate(prompt_sequence, start=1):
+                            # Check budget before each prompt
+                            if _budget_remaining() < 30:
+                                logger.warning(f"⏱️ Budget exhausted ({TOTAL_BUDGET_SECONDS}s), skipping remaining prompts for {gnn_file.name}")
+                                break
                             prompt_cfg = get_prompt(ptype, gnn_content)
                             messages = [
                                 LLMMessage(role="system", content=prompt_cfg["system_message"]),
@@ -431,8 +449,8 @@ async def _process_llm_async(
                             # Log progress
                             logger.info(f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}")
 
-                            # Get max prompt timeout from kwargs - default to 300s (5m) to allow for provider fallbacks
-                            max_prompt_timeout = kwargs.get('max_prompt_timeout', 300)
+                            # Per-prompt timeout: tight but sufficient for Ollama
+                            max_prompt_timeout = kwargs.get('max_prompt_timeout', 45)
 
                             # Execute prompt
                             try:
@@ -486,6 +504,10 @@ async def _process_llm_async(
 
                         # Run custom free-form prompts
                         for cust_idx, (key, user_prompt) in enumerate(custom_prompts, start=1):
+                            # Check budget before each custom prompt
+                            if _budget_remaining() < 30:
+                                logger.warning(f"⏱️ Budget exhausted ({TOTAL_BUDGET_SECONDS}s), skipping remaining custom prompts for {gnn_file.name}")
+                                break
                             logger.info(f"  📝 Running custom prompt {cust_idx}/{len(custom_prompts)}: {key}")
                             
                             messages = [

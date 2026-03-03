@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python
 > **Framework Base**: `pymdp` (Python Package)
 > **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 0.4.1
+> **Documentation Version**: 1.3.0
 
 ## Overview
 
@@ -122,12 +122,12 @@ The telemetry package operates with extremely high resilience, guaranteeing zero
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [pymdp_renderer.py](#placeholder) | `render_gnn_to_pymdp()` | Entry point |
-| Execution | [pymdp_runner.py](#placeholder) | `execute_pymdp_script_with_outputs()` | L77-220 |
-| Pre-validation | [pymdp_runner.py](#placeholder) | `validate_and_clean_pymdp_script()` | L22-75 |
-| Trace Generation | [pymdp_runner.py](#placeholder) | `generate_simulation_trace()` | L266-306 |
-| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L32-345 |
-| Cross-Framework | [visualizations.py](#placeholder) | `generate_unified_comparison()` | L730-986 |
+| Rendering | [pymdp_renderer.py](../../../src/render/pymdp/pymdp_renderer.py) | `render_gnn_to_pymdp()` | Entry point |
+| Execution | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `execute_pymdp_script_with_outputs()` | L77-220 |
+| Pre-validation | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `validate_and_clean_pymdp_script()` | L22-75 |
+| Trace Generation | [pymdp_runner.py](../../../src/execute/pymdp/pymdp_runner.py) | `generate_simulation_trace()` | L264-304 |
+| Analysis | [analyzer.py](../../../src/analysis/pymdp/analyzer.py) | `generate_analysis_from_logs()` | — |
+| Cross-Framework | [visualizations.py](../../../src/analysis/visualizations.py) | `generate_unified_comparison()` | — |
 
 ---
 
@@ -139,3 +139,10 @@ The telemetry package operates with extremely high resilience, guaranteeing zero
 | P-2 | Execution | ~~The runner had duplicate `env = os.environ.copy()` lines~~ | ✅ FIXED |
 | P-3 | Analysis | PyMDP analyzer imports `PyMDPVisualizer` which could fail silently | Low |
 | P-4 | Telemetry | `simple_simulation.py` could validate A/B/C/D shapes before simulation | Medium |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

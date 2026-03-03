@@ -1,0 +1,671 @@
+{
+  "annotation": "An Active Inference agent with:\n- Explicit epistemic value (information gain / Bayesian surprise) component in G\n- Separate instrumental value (preference satisfaction) component\n- Precision parameter γ weighting epistemic vs instrumental contributions\n- 5 hidden states, 5 observations, 4 actions in a navigation context\n- Agent is rewarded for reducing posterior uncertainty",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_ins"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_epi"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_ins"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "γ"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "π"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-03-03T08:22:03.761819",
+  "equations": [],
+  "extensions": {
+    "footer": "Curiosity-Driven Active Inference Agent v1 - GNN Representation.\nDemonstrates explicit epistemic value (information gain) alongside instrumental value.\nUseful for studying exploration-exploitation in Active Inference.",
+    "gnn_section": "ActInfPOMDP",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Curiosity-Driven Active Inference Agent",
+  "modified_at": "2026-03-03T08:22:03.761821",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": null,
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D"
+    },
+    {
+      "description": null,
+      "ontology_term": "Habit",
+      "variable_name": "E"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": null,
+      "ontology_term": "NextHiddenState",
+      "variable_name": "s_prime"
+    },
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": null,
+      "ontology_term": "PolicyVector",
+      "variable_name": "π"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": null,
+      "ontology_term": "ExpectedFreeEnergy",
+      "variable_name": "G"
+    },
+    {
+      "description": null,
+      "ontology_term": "EpistemicValue",
+      "variable_name": "G_epi"
+    },
+    {
+      "description": null,
+      "ontology_term": "InstrumentalValue",
+      "variable_name": "G_ins"
+    },
+    {
+      "description": null,
+      "ontology_term": "PrecisionParameter",
+      "variable_name": "γ"
+    },
+    {
+      "description": null,
+      "ontology_term": "VariationalFreeEnergy",
+      "variable_name": "F"
+    },
+    {
+      "description": null,
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.025,
+          0.025,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.9,
+          0.025,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.9,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.025,
+          0.9,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.025,
+          0.025,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.8,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C",
+      "type_hint": null,
+      "value": [
+        [
+          -2.0,
+          -2.0,
+          -2.0,
+          -2.0,
+          2.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D",
+      "type_hint": null,
+      "value": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "E",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "γ",
+      "type_hint": null,
+      "value": [
+        [
+          1.0
+        ]
+      ]
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": 30,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Likelihood matrix",
+      "dimensions": [
+        5,
+        5
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "Transition matrix (4 actions: up/down/left/right)",
+      "dimensions": [
+        5,
+        5,
+        4
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "Instrumental preference vector (goal observations)",
+      "dimensions": [
+        5
+      ],
+      "name": "C",
+      "var_type": "preference_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "Prior over hidden states (uniform = no preference)",
+      "dimensions": [
+        5
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "Habit vector over actions",
+      "dimensions": [
+        4
+      ],
+      "name": "E",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state belief",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Next hidden state belief",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "s_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Current observation",
+      "dimensions": [
+        5,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Policy distribution over actions",
+      "dimensions": [
+        4
+      ],
+      "name": "π",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "integer",
+      "description": "Selected action",
+      "dimensions": [
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Total Expected Free Energy (epistemic + instrumental)",
+      "dimensions": [
+        1
+      ],
+      "name": "G",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "float",
+      "description": "Epistemic value component (information gain)",
+      "dimensions": [
+        1
+      ],
+      "name": "G_epi",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "float",
+      "description": "Instrumental value component (preference satisfaction)",
+      "dimensions": [
+        1
+      ],
+      "name": "G_ins",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Precision weighting epistemic vs instrumental value",
+      "dimensions": [
+        1
+      ],
+      "name": "γ",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Variational Free Energy for state inference",
+      "dimensions": [
+        1
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

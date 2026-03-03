@@ -130,16 +130,54 @@ class POMDPExtractor:
             # Parse ontology mapping
             ontology_mapping = self._parse_ontology_annotations(sections.get('ActInfOntologyAnnotation', ''))
             
+            # Resolve multi-factor matrix names to standard A/B/C/D/E
+            # Supports models like T-maze which use A_loc, A_rew, B_loc, B_ctx, etc.
+            def _resolve_param(base_name, params):
+                """Look up a parameter by base name, falling back to factored variants."""
+                if params.get(base_name) is not None:
+                    return params[base_name]
+                # Look for factored variants (e.g., A_loc, A_rew for base A)
+                factored = {k: v for k, v in params.items() 
+                           if k.startswith(base_name + '_') and v is not None}
+                if factored:
+                    # Take the first factor that has the right structure
+                    # Prefer non-context factors (A_loc over A_ctx, B_loc over B_ctx)
+                    for suffix in ['_loc', '_rew', '']:
+                        key = base_name + suffix
+                        if key in factored:
+                            self.logger.info(f"Using factored param '{key}' as primary '{base_name}' matrix")
+                            return factored[key]
+                    # Fall back to first available factor
+                    first_key = next(iter(factored))
+                    self.logger.info(f"Using factored param '{first_key}' as primary '{base_name}' matrix")
+                    return factored[first_key]
+                return None
+            
+            A_matrix = _resolve_param('A', initial_params)
+            B_matrix = _resolve_param('B', initial_params)
+            C_vector = _resolve_param('C', initial_params)
+            D_vector = _resolve_param('D', initial_params)
+            E_vector = _resolve_param('E', initial_params)
+            
+            # For HMM / passive models without preferences (C) or policy prior (E),
+            # generate uniform fallbacks so renderers can still produce scripts
+            if C_vector is None and num_observations > 0:
+                self.logger.info(f"No C vector found — generating uniform preferences ({num_observations} observations)")
+                C_vector = [0.0] * num_observations
+            if D_vector is None and num_states > 0:
+                self.logger.info(f"No D vector found — generating uniform prior ({num_states} states)")
+                D_vector = [1.0 / num_states] * num_states
+            
             # Create POMDP state space
             pomdp_space = POMDPStateSpace(
                 num_states=num_states,
                 num_observations=num_observations,
                 num_actions=num_actions,
-                A_matrix=initial_params.get('A'),
-                B_matrix=initial_params.get('B'), 
-                C_vector=initial_params.get('C'),
-                D_vector=initial_params.get('D'),
-                E_vector=initial_params.get('E'),
+                A_matrix=A_matrix,
+                B_matrix=B_matrix,
+                C_vector=C_vector,
+                D_vector=D_vector,
+                E_vector=E_vector,
                 state_variables=state_space_info.get('state_variables'),
                 observation_variables=state_space_info.get('observation_variables'),
                 action_variables=state_space_info.get('action_variables'),
@@ -311,9 +349,9 @@ class POMDPExtractor:
                         value = int(value.strip().split('#')[0].strip())  # Remove comments
                         if key in ['num_actions', 'num_controls', 'n_actions']:
                             num_actions = value
-                        elif key in ['num_hidden_states', 'num_states', 'n_states']:
+                        elif key in ['num_hidden_states', 'num_states', 'n_states', 'num_locations']:
                             num_states = value
-                        elif key in ['num_obs', 'num_observations', 'n_obs']:
+                        elif key in ['num_obs', 'num_observations', 'n_obs', 'num_location_obs']:
                             num_observations = value
                         elif key in ['num_timesteps', 'n_timesteps', 'timesteps']:
                             num_timesteps = value

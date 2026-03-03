@@ -312,8 +312,10 @@ def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Di
         
         if len(var_lines) > 1 and len(conn_lines) > 1:
             try:
-                correlation_matrix = np.corrcoef(var_lines, conn_lines)
-                correlations["line_position_correlation"] = correlation_matrix[0, 1]
+                with np.errstate(divide='ignore', invalid='ignore'):
+                    correlation_matrix = np.corrcoef(var_lines, conn_lines)
+                val = correlation_matrix[0, 1]
+                correlations["line_position_correlation"] = 0.0 if np.isnan(val) else float(val)
             except Exception:
                 correlations["line_position_correlation"] = 0.0
     
@@ -1154,10 +1156,15 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                     beliefs_a = np.array(frameworks_with_beliefs[fw_a]["beliefs"])
                     beliefs_b = np.array(frameworks_with_beliefs[fw_b]["beliefs"])
                     if beliefs_a.shape == beliefs_b.shape:
-                        correlation = float(np.corrcoef(
-                            np.max(beliefs_a, axis=1),
-                            np.max(beliefs_b, axis=1)
-                        )[0, 1]) if beliefs_a.shape[0] > 1 else 0.0
+                        if beliefs_a.shape[0] > 1:
+                            with np.errstate(divide='ignore', invalid='ignore'):
+                                corr_val = np.corrcoef(
+                                    np.max(beliefs_a, axis=1),
+                                    np.max(beliefs_b, axis=1)
+                                )[0, 1]
+                            correlation = 0.0 if np.isnan(corr_val) else float(corr_val)
+                        else:
+                            correlation = 0.0
                         agreement[f"{fw_a}_vs_{fw_b}"] = {
                             "confidence_correlation": correlation,
                             "same_dimensions": True

@@ -412,8 +412,12 @@ def _train_models(
     ml_results["classification_task"] = task
     ml_results["label_names"] = label_names
 
-    # Cross-validation (use min(5, n_samples) folds)
-    n_folds = min(5, len(X))
+    # Cross-validation: cap folds by both sample count and smallest class count
+    # to avoid sklearn warnings about underpopulated classes
+    from collections import Counter
+    class_counts = Counter(y)
+    min_class_count = min(class_counts.values()) if class_counts else 1
+    n_folds = min(5, len(X), min_class_count)
 
     for model_name, clf in [
         ("decision_tree", DecisionTreeClassifier(max_depth=4, random_state=42)),

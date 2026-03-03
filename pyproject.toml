@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "generalized-notation-notation"
-version = "1.2.0"
+version = "1.3.0"
 description = "A text-based language for standardizing Active Inference generative models"
 readme = "README.md"
 requires-python = ">=3.11,<3.14"
@@ -127,6 +127,12 @@ active-inference = [
     "jaxlib>=0.4.0",
     "flax>=0.7.0",
     "optax>=0.1.0",
+]
+
+probabilistic-programming = [
+    "numpyro>=0.14",
+    "jax[cpu]>=0.4.0",
+    "jaxlib>=0.4.0",
 ]
 
 ml-ai = [
@@ -265,6 +271,9 @@ all = [
     # Database connectivity
     "sqlalchemy>=2.0.0",
     "alembic>=1.10.0",
+
+    # Probabilistic programming
+    "numpyro>=0.14",
 ]
 
 [project.urls]
@@ -326,6 +335,8 @@ module = [
     "optax.*",
     "discopy.*",
     "pymdp.*",
+    "torch.*",
+    "numpyro.*",
 ]
 ignore_missing_imports = true
 

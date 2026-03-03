@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/continuous/predictive_coding_agent.md",
+  "output_file": "output/0_template_output/predictive_coding_agent/predictive_coding_agent_processed.md",
+  "timestamp": "2026-03-03T08:15:07.787732",
+  "file_size_bytes": 4512,
+  "file_size_lines": 200,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

@@ -1,0 +1,524 @@
+///
+/// GNN Model: Stigmergic Swarm Active Inference
+/// Annotation: Three Active Inference agents coordinating via stigmergy (environmental traces):
+
+- No direct communication between agents — coordination emerges from environment
+- Agents deposit and sense environmental signals (pheromone analogy)
+- Shared 3x3 grid environment with signal intensity at each cell
+- Each agent navigates independently while responding to accumulated signals
+- Signal deposition: actions leave traces that other agents can observe
+- Signal decay: environmental signals decay over time (volatility)
+- Demonstrates emergent collective behavior from individual free energy minimization
+- Models ant colony foraging, distributed robotics, and decentralized coordination
+/// Generated: 2026-03-03T08:22:02.578026
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Stigmergic Swarm Active Inference"
+  annotation: String = "Three Active Inference agents coordinating via stigmergy (environmental traces):
+
+- No direct communication between agents — coordination emerges from environment
+- Agents deposit and sense environmental signals (pheromone analogy)
+- Shared 3x3 grid environment with signal intensity at each cell
+- Each agent navigates independently while responding to accumulated signals
+- Signal deposition: actions leave traces that other agents can observe
+- Signal decay: environmental signals decay over time (volatility)
+- Demonstrates emergent collective behavior from individual free energy minimization
+- Models ant colony foraging, distributed robotics, and decentralized coordination"
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["A1"] = new Variable {
+      name = "A1"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(4, 9)
+    }}
+    ["A2"] = new Variable {
+      name = "A2"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(4, 9)
+    }}
+    ["A3"] = new Variable {
+      name = "A3"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(4, 9)
+    }}
+    ["B1"] = new Variable {
+      name = "B1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 9, 4)
+    }}
+    ["B2"] = new Variable {
+      name = "B2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 9, 4)
+    }}
+    ["B3"] = new Variable {
+      name = "B3"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 9, 4)
+    }}
+    ["C1"] = new Variable {
+      name = "C1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["C2"] = new Variable {
+      name = "C2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["C3"] = new Variable {
+      name = "C3"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["D1"] = new Variable {
+      name = "D1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9)
+    }}
+    ["D2"] = new Variable {
+      name = "D2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9)
+    }}
+    ["D3"] = new Variable {
+      name = "D3"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9)
+    }}
+    ["G1"] = new Variable {
+      name = "G1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["G2"] = new Variable {
+      name = "G2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["G3"] = new Variable {
+      name = "G3"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["env_signal"] = new Variable {
+      name = "env_signal"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 1)
+    }}
+    ["o1"] = new Variable {
+      name = "o1"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(4, 1)
+    }}
+    ["o2"] = new Variable {
+      name = "o2"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(4, 1)
+    }}
+    ["o3"] = new Variable {
+      name = "o3"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(4, 1)
+    }}
+    ["pi1"] = new Variable {
+      name = "pi1"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["pi2"] = new Variable {
+      name = "pi2"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["pi3"] = new Variable {
+      name = "pi3"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["s1"] = new Variable {
+      name = "s1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 1)
+    }}
+    ["s2"] = new Variable {
+      name = "s2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 1)
+    }}
+    ["s3"] = new Variable {
+      name = "s3"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9, 1)
+    }}
+    ["signal_decay"] = new Variable {
+      name = "signal_decay"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["t"] = new Variable {
+      name = "t"
+      varType = "hidden_state"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["u1"] = new Variable {
+      name = "u1"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["u2"] = new Variable {
+      name = "u2"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["u3"] = new Variable {
+      name = "u3"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("D1")
+      targetVariables = List("s1")
+      connectionType = "directed"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("s1")
+      targetVariables = List("A1")
+      connectionType = "undirected"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("A1")
+      targetVariables = List("o1")
+      connectionType = "undirected"
+    }}
+    ["connection_3"] = new Connection {
+      sourceVariables = List("C1")
+      targetVariables = List("G1")
+      connectionType = "directed"
+    }}
+    ["connection_4"] = new Connection {
+      sourceVariables = List("G1")
+      targetVariables = List("pi1")
+      connectionType = "directed"
+    }}
+    ["connection_5"] = new Connection {
+      sourceVariables = List("pi1")
+      targetVariables = List("u1")
+      connectionType = "directed"
+    }}
+    ["connection_6"] = new Connection {
+      sourceVariables = List("B1")
+      targetVariables = List("u1")
+      connectionType = "directed"
+    }}
+    ["connection_7"] = new Connection {
+      sourceVariables = List("D2")
+      targetVariables = List("s2")
+      connectionType = "directed"
+    }}
+    ["connection_8"] = new Connection {
+      sourceVariables = List("s2")
+      targetVariables = List("A2")
+      connectionType = "undirected"
+    }}
+    ["connection_9"] = new Connection {
+      sourceVariables = List("A2")
+      targetVariables = List("o2")
+      connectionType = "undirected"
+    }}
+    ["connection_10"] = new Connection {
+      sourceVariables = List("C2")
+      targetVariables = List("G2")
+      connectionType = "directed"
+    }}
+    ["connection_11"] = new Connection {
+      sourceVariables = List("G2")
+      targetVariables = List("pi2")
+      connectionType = "directed"
+    }}
+    ["connection_12"] = new Connection {
+      sourceVariables = List("pi2")
+      targetVariables = List("u2")
+      connectionType = "directed"
+    }}
+    ["connection_13"] = new Connection {
+      sourceVariables = List("B2")
+      targetVariables = List("u2")
+      connectionType = "directed"
+    }}
+    ["connection_14"] = new Connection {
+      sourceVariables = List("D3")
+      targetVariables = List("s3")
+      connectionType = "directed"
+    }}
+    ["connection_15"] = new Connection {
+      sourceVariables = List("s3")
+      targetVariables = List("A3")
+      connectionType = "undirected"
+    }}
+    ["connection_16"] = new Connection {
+      sourceVariables = List("A3")
+      targetVariables = List("o3")
+      connectionType = "undirected"
+    }}
+    ["connection_17"] = new Connection {
+      sourceVariables = List("C3")
+      targetVariables = List("G3")
+      connectionType = "directed"
+    }}
+    ["connection_18"] = new Connection {
+      sourceVariables = List("G3")
+      targetVariables = List("pi3")
+      connectionType = "directed"
+    }}
+    ["connection_19"] = new Connection {
+      sourceVariables = List("pi3")
+      targetVariables = List("u3")
+      connectionType = "directed"
+    }}
+    ["connection_20"] = new Connection {
+      sourceVariables = List("B3")
+      targetVariables = List("u3")
+      connectionType = "directed"
+    }}
+    ["connection_21"] = new Connection {
+      sourceVariables = List("u1")
+      targetVariables = List("env_signal")
+      connectionType = "directed"
+    }}
+    ["connection_22"] = new Connection {
+      sourceVariables = List("u2")
+      targetVariables = List("env_signal")
+      connectionType = "directed"
+    }}
+    ["connection_23"] = new Connection {
+      sourceVariables = List("u3")
+      targetVariables = List("env_signal")
+      connectionType = "directed"
+    }}
+    ["connection_24"] = new Connection {
+      sourceVariables = List("env_signal")
+      targetVariables = List("A1")
+      connectionType = "undirected"
+    }}
+    ["connection_25"] = new Connection {
+      sourceVariables = List("env_signal")
+      targetVariables = List("A2")
+      connectionType = "undirected"
+    }}
+    ["connection_26"] = new Connection {
+      sourceVariables = List("env_signal")
+      targetVariables = List("A3")
+      connectionType = "undirected"
+    }}
+    ["connection_27"] = new Connection {
+      sourceVariables = List("signal_decay")
+      targetVariables = List("env_signal")
+      connectionType = "directed"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["A1"] = new Parameter {
+      name = "A1"
+      value = List([0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7])
+      paramType = "constant"
+    }}
+    ["A2"] = new Parameter {
+      name = "A2"
+      value = List([0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7])
+      paramType = "constant"
+    }}
+    ["A3"] = new Parameter {
+      name = "A3"
+      value = List([0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7])
+      paramType = "constant"
+    }}
+    ["C1"] = new Parameter {
+      name = "C1"
+      value = List([-0.5, 0.5, 1.5, 3.0])
+      paramType = "constant"
+    }}
+    ["C2"] = new Parameter {
+      name = "C2"
+      value = List([-0.5, 0.5, 1.5, 3.0])
+      paramType = "constant"
+    }}
+    ["C3"] = new Parameter {
+      name = "C3"
+      value = List([-0.5, 0.5, 1.5, 3.0])
+      paramType = "constant"
+    }}
+    ["D1"] = new Parameter {
+      name = "D1"
+      value = List([1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+      paramType = "constant"
+    }}
+    ["D2"] = new Parameter {
+      name = "D2"
+      value = List([0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+      paramType = "constant"
+    }}
+    ["D3"] = new Parameter {
+      name = "D3"
+      value = List([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0])
+      paramType = "constant"
+    }}
+    ["env_signal"] = new Parameter {
+      name = "env_signal"
+      value = List([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+      paramType = "constant"
+    }}
+    ["signal_decay"] = new Parameter {
+      name = "signal_decay"
+      value = List([0.9])
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Stigmergic Swarm Active Inference","annotation":"Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination","variables":[{"name":"A1","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B1","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C1","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D1","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s1","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o1","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi1","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u1","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G1","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A2","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B2","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C2","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D2","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s2","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o2","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi2","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u2","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G2","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A3","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B3","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C3","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D3","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s3","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o3","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi3","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u3","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G3","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"env_signal","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"signal_decay","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D1"],"target_variables":["s1"],"connection_type":"directed"},{"source_variables":["s1"],"target_variables":["A1"],"connection_type":"undirected"},{"source_variables":["A1"],"target_variables":["o1"],"connection_type":"undirected"},{"source_variables":["C1"],"target_variables":["G1"],"connection_type":"directed"},{"source_variables":["G1"],"target_variables":["pi1"],"connection_type":"directed"},{"source_variables":["pi1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["B1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["D2"],"target_variables":["s2"],"connection_type":"directed"},{"source_variables":["s2"],"target_variables":["A2"],"connection_type":"undirected"},{"source_variables":["A2"],"target_variables":["o2"],"connection_type":"undirected"},{"source_variables":["C2"],"target_variables":["G2"],"connection_type":"directed"},{"source_variables":["G2"],"target_variables":["pi2"],"connection_type":"directed"},{"source_variables":["pi2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["B2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["D3"],"target_variables":["s3"],"connection_type":"directed"},{"source_variables":["s3"],"target_variables":["A3"],"connection_type":"undirected"},{"source_variables":["A3"],"target_variables":["o3"],"connection_type":"undirected"},{"source_variables":["C3"],"target_variables":["G3"],"connection_type":"directed"},{"source_variables":["G3"],"target_variables":["pi3"],"connection_type":"directed"},{"source_variables":["pi3"],"target_variables":["u3"],"connection_type":"directed"},{"source_variables":["B3"],"target_variables":["u3"],"connection_type":"directed"},{"source_variables":["u1"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["u2"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["u3"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["env_signal"],"target_variables":["A1"],"connection_type":"undirected"},{"source_variables":["env_signal"],"target_variables":["A2"],"connection_type":"undirected"},{"source_variables":["env_signal"],"target_variables":["A3"],"connection_type":"undirected"},{"source_variables":["signal_decay"],"target_variables":["env_signal"],"connection_type":"directed"}],"parameters":[{"name":"A1","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"A2","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"A3","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"C1","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"C2","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"C3","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"D1","value":[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"D2","value":[[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"D3","value":[[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0]],"param_type":"constant"},{"name":"env_signal","value":[[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"signal_decay","value":[[0.9]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":30,"step_size":null},"ontology_mappings":[{"variable_name":"A1","ontology_term":"Agent1LikelihoodMatrix","description":null},{"variable_name":"B1","ontology_term":"Agent1TransitionMatrix","description":null},{"variable_name":"C1","ontology_term":"Agent1PreferenceVector","description":null},{"variable_name":"D1","ontology_term":"Agent1PositionPrior","description":null},{"variable_name":"s1","ontology_term":"Agent1PositionState","description":null},{"variable_name":"o1","ontology_term":"Agent1Observation","description":null},{"variable_name":"pi1","ontology_term":"Agent1PolicyVector","description":null},{"variable_name":"u1","ontology_term":"Agent1Action","description":null},{"variable_name":"G1","ontology_term":"Agent1ExpectedFreeEnergy","description":null},{"variable_name":"A2","ontology_term":"Agent2LikelihoodMatrix","description":null},{"variable_name":"B2","ontology_term":"Agent2TransitionMatrix","description":null},{"variable_name":"C2","ontology_term":"Agent2PreferenceVector","description":null},{"variable_name":"D2","ontology_term":"Agent2PositionPrior","description":null},{"variable_name":"s2","ontology_term":"Agent2PositionState","description":null},{"variable_name":"o2","ontology_term":"Agent2Observation","description":null},{"variable_name":"pi2","ontology_term":"Agent2PolicyVector","description":null},{"variable_name":"u2","ontology_term":"Agent2Action","description":null},{"variable_name":"G2","ontology_term":"Agent2ExpectedFreeEnergy","description":null},{"variable_name":"A3","ontology_term":"Agent3LikelihoodMatrix","description":null},{"variable_name":"B3","ontology_term":"Agent3TransitionMatrix","description":null},{"variable_name":"C3","ontology_term":"Agent3PreferenceVector","description":null},{"variable_name":"D3","ontology_term":"Agent3PositionPrior","description":null},{"variable_name":"s3","ontology_term":"Agent3PositionState","description":null},{"variable_name":"o3","ontology_term":"Agent3Observation","description":null},{"variable_name":"pi3","ontology_term":"Agent3PolicyVector","description":null},{"variable_name":"u3","ontology_term":"Agent3Action","description":null},{"variable_name":"G3","ontology_term":"Agent3ExpectedFreeEnergy","description":null},{"variable_name":"env_signal","ontology_term":"EnvironmentalSignal","description":null},{"variable_name":"signal_decay","ontology_term":"SignalDecayRate","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]} */
+
+// Variables:
+// Variable: A1 (action)
+// Variable: B1 (hidden_state)
+// Variable: C1 (hidden_state)
+// Variable: D1 (hidden_state)
+// Variable: s1 (hidden_state)
+// Variable: o1 (observation)
+// Variable: pi1 (policy)
+// Variable: u1 (action)
+// Variable: G1 (hidden_state)
+// Variable: A2 (action)
+// Variable: B2 (hidden_state)
+// Variable: C2 (hidden_state)
+// Variable: D2 (hidden_state)
+// Variable: s2 (hidden_state)
+// Variable: o2 (observation)
+// Variable: pi2 (policy)
+// Variable: u2 (action)
+// Variable: G2 (hidden_state)
+// Variable: A3 (action)
+// Variable: B3 (hidden_state)
+// Variable: C3 (hidden_state)
+// Variable: D3 (hidden_state)
+// Variable: s3 (hidden_state)
+// Variable: o3 (observation)
+// Variable: pi3 (policy)
+// Variable: u3 (action)
+// Variable: G3 (hidden_state)
+// Variable: env_signal (hidden_state)
+// Variable: signal_decay (hidden_state)
+// Variable: t (hidden_state)
+// Connections:
+// Connection: D1 --directed--> s1
+// Connection: s1 --undirected--> A1
+// Connection: A1 --undirected--> o1
+// Connection: C1 --directed--> G1
+// Connection: G1 --directed--> pi1
+// Connection: pi1 --directed--> u1
+// Connection: B1 --directed--> u1
+// Connection: D2 --directed--> s2
+// Connection: s2 --undirected--> A2
+// Connection: A2 --undirected--> o2
+// Connection: C2 --directed--> G2
+// Connection: G2 --directed--> pi2
+// Connection: pi2 --directed--> u2
+// Connection: B2 --directed--> u2
+// Connection: D3 --directed--> s3
+// Connection: s3 --undirected--> A3
+// Connection: A3 --undirected--> o3
+// Connection: C3 --directed--> G3
+// Connection: G3 --directed--> pi3
+// Connection: pi3 --directed--> u3
+// Connection: B3 --directed--> u3
+// Connection: u1 --directed--> env_signal
+// Connection: u2 --directed--> env_signal
+// Connection: u3 --directed--> env_signal
+// Connection: env_signal --undirected--> A1
+// Connection: env_signal --undirected--> A2
+// Connection: env_signal --undirected--> A3
+// Connection: signal_decay --directed--> env_signal
+// Parameters:
+// Parameter: A1 = [[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]
+// Parameter: A2 = [[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]
+// Parameter: A3 = [[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]
+// Parameter: C1 = [[-0.5, 0.5, 1.5, 3.0]]
+// Parameter: C2 = [[-0.5, 0.5, 1.5, 3.0]]
+// Parameter: C3 = [[-0.5, 0.5, 1.5, 3.0]]
+// Parameter: D1 = [[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+// Parameter: D2 = [[0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+// Parameter: D3 = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]]
+// Parameter: env_signal = [[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]
+// Parameter: signal_decay = [[0.9]]

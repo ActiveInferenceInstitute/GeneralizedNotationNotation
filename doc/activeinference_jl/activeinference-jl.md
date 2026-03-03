@@ -167,7 +167,7 @@ The package's integration with the broader Julia ecosystem for cognitive modelin
 [5] https://nms.kcl.ac.uk/osvaldo.simeone/freeenergymin.pdf
 [6] https://direct.mit.edu/books/oa-monograph/chapter-pdf/2246582/c004100_9780262369978.pdf
 [7] https://research.aalto.fi/fi/datasets/turinglangturingjl-v0240
-[8] https://www.sciencedirect.com/science/article/pii/S0925231224020903
+[8] https://www.sciencedirect.com/science/article/pii/S0925231.3.020903
 [9] https://discourse.julialang.org/t/blog-post-rust-vs-julia-in-scientific-computing/101711
 [10] https://github.com/JuliaPOMDP/POMDPs.jl
 [11] https://pymdp-rtd.readthedocs.io/en/latest/notebooks/pymdp_fundamentals.html

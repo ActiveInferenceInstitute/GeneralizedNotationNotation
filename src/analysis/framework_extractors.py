@@ -2,7 +2,7 @@
 Framework-specific data extractors for post-simulation analysis.
 
 Provides extract_*_data() functions for PyMDP, RxInfer.jl, ActiveInference.jl,
-JAX, and DisCoPy execution results.
+JAX, DisCoPy, PyTorch, and NumPyro execution results.
 
 Extracted from post_simulation.py for maintainability.
 """
@@ -55,6 +55,31 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                                 simulation_data["observations"] = file_data["observations"]
                                 logger.debug(f"Extracted {len(file_data['observations'])} observations")
 
+                            # Extract EFE from known paths:
+                            # 1. metrics.expected_free_energy (PyMDP/JAX)
+                            # 2. simulation_trace.efe_history
+                            # 3. top-level efe_history
+                            efe = None
+                            metrics = file_data.get("metrics", {})
+                            if isinstance(metrics, dict) and metrics.get("expected_free_energy"):
+                                efe = metrics["expected_free_energy"]
+                            elif file_data.get("simulation_trace", {}).get("efe_history"):
+                                efe = file_data["simulation_trace"]["efe_history"]
+                            elif file_data.get("efe_history"):
+                                efe = file_data["efe_history"]
+                            if efe:
+                                simulation_data["free_energy"] = efe
+                                logger.debug(f"Extracted EFE with {len(efe)} entries")
+
+                            # Extract belief_confidence
+                            confidence = None
+                            if isinstance(metrics, dict) and metrics.get("belief_confidence"):
+                                confidence = metrics["belief_confidence"]
+                            elif file_data.get("simulation_trace", {}).get("belief_confidence"):
+                                confidence = file_data["simulation_trace"]["belief_confidence"]
+                            if confidence:
+                                simulation_data["belief_confidence"] = confidence
+
                             logger.info(f"Enhanced PyMDP data from {results_files[0].name}")
                     except Exception as e:
                         logger.warning(f"Failed to read simulation_results.json: {e}")
@@ -78,6 +103,7 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "actions": simulation_data.get("actions", []),
         "policy": simulation_data.get("policy", []),
         "beliefs": simulation_data.get("beliefs", []),
+        "belief_confidence": simulation_data.get("belief_confidence", []),
         "visualization_count": simulation_data.get("visualization_count", 0),
         "visualization_files": simulation_data.get("visualization_files", [])
     }
@@ -87,6 +113,8 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     """
     Extract RxInfer.jl-specific data from execution result.
     Enhanced to read from collected files if available.
+    RxInfer stores data at top-level: beliefs, actions, observations,
+    efe_history, true_states, action_probabilities, validation.
     """
     simulation_data = execution_result.get("simulation_data", {})
 
@@ -95,8 +123,19 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     if implementation_dir:
         try:
             impl_path = Path(implementation_dir)
-            results_file = impl_path / "simulation_results.json"
-            if results_file.exists():
+            # Check simulation_data subdirectory first, then root
+            sim_data_dir = impl_path / "simulation_data"
+            results_file = None
+            if sim_data_dir.exists():
+                results_files = list(sim_data_dir.glob("*simulation_results.json"))
+                if results_files:
+                    results_file = results_files[0]
+            if not results_file:
+                rf = impl_path / "simulation_results.json"
+                if rf.exists():
+                    results_file = rf
+
+            if results_file:
                 logger.info(f"Reading RxInfer simulation data from {results_file.name}")
                 with open(results_file, 'r') as f:
                     file_data = json.load(f)
@@ -106,6 +145,14 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                         simulation_data["true_states"] = file_data["true_states"]
                     if "observations" in file_data:
                         simulation_data["observations"] = file_data["observations"]
+                    if "actions" in file_data:
+                        simulation_data["actions"] = file_data["actions"]
+                    # Extract EFE from efe_history (top-level in RxInfer output)
+                    if "efe_history" in file_data:
+                        simulation_data["free_energy"] = file_data["efe_history"]
+                        logger.debug(f"Extracted RxInfer efe_history with {len(file_data['efe_history'])} entries")
+                    if "action_probabilities" in file_data:
+                        simulation_data["action_probabilities"] = file_data["action_probabilities"]
         except Exception as e:
             logger.debug(f"Error reading RxInfer files: {e}")
 
@@ -113,6 +160,9 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "beliefs": simulation_data.get("beliefs", []),
         "true_states": simulation_data.get("true_states", []),
         "observations": simulation_data.get("observations", []),
+        "actions": simulation_data.get("actions", []),
+        "free_energy": simulation_data.get("free_energy", []),
+        "action_probabilities": simulation_data.get("action_probabilities", []),
         "posterior": simulation_data.get("posterior", []),
         "inference_data": simulation_data.get("inference_data", [])
     }
@@ -193,7 +243,30 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                         break
 
             if not csv_found:
-                logger.debug("No simulation_results.csv found for ActiveInference.jl")
+                # Also try JSON simulation_results.json (new format)
+                sim_data_dir = impl_path / "simulation_data"
+                if sim_data_dir.exists():
+                    results_files = list(sim_data_dir.glob("*simulation_results.json"))
+                    for rf in results_files:
+                        try:
+                            with open(rf, 'r') as f:
+                                file_data = json.load(f)
+                            if "beliefs" in file_data:
+                                simulation_data["beliefs"] = file_data["beliefs"]
+                            if "actions" in file_data:
+                                simulation_data["actions"] = file_data["actions"]
+                            if "observations" in file_data:
+                                simulation_data["observations"] = file_data["observations"]
+                            # Extract EFE from efe_history (top-level in ActiveInference.jl output)
+                            if "efe_history" in file_data:
+                                simulation_data["free_energy"] = file_data["efe_history"]
+                                logger.debug(f"Extracted ActiveInference.jl efe_history with {len(file_data['efe_history'])} entries")
+                            logger.info(f"Read ActiveInference.jl JSON results from {rf.name}")
+                            break
+                        except Exception:
+                            pass
+                if not simulation_data.get("beliefs"):
+                    logger.debug("No simulation_results.csv or JSON found for ActiveInference.jl")
 
         except Exception as e:
             logger.warning(f"Error reading ActiveInference.jl files: {e}")
@@ -322,3 +395,35 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
         "traces": simulation_data.get("traces", []),
         "visualization_count": simulation_data.get("visualization_count", 0)
     }
+
+
+def extract_pytorch_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Extract PyTorch-specific data from execution result.
+
+    PyTorch simulation results use the same JSON schema as PyMDP/JAX
+    (beliefs, actions, observations, efe_history, validation).
+
+    Args:
+        execution_result: Execution result dictionary
+
+    Returns:
+        Extracted simulation data
+    """
+    return extract_pymdp_data(execution_result)
+
+
+def extract_numpyro_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
+    """
+    Extract NumPyro-specific data from execution result.
+
+    NumPyro simulation results use the same JSON schema as PyMDP/JAX
+    (beliefs, actions, observations, efe_history, validation).
+
+    Args:
+        execution_result: Execution result dictionary
+
+    Returns:
+        Extracted simulation data
+    """
+    return extract_pymdp_data(execution_result)

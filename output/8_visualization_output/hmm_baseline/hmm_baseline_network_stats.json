@@ -1,0 +1,29 @@
+{
+  "total_variables": 16,
+  "total_connections": 12,
+  "variable_types": {
+    "unknown": 16
+  },
+  "connection_types": {
+    "D->s": 1,
+    "s->A": 1,
+    "s->s_prime": 1,
+    "A->o": 1,
+    "B->s_prime": 1,
+    "s->B": 1,
+    "s->F": 1,
+    "o->F": 1,
+    "s->alpha": 1,
+    "o->alpha": 1,
+    "alpha->s_prime": 1,
+    "s_prime->beta": 1
+  },
+  "network_properties": {
+    "num_nodes": 9,
+    "num_edges": 12,
+    "density": 0.16666666666666666,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.1
+  }
+}

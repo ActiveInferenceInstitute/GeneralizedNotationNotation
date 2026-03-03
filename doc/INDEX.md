@@ -6,9 +6,9 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 | Getting Started | Core Reference | Frameworks |
 |-----------------|----------------|------------|
-| [README](../README.md) | [GNN Syntax](gnn/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
+| [README](../README.md) | [GNN Syntax](gnn/reference/gnn_syntax.md) | [PyMDP](pymdp/README.md) |
 | [Setup Guide](../SETUP_GUIDE.md) | [Architecture](../ARCHITECTURE.md) | [RxInfer.jl](rxinfer/README.md) |
-| [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/gnn_tools.md) | [ActiveInference.jl](activeinference_jl/README.md) |
+| [CLAUDE.md](../CLAUDE.md) | [Pipeline Steps](gnn/operations/gnn_tools.md) | [ActiveInference.jl](activeinference_jl/README.md) |
 
 ---
 
@@ -18,11 +18,11 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 - [GNN Overview](gnn/gnn_overview.md) - High-level introduction to GNN
 - [About GNN](gnn/about_gnn.md) - Background and motivation
-- [GNN Syntax Reference](gnn/gnn_syntax.md) - Complete syntax specification
-- [GNN DSL Manual](gnn/gnn_dsl_manual.md) - Domain-specific language guide
-- [GNN File Structure](gnn/gnn_file_structure_doc.md) - File format specification
-- [GNN Examples](gnn/gnn_examples_doc.md) - Example GNN files
-- [GNN Implementation](gnn/gnn_implementation.md) - Implementation details
+- [GNN Syntax Reference](gnn/reference/gnn_syntax.md) - Complete syntax specification
+- [GNN DSL Manual](gnn/reference/gnn_dsl_manual.md) - Domain-specific language guide
+- [GNN File Structure](gnn/reference/gnn_file_structure_doc.md) - File format specification
+- [GNN Examples](gnn/tutorials/gnn_examples_doc.md) - Example GNN files
+- [GNN Implementation](gnn/integration/gnn_implementation.md) - Implementation details
 
 ### Active Inference Theory
 
@@ -36,10 +36,10 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 ### Architecture & Design
 
-- [Architecture Reference](gnn/architecture_reference.md) - System architecture
-- [Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md) - Design patterns
-- [GNN Ontology](gnn/gnn_ontology.md) - Ontological foundations
-- [LLM Neurosymbolic Integration](gnn/gnn_llm_neurosymbolic_active_inference.md) - AI integration
+- [Architecture Reference](gnn/reference/architecture_reference.md) - System architecture
+- [Advanced Modeling Patterns](gnn/advanced/advanced_modeling_patterns.md) - Design patterns
+- [GNN Ontology](gnn/advanced/gnn_ontology.md) - Ontological foundations
+- [LLM Neurosymbolic Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) - AI integration
 
 ---
 
@@ -78,7 +78,7 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 ### Pipeline Steps
 
-- [Pipeline README](gnn/gnn_tools.md) - Pipeline overview
+- [Pipeline README](gnn/operations/gnn_tools.md) - Pipeline overview
 - Step 0: Template initialization
 - Step 1: Environment setup
 - Step 2: Test execution
@@ -107,8 +107,8 @@ This index provides navigation to all documentation in the GNN repository, organ
 
 ### Integration Guides
 
-- [Framework Integration Guide](gnn/framework_integration_guide.md) - Connecting frameworks
-- [GNN Export](gnn/gnn_export.md) - Export formats
+- [Framework Integration Guide](gnn/integration/framework_integration_guide.md) - Connecting frameworks
+- [GNN Export](gnn/integration/gnn_export.md) - Export formats
 
 ---
 

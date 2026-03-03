@@ -1,7 +1,7 @@
 # About GNN
 
-**Version**: v1.2.0  
-**Last Updated**: February 24, 2026  
+**Version**: v1.3.0  
+**Last Updated**: March 3, 2026  
 **Status**: ✅ Production Ready  
 **Test Count**: 1,522+ tests Passing  
 
@@ -36,22 +36,22 @@ GNN leverages standard ASCII symbols to denote variables, operations, and causal
 
 The syntax is designed to be both human-readable and machine-parsable, making it suitable for documentation and automated processing. Key symbols include:
 
-| Symbol       | Meaning                         | Example   | Interpretation                      |
+| Symbol | Meaning | Example | Interpretation |
 |:-------------|:--------------------------------|:----------|:------------------------------------|
-| ,            | List separator                  | X,Y       | Elements X and Y                    |
-| _            | Subscript                       | X_2       | Variable X with subscript 2         |
-| ^            | Superscript                     | X^Y       | Variable X with superscript Y       |
-| =            | Equality or assignment          | X=5       | X is set to 5                       |
-| >            | Directed causal edge            | X>Y       | Causal influence from X to Y        |
-| -            | Undirected causal edge          | X-Y       | Undirected relation between X and Y |
-| ()           | Grouping                        | (X+Y)     | Parenthesized expression            |
-| {}           | Exact value specification       | X{1}      | X equals 1                          |
-| []           | Dimensionality or indexing      | X[2,3]    | X is a 2×3 matrix                   |
-| # / ## / ### | Markdown headings and comments  | ## Title  | Section header in GNN source file   |
-| +            | Addition                        | X+Y       | Sum of X and Y                      |
-| *            | Multiplication                  | X*Y       | Product of X and Y                  |
-| /            | Division                        | X/Y       | X divided by Y                      |
-| \|           | Conditional probability         | P(X\|Y)   | Probability of X given Y            |
+| , | List separator | X,Y | Elements X and Y |
+| _ | Subscript | X_2 | Variable X with subscript 2 |
+| ^ | Superscript | X^Y | Variable X with superscript Y |
+| = | Equality or assignment | X=5 | X is set to 5 |
+| > | Directed causal edge | X>Y | Causal influence from X to Y |
+| - | Undirected causal edge | X-Y | Undirected relation between X and Y |
+| () | Grouping | (X+Y) | Parenthesized expression |
+| {} | Exact value specification | X{1} | X equals 1 |
+| [] | Dimensionality or indexing | X[2,3] | X is a 2×3 matrix |
+| # / ## / ### | Markdown headings and comments | ## Title | Section header in GNN source file |
+| + | Addition | X+Y | Sum of X and Y |
+| * | Multiplication | X*Y | Product of X and Y |
+| / | Division | X/Y | X divided by Y |
+| \ |  | Conditional probability | P(X\ | Y) | Probability of X given Y |
 
 ### Syntax Guidelines
 
@@ -130,7 +130,7 @@ For complete pipeline documentation, see:
 
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
 - **[src/README.md](../../src/README.md)**: Pipeline architecture and safety documentation
-- **[GNN Tools and Resources](gnn_tools.md)**: Detailed pipeline usage examples
+- **[GNN Tools and Resources](operations/gnn_tools.md)**: Detailed pipeline usage examples
 
 **Quick Start:**
 
@@ -300,27 +300,31 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 ### Core Documentation
 
 - **[GNN Overview](gnn_overview.md)**: High-level concepts and ecosystem overview
-- **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
-- **[GNN Examples](gnn_examples_doc.md)**: Example models from simple to complex
-- **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step getting started guide
+- **[GNN Syntax](reference/gnn_syntax.md)**: Complete syntax reference
+- **[GNN Examples](tutorials/gnn_examples_doc.md)**: Example models from simple to complex
+- **[Quickstart Tutorial](tutorials/quickstart_tutorial.md)**: Step-by-step getting started guide
 
 ### Advanced Topics
 
-- **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
-- **[Multi-agent Systems](gnn_multiagent.md)**: Multi-agent modeling specification
-- **[LLM Integration](gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
+- **[Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
+- **[Multi-agent Systems](advanced/gnn_multiagent.md)**: Multi-agent modeling specification
+- **[LLM Integration](advanced/gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
 
 ### Framework Integration
 
-- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
-- **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference
-- **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
+- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python discrete-state POMDP framework
+- **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian active message passing
+- **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Categorical string diagrams and monoidal structures
+- **[PyTorch Integration](implementations/pytorch.md)**: Neural active inference and deep learning
+- **[NumPyro Integration](implementations/numpyro.md)**: Continuous probabilistic programming via MCMC
+- **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
+- **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
 
 ### Pipeline and Tools
 
 - **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
-- **[GNN Tools](gnn_tools.md)**: Available software and utilities
-- **[Ontology System](ontology_system.md)**: Active Inference ontology processing
+- **[GNN Tools](operations/gnn_tools.md)**: Available software and utilities
+- **[Ontology System](advanced/ontology_system.md)**: Active Inference ontology processing
 
 ### Navigation
 

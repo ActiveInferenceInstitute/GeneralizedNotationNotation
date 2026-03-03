@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-03-02
 
 <div align="center">
 
@@ -10,7 +10,7 @@
 [![DOI](https://img.shields.io/badge/DOI-10.5281%2Fzenodo.7803328-blue.svg)](https://doi.org/10.5281/zenodo.7803328)
 [![Pipeline Steps](https://img.shields.io/badge/Pipeline%20Steps-25-blue.svg)](#%EF%B8%8F-processing-pipeline)
 [![Latest Run](https://img.shields.io/badge/Latest%20Run-100%25%20Success-brightgreen.svg)](#-performance-characteristics)
-[![Tests](https://img.shields.io/badge/Tests-1,319%20Passed-brightgreen.svg)](#-repository-health)
+[![Tests](https://img.shields.io/badge/Tests-1,522%2B%20Passed-brightgreen.svg)](#-repository-health)
 [![Mermaid Diagrams](https://img.shields.io/badge/Mermaid%20Diagrams-27+-green.svg)](#-key-features)
 [![Documentation](https://img.shields.io/badge/Documentation-Comprehensive-success.svg)](#-documentation)
 
@@ -51,10 +51,10 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-02-23  
-**Version**: 1.2.0  
+**Last Updated**: 2026-03-03  
+**Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
-**Test Suite**: ✅ 1,522+ tests passing  
+**Test Suite**: ✅ 1,522+ tests passing (v1.3.0)  
 📖 **DOI:** [10.5281/zenodo.7803328](https://doi.org/10.5281/zenodo.7803328)  
 📁 **Archive:** [zenodo.org/records/7803328](https://zenodo.org/records/7803328)
 
@@ -128,7 +128,7 @@ The GNN pipeline is composed of **25 specialized modules**, each acting as an ag
 | **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
 | **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/9_advanced_viz.py) |
 | **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
-| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, JAX, etc. | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
+| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, JAX, PyTorch, NumPyro, etc. | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
 | **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
 | **13** | **[LLM](src/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/llm/AGENTS.md) • [📝 Code](src/13_llm.py) |
 | **14** | **[ML](src/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/ml_integration/AGENTS.md) • [📝 Code](src/14_ml_integration.py) |
@@ -181,7 +181,7 @@ graph LR
         
         B["📊 Graphical Models<br/>• Factor graphs<br/>• Network visualizations<br/>• Dependency diagrams<br/>• Interactive visualizations"]
         
-        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• JAX computations<br/>• DisCoPy diagrams"]
+        C["⚙️ Executable Models<br/>• PyMDP simulations<br/>• RxInfer.jl implementations<br/>• JAX computations<br/>• PyTorch inference<br/>• NumPyro probabilistic<br/>• DisCoPy diagrams"]
     end
     
     A -->|Parse & Extract| B
@@ -296,7 +296,7 @@ graph TB
         subgraph "🎯 Outputs (output/)"
             H[📊 Reports<br/>Type checking, analysis]
             I[🎨 Visualizations<br/>Graphs, matrices]
-            J[💻 Generated Code<br/>PyMDP, RxInfer]
+            J[💻 Generated Code<br/>PyMDP, RxInfer, PyTorch, NumPyro]
             K[🌐 Static Site<br/>HTML summaries]
         end
     end
@@ -378,6 +378,8 @@ graph TB
         ActInf[ActiveInference.jl Generator]
         JAX[JAX Generator]
         DisCoPy[DisCoPy Generator]
+        PyTorch[PyTorch Generator]
+        NumPyro[NumPyro Generator]
     end
     
     subgraph "Execution"
@@ -386,6 +388,8 @@ graph TB
         RxInferExec[RxInfer Runner]
         ActInfExec[ActiveInference Runner]
         JAXExec[JAX Runner]
+        PyTorchExec[PyTorch Runner]
+        NumPyroExec[NumPyro Runner]
     end
     
     subgraph "Analysis"
@@ -402,21 +406,29 @@ graph TB
     Renderer --> ActInf
     Renderer --> JAX
     Renderer --> DisCoPy
+    Renderer --> PyTorch
+    Renderer --> NumPyro
     
     PyMDP --> Executor
     RxInfer --> Executor
     ActInf --> Executor
     JAX --> Executor
+    PyTorch --> Executor
+    NumPyro --> Executor
     
     Executor --> PyMDPExec
     Executor --> RxInferExec
     Executor --> ActInfExec
     Executor --> JAXExec
+    Executor --> PyTorchExec
+    Executor --> NumPyroExec
     
     PyMDPExec --> Analyzer
     RxInferExec --> Analyzer
     ActInfExec --> Analyzer
     JAXExec --> Analyzer
+    PyTorchExec --> Analyzer
+    NumPyroExec --> Analyzer
     
     Analyzer --> Results
 ```
@@ -521,7 +533,7 @@ flowchart TD
         C --> D["📊 Multi-Format Export<br/>JSON, XML, GraphML, Pickle"]
         
         C --> E["🎨 Visualization<br/>Generate graphs & matrices"]
-        C --> F["🔄 Code Generation<br/>PyMDP, RxInfer & ActiveInference.jl templates"]
+        C --> F["🔄 Code Generation<br/>PyMDP, RxInfer, JAX, PyTorch, NumPyro, DisCoPy"]
         
         F --> G["▶️ Simulation Execution<br/>Run generated code"]
         E --> H["🧠 LLM Analysis<br/>AI-powered insights"]
@@ -607,8 +619,8 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `visualization` | 8 | Generates graphical representations of GNN models. | `matplotlib`, `plotly`, `graphviz` |
 | `advanced_visualization` | 9 | Provides advanced, interactive 3D and dynamic visualizations. | `vedo`, `pyvista`, `dash` |
 | `ontology` | 10 | Maps GNN concepts to Active Inference ontology terms. | Ontology Mapper, Knowledge Graph |
-| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, ActInf.jl) |
-| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, ActiveInference.jl |
+| `render` | 11 | Renders GNN models into executable code for various backends. | Code Generators (PyMDP, RxInfer, JAX, ActInf.jl, PyTorch, NumPyro, DisCoPy) |
+| `execute` | 12 | Executes the rendered code using the specified backend. | PyMDP, RxInfer.jl, JAX, ActiveInference.jl, PyTorch, NumPyro |
 | `llm` | 13 | Integrates Large Language Models for analysis, generation, and insights. | OpenAI GPT, Anthropic Claude, Local LLMs |
 | `ml_integration` | 14 | Integrates with machine learning frameworks for advanced analysis. | `scikit-learn`, `tensorflow`, `pytorch` |
 | `audio` | 15 | Generates audio representations of GNN model dynamics. | `SAPF`, `Pedalboard`, Audio Synthesis Engines |
@@ -1159,7 +1171,7 @@ The GNN project maintains high standards for code quality, testing, and document
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (28/28 modules + all subdirectories documented)
+- **AGENTS.md Coverage**: ✅ 100% (30/30 modules + all subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready

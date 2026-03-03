@@ -2,7 +2,7 @@
 
 Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
 
-**Last Updated**: February 24, 2026
+**Last Updated**: March 3, 2026
 
 ## No-Mock Policy
 
@@ -72,7 +72,7 @@ All shared fixtures live in `conftest.py` (601 lines). Standard fixtures:
 | `sample_gnn_file` | session | `input/gnn_files/actinf_pomdp_agent.md` |
 | `test_data_dir` | session | `src/tests/test_data/` |
 | `output_dir` | session | `output/2_tests_output/` |
-| `mcp_server_tools` | module | Live MCP server — all 76 tools registered |
+| `mcp_server_tools` | module | Live MCP server — all 131 tools registered |
 
 ## Resource Monitoring
 

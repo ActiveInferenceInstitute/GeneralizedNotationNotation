@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python / XLA
 > **Framework Base**: `jax` & `jax.numpy`
 > **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 0.4.1
+> **Documentation Version**: 1.3.0
 
 ## Overview
 
@@ -129,14 +129,14 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [jax_renderer.py](#placeholder) | `render_gnn_to_jax()` | Entry point |
-| Simulation Code Gen | [jax_renderer.py](#placeholder) | `run_simulation` (template) | L1097-1139 |
-| Results Serialization | [jax_renderer.py](#placeholder) | `save_simulation_results` (template) | L1186-1250 |
-| Execution | [jax_runner.py](#placeholder) | `execute_jax_script()` | L75-210 |
-| Device Selection | [jax_runner.py](#placeholder) | `initialize_jax_devices()` | L20-33 |
-| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L132-188 |
-| Raw Output Parsing | [analyzer.py](#placeholder) | `parse_raw_output()` | L19-99 |
-| Cross-Framework | [visualizations.py](#placeholder) | `generate_efe_convergence_comparison()` | L1110-1183 |
+| Rendering | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `render_gnn_to_jax()` | Entry point |
+| Simulation Code Gen | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `run_simulation` (template) | — |
+| Results Serialization | [jax_renderer.py](../../../src/render/jax/jax_renderer.py) | `save_simulation_results` (template) | — |
+| Execution | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `execute_jax_script()` | L75-211 |
+| Device Selection | [jax_runner.py](../../../src/execute/jax/jax_runner.py) | `initialize_jax_devices()` | L20-33 |
+| Analysis | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `generate_analysis_from_logs()` | — |
+| Raw Output Parsing | [analyzer.py](../../../src/analysis/jax/analyzer.py) | `parse_raw_output()` | — |
+| Cross-Framework | [visualizations.py](../../../src/analysis/visualizations.py) | `generate_efe_convergence_comparison()` | — |
 
 ---
 
@@ -148,3 +148,10 @@ The compiled JAX simulation traces achieve deterministic equivalence against nat
 | J-2 | Rendering | `save_simulation_results` uses f-string template with `{{` escaping — complex and error-prone for maintenance | Medium |
 | J-3 | Analysis | EFE multi-dimensional array requires `np.mean(axis=1)` collapse — could be standardized at serialization time | Low |
 | J-4 | Execution | ~~No `JAX_OUTPUT_DIR` pass-through~~ — now sets `JAX_OUTPUT_DIR` env var matching `PYMDP_OUTPUT_DIR` pattern | ✅ FIXED |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

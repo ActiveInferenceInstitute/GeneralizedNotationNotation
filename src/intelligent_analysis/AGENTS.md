@@ -12,7 +12,7 @@
 
 **Version**: 2.0.0
 
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-03-03
 
 ---
 
@@ -29,6 +29,7 @@ intelligent_analysis/
 ## Key Components
 
 ### Processor (`processor.py`)
+
 - `process_intelligent_analysis()` - Main entry point for pipeline step
 - `analyze_pipeline_summary()` - Analyze overall pipeline execution
 - `analyze_individual_steps()` - Per-step analysis with flag detection
@@ -39,6 +40,7 @@ intelligent_analysis/
 - `StepAnalysis` - Data class for step analysis results
 
 ### Analyzer (`analyzer.py`)
+
 - `IntelligentAnalyzer` - Main analyzer class with LLM integration
 - `AnalysisContext` - Context container for analysis state
 - `calculate_pipeline_health_score()` - Compute overall health metrics
@@ -63,6 +65,7 @@ intelligent_analysis/
 ## Usage
 
 ### Command Line
+
 ```bash
 # Full intelligent analysis
 python src/24_intelligent_analysis.py --verbose
@@ -78,6 +81,7 @@ python src/24_intelligent_analysis.py --analysis-model "gpt-4"
 ```
 
 ### Programmatic
+
 ```python
 from intelligent_analysis import process_intelligent_analysis
 
@@ -93,6 +97,7 @@ result = process_intelligent_analysis(
 ## Output
 
 Results are written to `output/24_intelligent_analysis_output/`:
+
 - `intelligent_analysis_report.md` - Human-readable executive summary
 - `analysis_data.json` - Machine-readable analysis data
 - `intelligent_analysis_summary.json` - Compact summary with counts and paths
@@ -165,12 +170,14 @@ class AnalysisContext:
 ```
 
 **Properties**:
+
 - `overall_status -> str` - Pipeline status ("SUCCESS", "FAILED", "UNKNOWN")
 - `total_duration -> float` - Total duration in seconds
 - `steps -> List[Dict[str, Any]]` - List of step dictionaries
 - `performance_summary -> Dict[str, Any]` - Performance summary data
 
 **Methods**:
+
 - `get_failed_steps() -> List[Dict[str, Any]]` - Filter to failed steps
 - `get_successful_steps() -> List[Dict[str, Any]]` - Filter to successful steps
 - `get_warning_steps() -> List[Dict[str, Any]]` - Filter to steps with warnings
@@ -191,6 +198,7 @@ def process_intelligent_analysis(
 ```
 
 **Parameters**:
+
 - `target_dir` (Path): Input directory (not directly used, passed by pipeline convention)
 - `output_dir` (Path): Output root directory. If the directory name is `24_intelligent_analysis_output`, outputs are written directly; otherwise a subdirectory is created.
 - `logger` (logging.Logger): Logger instance for progress and error reporting
@@ -199,6 +207,7 @@ def process_intelligent_analysis(
 **Returns**: `bool` - `True` if analysis succeeded, `False` on critical failure (missing summary, JSON parse error, write failure)
 
 **Example**:
+
 ```python
 import logging
 from pathlib import Path
@@ -223,9 +232,11 @@ def analyze_pipeline_summary(summary_data: Dict[str, Any]) -> Dict[str, Any]
 ```
 
 **Parameters**:
+
 - `summary_data` (Dict[str, Any]): Raw pipeline execution summary dictionary containing `steps`, `overall_status`, `total_duration_seconds`, and `performance_summary`
 
 **Returns**: Dictionary with keys:
+
 - `overall_status` (str): "SUCCESS", "FAILED", or "UNKNOWN"
 - `total_duration` (float): Total pipeline duration in seconds
 - `step_count` (int): Number of steps executed
@@ -245,13 +256,16 @@ def analyze_individual_steps(
 ```
 
 **Parameters**:
+
 - `summary_data` (Dict[str, Any]): Pipeline execution summary
 
 **Returns**: Tuple of:
+
 1. `List[StepAnalysis]` - One analysis object per step
 2. `Dict[str, List[StepAnalysis]]` - Steps grouped by flag type: `"red"`, `"yellow"`, `"green"`
 
 **Flag Thresholds** (hardcoded):
+
 - `SLOW_THRESHOLD`: 60.0 seconds (yellow flag)
 - `VERY_SLOW_THRESHOLD`: 120.0 seconds (yellow flag)
 - `HIGH_MEMORY_THRESHOLD`: 500.0 MB (yellow flag)
@@ -271,10 +285,12 @@ def identify_bottlenecks(
 ```
 
 **Parameters**:
+
 - `summary_data` (Dict[str, Any]): Pipeline execution summary
 - `threshold_seconds` (float): Duration threshold in seconds (default: 60.0)
 
 **Returns**: List of bottleneck dicts sorted by duration descending, each with:
+
 - `step` (str): Script name
 - `duration_seconds` (float): Step duration
 - `threshold_exceeded` (bool): Whether the absolute threshold was exceeded
@@ -290,6 +306,7 @@ def extract_failure_context(summary_data: Dict[str, Any]) -> List[Dict[str, Any]
 ```
 
 **Returns**: List of failure context dicts, each with:
+
 - `step_number`, `step_name`, `description`, `exit_code`
 - `error_output` (str): Last 2000 chars of stderr
 - `stdout_tail` (str): Last 1000 chars of stdout
@@ -347,6 +364,7 @@ class IntelligentAnalyzer:
 ```
 
 **Methods**:
+
 - `set_context(context: AnalysisContext) -> None` - Set/replace context, clears cache
 - `analyze() -> Dict[str, Any]` - Full analysis returning `timestamp`, `pipeline_name`, `overall_status`, `health_score`, `failure_analysis`, `performance_analysis`, `patterns`, `optimizations`
 - `calculate_health_score() -> float` - Health score (0-100)
@@ -356,6 +374,7 @@ class IntelligentAnalyzer:
 - `generate_optimizations() -> List[Dict[str, Any]]` - Optimization suggestions
 
 **Example**:
+
 ```python
 from intelligent_analysis.analyzer import IntelligentAnalyzer, AnalysisContext
 
@@ -375,6 +394,7 @@ def calculate_pipeline_health_score(summary_data: Dict[str, Any]) -> float
 ```
 
 **Scoring Formula** (total 100 points):
+
 - Success rate: 40% weight (steps that did not fail)
 - Warning rate: 20% weight (penalty for warnings)
 - Duration efficiency: 20% weight (penalizes runs > 600 seconds)
@@ -389,6 +409,7 @@ def classify_failure_severity(step: Dict[str, Any]) -> str
 ```
 
 **Classification Rules**:
+
 - **critical**: memory error, segfault, kernel died, fatal error, core dump, exit code > 127 or < 0
 - **major**: exception, error:, failed to, cannot find, permission denied, timeout, not found
 - **minor**: all other failures
@@ -402,6 +423,7 @@ def detect_performance_patterns(summary_data: Dict[str, Any]) -> List[Dict[str, 
 ```
 
 **Detected Patterns**:
+
 1. `cascading_failure` - Consecutive failed steps (severity: high)
 2. `memory_growth` - Memory increasing > 100MB/step (severity: medium)
 3. `high_variance` - Duration variance > mean^2 (severity: low)
@@ -416,6 +438,7 @@ def generate_optimization_suggestions(summary_data: Dict[str, Any]) -> List[Dict
 ```
 
 **Suggestion Types**:
+
 1. `parallelization` - Steps without dependency warnings (impact: high)
 2. `caching` - Steps taking > 30 seconds (impact: medium)
 3. `memory_optimization` - Peak memory > 1024 MB (impact: medium)
@@ -424,15 +447,19 @@ def generate_optimization_suggestions(summary_data: Dict[str, Any]) -> List[Dict
 ### Module-Level Utility Functions (`__init__.py`)
 
 #### `get_module_info() -> Dict[str, Any]`
+
 Returns version, description, features list, report formats, and LLM backends.
 
 #### `get_supported_analysis_types() -> List[str]`
+
 Returns list of supported analysis type strings.
 
 #### `validate_pipeline_summary(summary) -> bool`
+
 Checks that summary dict contains required fields: `start_time`, `steps`, `overall_status`.
 
 #### `check_analysis_tools() -> Dict[str, Dict[str, Any]]`
+
 Checks availability of `llm_processor`, `numpy`, and `pandas`. Returns availability status and versions.
 
 ---
@@ -737,6 +764,7 @@ Step 24 is the **final step** in the GNN pipeline. It runs after all other steps
 | Pipeline Orchestrator | `output/00_pipeline_summary/pipeline_execution_summary.json` | Primary input: complete execution summary with per-step data |
 
 The module looks for the summary file at two locations:
+
 1. `{output_dir}/00_pipeline_summary/pipeline_execution_summary.json`
 2. `{output_dir}/../00_pipeline_summary/pipeline_execution_summary.json` (fallback)
 
@@ -850,6 +878,7 @@ The split follows the project's thin orchestrator pattern:
 - **`analyzer.py`**: Contains pure analysis logic (`IntelligentAnalyzer`, `calculate_pipeline_health_score`, `classify_failure_severity`, etc.) with no file I/O or pipeline awareness. These functions operate on data structures and can be tested in isolation.
 
 This separation means:
+
 - `analyzer.py` can be imported and used independently of the pipeline
 - `processor.py` handles all side effects (file reads/writes, logging, LLM calls)
 - Testing is simpler: analyzer tests need no filesystem fixtures
@@ -865,6 +894,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 ### Current Version: 2.0.0
 
 **Features**:
+
 - Per-step analysis with yellow/red flag detection
 - Rule-based fallback analysis
 - LLM-powered executive summaries
@@ -874,6 +904,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 - Comprehensive executive report generation
 
 ### Roadmap
+
 - **Next**: Historical trend analysis across multiple pipeline runs
 - **Future**: Real-time monitoring integration, anomaly detection
 
@@ -882,27 +913,30 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 ## References
 
 ### Related Documentation
+
 - [Pipeline Overview](../../README.md)
 - [Analysis Module](../analysis/AGENTS.md)
 - [LLM Module](../llm/AGENTS.md)
 - [Execute Module](../execute/AGENTS.md)
 
 ### Internal References
+
 - `src/main.py` - Pipeline orchestrator that generates the summary consumed by this module
 - `src/llm/llm_processor.py` - LLM processor used for AI-powered analysis
 - `src/utils/pipeline_template.py` - Logging utilities used throughout
 
 ---
 
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-03-03
 **Maintainer**: GNN Pipeline Team
 **Status**: Production Ready
 **Version**: 2.0.0
 **Architecture Compliance**: 100% Thin Orchestrator Pattern
 
-
 ---
+
 ## Documentation
+
 - **[README](README.md)**: Module Overview
 - **[AGENTS](AGENTS.md)**: Agentic Workflows
 - **[SPEC](SPEC.md)**: Architectural Specification

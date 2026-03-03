@@ -82,13 +82,35 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             # GNN format for B is typically (action, prev_state, next_state)
             # PyMDP expects (next_state, prev_state, action)
             # Transpose any 3D array from (action, prev, next) to (next, prev, action)
-            if B_raw.ndim == 3:
+            if B_raw.ndim == 2:
+                # Passive model (HMM, no actions) — expand to 3D with single action
+                B = B_raw[:, :, np.newaxis]
+                logger.info(f"Expanded 2D B matrix {B_raw.shape} to 3D {B.shape} (passive model, 1 action)")
+            elif B_raw.ndim == 3:
                 # Transpose (0, 1, 2) -> (2, 1, 0) means action,prev,next -> next,prev,action
                 B = B_raw.transpose(2, 1, 0)
                 logger.info(f"Transposed B from {B_raw.shape} to {B.shape}")
             else:
                 B = B_raw
-                logger.warning(f"B matrix has unexpected dimensions: {B_raw.ndim}D, expected 3D")
+                logger.warning(f"B matrix has unexpected dimensions: {B_raw.ndim}D, expected 2D or 3D")
+            
+            # Normalize B columns so each column sums to 1.0 (required by PyMDP)
+            for action_idx in range(B.shape[2] if B.ndim == 3 else 1):
+                col_sums = B[:, :, action_idx].sum(axis=0) if B.ndim == 3 else B.sum(axis=0)
+                for col in range(len(col_sums)):
+                    if col_sums[col] > 0 and abs(col_sums[col] - 1.0) > 1e-6:
+                        if B.ndim == 3:
+                            B[:, col, action_idx] /= col_sums[col]
+                        else:
+                            B[:, col] /= col_sums[col]
+                    elif col_sums[col] == 0:
+                        # Column all zeros → uniform distribution
+                        n = B.shape[0]
+                        if B.ndim == 3:
+                            B[:, col, action_idx] = 1.0 / n
+                        else:
+                            B[:, col] = 1.0 / n
+            logger.info(f"B matrix normalized (columns sum to 1.0)")
         
         # 3. Get C vector (preferences)
         C_data = init_params.get('C')

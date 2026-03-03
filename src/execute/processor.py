@@ -116,14 +116,14 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
         List of framework names to include
     """
     if not frameworks or frameworks.lower() == "all":
-        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl"]
+        return ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro"]
 
     if frameworks.lower() == "lite":
         return ["pymdp", "jax", "discopy"]
 
     # Parse comma-separated list
     framework_list = [f.strip() for f in frameworks.split(",")]
-    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl"]
+    valid_frameworks = ["pymdp", "jax", "discopy", "rxinfer", "activeinference_jl", "pytorch", "numpyro"]
 
     # Filter out invalid frameworks
     valid_list = [f for f in framework_list if f in valid_frameworks]
@@ -334,6 +334,8 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
         'rxinfer': 'rxinfer',
         'activeinference_jl': 'activeinference_jl',
         'activeinference.jl': 'activeinference_jl',
+        'pytorch': 'pytorch',
+        'numpyro': 'numpyro',
     }
 
     for pattern, config in script_types.items():

@@ -335,6 +335,36 @@ def process_analysis(
             except Exception as e:
                 logger.warning(f"RxInfer analysis failed: {e}")
             
+            # 2.10: Generate PyTorch Visualizations
+            try:
+                from .pytorch.analyzer import generate_analysis_from_logs as analyze_pytorch
+                pytorch_output_dir = output_dir / "pytorch"
+                pytorch_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info("Generating PyTorch visualizations...")
+                pytorch_viz = analyze_pytorch(execution_dir, pytorch_output_dir, verbose)
+                if pytorch_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + pytorch_viz
+                    logger.info(f"Generated {len(pytorch_viz)} PyTorch visualization files")
+            except ImportError as e:
+                logger.debug(f"pytorch analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"PyTorch analysis failed: {e}")
+            
+            # 2.11: Generate NumPyro Visualizations
+            try:
+                from .numpyro.analyzer import generate_analysis_from_logs as analyze_numpyro
+                numpyro_output_dir = output_dir / "numpyro"
+                numpyro_output_dir.mkdir(parents=True, exist_ok=True)
+                logger.info("Generating NumPyro visualizations...")
+                numpyro_viz = analyze_numpyro(execution_dir, numpyro_output_dir, verbose)
+                if numpyro_viz:
+                    results["visualization_files"] = results.get("visualization_files", []) + numpyro_viz
+                    logger.info(f"Generated {len(numpyro_viz)} NumPyro visualization files")
+            except ImportError as e:
+                logger.debug(f"numpyro analyzer not available: {e}")
+            except Exception as e:
+                logger.warning(f"NumPyro analysis failed: {e}")
+            
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
                 comparisons = perform_model_comparisons(results["statistical_analysis"], verbose)
@@ -394,7 +424,7 @@ def process_analysis(
                             path_parts = sim_file.parts
                             framework = "unknown"
                             for part in path_parts:
-                                if part in ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"]:
+                                if part in ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro"]:
                                     framework = part
                                     break
 
@@ -425,6 +455,21 @@ def process_analysis(
                     logger.debug(traceback.format_exc())
             except Exception as e:
                 logger.warning(f"Comprehensive visualization generation failed: {e}")
+                import traceback
+                logger.debug(traceback.format_exc())
+
+            # 4. Generate unified cross-model comparison report
+            try:
+                from .generate_cross_model_report import generate_cross_model_report
+                report_path = results_dir / "cross_model_comparison_report.md"
+                report_file = generate_cross_model_report(
+                    execution_dir, results_dir, report_path
+                )
+                if report_file:
+                    results["cross_model_report"] = report_file
+                    logger.info(f"Generated cross-model comparison report: {report_file}")
+            except Exception as e:
+                logger.warning(f"Cross-model report generation failed: {e}")
                 import traceback
                 logger.debug(traceback.format_exc())
         

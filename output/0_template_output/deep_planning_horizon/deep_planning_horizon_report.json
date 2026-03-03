@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/discrete/deep_planning_horizon.md",
+  "output_file": "output/0_template_output/deep_planning_horizon/deep_planning_horizon_processed.md",
+  "timestamp": "2026-03-03T08:15:07.780163",
+  "file_size_bytes": 3754,
+  "file_size_lines": 153,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

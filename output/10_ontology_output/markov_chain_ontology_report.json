@@ -1,0 +1,89 @@
+{
+  "file_path": "input/gnn_files/discrete/markov_chain.md",
+  "file_name": "markov_chain.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A=EmissionMatrix",
+      "B=TransitionMatrix",
+      "D=InitialStateDistribution",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "t=Time"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "B=TransitionMatrix",
+      "s=HiddenState",
+      "s_prime=NextHiddenState",
+      "o=Observation",
+      "t=Time"
+    ],
+    "invalid_annotations": [
+      "A=EmissionMatrix",
+      "D=InitialStateDistribution"
+    ],
+    "matched_terms": {
+      "B": {
+        "annotation": "B=TransitionMatrix",
+        "term_name": "TransitionMatrix",
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix).",
+        "uri": "obo:ACTO_000009",
+        "key": "B",
+        "value": "TransitionMatrix",
+        "comment": null
+      },
+      "s": {
+        "annotation": "s=HiddenState",
+        "term_name": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001",
+        "key": "s",
+        "value": "HiddenState",
+        "comment": null
+      },
+      "s_prime": {
+        "annotation": "s_prime=NextHiddenState",
+        "term_name": "NextHiddenState",
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s').",
+        "uri": "obo:TEMP_000018",
+        "key": "s_prime",
+        "value": "NextHiddenState",
+        "comment": null
+      },
+      "o": {
+        "annotation": "o=Observation",
+        "term_name": "Observation",
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003",
+        "key": "o",
+        "value": "Observation",
+        "comment": null
+      },
+      "t": {
+        "annotation": "t=Time",
+        "term_name": "Time",
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066",
+        "key": "t",
+        "value": "Time",
+        "comment": null
+      }
+    },
+    "suggestions": [],
+    "coverage_score": 0.7142857142857143
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 7,
+    "valid_annotations": 5,
+    "invalid_annotations": 2,
+    "coverage_score": 0.7142857142857143
+  }
+}

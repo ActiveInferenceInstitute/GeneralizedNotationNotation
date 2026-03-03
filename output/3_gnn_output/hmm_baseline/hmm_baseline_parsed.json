@@ -1,0 +1,564 @@
+{
+  "model_name": "Hidden Markov Model Baseline",
+  "version": "1.0",
+  "annotation": "A standard discrete Hidden Markov Model with:\n- 4 hidden states with Markovian dynamics\n- 6 observation symbols\n- Fixed transition and emission matrices\n- No action selection (passive inference only)\n- Suitable for sequence modeling and state estimation tasks",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7290693f-a00d-4901-9eb6-b74371a01620",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        6,
+        4
+      ],
+      "data_type": "float",
+      "description": "Emission matrix: observations x hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "79d46751-b543-4d9a-ad28-aa582984da65",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Transition matrix (no action dependence)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bddee4cd-9ca6-4638-b713-50097ed265c1",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Initial state distribution (prior)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c47c23cb-b889-46fd-8e63-8aeb431e6492",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state belief (posterior)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "aa1582d3-3bcf-4beb-b74a-115b8782d6fc",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "353868b8-900b-4b5a-9be1-6a8dad985dc1",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        6,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation (one-hot)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e6c19a1-7a3a-41f8-a8bb-7bed014aa2c4",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy (negative ELBO)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "dbff3b15-adef-44ad-bf7c-e92224be6db7",
+      "name": "alpha",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Forward variable (belief propagation)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3d398e03-117c-475c-ba80-213e99fe6868",
+      "name": "beta",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Backward variable",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "75351e39-c9fc-4192-9ef4-6aa20a4f205b",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "526f349e-1a35-4132-bb56-50fec9d7d445",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "eac290a7-a30f-4e1e-b4e4-27bca68668df",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5bb54318-bd83-45ae-91b6-4f0f8e8aad15",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "95e6c19b-e600-4380-be13-244d77098a00",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "48561e4f-c17f-475a-b444-6a507b5991aa",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f62aa06c-8cce-4cd3-ba58-cd94c4becdf6",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "B"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4a3c4211-bd6f-4866-a453-003903b5a180",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "86d7057b-9678-49c6-a91a-532c73537beb",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "617f3ff8-8bda-4f07-b81d-88ee7cf2bf54",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "alpha"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7add2d9-1187-4d6c-933b-b5cac856b0ee",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "alpha"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9491f52f-e9b5-4cb8-be71-adc48658d1ad",
+      "source_variables": [
+        "alpha"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "79b72181-8e5e-455b-86f9-170e5c1d4bf2",
+      "source_variables": [
+        "s_prime"
+      ],
+      "target_variables": [
+        "beta"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e3b33383-e24a-450c-a442-4e2aeef8916b",
+      "name": "A",
+      "value": [
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.7,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.7,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.7
+        ],
+        [
+          0.1,
+          0.1,
+          0.4,
+          0.4
+        ],
+        [
+          0.4,
+          0.4,
+          0.1,
+          0.1
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "aaece0c8-add8-481b-86da-94b68bf2d298",
+      "name": "B",
+      "value": [
+        [
+          0.7,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.7,
+          0.2,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.6,
+          0.2
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.6
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "990bab7c-edef-4bf5-b451-21f83583ebc5",
+      "name": "D",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "aa4795f7-92a1-4692-a92a-11918ab3b65f",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b5c167a-032c-408e-a762-d047b43cbbb7",
+      "variable_name": "A",
+      "ontology_term": "EmissionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9d4a0c15-896a-4c98-9eb6-8fe628ba4c0f",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "126a864a-6b5e-4a36-b4ca-93acb509750c",
+      "variable_name": "D",
+      "ontology_term": "InitialStateDistribution",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a28f7a8f-a086-466a-ab9c-2e3b76fbf380",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9aebf91d-0e38-4256-93c0-f33fbb39da09",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "adf27faa-9240-4fb3-bc1f-f5e4d9821a29",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c9187919-50f2-49a7-b1bf-ddb289e2b798",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "86f6b98f-af97-4aed-95c2-ca776ed92b3f",
+      "variable_name": "alpha",
+      "ontology_term": "ForwardVariable",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "495cca1e-e695-497e-9885-b7e1beeaf847",
+      "variable_name": "beta",
+      "ontology_term": "BackwardVariable",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d14c1ce8-5b53-4c3b-bb4e-baf4fcc77c32",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-03T08:22:02.988352",
+  "modified_at": "2026-03-03T08:22:02.988352",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "HiddenMarkovModel",
+    "footer": "Hidden Markov Model Baseline v1 - GNN Representation.\nNo action selection \u2014 passive observer only.\nUse as baseline comparison for POMDP Active Inference variants.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "HiddenMarkovModel",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Hidden Markov Model Baseline",
+    "ModelAnnotation": "A standard discrete Hidden Markov Model with:\n- 4 hidden states with Markovian dynamics\n- 6 observation symbols\n- Fixed transition and emission matrices\n- No action selection (passive inference only)\n- Suitable for sequence modeling and state estimation tasks",
+    "StateSpaceBlock": "# HMM parameters\nA[6,4,type=float]      # Emission matrix: observations x hidden states\nB[4,4,type=float]      # Transition matrix (no action dependence)\nD[4,type=float]        # Initial state distribution (prior)\n\n# State and observations\ns[4,1,type=float]      # Hidden state belief (posterior)\ns_prime[4,1,type=float] # Next hidden state\no[6,1,type=int]        # Current observation (one-hot)\n\n# Inference quantities\nF[1,type=float]        # Variational Free Energy (negative ELBO)\nalpha[4,1,type=float]  # Forward variable (belief propagation)\nbeta[4,1,type=float]   # Backward variable\n\n# Time\nt[1,type=int]          # Discrete time step",
+    "Connections": "D>s\ns-A\ns>s_prime\nA-o\nB>s_prime\ns-B\ns-F\no-F\ns-alpha\no-alpha\nalpha>s_prime\ns_prime-beta",
+    "InitialParameterization": "# Emission: 6 observations, 4 states\nA={\n  (0.7, 0.1, 0.1, 0.1),\n  (0.1, 0.7, 0.1, 0.1),\n  (0.1, 0.1, 0.7, 0.1),\n  (0.1, 0.1, 0.1, 0.7),\n  (0.1, 0.1, 0.4, 0.4),\n  (0.4, 0.4, 0.1, 0.1)\n}\n\n# Transition: 4x4 column stochastic\nB={\n  (0.7, 0.1, 0.1, 0.1),\n  (0.1, 0.7, 0.2, 0.1),\n  (0.1, 0.1, 0.6, 0.2),\n  (0.1, 0.1, 0.1, 0.6)\n}\n\nD={(0.25, 0.25, 0.25, 0.25)}",
+    "Equations": "# Forward algorithm: alpha_t(s) = sum_{s'} P(o_t|s) * P(s|s') * alpha_{t-1}(s')\n# Backward algorithm: beta_t(s) = sum_{s'} P(o_{t+1}|s') * B(s'|s) * beta_{t+1}(s')\n# State posterior: Q(s_t) = alpha_t(s) * beta_t(s) / Z\n# Free Energy: F = -log P(o_{1:T})",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A=EmissionMatrix\nB=TransitionMatrix\nD=InitialStateDistribution\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\nF=VariationalFreeEnergy\nalpha=ForwardVariable\nbeta=BackwardVariable\nt=Time",
+    "ModelParameters": "num_hidden_states: 4\nnum_observations: 6\nnum_timesteps: 50",
+    "Footer": "Hidden Markov Model Baseline v1 - GNN Representation.\nNo action selection \u2014 passive observer only.\nUse as baseline comparison for POMDP Active Inference variants.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

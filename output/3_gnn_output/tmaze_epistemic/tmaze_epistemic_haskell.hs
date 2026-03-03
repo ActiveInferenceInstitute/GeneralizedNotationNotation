@@ -1,0 +1,67 @@
+module TMazeEpistemicForagingAgent where
+
+import Data.List (sort)
+import Numeric.LinearAlgebra ()
+
+-- Variable Types
+data A_loc = A_loc Double
+data A_rew = A_rew Double
+data B_ctx = B_ctx Double
+data B_loc = B_loc Double
+data C_loc = C_loc Double
+data C_rew = C_rew Double
+data D_ctx = D_ctx Double
+data D_loc = D_loc Double
+data F = F Double
+data G = G Double
+data G_epi = G_epi Double
+data G_ins = G_ins Double
+data o_loc = o_loc Int
+data o_rew = o_rew Int
+data s_ctx = s_ctx Double
+data s_loc = s_loc Double
+data t = t Int
+data u = u Int
+data π = π Double
+
+-- Connections as Functions
+D_locTos_loc :: D_loc -> s_loc
+D_locTos_loc x = undefined  -- TODO: implement connection
+D_ctxTos_ctx :: D_ctx -> s_ctx
+D_ctxTos_ctx x = undefined  -- TODO: implement connection
+s_locToA_loc :: s_loc -> A_loc
+s_locToA_loc x = undefined  -- TODO: implement connection
+A_locToo_loc :: A_loc -> o_loc
+A_locToo_loc x = undefined  -- TODO: implement connection
+s_locToA_rew :: s_loc -> A_rew
+s_locToA_rew x = undefined  -- TODO: implement connection
+s_ctxToA_rew :: s_ctx -> A_rew
+s_ctxToA_rew x = undefined  -- TODO: implement connection
+A_rewToo_rew :: A_rew -> o_rew
+A_rewToo_rew x = undefined  -- TODO: implement connection
+s_locToB_loc :: s_loc -> B_loc
+s_locToB_loc x = undefined  -- TODO: implement connection
+s_ctxToB_ctx :: s_ctx -> B_ctx
+s_ctxToB_ctx x = undefined  -- TODO: implement connection
+C_rewToG_ins :: C_rew -> G_ins
+C_rewToG_ins x = undefined  -- TODO: implement connection
+G_epiToG :: G_epi -> G
+G_epiToG x = undefined  -- TODO: implement connection
+G_insToG :: G_ins -> G
+G_insToG x = undefined  -- TODO: implement connection
+GToπ :: G -> π
+GToπ x = undefined  -- TODO: implement connection
+πTou :: π -> u
+πTou x = undefined  -- TODO: implement connection
+B_locTou :: B_loc -> u
+B_locTou x = undefined  -- TODO: implement connection
+s_locToF :: s_loc -> F
+s_locToF x = undefined  -- TODO: implement connection
+s_ctxToF :: s_ctx -> F
+s_ctxToF x = undefined  -- TODO: implement connection
+o_locToF :: o_loc -> F
+o_locToF x = undefined  -- TODO: implement connection
+o_rewToF :: o_rew -> F
+o_rewToF x = undefined  -- TODO: implement connection
+
+-- MODEL_DATA: {"model_name":"T-Maze Epistemic Foraging Agent","annotation":"The classic T-maze task from Active Inference literature (Friston et al.):\n\n- Agent navigates a T-shaped maze with 4 locations: center, left arm, right arm, cue location\n- Two observation modalities: location (where am I?) and reward/cue (what do I see?)\n- Reward is hidden behind one of the two arms (left or right), determined by context\n- Cue location provides partial information about which arm holds the reward\n- Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)\n- Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation\n- The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value","variables":[{"name":"s_loc","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"s_ctx","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"o_loc","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"o_rew","var_type":"observation","data_type":"integer","dimensions":[3,1]},{"name":"A_loc","var_type":"action","data_type":"float","dimensions":[4,4]},{"name":"A_rew","var_type":"action","data_type":"float","dimensions":[3,4,2]},{"name":"B_loc","var_type":"hidden_state","data_type":"float","dimensions":[4,4,4]},{"name":"B_ctx","var_type":"hidden_state","data_type":"float","dimensions":[2,2,1]},{"name":"C_loc","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"C_rew","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"D_loc","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D_ctx","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"\u03c0","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1]},{"name":"G_epi","var_type":"policy","data_type":"float","dimensions":[1]},{"name":"G_ins","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D_loc"],"target_variables":["s_loc"],"connection_type":"directed"},{"source_variables":["D_ctx"],"target_variables":["s_ctx"],"connection_type":"directed"},{"source_variables":["s_loc"],"target_variables":["A_loc"],"connection_type":"undirected"},{"source_variables":["A_loc"],"target_variables":["o_loc"],"connection_type":"undirected"},{"source_variables":["s_loc"],"target_variables":["A_rew"],"connection_type":"undirected"},{"source_variables":["s_ctx"],"target_variables":["A_rew"],"connection_type":"undirected"},{"source_variables":["A_rew"],"target_variables":["o_rew"],"connection_type":"undirected"},{"source_variables":["s_loc"],"target_variables":["B_loc"],"connection_type":"undirected"},{"source_variables":["s_ctx"],"target_variables":["B_ctx"],"connection_type":"undirected"},{"source_variables":["C_rew"],"target_variables":["G_ins"],"connection_type":"directed"},{"source_variables":["G_epi"],"target_variables":["G"],"connection_type":"directed"},{"source_variables":["G_ins"],"target_variables":["G"],"connection_type":"directed"},{"source_variables":["G"],"target_variables":["\u03c0"],"connection_type":"directed"},{"source_variables":["\u03c0"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["B_loc"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["s_loc"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["s_ctx"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["o_loc"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["o_rew"],"target_variables":["F"],"connection_type":"undirected"}],"parameters":[{"name":"A_loc","value":[[1.0,0.0,0.0,0.0],[0.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]],"param_type":"constant"},{"name":"B_loc","value":[[[0.0,0.0,0.0,0.0],[1.0,1.0,0.0,0.0],[0.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]],[[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[1.0,0.0,1.0,0.0],[0.0,0.0,0.0,1.0]],[[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[1.0,0.0,0.0,1.0]],[[1.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,0.0,0.0,0.0],[0.0,1.0,1.0,0.0]]],"param_type":"constant"},{"name":"B_ctx","value":[[[1.0,0.0],[0.0,1.0]]],"param_type":"constant"},{"name":"C_loc","value":[[0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"C_rew","value":[[-1.0,3.0,0.0]],"param_type":"constant"},{"name":"D_loc","value":[[1.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"D_ctx","value":[[0.5,0.5]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":3,"step_size":null},"ontology_mappings":[{"variable_name":"A_loc","ontology_term":"LocationLikelihoodMatrix","description":null},{"variable_name":"A_rew","ontology_term":"RewardLikelihoodMatrix","description":null},{"variable_name":"B_loc","ontology_term":"LocationTransitionMatrix","description":null},{"variable_name":"B_ctx","ontology_term":"ContextTransitionMatrix","description":null},{"variable_name":"C_loc","ontology_term":"LocationPreferenceVector","description":null},{"variable_name":"C_rew","ontology_term":"RewardPreferenceVector","description":null},{"variable_name":"D_loc","ontology_term":"LocationPrior","description":null},{"variable_name":"D_ctx","ontology_term":"ContextPrior","description":null},{"variable_name":"s_loc","ontology_term":"LocationHiddenState","description":null},{"variable_name":"s_ctx","ontology_term":"ContextHiddenState","description":null},{"variable_name":"o_loc","ontology_term":"LocationObservation","description":null},{"variable_name":"o_rew","ontology_term":"RewardObservation","description":null},{"variable_name":"\u03c0","ontology_term":"PolicyVector","description":null},{"variable_name":"u","ontology_term":"Action","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"G_epi","ontology_term":"EpistemicValue","description":null},{"variable_name":"G_ins","ontology_term":"InstrumentalValue","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]}

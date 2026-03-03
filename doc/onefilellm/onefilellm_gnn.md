@@ -183,7 +183,7 @@ Latency: 8 s; cost: ~0.25 USD at 28 k tokens.
 
 | Scenario | Sources | Depth | Uncompressed Tokens | Runtime (s) | Peak RAM |
 |----------|---------|-------|---------------------|-------------|----------|
-| GitHub repo only | 1 | N/A | 11,240[1] | 15 s | 220 MB |
+| GitHub repo only | 1 | N/A | 11.3.0[1] | 15 s | 220 MB |
 | Repo + Wiki + Specs | 3 | 1 | 28,430[7] | 37 s | 410 MB |
 | Full crawl incl. SVG | 3 | 2 | 52,880 | 91 s | 640 MB |
 

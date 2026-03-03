@@ -210,7 +210,7 @@ class MCP:
                 return sorted(self.resources.keys())
     
     def discover_modules(self, force_refresh: bool = False, modules_allowlist: Optional[List[str]] = None,
-                         per_module_timeout: float = 10.0, overall_timeout: float = 30.0) -> bool:
+                         per_module_timeout: float = 30.0, overall_timeout: float = 120.0) -> bool:
         """
         Enhanced module discovery with caching, thread safety, and comprehensive error handling.
 
@@ -231,116 +231,118 @@ class MCP:
             if self._modules_discovered and not force_refresh:
                 logger.debug("MCP modules already discovered. Skipping redundant discovery.")
                 return True
+            
+            # Prevent concurrent discoveries
+            self._modules_discovered = True
 
-        with self._lock:
-            root_dir = Path(__file__).parent.parent
-            logger.info(f"Discovering MCP modules in {root_dir}")
-            all_modules_loaded_successfully = True
-            
-            # Track discovery performance
-            discovery_start = time.time()
-            
-            # Clear existing modules if forcing refresh
-            if force_refresh:
+        root_dir = Path(__file__).parent.parent
+        logger.info(f"Discovering MCP modules in {root_dir}")
+        all_modules_loaded_successfully = True
+        
+        # Track discovery performance
+        discovery_start = time.time()
+        
+        # Clear existing modules if forcing refresh
+        if force_refresh:
+            with self._lock:
                 self.modules.clear()
                 self.tools.clear()
                 self.resources.clear()
-                self._modules_discovered = False
                 self._discovery_cache.clear()
-            
-            # Get list of directories to scan
-            directories = [d for d in root_dir.iterdir() 
-                          if d.is_dir() and not d.name.startswith('_')]
-            if modules_allowlist:
-                allow = set(modules_allowlist)
-                directories = [d for d in directories if d.name in allow or d.name == 'mcp']
-            
-            # Use thread pool if available, otherwise load sequentially
-            if self._executor is not None:
-                module_load_futures = {}
-                for directory in directories:
-                    mcp_file = directory / "mcp.py"
-                    if not mcp_file.exists():
-                        logger.debug(f"No MCP module found in {directory}")
-                        continue
-                    future = self._executor.submit(self._load_module, directory, mcp_file)
-                    module_load_futures[directory.name] = future
+        
+        # Get list of directories to scan
+        directories = [d for d in root_dir.iterdir() 
+                      if d.is_dir() and not d.name.startswith('_')]
+        if modules_allowlist:
+            allow = set(modules_allowlist)
+            directories = [d for d in directories if d.name in allow or d.name == 'mcp']
+        
+        # Use thread pool if available, otherwise load sequentially
+        if self._executor is not None:
+            module_load_futures = {}
+            for directory in directories:
+                mcp_file = directory / "mcp.py"
+                if not mcp_file.exists():
+                    logger.debug(f"No MCP module found in {directory}")
+                    continue
+                future = self._executor.submit(self._load_module, directory, mcp_file)
+                module_load_futures[directory.name] = future
 
-                start_wait = time.time()
-                from concurrent.futures import TimeoutError as FuturesTimeoutError
+            start_wait = time.time()
+            from concurrent.futures import TimeoutError as FuturesTimeoutError
                 
-                for module_name, future in list(module_load_futures.items()):
-                    remaining = max(0.0, overall_timeout - (time.time() - start_wait))
-                    try:
-                        success = future.result(timeout=min(per_module_timeout, remaining) if remaining > 0 else 0.001)
-                        if not success:
-                            all_modules_loaded_successfully = False
-                    except FuturesTimeoutError:
-                        # Timeout is a transient issue - module may load later via fallback
-                        logger.debug(f"Module {module_name} loading timed out - will be retried via fallback registration")
-                        # Don't set error status yet - allow fallback registration to succeed
-                    except Exception as e:
-                        error_msg = str(e) if str(e) else type(e).__name__
-                        logger.error(f"Failed to load module {module_name}: {error_msg}")
-                        all_modules_loaded_successfully = False
-                        self.modules[module_name] = MCPModuleInfo(
-                            name=f"src.{module_name}.mcp",
-                            path=Path(__file__).parent.parent / module_name / "mcp.py",
-                            status="error",
-                            error_message=error_msg,
-                            last_updated=time.time()
-                        )
-            else:
-                # Fallback sequential loading
-                for directory in directories:
-                    mcp_file = directory / "mcp.py"
-                    if not mcp_file.exists():
-                        logger.debug(f"No MCP module found in {directory}")
-                        continue
-                    success = self._load_module(directory, mcp_file)
+            for module_name, future in list(module_load_futures.items()):
+                remaining = max(0.0, overall_timeout - (time.time() - start_wait))
+                try:
+                    success = future.result(timeout=min(per_module_timeout, remaining) if remaining > 0 else 0.001)
                     if not success:
                         all_modules_loaded_successfully = False
-
-            # Special handling for core MCP tools in the mcp directory itself
-            mcp_dir = Path(__file__).parent
-            logger.debug(f"Discovering core MCP tools in {mcp_dir}")
-            
-            # Load SymPy MCP integration (special case - located in mcp directory)
-            sympy_mcp_file = mcp_dir / "sympy_mcp.py"
-            if sympy_mcp_file.exists():
-                try:
-                    # Import directly as src.mcp.sympy_mcp since it's in the mcp directory
-                    import_start = time.time()
-                    sympy_module = importlib.import_module("src.mcp.sympy_mcp")
-                    import_time = time.time() - import_start
-                    
-                    if hasattr(sympy_module, "register_tools") and callable(sympy_module.register_tools):
-                        tools_before = len(self.tools)
-                        sympy_module.register_tools(self)
-                        tools_added = len(self.tools) - tools_before
-                        
-                        self.modules["sympy_mcp"] = MCPModuleInfo(
-                            name="src.mcp.sympy_mcp",
-                            path=sympy_mcp_file,
-                            tools_count=tools_added,
-                            status="loaded",
-                            load_time=import_time,
-                            last_updated=time.time()
-                        )
-                        logger.debug(f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s")
-                    else:
-                        logger.warning("sympy_mcp module has no register_tools function")
-                except Exception as e:
-                    logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
+                except FuturesTimeoutError:
+                    # Timeout is a transient issue - module may load later via fallback
+                    logger.warning(f"Module {module_name} loading timed out (>{per_module_timeout:.0f}s) — skipped")
                     all_modules_loaded_successfully = False
+                except Exception as e:
+                    error_msg = str(e) if str(e) else type(e).__name__
+                    logger.error(f"Failed to load module {module_name}: {error_msg}")
+                    all_modules_loaded_successfully = False
+                    self.modules[module_name] = MCPModuleInfo(
+                        name=f"src.{module_name}.mcp",
+                        path=Path(__file__).parent.parent / module_name / "mcp.py",
+                        status="error",
+                        error_message=error_msg,
+                        last_updated=time.time()
+                    )
+        else:
+            # Fallback sequential loading
+            for directory in directories:
+                mcp_file = directory / "mcp.py"
+                if not mcp_file.exists():
+                    logger.debug(f"No MCP module found in {directory}")
+                    continue
+                success = self._load_module(directory, mcp_file)
+                if not success:
+                    all_modules_loaded_successfully = False
+
+        # Special handling for core MCP tools in the mcp directory itself
+        mcp_dir = Path(__file__).parent
+        logger.debug(f"Discovering core MCP tools in {mcp_dir}")
+        
+        # Load SymPy MCP integration (special case - located in mcp directory)
+        sympy_mcp_file = mcp_dir / "sympy_mcp.py"
+        if sympy_mcp_file.exists():
+            try:
+                # Import directly as src.mcp.sympy_mcp since it's in the mcp directory
+                import_start = time.time()
+                sympy_module = importlib.import_module("src.mcp.sympy_mcp")
+                import_time = time.time() - import_start
+                
+                if hasattr(sympy_module, "register_tools") and callable(sympy_module.register_tools):
+                    tools_before = len(self.tools)
+                    sympy_module.register_tools(self)
+                    tools_added = len(self.tools) - tools_before
                     
                     self.modules["sympy_mcp"] = MCPModuleInfo(
                         name="src.mcp.sympy_mcp",
                         path=sympy_mcp_file,
-                        status="error",
-                        error_message=str(e),
+                        tools_count=tools_added,
+                        status="loaded",
+                        load_time=import_time,
                         last_updated=time.time()
                     )
+                    logger.debug(f"Loaded sympy_mcp: {tools_added} tools in {import_time:.3f}s")
+                else:
+                    logger.warning("sympy_mcp module has no register_tools function")
+            except Exception as e:
+                logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
+                all_modules_loaded_successfully = False
+                
+                self.modules["sympy_mcp"] = MCPModuleInfo(
+                    name="src.mcp.sympy_mcp",
+                    path=sympy_mcp_file,
+                    status="error",
+                    error_message=str(e),
+                    last_updated=time.time()
+                )
 
             discovery_time = time.time() - discovery_start
             logger.info(f"Enhanced module discovery completed in {discovery_time:.2f}s: "

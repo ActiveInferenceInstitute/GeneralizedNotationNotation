@@ -4,7 +4,7 @@
 
 Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
 
-**Last Updated**: February 24, 2026  
+**Last Updated**: March 3, 2026  
 **Status**: ✅ All tools real (no stubs), 0 skips, 1,522+ tests passing
 
 ## Usage
@@ -23,7 +23,7 @@ python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 | Instance | `src/mcp/mcp_instance.py` |
 | Audit script | `src/mcp/validate_tools.py` |
 
-## MCP Tool Registry (76 real tools)
+## MCP Tool Registry (131 real tools)
 
 All tools are real named callable functions — no stubs, no lambdas, no generic wrappers. Each tool has a non-empty description and its `register_tools()` calls `logger.info`.
 

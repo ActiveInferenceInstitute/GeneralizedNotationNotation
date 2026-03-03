@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Julia
 > **Framework Base**: `ActiveInference.jl` (Discrete Active Inference Package)
 > **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 0.4.1
+> **Documentation Version**: 1.3.0
 
 ## Overview
 
@@ -21,7 +21,7 @@ The ActiveInference.jl implementation consists of three interconnected layers:
 
 ### Source File
 
-[activeinference_renderer.py](#placeholder)
+[activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py)
 
 ---
 
@@ -300,15 +300,15 @@ The slightly lower confidence correlation (compared to the 1.0000 achieved by Py
 
 | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Matrix Conversion | [activeinference_renderer.py](#placeholder) | `_matrix_to_julia()` | L17-66 |
-| Model Extraction | [activeinference_renderer.py](#placeholder) | `extract_model_info()` | L110-260 |
-| Script Generation | [activeinference_renderer.py](#placeholder) | `generate_activeinference_script()` | L262-734 |
-| Env Setup | [activeinference_runner.py](#placeholder) | `setup_julia_environment()` | L89-162 |
-| Execution | [activeinference_runner.py](#placeholder) | `execute_activeinference_script()` | L283-391 |
-| Julia Check | [activeinference_runner.py](#placeholder) | `is_julia_available()` | L27-88 (delegates to `julia_setup`) |
-| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L20-131 |
-| Trace Reconstruction | [analyzer.py](#placeholder) | `create_trace_reconstruction()` | L134-211 |
-| Matrix Heatmaps | [analyzer.py](#placeholder) | `create_model_matrix_heatmaps()` | L214-348 |
+| Matrix Conversion | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `_matrix_to_julia()` | — |
+| Model Extraction | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `extract_model_info()` | — |
+| Script Generation | [activeinference_renderer.py](../../../src/render/activeinference_jl/activeinference_renderer.py) | `generate_activeinference_script()` | — |
+| Env Setup | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `setup_julia_environment()` | L86-159 |
+| Execution | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `execute_activeinference_script()` | L280-388 |
+| Julia Check | [activeinference_runner.py](../../../src/execute/activeinference_jl/activeinference_runner.py) | `is_julia_available()` | L27-84 |
+| Analysis | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `generate_analysis_from_logs()` | — |
+| Trace Reconstruction | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_trace_reconstruction()` | — |
+| Matrix Heatmaps | [analyzer.py](../../../src/analysis/activeinference_jl/analyzer.py) | `create_model_matrix_heatmaps()` | — |
 
 ---
 
@@ -321,3 +321,10 @@ The slightly lower confidence correlation (compared to the 1.0000 achieved by Py
 | AIF-3 | Execution | Runner is 604 lines with Julia environment setup; `setup_julia_environment()` and `_fallback_environment_setup()` could be shared with `rxinfer_runner.py` — `is_julia_available()` now delegates to shared `julia_setup` module | Medium |
 | AIF-4 | Rendering | ~~`POLICY_LENGTH` was referenced but defined as `POLICY_LEN`~~ — removed orphaned `POLICY_LENGTH`; only `POLICY_LEN` is used | ✅ FIXED |
 | AIF-5 | Analysis | `parse_julia_matrix()` and `parse_julia_vector()` nested helpers could be extracted to shared Julia parsing utility | Low |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

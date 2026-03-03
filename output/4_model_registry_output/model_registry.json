@@ -1,20 +1,153 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-02-25T14:39:41.499400",
+  "updated_at": "2026-03-03T08:22:04.658959",
   "models": {
+    "simple_mdp": {
+      "model_id": "simple_mdp",
+      "name": "GNN Example: Simple MDP (Fully Observable)",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-03T08:22:04.658245",
+      "updated_at": "2026-03-03T08:22:04.658378",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/simple_mdp.md",
+          "created_at": "2026-03-03T08:22:04.658275",
+          "metadata": {},
+          "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "multi_armed_bandit": {
+      "model_id": "multi_armed_bandit",
+      "name": "GNN Example: Multi-Armed Bandit",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-03T08:22:04.658466",
+      "updated_at": "2026-03-03T08:22:04.658492",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+          "created_at": "2026-03-03T08:22:04.658468",
+          "metadata": {},
+          "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "deep_planning_horizon": {
+      "model_id": "deep_planning_horizon",
+      "name": "GNN Example: Deep Planning Horizon POMDP",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-03T08:22:04.658539",
+      "updated_at": "2026-03-03T08:22:04.658564",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+          "created_at": "2026-03-03T08:22:04.658542",
+          "metadata": {},
+          "hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
     "actinf_pomdp_agent": {
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-02-25T14:39:41.499148",
-      "updated_at": "2026-02-25T14:39:41.499273",
+      "created_at": "2026-03-03T08:22:04.658605",
+      "updated_at": "2026-03-03T08:22:04.658629",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "input/gnn_files/actinf_pomdp_agent.md",
-          "created_at": "2026-02-25T14:39:41.499182",
+          "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+          "created_at": "2026-03-03T08:22:04.658607",
           "metadata": {},
           "hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "hmm_baseline": {
+      "model_id": "hmm_baseline",
+      "name": "GNN Example: Hidden Markov Model Baseline",
+      "description": "HiddenMarkovModel",
+      "created_at": "2026-03-03T08:22:04.658668",
+      "updated_at": "2026-03-03T08:22:04.658690",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+          "created_at": "2026-03-03T08:22:04.658670",
+          "metadata": {},
+          "hash": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "two_state_bistable": {
+      "model_id": "two_state_bistable",
+      "name": "GNN Example: Two-State Bistable POMDP",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-03T08:22:04.658725",
+      "updated_at": "2026-03-03T08:22:04.658747",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+          "created_at": "2026-03-03T08:22:04.658727",
+          "metadata": {},
+          "hash": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "markov_chain": {
+      "model_id": "markov_chain",
+      "name": "GNN Example: Markov Chain (Passive Dynamics)",
+      "description": "HiddenMarkovModel",
+      "created_at": "2026-03-03T08:22:04.658783",
+      "updated_at": "2026-03-03T08:22:04.658804",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/markov_chain.md",
+          "created_at": "2026-03-03T08:22:04.658785",
+          "metadata": {},
+          "hash": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb"
+        }
+      },
+      "tags": [],
+      "metadata": {},
+      "current_version": "1.0"
+    },
+    "tmaze_epistemic": {
+      "model_id": "tmaze_epistemic",
+      "name": "GNN Example: T-Maze Epistemic Foraging Agent",
+      "description": "ActInfPOMDP",
+      "created_at": "2026-03-03T08:22:04.658841",
+      "updated_at": "2026-03-03T08:22:04.658865",
+      "versions": {
+        "1.0": {
+          "version": "1.0",
+          "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+          "created_at": "2026-03-03T08:22:04.658842",
+          "metadata": {},
+          "hash": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c"
         }
       },
       "tags": [],

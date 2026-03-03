@@ -193,7 +193,18 @@ def main():
         # Rotate existing logs
         rotate_logs(log_dir)
 
-        # Enable JSON logging
+        # Force re-initialization so pipeline.log is always freshly created
+        # for this run (prevents stale logs when re-running within same process)
+        PipelineLogger._initialized = False
+        if PipelineLogger._log_file_handler:
+            logging.getLogger().removeHandler(PipelineLogger._log_file_handler)
+            PipelineLogger._log_file_handler.close()
+            PipelineLogger._log_file_handler = None
+
+        # Initialize with log_dir to create pipeline.log
+        PipelineLogger.initialize(log_dir=log_dir, enable_structured=True)
+
+        # Enable JSON logging (adds pipeline.jsonl handler)
         PipelineLogger.enable_json_logging(log_dir)
 
         logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
@@ -469,7 +480,7 @@ def main():
             pipeline_summary["steps"].append(step_result)
 
             # Update performance summary
-            if step_result["status"] in ("SUCCESS", "SUCCESS_WITH_WARNINGS"):
+            if step_result["status"] in ("SUCCESS", "SUCCESS_WITH_WARNINGS", "SKIPPED"):
                 pipeline_summary["performance_summary"]["successful_steps"] += 1
             elif step_result["status"] == "FAILED":
                 pipeline_summary["performance_summary"]["failed_steps"] += 1
@@ -701,54 +712,142 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         # Use virtual environment Python if available, otherwise fall back to system Python
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
         
-        # Prepare command using the argument builder
+        # Retrieve testing matrix configuration from input/config.yaml
+        testing_matrix = {}
+        input_config_path = Path("input/config.yaml")
+        if input_config_path.exists():
+            import yaml
+            try:
+                with open(input_config_path, "r") as f:
+                    full_config = yaml.safe_load(f) or {}
+                    testing_matrix = full_config.get("testing_matrix", {})
+            except Exception as e:
+                logger.warning(f"Could not load testing_matrix from input/config.yaml: {e}")
+        
+        # Extract step number
+        step_num_match = re.match(r"^(\d+)_", script_name)
+        step_num = int(step_num_match.group(1)) if step_num_match else -1
+        
+        matrix_enabled = testing_matrix.get("enabled", False)
+        target_folders = []
+        
+        # Check global_steps: if a global step (0, 1, 2) is disabled, skip it entirely
+        if matrix_enabled:
+            global_steps = testing_matrix.get("global_steps", {})
+            script_stem = script_name.replace('.py', '')
+            if script_stem in global_steps and not global_steps[script_stem]:
+                logger.info(f"⏭️ Skipping {script_name}: disabled in testing_matrix.global_steps")
+                step_result["status"] = "SKIPPED"
+                step_result["exit_code"] = 0
+                step_result["stdout"] = f"Skipped by global_steps config (testing_matrix.global_steps.{script_stem}: false)\n"
+                return step_result
+        
+        # Only apply folder-matrix logic if enabled and the step is a processing step (>= 3)
+        if matrix_enabled and step_num >= 3:
+            base_target_dir = args.target_dir
+            if base_target_dir.exists() and base_target_dir.is_dir():
+                folders_config = testing_matrix.get("folders", {})
+                default_steps = testing_matrix.get("default_steps", [])
+                
+                # Check all subdirectories in the base target directory
+                for item in base_target_dir.iterdir():
+                    if item.is_dir() and item.name != "archived_gnn_files":
+                        # Determine allowed steps for this folder
+                        allowed_steps = folders_config.get(item.name, default_steps)
+                        if step_num in allowed_steps:
+                            target_folders.append(item)
+        
         from utils.argument_utils import build_step_command_args
+        from pipeline.step_timeouts import get_step_timeout
+        from utils.execution_utils import execute_command_streaming
         
-        cmd = build_step_command_args(
-            script_name.replace('.py', ''),
-            args,
-            python_executable,
-            script_path
-        )
-        
-        # Log the command being executed (only in verbose mode)
-        if args.verbose:
-            logger.info(f"Executing command: {' '.join(cmd)}")
-        
-        # Execute step with proper working directory (project root)
-        project_root = Path(__file__).parent.parent
-        # Ensure unbuffered output from children
+        # Prepare environment
         _env = os.environ.copy()
         _env.setdefault("PYTHONUNBUFFERED", "1")
+        comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
+        step_timeout_seconds = get_step_timeout(script_name, comprehensive=comprehensive_requested)
 
-        # Execute step with timeout
-        try:
-            # Use appropriate timeout for different step types
-            from pipeline.step_timeouts import get_step_timeout
-            comprehensive_requested = any("--comprehensive" in str(arg) for arg in sys.argv)
-            step_timeout_seconds = get_step_timeout(script_name, comprehensive=comprehensive_requested)
-
-            # Track memory during execution
-            process_start_time = time.time()
+        if matrix_enabled and step_num >= 2 and target_folders:
+            # MATRIX MODE: We found specific folders to run for this step
+            if args.verbose:
+                logger.info(f"Testing matrix enabled. Running step {step_num} on {len(target_folders)} specific folders: {[f.name for f in target_folders]}")
             
-            # Use streaming execution for real-time feedback
-            # This is critical for long-running steps like tests
-            from utils.execution_utils import execute_command_streaming
+            combined_stdout = ""
+            combined_stderr = ""
+            worst_exit_code = 0
             
-            # Execute with streaming
-            # For 2_tests.py, we definitely want to see stdout/stderr in real-time
-            # For others, we also benefit from real-time feedback
+            for folder in target_folders:
+                if args.verbose:
+                    logger.info(f"  -> Executing for folder: {folder.name}")
+                    
+                # Creating a modified args copy to point to the specific subfolder
+                import copy
+                folder_args = copy.copy(args)
+                folder_args.target_dir = folder
+                
+                cmd = build_step_command_args(
+                    script_name.replace('.py', ''),
+                    folder_args,
+                    python_executable,
+                    script_path
+                )
+                
+                # We do not use print_stdout=True for every subfolder iteration to avoid extreme terminal spam, 
+                # but we will print if requested verbose globally
+                if args.verbose:
+                    logger.info(f"  -> CMD ACTUALLY IS: {' '.join(cmd)}")
+                    
+                result = execute_command_streaming(
+                    cmd,
+                    cwd=project_root,
+                    env=_env,
+                    timeout=step_timeout_seconds,
+                    print_stdout=args.verbose,  
+                    print_stderr=True,
+                    capture_output=True
+                )
+                
+                combined_stdout += f"\n--- Output for {folder.name} ---\n{result.get('stdout', '')}\n"
+                if result.get('stderr'):
+                    combined_stderr += f"\n--- Stderr for {folder.name} ---\n{result.get('stderr', '')}\n"
+                
+                exit_code = result.get('exit_code', -1)
+                if exit_code != 0:
+                    worst_exit_code = exit_code
+                    logger.warning(f"  -> Folder {folder.name} execution returned code {exit_code}")
+                    
+            end_memory = get_current_memory_usage()
+            peak_memory = max(peak_memory, end_memory)
+            
+            step_result["stdout"] = combined_stdout
+            step_result["stderr"] = combined_stderr
+            step_result["exit_code"] = worst_exit_code
+            step_result["memory_usage_mb"] = end_memory
+            step_result["peak_memory_mb"] = peak_memory
+            step_result["memory_delta_mb"] = end_memory - start_memory
+            
+        else:
+            # STANDARD MODE
+            cmd = build_step_command_args(
+                script_name.replace('.py', ''),
+                args,
+                python_executable,
+                script_path
+            )
+            
+            if args.verbose:
+                logger.info(f"Executing command: {' '.join(cmd)}")
+                
             result = execute_command_streaming(
                 cmd,
                 cwd=project_root,
                 env=_env,
                 timeout=step_timeout_seconds,
-                print_stdout=True,  # Always print to stdout so user sees progress
-                print_stderr=True,  # Always print stderr so user sees errors
-                capture_output=True # Capture for logging/summary
+                print_stdout=True,  
+                print_stderr=True,
+                capture_output=True 
             )
             
-            # Capture final memory measurements
             end_memory = get_current_memory_usage()
             peak_memory = max(peak_memory, end_memory)
             
@@ -759,16 +858,9 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             step_result["peak_memory_mb"] = peak_memory
             step_result["memory_delta_mb"] = end_memory - start_memory
 
-            # Log captured output if verbose (it was already printed to console)
             if args.verbose:
                  logger.info("Command completed with exit code: " + str(step_result["exit_code"]))
 
-        except Exception as e:
-            step_result["status"] = "TIMEOUT" if "Timeout" in str(e) else "FAILED"
-            step_result["exit_code"] = -1
-            step_result["stderr"] = str(e)
-            return step_result
-        
         # Determine status
         if step_result["exit_code"] == 0:
             step_result["status"] = "SUCCESS"
@@ -872,7 +964,7 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
 
         # Validate step status values
         if "status" in step:
-            valid_statuses = ["SUCCESS", "SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS", "FAILED", "TIMEOUT"]
+            valid_statuses = ["SUCCESS", "SUCCESS_WITH_WARNINGS", "PARTIAL_SUCCESS", "FAILED", "TIMEOUT", "SKIPPED"]
             if step["status"] not in valid_statuses:
                 logger.warning(f"Step {i} has invalid status: {step['status']}")
 

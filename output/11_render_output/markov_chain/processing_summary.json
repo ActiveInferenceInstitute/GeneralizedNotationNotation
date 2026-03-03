@@ -1,0 +1,29 @@
+{
+  "timestamp": "2026-03-03T08:22:25.408406",
+  "source_file": "input/gnn_files/discrete/markov_chain.md",
+  "model_name": "Simple Markov Chain",
+  "pomdp_dimensions": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 1
+  },
+  "frameworks_requested": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro"
+  ],
+  "frameworks_processed": [
+    "pymdp",
+    "rxinfer",
+    "activeinference_jl",
+    "jax",
+    "discopy",
+    "pytorch",
+    "numpyro"
+  ],
+  "frameworks_failed": []
+}

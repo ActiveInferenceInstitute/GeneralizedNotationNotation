@@ -18,13 +18,13 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 1. **[What is GNN?](gnn/about_gnn.md)** - Overview and motivation
    - *Cross-refs*: [GNN Overview](gnn/gnn_overview.md), [Academic Paper](gnn/gnn_paper.md)
 2. **[Quickstart Tutorial](quickstart.md)** - Comprehensive getting started guide  
-   - *Cross-refs*: [Basic Examples](gnn/gnn_examples_doc.md), [Template System](templates/README.md)
-3. **[Your First GNN Model](gnn/gnn_examples_doc.md#example-1-static-perception-model)** - Simple example walkthrough
-   - *Cross-refs*: [Basic Template](templates/basic_gnn_template.md), [Syntax Reference](gnn/gnn_syntax.md)
-4. **[Basic Syntax Guide](gnn/gnn_syntax.md)** - Essential notation rules
-   - *Cross-refs*: [File Structure](gnn/gnn_file_structure_doc.md), [Implementation Guide](gnn/gnn_implementation.md)
-5. **[Tools Setup](gnn/gnn_tools.md#installation)** - Get GNN tools running
-   - *Cross-refs*: [Pipeline Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
+   - *Cross-refs*: [Basic Examples](gnn/tutorials/gnn_examples_doc.md), [Template System](templates/README.md)
+3. **[Your First GNN Model](gnn/tutorials/gnn_examples_doc.md#example-1-static-perception-model)** - Simple example walkthrough
+   - *Cross-refs*: [Basic Template](templates/basic_gnn_template.md), [Syntax Reference](gnn/reference/gnn_syntax.md)
+4. **[Basic Syntax Guide](gnn/reference/gnn_syntax.md)** - Essential notation rules
+   - *Cross-refs*: [File Structure](gnn/reference/gnn_file_structure_doc.md), [Implementation Guide](gnn/integration/gnn_implementation.md)
+5. **[Tools Setup](gnn/operations/gnn_tools.md#installation)** - Get GNN tools running
+   - *Cross-refs*: [Pipeline Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
 
 **📚 Complete Learning Paths**: See [Learning Paths Guide](learning_paths.md) for structured beginner → intermediate → advanced progression
 
@@ -40,27 +40,27 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *See Also*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
   - *Next Steps*: [Quickstart Tutorial](quickstart.md)
 - **[About GNN](gnn/about_gnn.md)** - Motivation, goals, and "triple play" approach
-  - *See Also*: [GNN Overview](gnn/gnn_overview.md), [Ontology System](gnn/ontology_system.md)
-  - *Next Steps*: [Basic Examples](gnn/gnn_examples_doc.md)
-- **[Basic Examples](gnn/gnn_examples_doc.md)** - Step-by-step model development
+  - *See Also*: [GNN Overview](gnn/gnn_overview.md), [Ontology System](gnn/advanced/ontology_system.md)
+  - *Next Steps*: [Basic Examples](gnn/tutorials/gnn_examples_doc.md)
+- **[Basic Examples](gnn/tutorials/gnn_examples_doc.md)** - Step-by-step model development
   - *See Also*: [Template System](templates/README.md), [Quickstart Tutorial](quickstart.md)
-  - *Next Steps*: [Syntax Reference](gnn/gnn_syntax.md)
+  - *Next Steps*: [Syntax Reference](gnn/reference/gnn_syntax.md)
 
 ### For Intermediate Users
 >
 > **🛠️ Learning Path**: Syntax → Structure → Implementation → Tools ([Full Intermediate Path](learning_paths.md#intermediate-path))
 
-- **[GNN Syntax Reference](gnn/gnn_syntax.md)** - Complete notation specification
-  - *See Also*: [File Structure](gnn/gnn_file_structure_doc.md), [Examples](gnn/gnn_examples_doc.md)
-  - *Related Tools*: [Type Checker](gnn/gnn_tools.md#validation-tools), [Templates](templates/README.md)
-- **[File Structure Guide](gnn/gnn_file_structure_doc.md)** - How to organize GNN files
-  - *See Also*: [Syntax Reference](gnn/gnn_syntax.md), [Implementation Guide](gnn/gnn_implementation.md)
-  - *Related Tools*: [Pipeline Documentation](gnn/gnn_tools.md)
-- **[Implementation Guide](gnn/gnn_implementation.md)** - Best practices for creating models
-  - *See Also*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Framework Integration](#framework-integrations)
+- **[GNN Syntax Reference](gnn/reference/gnn_syntax.md)** - Complete notation specification
+  - *See Also*: [File Structure](gnn/reference/gnn_file_structure_doc.md), [Examples](gnn/tutorials/gnn_examples_doc.md)
+  - *Related Tools*: [Type Checker](gnn/operations/gnn_tools.md#validation-tools), [Templates](templates/README.md)
+- **[File Structure Guide](gnn/reference/gnn_file_structure_doc.md)** - How to organize GNN files
+  - *See Also*: [Syntax Reference](gnn/reference/gnn_syntax.md), [Implementation Guide](gnn/integration/gnn_implementation.md)
+  - *Related Tools*: [Pipeline Documentation](gnn/operations/gnn_tools.md)
+- **[Implementation Guide](gnn/integration/gnn_implementation.md)** - Best practices for creating models
+  - *See Also*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Framework Integration](#framework-integrations)
   - *Related Tools*: [Testing Guide](testing/README.md), [API Documentation](api/README.md)
-- **[Tools and Resources](gnn/gnn_tools.md)** - Available software and utilities
-  - *See Also*: [Pipeline Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
+- **[Tools and Resources](gnn/operations/gnn_tools.md)** - Available software and utilities
+  - *See Also*: [Pipeline Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
   - *Related*: [Configuration Guide](configuration/README.md), [Deployment Guide](deployment/README.md)
 
 ### For Developers
@@ -71,10 +71,10 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Featured*: [PyMDP](pymdp/gnn_pymdp.md), [RxInfer](rxinfer/gnn_rxinfer.md), [DisCoPy](discopy/gnn_discopy.md)
   - *See Also*: [API Documentation](api/README.md), [Development Guide](development/README.md)
 - **[Advanced Topics](#advanced-topics)** - Complex modeling patterns
-  - *Featured*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Multi-agent](gnn/gnn_multiagent.md)
-  - *See Also*: [Cognitive Phenomena](cognitive_phenomena/README.md), [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md)
-- **[Tool Development](gnn/gnn_dsl_manual.md)** - Creating GNN-compatible tools
-  - *See Also*: [API Documentation](api/README.md), [Pipeline Architecture](gnn/architecture_reference.md)
+  - *Featured*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Multi-agent](gnn/advanced/gnn_multiagent.md)
+  - *See Also*: [Cognitive Phenomena](cognitive_phenomena/README.md), [LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)
+- **[Tool Development](gnn/reference/gnn_dsl_manual.md)** - Creating GNN-compatible tools
+  - *See Also*: [API Documentation](api/README.md), [Pipeline Architecture](gnn/reference/architecture_reference.md)
   - *Related*: [MCP Integration](mcp/README.md), [Testing Framework](testing/README.md)
 
 ### For Researchers
@@ -82,17 +82,17 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 > **🔬 Learning Path**: Theory → Specification → Applications → Research
 
 - **[Academic Paper](gnn/gnn_paper.md)** - Formal specification and theory
-  - *See Also*: [About GNN](gnn/about_gnn.md), [Ontology System](gnn/ontology_system.md)
-  - *Related Research*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Multi-agent](gnn/gnn_multiagent.md)
-- **[Multiagent Systems](gnn/gnn_multiagent.md)** - Multi-agent modeling approaches
-  - *See Also*: [Multi-agent Template](templates/multiagent_template.md), [Advanced Patterns](gnn/advanced_modeling_patterns.md)
+  - *See Also*: [About GNN](gnn/about_gnn.md), [Ontology System](gnn/advanced/ontology_system.md)
+  - *Related Research*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Multi-agent](gnn/advanced/gnn_multiagent.md)
+- **[Multiagent Systems](gnn/advanced/gnn_multiagent.md)** - Multi-agent modeling approaches
+  - *See Also*: [Multi-agent Template](templates/multiagent_template.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
   - *Framework Integration*: [RxInfer Examples](rxinfer/gnn_rxinfer.md#multi-agent-examples)
-- **[LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
+- **[LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md)** - AI-assisted modeling
   - *See Also*: [DSPy Integration](dspy/gnn_dspy.md), [AutoGenLib](autogenlib/gnn_autogenlib.md)
-  - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](gnn/gnn_tools.md#step-11-llm-enhanced-analysis)
+  - *Related Tools*: [MCP Protocol](mcp/README.md), [Pipeline Step 11](gnn/operations/gnn_tools.md#step-11-llm-enhanced-analysis)
 - **[PoE-World Integration](poe-world/poe-world.md)** - Compositional world modeling research
   - *See Also*: [PoE-World GNN Integration](poe-world/poe-world_gnn.md), [Program Synthesis](dspy/gnn_dspy.md)
-  - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced_modeling_patterns.md)
+  - *Research Applications*: [Hierarchical Template](templates/hierarchical_template.md), [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
 
 ## 🔧 Framework Integrations
 
@@ -103,12 +103,12 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 | **PyMDP** | [gnn_pymdp.md](pymdp/gnn_pymdp.md) | Python Active Inference framework | ✅ All templates | [POMDP](templates/pomdp_template.md), [Multi-agent](templates/multiagent_template.md) |
 | **RxInfer** | [gnn_rxinfer.md](rxinfer/gnn_rxinfer.md) | Julia Bayesian inference | ✅ All templates | [Hierarchical](templates/hierarchical_template.md), [Multi-agent](rxinfer/multiagent_trajectory_planning/) |
 | **DisCoPy** | [gnn_discopy.md](discopy/gnn_discopy.md) | Category theory and quantum computing | ✅ Advanced templates | [Category Theory Models](discopy/gnn_discopy.md) |
-| **DSPy** | [gnn_dspy.md](dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/gnn_llm_neurosymbolic_active_inference.md) |
-| **AutoGenLib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/gnn_dsl_manual.md) |
+| **DSPy** | [gnn_dspy.md](dspy/gnn_dspy.md) | AI prompt programming | 🔄 LLM integration | [LLM Pipeline](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
+| **AutoGenLib** | [gnn_autogenlib.md](autogenlib/gnn_autogenlib.md) | Dynamic code generation | 🔄 Code generation | [Tool Development](gnn/reference/gnn_dsl_manual.md) |
 | **MCP** | [gnn_mcp.md](mcp/gnn_mcp_model_context_protocol.md) | Model Context Protocol | ✅ API integration | [MCP Guide](mcp/README.md), [FastMCP](mcp/fastmcp.md) |
 | **PoE-World** | [poe-world_gnn.md](poe-world/poe-world_gnn.md) | Compositional world modeling | 🔄 Research integration | [PoE-World Overview](poe-world/poe-world.md), [Program Synthesis](dspy/gnn_dspy.md) |
 
-> **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](gnn/gnn_tools.md) | [Performance Comparison](troubleshooting/performance.md)
+> **🔗 Cross-References**: [API Documentation](api/README.md) | [Pipeline Integration](gnn/operations/gnn_tools.md) | [Performance Comparison](troubleshooting/performance.md)
 
 ### Additional Framework Categories
 
@@ -162,52 +162,52 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 
 ### Basic Examples
 >
-> **⏱️ Time to Complete**: 30 minutes | **Prerequisites**: [Syntax Guide](gnn/gnn_syntax.md)
+> **⏱️ Time to Complete**: 30 minutes | **Prerequisites**: [Syntax Guide](gnn/reference/gnn_syntax.md)
 
 - **[Static Perception](archive/gnn_example_dynamic_perception.md)** - Simplest GNN model
   - *Template*: [Basic GNN Template](templates/basic_gnn_template.md)
   - *Frameworks*: [PyMDP Tutorial](pymdp/gnn_pymdp.md#basic-examples), [RxInfer Basics](rxinfer/gnn_rxinfer.md#getting-started)
 - **[Dynamic Perception](archive/gnn_example_dynamic_perception_policy.md)** - Adding time dynamics
-  - *See Also*: [Time Modeling](gnn/gnn_file_structure_doc.md#time-section), [POMDP Template](templates/pomdp_template.md)
+  - *See Also*: [Time Modeling](gnn/reference/gnn_file_structure_doc.md#time-section), [POMDP Template](templates/pomdp_template.md)
 
 ### Intermediate Examples  
 >
-> **⏱️ Time to Complete**: 1-2 hours | **Prerequisites**: Basic examples + [Implementation Guide](gnn/gnn_implementation.md)
+> **⏱️ Time to Complete**: 1-2 hours | **Prerequisites**: Basic examples + [Implementation Guide](gnn/integration/gnn_implementation.md)
 
 - **[Butterfly Agent](archive/gnn_example_butterfly_pheromone_agent.md)** - POMDP navigation
   - *Template*: [POMDP Template](templates/pomdp_template.md)
   - *Frameworks*: [PyMDP POMDP](pymdp/gnn_pymdp.md#pomdp-examples), [RxInfer Navigation](rxinfer/multiagent_trajectory_planning/)
 - **[Trading Agent](archive/gnn_airplane_trading_pomdp.md)** - Decision making under uncertainty
-  - *See Also*: [Decision Theory](gnn/advanced_modeling_patterns.md#decision-theory), [Economic Models](cognitive_phenomena/README.md)
+  - *See Also*: [Decision Theory](gnn/advanced/advanced_modeling_patterns.md#decision-theory), [Economic Models](cognitive_phenomena/README.md)
 
 ### Advanced Examples
 >
-> **⏱️ Time to Complete**: 2-4 hours | **Prerequisites**: Intermediate examples + [Advanced Patterns](gnn/advanced_modeling_patterns.md)
+> **⏱️ Time to Complete**: 2-4 hours | **Prerequisites**: Intermediate examples + [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md)
 
 - **[Language Model](archive/gnn_active_inference_language_model.md)** - Multi-level linguistic processing
   - *Template*: [Hierarchical Template](templates/hierarchical_template.md)
-  - *See Also*: [LLM Integration](gnn/gnn_llm_neurosymbolic_active_inference.md), [Cognitive Phenomena](cognitive_phenomena/README.md)
+  - *See Also*: [LLM Integration](gnn/advanced/gnn_llm_neurosymbolic_active_inference.md), [Cognitive Phenomena](cognitive_phenomena/README.md)
 - **[Learning Agent](archive/gnn_example_jax_pymdp_learning_agent.md)** - Parameter learning in JAX
-  - *See Also*: [Advanced Patterns](gnn/advanced_modeling_patterns.md#learning-algorithms), [Performance Guide](troubleshooting/performance.md)
+  - *See Also*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md#learning-algorithms), [Performance Guide](troubleshooting/performance.md)
 - **[Poetic Muse](archive/gnn_poetic_muse_model.md)** - Creative Bayesian network
-  - *See Also*: [Multi-modal Models](gnn/advanced_modeling_patterns.md)
+  - *See Also*: [Multi-modal Models](gnn/advanced/advanced_modeling_patterns.md)
 
 ## 🎯 Advanced Topics
 
 > **🔬 Learning Path**: Theory → Specification → Applications → Research ([Full Advanced Path](learning_paths.md#advanced-path))  
 > **🧠 Specialized Applications** | **🔗 Related**: [Cognitive Phenomena](cognitive_phenomena/README.md)
 
-- **[Advanced Modeling Patterns](gnn/advanced_modeling_patterns.md)** - Sophisticated modeling techniques
-  - *Cross-refs*: [Implementation Guide](gnn/gnn_implementation.md), [Templates](templates/README.md)
-  - *Applications*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Multi-agent](gnn/gnn_multiagent.md)
-- **[Ontology System](gnn/ontology_system.md)** - Active Inference Ontology integration
+- **[Advanced Modeling Patterns](gnn/advanced/advanced_modeling_patterns.md)** - Sophisticated modeling techniques
+  - *Cross-refs*: [Implementation Guide](gnn/integration/gnn_implementation.md), [Templates](templates/README.md)
+  - *Applications*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Multi-agent](gnn/advanced/gnn_multiagent.md)
+- **[Ontology System](gnn/advanced/ontology_system.md)** - Active Inference Ontology integration
   - *Cross-refs*: [About GNN](gnn/about_gnn.md), [Academic Paper](gnn/gnn_paper.md)
-  - *Related*: [Pipeline Step 8](gnn/gnn_tools.md#step-8-ontology-processing)
-- **[Resource Metrics](gnn/resource_metrics.md)** - Computational resource estimation
-  - *Cross-refs*: [Performance Guide](troubleshooting/performance.md), [Type Checker](gnn/gnn_tools.md#validation-tools)
-  - *Related*: [Pipeline Step 4](gnn/gnn_tools.md#step-4-gnn-type-checker)
+  - *Related*: [Pipeline Step 8](gnn/operations/gnn_tools.md#step-8-ontology-processing)
+- **[Resource Metrics](gnn/operations/resource_metrics.md)** - Computational resource estimation
+  - *Cross-refs*: [Performance Guide](troubleshooting/performance.md), [Type Checker](gnn/operations/gnn_tools.md#validation-tools)
+  - *Related*: [Pipeline Step 4](gnn/operations/gnn_tools.md#step-4-gnn-type-checker)
 - **[GNN Kit](kit/gnn_kit.md)** - Comprehensive toolkit documentation
-  - *Cross-refs*: [Tools Guide](gnn/gnn_tools.md), [API Documentation](api/README.md)
+  - *Cross-refs*: [Tools Guide](gnn/operations/gnn_tools.md), [API Documentation](api/README.md)
 - **[Cerebrum Integration](cerebrum/gnn_cerebrum.md)** - Advanced cognitive architectures
   - *Cross-refs*: [Cognitive Phenomena](cognitive_phenomena/README.md), [Hierarchical Template](templates/hierarchical_template.md)
 - **[Audio Sonification](sapf/sapf_gnn.md)** - Auditory representation of model dynamics
@@ -223,44 +223,44 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 
 ### Common Tasks
 
-- **Creating your first model**: Start with [Static Perception Example](gnn/gnn_examples_doc.md#example-1-static-perception-model)
-  - *Tools*: [Basic Template](templates/basic_gnn_template.md) → [Type Checker](gnn/gnn_tools.md#validation-tools) → [PyMDP Rendering](pymdp/gnn_pymdp.md)
-- **Understanding syntax**: Check [GNN Syntax Reference](gnn/gnn_syntax.md)
-  - *Practice*: [Examples](gnn/gnn_examples_doc.md) → [Templates](templates/README.md) → [Implementation](gnn/gnn_implementation.md)
-- **Validating models**: Use [Type Checker Guide](gnn/gnn_tools.md#validation-tools)
+- **Creating your first model**: Start with [Static Perception Example](gnn/tutorials/gnn_examples_doc.md#example-1-static-perception-model)
+  - *Tools*: [Basic Template](templates/basic_gnn_template.md) → [Type Checker](gnn/operations/gnn_tools.md#validation-tools) → [PyMDP Rendering](pymdp/gnn_pymdp.md)
+- **Understanding syntax**: Check [GNN Syntax Reference](gnn/reference/gnn_syntax.md)
+  - *Practice*: [Examples](gnn/tutorials/gnn_examples_doc.md) → [Templates](templates/README.md) → [Implementation](gnn/integration/gnn_implementation.md)
+- **Validating models**: Use [Type Checker Guide](gnn/operations/gnn_tools.md#validation-tools)
   - *Troubleshooting*: [Common Errors](troubleshooting/common_errors.md) → [FAQ](troubleshooting/faq.md)
-- **Converting to code**: See [Rendering Documentation](gnn/gnn_tools.md#conversion-tools)
+- **Converting to code**: See [Rendering Documentation](gnn/operations/gnn_tools.md#conversion-tools)
   - *Frameworks*: [PyMDP](pymdp/gnn_pymdp.md) | [RxInfer](rxinfer/gnn_rxinfer.md) | [DisCoPy](discopy/gnn_discopy.md)
-- **Visualizing models**: Follow [Visualization Guide](gnn/gnn_tools.md#visualization-tools)
-  - *Pipeline*: [Step 6 Visualization](gnn/gnn_tools.md#step-6-visualization) → [Step 12 Website](gnn/gnn_tools.md#step-12-website-generation)
+- **Visualizing models**: Follow [Visualization Guide](gnn/operations/gnn_tools.md#visualization-tools)
+  - *Pipeline*: [Step 6 Visualization](gnn/operations/gnn_tools.md#step-6-visualization) → [Step 12 Website](gnn/operations/gnn_tools.md#step-12-website-generation)
 
 ### File Templates
 >
 > **📋 Production-Ready Templates** | **📊 Total**: 4 comprehensive templates (49KB)
 
 - **[Template System Overview](templates/README.md)** - Complete template documentation
-  - *Cross-refs*: [Examples](gnn/gnn_examples_doc.md), [Implementation](gnn/gnn_implementation.md)
+  - *Cross-refs*: [Examples](gnn/tutorials/gnn_examples_doc.md), [Implementation](gnn/integration/gnn_implementation.md)
 - **[Basic GNN Template](templates/basic_gnn_template.md)** - Simple model starting point
   - *Use Cases*: Learning, prototyping, static models
-  - *Next Steps*: [POMDP Template](templates/pomdp_template.md) or [Examples](gnn/gnn_examples_doc.md)
+  - *Next Steps*: [POMDP Template](templates/pomdp_template.md) or [Examples](gnn/tutorials/gnn_examples_doc.md)
 - **[POMDP Template](templates/pomdp_template.md)** - Comprehensive POMDP modeling template
   - *Use Cases*: Navigation, perception, decision-making
   - *Frameworks*: [PyMDP POMDP](pymdp/gnn_pymdp.md#pomdp-examples), [RxInfer POMDP](rxinfer/gnn_rxinfer.md#pomdp-models)
 - **[Multi-agent Template](templates/multiagent_template.md)** - Multi-agent systems template
   - *Use Cases*: Coordination, communication, social modeling
-  - *Examples*: [Multi-agent Systems](gnn/gnn_multiagent.md), [RxInfer Multi-agent](rxinfer/multiagent_trajectory_planning/)
+  - *Examples*: [Multi-agent Systems](gnn/advanced/gnn_multiagent.md), [RxInfer Multi-agent](rxinfer/multiagent_trajectory_planning/)
 - **[Hierarchical Template](templates/hierarchical_template.md)** - Hierarchical architectures template
   - *Use Cases*: Cognitive architectures, multi-scale modeling, complex systems
-  - *Related*: [Advanced Patterns](gnn/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
+  - *Related*: [Advanced Patterns](gnn/advanced/advanced_modeling_patterns.md), [Cerebrum](cerebrum/gnn_cerebrum.md)
 
 ### Pipeline Documentation
 >
 > **⚙️ 25-Step Processing Pipeline** | **📈 Complete Workflow Coverage**
 
-- **[Complete Pipeline Guide](gnn/gnn_tools.md)** - All 25 steps explained (0-24)
-  - *Architecture*: [Pipeline Architecture](gnn/architecture_reference.md)
+- **[Complete Pipeline Guide](gnn/operations/gnn_tools.md)** - All 25 steps explained (0-24)
+  - *Architecture*: [Pipeline Architecture](gnn/reference/architecture_reference.md)
   - *Configuration*: [Configuration Guide](configuration/README.md)
-- **[Pipeline Architecture](gnn/architecture_reference.md)** - Technical architecture
+- **[Pipeline Architecture](gnn/reference/architecture_reference.md)** - Technical architecture
   - *Development*: [Development Guide](development/README.md)
   - *API Integration*: [API Documentation](api/README.md)
 
@@ -270,29 +270,29 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
 
 - **[Complete API Documentation](api/README.md)** - All classes, functions, and interfaces
   - *Development*: [Development Guide](development/README.md)
-  - *Examples*: [Tool Development](gnn/gnn_dsl_manual.md)
+  - *Examples*: [Tool Development](gnn/reference/gnn_dsl_manual.md)
 - **[MCP Integration Guide](mcp/README.md)** - Model Context Protocol APIs
   - *FastMCP*: [FastMCP Guide](mcp/fastmcp.md)
-  - *Pipeline*: [Step 7 MCP](gnn/gnn_tools.md#step-7-model-context-protocol)
+  - *Pipeline*: [Step 7 MCP](gnn/operations/gnn_tools.md#step-7-model-context-protocol)
 - **[Tool Development](mcp/README.md#development-guidelines)** - Creating new MCP tools
-  - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/gnn_dsl_manual.md)
+  - *Cross-refs*: [API Documentation](api/README.md), [DSL Manual](gnn/reference/gnn_dsl_manual.md)
 - **[Interactive GUI Tools](../src/gui/README.md)** - Visual model construction interfaces
   - *GUI 1*: Form-based constructor (localhost:7860)
   - *GUI 2*: Visual matrix editor (localhost:7861)
   - *GUI 3*: State space design studio (localhost:7862)
-  - *Pipeline*: [Step 22 GUI Processing](gnn/gnn_tools.md#step-22-gui-processing)
+  - *Pipeline*: [Step 22 GUI Processing](gnn/operations/gnn_tools.md#step-22-gui-processing)
 
 ### Learning Resources
 >
 > **📖 Progressive Learning System** | **🎯 Beginner to Expert**
 
 - **[Tutorial System](tutorials/README.md)** - Step-by-step learning guides from beginner to expert
-  - *Start Here*: [Quickstart](gnn/quickstart_tutorial.md) → [Examples](gnn/gnn_examples_doc.md)
+  - *Start Here*: [Quickstart](gnn/tutorials/quickstart_tutorial.md) → [Examples](gnn/tutorials/gnn_examples_doc.md)
 - **[Configuration Guide](configuration/README.md)** - Complete configuration reference
   - *Examples*: [Configuration Examples](configuration/examples.md)
   - *Deployment*: [Deployment Guide](deployment/README.md)
 - **[Testing Guide](testing/README.md)** - Testing strategies and best practices
-  - *Pipeline*: [Step 3 Testing](gnn/gnn_tools.md#step-3-test-execution)
+  - *Pipeline*: [Step 3 Testing](gnn/operations/gnn_tools.md#step-3-test-execution)
   - *Quality*: [Style Guide](style_guide.md) and [Testing Guide](testing/README.md)
 
 ### Security & Compliance
@@ -315,7 +315,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Quality Assurance*: Testing and validation requirements
   - *Security Releases*: Critical vulnerability response process
 - **[Releases](releases/README.md)** - Release management and version history
-  - *Current Version*: v1.2.0 with comprehensive feature additions
+  - *Current Version*: v1.3.0 with comprehensive feature additions
   - *Version History*: Detailed change tracking since project inception
   - *Upgrade Guides*: Migration assistance between major versions
 
@@ -338,7 +338,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Testing*: [Testing Guide](testing/README.md)
 - **[Performance Guide](performance/README.md)** - Optimization strategies and benchmarking
   - *Troubleshooting*: [Performance Issues](troubleshooting/performance.md)
-  - *Resource Metrics*: [Resource Estimation](gnn/resource_metrics.md)
+  - *Resource Metrics*: [Resource Estimation](gnn/operations/resource_metrics.md)
 - **[Development Guide](development/README.md)** - Contributing and extending GNN
   - *Contributing*: [Contributing Guide](../CONTRIBUTING.md)
   - *API Development*: [API Documentation](api/README.md)
@@ -352,7 +352,7 @@ Welcome to the comprehensive documentation for Generalized Notation Notation (GN
   - *Performance*: [Performance Issues](troubleshooting/performance.md)
 - **[Common Errors](troubleshooting/common_errors.md)** - Detailed error scenarios and solutions
   - *FAQ*: [Frequently Asked Questions](troubleshooting/faq.md)
-  - *Validation*: [Type Checker](gnn/gnn_tools.md#validation-tools)
+  - *Validation*: [Type Checker](gnn/operations/gnn_tools.md#validation-tools)
 - **[FAQ](troubleshooting/faq.md)** - Extensive frequently asked questions
   - *Learning*: [Learning Resources](#learning-resources)
   - *Community*: [Getting Help](#-getting-help)

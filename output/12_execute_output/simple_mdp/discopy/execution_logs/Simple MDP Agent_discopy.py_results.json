@@ -1,0 +1,66 @@
+{
+  "framework": "discopy",
+  "model_name": "simple_mdp",
+  "script_name": "Simple MDP Agent_discopy.py",
+  "script_path": "output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 0.385483,
+  "timestamp": "2026-03-03T08:22:34.501945",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u2705 DisCoPy is available\n\ud83d\udd2c DisCoPy Categorical Diagram Generation\n\ud83d\udcca State Space: 4 states, 4 observations, 4 actions\n============================================================\nDisCoPy Categorical Diagrams - GNN Generated\nModel: Simple MDP Agent\n============================================================\n\u2713 Defined basic types: S (states), O (observations), A (actions), P (probabilities)\n\u2713 Defined 8 model components as morphisms\n\n\ud83c\udfd7\ufe0f  Building Active Inference circuit...\n\u26a0\ufe0f  Prior composition type mismatch (S @ P @ C does not compose with StateInf @ P: S @ P @ O @ P != O @ P.), using perception-action loop\n\u2713 Created perception-action loop\n\n\ud83d\udd0d Analyzing circuit structure...\n\ud83d\udcca Circuit Analysis:\n  - Number of components: 8\n  - Perception-action loop domain: O\n  - Perception-action loop codomain: A\n  - Generative model domain: O\n  - Generative model codomain: A\n\n\ud83e\udde9 Component Details:\n  - A_matrix: S \u2192 O @ P\n  - B_matrix: S @ A \u2192 S @ P\n  - C_vector: Ty() \u2192 O @ P\n  - D_vector: Ty() \u2192 S @ P\n  - E_vector: Ty() \u2192 A @ P\n  - state_inference: O \u2192 S @ P\n  - policy_inference: S @ P \u2192 A @ P\n  - action_selection: A @ P \u2192 A\n\n\ud83d\udd17 Compositional Structure:\n  - Loop composition depth: 3\n  - Model composition depth: 3\n\n\ud83d\udcbe Exporting circuit data to discopy_diagrams/...\n\u2713 Exported analysis: discopy_diagrams/circuit_analysis.json\n\u2713 Exported circuit info: discopy_diagrams/circuit_info.json\n\n\u2705 DisCoPy categorical diagram generation completed successfully!\n\ud83d\udcca Circuit analysis and data export successful\n\n\ud83c\udf89 Categorical representation of Active Inference model complete!\n",
+    "raw_error": "",
+    "diagrams": [
+      "Generation",
+      "structure",
+      "Analysis",
+      "data",
+      "info",
+      "generation",
+      "analysis"
+    ],
+    "components": [
+      "A_matrix",
+      "B_matrix",
+      "C_vector",
+      "D_vector",
+      "E_vector",
+      "state_inference",
+      "policy_inference",
+      "action_selection"
+    ],
+    "analysis": {
+      "num_components": 8,
+      "loop_domain": "O",
+      "loop_codomain": "A",
+      "model_domain": "O",
+      "model_codomain": "A"
+    },
+    "parameters": {
+      "num_states": 4,
+      "num_observations": 4,
+      "num_actions": 4
+    }
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 1558,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/simple_mdp/discopy"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

@@ -56,6 +56,16 @@ try:
 except ImportError:
     render_gnn_to_activeinference_jl = None
 
+try:
+    from .pytorch import render_gnn_to_pytorch
+except ImportError:
+    render_gnn_to_pytorch = None
+
+try:
+    from .numpyro import render_gnn_to_numpyro
+except ImportError:
+    render_gnn_to_numpyro = None
+
 # Import renderer classes for tests
 try:
     from .pymdp.pymdp_renderer import PyMDPRenderer
@@ -81,7 +91,7 @@ def get_supported_frameworks():
     Returns:
         List of framework names that can be used for rendering.
     """
-    return ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy']
+    return ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy', 'pytorch', 'numpyro']
 
 
 def validate_render(result, framework=None):
@@ -127,6 +137,8 @@ __all__ = [
     'render_gnn_to_rxinfer_toml',
     'render_gnn_to_discopy',
     'render_gnn_to_activeinference_jl',
+    'render_gnn_to_pytorch',
+    'render_gnn_to_numpyro',
 
     # Renderer classes
     'PyMDPRenderer',
@@ -146,6 +158,8 @@ FEATURES = {
     "activeinference_jl_rendering": True, 
     "discopy_rendering": True, 
     "jax_rendering": True, 
+    "pytorch_rendering": True,
+    "numpyro_rendering": True,
     "mcp_integration": True,
     "pomdp_processing": POMDP_PROCESSING_AVAILABLE,
     "state_space_extraction": POMDP_PROCESSING_AVAILABLE,

@@ -1,0 +1,12 @@
+{
+  "input_file": "input/gnn_files/hierarchical/hierarchical_pomdp.md",
+  "output_file": "output/0_template_output/hierarchical_pomdp/hierarchical_pomdp_processed.md",
+  "timestamp": "2026-03-03T08:15:07.773840",
+  "file_size_bytes": 3561,
+  "file_size_lines": 138,
+  "processing_options": {
+    "verbose": false,
+    "recursive": true,
+    "example_param": "default_value"
+  }
+}

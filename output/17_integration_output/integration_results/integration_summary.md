@@ -1,13 +1,12 @@
 # System Integration Report
 
-Scanned 1 files.
+Scanned 8 files.
 
-- **Graph Nodes**: 13
-- **Graph Edges**: 14
-- **Cycles Detected**: 3
+- **Graph Nodes**: 40
+- **Graph Edges**: 85
+- **Cycles Detected**: 79
 - **Isolated Nodes**: 2
 
-## Issues (2)
+## Issues (1)
 
-- Circular dependencies detected: [['B', 's'], ['A', 's'], ['A', 'o']]
-- Isolated components (no connections): ['F', 't']
+- Isolated components (no connections): ['t', 'C_loc']

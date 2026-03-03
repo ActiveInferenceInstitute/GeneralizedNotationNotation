@@ -296,7 +296,7 @@ As we advance toward increasingly sophisticated AI systems, the **mathematical r
 [29] https://ai.stackexchange.com/questions/47826/mathematical-logic-and-ai
 [30] https://www.ucviden.dk/files/165606913/How_can_the_use.pdf
 [31] https://arxiv.org/html/2405.04550v1
-[32] https://www.sciencedirect.com/science/article/pii/S1364661323002607
+[32] https://www.sciencedirect.com/science/article/pii/S1364661.3.002607
 [33] https://arxiv.org/pdf/2412.16075.pdf
 [34] https://openreview.net/forum?id=HuvAM5x2xG
 [35] https://en.wikipedia.org/wiki/Big_O_notation
@@ -1169,7 +1169,7 @@ As we advance toward increasingly sophisticated AI systems, this **mathematicall
 [32] https://pubmed.ncbi.nlm.nih.gov/38528782/
 [33] https://github.com/fchollet/ARC-AGI
 [34] https://arcprize.kongjiang.org/arc-agi
-[35] http://arxiv.org/pdf/2112.00848.pdf
+[35] http://arxiv.org/pdf/21.3.00848.pdf
 [36] https://arxiv.org/html/2505.08778v1
 [37] https://arcprize.org/media/arc-prize-2024-technical-report.pdf
 [38] https://wandb.ai/dipamc77/posts/reports/Thoughts-on-the-ARC-benchmark--VmlldzoyMTY4NDQx

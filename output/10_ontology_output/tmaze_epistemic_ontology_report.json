@@ -1,0 +1,179 @@
+{
+  "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+  "file_name": "tmaze_epistemic.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A_loc=LocationLikelihoodMatrix",
+      "A_rew=RewardLikelihoodMatrix",
+      "B_loc=LocationTransitionMatrix",
+      "B_ctx=ContextTransitionMatrix",
+      "C_loc=LocationPreferenceVector",
+      "C_rew=RewardPreferenceVector",
+      "D_loc=LocationPrior",
+      "D_ctx=ContextPrior",
+      "s_loc=LocationHiddenState",
+      "s_ctx=ContextHiddenState",
+      "o_loc=LocationObservation",
+      "o_rew=RewardObservation",
+      "pi=PolicyVector",
+      "u=Action",
+      "G=ExpectedFreeEnergy",
+      "G_epi=EpistemicValue",
+      "G_ins=InstrumentalValue",
+      "F=VariationalFreeEnergy",
+      "t=Time"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "pi=PolicyVector",
+      "u=Action",
+      "G=ExpectedFreeEnergy",
+      "F=VariationalFreeEnergy",
+      "t=Time"
+    ],
+    "invalid_annotations": [
+      "A_loc=LocationLikelihoodMatrix",
+      "A_rew=RewardLikelihoodMatrix",
+      "B_loc=LocationTransitionMatrix",
+      "B_ctx=ContextTransitionMatrix",
+      "C_loc=LocationPreferenceVector",
+      "C_rew=RewardPreferenceVector",
+      "D_loc=LocationPrior",
+      "D_ctx=ContextPrior",
+      "s_loc=LocationHiddenState",
+      "s_ctx=ContextHiddenState",
+      "o_loc=LocationObservation",
+      "o_rew=RewardObservation",
+      "G_epi=EpistemicValue",
+      "G_ins=InstrumentalValue"
+    ],
+    "matched_terms": {
+      "pi": {
+        "annotation": "pi=PolicyVector",
+        "term_name": "PolicyVector",
+        "description": "A vector representing a specific sequence of actions or a probability distribution over available policies.",
+        "uri": "obo:TEMP_000021",
+        "key": "pi",
+        "value": "PolicyVector",
+        "comment": null
+      },
+      "u": {
+        "annotation": "u=Action",
+        "term_name": "Action",
+        "description": "An output of the agent that can affect the environment or the agent itself.",
+        "uri": "obo:ACTO_000004",
+        "key": "u",
+        "value": "Action",
+        "comment": null
+      },
+      "G": {
+        "annotation": "G=ExpectedFreeEnergy",
+        "term_name": "ExpectedFreeEnergy",
+        "description": "A quantity minimized by the agent to select policies, balancing epistemic value (information gain) and pragmatic value (preference satisfaction).",
+        "uri": "obo:ACTO_000011",
+        "key": "G",
+        "value": "ExpectedFreeEnergy",
+        "comment": null
+      },
+      "F": {
+        "annotation": "F=VariationalFreeEnergy",
+        "term_name": "VariationalFreeEnergy",
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:TEMP_000065",
+        "key": "F",
+        "value": "VariationalFreeEnergy",
+        "comment": null
+      },
+      "t": {
+        "annotation": "t=Time",
+        "term_name": "Time",
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066",
+        "key": "t",
+        "value": "Time",
+        "comment": null
+      }
+    },
+    "suggestions": [
+      {
+        "annotation": "A_loc=LocationLikelihoodMatrix",
+        "suggested_term": "LikelihoodMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies)."
+      },
+      {
+        "annotation": "A_rew=RewardLikelihoodMatrix",
+        "suggested_term": "LikelihoodMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies)."
+      },
+      {
+        "annotation": "B_loc=LocationTransitionMatrix",
+        "suggested_term": "TransitionMatrix",
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix)."
+      },
+      {
+        "annotation": "B_ctx=ContextTransitionMatrix",
+        "suggested_term": "TransitionMatrix",
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix)."
+      },
+      {
+        "annotation": "C_loc=LocationPreferenceVector",
+        "suggested_term": "Preference",
+        "description": "The agent's desired or preferred observations or states, influencing policy selection (e.g., 'C' vector/matrix)."
+      },
+      {
+        "annotation": "C_rew=RewardPreferenceVector",
+        "suggested_term": "Preference",
+        "description": "The agent's desired or preferred observations or states, influencing policy selection (e.g., 'C' vector/matrix)."
+      },
+      {
+        "annotation": "D_loc=LocationPrior",
+        "suggested_term": "Prior",
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix)."
+      },
+      {
+        "annotation": "D_ctx=ContextPrior",
+        "suggested_term": "Prior",
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix)."
+      },
+      {
+        "annotation": "s_loc=LocationHiddenState",
+        "suggested_term": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable."
+      },
+      {
+        "annotation": "s_ctx=ContextHiddenState",
+        "suggested_term": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable."
+      },
+      {
+        "annotation": "s_ctx=ContextHiddenState",
+        "suggested_term": "NextHiddenState",
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s')."
+      },
+      {
+        "annotation": "o_loc=LocationObservation",
+        "suggested_term": "Observation",
+        "description": "Data received from the environment through sensory input."
+      },
+      {
+        "annotation": "o_rew=RewardObservation",
+        "suggested_term": "Observation",
+        "description": "Data received from the environment through sensory input."
+      }
+    ],
+    "coverage_score": 0.2631578947368421
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 19,
+    "valid_annotations": 5,
+    "invalid_annotations": 14,
+    "coverage_score": 0.2631578947368421
+  }
+}

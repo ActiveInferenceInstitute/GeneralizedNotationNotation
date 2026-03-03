@@ -1177,9 +1177,11 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return False
 
         try:
-            # Calculate correlation matrix
+            # Calculate correlation matrix (suppress warnings from constant columns)
             if matrix_data.shape[0] > 1 and matrix_data.shape[1] > 1:
-                corr_matrix = np.corrcoef(matrix_data.T)  # Transpose for proper correlation
+                with np.errstate(divide='ignore', invalid='ignore'):
+                    corr_matrix = np.corrcoef(matrix_data.T)  # Transpose for proper correlation
+                corr_matrix = np.nan_to_num(corr_matrix, nan=0.0)
             else:
                 corr_matrix = matrix_data
 

@@ -1,17 +1,17 @@
 
 # Security Analysis Summary
 
-**Generated**: 2026-02-25 14:42:28
+**Generated**: 2026-03-03 08:41:38
 
 ## Processing Results
-- **Files Processed**: 1
+- **Files Processed**: 8
 - **Success**: True
 - **Errors**: 0
 
 ## Security Results
-- **Security Checks**: 1
+- **Security Checks**: 8
 - **Vulnerabilities Found**: 0
-- **Recommendations**: 2
+- **Recommendations**: 16
 
 ## Vulnerability Summary
 - No vulnerabilities found
@@ -19,5 +19,6 @@
 ## Recommendations
 
 ### Medium Priority Recommendations
-- **actinf_pomdp_agent.md**: Add security documentation section
-- **actinf_pomdp_agent.md**: Add error handling
+- **simple_mdp.md**: Add security documentation section
+- **simple_mdp.md**: Add error handling
+- **multi_armed_bandit.md**: Add security documentation section

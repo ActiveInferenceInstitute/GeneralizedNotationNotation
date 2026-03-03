@@ -3,7 +3,7 @@
 Post-Simulation Analysis Module
 
 This module provides generic post-simulation analysis methods that work across
-all frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy).
+all frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro).
 
 Implementation is split across sub-modules for maintainability:
 - trace_analysis: Framework-agnostic trace, free energy, policy, state analysis
@@ -39,6 +39,8 @@ from .framework_extractors import (
     extract_activeinference_jl_data,
     extract_jax_data,
     extract_discopy_data,
+    extract_pytorch_data,
+    extract_numpyro_data,
 )
 
 # Re-export from math_utils
@@ -103,11 +105,19 @@ def analyze_execution_results(
                     result_data = json.load(f)
 
                 framework = result_data.get("framework", "unknown")
+                # Normalize framework name to lowercase for consistent grouping
+                # Simulation JSONs may use "PyMDP"/"JAX" while execution logs use "pymdp"/"jax"
+                framework = framework.lower().replace(".", "_").replace(" ", "_")
                 file_model_name = result_data.get("model_name", "unknown")
 
-                # Filter by model name if specified
+                # Filter by model name if specified — use normalized comparison
+                # because GNN file stems (e.g. "simple_mdp") differ from
+                # display names in JSONs (e.g. "Simple MDP Agent", "GNNModel")
                 if model_name and file_model_name != model_name:
-                    continue
+                    file_slug = file_model_name.lower().replace(" ", "_").replace("-", "_")
+                    param_slug = model_name.lower().replace(" ", "_").replace("-", "_")
+                    if param_slug not in file_slug and file_slug not in param_slug:
+                        continue
 
                 if framework not in framework_data:
                     framework_data[framework] = []
@@ -171,6 +181,40 @@ def analyze_execution_results(
                         model_name_for_analysis = result.get("model_name", "unknown")
 
                         if isinstance(extracted, dict):
+                            # Fallback: if extractors didn't find free_energy, try
+                            # pulling it directly from the loaded JSON result data.
+                            # The simulation_results.json files store EFE as:
+                            #   - efe_history (rxinfer, activeinference_jl)
+                            #   - metrics.expected_free_energy (pymdp, jax)
+                            #   - simulation_trace.efe_history (pymdp, jax)
+                            if not extracted.get("free_energy"):
+                                efe = None
+                                if result.get("efe_history"):
+                                    efe = result["efe_history"]
+                                elif isinstance(result.get("metrics"), dict) and result["metrics"].get("expected_free_energy"):
+                                    efe = result["metrics"]["expected_free_energy"]
+                                elif isinstance(result.get("simulation_trace"), dict) and result["simulation_trace"].get("efe_history"):
+                                    efe = result["simulation_trace"]["efe_history"]
+                                if efe:
+                                    extracted["free_energy"] = efe
+                                    logger.debug(f"Fallback: extracted EFE for {framework} from result data ({len(efe)} entries)")
+
+                            # Also pull beliefs if missing
+                            if not extracted.get("beliefs"):
+                                beliefs = result.get("beliefs") or result.get("simulation_trace", {}).get("beliefs")
+                                if beliefs:
+                                    extracted["beliefs"] = beliefs
+
+                            # Also pull actions/observations if missing
+                            if not extracted.get("actions"):
+                                actions = result.get("actions") or result.get("simulation_trace", {}).get("actions")
+                                if actions:
+                                    extracted["actions"] = actions
+                            if not extracted.get("observations"):
+                                obs = result.get("observations") or result.get("simulation_trace", {}).get("observations")
+                                if obs:
+                                    extracted["observations"] = obs
+
                             if extracted.get("free_energy"):
                                 fe_analysis = analyze_free_energy(
                                     extracted["free_energy"],

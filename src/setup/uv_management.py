@@ -48,6 +48,7 @@ OPTIONAL_GROUPS = {
     'research': 'Research tools (jupyterlab, sympy, numba, cython)',
     'scaling': 'Scaling (dask, distributed, joblib, fsspec)',
     'database': 'Database (sqlalchemy, alembic)',
+    'probabilistic-programming': 'Probabilistic programming (numpyro, jax)',
     'all': 'All optional dependencies combined',
 }
 

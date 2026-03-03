@@ -21,23 +21,30 @@ The GNN pipeline executes 24 steps sequentially. Some steps may complete with wa
 **Severity**: 🟢 Low (False Positive)
 
 #### Root Cause
+
 Matplotlib backend warnings appear in stderr output, triggering warning detection:
+
 ```
 UserWarning: FigureCanvasAgg is non-interactive, and thus cannot be shown
 ```
 
 #### Verification
+
 Check that visualization files were created:
+
 ```bash
 ls output/9_advanced_viz_output/*.png
 ls output/9_advanced_viz_output/d2_diagrams/
 ```
 
 #### Action Required
+
 **None** - This is a false positive. The module works correctly.
 
 #### Optional Fix
+
 To eliminate the warning message, you can suppress matplotlib warnings:
+
 ```python
 # Add to advanced_visualization/d2_visualizer.py
 import warnings
@@ -49,17 +56,19 @@ warnings.filterwarnings('ignore', category=UserWarning, module='matplotlib')
 ### Step 13: Execution Framework Warnings
 
 **Symptom**: Some frameworks fail during execution  
-**Impact**: ⚠️ Reduced framework coverage (2/5 frameworks execute)  
+**Impact**: ⚠️ Reduced framework coverage (2/7 frameworks execute)  
 **Severity**: 🟡 Medium (Missing Optional Dependencies)
 
 #### Common Failures
 
 ##### PyMDP Failure
+
 **Error Message**: `ModuleNotFoundError: No module named 'pymdp.agent'`
 
 **Root Cause**: Wrong PyMDP package installed or package not installed
 
 **Solution**:
+
 ```bash
 # Install correct PyMDP package (inferactively-pymdp) with uv
 uv pip install inferactively-pymdp
@@ -72,11 +81,13 @@ python3 -c "from pymdp import Agent; print('✅ PyMDP OK')"
 ```
 
 ##### JAX/Flax Failure
+
 **Error Message**: `ModuleNotFoundError: No module named 'flax'`
 
 **Root Cause**: JAX installed without Flax neural network library
 
 **Solution**:
+
 ```bash
 # Install JAX with Flax using uv
 uv pip install jax[cpu] flax optax
@@ -90,11 +101,13 @@ python3 -c "import jax; print(f'Devices: {jax.devices()}')"
 ```
 
 ##### RxInfer.jl Failure
+
 **Error Message**: `Half-edge has been found: s_prev_1`
 
 **Root Cause**: Model generation bug in older RxInfer template
 
 **Solution**: Template has been fixed in latest version. Regenerate code:
+
 ```bash
 # Regenerate RxInfer code with fixed template
 python src/11_render.py --target-dir input/gnn_files
@@ -104,6 +117,7 @@ python src/12_execute.py --frameworks "rxinfer"
 ```
 
 #### Quick Fix - Install All Frameworks
+
 ```bash
 # Install lite preset (recommended)
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
@@ -113,6 +127,7 @@ uv pip install inferactively-pymdp jax[cpu] flax optax
 ```
 
 #### Framework Availability Check
+
 ```bash
 # Check which frameworks are available
 python src/12_execute.py --frameworks "all" --dry-run
@@ -129,11 +144,13 @@ python src/12_execute.py --frameworks "all" --dry-run
 #### Common Issues
 
 ##### Ollama Timeouts
+
 **Error Message**: `Prompt execution timed out after 60 seconds`
 
 **Root Cause**: Small Ollama model (`gemma3:4b`) too slow for complex prompts
 
 **Solution Option 1 - Use Larger Ollama Model**:
+
 ```bash
 # Install more capable model
 ollama pull llama2:7b
@@ -146,6 +163,7 @@ ollama list
 ```
 
 **Solution Option 2 - Use OpenAI**:
+
 ```bash
 # Set OpenAI API key
 export OPENAI_API_KEY="sk-your-key-here"
@@ -155,12 +173,14 @@ python src/13_llm.py --target-dir input/gnn_files
 ```
 
 **Solution Option 3 - Skip LLM Step**:
+
 ```bash
 # Skip LLM analysis if not needed
 python src/main.py --skip-steps "13"
 ```
 
 ##### Low-Quality Responses
+
 **Symptom**: LLM returns code instead of prose, or nonsensical output
 
 **Root Cause**: Small model lacks reasoning capability
@@ -168,7 +188,9 @@ python src/main.py --skip-steps "13"
 **Solution**: Use larger model (see Option 1 above) or disable LLM step
 
 #### Configuration
+
 Increase timeouts for complex prompts by editing `src/llm/processor.py`:
+
 ```python
 PROMPT_TIMEOUTS = {
     'practical_applications': 120,  # Increase from 60
@@ -186,10 +208,13 @@ PROMPT_TIMEOUTS = {
 **Severity**: 🟠 High (Execution Blocker)
 
 #### Root Cause
+
 Some tests (especially integration/slow tests) exceed timeout limits
 
 #### Solution 1 - Skip Slow Tests (Recommended for Pipeline)
+
 Tests now automatically skip slow tests in pipeline mode:
+
 ```bash
 # Runs only fast tests (default in pipeline)
 python src/main.py
@@ -199,6 +224,7 @@ python src/main.py
 ```
 
 #### Solution 2 - Skip Tests Entirely
+
 ```bash
 # Set environment variable to skip tests
 export SKIP_TESTS_IN_PIPELINE=1
@@ -206,6 +232,7 @@ python src/main.py
 ```
 
 #### Solution 3 - Run Tests Separately
+
 ```bash
 # Run pipeline without tests
 python src/main.py --skip-steps "2"
@@ -215,7 +242,9 @@ python src/2_tests.py --comprehensive
 ```
 
 #### Verification
+
 Check test output:
+
 ```bash
 cat output/2_tests_output/pytest_fast_output.txt
 ```
@@ -229,6 +258,7 @@ cat output/2_tests_output/pytest_fast_output.txt
 **Symptom**: Import errors or diagram generation failures
 
 **Solution**:
+
 ```bash
 # Reinstall DisCoPy with uv
 uv pip uninstall discopy -y
@@ -243,6 +273,7 @@ python3 -c "import discopy; print(discopy.__version__)"
 **Symptom**: Julia packages not found or version conflicts
 
 **Solution**:
+
 ```bash
 # Update all Julia packages
 julia -e 'using Pkg; Pkg.update()'
@@ -264,16 +295,19 @@ julia -e 'using Pkg; Pkg.status()'
 Run through this checklist to identify issues:
 
 ### 1. Check Pipeline Execution Summary
+
 ```bash
 cat output/pipeline_execution_summary.json | python3 -m json.tool
 ```
 
 Look for:
+
 - `overall_status`: Should be `SUCCESS` or `SUCCESS_WITH_WARNINGS`
 - `failed_steps`: Should be `0`
 - `successful_steps`: Should be `23` or `24`
 
 ### 2. Check Individual Step Output
+
 ```bash
 # Check specific step output
 ls output/[STEP_NUMBER]_*_output/
@@ -283,6 +317,7 @@ cat output/[STEP_NUMBER]_*_output/*.json | python3 -m json.tool
 ```
 
 ### 3. Check Framework Availability
+
 ```bash
 # Test each framework
 python3 -c "import discopy; print('✅ DisCoPy')"
@@ -293,6 +328,7 @@ julia -e 'using RxInfer; println("✅ RxInfer.jl")'
 ```
 
 ### 4. Check Python Environment
+
 ```bash
 # Verify Python version
 python3 --version  # Should be 3.9+
@@ -305,6 +341,7 @@ which python3
 ```
 
 ### 5. Check Disk Space
+
 ```bash
 # Check available space
 df -h .
@@ -320,23 +357,27 @@ du -sh output/
 ### For Clean Pipeline Execution
 
 1. **Install Recommended Frameworks**:
+
    ```bash
    python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
    ```
 
 2. **Use Fast Test Mode** (default):
+
    ```bash
    # Fast tests only (completes in ~5 minutes)
    python src/main.py
    ```
 
 3. **Skip Optional Steps** if not needed:
+
    ```bash
    # Skip LLM and slow steps
    python src/main.py --skip-steps "13,14"
    ```
 
 4. **Monitor Resource Usage**:
+
    ```bash
    # Run with monitoring
    time python src/main.py
@@ -345,12 +386,14 @@ du -sh output/
 ### For Development
 
 1. **Use Comprehensive Tests** separately:
+
    ```bash
    # Run full test suite separately
    python src/2_tests.py --comprehensive
    ```
 
 2. **Test Individual Frameworks**:
+
    ```bash
    # Test one framework at a time
    python src/12_execute.py --frameworks "pymdp"
@@ -358,6 +401,7 @@ du -sh output/
    ```
 
 3. **Use Verbose Logging**:
+
    ```bash
    # Get detailed output
    python src/main.py --verbose
@@ -384,6 +428,7 @@ du -sh output/
 When reporting warnings/errors, include:
 
 1. **System Information**:
+
    ```bash
    python3 --version
    pip list > packages.txt
@@ -391,11 +436,13 @@ When reporting warnings/errors, include:
    ```
 
 2. **Pipeline Summary**:
+
    ```bash
    cat output/pipeline_execution_summary.json
    ```
 
 3. **Error Logs**:
+
    ```bash
    # Include relevant step output
    cat output/[failing_step]_output/*.log
@@ -411,14 +458,17 @@ When reporting warnings/errors, include:
 ## Status Interpretation
 
 ### Success States
+
 - ✅ `SUCCESS`: Step completed perfectly
 - ✅ `SUCCESS_WITH_WARNINGS`: Step completed with minor issues (output still valid)
 
 ### Warning States
+
 - ⚠️ `PARTIAL_SUCCESS`: Some outputs generated, some failed
 - ⚠️ `SUCCESS_WITH_WARNINGS`: Non-critical warnings present
 
 ### Failure States
+
 - ❌ `FAILED`: Step failed completely
 - ❌ `TIMEOUT`: Step exceeded time limit
 - ❌ `ERROR`: Unexpected error occurred
@@ -427,4 +477,3 @@ When reporting warnings/errors, include:
 
 **Guide Version**: 1.0  
 **Compatible Pipeline Version**: 1.1.1+  
-

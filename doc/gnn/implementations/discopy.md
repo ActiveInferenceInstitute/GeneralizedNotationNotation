@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python
 > **Framework Base**: `discopy` (Categorical Quantum Diagrams)
 > **Simulation Architecture**: Structural / Categorical Semantics (No POMDP Simulation)
-> **Documentation Version**: 0.4.1
+> **Documentation Version**: 1.3.0
 
 ## Overview
 
@@ -21,7 +21,7 @@ The DisCoPy implementation consists of three interconnected layers:
 
 ### Source File
 
-[discopy_renderer.py](#placeholder)
+[discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py)
 
 ---
 
@@ -71,16 +71,16 @@ These types form the objects of the monoidal category in which the Active Infere
 
 Each GNN model component is represented as a morphism (Box) in the category, with explicit domain and codomain types:
 
-| Component | Box Name | Domain | Codomain | Interpretation |
+ | Component | Box Name | Domain | Codomain | Interpretation |
 |---|---|---|---|---|
-| **A matrix** | `'A'` | `S` | `O ⊗ P` | Observation likelihood `P(o\|s)` |
-| **B matrix** | `'B'` | `S ⊗ A` | `S ⊗ P` | State transition `P(s'\|s,a)` |
-| **C vector** | `'C'` | `I` (unit) | `O ⊗ P` | Preferred observations |
-| **D vector** | `'D'` | `I` (unit) | `S ⊗ P` | Prior state beliefs |
-| **E vector** | `'E'` | `I` (unit) | `A ⊗ P` | Policy priors |
-| **State Inference** | `'StateInf'` | `O` | `S ⊗ P` | Posterior inference |
-| **Policy Inference** | `'PolicyInf'` | `S ⊗ P` | `A ⊗ P` | Policy evaluation |
-| **Action Selection** | `'ActionSel'` | `A ⊗ P` | `A` | Action sampling |
+ | **A matrix** | `'A'` | `S` | `O ⊗ P` | Observation likelihood `P(o\ | s)` |
+ | **B matrix** | `'B'` | `S ⊗ A` | `S ⊗ P` | State transition `P(s'\ | s,a)` |
+ | **C vector** | `'C'` | `I` (unit) | `O ⊗ P` | Preferred observations |
+ | **D vector** | `'D'` | `I` (unit) | `S ⊗ P` | Prior state beliefs |
+ | **E vector** | `'E'` | `I` (unit) | `A ⊗ P` | Policy priors |
+ | **State Inference** | `'StateInf'` | `O` | `S ⊗ P` | Posterior inference |
+ | **Policy Inference** | `'PolicyInf'` | `S ⊗ P` | `A ⊗ P` | Policy evaluation |
+ | **Action Selection** | `'ActionSel'` | `A ⊗ P` | `A` | Action sampling |
 
 ### Tensor Products (`⊗`)
 
@@ -186,50 +186,58 @@ DisCoPy does **not** produce `beliefs`, `actions`, `observations`, or `efe_histo
 
 ## Cross-Framework Role
 
-| Aspect | DisCoPy | Numerical Frameworks |
+ | Aspect | DisCoPy | Numerical Frameworks |
 |---|---|---|
-| **Purpose** | Structural validation | Computational simulation |
-| **Output** | Category diagrams, type analysis | Belief/action/EFE trajectories |
-| **GNN Data Used** | Dimensions, variable names, connections | Full matrix values |
-| **Numerical Results** | None | beliefs, actions, observations, EFE |
-| **Validation** | Type-consistency of compositions | Beliefs sum to 1, actions in range |
+ | **Purpose** | Structural validation | Computational simulation |
+ | **Output** | Category diagrams, type analysis | Belief/action/EFE trajectories |
+ | **GNN Data Used** | Dimensions, variable names, connections | Full matrix values |
+ | **Numerical Results** | None | beliefs, actions, observations, EFE |
+ | **Validation** | Type-consistency of compositions | Beliefs sum to 1, actions in range |
 
 ---
 
 ## Dependencies
 
-| Package | Purpose |
+ | Package | Purpose |
 |---|---|
-| `discopy` | Categorical diagram construction and composition |
-| `discopy.monoidal` | `Ty`, `Box`, `Id` primitives |
-| `discopy.drawing` | `Equation` visualization (structural) |
-| `numpy` | Numerical utilities |
-| `json` | Telemetry serialization |
+ | `discopy` | Categorical diagram construction and composition |
+ | `discopy.monoidal` | `Ty`, `Box`, `Id` primitives |
+ | `discopy.drawing` | `Equation` visualization (structural) |
+ | `numpy` | Numerical utilities |
+ | `json` | Telemetry serialization |
 
 ---
 
 ## Source Code Connections
 
-| Pipeline Stage | Module | Key Function | Lines |
+ | Pipeline Stage | Module | Key Function | Lines |
 |---|---|---|---|
-| Rendering | [discopy_renderer.py](#placeholder) | `_generate_discopy_diagram_code()` | L115-420 |
-| Entry Point | [discopy_renderer.py](#placeholder) | `render_gnn_to_discopy()` | L427-471 |
-| GNN Parsing | [discopy_renderer.py](#placeholder) | `_parse_gnn_content()` | L75-113 |
-| Execution | [discopy_executor.py](#placeholder) | `execute_discopy_script()` | L37-137 |
-| Validation | [discopy_executor.py](#placeholder) | `DisCoPyExecutor.validate_diagram()` | L155-181 |
-| Analysis | [analyzer.py](#placeholder) | `generate_analysis_from_logs()` | L18-90 |
-| Visualization | [analyzer.py](#placeholder) | `create_discopy_visualizations()` | L93-343 |
-| Data Extraction | [analyzer.py](#placeholder) | `extract_circuit_data()` | L349-385 |
-| Structure Analysis | [analyzer.py](#placeholder) | `analyze_diagram_structure()` | L388-418 |
+ | Rendering | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `_generate_discopy_diagram_code()` | — |
+ | Entry Point | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` | — |
+ | GNN Parsing | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `_parse_gnn_content()` | — |
+ | Execution | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` | L37-137 |
+ | Validation | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `DisCoPyExecutor.validate_diagram()` | L156-182 |
+ | Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` | — |
+ | Visualization | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `create_discopy_visualizations()` | — |
+ | Data Extraction | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `extract_circuit_data()` | — |
+ | Structure Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `analyze_diagram_structure()` | — |
 
 ---
 
 ## Improvement Opportunities
 
-| ID | Area | Description | Impact |
+ | ID | Area | Description | Impact |
 |---|---|---|---|
-| D-1 | Execution | ~~No dedicated runner~~ — added `execute_discopy_script()` in `discopy_executor.py` with syntax validation and log persistence | ✅ FIXED |
-| D-2 | Rendering | No actual matrix values are injected into the generated script — only dimensions | Low |
-| D-3 | Rendering | ~~The `generative_model` was just assigned to `perception_action_loop`~~ — now composes `D_vector @ C_vector` priors with graceful fallback | ✅ FIXED |
-| D-4 | Analysis | `create_discopy_visualizations()` at 250 lines generates visualizations from `circuit_info.json` but could also render actual string diagrams using `discopy.drawing` if matplotlib is available | Medium |
-| D-5 | Telemetry | No numerical simulation data exported — could add an optional mode to evaluate the circuit with actual tensor values using `discopy.tensor` | Low |
+ | D-1 | Execution | ~~No dedicated runner~~ — added `execute_discopy_script()` in `discopy_executor.py` with syntax validation and log persistence | ✅ FIXED |
+ | D-2 | Rendering | No actual matrix values are injected into the generated script — only dimensions | Low |
+ | D-3 | Rendering | ~~The `generative_model` was just assigned to `perception_action_loop`~~ — now composes `D_vector @ C_vector` priors with graceful fallback | ✅ FIXED |
+ | D-4 | Analysis | `create_discopy_visualizations()` at 250 lines generates visualizations from `circuit_info.json` but could also render actual string diagrams using `discopy.drawing` if matplotlib is available | Medium |
+ | D-5 | Telemetry | No numerical simulation data exported — could add an optional mode to evaluate the circuit with actual tensor values using `discopy.tensor` | Low |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**:
+  Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

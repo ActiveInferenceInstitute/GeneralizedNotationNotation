@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Active Inference POMDP Agent
-# Generated: 2026-02-25 14:39:53
+# Generated: 2026-03-03 08:22:25
 
 using Pkg
 
@@ -63,6 +63,7 @@ function to_tensor(raw)
         if !isempty(arr)
             first_action = collect(arr[1])
             if !isempty(first_action) && (first_action[1] isa Tuple || first_action[1] isa Vector)
+                # 3D case: each element is a matrix (list of rows)
                 n_actions = length(arr)
                 n_rows = length(first_action)
                 first_row = collect(first_action[1])
@@ -79,6 +80,28 @@ function to_tensor(raw)
                     end
                 end
                 return tensor
+            elseif first_action[1] isa Number
+                # 2D case: each element is a flat vector (row of transition matrix)
+                # This is a passive model (HMM/Markov Chain) with no action dimension
+                println("ℹ️  B is 2D (passive model) — expanding to 3D with single action")
+                n_rows = length(arr)
+                n_cols = length(first_action)
+                mat = zeros(n_rows, n_cols)
+                for r in 1:n_rows
+                    row_data = collect(arr[r])
+                    for c in 1:n_cols
+                        mat[r, c] = row_data[c]
+                    end
+                end
+                # Normalize columns
+                for c in 1:n_cols
+                    cs = sum(mat[:, c])
+                    if cs > 0
+                        mat[:, c] ./= cs
+                    end
+                end
+                # Expand to 3D with single action
+                return reshape(mat, n_rows, n_cols, 1)
             end
         end
     catch e

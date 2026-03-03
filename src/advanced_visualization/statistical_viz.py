@@ -209,8 +209,10 @@ def _generate_matrix_correlations(
                 padded[:len(vec)] = vec
                 matrix_vectors[i] = padded
 
-        # Compute correlation matrix
-        correlation_matrix = np.corrcoef(matrix_vectors)
+        # Compute correlation matrix (suppress warnings from constant columns)
+        with np.errstate(divide='ignore', invalid='ignore'):
+            correlation_matrix = np.corrcoef(matrix_vectors)
+        correlation_matrix = np.nan_to_num(correlation_matrix, nan=0.0)
 
         # Create heatmap
         plt.figure(figsize=(10, 8))

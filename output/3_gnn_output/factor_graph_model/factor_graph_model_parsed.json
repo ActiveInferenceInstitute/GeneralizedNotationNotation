@@ -1,0 +1,1115 @@
+{
+  "model_name": "Factor Graph Active Inference Model",
+  "version": "1.0",
+  "annotation": "A factor graph decomposition of an Active Inference generative model with:\n- Two independent observation modalities (visual and proprioceptive)\n- Two independent hidden state factors (position and velocity)\n- Factored joint distribution: P(o,s) = P(o_vis|s_pos) * P(o_prop|s_vel) * P(s_pos|s_vel) * P(s_vel)\n- Variable nodes: observation and state variables\n- Factor nodes: likelihood and transition factors\n- Enables modality-specific processing and efficient belief propagation",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0e7f3d51-a409-417d-a2a6-7314baff185a",
+      "name": "o_vis",
+      "var_type": "observation",
+      "dimensions": [
+        6,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Visual observations (6 possible)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d756c840-b209-48d7-9581-a7f395d3c2d9",
+      "name": "A_vis",
+      "var_type": "action",
+      "dimensions": [
+        6,
+        3
+      ],
+      "data_type": "float",
+      "description": "Visual likelihood factor: P(o_vis | s_pos)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1fa13534-c182-4fd6-86f3-7b96803b2241",
+      "name": "o_prop",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Proprioceptive observations (4D)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4a15e87d-97ef-4d6e-b14e-a088d35c42f6",
+      "name": "A_prop",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "Proprioceptive likelihood: P(o_prop | s_vel)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f0147c50-8436-426c-8d73-96480a3dc9ef",
+      "name": "s_pos",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Position state (3 discrete locations)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d7e5cd09-4f8f-4de2-868c-e937c000f256",
+      "name": "B_pos",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        3,
+        2
+      ],
+      "data_type": "float",
+      "description": "Position transition factor",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a45cac3c-55dd-4d1d-8aef-c8c46fd44e75",
+      "name": "s_vel",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Velocity state (2 levels: slow/fast)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d22f2e6d-e1f7-4f1b-b9ed-f25a660b5821",
+      "name": "B_vel",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Velocity transition (action-independent)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b90f2b9f-8f64-4b9d-b8fa-0f16f01d88be",
+      "name": "D_pos",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prior over position",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3d6e3d4e-a660-453e-82d3-cd85d6303679",
+      "name": "D_vel",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Prior over velocity",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b7f1087e-8df4-460d-9b58-a551ed64a9f7",
+      "name": "C_vis",
+      "var_type": "hidden_state",
+      "dimensions": [
+        6
+      ],
+      "data_type": "float",
+      "description": "Visual preferences (goal location)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9c10f66e-4d57-4805-b6ba-cf5a519d3a59",
+      "name": "C_prop",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Proprioceptive preferences (comfort)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "56438a0d-bc2e-4e77-807e-3d53c0fd071e",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Policy (2 actions: move/stay)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ccada83b-8a5d-48dc-ad13-e17d7408e031",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Selected action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e3b19d1d-ca09-4e6d-ac84-d63f24d40001",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cb650cb1-0001-48d0-a7e7-5df4bb72578e",
+      "name": "m_pos_to_vis",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Message: position\u2192visual factor",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e36ca1e3-def6-45e6-afd1-8c21b15e5ba5",
+      "name": "m_vel_to_prop",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Message: velocity\u2192proprioceptive factor",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0d5857c5-d172-413f-85ce-87ecbe943cd2",
+      "name": "m_vis_to_pos",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Message: visual factor\u2192position",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b8c2eca-6b21-4233-960c-fe32a5ade85d",
+      "name": "m_prop_to_vel",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Message: proprioceptive factor\u2192velocity",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9581068e-94d0-45a1-9848-9cc683d78d97",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Total Variational Free Energy (sum of factors)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ad922130-1774-4271-b80b-f4a11f79f5e2",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "941eb997-b6e0-494f-a9f1-2d5acc391673",
+      "source_variables": [
+        "D_pos"
+      ],
+      "target_variables": [
+        "s_pos"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4ff2819f-23db-409f-b610-d4283f19dcd5",
+      "source_variables": [
+        "D_vel"
+      ],
+      "target_variables": [
+        "s_vel"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0bca81a-261c-45c2-82ec-79cb4430f5e8",
+      "source_variables": [
+        "s_pos"
+      ],
+      "target_variables": [
+        "A_vis"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8e3727dc-7d41-40f8-b7ae-135f6f4e7cba",
+      "source_variables": [
+        "A_vis"
+      ],
+      "target_variables": [
+        "o_vis"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ac4645fe-f86e-466b-9227-0f7b957f8620",
+      "source_variables": [
+        "s_vel"
+      ],
+      "target_variables": [
+        "A_prop"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0483d27c-f6a1-43e7-ac6b-ff46bb5e23fd",
+      "source_variables": [
+        "A_prop"
+      ],
+      "target_variables": [
+        "o_prop"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8d6a8748-ca97-4f03-b57e-b86da8ef632f",
+      "source_variables": [
+        "s_pos"
+      ],
+      "target_variables": [
+        "B_pos"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a55779d9-388b-4d65-9f66-4bd798f43777",
+      "source_variables": [
+        "s_vel"
+      ],
+      "target_variables": [
+        "B_vel"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1d70216-4432-4c0a-b821-123463b2f3df",
+      "source_variables": [
+        "B_pos"
+      ],
+      "target_variables": [
+        "s_pos"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "515b5ada-b176-432e-b299-97808f70d289",
+      "source_variables": [
+        "B_vel"
+      ],
+      "target_variables": [
+        "s_vel"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1024630b-f2f6-4750-bfc9-7377f47c643f",
+      "source_variables": [
+        "s_pos"
+      ],
+      "target_variables": [
+        "m_pos_to_vis"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3c215acf-6d6b-4f96-a0b3-a9fe22c6692d",
+      "source_variables": [
+        "m_pos_to_vis"
+      ],
+      "target_variables": [
+        "A_vis"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "daecffcd-0d9e-41f1-8d07-0eabdfcc45f4",
+      "source_variables": [
+        "o_vis"
+      ],
+      "target_variables": [
+        "m_vis_to_pos"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b3f4933-460d-4357-a4ff-f79a1090d953",
+      "source_variables": [
+        "m_vis_to_pos"
+      ],
+      "target_variables": [
+        "s_pos"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e3fcc97e-1d05-49e2-a18e-880e51c0e7fe",
+      "source_variables": [
+        "s_vel"
+      ],
+      "target_variables": [
+        "m_vel_to_prop"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2f84e3ee-3322-48b5-abae-6c6c2ab75164",
+      "source_variables": [
+        "m_vel_to_prop"
+      ],
+      "target_variables": [
+        "A_prop"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b2153e0-f1c2-4dd1-b81e-ceae52db6adf",
+      "source_variables": [
+        "o_prop"
+      ],
+      "target_variables": [
+        "m_prop_to_vel"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d76ca35b-5923-4822-890f-5564635973dc",
+      "source_variables": [
+        "m_prop_to_vel"
+      ],
+      "target_variables": [
+        "s_vel"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6f16f922-edca-4918-9dde-8e56a9c10dd2",
+      "source_variables": [
+        "C_vis"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a2dc4f26-a4c7-4f8f-8e86-d90851e2c695",
+      "source_variables": [
+        "C_prop"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a2325b51-2030-41df-82c7-662a710fcfb7",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fe0e100d-16a9-4b05-9854-b14d2f538a01",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "59df26c8-8be5-43eb-aa00-181afe69e2ba",
+      "source_variables": [
+        "B_pos"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "996139ae-9aee-4c2d-9525-7ab13ba93d48",
+      "source_variables": [
+        "s_pos"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "585b6eda-abdb-4148-8b60-866469697d09",
+      "source_variables": [
+        "s_vel"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "24095eca-f769-4f12-854c-8d63e988ecf9",
+      "source_variables": [
+        "o_vis"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8573553a-8bef-42e2-a187-16c9dbc41b47",
+      "source_variables": [
+        "o_prop"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b97c5171-d6b2-476e-8813-b1772ae811b1",
+      "name": "A_vis",
+      "value": [
+        [
+          0.8,
+          0.1,
+          0.1
+        ],
+        [
+          0.1,
+          0.8,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.8
+        ],
+        [
+          0.05,
+          0.45,
+          0.5
+        ],
+        [
+          0.45,
+          0.05,
+          0.5
+        ],
+        [
+          0.5,
+          0.5,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "60d833ad-6b33-4359-ae9c-1bd5eb5395ef",
+      "name": "A_prop",
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.1,
+          0.9
+        ],
+        [
+          0.5,
+          0.5
+        ],
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1650a796-578d-4dd4-9292-3ad306720f69",
+      "name": "B_pos",
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.5,
+            0.5,
+            0.0
+          ],
+          [
+            0.0,
+            0.5,
+            0.5
+          ],
+          [
+            0.5,
+            0.0,
+            0.5
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "fa56e045-cac6-448e-9ec1-61d469709b6f",
+      "name": "B_vel",
+      "value": [
+        [
+          [
+            0.8,
+            0.2
+          ],
+          [
+            0.2,
+            0.8
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "26174f86-8fe3-4174-8315-36a177c91929",
+      "name": "D_pos",
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "578aac6d-1280-44c7-9671-520fd3805b1c",
+      "name": "D_vel",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e8cbf35c-2a7b-42df-8fec-61ed94c9f705",
+      "name": "C_vis",
+      "value": [
+        [
+          2.0,
+          -0.5,
+          -0.5,
+          -0.5,
+          -0.5,
+          -0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "957d6070-a3bb-488b-a48f-12b5942eb0fe",
+      "name": "C_prop",
+      "value": [
+        [
+          1.0,
+          -1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "f5ad7ea2-4c27-4d29-9030-d712f7d560fe",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b3472d79-cddd-4a71-99a3-62650829ab49",
+      "variable_name": "A_vis",
+      "ontology_term": "VisualLikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7ba7f93b-fe56-4201-aa07-774a0795fa00",
+      "variable_name": "A_prop",
+      "ontology_term": "ProprioceptiveLikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cb32c02b-a5c8-4441-934d-a0631f348e21",
+      "variable_name": "B_pos",
+      "ontology_term": "PositionTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b133a14-6b58-4941-9d6b-31bfcd90edbb",
+      "variable_name": "B_vel",
+      "ontology_term": "VelocityTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "75036ea7-8605-43ac-8613-ce02e3876f97",
+      "variable_name": "D_pos",
+      "ontology_term": "PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "dbc43ae5-4ce2-4652-a38d-b52aa2b22c63",
+      "variable_name": "D_vel",
+      "ontology_term": "VelocityPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b547ce61-309b-4f41-9ad1-407a66da6e88",
+      "variable_name": "C_vis",
+      "ontology_term": "VisualPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9a345599-06e8-47bb-8089-b5cd5086ccec",
+      "variable_name": "C_prop",
+      "ontology_term": "ProprioceptivePreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "24614a8e-0286-4412-a1ff-4dc246b96659",
+      "variable_name": "s_pos",
+      "ontology_term": "PositionHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e2b2af2-8320-4820-8fc7-851bb9c46c11",
+      "variable_name": "s_vel",
+      "ontology_term": "VelocityHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b21fd5bb-c052-4d83-8a86-2fb0cb392818",
+      "variable_name": "o_vis",
+      "ontology_term": "VisualObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "c0393e0e-479d-4be1-a91b-d00a39df59d4",
+      "variable_name": "o_prop",
+      "ontology_term": "ProprioceptiveObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba99c575-1439-4871-850f-212cae6884e2",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "49a74d0a-8b81-461e-bf3e-9de4713b1cf1",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "aeeaec07-d8b6-4561-b949-9606259b2e9d",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8746427b-5594-4dc7-88f9-a91d1e5f5136",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b41bcfd6-1b26-43d5-be37-9a87ad4d5ab6",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-03T08:22:03.395580",
+  "modified_at": "2026-03-03T08:22:03.395580",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfFactorGraph",
+    "footer": "Factor Graph Active Inference Model v1 - GNN Representation.\nFactored model enables modality-specific processing.\nBelief propagation on factor graph is more efficient than joint inference.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfFactorGraph",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Factor Graph Active Inference Model",
+    "ModelAnnotation": "A factor graph decomposition of an Active Inference generative model with:\n- Two independent observation modalities (visual and proprioceptive)\n- Two independent hidden state factors (position and velocity)\n- Factored joint distribution: P(o,s) = P(o_vis|s_pos) * P(o_prop|s_vel) * P(s_pos|s_vel) * P(s_vel)\n- Variable nodes: observation and state variables\n- Factor nodes: likelihood and transition factors\n- Enables modality-specific processing and efficient belief propagation",
+    "StateSpaceBlock": "# Visual modality\no_vis[6,1,type=int]    # Visual observations (6 possible)\nA_vis[6,3,type=float]  # Visual likelihood factor: P(o_vis | s_pos)\n\n# Proprioceptive modality\no_prop[4,1,type=float] # Proprioceptive observations (4D)\nA_prop[4,2,type=float] # Proprioceptive likelihood: P(o_prop | s_vel)\n\n# State factor 1: position\ns_pos[3,1,type=float]  # Position state (3 discrete locations)\nB_pos[3,3,2,type=float] # Position transition factor\n\n# State factor 2: velocity\ns_vel[2,1,type=float]  # Velocity state (2 levels: slow/fast)\nB_vel[2,2,1,type=float] # Velocity transition (action-independent)\n\n# Priors\nD_pos[3,type=float]    # Prior over position\nD_vel[2,type=float]    # Prior over velocity\n\n# Preferences\nC_vis[6,type=float]    # Visual preferences (goal location)\nC_prop[4,type=float]   # Proprioceptive preferences (comfort)\n\n# Action and policy\n\u03c0[2,type=float]        # Policy (2 actions: move/stay)\nu[1,type=int]          # Selected action\nG[\u03c0,type=float]        # Expected Free Energy\n\n# Factor graph messages\nm_pos_to_vis[3,1,type=float]  # Message: position\u2192visual factor\nm_vel_to_prop[2,1,type=float] # Message: velocity\u2192proprioceptive factor\nm_vis_to_pos[3,1,type=float]  # Message: visual factor\u2192position\nm_prop_to_vel[2,1,type=float] # Message: proprioceptive factor\u2192velocity\n\n# Free Energy\nF[1,type=float]        # Total Variational Free Energy (sum of factors)\n\n# Time\nt[1,type=int]",
+    "Connections": "D_pos>s_pos\nD_vel>s_vel\ns_pos-A_vis\nA_vis-o_vis\ns_vel-A_prop\nA_prop-o_prop\ns_pos-B_pos\ns_vel-B_vel\nB_pos>s_pos\nB_vel>s_vel\ns_pos-m_pos_to_vis\nm_pos_to_vis-A_vis\no_vis-m_vis_to_pos\nm_vis_to_pos-s_pos\ns_vel-m_vel_to_prop\nm_vel_to_prop-A_prop\no_prop-m_prop_to_vel\nm_prop_to_vel-s_vel\nC_vis>G\nC_prop>G\nG>\u03c0\n\u03c0>u\nB_pos>u\ns_pos-F\ns_vel-F\no_vis-F\no_prop-F",
+    "InitialParameterization": "A_vis={\n  (0.8, 0.1, 0.1),\n  (0.1, 0.8, 0.1),\n  (0.1, 0.1, 0.8),\n  (0.05, 0.45, 0.5),\n  (0.45, 0.05, 0.5),\n  (0.5, 0.5, 0.0)\n}\n\nA_prop={\n  (0.9, 0.1),\n  (0.1, 0.9),\n  (0.5, 0.5),\n  (0.5, 0.5)\n}\n\nB_pos={\n  ( (0.9,0.1,0.0), (0.0,0.9,0.1), (0.1,0.0,0.9) ),\n  ( (0.5,0.5,0.0), (0.0,0.5,0.5), (0.5,0.0,0.5) )\n}\n\nB_vel={\n  ( (0.8, 0.2), (0.2, 0.8) )\n}\n\nD_pos={(0.333, 0.333, 0.333)}\nD_vel={(0.5, 0.5)}\n\n# Goal: observe visual feature 1 (index 0) and comfortable proprioception\nC_vis={(2.0, -0.5, -0.5, -0.5, -0.5, -0.5)}\nC_prop={(1.0, -1.0, 0.0, 0.0)}",
+    "Equations": "# Factored VFE: F = F_vis + F_prop + F_pos + F_vel\n# F_vis = D_KL[Q(s_pos)||P(s_pos)] - E_Q[log P(o_vis|s_pos)]\n# Message passing: belief propagation on factor graph\n# Variable nodes aggregate incoming messages: Q(s) \u221d product of incoming messages\n# Factor nodes compute messages as marginals of factor * incoming messages",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A_vis=VisualLikelihoodMatrix\nA_prop=ProprioceptiveLikelihoodMatrix\nB_pos=PositionTransitionMatrix\nB_vel=VelocityTransitionMatrix\nD_pos=PositionPrior\nD_vel=VelocityPrior\nC_vis=VisualPreferenceVector\nC_prop=ProprioceptivePreferenceVector\ns_pos=PositionHiddenState\ns_vel=VelocityHiddenState\no_vis=VisualObservation\no_prop=ProprioceptiveObservation\n\u03c0=PolicyVector\nu=Action\nG=ExpectedFreeEnergy\nF=VariationalFreeEnergy\nt=Time",
+    "ModelParameters": "num_positions: 3\nnum_velocities: 2\nnum_visual_obs: 6\nnum_proprio_obs: 4\nnum_actions: 2\nnum_timesteps: 25\nnum_modalities: 2\nnum_state_factors: 2",
+    "Footer": "Factor Graph Active Inference Model v1 - GNN Representation.\nFactored model enables modality-specific processing.\nBelief propagation on factor graph is more efficient than joint inference.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

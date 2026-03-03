@@ -248,8 +248,17 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     model_info["D"] = initial_params.get("D")
     model_info["E"] = initial_params.get("E")
     
-    if any(x is None for x in [model_info["A"], model_info["B"], model_info["C"], model_info["D"], model_info["E"]]):
-        raise ValueError("Missing one or more of A, B, C, D, E in initialparameterization.")
+    # A, B, C, D are required; E (habit/policy prior) is optional
+    required = {"A": model_info["A"], "B": model_info["B"], "C": model_info["C"], "D": model_info["D"]}
+    missing = [k for k, v in required.items() if v is None]
+    if missing:
+        raise ValueError(f"Missing required matrices {missing} in initialparameterization.")
+    
+    # Generate uniform E if not provided (many models don't define explicit habits)
+    if model_info["E"] is None:
+        n_act = model_info["n_controls"][0] if model_info["n_controls"] else 3
+        model_info["E"] = [1.0 / n_act] * n_act
+        logger.info(f"Generated uniform E vector ({n_act} actions) — model has no explicit habit prior")
 
     # --- Metadata ---
     model_info["metadata"] = {
@@ -337,7 +346,7 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
 
     C_vector = model_info["C"]
     D_vector = model_info["D"]
-    E_vector = model_info["E"]
+    E_vector = model_info.get("E") or [1.0 / n_actions] * n_actions
     
     julia_A = _matrix_to_julia(A_matrix)
     julia_B = _matrix_to_julia(B_matrix)

@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python / JAX-based Probabilistic Programming
 > **Framework Base**: `numpyro >= 0.14` (NumPy-interface Pyro with JAX backend)
 > **Simulation Architecture**: Inference-as-sampling POMDP agent
-> **Documentation Version**: 1.0
+> **Documentation Version**: 1.3.0
 
 ## Overview
 
@@ -14,7 +14,7 @@ This unlocks uncertainty quantification beyond the classical Dirichlet-categoric
 ## Architecture
 
 | Stage | Module | Description |
-|-------|--------|-------------|
+|---|---|---|
 | Rendering (Step 11) | `src/render/numpyro/numpyro_renderer.py` | GNN JSON → NumPyro probabilistic program |
 | Execution (Step 12) | `src/execute/numpyro/numpyro_runner.py` | MCMC/SVI inference, log persistence |
 | Analysis (Step 16) | `src/analysis/numpyro/analyzer.py` | Posterior summaries, uncertainty bands |
@@ -137,7 +137,7 @@ python src/12_execute.py --target-dir input/gnn_files/ --framework numpyro
 ## Comparison to Other Frameworks
 
 | Feature | PyMDP | JAX | NumPyro |
-|---------|-------|-----|---------|
+|---|---|---|---|
 | Inference method | Belief propagation | Manual message-passing | MCMC / SVI |
 | Uncertainty output | None | None | Full posterior |
 | GPU support | No | Yes | Yes |
@@ -146,20 +146,27 @@ python src/12_execute.py --target-dir input/gnn_files/ --framework numpyro
 
 ## Correlation Results
 
-NumPyro's posterior *mean* beliefs correlate with PyMDP and JAX beliefs at ~1.0 for deterministic GNN matrices. Posterior *variance* is the unique contribution.
+During the **March 3, 2026** pipeline benchmarking audit, NumPyro was verified as **Fully Operational**. NumPyro's posterior *mean* beliefs correlate with PyMDP and JAX beliefs at ~1.0 for deterministic GNN matrices. Posterior *variance* is the unique contribution, supplying rich uncertainty mechanics while maintaining cross-framework fidelity.
 
 ## Source Code Connections
 
 | Stage | Module | Key Function |
-|-------|--------|-------------|
-| Rendering | `src/render/numpyro/numpyro_renderer.py` | `render_gnn_to_numpyro()` |
-| Execution | `src/execute/numpyro/numpyro_runner.py` | `execute_numpyro_script()` |
-| Analysis | `src/analysis/numpyro/analyzer.py` | `generate_analysis_from_logs()` |
+|---|---|---|
+| Rendering | [numpyro_renderer.py](../../../src/render/numpyro/numpyro_renderer.py) | `render_gnn_to_numpyro()` |
+| Execution | [numpyro_runner.py](../../../src/execute/numpyro/numpyro_runner.py) | `execute_numpyro_script()` |
+| Analysis | [analyzer.py](../../../src/analysis/numpyro/analyzer.py) | `generate_analysis_from_logs()` |
 
 ## Improvement Opportunities
 
 | ID | Area | Description | Impact |
-|----|------|-------------|--------|
-| NP-1 | Rendering | Action selection should use EFE not uniform prior | High |
+|---|---|---|---|
+| NP-1 | Rendering | ~~Action selection should use EFE not uniform prior~~ — now uses EFE-based softmax action selection | ✅ FIXED |
 | NP-2 | Execution | SVI not yet implemented (only NUTS) | Medium |
 | NP-3 | Analysis | Posterior uncertainty plots not linked to Step 9 (Adv Viz) | Low |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**: Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

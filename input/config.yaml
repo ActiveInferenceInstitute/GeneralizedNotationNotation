@@ -5,46 +5,46 @@
 pipeline:
   # Enable/disable pipeline execution
   enabled: true
-  
+
   # Pipeline steps to execute (0-23)
   # Leave empty to run all steps
   steps: []
-  
+
   # Skip specific steps
   skip_steps: []
-  
+
   # Force execution of specific steps
   force_steps: []
-  
+
   # Parallel execution settings
   parallel:
     enabled: false
     max_workers: 4
-  
+
   # Timeout settings (in seconds)
   timeout:
-    step: 3600  # 1 hour per step
-    total: 7200  # 2 hours total
+    step: 3600 # 1 hour per step
+    total: 7200 # 2 hours total
 
 # UV environment settings
 uv:
   # UV environment management
   recreate_uv_env: false
-  
+
   # UV environment directory (UV standard)
   uv_env_dir: ".venv"
-  
+
   # UV sync settings
   sync:
     # Install development dependencies
     dev: false
-    
+
     # Install optional dependency groups
     extras: []
-    
+
     # Upgrade packages
     upgrade: false
-    
+
     # Fast sync mode
     fast: true
 
@@ -52,24 +52,129 @@ uv:
 io:
   # Input directory for GNN files
   input_dir: "input/gnn_files"
-  
+
   # Output directory for pipeline artifacts
   output_dir: "output"
-  
+
   # Temporary directory
   temp_dir: "temp"
-  
+
   # Log directory
   log_dir: "logs"
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# Testing Matrix Configuration
+# Maps subdirectories in input/gnn_files/ to specific pipeline steps.
+# Edit the lists below to control which steps run on which folders.
+# ═══════════════════════════════════════════════════════════════════════════════
+#
+# ┌──────────────────────────────────────────────────────────────────────────────
+# │ STEP REFERENCE (select by number)
+# ├──────┬──────────────────────────┬──────────────────────────────────────────
+# │ Step │ Script (src/)            │ Purpose
+# ├──────┼──────────────────────────┼──────────────────────────────────────────
+# │   0  │ 0_template.py            │ Pipeline template & initialization
+# │   1  │ 1_setup.py               │ Environment setup & dependency install
+# │   2  │ 2_tests.py               │ Test suite execution
+# │   3  │ 3_gnn.py                 │ GNN file discovery & parsing
+# │   4  │ 4_model_registry.py      │ Model registry & versioning
+# │   5  │ 5_type_checker.py        │ GNN type validation
+# │   6  │ 6_validation.py          │ Consistency & quality checking
+# │   7  │ 7_export.py              │ Multi-format export (JSON, XML, GraphML)
+# │   8  │ 8_visualization.py       │ Graph & matrix visualization
+# │   9  │ 9_advanced_viz.py        │ Interactive / advanced visualization
+# │  10  │ 10_ontology.py           │ Active Inference ontology processing
+# │  11  │ 11_render.py             │ Code generation (PyMDP, RxInfer, JAX…)
+# │  12  │ 12_execute.py            │ Execute rendered simulation scripts
+# │  13  │ 13_llm.py                │ LLM-enhanced analysis
+# │  14  │ 14_ml_integration.py     │ Machine learning integration
+# │  15  │ 15_audio.py              │ Audio sonification generation
+# │  16  │ 16_analysis.py           │ Statistical analysis & reporting
+# │  17  │ 17_integration.py        │ System integration checks
+# │  18  │ 18_security.py           │ Security validation
+# │  19  │ 19_research.py           │ Research tools & literature
+# │  20  │ 20_website.py            │ Static HTML website generation
+# │  21  │ 21_mcp.py                │ Model Context Protocol processing
+# │  22  │ 22_gui.py                │ Interactive GNN constructor GUI
+# │  23  │ 23_report.py             │ Comprehensive report generation
+# │  24  │ 24_intelligent_analysis  │ AI-powered pipeline analysis
+# └──────┴──────────────────────────┴──────────────────────────────────────────
+#
+# NOTE: Global steps run once before folder-specific steps (not folder-routed).
+#       Steps not in any folder's list run once on the root input directory.
+# ═══════════════════════════════════════════════════════════════════════════════
+
+testing_matrix:
+  enabled: true
+
+  # ─────────────────────────────────────────────────────────────────────────────
+  # GLOBAL STEPS — run once (not per-folder), togglable independently
+  # Set individual steps to true/false to include/exclude them from the pipeline
+  # ─────────────────────────────────────────────────────────────────────────────
+  global_steps:
+    0_template: true # Pipeline template & initialization
+    1_setup: true # Environment setup & dependency install
+    2_tests: true # Test suite execution
+
+  # Default steps for folders not explicitly listed below
+  default_steps: [3, 5, 6, 10]
+
+  # Folder-specific step configurations
+  # Each key = subdirectory name in input/gnn_files/
+  # Each value = list of step numbers to run on that folder
+  folders:
+    # POMDP agents (full pipeline — all steps)
+    discrete: [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        # 13,  # LLM — disabled (slow Ollama calls); re-enable when needed
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+      ]
+
+    # Basic perception models
+    basics: [3, 5, 6, 10] # Parse, type-check, validate, ontology
+
+    # Continuous-space models
+    continuous: [3, 5, 6] # Parse and type-check
+
+    # Hierarchical models
+    hierarchical: [3, 5, 6] # Parse and type-check
+
+    # Multi-agent models
+    multiagent: [3, 5, 6] # Parse and type-check
+
+    # Precision-weighted models
+    precision: [3, 5, 6] # Parse and type-check
+
+    # Structured / factor graph models
+    structured: [3, 5, 6] # Parse and type-check
 
 # Logging settings
 logging:
   # Log level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
   level: "INFO"
-  
+
   # Log format
   format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  
+
   # Log file settings
   file:
     enabled: true
@@ -80,10 +185,10 @@ logging:
 validation:
   # Enable validation checks
   enabled: true
-  
+
   # Strict validation mode
   strict: false
-  
+
   # Validation timeout (seconds)
   timeout: 300
 
@@ -91,23 +196,23 @@ validation:
 performance:
   # Memory limit (MB)
   memory_limit: 4096
-  
+
   # CPU limit (cores)
   cpu_limit: 4
-  
+
   # Cache settings
   cache:
     enabled: true
     max_size: "1GB"
-    ttl: 3600  # 1 hour
+    ttl: 3600 # 1 hour
 
 # Security settings
 security:
   # Enable security checks
   enabled: true
-  
+
   # Allow network access
   network_access: true
-  
+
   # File permissions
-  file_permissions: "644" 
+  file_permissions: "644"

@@ -1,8 +1,8 @@
 # GNN MCP Client Setup Guide
 
-Connect any MCP-compatible client to the GNN pipeline and access all 76 tools interactively.
+Connect any MCP-compatible client to the GNN pipeline and access all 131 tools interactively.
 
-**Last Updated**: February 24, 2026
+**Last Updated**: March 3, 2026
 
 ## Prerequisites
 
@@ -112,7 +112,7 @@ async with stdio_client(server_params) as (read, write):
         await session.initialize()
         tools = await session.list_tools()
         print(f"Connected: {len(tools.tools)} tools available")
-        # → Connected: 76 tools available
+        # → Connected: 131 tools available
 ```
 
 ## Available Tools by Use Case
@@ -132,7 +132,7 @@ async with stdio_client(server_params) as (read, write):
 
 **Server won't start**: Ensure `PYTHONPATH=src` includes the `src/` directory where all modules live.
 
-**Tools not appearing**: Run the audit to confirm all 76 tools register cleanly:
+**Tools not appearing**: Run the audit to confirm all 131 tools register cleanly:
 
 ```bash
 PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v --tb=short
@@ -142,7 +142,7 @@ PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v --tb=short
 
 ## See Also
 
-- [Tool Reference](tool_reference.md) — all 76 tools in a flat table
+- [Tool Reference](tool_reference.md) — all 131 tools in a flat table
 - [Tool Development Guide](tool_development_guide.md) — add your own tools
 - [modules/21_mcp.md](../modules/21_mcp.md) — pipeline step documentation
 - [doc/mcp/fastmcp.md](../../../doc/mcp/fastmcp.md) — FastMCP library guide

@@ -386,7 +386,7 @@ The work of the quadray coordinate community represents a remarkable example of 
 [45] https://www.reddit.com/r/Firearms/comments/p726zf/what_is_the_best_cartridge_to_kill_a_robot/
 [46] https://coda.io/@daniel-ari-friedman/math4wisdom/quadcraft-166
 [47] https://coda.io/@daniel-ari-friedman/math4wisdom/benrayfield-169
-[48] https://coderanch.com/t/755031/a/12280/collins.txt?download_attachment=true
+[48] https://coderanch.com/t/755031/a/1.3.0/collins.txt?download_attachment=true
 [49] https://archive.org/download/csw21/CSW21.txt
 [50] https://id.scribd.com/document/421490488/ProductCreationTemplate-2019-04-09
 [51] https://cosmometry.com/ch-8-isotropic-vector-matrix/

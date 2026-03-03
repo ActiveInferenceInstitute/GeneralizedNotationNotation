@@ -1,0 +1,36 @@
+{
+  "total_variables": 40,
+  "total_connections": 19,
+  "variable_types": {
+    "unknown": 40
+  },
+  "connection_types": {
+    "D_loc->s_loc": 1,
+    "D_ctx->s_ctx": 1,
+    "s_loc->A_loc": 1,
+    "A_loc->o_loc": 1,
+    "s_loc->A_rew": 1,
+    "s_ctx->A_rew": 1,
+    "A_rew->o_rew": 1,
+    "s_loc->B_loc": 1,
+    "s_ctx->B_ctx": 1,
+    "C_rew->G_ins": 1,
+    "G_epi->G": 1,
+    "G_ins->G": 1,
+    "G->pi": 1,
+    "pi->u": 1,
+    "B_loc->u": 1,
+    "s_loc->F": 1,
+    "s_ctx->F": 1,
+    "o_loc->F": 1,
+    "o_rew->F": 1
+  },
+  "network_properties": {
+    "num_nodes": 17,
+    "num_edges": 19,
+    "density": 0.06985294117647059,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.0
+  }
+}

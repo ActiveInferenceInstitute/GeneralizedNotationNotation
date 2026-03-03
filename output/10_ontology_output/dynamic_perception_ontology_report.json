@@ -1,0 +1,117 @@
+{
+  "file_path": "input/gnn_files/basics/dynamic_perception.md",
+  "file_name": "dynamic_perception.md",
+  "ontology_data": {
+    "concepts": [],
+    "relations": [],
+    "properties": [],
+    "annotations": [
+      "A=RecognitionMatrix",
+      "B=TransitionMatrix",
+      "D=Prior",
+      "s_t=HiddenState",
+      "s_prime=NextHiddenState",
+      "o_t=Observation",
+      "F=VariationalFreeEnergy",
+      "t=Time"
+    ]
+  },
+  "validation_result": {
+    "valid_annotations": [
+      "A=RecognitionMatrix",
+      "B=TransitionMatrix",
+      "D=Prior",
+      "s_t=HiddenState",
+      "s_prime=NextHiddenState",
+      "o_t=Observation",
+      "F=VariationalFreeEnergy",
+      "t=Time"
+    ],
+    "invalid_annotations": [],
+    "matched_terms": {
+      "A": {
+        "annotation": "A=RecognitionMatrix",
+        "term_name": "RecognitionMatrix",
+        "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix), representing the likelihood of observations given hidden states.",
+        "uri": "obo:TEMP_000016",
+        "key": "A",
+        "value": "RecognitionMatrix",
+        "comment": null
+      },
+      "B": {
+        "annotation": "B=TransitionMatrix",
+        "term_name": "TransitionMatrix",
+        "description": "A probabilistic mapping defining the dynamics of hidden states over time, potentially conditioned on action (e.g., 'B' matrix).",
+        "uri": "obo:ACTO_000009",
+        "key": "B",
+        "value": "TransitionMatrix",
+        "comment": null
+      },
+      "D": {
+        "annotation": "D=Prior",
+        "term_name": "Prior",
+        "description": "A prior probability distribution over hidden states, typically representing initial beliefs before new evidence (e.g., 'D' vector/matrix).",
+        "uri": "obo:TEMP_000017",
+        "key": "D",
+        "value": "Prior",
+        "comment": null
+      },
+      "s_t": {
+        "annotation": "s_t=HiddenState",
+        "term_name": "HiddenState",
+        "description": "A state of the environment or agent that is not directly observable.",
+        "uri": "obo:ACTO_000001",
+        "key": "s_t",
+        "value": "HiddenState",
+        "comment": null
+      },
+      "s_prime": {
+        "annotation": "s_prime=NextHiddenState",
+        "term_name": "NextHiddenState",
+        "description": "The anticipated or inferred hidden state at the subsequent time step (e.g., s_t+1 or s').",
+        "uri": "obo:TEMP_000018",
+        "key": "s_prime",
+        "value": "NextHiddenState",
+        "comment": null
+      },
+      "o_t": {
+        "annotation": "o_t=Observation",
+        "term_name": "Observation",
+        "description": "Data received from the environment through sensory input.",
+        "uri": "obo:ACTO_000003",
+        "key": "o_t",
+        "value": "Observation",
+        "comment": null
+      },
+      "F": {
+        "annotation": "F=VariationalFreeEnergy",
+        "term_name": "VariationalFreeEnergy",
+        "description": "A bound on Bayesian model evidence, minimized during perception and learning to approximate posterior beliefs.",
+        "uri": "obo:TEMP_000065",
+        "key": "F",
+        "value": "VariationalFreeEnergy",
+        "comment": null
+      },
+      "t": {
+        "annotation": "t=Time",
+        "term_name": "Time",
+        "description": "Represents a point or interval in a temporal sequence, often a discrete time step in a model.",
+        "uri": "obo:TEMP_000066",
+        "key": "t",
+        "value": "Time",
+        "comment": null
+      }
+    },
+    "suggestions": [],
+    "coverage_score": 1.0
+  },
+  "summary": {
+    "total_concepts": 0,
+    "total_relations": 0,
+    "total_properties": 0,
+    "total_annotations": 8,
+    "valid_annotations": 8,
+    "invalid_annotations": 0,
+    "coverage_score": 1.0
+  }
+}

@@ -179,29 +179,40 @@ def process_integration(
                 logger.warning(f"Failed to parse {gnn_file.name}: {e}")
                 continue
         
-        # Also add cross-file reference edges (legacy behavior)
-        for gnn_file in gnn_files:
-            try:
-                content = gnn_file.read_text()
-                current_file_components = [
-                    c for c, f in component_locations.items() if f == gnn_file.name
-                ]
-                for src in current_file_components:
-                    for dest, dest_file in component_locations.items():
-                        if dest in content and dest_file != gnn_file.name:
-                            if has_networkx:
-                                G.add_edge(src, dest, type="cross_file_reference")
-                            else:
-                                G.setdefault(src, []).append(dest)
-            except Exception as e:
-                logger.warning(f"Failed to process edges for {gnn_file.name}: {e}")
-                continue
+        # NOTE: Cross-file reference edges via content matching have been removed.
+        # GNN models share a common mathematical vocabulary (s_prime, beta, alpha,
+        # s_tau1, etc.), so substring/word-boundary matching always generates
+        # false-positive edges. Real cross-file dependencies are detected via
+        # explicit $ref: syntax (see the "Verify cross-references" section below).
         
         if has_networkx:
             try:
-                cycles = list(nx.simple_cycles(G))
-                if cycles:
-                    results["issues"].append(f"Circular dependencies detected: {cycles}")
+                # Count cycles for structural analysis. Intra-model cycles from
+                # ## Connections are expected mathematical relationships (e.g.,
+                # bidirectional s - A creates s→A→s loops), so we report them
+                # as informational structure, not as dependency issues.
+                import time as _t
+                
+                MAX_CYCLE_LENGTH = 6   # Short cycles only for structural metrics
+                MAX_CYCLE_TIME = 5     # Quick scan — not a critical check
+                
+                cycle_count = 0
+                try:
+                    _deadline = _t.monotonic() + MAX_CYCLE_TIME
+                    for c in nx.simple_cycles(G, length_bound=MAX_CYCLE_LENGTH):
+                        cycle_count += 1
+                        if _t.monotonic() > _deadline or cycle_count >= 500:
+                            break
+                except TypeError:
+                    # Older networkx without length_bound
+                    try:
+                        _deadline = _t.monotonic() + MAX_CYCLE_TIME
+                        for c in nx.simple_cycles(G):
+                            cycle_count += 1
+                            if _t.monotonic() > _deadline or cycle_count >= 500:
+                                break
+                    except Exception:
+                        cycle_count = 0
                 
                 # Detect isolated nodes
                 isolated = list(nx.isolates(G))
@@ -211,13 +222,13 @@ def process_integration(
                 results["system_graph_stats"] = {
                     "nodes": G.number_of_nodes(),
                     "edges": G.number_of_edges(),
-                    "cycles": len(cycles),
+                    "cycles": cycle_count,
                     "isolated_nodes": len(isolated),
                     "components": nx.number_weakly_connected_components(G)
                 }
                 
                 logger.info(f"System graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges, "
-                           f"{len(cycles)} cycles, {len(isolated)} isolated")
+                           f"{cycle_count} intra-model cycles (structural), {len(isolated)} isolated")
             except Exception as e:
                 logger.warning(f"Failed to analyze graph: {e}")
         else:

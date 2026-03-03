@@ -1,6 +1,6 @@
 {
   "report_generation_summary": {
-    "generation_time": "2026-02-25T14:42:42.960842",
+    "generation_time": "2026-03-03T08:41:44.973064",
     "pipeline_directory": "output",
     "report_directory": "output/23_report_output",
     "health_score": 95.0,
@@ -12,8 +12,8 @@
     "pipeline_summary": {
       "total_steps": 24,
       "successful_steps": 24,
-      "total_files": 241,
-      "total_size_mb": 16.21,
+      "total_files": 1704,
+      "total_size_mb": 87.46,
       "success_rate": 100.0
     }
   }

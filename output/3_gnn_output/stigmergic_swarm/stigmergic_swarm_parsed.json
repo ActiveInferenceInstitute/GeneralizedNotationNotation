@@ -1,0 +1,1492 @@
+{
+  "model_name": "Stigmergic Swarm Active Inference",
+  "version": "1.0",
+  "annotation": "Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6e8bd4ee-57d0-4a0e-b82e-2b6f8e9eed2a",
+      "name": "A1",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 1 likelihood: P(obs | position on 3x3 grid)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "98c5bd56-c116-43ff-8c3f-6aa808779ae1",
+      "name": "B1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 transitions: (9 positions \u00d7 4 actions: N/S/E/W)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "151d9bac-3393-4ef4-91cb-9bd60d787afb",
+      "name": "C1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1f6c3be3-dc15-416a-979b-ab415d849cbf",
+      "name": "D1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 1 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "abe82f8c-ae7c-422f-8bc0-4ec3a992d7c3",
+      "name": "s1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 position belief (9 grid cells)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "36f56990-d347-44e1-adc6-19994edfdae3",
+      "name": "o1",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 observation: (empty, signal_low, signal_high, goal)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d357c503-e560-4934-a28c-a49b85765d5b",
+      "name": "pi1",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f8a59465-122b-45f0-9d4c-cdd6bfc73bb1",
+      "name": "u1",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a571b5f2-90ac-475d-860b-bb45b0520a74",
+      "name": "G1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9435ddd5-5fec-4d00-ba0e-1457301abc18",
+      "name": "A2",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 2 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1919d879-e5bb-433f-84b9-d6b77939987c",
+      "name": "B2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 transitions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0ce81cc8-087d-4ecd-abc1-759cdf29d8e8",
+      "name": "C2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d7ac693f-a31c-4206-9fd9-0708ce00b6a4",
+      "name": "D2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 2 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "325747a6-de80-410f-be21-66e65ac0297a",
+      "name": "s2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 position belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e358ce0-315a-4ada-948e-5e1d376b1262",
+      "name": "o2",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "aca3a4c6-46e1-4284-b25b-dce61112f5b0",
+      "name": "pi2",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7568ddaa-9399-44fb-915f-602011937d67",
+      "name": "u2",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8b380d50-0f2a-4782-a5bd-a3a49e2f1c67",
+      "name": "G2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "08df2036-045d-4302-a109-a449fe00e5d3",
+      "name": "A3",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 3 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "418d5f80-f11d-452a-9549-2164c2cb9790",
+      "name": "B3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        9,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 transitions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b38111af-d6bb-441d-9524-a23c97226751",
+      "name": "C3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "76289d7b-445f-4496-894e-c06c01f7021b",
+      "name": "D3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Agent 3 position prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ddb13ce7-48bb-4d10-bb60-29ce5b93ed25",
+      "name": "s3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 3 position belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca954a97-43b0-43e3-96e0-ac146bf1ca20",
+      "name": "o3",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 3 observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "0bab9f68-657c-4f41-9043-140e49edef63",
+      "name": "pi3",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 3 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "21e1d238-87cd-40c9-8e5c-abbc2d71be30",
+      "name": "u3",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 3 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0e0dd5f-9f1d-4039-85e7-99697881893e",
+      "name": "G3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 3 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e6fcd2f-8cf5-438c-93ab-eb67f7fef21a",
+      "name": "env_signal",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9,
+        1
+      ],
+      "data_type": "float",
+      "description": "Signal intensity at each grid cell (0.0 to 1.0)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c4e0ea19-43fc-4347-9b22-666e78c6d514",
+      "name": "signal_decay",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Signal decay rate per timestep",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4561f555-b030-48af-9eee-7bf18e9bcf84",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a442f8fe-2cd0-44b4-b156-265ade2b5b12",
+      "source_variables": [
+        "D1"
+      ],
+      "target_variables": [
+        "s1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee12bedf-a1ae-429e-9961-ec0485d2e3ff",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "A1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e10d7988-f4d6-492d-9ea4-3ae8901cf0b6",
+      "source_variables": [
+        "A1"
+      ],
+      "target_variables": [
+        "o1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "95bf83cb-9f19-41a8-ace1-2dc069283c9a",
+      "source_variables": [
+        "C1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1003169c-2f07-46ea-9508-a47bf67ad634",
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "pi1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "df32aef7-54fd-4cd1-9fbf-646b84009d98",
+      "source_variables": [
+        "pi1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d264a812-57da-4ba9-b7f2-8a58a2f7d400",
+      "source_variables": [
+        "B1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3c680516-2c00-460f-83b8-1a6024462f67",
+      "source_variables": [
+        "D2"
+      ],
+      "target_variables": [
+        "s2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "df483ec5-64e9-4d78-b7bd-02a87398a2c8",
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "A2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca09d441-08cb-4c9e-8d18-f9ffc848d0b4",
+      "source_variables": [
+        "A2"
+      ],
+      "target_variables": [
+        "o2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba51d7b1-da29-44fb-9ae3-ed6de02c91ac",
+      "source_variables": [
+        "C2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c5ab28be-0f8b-45fc-beae-3be2d08ea442",
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "pi2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7101f6ae-6913-44f0-92bc-45497b697403",
+      "source_variables": [
+        "pi2"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f8bb1cbe-592d-4fed-a303-b1c8d4592be9",
+      "source_variables": [
+        "B2"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c555cdf2-4d6d-432f-95c9-6458d317d7da",
+      "source_variables": [
+        "D3"
+      ],
+      "target_variables": [
+        "s3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7b866a0f-3ee1-4dc7-963b-4eaa83a313fc",
+      "source_variables": [
+        "s3"
+      ],
+      "target_variables": [
+        "A3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "225bfb5f-5764-4e65-b57a-7aa09cb0c612",
+      "source_variables": [
+        "A3"
+      ],
+      "target_variables": [
+        "o3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f8457dd6-fa7d-4e86-b9b4-1ce44fef6ee6",
+      "source_variables": [
+        "C3"
+      ],
+      "target_variables": [
+        "G3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e705678-204e-4b6a-8f25-699f1acd7cb4",
+      "source_variables": [
+        "G3"
+      ],
+      "target_variables": [
+        "pi3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f66f994-f1d7-4479-bb48-4d04cf049562",
+      "source_variables": [
+        "pi3"
+      ],
+      "target_variables": [
+        "u3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e042b40e-a90b-4667-9d25-3203f19642fd",
+      "source_variables": [
+        "B3"
+      ],
+      "target_variables": [
+        "u3"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "09c5fde7-cf06-4ec1-be52-31804e540a71",
+      "source_variables": [
+        "u1"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f64013d-fe34-4846-9249-8b98dd9356f8",
+      "source_variables": [
+        "u2"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "51095457-7a8b-4991-81ab-632fb458ae20",
+      "source_variables": [
+        "u3"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1581565-f211-4e74-a9b5-5f82988c7c3e",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4c056176-fdf7-42ef-b74a-482113cadf4c",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4f85e7dc-444b-4d08-a86e-5495fb603b3f",
+      "source_variables": [
+        "env_signal"
+      ],
+      "target_variables": [
+        "A3"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3bbb80ac-b63f-4295-b4ad-448bb5e7551f",
+      "source_variables": [
+        "signal_decay"
+      ],
+      "target_variables": [
+        "env_signal"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "88b4b865-3bb5-4097-b26a-1c0c7f2d1880",
+      "name": "A1",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "891b97bf-a063-412a-97d9-d777009aabb4",
+      "name": "A2",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ac3ea922-6eff-4b07-a0d7-705554fe6682",
+      "name": "A3",
+      "value": [
+        [
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.7,
+          0.1
+        ],
+        [
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.15,
+          0.1
+        ],
+        [
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1,
+          0.1
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.05,
+          0.7
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ebc08b4d-4f29-4ef3-b8d5-7eaabd103f9d",
+      "name": "C1",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec369cee-6f65-42e7-95a0-75f79f9c6781",
+      "name": "C2",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e7c29e7-960f-4be2-b071-3145b7106f2b",
+      "name": "C3",
+      "value": [
+        [
+          -0.5,
+          0.5,
+          1.5,
+          3.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ae29a5f-3eaa-40f7-b1ab-62b0764073aa",
+      "name": "D1",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "f4d221d3-cfa0-43e5-98cc-4f74d8cd9a51",
+      "name": "D2",
+      "value": [
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "862a8fff-28fc-4d8c-9934-d540c9802319",
+      "name": "D3",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3e4ee525-91e6-4b19-b01d-a79b929c5a76",
+      "name": "env_signal",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "d6d50084-c0c6-44e7-8d2b-a2fe29cea4a7",
+      "name": "signal_decay",
+      "value": [
+        [
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "ddf57992-151a-4ef3-adae-9b220c6079dd",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 30,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cb364121-3eae-4651-8056-2511a503a8b2",
+      "variable_name": "A1",
+      "ontology_term": "Agent1LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b7d606a1-6116-4d61-a1c9-07ab7b220297",
+      "variable_name": "B1",
+      "ontology_term": "Agent1TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "0cafad4f-bfd4-486e-b916-5b849290d6b2",
+      "variable_name": "C1",
+      "ontology_term": "Agent1PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7801e610-8ea5-4eea-97ad-7adbceb21f66",
+      "variable_name": "D1",
+      "ontology_term": "Agent1PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3ce131ab-c641-491f-965b-38cc0219bce4",
+      "variable_name": "s1",
+      "ontology_term": "Agent1PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "45fa99c9-8a4b-444a-875d-991ee549e44c",
+      "variable_name": "o1",
+      "ontology_term": "Agent1Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1a36ede8-b971-4fd1-a76c-a23cc9f711be",
+      "variable_name": "pi1",
+      "ontology_term": "Agent1PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a553f045-fd33-49c3-8ae2-088be8ad440f",
+      "variable_name": "u1",
+      "ontology_term": "Agent1Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3a0f42f0-98fd-4b7f-afd1-7a56eeb61085",
+      "variable_name": "G1",
+      "ontology_term": "Agent1ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d0968f8a-8196-4adb-bbce-a692dbffe992",
+      "variable_name": "A2",
+      "ontology_term": "Agent2LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3f745795-ff47-4bf6-8248-6124cceaf033",
+      "variable_name": "B2",
+      "ontology_term": "Agent2TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c939053-9765-4e2b-8ff5-14d422168bc2",
+      "variable_name": "C2",
+      "ontology_term": "Agent2PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b0dd585-4e8c-4ce4-ac09-d45ee1f9d304",
+      "variable_name": "D2",
+      "ontology_term": "Agent2PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "31b43ab9-40ce-4a36-8695-150f33341467",
+      "variable_name": "s2",
+      "ontology_term": "Agent2PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "78b2dca4-01fb-4fec-b1d2-b243581d7199",
+      "variable_name": "o2",
+      "ontology_term": "Agent2Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "23fca7a8-87dc-4c89-a81c-9dcc42bd1d33",
+      "variable_name": "pi2",
+      "ontology_term": "Agent2PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "307df721-6ccd-48e8-a978-4898fbee7fc8",
+      "variable_name": "u2",
+      "ontology_term": "Agent2Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f6138124-e00a-4bcb-acab-67397d34b55a",
+      "variable_name": "G2",
+      "ontology_term": "Agent2ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a31ec038-28b2-4f12-8f4c-1528c643c2f9",
+      "variable_name": "A3",
+      "ontology_term": "Agent3LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7dcd12b3-8e8e-4872-bea9-86b284162a5c",
+      "variable_name": "B3",
+      "ontology_term": "Agent3TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "48d9c426-ef56-4da1-b410-abe3af52c5c5",
+      "variable_name": "C3",
+      "ontology_term": "Agent3PreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "76f65da9-a7e1-4313-a3c3-fe129cbab4cd",
+      "variable_name": "D3",
+      "ontology_term": "Agent3PositionPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6fe22d5e-2064-47ca-9f7c-ebee11bb7de2",
+      "variable_name": "s3",
+      "ontology_term": "Agent3PositionState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "386e7ffe-8a4d-4529-8851-9ab3472298ec",
+      "variable_name": "o3",
+      "ontology_term": "Agent3Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "043f518d-5b95-4e36-ba72-8f85c35476d1",
+      "variable_name": "pi3",
+      "ontology_term": "Agent3PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0f0c65f-74a7-4064-ba88-d3873560869b",
+      "variable_name": "u3",
+      "ontology_term": "Agent3Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e5a81856-9ace-44fb-b375-bd8513bfa3af",
+      "variable_name": "G3",
+      "ontology_term": "Agent3ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "96816bb1-1064-48a6-9135-68d2c88fff17",
+      "variable_name": "env_signal",
+      "ontology_term": "EnvironmentalSignal",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b7f401b5-6678-497e-8728-e59b03b9ee97",
+      "variable_name": "signal_decay",
+      "ontology_term": "SignalDecayRate",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e635913f-2c17-454c-a762-1472397b4cb7",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-03T08:22:02.564759",
+  "modified_at": "2026-03-03T08:22:02.564760",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP_MultiAgent",
+    "footer": "Stigmergic Swarm Active Inference v1 - GNN Representation.\n3 agents coordinating via environmental traces only.\nNo direct communication \u2014 emergent coordination from shared signals.\nModels ant colony foraging and decentralized robotic coordination.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP_MultiAgent",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Stigmergic Swarm Active Inference",
+    "ModelAnnotation": "Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination",
+    "StateSpaceBlock": "# Agent 1\n\nA1[4,9,type=float]         # Agent 1 likelihood: P(obs | position on 3x3 grid)\nB1[9,9,4,type=float]       # Agent 1 transitions: (9 positions \u00d7 4 actions: N/S/E/W)\nC1[4,type=float]           # Agent 1 preferences over observations\nD1[9,type=float]           # Agent 1 position prior\ns1[9,1,type=float]         # Agent 1 position belief (9 grid cells)\no1[4,1,type=int]           # Agent 1 observation: (empty, signal_low, signal_high, goal)\npi1[4,type=float]          # Agent 1 policy\nu1[1,type=int]             # Agent 1 action\nG1[pi1,type=float]         # Agent 1 EFE\n\n# Agent 2\n\nA2[4,9,type=float]         # Agent 2 likelihood\nB2[9,9,4,type=float]       # Agent 2 transitions\nC2[4,type=float]           # Agent 2 preferences\nD2[9,type=float]           # Agent 2 position prior\ns2[9,1,type=float]         # Agent 2 position belief\no2[4,1,type=int]           # Agent 2 observation\npi2[4,type=float]          # Agent 2 policy\nu2[1,type=int]             # Agent 2 action\nG2[pi2,type=float]         # Agent 2 EFE\n\n# Agent 3\n\nA3[4,9,type=float]         # Agent 3 likelihood\nB3[9,9,4,type=float]       # Agent 3 transitions\nC3[4,type=float]           # Agent 3 preferences\nD3[9,type=float]           # Agent 3 position prior\ns3[9,1,type=float]         # Agent 3 position belief\no3[4,1,type=int]           # Agent 3 observation\npi3[4,type=float]          # Agent 3 policy\nu3[1,type=int]             # Agent 3 action\nG3[pi3,type=float]         # Agent 3 EFE\n\n# Shared environment (stigmergic signals)\n\nenv_signal[9,1,type=float]     # Signal intensity at each grid cell (0.0 to 1.0)\nsignal_decay[1,type=float]     # Signal decay rate per timestep\n\n# Time\n\nt[1,type=int]                  # Discrete time step",
+    "Connections": "# Agent 1\n\nD1>s1\ns1-A1\nA1-o1\nC1>G1\nG1>pi1\npi1>u1\nB1>u1\n\n# Agent 2\n\nD2>s2\ns2-A2\nA2-o2\nC2>G2\nG2>pi2\npi2>u2\nB2>u2\n\n# Agent 3\n\nD3>s3\ns3-A3\nA3-o3\nC3>G3\nG3>pi3\npi3>u3\nB3>u3\n\n# Stigmergic coupling via environment\n\nu1>env_signal\nu2>env_signal\nu3>env_signal\nenv_signal-A1\nenv_signal-A2\nenv_signal-A3\nsignal_decay>env_signal",
+    "InitialParameterization": "# All agents have identical generative models (homogeneous swarm)\n\n# Likelihood: observation depends on position and environmental signal\n\n# At each cell, agent observes: empty (no signal), signal_low, signal_high, or goal\n\nA1={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\nA2={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\nA3={\n  (0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1),\n  (0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1),\n  (0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1),\n  (0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7)\n}\n\n# Shared preferences: follow signals, seek goal\n\nC1={(-0.5, 0.5, 1.5, 3.0)}\nC2={(-0.5, 0.5, 1.5, 3.0)}\nC3={(-0.5, 0.5, 1.5, 3.0)}\n\n# Starting positions: agents start at different corners\n\nD1={(1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\nD2={(0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\nD3={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0)}\n\n# Initial environment: no signals\n\nenv_signal={(0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)}\n\n# Signal decay: 10% per timestep\n\nsignal_decay={(0.9)}",
+    "Equations": "# Each agent independently minimizes VFE and selects actions via EFE\n\n# Stigmergic coupling mechanism\n\n# env_signal[cell] += deposit_rate when agent visits cell\n\n# env_signal[cell] *= signal_decay each timestep\n\n# Agent likelihood A is modulated by env_signal\n\n# P(signal_obs | cell) increases with env_signal[cell]\n\n# No direct communication \u2014 coordination emerges from shared environment",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=30",
+    "ActInfOntologyAnnotation": "A1=Agent1LikelihoodMatrix\nB1=Agent1TransitionMatrix\nC1=Agent1PreferenceVector\nD1=Agent1PositionPrior\ns1=Agent1PositionState\no1=Agent1Observation\npi1=Agent1PolicyVector\nu1=Agent1Action\nG1=Agent1ExpectedFreeEnergy\nA2=Agent2LikelihoodMatrix\nB2=Agent2TransitionMatrix\nC2=Agent2PreferenceVector\nD2=Agent2PositionPrior\ns2=Agent2PositionState\no2=Agent2Observation\npi2=Agent2PolicyVector\nu2=Agent2Action\nG2=Agent2ExpectedFreeEnergy\nA3=Agent3LikelihoodMatrix\nB3=Agent3TransitionMatrix\nC3=Agent3PreferenceVector\nD3=Agent3PositionPrior\ns3=Agent3PositionState\no3=Agent3Observation\npi3=Agent3PolicyVector\nu3=Agent3Action\nG3=Agent3ExpectedFreeEnergy\nenv_signal=EnvironmentalSignal\nsignal_decay=SignalDecayRate\nt=Time",
+    "ModelParameters": "num_agents: 3\ngrid_size: 9\nnum_obs: 4\nnum_actions: 4\nsignal_decay_rate: 0.9\nsignal_deposit_rate: 0.3\nnum_timesteps: 30",
+    "Footer": "Stigmergic Swarm Active Inference v1 - GNN Representation.\n3 agents coordinating via environmental traces only.\nNo direct communication \u2014 emergent coordination from shared signals.\nModels ant colony foraging and decentralized robotic coordination.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

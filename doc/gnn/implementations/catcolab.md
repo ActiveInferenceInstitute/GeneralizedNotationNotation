@@ -15,33 +15,33 @@ GNN and CatColab are **complementary**: GNN specifies the numerical Active Infer
 
 CatColab integration operates across three pipeline stages:
 
-| Stage | GNN Module | CatColab Role |
-|-------|-----------|---------------|
-| Export (Step 7) | `src/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) |
-| Render (Step 11) | `src/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) |
-| Execute (Step 12) | `src/execute/discopy/` | Categorical evaluation of circuit structure |
+ | Stage | GNN Module | CatColab Role |
+|---|---|---|
+ | Export (Step 7) | `src/export/` | GNN JSON → CatColab JSON (Schema/Stock-and-Flow/Olog) |
+ | Render (Step 11) | `src/render/discopy/` | DisCoPy string diagrams (shared categorical foundation) |
+ | Execute (Step 12) | `src/execute/discopy/` | Categorical evaluation of circuit structure |
 
 ## Conceptual Bridges
 
 ### GNN Matrices → CatColab Logics
 
-| GNN Matrix | CatColab Logic | Categorical Role |
-|------------|----------------|-----------------|
-| **A** (Likelihood) | Schema | Profunctor from states to observations |
-| **B** (Transition) | Stock-and-Flow | Controlled dynamical system |
-| **C** (Preference) | Regulatory Network | Signed evaluation functor |
-| **D** (Prior) | Olog | Probabilistic initialization |
-| **E** (Habit) | Petri Net | Stochastic policy selection |
+ | GNN Matrix | CatColab Logic | Categorical Role |
+|---|---|---|
+ | **A** (Likelihood) | Schema | Profunctor from states to observations |
+ | **B** (Transition) | Stock-and-Flow | Controlled dynamical system |
+ | **C** (Preference) | Regulatory Network | Signed evaluation functor |
+ | **D** (Prior) | Olog | Probabilistic initialization |
+ | **E** (Habit) | Petri Net | Stochastic policy selection |
 
 ### GNN Sections → CatColab Constructs
 
-| GNN Section | CatColab Equivalent |
-|-------------|---------------------|
-| `StateSpaceBlock` | Objects and types |
-| `Connections` | Morphisms and relations |
-| `Equations` | 2-cells (coherence conditions) |
-| `Parameters` | Instance data |
-| `Annotations` | Olog propositions |
+ | GNN Section | CatColab Equivalent |
+|---|---|
+ | `StateSpaceBlock` | Objects and types |
+ | `Connections` | Morphisms and relations |
+ | `Equations` | 2-cells (coherence conditions) |
+ | `Parameters` | Instance data |
+ | `Annotations` | Olog propositions |
 
 ## Installation
 
@@ -72,13 +72,13 @@ python src/main.py --only-steps "3,7" --verbose
 
 **Logic selection guide:**
 
-| GNN Model Type | Choose CatColab Logic |
-|----------------|-----------------------|
-| Perception-only POMDP | Schema |
-| Full POMDP with dynamics | Stock-and-Flow Diagram |
-| Multi-agent system | Regulatory Network |
-| Discrete action selection | Petri Net |
-| Ontology-annotated | Olog |
+ | GNN Model Type | Choose CatColab Logic |
+|---|---|
+ | Perception-only POMDP | Schema |
+ | Full POMDP with dynamics | Stock-and-Flow Diagram |
+ | Multi-agent system | Regulatory Network |
+ | Discrete action selection | Petri Net |
+ | Ontology-annotated | Olog |
 
 ## Import CatColab → GNN
 
@@ -132,11 +132,11 @@ CatColab/DisCoPy provides structural output only and is **excluded** from numeri
 
 ## Source Code Connections
 
-| Stage | Module | Key Function |
-|-------|--------|-------------|
-| Export | [discopy_renderer.py](#placeholder) | `render_gnn_to_discopy()` |
-| Execute | [discopy_executor.py](#placeholder) | `execute_discopy_script()` |
-| Analysis | [analysis/discopy/analyzer.py](#placeholder) | `generate_analysis_from_logs()` |
+ | Stage | Module | Key Function |
+|---|---|---|
+ | Export | [discopy_renderer.py](../../../src/render/discopy/discopy_renderer.py) | `render_gnn_to_discopy()` |
+ | Execute | [discopy_executor.py](../../../src/execute/discopy/discopy_executor.py) | `execute_discopy_script()` |
+ | Analysis | [analyzer.py](../../../src/analysis/discopy/analyzer.py) | `generate_analysis_from_logs()` |
 
 ## Deep Dive
 
@@ -144,8 +144,16 @@ Full categorical bridge documentation: **[doc/catcolab/catcolab_gnn.md](../../..
 
 ## Improvement Opportunities
 
-| ID | Area | Description | Impact |
-|----|------|-------------|--------|
-| C-1 | Export | CatColab JSON schema not yet formally validated | Medium |
-| C-2 | Import | CatColab→GNN importer stubs partial logic types | Medium |
-| C-3 | Analysis | DisCoPy analyzer only outputs 2 structural diagrams | Low |
+ | ID | Area | Description | Impact |
+|---|---|---|---|
+ | C-1 | Export | CatColab JSON schema not yet formally validated | Medium |
+ | C-2 | Import | CatColab→GNN importer stubs partial logic types | Medium |
+ | C-3 | Analysis | DisCoPy analyzer only outputs 2 structural diagrams | Low |
+
+## See Also / Next Steps
+
+- **[Cross-Framework Methodology](../integration/cross_framework_methodology.md)**: Details on the correlation methodology and benchmarking metrics.
+- **[Architecture Reference](../reference/architecture_reference.md)**:
+  Deep dive into the pipeline orchestrator and module integration.
+- **[GNN Implementations Index](README.md)**: Return to the master framework implementer manifest.
+- **[Back to GNN START_HERE](../../START_HERE.md)**

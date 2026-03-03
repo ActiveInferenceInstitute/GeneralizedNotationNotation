@@ -1,0 +1,162 @@
+{
+  "framework": "jax",
+  "model_name": "hmm_baseline",
+  "script_name": "Hidden Markov Model Baseline_jax.py",
+  "script_path": "output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.097288,
+  "timestamp": "2026-03-03T08:22:56.088513",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [
+      1.7032,
+      1.644
+    ],
+    "states": [],
+    "observations": [
+      4,
+      3,
+      5,
+      5,
+      3,
+      3,
+      4,
+      5,
+      5,
+      1,
+      5,
+      1,
+      5,
+      5,
+      1
+    ],
+    "actions": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (6, 4)\n   B matrix shape: (4, 4, 4)\n   C vector shape: (6,)\n   D vector shape: (4,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 4\n- Number of observations: 6\n- Number of actions: 4\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.25 0.25 0.25 0.25]\n   Updated belief: [0.7 0.1 0.1 0.1]\n   Selected action: 0\n   Expected free energy: 1.7032\n   EFE for all actions: [1.7031758 1.7031758 1.7031758 1.7031758]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [0 0 0 0 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [2.9041411e-03 9.9612027e-01 2.8360753e-06 9.7277371e-04]\n   Average EFE: 1.6440\n\n\ud83d\udcbe Saved simulation results to: jax_outputs/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
+    "raw_error": "",
+    "beliefs": [
+      [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.4000000059604645,
+        0.4000000059604645
+      ],
+      [
+        0.029411766678094864,
+        0.029411766678094864,
+        0.11764706671237946,
+        0.8235294222831726
+      ],
+      [
+        0.10000000149011612,
+        0.10000000149011612,
+        0.10000000149011612,
+        0.699999988079071
+      ],
+      [
+        0.25,
+        0.25,
+        0.0625,
+        0.4374999701976776
+      ],
+      [
+        0.06896552443504333,
+        0.06896552443504333,
+        0.017241381108760834,
+        0.8448275327682495
+      ],
+      [
+        0.011363638564944267,
+        0.011363638564944267,
+        0.002840909641236067,
+        0.9744318127632141
+      ],
+      [
+        0.002890173811465502,
+        0.002890173811465502,
+        0.002890173811465502,
+        0.9913294911384583
+      ],
+      [
+        0.011363636702299118,
+        0.011363636702299118,
+        0.0028409091755747795,
+        0.9744316935539246
+      ],
+      [
+        0.042553193867206573,
+        0.042553193867206573,
+        0.002659574616700411,
+        0.9122340083122253
+      ],
+      [
+        0.033898305147886276,
+        0.23728811740875244,
+        0.0021186440717428923,
+        0.7266948223114014
+      ],
+      [
+        0.07476635277271271,
+        0.5233644843101501,
+        0.001168224262073636,
+        0.4007008969783783
+      ],
+      [
+        0.018058689311146736,
+        0.8848757743835449,
+        0.00028216702048666775,
+        0.09678328782320023
+      ],
+      [
+        0.019476568326354027,
+        0.9543518424034119,
+        7.608034502482042e-05,
+        0.0260955560952425
+      ],
+      [
+        0.019866522401571274,
+        0.9734596014022827,
+        1.9400900782784447e-05,
+        0.006654508411884308
+      ],
+      [
+        0.00290414085611701,
+        0.9961202144622803,
+        2.8360750548017677e-06,
+        0.0009727736469358206
+      ]
+    ],
+    "num_timesteps": 15
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 1325,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/hmm_baseline/jax"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/hmm_baseline/jax/simulation_data/jax_outputs_simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

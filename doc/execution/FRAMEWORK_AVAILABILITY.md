@@ -19,27 +19,32 @@ for fw, info in status.items():
 ## Framework Availability at Runtime
 
 ### PyMDP
+
 - **Python module**: `pymdp`
 - **Status file**: `output/12_execute_output/framework_status.json`
 - **Check command**: `python -c "import pymdp; print(pymdp.__version__)"`
 - **Install**: `uv sync --extra active-inference` (or `uv pip install inferactively-pymdp`)
 
 ### JAX + Flax
+
 - **Python modules**: `jax`, `flax`
 - **Check command**: `python -c "import jax; import flax; print(f'JAX: {jax.__version__}, Flax: {flax.__version__}')"`
 - **Install**: `uv sync --extra active-inference` (or `uv pip install jax flax`)
 
 ### RxInfer.jl
+
 - **Julia package**: `RxInfer`
 - **Check command**: `julia -e "using RxInfer; println(\"RxInfer available\")"`
 - **Install**: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
 
 ### ActiveInference.jl
+
 - **Julia package**: `ActiveInference`
 - **Check command**: `julia -e "using ActiveInference; println(\"ActiveInference available\")"`
 - **Install**: `julia -e 'import Pkg; Pkg.add("ActiveInference")'`
 
 ### DisCoPy
+
 - **Python module**: `discopy`
 - **Check command**: `python -c "import discopy; print(discopy.__version__)"`
 - **Install**: Usually pre-installed as core dependency
@@ -47,6 +52,7 @@ for fw, info in status.items():
 ## Framework Status During Execution
 
 ### Before Execution (Step 12 Start)
+
 The execute module automatically detects available frameworks and logs them:
 
 ```
@@ -59,30 +65,34 @@ The execute module automatically detects available frameworks and logs them:
 ```
 
 ### During Execution
+
 For each framework:
 
 **Available**:
+
 ```
 2025-11-19 11:07:13 [execute] INFO - ✅ Successfully executed model_name_discopy.py
 ```
 
 **Missing**:
+
 ```
 2025-11-19 11:07:13 [execute] WARNING - ❌ model_name_pymdp.py failed
 2025-11-19 11:07:13 [execute] WARNING - Error: PyMDP not available - install with: uv sync --extra active-inference
 ```
 
 ### After Execution
+
 The execution report shows framework statistics:
 
 ```json
 {
   "frameworks": {
-    "total": 5,
+    "total": 7,
     "available": 2,
     "executed": 2,
     "succeeded": 2,
-    "failed": 3
+    "failed": 5
   },
   "framework_details": {
     "pymdp": {
@@ -136,6 +146,7 @@ ActiveInference.jl (Julia)
 ## Determining What You Need
 
 ### Minimum for Basic Pipeline
+
 ```bash
 # Just core dependencies
 uv sync
@@ -143,17 +154,19 @@ uv sync
 ```
 
 ### Minimum for Most Use Cases
+
 ```bash
 uv sync
 uv pip install inferactively-pymdp flax
-# Result: PyMDP, JAX, DisCoPy work (3/5 frameworks)
+# Result: PyMDP, JAX, DisCoPy work (3/7 frameworks)
 ```
 
 ### For Complete Coverage
+
 ```bash
 uv sync --extra active-inference --extra visualization
 julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
-# Result: All 5 frameworks work
+# Result: All 7 frameworks work
 ```
 
 ## Troubleshooting
@@ -163,6 +176,7 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 **Problem**: Framework shows as "not available" but you installed it
 
 **Solutions**:
+
 1. Check installation: `uv pip list | grep pymdp`
 2. Verify Python path: `which python`
 3. Try direct import: `python -c "import pymdp"`
@@ -173,6 +187,7 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 **Problem**: Julia shows available but packages not found
 
 **Solutions**:
+
 1. Check Julia version: `julia --version`
 2. Verify packages: `julia -e "import Pkg; Pkg.status()"`
 3. Add missing: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
@@ -183,13 +198,17 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 **Problem**: Some frameworks work, others don't
 
 **Solutions**:
+
 1. Verify environments separately:
+
    ```bash
    python -c "import pymdp; print('✅ PyMDP')" || echo "❌ PyMDP"
    julia -e "using RxInfer; println(\"✅ RxInfer\")" || echo "❌ RxInfer"
    ```
+
 2. Check PATH: `echo $PATH` (should include both python and julia)
 3. Use full paths if needed:
+
    ```bash
    /usr/bin/python3 -c "import pymdp"
    /usr/local/bin/julia -e "using RxInfer"
@@ -198,11 +217,13 @@ julia -e 'import Pkg; Pkg.add(["RxInfer", "ActiveInference"])'
 ## Viewing Framework Status
 
 ### In Real-time During Execution
+
 ```bash
 python src/12_execute.py --verbose --target-dir input/gnn_files --output-dir output
 ```
 
 ### After Execution
+
 ```bash
 # View summary
 cat output/12_execute_output/execution_results.json | jq .framework_details
@@ -212,6 +233,7 @@ cat output/12_execute_output/framework_status.json | jq .
 ```
 
 ### Via Python API
+
 ```python
 from execute import get_execution_health_status
 
@@ -243,7 +265,7 @@ python src/12_execute.py --frameworks "discopy,activeinference_jl" ...
 
 # Use preset combinations
 python src/12_execute.py --frameworks "lite" ...  # Fast: pymdp, jax, discopy
-python src/12_execute.py --frameworks "all" ...   # All 5 frameworks
+python src/12_execute.py --frameworks "all" ...   # All 7 frameworks
 ```
 
 ## Next Steps
@@ -256,4 +278,3 @@ python src/12_execute.py --frameworks "all" ...   # All 5 frameworks
 ---
 
 **Compatible with**: Pipeline v2.1.0+
-

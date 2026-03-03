@@ -8,7 +8,7 @@ The `src/__init__.py` file defines the GNN pipeline core package. It provides pa
 
 | Export | Type | Description |
 |--------|------|-------------|
-| `__version__` | `str` | Package version (`1.2.0`) |
+| `__version__` | `str` | Package version (`1.3.0`) |
 | `FEATURES` | `dict` | Feature flags (`pipeline_orchestration`, `mcp_integration`) |
 | `get_module_info()` | `function` | Returns package metadata and discovered modules |
 | `sapf` | `module` | Structured Audio Processing Framework (lazy-loaded) |

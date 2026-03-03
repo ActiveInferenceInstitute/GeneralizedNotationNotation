@@ -11,7 +11,7 @@ GNN (Generalized Notation Notation) is a text-based specification language for A
 
 - Parsing or authoring `.md` GNN model files
 - Running the full pipeline or individual steps
-- Generating simulation code (PyMDP, RxInfer.jl, JAX, DisCoPy, ActiveInference.jl)
+- Generating simulation code (PyMDP, RxInfer.jl, JAX, DisCoPy, ActiveInference.jl, PyTorch, NumPyro)
 - Creating visualizations, exports, or reports from GNN models
 - Working with Active Inference ontology annotations
 

@@ -11,6 +11,8 @@ FEATURES = {
     "post_simulation_analysis": True,
     "belief_visualization": True,
     "cross_framework_metrics": True,
+    "pytorch_analysis": True,
+    "numpyro_analysis": True,
     "mcp_integration": True
 }
 
@@ -69,6 +71,17 @@ from .post_simulation import (
     plot_belief_evolution,
     animate_belief_evolution
 )
+
+# Optional framework-specific analyzers (graceful import)
+try:
+    from .pytorch.analyzer import generate_analysis_from_logs as pytorch_generate_analysis
+except ImportError:
+    pytorch_generate_analysis = None
+
+try:
+    from .numpyro.analyzer import generate_analysis_from_logs as numpyro_generate_analysis
+except ImportError:
+    numpyro_generate_analysis = None
 
 
 # Note: process_analysis is imported from processor.py at the top of this file.

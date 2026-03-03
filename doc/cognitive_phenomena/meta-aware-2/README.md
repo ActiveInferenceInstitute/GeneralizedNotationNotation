@@ -475,7 +475,7 @@ If you use this implementation in your research, please cite:
   author={Sandved-Smith, Lars and Hesp, Casper and Mattout, J{\'e}r{\'e}mie and Friston, Karl and Lutz, Antoine and Ramstead, Maxwell JD},
   journal={Journal of Mathematical Psychology},
   volume={105},
-  pages={102607},
+  pages={1.3.07},
   year={2021},
   publisher={Elsevier}
 }

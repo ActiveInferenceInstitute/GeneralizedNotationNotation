@@ -2,7 +2,7 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: February 24, 2026
+**Last Updated**: March 3, 2026
 
 ## Design Principles
 
@@ -57,7 +57,7 @@ def register_tools(server: Any) -> None:
         """Return <module> module version and capabilities."""
         return {
             "module": "<module>",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "capabilities": ["feature_a", "feature_b"],
         }
 
@@ -119,7 +119,7 @@ PYTHONPATH=src python src/mcp/validate_tools.py
 | Test Class | What It Checks |
 |------------|---------------|
 | `TestMCPModuleDiscovery` | 22 modules × 2: module registered + `register_tools` is callable |
-| `TestMCPDomainTools` | 76 tools × 2: tool callable + description not empty |
+| `TestMCPDomainTools` | 131 tools × 2: tool callable + description not empty |
 | `TestMCPToolRealness` | No generic stubs (`list_functions`, `call_function`) |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |

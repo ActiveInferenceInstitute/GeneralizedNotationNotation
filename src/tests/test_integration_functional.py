@@ -52,7 +52,7 @@ class TestIntegrationFunctional:
             "- name: alpha\n"
             "- name: beta\n\n"
             "## Connections\n"
-            "alpha -> beta\n"
+            "alpha > beta\n"
         )
         return target
 
@@ -67,7 +67,7 @@ class TestIntegrationFunctional:
             "- name: CompA\n"
             "- name: CompB\n\n"
             "## Connections\n"
-            "CompA -> CompB\n"
+            "CompA > CompB\n"
             "Uses CompC from model_b\n"
         )
         (target / "model_b.md").write_text(
@@ -76,7 +76,7 @@ class TestIntegrationFunctional:
             "- name: CompC\n"
             "- name: CompD\n\n"
             "## Connections\n"
-            "CompC -> CompD\n"
+            "CompC > CompD\n"
             "Uses CompA from model_a\n"
         )
         return target
@@ -207,7 +207,7 @@ class TestIntegrationFunctional:
     @pytest.mark.unit
     @pytest.mark.skipif(not _has_networkx(), reason="networkx not installed")
     def test_cross_references_between_files(self, multi_gnn_dir, output_dir):
-        """Components referenced across files should create graph edges."""
+        """Intra-file connections from ## Connections should produce graph edges."""
         process_integration(multi_gnn_dir, output_dir, verbose=True)
 
         results_file = output_dir / "integration_results" / "integration_results.json"
@@ -215,10 +215,10 @@ class TestIntegrationFunctional:
             data = json.load(f)
 
         stats = data.get("system_graph_stats", {})
-        # model_a mentions CompC (defined in model_b), model_b mentions CompA (in model_a)
+        # model_a has CompA -> CompB, model_b has CompC -> CompD (2 edges from ## Connections)
         if stats.get("nodes", 0) > 0:
-            assert stats.get("edges", 0) > 0, (
-                "Cross-file references should produce edges"
+            assert stats.get("edges", 0) >= 2, (
+                "## Connections edges should be present in graph"
             )
 
     # -- Undefined reference detection --

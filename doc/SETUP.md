@@ -371,7 +371,7 @@ python src/1_setup.py --install_optional --optional_groups "pymdp,jax"
 python src/1_setup.py --install_optional --optional_groups "all"
 ```
 
-**Included**: All 5 frameworks
+**Included**: All 7 frameworks
 
 **Best for**: Research, comprehensive benchmarking, production use
 
@@ -693,8 +693,8 @@ To work with multiple GNN versions:
 
 ```bash
 # Use virtual environments for version isolation
-python3 -m venv gnn-v1.2.0
-source gnn-v1.2.0/bin/activate
+python3 -m venv gnn-v1.3.0
+source gnn-v1.3.0/bin/activate
 cd src && python3 main.py --only-steps 1
 
 # Create another environment for development
@@ -739,4 +739,4 @@ If you encounter issues during setup:
 ---
 
 **Setup Guide Version**: 2.0  
-**Compatible GNN Versions**: v1.2.0+  
+**Compatible GNN Versions**: v1.3.0+  

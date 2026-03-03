@@ -1,0 +1,611 @@
+annotation: 'A three-level hierarchical Active Inference agent with distinct temporal
+  scales:
+
+
+  - Level 0 (fast, 100ms): Sensorimotor control — immediate reflexive responses
+
+  - Level 1 (medium, 1s): Tactical planning — goal-directed behavior sequences
+
+  - Level 2 (slow, 10s): Strategic planning — long-term objective management
+
+  - Top-down flow: Strategy sets tactical goals, tactics set sensorimotor preferences
+
+  - Bottom-up flow: Sensorimotor observations inform tactical beliefs, tactical outcomes
+  inform strategy
+
+  - Each level maintains its own generative model with A, B, C, D matrices
+
+  - Timescale separation encoded via update ratios (Level 2 updates every 10 Level
+  0 steps)
+
+  - Demonstrates deep temporal models from Friston et al. hierarchical Active Inference'
+connections:
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A0
+  target_variables:
+  - o0
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A1
+  target_variables:
+  - o1
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A2
+  target_variables:
+  - o2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B0
+  target_variables:
+  - u0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B1
+  target_variables:
+  - u1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B2
+  target_variables:
+  - u2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C0
+  target_variables:
+  - G0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C1
+  target_variables:
+  - G1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C2
+  target_variables:
+  - G2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D0
+  target_variables:
+  - s0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D1
+  target_variables:
+  - s1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D2
+  target_variables:
+  - s2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - G0
+  target_variables:
+  - pi0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - G1
+  target_variables:
+  - pi1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - G2
+  target_variables:
+  - pi2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - pi0
+  target_variables:
+  - u0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - pi1
+  target_variables:
+  - u1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - pi2
+  target_variables:
+  - u2
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s0
+  target_variables:
+  - A0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s0
+  target_variables:
+  - o1
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s1
+  target_variables:
+  - A1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s1
+  target_variables:
+  - C0
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s1
+  target_variables:
+  - o2
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s2
+  target_variables:
+  - A2
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s2
+  target_variables:
+  - C1
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s2
+  target_variables:
+  - D1
+  weight: null
+created_at: '2026-03-03T08:22:02.126327'
+equations: []
+model_name: Three-Level Temporal Hierarchy Agent
+modified_at: '2026-03-03T08:22:02.126331'
+ontology_mappings:
+- description: null
+  ontology_term: FastLikelihoodMatrix
+  variable_name: A0
+- description: null
+  ontology_term: TacticalLikelihoodMatrix
+  variable_name: A1
+- description: null
+  ontology_term: StrategicLikelihoodMatrix
+  variable_name: A2
+- description: null
+  ontology_term: FastTransitionMatrix
+  variable_name: B0
+- description: null
+  ontology_term: TacticalTransitionMatrix
+  variable_name: B1
+- description: null
+  ontology_term: StrategicTransitionMatrix
+  variable_name: B2
+- description: null
+  ontology_term: FastPreferenceVector
+  variable_name: C0
+- description: null
+  ontology_term: TacticalPreferenceVector
+  variable_name: C1
+- description: null
+  ontology_term: StrategicPreferenceVector
+  variable_name: C2
+- description: null
+  ontology_term: FastPrior
+  variable_name: D0
+- description: null
+  ontology_term: TacticalPrior
+  variable_name: D1
+- description: null
+  ontology_term: StrategicPrior
+  variable_name: D2
+- description: null
+  ontology_term: FastExpectedFreeEnergy
+  variable_name: G0
+- description: null
+  ontology_term: TacticalExpectedFreeEnergy
+  variable_name: G1
+- description: null
+  ontology_term: StrategicExpectedFreeEnergy
+  variable_name: G2
+- description: null
+  ontology_term: FastObservation
+  variable_name: o0
+- description: null
+  ontology_term: TacticalObservation
+  variable_name: o1
+- description: null
+  ontology_term: StrategicObservation
+  variable_name: o2
+- description: null
+  ontology_term: FastPolicyVector
+  variable_name: pi0
+- description: null
+  ontology_term: TacticalPolicyVector
+  variable_name: pi1
+- description: null
+  ontology_term: StrategicPolicyVector
+  variable_name: pi2
+- description: null
+  ontology_term: FastHiddenState
+  variable_name: s0
+- description: null
+  ontology_term: TacticalHiddenState
+  variable_name: s1
+- description: null
+  ontology_term: StrategicHiddenState
+  variable_name: s2
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: FastTimeConstant
+  variable_name: tau0
+- description: null
+  ontology_term: TacticalTimeConstant
+  variable_name: tau1
+- description: null
+  ontology_term: StrategicTimeConstant
+  variable_name: tau2
+- description: null
+  ontology_term: FastAction
+  variable_name: u0
+- description: null
+  ontology_term: TacticalAction
+  variable_name: u1
+- description: null
+  ontology_term: StrategicAction
+  variable_name: u2
+parameters:
+- description: null
+  name: A0
+  type_hint: null
+  value:
+  - - 0.85
+    - 0.05
+    - 0.05
+    - 0.05
+  - - 0.05
+    - 0.85
+    - 0.05
+    - 0.05
+  - - 0.05
+    - 0.05
+    - 0.85
+    - 0.05
+- description: null
+  name: A1
+  type_hint: null
+  value:
+  - - 0.8
+    - 0.1
+    - 0.1
+  - - 0.1
+    - 0.8
+    - 0.1
+  - - 0.1
+    - 0.1
+    - 0.8
+  - - 0.1
+    - 0.1
+    - 0.1
+- description: null
+  name: A2
+  type_hint: null
+  value:
+  - - 0.9
+    - 0.1
+  - - 0.1
+    - 0.9
+  - - 0.1
+    - 0.1
+- description: null
+  name: C0
+  type_hint: null
+  value:
+  - - 0.0
+    - -1.0
+    - 1.0
+- description: null
+  name: C1
+  type_hint: null
+  value:
+  - - -0.5
+    - 1.0
+    - 1.5
+    - -1.0
+- description: null
+  name: C2
+  type_hint: null
+  value:
+  - - -1.0
+    - 2.0
+    - 0.5
+- description: null
+  name: D0
+  type_hint: null
+  value:
+  - - 0.25
+    - 0.25
+    - 0.25
+    - 0.25
+- description: null
+  name: D1
+  type_hint: null
+  value:
+  - - 0.33
+    - 0.33
+    - 0.34
+- description: null
+  name: D2
+  type_hint: null
+  value:
+  - - 0.5
+    - 0.5
+- description: null
+  name: tau0
+  type_hint: null
+  value:
+  - - 0.1
+- description: null
+  name: tau1
+  type_hint: null
+  value:
+  - - 1.0
+- description: null
+  name: tau2
+  type_hint: null
+  value:
+  - - 10.0
+time_specification:
+  discretization: null
+  horizon: 100
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: 'Level 0 likelihood: P(fast_obs | fast_state)'
+  dimensions:
+  - 3
+  - 4
+  name: A0
+  type: action
+- data_type: float
+  description: 'Level 1 likelihood: P(tactic_obs | tactic_state)'
+  dimensions:
+  - 4
+  - 3
+  name: A1
+  type: action
+- data_type: float
+  description: 'Level 2 likelihood: P(strategy_obs | strategy_state)'
+  dimensions:
+  - 3
+  - 2
+  name: A2
+  type: action
+- data_type: float
+  description: 'Level 0 transitions: P(fast_state'' | fast_state, fast_action)'
+  dimensions:
+  - 4
+  - 4
+  - 3
+  name: B0
+  type: hidden_state
+- data_type: float
+  description: Level 1 transitions
+  dimensions:
+  - 3
+  - 3
+  - 3
+  name: B1
+  type: hidden_state
+- data_type: float
+  description: Level 2 transitions
+  dimensions:
+  - 2
+  - 2
+  - 2
+  name: B2
+  type: hidden_state
+- data_type: float
+  description: Level 0 preferences (modulated by Level 1)
+  dimensions:
+  - 3
+  name: C0
+  type: hidden_state
+- data_type: float
+  description: Level 1 preferences (modulated by Level 2)
+  dimensions:
+  - 4
+  name: C1
+  type: hidden_state
+- data_type: float
+  description: Level 2 preferences (fixed strategic goals)
+  dimensions:
+  - 3
+  name: C2
+  type: hidden_state
+- data_type: float
+  description: Level 0 prior over initial states
+  dimensions:
+  - 4
+  name: D0
+  type: hidden_state
+- data_type: float
+  description: Level 1 prior (modulated by Level 2 predictions)
+  dimensions:
+  - 3
+  name: D1
+  type: hidden_state
+- data_type: float
+  description: Level 2 prior over strategies
+  dimensions:
+  - 2
+  name: D2
+  type: hidden_state
+- data_type: float
+  description: Level 0 Expected Free Energy
+  dimensions:
+  - 1
+  name: G0
+  type: hidden_state
+- data_type: float
+  description: Level 1 Expected Free Energy
+  dimensions:
+  - 1
+  name: G1
+  type: hidden_state
+- data_type: float
+  description: Level 2 Expected Free Energy
+  dimensions:
+  - 1
+  name: G2
+  type: hidden_state
+- data_type: integer
+  description: Level 0 observation
+  dimensions:
+  - 3
+  - 1
+  name: o0
+  type: observation
+- data_type: float
+  description: Level 1 observation (= summary of Level 0 state trajectory)
+  dimensions:
+  - 4
+  - 1
+  name: o1
+  type: observation
+- data_type: float
+  description: Level 2 observation (= summary of Level 1 outcomes)
+  dimensions:
+  - 3
+  - 1
+  name: o2
+  type: observation
+- data_type: float
+  description: Level 0 policy
+  dimensions:
+  - 3
+  name: pi0
+  type: policy
+- data_type: float
+  description: Level 1 policy
+  dimensions:
+  - 3
+  name: pi1
+  type: policy
+- data_type: float
+  description: Level 2 policy
+  dimensions:
+  - 2
+  name: pi2
+  type: policy
+- data_type: float
+  description: Level 0 hidden state belief
+  dimensions:
+  - 4
+  - 1
+  name: s0
+  type: hidden_state
+- data_type: float
+  description: Level 1 hidden state belief
+  dimensions:
+  - 3
+  - 1
+  name: s1
+  type: hidden_state
+- data_type: float
+  description: Level 2 hidden state belief
+  dimensions:
+  - 2
+  - 1
+  name: s2
+  type: hidden_state
+- data_type: integer
+  description: Global discrete time counter
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+- data_type: float
+  description: Level 0 time constant (0.1s)
+  dimensions:
+  - 1
+  name: tau0
+  type: hidden_state
+- data_type: float
+  description: Level 1 time constant (1.0s)
+  dimensions:
+  - 1
+  name: tau1
+  type: hidden_state
+- data_type: float
+  description: Level 2 time constant (10.0s)
+  dimensions:
+  - 1
+  name: tau2
+  type: hidden_state
+- data_type: integer
+  description: Level 0 action
+  dimensions:
+  - 1
+  name: u0
+  type: action
+- data_type: integer
+  description: Level 1 action
+  dimensions:
+  - 1
+  name: u1
+  type: action
+- data_type: integer
+  description: Level 2 action
+  dimensions:
+  - 1
+  name: u2
+  type: action
+version: '1.0'

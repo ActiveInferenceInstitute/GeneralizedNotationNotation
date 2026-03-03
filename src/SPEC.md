@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.2.0  
-**Last Updated**: 2026-02-23  
+**Version**: 1.3.0  
+**Last Updated**: 2026-03-03  
 **Status**: ✅ Production Ready
 
 ---
@@ -122,6 +122,48 @@ Every module directory MUST contain:
 
 ---
 
+## Testing Matrix Configuration
+
+The pipeline supports **staged, folder-based execution** via a testing matrix defined in `input/config.yaml`. This allows different categories of GNN files to be processed by different subsets of pipeline steps.
+
+> **📋 For the complete 20-column step reference, see [`STEP_INDEX.md`](STEP_INDEX.md).**
+
+### Configuration
+
+```yaml
+# input/config.yaml
+testing_matrix:
+  enabled: true
+
+  # Global steps — toggled independently (not folder-routed)
+  global_steps:
+    0_template: true       # Pipeline template & initialization
+    1_setup: true          # Environment setup & dependency install
+    2_tests: false         # Set to false to skip test execution
+
+  # Default steps for unlisted folders
+  default_steps: [3, 5, 6, 10]
+
+  # Per-folder step routing
+  folders:
+    discrete: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]
+    basics: [3, 5, 6, 10]
+    continuous: [3, 5, 6]
+```
+
+### Behavior
+
+- **Global steps** (0, 1, 2): Run once before folder-specific steps. Each can be toggled to `true`/`false` independently. Disabled steps are `SKIPPED`.
+- **Processing steps** (3–24): When `enabled: true`, `main.py` iterates over subdirectories in `input/gnn_files/` and runs each step only on folders whose config includes that step number.
+- Folders not explicitly listed use `default_steps`.
+- Results are aggregated across all folder executions per step.
+
+### Orchestrator Implementation
+
+The matrix logic lives in `execute_pipeline_step()` in `main.py`. It loads the matrix from `input/config.yaml` via PyYAML, checks `global_steps` for steps 0–2, and dynamically sets `--target-dir` per subfolder for steps 3–24.
+
+---
+
 ## Technical Requirements
 
 ### Python Version
@@ -161,6 +203,8 @@ jsonschema>=4.0
 | ActiveInference.jl | Julia | `render/activeinference_jl/`, `execute/activeinference_jl/` | Active Inference |
 | DisCoPy | Python | `render/discopy/`, `execute/discopy/` | Category theory |
 | JAX | Python | `render/jax/`, `execute/jax/` | GPU acceleration |
+| PyTorch | Python | `render/pytorch/`, `execute/pytorch/` | Deep learning inference |
+| NumPyro | Python | `render/numpyro/`, `execute/numpyro/` | Probabilistic programming |
 
 ---
 

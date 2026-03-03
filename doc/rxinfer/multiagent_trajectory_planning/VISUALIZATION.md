@@ -495,7 +495,7 @@ Saves path uncertainty data to a CSV file.
 ```csv
 agent,step,x_variance,y_variance
 1,1,0.00002,0.00002
-1,2,0.05892,0.06050
+1.3.0.05892,0.06050
 ...
 ```
 

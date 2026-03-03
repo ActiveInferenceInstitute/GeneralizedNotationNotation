@@ -1,16 +1,17 @@
 # GNN Paper: Generalized Notation Notation
 
-**Version**: v1.2.0  
-**Last Updated**: February 24, 2026  
+**Version**: v1.3.0  
+**Last Updated**: March 3, 2026  
 **Status**: ✅ Production Ready  
 **Test Count**: 1,522+ tests Passing  
 
-Generalized Notation Notation for Active
-Inference Models
-Jakub Sm´ekal1[0000−0003−4989−4968] and Daniel Ari
-Friedman1[0000−0001−6232−9096]
+Published on April 5, 2023 at: <https://zenodo.org/records/7803328>
+
+Generalized Notation Notation for Active Inference Models
+Jakub Smekal [0000−0003−4989−4968] and Daniel Ari Friedman [0000−0001−6232−9096]
 Active Inference Institute, USA <https://www.activeinference.institute/>
 <blanket@activeinference.institute>
+
 Abstract. This paper introduces Generalized Notation Notation (GNN),
 a novel approach to generative model representation that facilitates communication, understanding, and application of Active Inference across
 various domains. GNN complements the Active Inference Ontology as a
@@ -23,24 +24,29 @@ gaps among different modeling settings. The goal of this work is to facilitate i
 the advancement of the field.
 Keywords: Active Inference · cognitive models · model representation
 · hierarchical cognitive models · Bayesian statistics · generative models.
-1 Introduction
-1.1 Communicating Active Inference: Challenges and opportunities
+
+## 1 Introduction
+
+### 1.1 Communicating Active Inference: Challenges and opportunities
+
 In recent years, the cognitive sciences have made significant strides towards understanding the complex nature of human cognition and behavior. One promising approach is Active Inference, a unifying theoretical framework that combines
 perception, action, and learning in a coherent manner [1] [2]. Despite the potential value of models within this framework, the widespread adoption of Active
 Inference has been hindered by the lack of a standardized method for effectively
 representing and communicating them. In this paper, we address this challenge
 by introducing a novel approach to cognitive model representation called Generalized Notation Notation (GNN), which aims to facilitate communication and
 understanding of Active Inference models across various domains and settings.
-1.2 Comprehensively described cognitive models are key
-Developing comprehensive, accessible, reproducible, interoperable cognitive models is crucial for the advancement of the Active Inference field. Without a stan-
-2 J. Sm´ekal and D. Friedman
-dardized language for describing cognitive models, researchers experience friction when collaborating, sharing, and building upon existing work. In Active
+
+### 1.2 Comprehensively described cognitive models are key
+
+Developing comprehensive, accessible, reproducible, interoperable cognitive models is crucial for the advancement of the Active Inference field. Without a standardized language for describing cognitive models, researchers experience friction when collaborating, sharing, and building upon existing work. In Active
 Inference research, models are often conveyed through assemblages of natural
 language, pseudocode, programming languages, analytical formulas, and pictorial representations. In this paper, we present GNN as a flexible and expressive
 language tailored for expressing Active Inference models, and encompassing various relevant aspects of languages, including ontology, morphology, grammar,
 and pragmatics. By leveraging GNN as an Active Inferlingua (or Interlingua, Infralingua, or Supralingua), we aim to bridge and respect the gaps among different
 modeling approaches in order to facilitate interdisciplinary research.
-1.3 Goals and structure of the paper
+
+### 1.3 Goals and structure of the paper
+
 In this paper, first we present the current specification of the GNN language
 and method (Section 2). To provide an example of GNN in action, we provide the GNN representation of a recent step-by-step Active Inference tutorial
 [3] [4] (Section 3). We point towards the practical utility of GNN by exploring
@@ -52,19 +58,24 @@ By situating GNN within the broader context of hierarchical cognitive models
 and Active Inference, we hope to inspire further exploration and development of
 this promising approach to understanding and communicating complex cognitive
 processes.
-Generalized Notation Notation 3
-2 Active Inference Linguistics: Ontology, Morphology,
-and Grammar
-2.1 Generalized Notation Notation (GNN) overview
+
+## 2 Active Inference Linguistics: Ontology, Morphology, and Grammar
+
+### 2.1 Generalized Notation Notation (GNN) overview
+
 GNN describes Active Inference models with ASCII letters and punctuation,
 structured in a source file that accords with the principles of Markdown. In this
 section we provide a snapshot of the current specification of GNN.
 Updated information on GNN can be found at Github [10] or in Coda [11].
-2.2 GNN punctuation
-4 J. Sm´ekal and D. Friedman
-2.3 GNN source file structure
-3 Step-by-Step GNN
-3.1 A Step-by-Step example of GNN applied to Smith et al. 2022
+
+### 2.2 GNN punctuation
+
+### 2.3 GNN source file structure
+
+## 3 Step-by-Step GNN
+
+### 3.1 A Step-by-Step example of GNN applied to Smith et al. 2022
+
 Here we provide several examples of increasing expressiveness of GNN, as defined
 in the prior section. The examples are directly drawn from ”A step-by-step
 tutorial on active inference and its application to empirical data” by Smith,
@@ -72,10 +83,11 @@ Friston, and Whyte 2022 [3] [4]. Just as the goal of the initial step-by-step pa
 was to start simple and progressively add model features till one has arrived at a
 full Active Inference generative model, here we use that exact same progression
 to demonstrate the flexibility of GNN.
-Generalized Notation Notation 5
-6 J. Sm´ekal and D. Friedman
-4 Expressing GNN: The Triple Play
-4.1 Every GNN expression has a pragmatic and epistemic context
+
+## 4 Expressing GNN: The Triple Play
+
+### 4.1 Every GNN expression has a pragmatic and epistemic context
+
 As with communication more broadly, it is key to consider the pragmatic and
 epistemic context associated with the use of any given Generalized Notation
 Notation (GNN) expressions. Here, the pragmatic context refers to the practical aspects of communication, such as the preferences and behavioral policies of
@@ -93,23 +105,28 @@ Below we highlight the “Triple Play”, gesturing towards the high-fidelity
 rendering of a GNN expression (of a small motif or complete ecosystem-scale
 generative model) across plain-text, graphical, and executable (computational)
 forms.
-4.2 Text-based models
+
+### 4.2 Text-based models
+
 At its core, GNN is a text-based model that can be rendered into different formats, including mathematical notation, visualized figures, natural language descriptions, algorithmic pseudocode, and executable simulations. The plain-text
 basis of GNN provides a flexible framework for communicating these computational models, allowing for the integration of different representations to better
 convey the underlying concepts and relationships of active inference linguistics.
 Additionally the plain-text basis of GNN enables the use of tools such as Regular
 Expressions and Large Language Models.
-4.3 Graphical models
+
+### 4.3 Graphical models
+
 Graphical models can be visualized using GNN. In the context of Bayesian statistics, graphical models offer a powerful way to represent complex relationships
 and dependencies. GNN enables the detailing and rendering of clear and informative visual representations that can be easily understood by different audiences.
 Here GNN can be applied as post hoc documentation, by deriving plain-text of
-Generalized Notation Notation 7
 Figures drawn in papers. Additionally GNN can be used pre hoc or in medias res
 during the process of designing and implementing Active Inference models. By
 incorporating graphical models into GNN expressions, we can on one hand utilize
 the power of Bayesian statistics, and on the other hand benefit from improved
 visual communication of intricate cognitive models and concepts.
-4.4 Executable Cognitive models
+
+### 4.4 Executable Cognitive models
+
 Lastly, cognitive models can be executed using GNN. Cognitive models represent
 the mental processes and structures described by Active Inference. GNN provides
 a means to specify these models in a formal and precise manner, allowing for their
@@ -121,15 +138,19 @@ software implementations of Active Inference exist with only more on the horizon
 flexible capability of GNN will enable researchers to explore the implications
 of various cognitive models, advancing understanding of active inference and
 catalyzing applications across diverse domains.
-5 Discussion
-5.1 Summary of key findings and developments
+
+## 5 Discussion
+
+### 5.1 Summary of key findings and developments
+
 In recent years, the field of cognitive science has experienced significant epistemic
 advancements and pragmatic developments, especially in the context of Active
 Inference generative models [2]. These models, which encompass wide ranges of
 statistical and symbolic model types [7], have been instrumental in shaping our
 understanding of cognitive processes.
-5.2 Philosophical and Taxonomic perspectives on Active Inference
-model diversity
+
+### 5.2 Philosophical and Taxonomic perspectives on Active Inference model diversity
+
 Ongoing discussions among various factions (e.g. scientific realism and instrumentalism) have raised important questions about the nature, function, and
 purpose of Active Inference models [8].
 The realism-instrumentalism distinction plays a crucial role in shaping our
@@ -142,14 +163,15 @@ in specific domains, without necessarily corresponding to any underlying reality
 This distinction raises the question of how these models might be viewed as tools
 for representing objective cognitive truths, and/or for subjective understanding
 and prediction.
-8 J. Sm´ekal and D. Friedman
 There are significant implications of the realism-instrumentalism conversation in the context of Active Inference cognitive models. Both the realist and
 instrumentalist perspectives can inform the development of more comprehensive and accurate models, by emphasizing the need for a balance among factors
 such as explanatory power and predictive utility. By taking into account the
 strengths and limitations of specific perspectives as applied to particular generative models, researchers can develop methods that are better suited to capture
 and respect the complexity of cognitive processes, while also providing useful
 frameworks for problem-solving and prediction.
-5.3 Some future research directions
+
+### 5.3 Some future research directions
+
 Various future research directions have emerged related to GNN, and will be the
 subject of ongoing work at the Active Inference Institute and elsewhere. Some
 salient directions are briefly listed here. In terms of realizing the utility of GNN,
@@ -162,14 +184,17 @@ From a linguistics perspective it would be interesting to explore possible gramm
 integration with natural language processing and formal semiotic methods will
 enable new kinds of analyses on, with, and for the generative models described
 by GNN.
-5.4 Final thoughts on GNN and Beyond
+
+### 5.4 Final thoughts on GNN and Beyond
+
 By adhering to scientific principles such as rigor, accessibility, and plurality,
 Active Inference researchers can develop and use versatile methods that point
 towards the intricacies of cognitive processes while also providing practical solutions to real-world problems. As the field continues to evolve, it is crucial to
 remain open to new ideas, methodologies, action policies, and inferred beliefs, in
 order to foster a more comprehensive understanding of minds and their workings
 [1].
-References
+
+## References
 
 1. Friston, KJ.: The free-energy principle: a unified brain theory?. Nature Reviews
 Neuroscience 11, pages 127–138 (2010) <https://doi.org/10.1038/nrn2787>
@@ -178,7 +203,7 @@ Mind, Brain, and Behavior. MIT Press (2022) 9780262045353
 3. Smith, R., Friston, KJ, Whyte, CJ: A step-by-step tutorial on active inference and
 its application to empirical data. Journal of Mathematical Psychology, Volume 107
 (2022) <https://doi.org/10.1016/j.jmp.2021.102632>
-Generalized Notation Notation 9
+
 4. Smith, R., Whyte, CJ., Murphy, M., Friedman, DA: ActInf ModelStream 001.1,
 001.2, 001.3, 001.4: ”A Step-by-Step Tutorial on Active Inference”. Active Inference
 Journal (2022) <https://doi.org/10.5281/zenodo.7452789>

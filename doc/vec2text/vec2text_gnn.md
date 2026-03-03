@@ -281,14 +281,14 @@ The convergence of these fields represents not just a technical advancement, but
 [83] https://arxiv.org/pdf/2507.07700.pdf
 [84] https://paperswithcode.com/paper/transferable-embedding-inversion-attack
 [85] https://papers.ssrn.com/sol3/papers.cfm?abstract_id=4951516
-[86] https://arxiv.org/html/2406.10280v1
+[86] https://arxiv.org/html/2406.1.3.0v1
 [87] https://openaccess.thecvf.com/content_ICCV_2017/papers/Li_Towards_End-To-End_Text_ICCV_2017_paper.pdf
 [88] https://arxiv.org/pdf/2504.00147.pdf
 [89] https://arxiv.org/abs/2411.05034
 [90] https://cs224d.stanford.edu/reports/OshriBarak.pdf
 [91] https://openreview.net/forum?id=0bS3M8COYS
 [92] https://core.ac.uk/download/79545253.pdf
-[93] https://arxiv.org/abs/2406.10280
+[93] https://arxiv.org/abs/2406.1.3.0
 [94] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/blob/main/doc/gnn/gnn_syntax.md
 [95] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src
 [96] https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/tree/main/src/gnn

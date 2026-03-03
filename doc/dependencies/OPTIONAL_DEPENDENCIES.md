@@ -25,6 +25,7 @@ This document provides a comprehensive guide to optional dependencies in the GNN
 **Used in**: Step 12 (Execute) - Simulation execution
 
 **Installation**:
+
 ```bash
 # Via UV optional group (recommended)
 uv sync --extra active-inference
@@ -34,22 +35,26 @@ uv pip install inferactively-pymdp
 ```
 
 **Error if missing**:
+
 ```
 ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.agent'
 ```
 
 **Impact on pipeline**:
+
 - ✅ Pipeline continues successfully
 - ✅ DisCoPy and ActiveInference.jl still work
 - ⚠️ PyMDP simulations are skipped
-- Result: 2/5 frameworks working (40% execution success rate)
+- Result: 2/7 frameworks working (29% execution success rate)
 
 **When to install**:
+
 - You need PyMDP-based POMDP simulations
 - You're testing all supported frameworks
 - You want comprehensive framework coverage
 
 **When you don't need it**:
+
 - You only need Julia (ActiveInference.jl, RxInfer) simulations
 - You only need Python-based simulations (JAX, DisCoPy)
 - You want a minimal installation
@@ -63,6 +68,7 @@ ERROR:src.execute.pymdp.executor:PyMDP import failed: No module named 'pymdp.age
 **Used in**: Step 12 (Execute) - JAX simulation execution
 
 **Installation**:
+
 ```bash
 # Via UV optional group (recommended)
 uv sync --extra active-inference
@@ -72,22 +78,26 @@ uv pip install flax
 ```
 
 **Error if missing**:
+
 ```
 ModuleNotFoundError: No module named 'flax'
 ```
 
 **Impact on pipeline**:
+
 - ✅ Pipeline continues successfully
 - ✅ JAX rendering still works (code generation succeeds)
 - ⚠️ JAX simulations fail to execute
-- Result: 2/5 frameworks working (40% execution success rate)
+- Result: 2/7 frameworks working (29% execution success rate)
 
 **When to install**:
+
 - You need JAX neural network simulations
 - You're using JAX-based Active Inference implementations
 - You want to execute JAX-rendered code
 
 **When you don't need it**:
+
 - You don't use JAX for simulations
 - You prefer Julia or Python alternatives
 - You want a lighter installation
@@ -101,6 +111,7 @@ ModuleNotFoundError: No module named 'flax'
 **Used in**: Step 12 (Execute) - RxInfer execution
 
 **Installation**:
+
 ```bash
 julia -e 'import Pkg; Pkg.add("RxInfer")'
 ```
@@ -108,23 +119,27 @@ julia -e 'import Pkg; Pkg.add("RxInfer")'
 **Prerequisites**: Julia must be installed (`julia --version`)
 
 **Error if missing**:
+
 ```
 ERROR: LoadError: ArgumentError: Package RxInfer not found in current path.
 Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 ```
 
 **Impact on pipeline**:
+
 - ✅ Pipeline continues successfully
 - ✅ RxInfer code rendering still works
 - ⚠️ RxInfer simulations fail to execute
-- Result: 2/5 frameworks working (40% execution success rate)
+- Result: 2/7 frameworks working (29% execution success rate)
 
 **When to install**:
+
 - You need Julia-based probabilistic inference
 - You're testing RxInfer simulations
 - You work primarily with Julia
 
 **When you don't need it**:
+
 - You don't use Julia
 - You prefer Python frameworks (PyMDP, JAX)
 - You want quick prototyping without Julia overhead
@@ -142,6 +157,7 @@ Run `import Pkg; Pkg.add("RxInfer")` to install the RxInfer package.
 **Used in**: Step 9 (Advanced Visualization) - Advanced visualization features
 
 **Installation**:
+
 ```bash
 # Via UV optional group (recommended)
 uv sync --extra visualization
@@ -151,11 +167,13 @@ uv pip install plotly
 ```
 
 **Impact on pipeline**:
+
 - ✅ Static visualizations still work (matplotlib-based)
 - ⚠️ Interactive visualizations are skipped
 - Result: Basic visualization features work, advanced features disabled
 
 **When to install**:
+
 - You need interactive 3D plots
 - You want web-based visualization dashboards
 - You're sharing visualizations as HTML files
@@ -171,24 +189,28 @@ uv pip install plotly
 **Installation**:
 
 **macOS**:
+
 ```bash
 brew install graphviz
 ```
 
 **Linux (Ubuntu/Debian)**:
+
 ```bash
 apt-get install graphviz
 ```
 
 **Windows**:
-Download from: https://graphviz.org/download/
+Download from: <https://graphviz.org/download/>
 
 **Impact on pipeline**:
+
 - ✅ Basic visualizations work (using networkx layouts)
 - ⚠️ Advanced graph layouts fall back to simpler algorithms
 - Result: Visualizations still generated, possibly less optimal
 
 **When to install**:
+
 - You need Graphviz-specific layout algorithms
 - Your graphs have complex structures
 - You want publication-quality layouts
@@ -207,6 +229,7 @@ uv sync
 ```
 
 **Result**:
+
 - ✅ Full pipeline works
 - ✅ All rendering (code generation) works
 - ⚠️ Execution (Step 12) has limited framework support
@@ -225,6 +248,7 @@ uv pip install inferactively-pymdp flax  # Optional frameworks
 ```
 
 **Result**:
+
 - ✅ Full pipeline works
 - ✅ Most frameworks available
 - ✅ Execution mostly works
@@ -250,6 +274,7 @@ sudo apt-get install graphviz
 ```
 
 **Result**:
+
 - ✅ Full pipeline with all features
 - ✅ All frameworks available
 - ✅ All visualization features enabled
@@ -312,6 +337,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: PyMDP not installed
 
 **Solutions**:
+
 1. Install PyMDP: `uv pip install inferactively-pymdp` or `uv sync --extra active-inference`
 2. Or use other frameworks: Execution continues with available frameworks
 3. Check installation: `python -c "import pymdp; print(pymdp.__version__)"`
@@ -321,6 +347,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: Flax not installed (JAX is installed but Flax is missing)
 
 **Solutions**:
+
 1. Install Flax: `uv pip install flax` or `uv sync --extra active-inference`
 2. Or skip JAX simulations in Step 12 settings
 3. Check installation: `python -c "import flax; print(flax.__version__)"`
@@ -330,6 +357,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: RxInfer.jl package not installed in Julia
 
 **Solutions**:
+
 1. Install RxInfer: `julia -e 'import Pkg; Pkg.add("RxInfer")'`
 2. Verify Julia: `julia --version`
 3. Check installation: `julia -e 'using RxInfer'`
@@ -339,6 +367,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 **Cause**: GraphViz or Plotly not installed
 
 **Solutions**:
+
 1. Install GraphViz (system): See installation steps above
 2. Install Plotly: `uv pip install plotly` or `uv sync --extra visualization`
 3. Run Step 9 with verbose: `python src/9_advanced_viz.py --verbose`
@@ -348,6 +377,7 @@ grep -i "successfully loaded" output/21_mcp_output/*.log
 ## Recommendations by Use Case
 
 ### For Research & Publication
+
 ```bash
 # Install everything for maximum features
 uv sync --extra active-inference --extra visualization
@@ -358,12 +388,14 @@ brew install graphviz  # or apt-get on Linux
 ```
 
 ### For Development/Testing
+
 ```bash
 # Install core + testing frameworks
 uv sync --extra active-inference
 ```
 
 ### For Quick Prototyping
+
 ```bash
 # Install only core
 uv sync
@@ -371,6 +403,7 @@ uv sync
 ```
 
 ### For CI/CD Pipelines
+
 ```bash
 # Install core - skip optional for speed
 uv sync
@@ -378,6 +411,7 @@ uv sync
 ```
 
 ### For Production Deployment
+
 ```bash
 # Install known-working set
 uv sync --extra active-inference
@@ -408,16 +442,19 @@ A: DisCoPy or ActiveInference.jl - they're already installed. Add PyMDP + Flax f
 ## Performance Impact
 
 ### Installation Size
+
 - **Core only**: ~500MB (+ dependencies)
 - **Core + PyMDP + Flax**: ~1.2GB
 - **Full installation**: ~3-5GB (with Julia)
 
 ### Installation Time
+
 - **Core only**: 2-5 minutes
 - **Core + PyMDP + Flax**: 5-10 minutes
 - **Full installation**: 15-30 minutes (includes Julia)
 
 ### Runtime Performance
+
 - **Optional deps loading**: <100ms per framework
 - **Missing framework skip**: ~10ms per framework
 - **Overall impact**: Negligible - pipeline still completes in 3-4 minutes
@@ -436,4 +473,3 @@ If you encounter issues with optional dependencies:
 ---
 
 **Status**: ✅ Current for Pipeline v2.1.0
-

@@ -1,6 +1,6 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
-**Last Updated**: 2026-02-23
+**Last Updated**: 2026-03-03
 
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
@@ -13,7 +13,7 @@ This document provides a complete, machine-parsable and human-accessible overvie
 ## Why GNN?
 
 - Consistent, reproducible model specification and sharing
-- Interoperability across ecosystems (PyMDP, RxInfer.jl, ActiveInference.jl, JAX)
+- Interoperability across ecosystems (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, PyTorch, NumPyro)
 - Traceable artifact lineage and rigorous validation
 
 ## High-Level Concept Map
@@ -189,7 +189,7 @@ flowchart LR
 
 ## Integration Notes
 
-- PyMDP, RxInfer.jl, ActiveInference.jl rendering configured in `src/render/`
+- PyMDP, RxInfer.jl, ActiveInference.jl, JAX, PyTorch, NumPyro, DisCoPy rendering configured in `src/render/`
 - Execution backends in `src/execute/`
 - MCP tools in `src/mcp/`
 

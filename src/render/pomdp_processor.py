@@ -121,6 +121,22 @@ class POMDPRenderProcessor:
                 'optional_matrices': ['A', 'B', 'C', 'D', 'E'],
                 'supports_multi_modality': True,
                 'supports_multi_factor': True
+            },
+            'pytorch': {
+                'output_subdir': 'pytorch',
+                'file_extension': '.py',
+                'requires_matrices': ['A', 'B', 'C', 'D'],
+                'optional_matrices': ['E'],
+                'supports_multi_modality': True,
+                'supports_multi_factor': True
+            },
+            'numpyro': {
+                'output_subdir': 'numpyro',
+                'file_extension': '.py',
+                'requires_matrices': ['A', 'B', 'C', 'D'],
+                'optional_matrices': ['E'],
+                'supports_multi_modality': True,
+                'supports_multi_factor': True
             }
         }
     
@@ -454,6 +470,10 @@ class POMDPRenderProcessor:
             return self._call_jax_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == 'discopy':
             return self._call_discopy_renderer(gnn_spec, output_dir, **kwargs)
+        elif framework == 'pytorch':
+            return self._call_pytorch_renderer(gnn_spec, output_dir, **kwargs)
+        elif framework == 'numpyro':
+            return self._call_numpyro_renderer(gnn_spec, output_dir, **kwargs)
         else:
             return {
                 'success': False,
@@ -654,7 +674,67 @@ class POMDPRenderProcessor:
                 'message': "DisCoPy renderer not available",
                 'artifacts': []
             }
-    
+
+    def _call_pytorch_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
+        """Call PyTorch renderer."""
+        try:
+            from .pytorch.pytorch_renderer import render_gnn_to_pytorch
+
+            model_name = gnn_spec.get('name', 'pomdp_model')
+            output_file = output_dir / f"{model_name}_pytorch.py"
+
+            # Build options dict with timesteps if available
+            options = {}
+            model_params = gnn_spec.get('model_parameters', {})
+            if 'num_timesteps' in model_params:
+                options['num_timesteps'] = model_params['num_timesteps']
+
+            success, message, artifact_path = render_gnn_to_pytorch(gnn_spec, output_file, options or None)
+
+            return {
+                'success': success,
+                'message': message,
+                'artifacts': [artifact_path] if success and artifact_path else [],
+                'warnings': []
+            }
+
+        except ImportError:
+            return {
+                'success': False,
+                'message': "PyTorch renderer not available",
+                'artifacts': []
+            }
+
+    def _call_numpyro_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
+        """Call NumPyro renderer."""
+        try:
+            from .numpyro.numpyro_renderer import render_gnn_to_numpyro
+
+            model_name = gnn_spec.get('name', 'pomdp_model')
+            output_file = output_dir / f"{model_name}_numpyro.py"
+
+            # Build options dict with timesteps if available
+            options = {}
+            model_params = gnn_spec.get('model_parameters', {})
+            if 'num_timesteps' in model_params:
+                options['num_timesteps'] = model_params['num_timesteps']
+
+            success, message, artifact_path = render_gnn_to_numpyro(gnn_spec, output_file, options or None)
+
+            return {
+                'success': success,
+                'message': message,
+                'artifacts': [artifact_path] if success and artifact_path else [],
+                'warnings': []
+            }
+
+        except ImportError:
+            return {
+                'success': False,
+                'message': "NumPyro renderer not available",
+                'artifacts': []
+            }
+
     def _validate_state_spaces_in_spec(self, gnn_spec: Dict[str, Any], framework: str) -> Dict[str, Any]:
         """
         Validate that state spaces are present in GNN spec.

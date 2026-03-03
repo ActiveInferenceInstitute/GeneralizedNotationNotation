@@ -12,6 +12,8 @@ FEATURES = {
     "activeinference_jl_execution": True,
     "discopy_execution": True,
     "jax_execution": True,
+    "pytorch_execution": True,
+    "numpyro_execution": True,
     "validation": True,
     "error_recovery": True,
     "mcp_integration": True

@@ -1,7 +1,7 @@
 # GNN Overview
 
-**Version**: v1.2.0  
-**Last Updated**: February 24, 2026  
+**Version**: v1.3.0  
+**Last Updated**: March 3, 2026  
 **Status**: ✅ Production Ready  
 **Test Count**: 1,522+ tests Passing  
 
@@ -231,8 +231,8 @@ For complete information about the pipeline architecture and individual modules:
 
 - **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
 - **[src/README.md](../../src/README.md)**: Pipeline safety and reliability documentation
-- **[GNN Tools and Resources](gnn_tools.md)**: Detailed pipeline usage and examples
-- **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step guide for beginners
+- **[GNN Tools and Resources](operations/gnn_tools.md)**: Detailed pipeline usage and examples
+- **[Quickstart Tutorial](tutorials/quickstart_tutorial.md)**: Step-by-step guide for beginners
 
 ## Related Documentation
 
@@ -240,55 +240,59 @@ For more detailed information about specific aspects of GNN, refer to:
 
 ### GNN Language Specification
 
-- [GNN Syntax and Punctuation](gnn_syntax.md): Detailed specification of the notation symbols
-- [GNN File Structure](gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
-- [GNN DSL Manual](gnn_dsl_manual.md): Complete Domain-Specific Language reference
+- [GNN Syntax and Punctuation](reference/gnn_syntax.md): Detailed specification of the notation symbols
+- [GNN File Structure](reference/gnn_file_structure_doc.md): Comprehensive guide to GNN file organization
+- [GNN DSL Manual](reference/gnn_dsl_manual.md): Complete Domain-Specific Language reference
 
 ### Modeling and Examples
 
-- [GNN Examples](gnn_examples_doc.md): Step-by-step examples and use cases
-- [Advanced Modeling Patterns](advanced_modeling_patterns.md): Sophisticated modeling techniques
-- [Multi-Agent Systems](gnn_multiagent.md): Multi-agent modeling specifications
+- [GNN Examples](tutorials/gnn_examples_doc.md): Step-by-step examples and use cases
+- [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md): Sophisticated modeling techniques
+- [Multi-Agent Systems](advanced/gnn_multiagent.md): Multi-agent modeling specifications
 
 ### Implementation and Tools
 
-- [GNN Implementation Guide](gnn_implementation.md): Guidelines for implementing GNN in practice
-- [GNN Tools and Resources](gnn_tools.md): Available tools and resources for working with GNN
-- [Framework Integration Guide](framework_integration_guide.md): Integration with PyMDP, RxInfer, etc.
-- [Technical Reference](technical_reference.md): Detailed technical specifications
+- [GNN Implementation Guide](integration/gnn_implementation.md): Guidelines for implementing GNN in practice
+- [GNN Tools and Resources](operations/gnn_tools.md): Available tools and resources for working with GNN
+- [Framework Integration Guide](integration/framework_integration_guide.md): Integration with PyMDP, RxInfer, etc.
+- [Technical Reference](reference/technical_reference.md): Detailed technical specifications
 
 **Advanced Topics**
 
-- [Architecture Reference](architecture_reference.md): Thin orchestrator pattern and data flow
-- [LLM and Neurosymbolic Active Inference](gnn_llm_neurosymbolic_active_inference.md): LLM integration
-- [Ontology System](ontology_system.md): Active Inference ontology annotations
+- [Architecture Reference](reference/architecture_reference.md): Thin orchestrator pattern and data flow
+- [LLM and Neurosymbolic Active Inference](advanced/gnn_llm_neurosymbolic_active_inference.md): LLM integration
+- [Ontology System](advanced/ontology_system.md): Active Inference ontology annotations
 
 ## See Also
 
 ### Core Documentation
 
 - **[About GNN](about_gnn.md)**: Detailed GNN specification and motivation
-- **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
-- **[GNN Examples](gnn_examples_doc.md)**: Example models from simple to complex
-- **[Quickstart Tutorial](quickstart_tutorial.md)**: Step-by-step getting started guide
+- **[GNN Syntax](reference/gnn_syntax.md)**: Complete syntax reference
+- **[GNN Examples](tutorials/gnn_examples_doc.md)**: Example models from simple to complex
+- **[Quickstart Tutorial](tutorials/quickstart_tutorial.md)**: Step-by-step getting started guide
 
 ### Advanced Topics
 
-- **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
-- **[Multi-agent Systems](gnn_multiagent.md)**: Multi-agent modeling specification
-- **[LLM Integration](gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
+- **[Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)**: Hierarchical and sophisticated techniques
+- **[Multi-agent Systems](advanced/gnn_multiagent.md)**: Multi-agent modeling specification
+- **[LLM Integration](advanced/gnn_llm_neurosymbolic_active_inference.md)**: AI-assisted modeling
 
 ### Framework Integration
 
-- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python Active Inference framework
-- **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian inference
-- **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Category theory integration
+- **[PyMDP Integration](../pymdp/gnn_pymdp.md)**: Python discrete-state POMDP framework
+- **[RxInfer Integration](../rxinfer/gnn_rxinfer.md)**: Julia Bayesian active message passing
+- **[DisCoPy Integration](../discopy/gnn_discopy.md)**: Categorical string diagrams and monoidal structures
+- **[PyTorch Integration](implementations/pytorch.md)**: Neural active inference and deep learning
+- **[NumPyro Integration](implementations/numpyro.md)**: Continuous probabilistic programming via MCMC
+- **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
+- **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
 
 ### Pipeline and Tools
 
 - **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
-- **[GNN Tools](gnn_tools.md)**: Available software and utilities
-- **[Implementation Guide](gnn_implementation.md)**: Guidelines for implementing GNN in practice
+- **[GNN Tools](operations/gnn_tools.md)**: Available software and utilities
+- **[Implementation Guide](integration/gnn_implementation.md)**: Guidelines for implementing GNN in practice
 
 ### Navigation
 

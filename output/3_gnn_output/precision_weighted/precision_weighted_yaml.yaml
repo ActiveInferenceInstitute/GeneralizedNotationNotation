@@ -1,0 +1,361 @@
+annotation: 'An Active Inference agent with explicit precision parameters:
+
+  - ω (omega): sensory precision weighting likelihood confidence
+
+  - γ (gamma): policy precision controlling action randomness
+
+  - β (beta): inverse temperature for policy selection (softmax)
+
+  - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
+
+  - Precision parameters enable modeling of attention and confidence'
+connections:
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A
+  target_variables:
+  - o
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B
+  target_variables:
+  - u
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C
+  target_variables:
+  - G
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D
+  target_variables:
+  - s
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - E
+  target_variables:
+  - π
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - G
+  target_variables:
+  - π
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - o
+  target_variables:
+  - F
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - A
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - F
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - s
+  target_variables:
+  - s_prime
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - u
+  target_variables:
+  - s_prime
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - β
+  target_variables:
+  - π
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - γ
+  target_variables:
+  - π
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - π
+  target_variables:
+  - u
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - ω
+  target_variables:
+  - A
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - ω
+  target_variables:
+  - F
+  weight: null
+created_at: '2026-03-03T08:22:03.747660'
+equations: []
+model_name: Precision-Weighted Active Inference Agent
+modified_at: '2026-03-03T08:22:03.747662'
+ontology_mappings:
+- description: null
+  ontology_term: LikelihoodMatrix
+  variable_name: A
+- description: null
+  ontology_term: TransitionMatrix
+  variable_name: B
+- description: null
+  ontology_term: LogPreferenceVector
+  variable_name: C
+- description: null
+  ontology_term: PriorOverHiddenStates
+  variable_name: D
+- description: null
+  ontology_term: Habit
+  variable_name: E
+- description: null
+  ontology_term: VariationalFreeEnergy
+  variable_name: F
+- description: null
+  ontology_term: ExpectedFreeEnergy
+  variable_name: G
+- description: null
+  ontology_term: Observation
+  variable_name: o
+- description: null
+  ontology_term: HiddenState
+  variable_name: s
+- description: null
+  ontology_term: NextHiddenState
+  variable_name: s_prime
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: Action
+  variable_name: u
+- description: null
+  ontology_term: InverseTemperature
+  variable_name: β
+- description: null
+  ontology_term: PolicyPrecision
+  variable_name: γ
+- description: null
+  ontology_term: PolicyVector
+  variable_name: π
+- description: null
+  ontology_term: SensoryPrecision
+  variable_name: ω
+parameters:
+- description: null
+  name: A
+  type_hint: null
+  value:
+  - - 0.9
+    - 0.05
+    - 0.05
+  - - 0.05
+    - 0.9
+    - 0.05
+  - - 0.05
+    - 0.05
+    - 0.9
+- description: null
+  name: B
+  type_hint: null
+  value:
+  - - - 1.0
+      - 0.0
+      - 0.0
+    - - 0.0
+      - 1.0
+      - 0.0
+    - - 0.0
+      - 0.0
+      - 1.0
+  - - - 0.0
+      - 1.0
+      - 0.0
+    - - 1.0
+      - 0.0
+      - 0.0
+    - - 0.0
+      - 0.0
+      - 1.0
+  - - - 0.0
+      - 0.0
+      - 1.0
+    - - 0.0
+      - 1.0
+      - 0.0
+    - - 1.0
+      - 0.0
+      - 0.0
+- description: null
+  name: C
+  type_hint: null
+  value:
+  - - 0.1
+    - 0.1
+    - 1.0
+- description: null
+  name: D
+  type_hint: null
+  value:
+  - - 0.333
+    - 0.333
+    - 0.333
+- description: null
+  name: E
+  type_hint: null
+  value:
+  - - 0.333
+    - 0.333
+    - 0.333
+- description: null
+  name: β
+  type_hint: null
+  value:
+  - - 0.5
+- description: null
+  name: γ
+  type_hint: null
+  value:
+  - - 2.0
+- description: null
+  name: ω
+  type_hint: null
+  value:
+  - - 4.0
+time_specification:
+  discretization: null
+  horizon: Unbounded
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: Likelihood matrix (modulated by ω)
+  dimensions:
+  - 3
+  - 3
+  name: A
+  type: likelihood_matrix
+- data_type: float
+  description: Transition matrix
+  dimensions:
+  - 3
+  - 3
+  - 3
+  name: B
+  type: transition_matrix
+- data_type: float
+  description: Log-preferences over observations
+  dimensions:
+  - 3
+  name: C
+  type: preference_vector
+- data_type: float
+  description: Prior over hidden states
+  dimensions:
+  - 3
+  name: D
+  type: prior_vector
+- data_type: float
+  description: Habit (prior over actions)
+  dimensions:
+  - 3
+  name: E
+  type: policy
+- data_type: float
+  description: Variational Free Energy
+  dimensions:
+  - 1
+  name: F
+  type: hidden_state
+- data_type: float
+  description: Expected Free Energy
+  dimensions:
+  - 1
+  name: G
+  type: policy
+- data_type: integer
+  description: Current observation
+  dimensions:
+  - 3
+  - 1
+  name: o
+  type: observation
+- data_type: float
+  description: Hidden state distribution
+  dimensions:
+  - 3
+  - 1
+  name: s
+  type: hidden_state
+- data_type: float
+  description: Next hidden state
+  dimensions:
+  - 3
+  - 1
+  name: s_prime
+  type: hidden_state
+- data_type: integer
+  description: Selected action
+  dimensions:
+  - 1
+  name: u
+  type: action
+- data_type: float
+  description: Inverse temperature (β = 1/γ, controls randomness)
+  dimensions:
+  - 1
+  name: β
+  type: hidden_state
+- data_type: float
+  description: Policy precision (temperature for action selection)
+  dimensions:
+  - 1
+  name: γ
+  type: hidden_state
+- data_type: float
+  description: Policy distribution
+  dimensions:
+  - 3
+  name: π
+  type: policy
+- data_type: float
+  description: Sensory precision (modulates A matrix confidence)
+  dimensions:
+  - 1
+  name: ω
+  type: hidden_state
+version: '1.0'

@@ -197,7 +197,7 @@ def visualize_all_framework_outputs(
 
     # Also search for simulation_results.json files - MERGE into existing keys
     # Known framework directory names for path-based detection
-    _FRAMEWORK_DIRS = {"pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"}
+    _FRAMEWORK_DIRS = {"pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro"}
 
     for sim_file in execution_dir.rglob("*simulation_results.json"):
         try:

@@ -1,24 +1,24 @@
 
 # Analysis Summary
 
-**Generated**: 2026-02-25 14:42:27
+**Generated**: 2026-03-03 08:41:37
 
 ## Processing Results
-- **Files Processed**: 1
+- **Files Processed**: 8
 - **Success**: True
 - **Errors**: 0
 
 ## Analysis Results
-- **Statistical Analyses**: 1
-- **Complexity Metrics**: 1
-- **Performance Benchmarks**: 1
-- **Model Comparisons**: 0
+- **Statistical Analyses**: 8
+- **Complexity Metrics**: 8
+- **Performance Benchmarks**: 8
+- **Model Comparisons**: 1
 
 ## Error Summary
 - No errors encountered
 
 ## Model Statistics
-- Total variables across all models: 73
-- Total connections across all models: 11
-- Average variables per model: 73.0
-- Average connections per model: 11.0
+- Total variables across all models: 562
+- Total connections across all models: 113
+- Average variables per model: 70.2
+- Average connections per model: 14.1

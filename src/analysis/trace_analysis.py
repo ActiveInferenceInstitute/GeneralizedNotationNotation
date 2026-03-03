@@ -97,7 +97,21 @@ def analyze_free_energy(
         if not free_energy_values:
             return analysis
 
-        fe_array = np.array(free_energy_values)
+        # Safely convert free energy values to a flat 1-D array of scalars.
+        # Values may be nested lists, multi-dimensional arrays, or ragged
+        # sequences — flatten everything and reduce each element to a scalar
+        # via np.mean() so that downstream float() calls never fail.
+        raw = []
+        for val in free_energy_values:
+            try:
+                arr = np.asarray(val, dtype=float)
+                raw.append(float(np.mean(arr)))  # reduce to scalar
+            except (TypeError, ValueError):
+                continue  # skip non-numeric entries
+        if not raw:
+            return analysis
+
+        fe_array = np.array(raw, dtype=float)
 
         # Calculate statistics
         analysis["mean_free_energy"] = float(np.mean(fe_array))

@@ -278,7 +278,7 @@ The language's design philosophy of achieving maximum expressiveness with minima
 [25] https://stg.wbdg.org/FFC/NAVFAC/ATESS/05_navfac_far_east_ufc_scif_sapf_oct_2024.pdf
 [26] https://help.sap.com/docs/SAP_APPLICATION_INTERFACE_FRAMEWORK/1cefaed5b7a3471cb08564e54d5ba866/48be1a54ab881f6ee10000000a441470.html
 [27] https://supercollider.github.io/examples.html
-[28] http://www.cs.cmu.edu/afs/cs/academic/class/15210-s12/www/recis/rec03.pdf
+[28] http://www.cs.cmu.edu/afs/cs/academic/class/1.3.0-s12/www/recis/rec03.pdf
 [29] https://www.youtube.com/watch?v=VWQdGKW1Wv8
 [30] https://langdev.stackexchange.com/questions/933/should-a-concatenative-language-operate-by-expansion-or-recursively
 [31] https://docs.rs-online.com/0ad0/0900766b8159434d.pdf

@@ -1,25 +1,219 @@
 {
   "status": "completed",
-  "target_dir": "input/gnn_files",
+  "target_dir": "input/gnn_files/discrete",
   "output_dir": "output/14_ml_integration_output",
   "models_trained": [
     {
-      "source": "actinf_pomdp_agent.md",
-      "type": "structural_analysis",
-      "framework": "internal_stats",
-      "accuracy": 1.0,
-      "note": "Need >=2 GNN files for ML classification (have 1)",
-      "model_family": "pomdp",
-      "num_states": 3,
-      "total_parameters": 56
+      "type": "decision_tree",
+      "framework": "sklearn",
+      "task": "family_classification",
+      "train_accuracy": 1.0,
+      "cv_mean_accuracy": 0.625,
+      "cv_std": 0.125,
+      "n_folds": 2,
+      "n_samples": 8,
+      "n_features": 14,
+      "feature_names": [
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "num_variables",
+        "connectivity_ratio",
+        "max_dimension",
+        "total_parameters",
+        "planning_horizon",
+        "directed_connections",
+        "undirected_connections",
+        "has_precision",
+        "has_learning",
+        "has_ontology",
+        "has_parameterization"
+      ],
+      "artifact_path": "output/14_ml_integration_output/gnn_decision_tree.pkl",
+      "feature_importance": {
+        "num_states": 0.0,
+        "num_observations": 0.0,
+        "num_actions": 0.0,
+        "num_variables": 0.0,
+        "connectivity_ratio": 0.0,
+        "max_dimension": 0.0,
+        "total_parameters": 0.0,
+        "planning_horizon": 0.0,
+        "directed_connections": 1.0,
+        "undirected_connections": 0.0,
+        "has_precision": 0.0,
+        "has_learning": 0.0,
+        "has_ontology": 0.0,
+        "has_parameterization": 0.0
+      },
+      "top_features": [
+        [
+          "directed_connections",
+          1.0
+        ],
+        [
+          "num_states",
+          0.0
+        ],
+        [
+          "num_observations",
+          0.0
+        ],
+        [
+          "num_actions",
+          0.0
+        ],
+        [
+          "num_variables",
+          0.0
+        ]
+      ]
+    },
+    {
+      "type": "random_forest",
+      "framework": "sklearn",
+      "task": "family_classification",
+      "train_accuracy": 1.0,
+      "cv_mean_accuracy": 0.875,
+      "cv_std": 0.125,
+      "n_folds": 2,
+      "n_samples": 8,
+      "n_features": 14,
+      "feature_names": [
+        "num_states",
+        "num_observations",
+        "num_actions",
+        "num_variables",
+        "connectivity_ratio",
+        "max_dimension",
+        "total_parameters",
+        "planning_horizon",
+        "directed_connections",
+        "undirected_connections",
+        "has_precision",
+        "has_learning",
+        "has_ontology",
+        "has_parameterization"
+      ],
+      "artifact_path": "output/14_ml_integration_output/gnn_random_forest.pkl",
+      "feature_importance": {
+        "num_states": 0.0,
+        "num_observations": 0.19682539682539682,
+        "num_actions": 0.13333333333333333,
+        "num_variables": 0.0476190476190476,
+        "connectivity_ratio": 0.17777777777777778,
+        "max_dimension": 0.0,
+        "total_parameters": 0.06666666666666667,
+        "planning_horizon": 0.0,
+        "directed_connections": 0.37777777777777777,
+        "undirected_connections": 0.0,
+        "has_precision": 0.0,
+        "has_learning": 0.0,
+        "has_ontology": 0.0,
+        "has_parameterization": 0.0
+      },
+      "top_features": [
+        [
+          "directed_connections",
+          0.3778
+        ],
+        [
+          "num_observations",
+          0.1968
+        ],
+        [
+          "connectivity_ratio",
+          0.1778
+        ],
+        [
+          "num_actions",
+          0.1333
+        ],
+        [
+          "total_parameters",
+          0.0667
+        ]
+      ]
     }
   ],
-  "feature_importance": {},
+  "feature_importance": {
+    "num_states": 0.0,
+    "num_observations": 0.19682539682539682,
+    "num_actions": 0.13333333333333333,
+    "num_variables": 0.0476190476190476,
+    "connectivity_ratio": 0.17777777777777778,
+    "max_dimension": 0.0,
+    "total_parameters": 0.06666666666666667,
+    "planning_horizon": 0.0,
+    "directed_connections": 0.37777777777777777,
+    "undirected_connections": 0.0,
+    "has_precision": 0.0,
+    "has_learning": 0.0,
+    "has_ontology": 0.0,
+    "has_parameterization": 0.0
+  },
   "cross_validation": {},
   "framework_status": {
     "sklearn": "available"
   },
   "extracted_features": [
+    {
+      "file_name": "simple_mdp.md",
+      "model_family": "pomdp",
+      "num_variables": 9,
+      "num_states": 4,
+      "num_observations": 4,
+      "num_actions": 4,
+      "max_dimension": 4,
+      "total_parameters": 102,
+      "connectivity_ratio": 0.1388888888888889,
+      "directed_connections": 7,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    },
+    {
+      "file_name": "multi_armed_bandit.md",
+      "model_family": "pomdp",
+      "num_variables": 9,
+      "num_states": 3,
+      "num_observations": 3,
+      "num_actions": 3,
+      "max_dimension": 3,
+      "total_parameters": 53,
+      "connectivity_ratio": 0.1388888888888889,
+      "directed_connections": 7,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    },
+    {
+      "file_name": "deep_planning_horizon.md",
+      "model_family": "pomdp",
+      "num_variables": 20,
+      "num_states": 4,
+      "num_observations": 4,
+      "num_actions": 4,
+      "max_dimension": 64,
+      "total_parameters": 566,
+      "connectivity_ratio": 0.0868421052631579,
+      "directed_connections": 24,
+      "undirected_connections": 9,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 5,
+      "time_type": "discrete"
+    },
     {
       "file_name": "actinf_pomdp_agent.md",
       "model_family": "pomdp",
@@ -38,36 +232,87 @@
       "has_parameterization": true,
       "planning_horizon": 1,
       "time_type": "discrete"
+    },
+    {
+      "file_name": "hmm_baseline.md",
+      "model_family": "hmm",
+      "num_variables": 10,
+      "num_states": 4,
+      "num_observations": 6,
+      "num_actions": 0,
+      "max_dimension": 6,
+      "total_parameters": 68,
+      "connectivity_ratio": 0.13333333333333333,
+      "directed_connections": 4,
+      "undirected_connections": 8,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    },
+    {
+      "file_name": "two_state_bistable.md",
+      "model_family": "pomdp",
+      "num_variables": 10,
+      "num_states": 2,
+      "num_observations": 2,
+      "num_actions": 2,
+      "max_dimension": 2,
+      "total_parameters": 26,
+      "connectivity_ratio": 0.12222222222222222,
+      "directed_connections": 8,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    },
+    {
+      "file_name": "markov_chain.md",
+      "model_family": "hmm",
+      "num_variables": 7,
+      "num_states": 3,
+      "num_observations": 3,
+      "num_actions": 0,
+      "max_dimension": 3,
+      "total_parameters": 31,
+      "connectivity_ratio": 0.14285714285714285,
+      "directed_connections": 3,
+      "undirected_connections": 3,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 1,
+      "time_type": "discrete"
+    },
+    {
+      "file_name": "tmaze_epistemic.md",
+      "model_family": "pomdp",
+      "num_variables": 16,
+      "num_states": 0,
+      "num_observations": 0,
+      "num_actions": 0,
+      "max_dimension": 4,
+      "total_parameters": 141,
+      "connectivity_ratio": 0.07916666666666666,
+      "directed_connections": 8,
+      "undirected_connections": 11,
+      "has_precision": false,
+      "has_learning": false,
+      "has_ontology": true,
+      "has_parameterization": true,
+      "planning_horizon": 3,
+      "time_type": "discrete"
     }
   ],
-  "feature_statistics": {
-    "num_states": {
-      "min": 3,
-      "max": 3,
-      "mean": 3.0
-    },
-    "num_observations": {
-      "min": 3,
-      "max": 3,
-      "mean": 3.0
-    },
-    "num_actions": {
-      "min": 3,
-      "max": 3,
-      "mean": 3.0
-    },
-    "total_parameters": {
-      "min": 56,
-      "max": 56,
-      "mean": 56.0
-    },
-    "connectivity_ratio": {
-      "min": 0.12222222222222222,
-      "max": 0.12222222222222222,
-      "mean": 0.12222222222222222
-    }
-  },
-  "model_families": [
+  "classification_task": "family_classification",
+  "label_names": [
+    "hmm",
     "pomdp"
   ]
 }

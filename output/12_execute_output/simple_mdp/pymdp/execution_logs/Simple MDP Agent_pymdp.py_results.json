@@ -1,0 +1,159 @@
+{
+  "framework": "pymdp",
+  "model_name": "simple_mdp",
+  "script_name": "Simple MDP Agent_pymdp.py",
+  "script_path": "output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 2.803162,
+  "timestamp": "2026-03-03T08:22:29.543674",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [
+      0,
+      3,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3,
+      3,
+      2,
+      3,
+      3,
+      3,
+      3,
+      3
+    ],
+    "actions": [
+      3,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy": [],
+    "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
+    "raw_error": "2026-03-03 08:22:32,068 - INFO - A matrix shape: (4, 4)\n2026-03-03 08:22:32,068 - INFO - B matrix shape: (4, 4, 4)\n2026-03-03 08:22:32,068 - INFO - C vector shape: (4,)\n2026-03-03 08:22:32,068 - INFO - D vector shape: (4,)\n2026-03-03 08:22:32,068 - INFO - Starting PyMDP simulation for Simple MDP Agent\n2026-03-03 08:22:32,068 - INFO - Output directory: output/pymdp_simulations/Simple MDP Agent\n2026-03-03 08:22:32,068 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-03 08:22:32,068 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-03 08:22:32,072 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-03 08:22:32,072 - INFO - Starting simple PyMDP simulation\n2026-03-03 08:22:32,072 - INFO - Transposed B from (4, 4, 4) to (4, 4, 4)\n2026-03-03 08:22:32,072 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-03 08:22:32,072 - INFO - Created matrices: A=(4, 4), B=(4, 4, 4), C=(4,), D=(4,)\n2026-03-03 08:22:32,072 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-03 08:22:32,072 - INFO - Successfully created PyMDP agent\n2026-03-03 08:22:32,072 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-03 08:22:32,077 - INFO - Step 0: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=1.0\n2026-03-03 08:22:32,078 - INFO - Step 1: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=1.0\n2026-03-03 08:22:32,078 - INFO - Step 2: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,079 - INFO - Step 3: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,079 - INFO - Step 4: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=1.0\n2026-03-03 08:22:32,080 - INFO - Step 5: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=1.0\n2026-03-03 08:22:32,080 - INFO - Step 6: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,080 - INFO - Step 7: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,081 - INFO - Step 8: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,081 - INFO - Step 9: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,081 - INFO - Step 10: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,081 - INFO - Step 11: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,082 - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1. 0.], action=1.0\n2026-03-03 08:22:32,082 - INFO - Step 13: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,082 - INFO - Step 14: true_s=3, obs=3, belief=[0. 0. 0. 1.], action=0.0\n2026-03-03 08:22:32,082 - INFO - Saving raw simulation data for analysis step...\n2026-03-03 08:22:32,083 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Simple MDP Agent/simulation_results.json\n2026-03-03 08:22:32,083 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-03 08:22:32,083 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-03 08:22:32,083 - INFO - PyMDP simulation completed successfully\n2026-03-03 08:22:32,083 - INFO - \u2713 Simulation completed successfully!\n2026-03-03 08:22:32,083 - INFO - Results summary:\n2026-03-03 08:22:32,083 - INFO -   Correlation ID: render_generated_script\n2026-03-03 08:22:32,083 - INFO -   Success: True\n2026-03-03 08:22:32,083 - INFO -   Output: output/pymdp_simulations/Simple MDP Agent\n",
+    "beliefs": [
+      [
+        1.0,
+        9.999999999999965e-17,
+        9.999999999999965e-17,
+        9.999999999999965e-17
+      ],
+      [
+        2.2222222222222002e-32,
+        2.2222222222222002e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        9.999999999999968e-32,
+        9.999999999999968e-32,
+        0.9999999999999991,
+        8.99999999999992e-16
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111203e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        9.999999999999968e-32,
+        9.999999999999968e-32,
+        0.9999999999999991,
+        8.99999999999992e-16
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111203e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ],
+      [
+        1.111111111111098e-32,
+        1.111111111111098e-32,
+        1.1111111111111125e-17,
+        1.0
+      ]
+    ],
+    "num_timesteps": 15
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 219,
+    "stderr_length": 3357,
+    "output_directory": "output/12_execute_output/simple_mdp/pymdp"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/simple_mdp/pymdp/simulation_data/Simple MDP Agent_simulation_results.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

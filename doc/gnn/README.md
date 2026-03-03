@@ -1,7 +1,7 @@
 # GNN Documentation Index
 
-**Version**: v1.2.0  
-**Last Updated**: February 23, 2026  
+**Version**: v1.3.0  
+**Last Updated**: March 3, 2026  
 **Status**: ✅ Production Ready  
 **Test Count**: 1,522+ tests Passing  
 
@@ -12,8 +12,8 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 **New to GNN?** Start here:
 
 1. [GNN Overview](gnn_overview.md) - Introduction to GNN and its purpose
-2. [Quickstart Tutorial](quickstart_tutorial.md) - Build your first model in 15 minutes
-3. [GNN File Structure](gnn_file_structure_doc.md) - Understanding GNN file organization
+2. [Quickstart Tutorial](tutorials/quickstart_tutorial.md) - Build your first model in 15 minutes
+3. [GNN File Structure](reference/gnn_file_structure_doc.md) - Understanding GNN file organization
 
 ## 📋 Pipeline Documentation
 
@@ -24,10 +24,10 @@ Complete navigation guide for all GNN (Generalized Notation Notation) documentat
 - **[src/AGENTS.md](../../src/AGENTS.md)** - Master agent scaffolding and complete 25-step registry
 - **[src/README.md](../../src/README.md)** - Pipeline architecture and thin orchestrator pattern
 - **[src/main.py](../../src/main.py)** - Pipeline orchestrator implementation
-- [Architecture Reference](architecture_reference.md) - Implementation patterns and cross-module data flow
+- [Architecture Reference](reference/architecture_reference.md) - Implementation patterns and cross-module data flow
 - [Module Reference](modules/README.md) - Per-module documentation for all 25 steps, with architecture, CLI args, and output details
-- [GNN Tools and Resources](gnn_tools.md) - Complete pipeline usage and examples
-- [Technical Reference](technical_reference.md) - Round-trip data flow and entry points
+- [GNN Tools and Resources](operations/gnn_tools.md) - Complete pipeline usage and examples
+- [Technical Reference](reference/technical_reference.md) - Round-trip data flow and entry points
 - **[Testing Hub](testing/README.md)** — Test architecture, patterns, MCP audit (1,522+ tests)
 
 **Quick Start:**
@@ -45,22 +45,22 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 **GNN Syntax and Structure:**
 
 - **[Language Hub](language/README.md)** — Quick syntax cheatsheet + links to all 7 language docs
-- [GNN Syntax Reference](gnn_syntax.md) - Complete syntax guide with examples
-- [GNN DSL Manual](gnn_dsl_manual.md) - Domain-Specific Language specification
-- [GNN Schema Specification](gnn_schema.md) - Parsing and validation schemas
-- [GNN File Structure](gnn_file_structure_doc.md) - File organization and sections
-- [GNN Standards](gnn_standards.md) - Domain knowledge and coding standards
+- [GNN Syntax Reference](reference/gnn_syntax.md) - Complete syntax guide with examples
+- [GNN DSL Manual](reference/gnn_dsl_manual.md) - Domain-Specific Language specification
+- [GNN Schema Specification](reference/gnn_schema.md) - Parsing and validation schemas
+- [GNN File Structure](reference/gnn_file_structure_doc.md) - File organization and sections
+- [GNN Standards](reference/gnn_standards.md) - Domain knowledge and coding standards
 - [About GNN](about_gnn.md) - Detailed GNN specification
-- [GNN Troubleshooting](gnn_troubleshooting.md) - Common issues and solutions
+- [GNN Troubleshooting](operations/gnn_troubleshooting.md) - Common issues and solutions
 
 ## 🎯 Modeling and Examples
 
 **Learning to Model:**
 
-- [Quickstart Tutorial](quickstart_tutorial.md) - Step-by-step first model
-- [GNN Examples](gnn_examples_doc.md) - Model progression from simple to complex
-- [Advanced Modeling Patterns](advanced_modeling_patterns.md) - Hierarchical and sophisticated techniques
-- [Multi-Agent Systems](gnn_multiagent.md) - Multi-agent modeling specification
+- [Quickstart Tutorial](tutorials/quickstart_tutorial.md) - Step-by-step first model
+- [GNN Examples](tutorials/gnn_examples_doc.md) - Model progression from simple to complex
+- [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md) - Hierarchical and sophisticated techniques
+- [Multi-Agent Systems](advanced/gnn_multiagent.md) - Multi-agent modeling specification
 
 **Cognitive Phenomena:**
 
@@ -70,9 +70,9 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **Framework Integration:**
 
-- **[MCP Hub](mcp/README.md)** — 76 tools, client setup, tool development guide
-- [Framework Integration Guide](framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
-- [GNN Implementation Guide](gnn_implementation.md) - Implementation workflows and patterns
+- **[MCP Hub](mcp/README.md)** — 131 tools, client setup, tool development guide
+- [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro
+- [GNN Implementation Guide](integration/gnn_implementation.md) - Implementation workflows and patterns
 - **[Framework Implementations](implementations/README.md)** — 8 frameworks: PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, CatColab, PyTorch, NumPyro
 - [PyMDP Integration](../pymdp/gnn_pymdp.md) - Python POMDP framework
 - [RxInfer Integration](../rxinfer/gnn_rxinfer.md) - Julia Bayesian inference
@@ -84,14 +84,14 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **AI and Analysis:**
 
-- [LLM and Neurosymbolic Active Inference](gnn_llm_neurosymbolic_active_inference.md) - LLM integration (Step 13)
-- [Ontology System](ontology_system.md) - Active Inference ontology annotations (Step 10)
-- [Resource Metrics](resource_metrics.md) - Computational resource estimation (Step 5)
+- [LLM and Neurosymbolic Active Inference](advanced/gnn_llm_neurosymbolic_active_inference.md) - LLM integration (Step 13)
+- [Ontology System](advanced/ontology_system.md) - Active Inference ontology annotations (Step 10)
+- [Resource Metrics](operations/resource_metrics.md) - Computational resource estimation (Step 5)
 
 **Quality and Improvement:**
 
-- [Improvement Analysis](improvement_analysis.md) - Pipeline improvement opportunities
-- [REPO Coherence Check](REPO_COHERENCE_CHECK.md) - Quality standards and validation
+- [Improvement Analysis](operations/improvement_analysis.md) - Pipeline improvement opportunities
+- [REPO Coherence Check](operations/REPO_COHERENCE_CHECK.md) - Quality standards and validation
 
 ## 📊 Complete Module Registry
 
@@ -141,52 +141,52 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **I want to...**
 
-- **Learn GNN basics** → [GNN Overview](gnn_overview.md) → [Quickstart Tutorial](quickstart_tutorial.md)
-- **Understand syntax** → [GNN Syntax](gnn_syntax.md) → [GNN DSL Manual](gnn_dsl_manual.md)
-- **Build a model** → [Quickstart Tutorial](quickstart_tutorial.md) → [GNN Examples](gnn_examples_doc.md)
-- **Use advanced patterns** → [Advanced Modeling Patterns](advanced_modeling_patterns.md)
-- **Integrate frameworks** → [Framework Integration Guide](framework_integration_guide.md)
-- **Process models** → [GNN Tools](gnn_tools.md) → [src/AGENTS.md](../../src/AGENTS.md)
-- **Understand pipeline** → [src/README.md](../../src/README.md) → [Architecture Reference](architecture_reference.md)
-- **Debug issues** → [Technical Reference](technical_reference.md) → [Improvement Analysis](improvement_analysis.md)
+- **Learn GNN basics** → [GNN Overview](gnn_overview.md) → [Quickstart Tutorial](tutorials/quickstart_tutorial.md)
+- **Understand syntax** → [GNN Syntax](reference/gnn_syntax.md) → [GNN DSL Manual](reference/gnn_dsl_manual.md)
+- **Build a model** → [Quickstart Tutorial](tutorials/quickstart_tutorial.md) → [GNN Examples](tutorials/gnn_examples_doc.md)
+- **Use advanced patterns** → [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)
+- **Integrate frameworks** → [Framework Integration Guide](integration/framework_integration_guide.md)
+- **Process models** → [GNN Tools](operations/gnn_tools.md) → [src/AGENTS.md](../../src/AGENTS.md)
+- **Understand pipeline** → [src/README.md](../../src/README.md) → [Architecture Reference](reference/architecture_reference.md)
+- **Debug issues** → [Technical Reference](reference/technical_reference.md) → [Improvement Analysis](operations/improvement_analysis.md)
 
 ### By Audience
 
 **Beginners:**
 
 1. [GNN Overview](gnn_overview.md)
-2. [Quickstart Tutorial](quickstart_tutorial.md)
-3. [GNN Examples](gnn_examples_doc.md)
-4. [GNN Syntax](gnn_syntax.md)
+2. [Quickstart Tutorial](tutorials/quickstart_tutorial.md)
+3. [GNN Examples](tutorials/gnn_examples_doc.md)
+4. [GNN Syntax](reference/gnn_syntax.md)
 
 **Researchers:**
 
-1. [Advanced Modeling Patterns](advanced_modeling_patterns.md)
-2. [Multi-Agent Systems](gnn_multiagent.md)
-3. [LLM and Neurosymbolic AI](gnn_llm_neurosymbolic_active_inference.md)
-4. [Ontology System](ontology_system.md)
+1. [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)
+2. [Multi-Agent Systems](advanced/gnn_multiagent.md)
+3. [LLM and Neurosymbolic AI](advanced/gnn_llm_neurosymbolic_active_inference.md)
+4. [Ontology System](advanced/ontology_system.md)
 
 **Developers:**
 
 1. [src/AGENTS.md](../../src/AGENTS.md)
-2. [Architecture Reference](architecture_reference.md)
-3. [Technical Reference](technical_reference.md)
-4. [Framework Integration Guide](framework_integration_guide.md)
-5. [GNN Implementation Guide](gnn_implementation.md)
+2. [Architecture Reference](reference/architecture_reference.md)
+3. [Technical Reference](reference/technical_reference.md)
+4. [Framework Integration Guide](integration/framework_integration_guide.md)
+5. [GNN Implementation Guide](integration/gnn_implementation.md)
 
 **System Architects:**
 
 1. [src/README.md](../../src/README.md)
-2. [Architecture Reference](architecture_reference.md)
-3. [GNN Standards](gnn_standards.md)
-4. [Improvement Analysis](improvement_analysis.md)
-5. [REPO Coherence Check](REPO_COHERENCE_CHECK.md)
+2. [Architecture Reference](reference/architecture_reference.md)
+3. [GNN Standards](reference/gnn_standards.md)
+4. [Improvement Analysis](operations/improvement_analysis.md)
+5. [REPO Coherence Check](operations/REPO_COHERENCE_CHECK.md)
 
 ## 🛠️ Additional Resources
 
 **Related Documentation:**
 
-- [GNN Troubleshooting](gnn_troubleshooting.md) - Common issues and solutions
+- [GNN Troubleshooting](operations/gnn_troubleshooting.md) - Common issues and solutions
 - [API Reference](../api/) - API documentation
 - [Configuration Guide](../configuration/) - Configuration options
 - [Troubleshooting](../troubleshooting/) - Common issues and solutions
@@ -211,7 +211,7 @@ All GNN documentation follows these principles:
 ## 📋 Documentation Status
 
 - ✅ All 25 pipeline steps documented
-- ✅ Complete module AGENTS.md coverage (28/28 modules)
+- ✅ Complete module AGENTS.md coverage (30/30 modules)
 - ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
 - ✅ 1,522+ tests passing
 
@@ -221,38 +221,38 @@ All GNN documentation follows these principles:
 ## 📖 Document Index (Alphabetical)
 
 - [About GNN](about_gnn.md)
-- [Advanced Modeling Patterns](advanced_modeling_patterns.md)
-- [Architecture Reference](architecture_reference.md)
-- [Framework Integration Guide](framework_integration_guide.md)
-- [GNN DSL Manual](gnn_dsl_manual.md)
-- [GNN Examples](gnn_examples_doc.md)
-- [GNN Export Guide](gnn_export.md)
-- [GNN File Structure](gnn_file_structure_doc.md)
-- [GNN Implementation Guide](gnn_implementation.md)
-- [GNN LLM and Neurosymbolic AI](gnn_llm_neurosymbolic_active_inference.md)
-- [GNN Multi-Agent](gnn_multiagent.md)
-- [GNN Ontology Guide](gnn_ontology.md)
+- [Advanced Modeling Patterns](advanced/advanced_modeling_patterns.md)
+- [Architecture Reference](reference/architecture_reference.md)
+- [Framework Integration Guide](integration/framework_integration_guide.md)
+- [GNN DSL Manual](reference/gnn_dsl_manual.md)
+- [GNN Examples](tutorials/gnn_examples_doc.md)
+- [GNN Export Guide](integration/gnn_export.md)
+- [GNN File Structure](reference/gnn_file_structure_doc.md)
+- [GNN Implementation Guide](integration/gnn_implementation.md)
+- [GNN LLM and Neurosymbolic AI](advanced/gnn_llm_neurosymbolic_active_inference.md)
+- [GNN Multi-Agent](advanced/gnn_multiagent.md)
+- [GNN Ontology Guide](advanced/gnn_ontology.md)
 - [GNN Overview](gnn_overview.md)
 - [GNN Paper](gnn_paper.md)
-- [GNN Schema](gnn_schema.md)
-- [GNN Standards](gnn_standards.md)
-- [GNN Syntax](gnn_syntax.md)
-- [GNN Tools and Resources](gnn_tools.md)
-- [GNN Troubleshooting](gnn_troubleshooting.md)
-- [GNN Type System](gnn_type_system.md)
-- [GNN Visualization Guide](gnn_visualization.md)
-- [Improvement Analysis](improvement_analysis.md)
-- [Ontology System](ontology_system.md)
-- [Quickstart Tutorial](quickstart_tutorial.md)
-- [REPO Coherence Check](REPO_COHERENCE_CHECK.md)
-- [Resource Metrics](resource_metrics.md)
-- [Technical Reference](technical_reference.md)
+- [GNN Schema](reference/gnn_schema.md)
+- [GNN Standards](reference/gnn_standards.md)
+- [GNN Syntax](reference/gnn_syntax.md)
+- [GNN Tools and Resources](operations/gnn_tools.md)
+- [GNN Troubleshooting](operations/gnn_troubleshooting.md)
+- [GNN Type System](reference/gnn_type_system.md)
+- [GNN Visualization Guide](integration/gnn_visualization.md)
+- [Improvement Analysis](operations/improvement_analysis.md)
+- [Ontology System](advanced/ontology_system.md)
+- [Quickstart Tutorial](tutorials/quickstart_tutorial.md)
+- [REPO Coherence Check](operations/REPO_COHERENCE_CHECK.md)
+- [Resource Metrics](operations/resource_metrics.md)
+- [Technical Reference](reference/technical_reference.md)
 
 ---
 
-**GNN Version**: v1.2.0
-**Pipeline Version**: 1.2.0
+**GNN Version**: v1.3.0
+**Pipeline Version**: 1.3.0
 **Total Pipeline Steps**: 25 (0-24)
-**Last Updated**: 2026-02-24
+**Last Updated**: 2026-03-03
 
 **Status**: ✅ All Documentation Complete

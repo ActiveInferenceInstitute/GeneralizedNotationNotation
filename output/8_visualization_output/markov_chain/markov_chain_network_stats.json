@@ -1,0 +1,23 @@
+{
+  "total_variables": 20,
+  "total_connections": 6,
+  "variable_types": {
+    "unknown": 20
+  },
+  "connection_types": {
+    "D->s": 1,
+    "s->A": 1,
+    "A->o": 1,
+    "s->s_prime": 1,
+    "B->s_prime": 1,
+    "s->B": 1
+  },
+  "network_properties": {
+    "num_nodes": 6,
+    "num_edges": 6,
+    "density": 0.2,
+    "is_strongly_connected": false,
+    "is_weakly_connected": true,
+    "average_clustering": 0.18055555555555555
+  }
+}

@@ -1,6 +1,6 @@
 # GNN MCP Tool Quick Reference
 
-All 76 real tools registered by the GNN MCP server (v1.2.0, February 24, 2026).  
+All 131 real tools registered by the GNN MCP server (v1.3.0, March 02, 2026).  
 Sorted alphabetically by domain. For full per-domain documentation see **[../modules/21_mcp.md](../modules/21_mcp.md)**.
 
 ## Full Tool Table
@@ -86,5 +86,5 @@ Sorted alphabetically by domain. For full per-domain documentation see **[../mod
 | website | `list_generated_website_pages` | List all generated website pages |
 | website | `process_website` | Generate static HTML website from pipeline output |
 
-**Total: 76 tools across 22 domains**  
+**Total: 131 tools across 30 domains**  
 Verified by `src/tests/test_mcp_audit.py` — 1,522+ tests, 0 failures, 0 skips.

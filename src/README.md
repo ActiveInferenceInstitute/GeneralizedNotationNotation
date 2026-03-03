@@ -195,8 +195,8 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Output Directory Structure**: Fully organized ✅
 - **Pipeline Continuation**: Guaranteed ✅
 - **Error Recovery**: Comprehensive ✅
-- **Last Updated**: 2026-02-23
-- **Version**: 1.2.0
+- **Last Updated**: 2026-03-03
+- **Version**: 1.3.0
 - **Test Suite**: ✅ 1,522+ tests passing
 
 **Complete Output Directory Organization (25 Steps):**
@@ -247,7 +247,7 @@ output/
 2. **Retry Mechanisms**: Exponential backoff retry with configurable attempt limits
 3. **Resource Monitoring**: Memory and CPU usage tracking with timeout protection
 4. **Error Recovery**: Detailed error classification with specific recovery suggestions
-5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, and DisCoPy
+5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy, PyTorch, and NumPyro
 
 **Pipeline Continuation Guarantees:**
 
@@ -293,6 +293,15 @@ python src/12_execute.py --frameworks "lite" --verbose
 
 # Install optional dependencies
 python src/1_setup.py --install_optional --optional_groups "pymdp,jax,viz,gui,audio,llm"
+
+# Staged folder execution via testing matrix (configured in input/config.yaml)
+# Run parse + type-check + validate + render on matrix-configured folders:
+python src/main.py --only-steps "3,5,6,11" --verbose
+# Only 'discrete' folder gets step 11 (render); all folders get steps 3,5,6
+
+# Toggle global steps (0=template, 1=setup, 2=tests) in input/config.yaml:
+#   testing_matrix.global_steps.2_tests: false  → skips test execution
+#   testing_matrix.global_steps.1_setup: false   → skips environment setup
 ```
 
 **Output Verification:**
