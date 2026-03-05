@@ -311,7 +311,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-03T08:22:02.564759",
+  "created_at": "2026-03-05T10:37:34.823216",
   "equations": [],
   "extensions": {
     "footer": "Stigmergic Swarm Active Inference v1 - GNN Representation.\n3 agents coordinating via environmental traces only.\nNo direct communication — emergent coordination from shared signals.\nModels ant colony foraging and decentralized robotic coordination.",
@@ -319,7 +319,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Stigmergic Swarm Active Inference",
-  "modified_at": "2026-03-03T08:22:02.564760",
+  "modified_at": "2026-03-05T10:37:34.823217",
   "ontology_mappings": [
     {
       "description": null,

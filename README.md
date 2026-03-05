@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-03-02
+**Last Updated**: 2026-03-05
 
 <div align="center">
 
@@ -51,7 +51,7 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-03-03  
+**Last Updated**: 2026-03-05  
 **Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
 **Test Suite**: ✅ 1,522+ tests passing (v1.3.0)  
@@ -94,7 +94,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 29 agent modules
+├── 📁 src/                    # 25-step pipeline + 27 modules
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
@@ -1161,7 +1161,7 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 
 The GNN project maintains high standards for code quality, testing, and documentation.
 
-### 📊 Current Metrics (2026-02-09)
+### 📊 Current Metrics (2026-03-05)
 
 - **Total Steps**: 25 (0-24)
 - **Execution Time**: ~5 minutes (with LLM step)

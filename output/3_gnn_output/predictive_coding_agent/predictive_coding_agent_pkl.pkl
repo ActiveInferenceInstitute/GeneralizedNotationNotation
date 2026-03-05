@@ -10,7 +10,7 @@
 - Action minimizes expected free energy by changing sensory input
 - Uses generalized coordinates of motion (position, velocity, acceleration)
 - Demonstrates the core predictive processing framework underlying Active Inference
-/// Generated: 2026-03-03T08:22:04.298815
+/// Generated: 2026-03-05T10:37:36.366499
 /// Enhanced by GNN PKL Serializer
 ///
 

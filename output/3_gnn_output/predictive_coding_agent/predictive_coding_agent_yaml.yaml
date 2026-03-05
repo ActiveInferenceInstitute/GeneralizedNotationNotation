@@ -143,10 +143,10 @@ connections:
   target_variables:
   - e_s
   weight: null
-created_at: '2026-03-03T08:22:04.288856'
+created_at: '2026-03-05T10:37:36.357169'
 equations: []
 model_name: Predictive Coding Active Inference Agent
-modified_at: '2026-03-03T08:22:04.288857'
+modified_at: '2026-03-05T10:37:36.357170'
 ontology_mappings:
 - description: null
   ontology_term: VariationalFreeEnergy

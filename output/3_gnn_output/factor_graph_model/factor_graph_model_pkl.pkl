@@ -7,7 +7,7 @@
 - Variable nodes: observation and state variables
 - Factor nodes: likelihood and transition factors
 - Enables modality-specific processing and efficient belief propagation
-/// Generated: 2026-03-03T08:22:03.407648
+/// Generated: 2026-03-05T10:37:35.608084
 /// Enhanced by GNN PKL Serializer
 ///
 

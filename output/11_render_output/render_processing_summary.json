@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-03T08:22:25.416517",
+  "timestamp": "2026-03-05T10:37:41.309796",
   "processing_type": "POMDP-aware rendering",
   "total_files": 8,
   "successful_files": 8,
@@ -10,20 +10,20 @@
   "configuration": {
     "frameworks": "all",
     "strict_validation": true,
-    "verbose": false,
+    "verbose": true,
     "pomdp_processing_available": true
   },
   "file_results": {
-    "input/gnn_files/discrete/simple_mdp.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 449,
@@ -34,11 +34,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -55,7 +55,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/activeinference_jl/Simple MDP Agent_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -68,9 +68,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -81,11 +81,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -96,11 +96,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 108,
@@ -111,11 +111,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 121,
@@ -125,20 +125,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/simple_mdp/processing_summary.json",
-      "output_directory": "output/11_render_output/simple_mdp",
-      "base_output_dir": "output/11_render_output/simple_mdp"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp"
     },
-    "input/gnn_files/discrete/multi_armed_bandit.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 351,
@@ -149,11 +149,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -170,7 +170,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/activeinference_jl/Multi Armed Bandit Agent_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 283,
@@ -183,9 +183,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -196,11 +196,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/multi_armed_bandit/discopy/Multi Armed Bandit Agent_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/discopy/Multi Armed Bandit Agent_discopy.py",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/discopy/Multi Armed Bandit Agent_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/discopy/Multi Armed Bandit Agent_discopy.py"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -211,11 +211,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 106,
@@ -226,11 +226,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py",
           "output_files": [
-            "output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/multi_armed_bandit/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 119,
@@ -240,20 +240,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/multi_armed_bandit/processing_summary.json",
-      "output_directory": "output/11_render_output/multi_armed_bandit",
-      "base_output_dir": "output/11_render_output/multi_armed_bandit"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit"
     },
-    "input/gnn_files/discrete/deep_planning_horizon.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 632,
@@ -264,11 +264,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -285,7 +285,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/activeinference_jl/Deep Planning Horizon POMDP_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -298,9 +298,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/jax/Deep Planning Horizon POMDP_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/jax/Deep Planning Horizon POMDP_jax.py"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -311,11 +311,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -326,11 +326,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 108,
@@ -341,11 +341,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/deep_planning_horizon/numpyro/Deep Planning Horizon POMDP_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/numpyro/Deep Planning Horizon POMDP_numpyro.py",
           "output_files": [
-            "output/11_render_output/deep_planning_horizon/numpyro/Deep Planning Horizon POMDP_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/numpyro/Deep Planning Horizon POMDP_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/deep_planning_horizon/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 121,
@@ -355,20 +355,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/deep_planning_horizon/processing_summary.json",
-      "output_directory": "output/11_render_output/deep_planning_horizon",
-      "base_output_dir": "output/11_render_output/deep_planning_horizon"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon"
     },
-    "input/gnn_files/discrete/actinf_pomdp_agent.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 413,
@@ -379,11 +379,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -400,7 +400,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl/Active Inference POMDP Agent_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -413,9 +413,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/jax/Active Inference POMDP Agent_jax.py"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -426,11 +426,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy/Active Inference POMDP Agent_discopy.py"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -441,11 +441,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pytorch/Active Inference POMDP Agent_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 106,
@@ -456,11 +456,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py",
           "output_files": [
-            "output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/numpyro/Active Inference POMDP Agent_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/actinf_pomdp_agent/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 119,
@@ -470,20 +470,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/actinf_pomdp_agent/processing_summary.json",
-      "output_directory": "output/11_render_output/actinf_pomdp_agent",
-      "base_output_dir": "output/11_render_output/actinf_pomdp_agent"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent"
     },
-    "input/gnn_files/discrete/hmm_baseline.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py",
           "output_files": [
-            "output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 377,
@@ -494,11 +494,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -515,7 +515,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/activeinference_jl/Hidden Markov Model Baseline_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -528,9 +528,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -541,11 +541,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py",
           "output_files": [
-            "output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -556,11 +556,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py",
           "output_files": [
-            "output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 110,
@@ -571,11 +571,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py",
           "output_files": [
-            "output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/hmm_baseline/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 123,
@@ -585,20 +585,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/hmm_baseline/processing_summary.json",
-      "output_directory": "output/11_render_output/hmm_baseline",
-      "base_output_dir": "output/11_render_output/hmm_baseline"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline"
     },
-    "input/gnn_files/discrete/two_state_bistable.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py",
           "output_files": [
-            "output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 347,
@@ -609,11 +609,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -630,7 +630,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/activeinference_jl/Two State Bistable POMDP_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -643,9 +643,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -656,11 +656,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
           "output_files": [
-            "output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -671,11 +671,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/two_state_bistable/pytorch/Two State Bistable POMDP_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pytorch/Two State Bistable POMDP_pytorch.py",
           "output_files": [
-            "output/11_render_output/two_state_bistable/pytorch/Two State Bistable POMDP_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pytorch/Two State Bistable POMDP_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 104,
@@ -686,11 +686,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/two_state_bistable/numpyro/Two State Bistable POMDP_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/numpyro/Two State Bistable POMDP_numpyro.py",
           "output_files": [
-            "output/11_render_output/two_state_bistable/numpyro/Two State Bistable POMDP_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/numpyro/Two State Bistable POMDP_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/two_state_bistable/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 117,
@@ -700,20 +700,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/two_state_bistable/processing_summary.json",
-      "output_directory": "output/11_render_output/two_state_bistable",
-      "base_output_dir": "output/11_render_output/two_state_bistable"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable"
     },
-    "input/gnn_files/discrete/markov_chain.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py",
           "output_files": [
-            "output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/markov_chain/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 283,
@@ -724,11 +724,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/markov_chain/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -745,7 +745,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/activeinference_jl/Simple Markov Chain_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/markov_chain/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 282,
@@ -758,9 +758,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/markov_chain/jax/Simple Markov Chain_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/jax/Simple Markov Chain_jax.py"
           ],
-          "output_directory": "output/11_render_output/markov_chain/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -771,11 +771,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py",
           "output_files": [
-            "output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/discopy/Simple Markov Chain_discopy.py"
           ],
-          "output_directory": "output/11_render_output/markov_chain/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -786,11 +786,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/markov_chain/pytorch/Simple Markov Chain_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pytorch/Simple Markov Chain_pytorch.py",
           "output_files": [
-            "output/11_render_output/markov_chain/pytorch/Simple Markov Chain_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pytorch/Simple Markov Chain_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/markov_chain/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 106,
@@ -801,11 +801,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py",
           "output_files": [
-            "output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/numpyro/Simple Markov Chain_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/markov_chain/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 119,
@@ -815,20 +815,20 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/markov_chain/processing_summary.json",
-      "output_directory": "output/11_render_output/markov_chain",
-      "base_output_dir": "output/11_render_output/markov_chain"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain"
     },
-    "input/gnn_files/discrete/tmaze_epistemic.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pymdp/T-Maze Epistemic Foraging Agent_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 563,
@@ -839,11 +839,11 @@
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl",
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/rxinfer",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/rxinfer",
           "warnings": [
             "rxinfer has limited multi-modality support"
           ],
@@ -860,7 +860,7 @@
           "output_files": [
             "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/activeinference_jl/T-Maze Epistemic Foraging Agent_activeinference.jl"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/activeinference_jl",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/activeinference_jl",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -873,9 +873,9 @@
           "success": true,
           "message": "JAX model code generated successfully.",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/jax/T-Maze Epistemic Foraging Agent_jax.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/jax/T-Maze Epistemic Foraging Agent_jax.py"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/jax",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/jax",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 284,
@@ -886,11 +886,11 @@
         },
         "discopy": {
           "success": true,
-          "message": "Generated DisCoPy categorical diagram script: output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py",
+          "message": "Generated DisCoPy categorical diagram script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/discopy",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/discopy",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 173,
@@ -901,11 +901,11 @@
         },
         "pytorch": {
           "success": true,
-          "message": "PyTorch script generated: output/11_render_output/tmaze_epistemic/pytorch/T-Maze Epistemic Foraging Agent_pytorch.py",
+          "message": "PyTorch script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pytorch/T-Maze Epistemic Foraging Agent_pytorch.py",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/pytorch/T-Maze Epistemic Foraging Agent_pytorch.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pytorch/T-Maze Epistemic Foraging Agent_pytorch.py"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/pytorch",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/pytorch",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 108,
@@ -916,11 +916,11 @@
         },
         "numpyro": {
           "success": true,
-          "message": "NumPyro script generated: output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py",
+          "message": "NumPyro script generated: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py",
           "output_files": [
-            "output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py"
           ],
-          "output_directory": "output/11_render_output/tmaze_epistemic/numpyro",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/numpyro",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 121,
@@ -930,9 +930,9 @@
           }
         }
       },
-      "summary_file": "output/11_render_output/tmaze_epistemic/processing_summary.json",
-      "output_directory": "output/11_render_output/tmaze_epistemic",
-      "base_output_dir": "output/11_render_output/tmaze_epistemic"
+      "summary_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic/processing_summary.json",
+      "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic",
+      "base_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/tmaze_epistemic"
     }
   }
 }

@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Multi Armed Bandit Agent
-Generated: 2026-03-03 08:22:25
+Generated: 2026-03-05 10:37:41
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Multi Armed Bandit Agent',
-        'timestamp': '2026-03-03 08:22:25',
+        'timestamp': '2026-03-05 10:37:41',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

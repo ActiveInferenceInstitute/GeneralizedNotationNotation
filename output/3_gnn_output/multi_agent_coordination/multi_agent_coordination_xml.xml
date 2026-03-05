@@ -7,8 +7,8 @@
 - Joint task state includes both agents' positions (4x4 = 16 joint states)
 - Cooperative preferences: both agents prefer the same goal configuration
 - Models social cognition and coordination without explicit communication</annotation>
-    <created_at>2026-03-03T08:22:02.579868</created_at>
-    <modified_at>2026-03-03T08:22:02.579871</modified_at>
+    <created_at>2026-03-05T10:37:34.839114</created_at>
+    <modified_at>2026-03-05T10:37:34.839115</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="A1" type="action" description="Agent 1 likelihood"/>

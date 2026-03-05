@@ -1,6 +1,6 @@
 {
   "model_name": "Simple Markov Chain",
-  "timestamp": "2026-03-03 08:22:25",
+  "timestamp": "2026-03-05 10:34:58",
   "parameters": {
     "num_states": 3,
     "num_observations": 3,

@@ -6,7 +6,7 @@ A continuous-state Active Inference agent navigating a 2D environment:
 - Actions: 2D velocity commands (dx, dy)
 - Uses Laplace approximation for Gaussian belief updating
 - Generalized coordinates of motion for smooth trajectories
-Generated: 2026-03-03T08:22:04.302335
+Generated: 2026-03-05T10:37:36.369813
 """
 
 import numpy as np

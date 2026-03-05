@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/pytorch/Hidden Markov Model Baseline_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.630646,
-  "timestamp": "2026-03-03T08:22:55.456493",
+  "execution_time": 0.729261,
+  "timestamp": "2026-03-05T10:35:28.785415",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/hmm_baseline/pytorch"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/pytorch"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/hmm_baseline/pytorch/simulation_data/pytorch_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/pytorch/simulation_data/pytorch_simulation_results.json"
     ],
     "traces": [],
     "other": []

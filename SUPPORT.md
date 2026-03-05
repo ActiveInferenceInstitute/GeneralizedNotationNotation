@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Support Guide | **Audience**: All Users | **Complexity**: Beginner-Friendly  
-> **Last Updated**: February 2026 | **Status**: Production-Ready  
+> **Last Updated**: March 2026 | **Status**: Production-Ready  
 > **Cross-References**: [README](README.md) | [Troubleshooting](doc/troubleshooting/README.md) | [Contributing](CONTRIBUTING.md)
 
 If you need help with GeneralizedNotationNotation (GNN), have questions, or want to discuss the project, here are several ways to get support:

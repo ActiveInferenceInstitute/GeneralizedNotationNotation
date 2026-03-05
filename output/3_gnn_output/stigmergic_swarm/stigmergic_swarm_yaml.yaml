@@ -214,10 +214,10 @@ connections:
   target_variables:
   - env_signal
   weight: null
-created_at: '2026-03-03T08:22:02.564759'
+created_at: '2026-03-05T10:37:34.823216'
 equations: []
 model_name: Stigmergic Swarm Active Inference
-modified_at: '2026-03-03T08:22:02.564760'
+modified_at: '2026-03-05T10:37:34.823217'
 ontology_mappings:
 - description: null
   ontology_term: Agent1LikelihoodMatrix

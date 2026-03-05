@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/pytorch/Simple MDP Agent_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.161091,
-  "timestamp": "2026-03-03T08:22:32.350769",
+  "execution_time": 0.976489,
+  "timestamp": "2026-03-05T10:37:45.989486",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/simple_mdp/pytorch"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/pytorch"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/simple_mdp/pytorch/simulation_data/pytorch_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/pytorch/simulation_data/pytorch_simulation_results.json"
     ],
     "traces": [],
     "other": []

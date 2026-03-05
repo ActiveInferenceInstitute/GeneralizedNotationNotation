@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/numpyro/Hidden Markov Model Baseline_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.085341,
-  "timestamp": "2026-03-03T08:22:52.818441",
+  "execution_time": 1.189964,
+  "timestamp": "2026-03-05T10:35:25.840891",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,19 +14,19 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.703s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.748s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": ""
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/hmm_baseline/numpyro"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/numpyro"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/hmm_baseline/numpyro/simulation_data/numpyro_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/numpyro/simulation_data/numpyro_simulation_results.json"
     ],
     "traces": [],
     "other": []

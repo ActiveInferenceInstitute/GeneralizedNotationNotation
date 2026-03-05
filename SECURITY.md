@@ -2,7 +2,7 @@
 
 > **📋 Document Metadata**  
 > **Type**: Security Policy | **Audience**: All Users | **Complexity**: Intermediate  
-> **Last Updated**: February 2026 | **Status**: Production-Ready  
+> **Last Updated**: March 2026 | **Status**: Production-Ready  
 > **Cross-References**: [Comprehensive Security Guide](doc/security/README.md) | [Deployment Security](doc/deployment/README.md) | [MCP Security](doc/mcp/README.md)
 
 ## 🔒 Comprehensive Security Framework
@@ -32,6 +32,8 @@ We are committed to ensuring the security of the GeneralizedNotationNotation (GN
 | 2026-02-06 | CVE-2026-0994 | protobuf | Upgraded 6.33.4 → 6.33.5 (patched) |
 | 2026-02-09 | CVE-2025-53000 | nbconvert | Upgraded 7.16.6 → 7.17.0 |
 | 2026-02-11 | CVE-2026-26007 | cryptography | Upgraded 46.0.3 → 46.0.5 |
+| 2026-03-05 | CVE-2025-14009 | nltk | Upgraded 3.9.2 → 3.9.3 (Zip Slip RCE fix) |
+| 2026-03-05 | CVE-2026-28802 | authlib | Upgraded 1.6.6 → 1.6.9 (alg:none signature bypass fix) |
 
 > **ℹ️ Known Accepted Risks**: The following vulnerabilities are documented and accepted:
 >
