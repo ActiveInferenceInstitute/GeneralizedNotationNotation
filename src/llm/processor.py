@@ -54,18 +54,7 @@ def _model_is_cached(model_name: str, logger) -> bool:
         return False
 import asyncio
 
-try:
-    from utils.pipeline_template import (
-        log_step_start,
-        log_step_success,
-        log_step_error,
-        log_step_warning
-    )
-except Exception:
-    def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
-    def log_step_success(logger, msg): logger.info(f"✅ {msg}")
-    def log_step_error(logger, msg): logger.error(f"❌ {msg}")
-    def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
+from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
 
 def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
     """

@@ -49,14 +49,11 @@ except ImportError:
     JAX_AVAILABLE = False
     run_jax_scripts = None
 
+from utils.step_logging import log_step_start, log_step_success, log_step_warning, log_step_error
+
 try:
-    from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+    from utils import performance_tracker
 except Exception:
-    import logging as _logging
-    def log_step_start(logger, msg): _logging.getLogger(__name__).info(f"🚀 {msg}")
-    def log_step_success(logger, msg): _logging.getLogger(__name__).info(f"✅ {msg}")
-    def log_step_warning(logger, msg): _logging.getLogger(__name__).warning(f"⚠️ {msg}")
-    def log_step_error(logger, msg): _logging.getLogger(__name__).error(f"❌ {msg}")
     def performance_tracker():
         from contextlib import contextmanager
         @contextmanager

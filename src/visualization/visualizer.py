@@ -789,15 +789,11 @@ def generate_visualizations(
     Returns:
         True if visualization succeeded, False otherwise
     """
+    from utils.step_logging import log_step_start, log_step_success, log_step_warning, log_step_error
     try:
-        from utils import log_step_start, log_step_success, log_step_warning, log_step_error, performance_tracker
+        from utils import performance_tracker
         from pipeline import get_output_dir_for_script
     except ImportError:
-        # Fallback logging functions
-        def log_step_start(logger, msg): logger.info(f"🚀 {msg}")
-        def log_step_success(logger, msg): logger.info(f"✅ {msg}")
-        def log_step_warning(logger, msg): logger.warning(f"⚠️ {msg}")
-        def log_step_error(logger, msg): logger.error(f"❌ {msg}")
         def get_output_dir_for_script(script, output_dir): return output_dir / "visualization"
         performance_tracker = None
     from contextlib import contextmanager

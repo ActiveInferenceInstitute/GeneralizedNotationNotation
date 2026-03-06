@@ -11,30 +11,14 @@ import json
 import datetime
 from typing import Dict, Any
 
-# Import utilities
+from utils.step_logging import log_step_start, log_step_success, log_step_warning, log_step_error
+
 try:
-    from utils import (
-        setup_step_logging,
-        log_step_start,
-        log_step_success,
-        log_step_warning,
-        log_step_error,
-        performance_tracker
-    )
-    UTILS_AVAILABLE = True
+    from utils import setup_step_logging, performance_tracker
 except ImportError:
-    # Fallback logging setup
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    UTILS_AVAILABLE = False
+    from utils.step_logging import setup_step_logging
 
-    # Create minimal compatibility functions
-    def log_step_start(logger, message): logger.info(f"🚀 {message}")
-    def log_step_success(logger, message): logger.info(f"✅ {message}")
-    def log_step_warning(logger, message): logger.warning(f"⚠️ {message}")
-    def log_step_error(logger, message): logger.error(f"❌ {message}")
-
-    # Create minimal performance tracker
-    class MinimalPerformanceTracker:
+    class _MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
             class NoOpContext:
                 def __enter__(self): return self
@@ -42,7 +26,7 @@ except ImportError:
             return NoOpContext()
         def get_summary(self): return {}
 
-    performance_tracker = MinimalPerformanceTracker()
+    performance_tracker = _MinimalPerformanceTracker()
 
 # Initialize logger
 logger = logging.getLogger(__name__)

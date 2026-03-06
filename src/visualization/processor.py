@@ -65,21 +65,7 @@ except ImportError:
     PLOTLY_AVAILABLE = False
 
 # Try to import utils, but provide fallbacks if not available
-try:
-    from utils.pipeline_template import (
-        log_step_start,
-        log_step_success,
-        log_step_error,
-        log_step_warning
-    )
-    UTILS_AVAILABLE = True
-except ImportError:
-    # Fallback logging functions
-    def log_step_start(logger, msg): logger.info(f"\U0001f680 {msg}")
-    def log_step_success(logger, msg): logger.info(f"\u2705 {msg}")
-    def log_step_error(logger, msg): logger.error(f"\u274c {msg}")
-    def log_step_warning(logger, msg): logger.warning(f"\u26a0\ufe0f {msg}")
-    UTILS_AVAILABLE = False
+from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
 
 # Import analysis utilities
 try:
