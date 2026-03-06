@@ -51,17 +51,7 @@ except ImportError as e:
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
-    def setup_step_logging(name: str, verbose: bool = False) -> logging.Logger:
-        return logging.getLogger(name)
-
-    def log_step_success(logger: logging.Logger, message: str):
-        logger.info(f"✅ {message}")
-
-    def log_step_warning(logger: logging.Logger, message: str):
-        logger.warning(f"⚠️ {message}")
-
-    def log_step_error(logger: logging.Logger, message: str):
-        logger.error(f"❌ {message}")
+    from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
 
 
 class EnhancedHealthChecker:

@@ -1,11 +1,11 @@
 {
-  "input_file": "input/gnn_files/continuous/continuous_navigation.md",
-  "output_file": "output/0_template_output/continuous_navigation/continuous_navigation_processed.md",
-  "timestamp": "2026-03-06T09:42:35.847598",
+  "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/continuous_navigation.md",
+  "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/continuous_navigation/continuous_navigation_processed.md",
+  "timestamp": "2026-03-06T15:48:32.103476",
   "file_size_bytes": 3819,
   "file_size_lines": 151,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }

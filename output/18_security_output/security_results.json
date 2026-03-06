@@ -1,0 +1,203 @@
+{
+  "timestamp": "2026-03-06T15:11:58.796995",
+  "processed_files": 8,
+  "success": true,
+  "errors": [],
+  "security_checks": [
+    {
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "file_hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
+      "file_size": 3322,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.797418"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_name": "multi_armed_bandit.md",
+      "file_hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
+      "file_size": 3332,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.798258"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_name": "deep_planning_horizon.md",
+      "file_hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
+      "file_size": 3776,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.798733"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "file_hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804",
+      "file_size": 4306,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.799285"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+      "file_name": "hmm_baseline.md",
+      "file_hash": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265",
+      "file_size": 2513,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.799778"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+      "file_name": "two_state_bistable.md",
+      "file_hash": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361",
+      "file_size": 2756,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.800135"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
+      "file_name": "markov_chain.md",
+      "file_hash": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb",
+      "file_size": 2394,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.800502"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_name": "tmaze_epistemic.md",
+      "file_hash": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c",
+      "file_size": 5626,
+      "sensitive_patterns": [],
+      "file_permissions": "readable",
+      "security_score": 100.0,
+      "check_timestamp": "2026-03-06T15:11:58.800923"
+    }
+  ],
+  "vulnerabilities": [],
+  "recommendations": [
+    {
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_name": "simple_mdp.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_name": "multi_armed_bandit.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_name": "multi_armed_bandit.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_name": "deep_planning_horizon.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_name": "deep_planning_horizon.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "file_name": "actinf_pomdp_agent.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+      "file_name": "hmm_baseline.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+      "file_name": "hmm_baseline.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+      "file_name": "two_state_bistable.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+      "file_name": "two_state_bistable.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
+      "file_name": "markov_chain.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
+      "file_name": "markov_chain.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_name": "tmaze_epistemic.md",
+      "recommendation": "Add security documentation section",
+      "priority": "medium",
+      "description": "Consider adding a security section to document security considerations"
+    },
+    {
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_name": "tmaze_epistemic.md",
+      "recommendation": "Add error handling",
+      "priority": "medium",
+      "description": "Implement proper error handling for robust security"
+    }
+  ]
+}

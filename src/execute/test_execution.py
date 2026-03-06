@@ -27,7 +27,7 @@ def find_pymdp_scripts(rendered_simulators_dir):
     return [p for p in pymdp_dir.rglob("*.py") if not any(part.startswith('__') for part in p.parts)]
 from execute.jax.jax_runner import is_jax_available
 from execute.activeinference_jl.activeinference_runner import is_julia_available
-from utils.step_logging import log_step_start, log_step_success, log_step_warning, log_step_error, setup_step_logging
+from utils.logging.logging_utils import log_step_start, log_step_success, log_step_warning, log_step_error, setup_step_logging
 
 def test_dependency_checking():
     """Test dependency checking for all execution environments."""

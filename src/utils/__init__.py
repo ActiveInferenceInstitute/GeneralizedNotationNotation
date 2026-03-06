@@ -6,13 +6,31 @@
 """
 GNN Pipeline Utilities Package
 
-This package provides streamlined utilities for the GNN processing pipeline:
+184 exported names aggregated from 20 source modules. All pipeline steps import
+from this package for consistency. The surface area is intentionally wide; a
+future pass should split it by concern into sub-packages.
+
+Source modules:
 - logging_utils: Centralized, correlation-aware logging system
 - argument_utils: Streamlined argument parsing and validation
+- resource_manager: Memory and resource usage tracking
+- error_recovery: Error context, severity, and recovery management
+- pipeline_monitor: Pipeline health reporting
+- pipeline_validator: Pre-execution prerequisite checker (step output validation)
+- pipeline_planner: Execution plan generation
 - dependency_validator: Comprehensive dependency validation
-- config_loader: YAML configuration loading and validation
-
-All pipeline modules should import from this package for consistency.
+- config_loader: YAML configuration loading and validation (active config system)
+- performance_tracker: Operation timing and performance metrics
+- step_logging: Minimal, always-importable logging functions (no external deps)
+- base_processor: Abstract base class for standardized step processors
+- venv_utils: Virtual environment path helpers
+- system_utils: System information gathering
+- test_utils: Test runner, categories, stages, and coverage targets
+- pipeline: Legacy utilities re-exported for backwards compatibility
+- error_handling: Structured error handler, categories, and recovery strategies
+- structured_logging: Structured log emission with correlation context
+- configuration: DEPRECATED — not wired into pipeline; see config_loader instead
+- dependency_audit: Dependency auditing and optimization utilities
 """
 
 import logging
@@ -112,7 +130,7 @@ try:
     )
 
     # Step logging - minimal, always-importable logging functions
-    from .step_logging import (
+    from .logging.logging_utils import (
         log_step_start as step_log_start,
         log_step_success as step_log_success,
         log_step_warning as step_log_warning,

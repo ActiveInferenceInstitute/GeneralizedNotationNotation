@@ -1,8 +1,8 @@
 
 # Processed by GNN Pipeline Template
-# Original file: input/gnn_files/discrete/tmaze_epistemic.md
-# Processed on: 2026-03-06T09:42:35.845869
-# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
+# Original file: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md
+# Processed on: 2026-03-06T15:48:32.101169
+# Options: {'verbose': True, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: T-Maze Epistemic Foraging Agent
 

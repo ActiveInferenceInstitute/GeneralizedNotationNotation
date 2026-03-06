@@ -764,8 +764,8 @@ class GNNRoundTripTester:
                     continue
                 try:
                     # Check if format is in the available lists (using enum values for comparison)
-                    parser_available = any(p.value == fmt.value for p in available_parsers.keys())
-                    serializer_available = any(s.value == fmt.value for s in available_serializers.keys())
+                    parser_available = any(p.value == fmt.value for p in available_parsers)
+                    serializer_available = any(s.value == fmt.value for s in available_serializers)
                     if parser_available and serializer_available:
                         working_formats.append(fmt)
                         if LOGGING_CONFIG['enable_debug']:
@@ -1188,7 +1188,7 @@ class GNNRoundTripTester:
                 try:
                     # Use enum value for comparison to handle different enum instances
                     available_parsers = self.parsing_system._parsers
-                    parser_found = any(p.value == target_format.value for p in available_parsers.keys())
+                    parser_found = any(p.value == target_format.value for p in available_parsers)
 
                     if parser_found:
                         # Find the actual parser instance
@@ -1335,8 +1335,8 @@ class GNNRoundTripTester:
         conv_dict = {var.name: var for var in conv_vars}
 
         # Check for missing variables
-        missing_in_converted = set(orig_dict.keys()) - set(conv_dict.keys())
-        extra_in_converted = set(conv_dict.keys()) - set(orig_dict.keys())
+        missing_in_converted = set(orig_dict) - set(conv_dict)
+        extra_in_converted = set(conv_dict) - set(orig_dict)
 
         for var_name in missing_in_converted:
             result.add_difference(f"Variable missing in converted: {var_name}")
@@ -1345,7 +1345,7 @@ class GNNRoundTripTester:
             result.add_difference(f"Extra variable in converted: {var_name}")
 
         # Compare common variables
-        for var_name in set(orig_dict.keys()) & set(conv_dict.keys()):
+        for var_name in set(orig_dict) & set(conv_dict):
             orig_var = orig_dict[var_name]
             conv_var = conv_dict[var_name]
 
@@ -1404,8 +1404,8 @@ class GNNRoundTripTester:
         orig_dict = {param.name: param for param in orig_params}
         conv_dict = {param.name: param for param in conv_params}
 
-        missing_params = set(orig_dict.keys()) - set(conv_dict.keys())
-        extra_params = set(conv_dict.keys()) - set(orig_dict.keys())
+        missing_params = set(orig_dict) - set(conv_dict)
+        extra_params = set(conv_dict) - set(orig_dict)
 
         for param_name in missing_params:
             result.add_difference(f"Missing parameter: {param_name}")
@@ -1414,7 +1414,7 @@ class GNNRoundTripTester:
             result.add_difference(f"Extra parameter: {param_name}")
 
         # Compare parameter values (simplified - could be more sophisticated)
-        for param_name in set(orig_dict.keys()) & set(conv_dict.keys()):
+        for param_name in set(orig_dict) & set(conv_dict):
             orig_val = orig_dict[param_name].value
             conv_val = conv_dict[param_name].value
 

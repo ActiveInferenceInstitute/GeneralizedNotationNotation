@@ -107,6 +107,7 @@ api = [
 ]
 
 # Optional heavy packages (install separately based on use case requirements)
+# JAX-based active inference: GPU-accelerated free energy minimization (step 12 jax renderer)
 active-inference = [
     "jax[cpu]>=0.4.0",
     "jaxlib>=0.4.0",
@@ -114,12 +115,14 @@ active-inference = [
     "optax>=0.1.0",
 ]
 
+# NumPyro probabilistic programming: Bayesian inference backends (step 12 numpyro renderer)
 probabilistic-programming = [
     "numpyro>=0.14",
     "jax[cpu]>=0.4.0",
     "jaxlib>=0.4.0",
 ]
 
+# Deep learning: PyTorch-based renderers and LLM fine-tuning (step 12 pytorch renderer)
 ml-ai = [
     "torch>=2.0.0",
     "torchvision>=0.15.0",
@@ -129,6 +132,7 @@ ml-ai = [
     "accelerate>=0.20.0",
 ]
 
+# LLM integration: external API calls for step 13 (LLM analysis)
 llm = [
     "openai>=1.0.0",
     "anthropic>=0.7.0",
@@ -136,6 +140,7 @@ llm = [
     "ollama>=0.1.0",
 ]
 
+# Enhanced visualization: interactive plots beyond matplotlib (steps 8, 9, 16)
 visualization = [
     "plotly>=5.15.0",
     "altair>=5.0.0",
@@ -146,6 +151,7 @@ visualization = [
     "dash>=2.10.0",
 ]
 
+# Audio synthesis: SAPF/sonification output (step 15)
 audio = [
     "librosa>=0.10.0",
     "soundfile>=0.12.0",
@@ -154,15 +160,17 @@ audio = [
     "pyaudio>=0.2.0",
 ]
 
+# GUI interfaces: Gradio/Streamlit frontends (step 22)
 gui = [
     "gradio>=4.0.0",
     "streamlit>=1.25.0",
 ]
 
+# Graph/categorical: DisCoPy string diagrams + graph analysis (step 11 discopy renderer)
 graphs = [
     "igraph>=0.10.0",
     "graphviz>=0.20.0",
-    "discopy[categorical]>=1.1.0",
+    "discopy>=1.1.0",
 ]
 
 research = [
@@ -222,7 +230,7 @@ all = [
     "dash>=2.10.0",
     "igraph>=0.10.0",
     "graphviz>=0.20.0",
-    "discopy[categorical]>=1.1.0",
+    "discopy>=1.1.0",
 
     # Audio processing
     "librosa>=0.10.0",

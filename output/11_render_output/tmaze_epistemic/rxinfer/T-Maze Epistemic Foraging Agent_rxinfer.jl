@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: T-Maze Epistemic Foraging Agent
-# Generated: 2026-03-06 09:48:42
+# Generated: 2026-03-06 15:00:54
 
 using Pkg
 

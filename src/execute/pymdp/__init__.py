@@ -24,7 +24,18 @@ from .pymdp_utils import (
     create_output_directory_with_timestamp,
     format_duration
 )
-from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
+# Soft import: analysis (step 16) is downstream of execute (step 12); wrap to avoid
+# hard coupling across pipeline stages.
+try:
+    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
+except ImportError:
+    PyMDPVisualizer = None  # type: ignore[assignment,misc]
+
+    def create_visualizer(*args, **kwargs):  # type: ignore[misc]
+        return None
+
+    def save_all_visualizations(*args, **kwargs):  # type: ignore[misc]
+        return []
 
 # Import execution functions
 from .executor import (

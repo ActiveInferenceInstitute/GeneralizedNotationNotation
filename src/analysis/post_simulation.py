@@ -28,6 +28,7 @@ from .trace_analysis import (
     analyze_simulation_traces,
     analyze_free_energy,
     analyze_policy_convergence,
+    analyze_state_distributions,
     compare_framework_results,
 )
 
@@ -41,11 +42,26 @@ from .framework_extractors import (
 )
 
 # Re-export from math_utils
+from .math_utils import (
+    compute_shannon_entropy,
+    compute_kl_divergence,
+    compute_variational_free_energy,
+    compute_expected_free_energy,
+    compute_information_gain,
+    analyze_active_inference_metrics,
+)
 
 # Re-export from visualizations
 from .visualizations import (
     plot_belief_evolution,
     animate_belief_evolution,
+    visualize_all_framework_outputs,
+    generate_belief_heatmaps,
+    generate_action_analysis,
+    generate_free_energy_plots,
+    generate_observation_analysis,
+    generate_cross_framework_comparison,
+    generate_unified_framework_dashboard,
 )
 
 

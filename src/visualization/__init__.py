@@ -80,9 +80,6 @@ from .processor import (
     parse_gnn_content,
     parse_matrix_data,
     generate_matrix_visualizations,
-    generate_network_visualizations,
-    generate_combined_analysis,
-    generate_combined_visualizations
 )
 
 __version__ = "1.1.3"

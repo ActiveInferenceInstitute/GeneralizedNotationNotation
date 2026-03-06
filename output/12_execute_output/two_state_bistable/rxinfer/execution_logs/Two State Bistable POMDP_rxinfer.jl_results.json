@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 19.121172,
-  "timestamp": "2026-03-06T09:50:02.490029",
+  "execution_time": 21.555522,
+  "timestamp": "2026-03-06T15:02:48.856281",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

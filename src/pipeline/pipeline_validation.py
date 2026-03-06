@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
 """
-GNN Pipeline Validation Script
+GNN Pipeline Static Code Validation
 
-This script validates that all pipeline steps are:
-1. Using consistent logging patterns
-2. Producing expected outputs  
-3. Handling arguments correctly
-4. Following the established patterns
-5. Using centralized configuration properly
+Role: Static code analysis validator. Checks source code patterns — import style,
+config usage, argument naming, dependency cycles, and output naming conventions.
+Does NOT run the pipeline or check runtime behavior.
+
+See also:
+- utils/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
+- pipeline/pipeline_validator.py: Runtime integration tester (runs pipeline via subprocess)
 
 Usage:
     python pipeline_validation.py [--fix-issues]

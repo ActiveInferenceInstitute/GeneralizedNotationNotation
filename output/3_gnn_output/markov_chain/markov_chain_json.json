@@ -69,7 +69,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-06T09:42:43.754435",
+  "created_at": "2026-03-06T15:00:16.274019",
   "equations": [],
   "extensions": {
     "footer": "Simple Markov Chain v1 - GNN Representation.\nPassive dynamics, no actions. Tests minimal Markov model structure.",
@@ -77,7 +77,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Simple Markov Chain",
-  "modified_at": "2026-03-06T09:42:43.754436",
+  "modified_at": "2026-03-06T15:00:16.274020",
   "ontology_mappings": [
     {
       "description": null,

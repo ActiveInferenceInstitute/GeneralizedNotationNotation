@@ -10,7 +10,7 @@ import json
 import numpy as np
 from datetime import datetime
 
-from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 from .analyzer import (
     perform_statistical_analysis,
     calculate_complexity_metrics,

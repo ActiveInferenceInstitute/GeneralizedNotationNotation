@@ -1,9 +1,20 @@
 #!/usr/bin/env python3
 """
-GNN Pipeline Unified Configuration System
+DEPRECATED: This module is not used by the GNN pipeline.
 
-This module provides a centralized configuration management system for the GNN processing
-pipeline with environment variable support, schema validation, and hot reloading capabilities.
+The active configuration system is utils/config_loader.py, which is consumed by
+utils/argument_utils.py and ultimately by main.py.
+
+This module (ConfigurationManager, get_config_manager, init_config, etc.) was written
+as a more advanced alternative but was never wired into the pipeline. It will be
+removed in a future cleanup pass.
+
+---
+
+GNN Pipeline Unified Configuration System (unused)
+
+Provides ConfigurationManager with environment variable support, schema validation,
+and hot reloading. Not consumed by any pipeline step.
 """
 
 import os

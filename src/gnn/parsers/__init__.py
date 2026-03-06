@@ -82,8 +82,8 @@ from .binary_serializer import BinarySerializer
 
 # Import converters and validators
 from .converters import FormatConverter, ConversionError
-from .validators import GNNValidator, ValidationError, ValidationWarning
-from .common import GNNInternalRepresentation, ASTNode, ParseError, GNNParser
+from .validators import GNNValidator
+from .common import GNNInternalRepresentation, ASTNode, ParseError, ValidationError, ValidationWarning, GNNParser
 
 # Import system and utilities
 from .system import GNNParsingSystem, PARSER_REGISTRY, SERIALIZER_REGISTRY

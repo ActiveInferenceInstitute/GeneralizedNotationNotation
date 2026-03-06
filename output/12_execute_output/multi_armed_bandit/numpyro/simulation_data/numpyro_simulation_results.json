@@ -184,7 +184,7 @@
     "actions_in_range": true,
     "all_valid": true
   },
-  "execution_time_seconds": 0.617,
+  "execution_time_seconds": 0.7477,
   "jax_version": "0.9.0",
   "numpyro_version": "0.20.0"
 }

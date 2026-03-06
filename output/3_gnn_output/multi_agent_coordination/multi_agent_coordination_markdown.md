@@ -6,6 +6,7 @@ Multi-Agent Cooperative Active Inference
 
 ## ModelAnnotation
 Two Active Inference agents cooperating on a joint task:
+
 - Agent 1 and Agent 2 each maintain independent beliefs
 - Shared observation space: agents observe each other's actions
 - Joint task state includes both agents' positions (4x4 = 16 joint states)
@@ -18,6 +19,7 @@ B1[4,4,3],float
 C1[4],float
 D1[4],float
 s1[4,1],float
+s1_prime[4,1],float
 o1[4,1],integer
 π1[3],float
 u1[1],integer
@@ -27,6 +29,7 @@ B2[4,4,3],float
 C2[4],float
 D2[4],float
 s2[4,1],float
+s2_prime[4,1],float
 o2[4,1],integer
 π2[3],float
 u2[1],integer
@@ -78,6 +81,7 @@ B1 = TransitionMatrix
 C1 = LogPreferenceVector
 D1 = PriorOverHiddenStates
 s1 = Agent1HiddenState
+s1_prime = Agent1NextHiddenState
 o1 = Agent1Observation
 π1 = Agent1PolicyVector
 u1 = Agent1Action
@@ -87,6 +91,7 @@ B2 = TransitionMatrix
 C2 = LogPreferenceVector
 D2 = PriorOverHiddenStates
 s2 = Agent2HiddenState
+s2_prime = Agent2NextHiddenState
 o2 = Agent2Observation
 π2 = Agent2PolicyVector
 u2 = Agent2Action
@@ -96,6 +101,6 @@ o_joint = JointObservation
 t = Time
 
 ## Footer
-Generated: 2026-03-06T09:42:43.393369
+Generated: 2026-03-06T15:00:15.824893
 
 ## Signature

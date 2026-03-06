@@ -19,13 +19,36 @@ from .uv_management import (
     # Constants
     VENV_DIR,
     PROJECT_ROOT,
+    # Core setup functions
     check_system_requirements,
     create_uv_environment,
     install_uv_dependencies,
+    setup_uv_environment,
+    validate_uv_setup,
+    get_uv_setup_info,
+    cleanup_uv_setup,
+    check_uv_availability,
+    get_installed_package_versions,
+    log_system_info,
+    check_environment_health,
+    save_setup_results,
+    # Native UV dependency management
+    add_uv_dependency,
+    remove_uv_dependency,
+    update_uv_dependencies,
+    lock_uv_dependencies,
 )
 
 from .dependency_setup import (
     install_jax_and_test,
+    install_optional_package_group,
+    install_all_optional_packages,
+    install_optional_dependencies,
+    create_project_structure,
+    setup_gnn_project,
+    setup_complete_environment,
+    # Constants
+    OPTIONAL_GROUPS,
 )
 
 # --- Logger Setup ---

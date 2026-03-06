@@ -1,0 +1,20 @@
+{
+  "session_id": "ext_20260306_203911_80f0d244",
+  "status": "submitted",
+  "runner": "claude",
+  "created_at": "2026-03-06T20:39:11+00:00",
+  "expires_at": "2026-03-07T20:39:11+00:00",
+  "ttl_hours": 24,
+  "token": "7f1f04d3ceba0fc7de1aa95cc0f846e9",
+  "attest": "I validated this review was completed without awareness of overall score and is unbiased.",
+  "packet_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/review_packets/holistic_packet_20260306_203911.json",
+  "blind_packet_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/review_packet_blind.json",
+  "packet_sha256": "7b75e19206bfbc93a1715f27fca2568bb6ad52887d1fff52987fbf054ffb7073",
+  "template_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/review_result.template.json",
+  "launch_prompt_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/claude_launch_prompt.md",
+  "instructions_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/reviewer_instructions.md",
+  "expected_output_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/review_result.json",
+  "submitted_at": "2026-03-06T20:42:20+00:00",
+  "submitted_input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/review_result.json",
+  "submitted_canonical_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/external_review_sessions/ext_20260306_203911_80f0d244/canonical_import_20260306_204219.json"
+}

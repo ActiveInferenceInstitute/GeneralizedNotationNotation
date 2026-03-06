@@ -1,11 +1,11 @@
 {
-  "input_file": "input/gnn_files/basics/static_perception.md",
-  "output_file": "output/0_template_output/static_perception/static_perception_processed.md",
-  "timestamp": "2026-03-06T09:42:35.839048",
+  "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/basics/static_perception.md",
+  "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/static_perception/static_perception_processed.md",
+  "timestamp": "2026-03-06T15:48:32.088199",
   "file_size_bytes": 1663,
   "file_size_lines": 95,
   "processing_options": {
-    "verbose": false,
+    "verbose": true,
     "recursive": true,
     "example_param": "default_value"
   }

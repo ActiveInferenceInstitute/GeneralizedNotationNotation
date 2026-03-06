@@ -2,8 +2,12 @@
 from __future__ import annotations
 """
 Pipeline execution module.
+
+Note: run_pipeline() and execute_pipeline_step() are stubs — real orchestration
+is handled by main.py. This module exists for API compatibility and testing.
 """
 
+import logging
 from pathlib import Path
 from typing import List, Optional
 from datetime import datetime
@@ -46,7 +50,6 @@ def run_pipeline(
     }
 
     try:
-        # Normalize inputs
         if pipeline_data is None:
             pipeline_data = {}
         if target_dir is not None:
@@ -55,8 +58,8 @@ def run_pipeline(
             output_dir = Path(output_dir)
             try:
                 output_dir.mkdir(parents=True, exist_ok=True)
-            except Exception:
-                # Best-effort creation; record warning but continue
+            except Exception as e:
+                logging.warning(f"Could not create output directory {output_dir}: {e}")
                 results["warnings"].append(f"Could not ensure output dir: {output_dir}")
 
         # STUB: delegates to main.py for real execution

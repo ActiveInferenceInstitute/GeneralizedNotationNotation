@@ -1273,7 +1273,7 @@ class GNNValidator:
     def _validate_semantics(self, parsed: ParsedGNN, result: ValidationResult):
         """Validate semantic consistency of parsed GNN model."""
         # Validate variable references in connections
-        variable_names = set(parsed.variables.keys())
+        variable_names = set(parsed.variables)
 
         for connection in parsed.connections:
             # Check source variables
@@ -1319,8 +1319,8 @@ class GNNValidator:
             result.metadata['active_inference_matrices'] = ai_matrices
 
         # Check for proper state/observation variable naming
-        state_vars = [name for name in parsed.variables.keys() if name.startswith('s_f')]
-        obs_vars = [name for name in parsed.variables.keys() if name.startswith('o_m')]
+        state_vars = [name for name in parsed.variables if name.startswith('s_f')]
+        obs_vars = [name for name in parsed.variables if name.startswith('o_m')]
 
         if state_vars:
             result.metadata['state_variables'] = state_vars

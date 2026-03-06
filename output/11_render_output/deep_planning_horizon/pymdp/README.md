@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Deep Planning Horizon POMDP**
 - 4 hidden states, 4 observations, 4 actions
 - Each action policy is a sequence of T actions: π = [a_1, a_2, ..., a_T]
 - Enables sophisticated multi-step reasoning and delayed reward attribution
-- **Generation Date**: 2026-03-06 09:48:42
+- **Generation Date**: 2026-03-06 15:00:54
 
 ## POMDP Dimensions
 

@@ -1,5 +1,5 @@
 {
-  "annotation": "Two Active Inference agents cooperating on a joint task:\n- Agent 1 and Agent 2 each maintain independent beliefs\n- Shared observation space: agents observe each other's actions\n- Joint task state includes both agents' positions (4x4 = 16 joint states)\n- Cooperative preferences: both agents prefer the same goal configuration\n- Models social cognition and coordination without explicit communication",
+  "annotation": "Two Active Inference agents cooperating on a joint task:\n\n- Agent 1 and Agent 2 each maintain independent beliefs\n- Shared observation space: agents observe each other's actions\n- Joint task state includes both agents' positions (4x4 = 16 joint states)\n- Cooperative preferences: both agents prefer the same goal configuration\n- Models social cognition and coordination without explicit communication",
   "checksum": null,
   "connections": [
     {
@@ -234,7 +234,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-06T09:42:43.391640",
+  "created_at": "2026-03-06T15:00:15.823132",
   "equations": [],
   "extensions": {
     "footer": "Multi-Agent Cooperative Active Inference v1 - GNN Representation.\nImplicit coordination via shared observation space.\nNo explicit communication — emergent cooperation from aligned preferences.",
@@ -242,7 +242,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Multi-Agent Cooperative Active Inference",
-  "modified_at": "2026-03-06T09:42:43.391643",
+  "modified_at": "2026-03-06T15:00:15.823133",
   "ontology_mappings": [
     {
       "description": null,
@@ -268,6 +268,11 @@
       "description": null,
       "ontology_term": "Agent1HiddenState",
       "variable_name": "s1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1NextHiddenState",
+      "variable_name": "s1_prime"
     },
     {
       "description": null,
@@ -313,6 +318,11 @@
       "description": null,
       "ontology_term": "Agent2HiddenState",
       "variable_name": "s2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2NextHiddenState",
+      "variable_name": "s2_prime"
     },
     {
       "description": null,
@@ -693,6 +703,16 @@
       "var_type": "hidden_state"
     },
     {
+      "data_type": "float",
+      "description": "Agent 1 next hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s1_prime",
+      "var_type": "hidden_state"
+    },
+    {
       "data_type": "integer",
       "description": "Agent 1 observations (includes Agent 2 obs)",
       "dimensions": [
@@ -776,6 +796,16 @@
         1
       ],
       "name": "s2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 next hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s2_prime",
       "var_type": "hidden_state"
     },
     {

@@ -1,5 +1,6 @@
 annotation: 'Two Active Inference agents cooperating on a joint task:
 
+
   - Agent 1 and Agent 2 each maintain independent beliefs
 
   - Shared observation space: agents observe each other''s actions
@@ -157,10 +158,10 @@ connections:
   target_variables:
   - u2
   weight: null
-created_at: '2026-03-06T09:42:43.391640'
+created_at: '2026-03-06T15:00:15.823132'
 equations: []
 model_name: Multi-Agent Cooperative Active Inference
-modified_at: '2026-03-06T09:42:43.391643'
+modified_at: '2026-03-06T15:00:15.823133'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix
@@ -205,8 +206,14 @@ ontology_mappings:
   ontology_term: Agent1HiddenState
   variable_name: s1
 - description: null
+  ontology_term: Agent1NextHiddenState
+  variable_name: s1_prime
+- description: null
   ontology_term: Agent2HiddenState
   variable_name: s2
+- description: null
+  ontology_term: Agent2NextHiddenState
+  variable_name: s2_prime
 - description: null
   ontology_term: JointState
   variable_name: s_joint
@@ -503,11 +510,25 @@ variables:
   name: s1
   type: hidden_state
 - data_type: float
+  description: Agent 1 next hidden state
+  dimensions:
+  - 4
+  - 1
+  name: s1_prime
+  type: hidden_state
+- data_type: float
   description: Agent 2 hidden state
   dimensions:
   - 4
   - 1
   name: s2
+  type: hidden_state
+- data_type: float
+  description: Agent 2 next hidden state
+  dimensions:
+  - 4
+  - 1
+  name: s2_prime
   type: hidden_state
 - data_type: float
   description: Joint state (Agent1_pos x Agent2_pos)

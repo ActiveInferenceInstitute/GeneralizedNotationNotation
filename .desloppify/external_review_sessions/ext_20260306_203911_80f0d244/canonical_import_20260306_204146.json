@@ -1,0 +1,168 @@
+{
+  "assessments": {
+    "cross_module_architecture": 47,
+    "convention_outlier": 38,
+    "error_consistency": 38,
+    "abstraction_fitness": 35,
+    "dependency_health": 38,
+    "test_strategy": 35,
+    "ai_generated_debt": 55,
+    "package_organization": 38,
+    "high_level_elegance": 48,
+    "mid_level_elegance": 45,
+    "low_level_elegance": 53,
+    "design_coherence": 45
+  },
+  "findings": [
+    {
+      "dimension": "ai_generated_debt",
+      "identifier": "pipeline_template_unreachable_example_code",
+      "summary": "pipeline_template.py mixes live production code with unreachable example template functions",
+      "related_files": [
+        "src/utils/pipeline_template.py"
+      ],
+      "evidence": "standard_module_function, process_single_file, and create_standard_module_function (approx lines 194-374) import from '.shared_functions' which does not exist and are never called by any pipeline step. The file has a second module-level docstring at line 178 indicating two modules were concatenated. Zero callers confirmed by grep.",
+      "suggestion": "Delete the three unused template functions (lines ~194-374). The file already has create_standardized_pipeline_script which is the real production function.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "error_consistency",
+      "identifier": "execute_pipeline_step_try_except_unreachable",
+      "summary": "execute_pipeline_step wraps a hardcoded dataclass instantiation in a try/except that can never trigger",
+      "related_files": [
+        "src/pipeline/execution.py"
+      ],
+      "evidence": "Lines 113-130: the try block contains only StepExecutionResult(...) with hardcoded values \u2014 dataclass instantiation cannot raise. The except block is unreachable dead code wrapping a stub.",
+      "suggestion": "Remove the try/except wrapper from execute_pipeline_step. Return the stub directly and document it as a stub.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "cross_module_architecture",
+      "identifier": "execute_pymdp_imports_analysis_internals",
+      "summary": "execute/pymdp/__init__.py imports from analysis/ creating unexpected lateral coupling",
+      "related_files": [
+        "src/execute/pymdp/__init__.py",
+        "src/analysis/"
+      ],
+      "evidence": "execute/ is a simulation execution module; importing from analysis/ creates a dependency on the analysis layer that is not documented as intentional. This mirrors the recently-fixed visualization\u2192analysis coupling pattern.",
+      "suggestion": "Move the shared analysis helper into a common module or into execute/ itself, rather than crossing to analysis/.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "convention_outlier",
+      "identifier": "log_step_functions_defined_in_nine_places",
+      "summary": "log_step_start/success/warning/error defined in at least 9 distinct files creating convention drift",
+      "related_files": [
+        "src/utils/step_logging.py",
+        "src/utils/logging_utils.py",
+        "src/utils/structured_logging.py",
+        "src/utils/diagnostic_logging.py",
+        "src/utils/logging/logging_utils.py"
+      ],
+      "evidence": "grep for 'def log_step_start' returns definitions in step_logging.py, logging_utils.py, structured_logging.py, diagnostic_logging.py, utils/logging/logging_utils.py, and pipeline/health_check.py (fallback). Each has slightly different signatures. utils/step_logging.py is designated the canonical source but not enforced.",
+      "suggestion": "Designate utils/step_logging.py as the single source. Delete the duplicate definitions in logging_utils.py, structured_logging.py, and diagnostic_logging.py. Update all callers to import from step_logging.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "abstraction_fitness",
+      "identifier": "standardized_error_handler_pure_passthrough",
+      "summary": "StandardizedErrorHandler forwards all calls to PipelineErrorHandler with no additional policy",
+      "related_files": [
+        "src/utils/standardized_error_handling.py",
+        "src/utils/error_handling.py"
+      ],
+      "evidence": "Every method in StandardizedErrorHandler calls self.pipeline_error_handler.create_error() then self.pipeline_error_handler.handle_error(). The only added behavior is _categorize_error which maps Python exception types to ErrorCategory \u2014 logic equally appropriate inside PipelineErrorHandler._classify_error. ErrorRecoveryManager in error_recovery.py provides a third parallel error-handling class with yet another interface.",
+      "suggestion": "Merge _categorize_error into PipelineErrorHandler._classify_error and delete StandardizedErrorHandler. Reduce to one error handler class.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "dependency_health",
+      "identifier": "heavy_optional_deps_in_mandatory_core",
+      "summary": "gradio, discopy, altair, and plotly listed as mandatory core dependencies rather than optional extras",
+      "related_files": [
+        "pyproject.toml"
+      ],
+      "evidence": "pyproject.toml core dependencies include UI/visualization libraries (gradio, altair, plotly) and the discopy categorical-computation library. These are needed only by specific pipeline steps and should be optional extras. JAX ecosystem (jax[cpu], jaxlib, flax, optax) similarly appear as mandatory despite being needed only by step 12.",
+      "suggestion": "Move heavy optional dependencies to [project.optional-dependencies] groups: visualization, audio, jax, discopy. Keep core dependencies to: numpy, scipy, matplotlib, networkx, pyyaml.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "test_strategy",
+      "identifier": "pervasive_skip_and_safe_to_fail",
+      "summary": "576 occurrences of safe_to_fail or pytest.skip across tests make coverage metrics unreliable",
+      "related_files": [
+        "src/tests/"
+      ],
+      "evidence": "grep for 'safe_to_fail\\|pytest.skip' returns 576 matches. This means a large fraction of tests are soft-assertions that pass even when the feature under test is broken. test_pipeline_scripts.py hangs on --help invocations due to subprocess timeouts, indicating tests are written against untestable behavior.",
+      "suggestion": "Convert safe_to_fail assertions to hard assertions for stable interfaces. Replace subprocess --help tests with direct function-level tests. Reserve pytest.skip for genuinely optional features with clear skip conditions.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "package_organization",
+      "identifier": "utils_fifty_file_god_package",
+      "summary": "utils/ contains 50 files mixing logging, config, pipeline orchestration, error handling, and test utilities",
+      "related_files": [
+        "src/utils/"
+      ],
+      "evidence": "utils/__init__.py exports 184 names from 20 source modules. Every other module in the codebase imports from utils/. The package has no internal structure \u2014 logging helpers sit next to pipeline validators, test utilities, and error recovery managers. This creates an implicit dependency on all of utils/ for modules that need only one function.",
+      "suggestion": "Split by concern into sub-packages: utils/logging/, utils/errors/, utils/config/, utils/testing/. Migrate imports one subdirectory at a time. utils/__init__.py can continue re-exporting during migration.",
+      "confidence": "high"
+    },
+    {
+      "dimension": "high_level_elegance",
+      "identifier": "pipeline_validation_split_across_three_modules",
+      "summary": "Pipeline validation logic is split across pipeline_validation.py, utils/pipeline_validator.py, and pipeline/pipeline_validator.py with no clear ownership",
+      "related_files": [
+        "src/pipeline/pipeline_validation.py",
+        "src/utils/pipeline_validator.py",
+        "src/pipeline/pipeline_validator.py"
+      ],
+      "evidence": "Three distinct modules named pipeline_validator* or pipeline_validation perform related but differently-scoped validation. Callers cannot determine which to use without reading all three. The confusingly similar names create ongoing discovery friction for new contributors.",
+      "suggestion": "Rename files to reflect their role: static_analysis.py, prerequisite_checker.py, integration_tester.py. Add cross-references in each module docstring.",
+      "confidence": "medium"
+    },
+    {
+      "dimension": "low_level_elegance",
+      "identifier": "get_output_dir_for_script_verbose_docstring",
+      "summary": "get_output_dir_for_script in utils/pipeline.py has an 8-line docstring for a 7-line wrapper function",
+      "related_files": [
+        "src/utils/pipeline.py"
+      ],
+      "evidence": "Lines 15-27: docstring includes explanatory prose about circular import avoidance plus full Args/Returns sections for a function whose body is a try/except import with one-line fallback. Docstring-to-code ratio exceeds 1:1.",
+      "suggestion": "Replace with a single-line docstring: 'Delegate to pipeline.config.get_output_dir_for_script; falls back to derived path on ImportError.'",
+      "confidence": "medium"
+    },
+    {
+      "dimension": "mid_level_elegance",
+      "identifier": "render_processor_mutates_sys_path_at_call_time",
+      "summary": "render/processor.py inserts paths into sys.path during processing rather than at module import time",
+      "related_files": [
+        "src/render/processor.py"
+      ],
+      "evidence": "sys.path mutation during function calls creates non-deterministic import state dependent on call order. Multiple callers may see different module resolution depending on which render functions have been called previously.",
+      "suggestion": "Move sys.path insertions to module level or use importlib with explicit path arguments. Check whether path is already present before inserting.",
+      "confidence": "medium"
+    },
+    {
+      "dimension": "design_coherence",
+      "identifier": "process_analysis_handles_multiple_incompatible_types",
+      "summary": "process_analysis() in analysis/processor.py handles parsed model dicts, file paths, and raw strings through branched isinstance checks",
+      "related_files": [
+        "src/analysis/processor.py"
+      ],
+      "evidence": "The function dispatches on type of its first argument using isinstance chains rather than offering separate entry points for each input type. This conflates discovery, parsing, and analysis into one function, making the contract unpredictable.",
+      "suggestion": "Split into process_analysis_from_file(path), process_analysis_from_dict(model), and a thin dispatcher that callers use only when type is genuinely unknown.",
+      "confidence": "medium"
+    }
+  ],
+  "provenance": {
+    "kind": "blind_review_batch_import",
+    "blind": true,
+    "runner": "claude",
+    "run_stamp": "ext_20260306_203911_80f0d244",
+    "created_at": "2026-03-06T20:41:46+00:00",
+    "packet_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/.desloppify/review_packet_blind.json",
+    "packet_sha256": "7b75e19206bfbc93a1715f27fca2568bb6ad52887d1fff52987fbf054ffb7073",
+    "external_session_id": "ext_20260306_203911_80f0d244"
+  }
+}

@@ -11,12 +11,20 @@ This module provides comprehensive rendering capabilities that:
 
 import json
 import logging
+import sys
 from pathlib import Path
 from typing import Dict, Any, Optional, Union, Tuple, List
 from datetime import datetime
 
-
 import numpy as np
+
+# Ensure src and project root are on the path for cross-module imports
+_src_path = Path(__file__).parent.parent
+_project_root = _src_path.parent
+if str(_src_path) not in sys.path:
+    sys.path.insert(0, str(_src_path))
+if str(_project_root) not in sys.path:
+    sys.path.insert(0, str(_project_root))
 
 logger = logging.getLogger(__name__)
 
@@ -181,19 +189,6 @@ def process_render(
 
         # Import POMDP processing capabilities
         try:
-            # Use absolute imports to avoid relative import issues
-            import sys
-            from pathlib import Path
-
-            # Add both src directory and project root to path
-            src_path = Path(__file__).parent.parent
-            project_root = src_path.parent
-
-            if str(src_path) not in sys.path:
-                sys.path.insert(0, str(src_path))
-            if str(project_root) not in sys.path:
-                sys.path.insert(0, str(project_root))
-
             # Try multiple import strategies
             try:
                 from gnn.pomdp_extractor import extract_pomdp_from_file

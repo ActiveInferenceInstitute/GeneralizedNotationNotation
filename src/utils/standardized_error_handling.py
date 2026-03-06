@@ -20,16 +20,14 @@ class StandardizedErrorHandler:
     """
     Standardized error handler that provides consistent error handling
     patterns across all pipeline modules.
+
+    DEPRECATED: Not used in the production pipeline. Use PipelineErrorHandler
+    from utils.error_handling directly. This class will be removed in a future
+    release.
     """
 
     def __init__(self, step_name: str, logger: Optional[logging.Logger] = None):
-        """
-        Initialize standardized error handler.
-        
-        Args:
-            step_name: Name of the pipeline step or module
-            logger: Optional logger instance (creates one if not provided)
-        """
+        """Initialize handler for step_name; creates a logger if none provided."""
         self.step_name = step_name
         self.logger = logger or setup_step_logging(step_name)
         self.correlation_id = str(uuid.uuid4())[:8]

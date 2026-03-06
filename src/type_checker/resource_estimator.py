@@ -180,7 +180,7 @@ class GNNResourceEstimator:
         model_name = content.get('ModelName', os.path.basename(file_path))
 
         # Determine if model is hierarchical
-        is_hierarchical = any('hierarchical' in key.lower() for key in content.keys())
+        is_hierarchical = any('hierarchical' in key.lower() for key in content)
         if is_hierarchical:
             model_type = 'Hierarchical'
         else:

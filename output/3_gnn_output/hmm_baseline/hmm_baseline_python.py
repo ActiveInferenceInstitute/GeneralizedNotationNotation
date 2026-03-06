@@ -6,7 +6,7 @@ A standard discrete Hidden Markov Model with:
 - Fixed transition and emission matrices
 - No action selection (passive inference only)
 - Suitable for sequence modeling and state estimation tasks
-Generated: 2026-03-06T09:42:43.742215
+Generated: 2026-03-06T15:00:16.257361
 """
 
 import numpy as np

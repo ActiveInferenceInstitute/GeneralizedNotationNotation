@@ -105,7 +105,7 @@ class ReportGenerator:
                 'validation_success_rate': self._calculate_validation_success_rate(context),
                 'phase_durations': {
                     phase.name.lower(): context.get_phase_duration(phase)
-                    for phase in context.phase_times.keys()
+                    for phase in context.phase_times
                 },
                 'phase_logs': {
                     phase.name.lower(): message

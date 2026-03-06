@@ -65,25 +65,10 @@ except ImportError:
     PLOTLY_AVAILABLE = False
 
 # Try to import utils, but provide fallbacks if not available
-from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
-# Import analysis utilities
-try:
-    from analysis.analyzer import parse_matrix_data, generate_matrix_visualizations
-except ImportError:
-    # Fallback definition if analysis module is not available
-    def parse_matrix_data(matrix_str: str) -> Any:
-        try:
-            import re
-            numbers = re.findall(r'[-+]?\d*\.\d+|\d+', matrix_str)
-            if len(numbers) >= 1:
-                return np.array([float(n) for n in numbers])
-            return None
-        except Exception:
-            return None
-
-    def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
-        return []
+# Import analysis utilities via compatibility shim
+from visualization.matrix_compat import parse_matrix_data, generate_matrix_visualizations
 
 # Set up logger
 logger = logging.getLogger(__name__)

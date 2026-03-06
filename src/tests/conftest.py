@@ -199,7 +199,9 @@ def pytest_sessionstart(session):
 def pytest_collection_modifyitems(config, items):
     """Modify test collection to add automatic markers and safety checks."""
     for item in items:
-        # Add safe_to_fail marker to all tests by default
+        # Applied to all non-destructive tests by default — allows optional dependencies
+        # to fail without blocking CI. Tests are skipped or reported as warnings when
+        # the environment lacks optional deps (e.g. JAX, discopy, gradio).
         if not any(marker.name == "destructive" for marker in item.iter_markers()):
             item.add_marker(pytest.mark.safe_to_fail)
 

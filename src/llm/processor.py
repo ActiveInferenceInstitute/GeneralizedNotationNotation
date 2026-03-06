@@ -54,7 +54,7 @@ def _model_is_cached(model_name: str, logger) -> bool:
         return False
 import asyncio
 
-from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
 def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
     """

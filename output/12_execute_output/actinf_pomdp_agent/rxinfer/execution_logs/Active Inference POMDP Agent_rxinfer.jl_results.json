@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/rxinfer/Active Inference POMDP Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 18.338542,
-  "timestamp": "2026-03-06T09:51:51.122742",
+  "execution_time": 22.51146,
+  "timestamp": "2026-03-06T15:05:02.967386",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

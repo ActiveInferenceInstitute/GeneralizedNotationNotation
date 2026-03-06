@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/markov_chain/jax/Simple Markov Chain_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.987161,
-  "timestamp": "2026-03-06T09:49:22.484216",
+  "execution_time": 1.231521,
+  "timestamp": "2026-03-06T15:01:48.950413",
   "simulation_data": {
     "traces": [],
     "free_energy": [

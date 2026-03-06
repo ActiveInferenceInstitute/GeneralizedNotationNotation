@@ -7,7 +7,7 @@ A factor graph decomposition of an Active Inference generative model with:
 - Variable nodes: observation and state variables
 - Factor nodes: likelihood and transition factors
 - Enables modality-specific processing and efficient belief propagation
-Generated: 2026-03-06T09:42:44.100204
+Generated: 2026-03-06T15:00:16.680391
 """
 
 import numpy as np

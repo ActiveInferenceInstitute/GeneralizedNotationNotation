@@ -114,17 +114,14 @@ class PipelineErrorHandler:
                     context: Dict[str, Any] = None) -> PipelineError:
         """Create a standardized pipeline error from an exception."""
 
-        # Classify error severity and recovery strategy
         severity, recovery_strategy = self._classify_error(error, category)
 
-        # Extract error context
         error_context = context or {}
         error_context.update({
             "exception_type": type(error).__name__,
             "module": getattr(error, '__module__', 'unknown'),
         })
 
-        # Create structured error
         pipeline_error = PipelineError(
             step_name=step_name,
             error_type=type(error).__name__,
@@ -280,7 +277,6 @@ class PipelineErrorHandler:
             "generated_at": time.time()
         }
 
-        # Generate breakdowns
         for error in self.errors:
             error_summary["error_breakdown"][error.error_type] = error_summary["error_breakdown"].get(error.error_type, 0) + 1
             error_summary["severity_breakdown"][error.severity.value] = error_summary["severity_breakdown"].get(error.severity.value, 0) + 1

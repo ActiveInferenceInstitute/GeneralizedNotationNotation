@@ -10,8 +10,8 @@ pipeline:
   # Leave empty to run all steps
   steps: []
 
-  # Skip specific steps
-  skip_steps: []
+  # Skip specific steps (13 = LLM processing — slow Ollama calls, ~10 min)
+  skip_steps: [13]
 
   # Force execution of specific steps
   force_steps: []
@@ -39,8 +39,13 @@ uv:
     # Install development dependencies
     dev: false
 
-    # Install optional dependency groups
-    extras: []
+    # Install optional dependency groups needed for execution step
+    extras:
+      - active-inference # jax, jaxlib, flax, optax
+      - probabilistic-programming # numpyro
+      - ml-ai # torch
+      - graphs # discopy
+      - llm # ollama, openai
 
     # Upgrade packages
     upgrade: false

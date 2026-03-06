@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/jax/Deep Planning Horizon POMDP_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.001716,
-  "timestamp": "2026-03-06T09:49:17.612588",
+  "execution_time": 1.10829,
+  "timestamp": "2026-03-06T15:01:43.138013",
   "simulation_data": {
     "traces": [],
     "free_energy": [

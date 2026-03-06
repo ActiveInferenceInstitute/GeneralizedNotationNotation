@@ -38,7 +38,7 @@ try:
 
 except ImportError:
     # Fallback: use step_logging (always importable, no external deps)
-    from utils.step_logging import (
+    from utils.logging.logging_utils import (
         setup_step_logging,
         log_step_warning,
         log_step_error,
@@ -52,101 +52,6 @@ except ImportError:
             return False
 
     UTILS_AVAILABLE = False
-
-def create_standard_pipeline_script(
-    step_name: str,
-    module_function: Callable,
-    fallback_parser_description: str,
-    additional_arguments: Optional[Dict[str, Any]] = None,
-    step_specific_imports: Optional[List[str]] = None
-) -> Callable:
-    """
-    Create a standardized pipeline script with consistent argument parsing and error handling.
-    
-    Args:
-        step_name: Name of the step (e.g., "1_gnn", "5_export")
-        module_function: The main function to call for processing
-        fallback_parser_description: Description for fallback argument parser
-        additional_arguments: Additional arguments to add to the parser
-        step_specific_imports: Additional imports needed for the step
-        
-    Returns:
-        Function that can be called to run the standardized script
-    """
-    def run_standardized_script():
-        """Standardized script execution function."""
-        try:
-            # Import step-specific modules if provided
-            if step_specific_imports:
-                for import_name in step_specific_imports:
-                    try:
-                        __import__(import_name)
-                    except ImportError as e:
-                        logging.warning(f"Failed to import {import_name}: {e}")
-
-            # Parse arguments
-            if UTILS_AVAILABLE:
-                try:
-                    parsed_args = ArgumentParser.parse_step_arguments(step_name)
-                except Exception as e:
-                    logging.warning(f"Failed to use enhanced argument parser: {e}")
-                    parsed_args = _create_fallback_parser(fallback_parser_description, additional_arguments).parse_args()
-            else:
-                parsed_args = _create_fallback_parser(fallback_parser_description, additional_arguments).parse_args()
-
-            # Set up logging
-            logger = setup_step_logging(step_name, getattr(parsed_args, 'verbose', False))
-
-            # Convert paths with proper handling for None values
-            target_dir_raw = getattr(parsed_args, 'target_dir', None)
-            if target_dir_raw is None:
-                # Set default based on step type
-                if step_name == "11_render.py":
-                    # Step 11 usually processes GNN files directly
-                    target_dir = Path('input/gnn_files')
-                elif step_name == "12_execute.py":
-                    # Step 12 processes rendered simulators from step 11 by default
-                    target_dir = Path('output/11_render_output')
-                else:
-                    # Default for other steps
-                    target_dir = Path('input/gnn_files')
-            else:
-                target_dir = Path(target_dir_raw)
-
-            output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
-            output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
-
-            # Set recursive flag default based on step type
-            if step_name in ["11_render.py", "12_execute.py"]:
-                # Steps 9 and 10 need recursive processing by default
-                recursive_default = True
-            else:
-                recursive_default = False
-
-            # Normalize the output directory to the standardized numbered step folder
-            try:
-                step_output_dir = get_output_dir_for_script(step_name if not step_name.endswith('.py') else step_name[:-3], output_dir)
-            except Exception:
-                step_output_dir = output_dir
-
-            # Call the module function with the standardized step output dir
-            success = module_function(
-                target_dir=target_dir,
-                output_dir=step_output_dir,
-                logger=logger,
-                recursive=getattr(parsed_args, 'recursive', recursive_default),
-                verbose=getattr(parsed_args, 'verbose', False),
-                **{k: v for k, v in vars(parsed_args).items()
-                   if k not in ['target_dir', 'output_dir', 'recursive', 'verbose']}
-            )
-
-            return 0 if success else 1
-
-        except Exception as e:
-            logging.error(f"Script execution failed: {e}")
-            return 1
-
-    return run_standardized_script
 
 def _create_fallback_parser(description: str, additional_arguments: Optional[Dict[str, Any]] = None) -> argparse.ArgumentParser:
     """Create a fallback argument parser with standard arguments."""

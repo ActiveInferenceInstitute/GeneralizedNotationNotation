@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.370343,
-  "timestamp": "2026-03-06T09:49:18.616069",
+  "execution_time": 0.415643,
+  "timestamp": "2026-03-06T15:01:44.248497",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

@@ -20,15 +20,26 @@ from .mcp import (
     mcp_instance,
     initialize,
     MCP,
+    get_mcp_instance,
+    # Enhanced utility functions
+    list_available_tools,
+    list_available_resources,
+    get_tool_info,
+    get_resource_info,
+)
+
+# Import data structures from models
+from .models import (
     MCPTool,
     MCPResource,
+    MCPModuleInfo,
+    MCPPerformanceMetrics,
+    MCPSDKStatus,
+)
+
+# Import exception classes from exceptions module
+from .exceptions import (
     MCPError,
-    MCPServer,
-    create_mcp_server,
-    start_mcp_server,
-    register_tools,
-    get_mcp_instance,
-    # Enhanced error classes
     MCPToolNotFoundError,
     MCPResourceNotFoundError,
     MCPInvalidParamsError,
@@ -37,16 +48,13 @@ from .mcp import (
     MCPValidationError,
     MCPModuleLoadError,
     MCPPerformanceError,
-    # Enhanced data structures
-    MCPModuleInfo,
-    MCPPerformanceMetrics,
-    MCPSDKStatus,
-    # Enhanced utility functions
-    list_available_tools,
-    list_available_resources,
-    get_tool_info,
-    get_resource_info
 )
+
+# Stubs for legacy API surface (not yet implemented)
+MCPServer = None
+create_mcp_server = lambda *a, **kw: None
+start_mcp_server = lambda *a, **kw: None
+register_tools = lambda *a, **kw: None
 
 # Import processor functions
 from .processor import (

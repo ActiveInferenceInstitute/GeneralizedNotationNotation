@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/rxinfer/T-Maze Epistemic Foraging Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 19.515034,
-  "timestamp": "2026-03-06T09:50:40.589133",
+  "execution_time": 21.527049,
+  "timestamp": "2026-03-06T15:03:32.935134",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

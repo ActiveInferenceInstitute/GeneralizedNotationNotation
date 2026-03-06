@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-06T09:48:42.644817",
+  "timestamp": "2026-03-06T15:00:54.951682",
   "source_file": "input/gnn_files/discrete/markov_chain.md",
   "model_name": "Simple Markov Chain",
   "pomdp_dimensions": {

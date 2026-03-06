@@ -590,3 +590,4 @@ from .test_runner_modes import (
 )
 
 # Re-export from test_runner_modular sub-module for backward compatibility
+from .test_runner_modular import create_test_runner

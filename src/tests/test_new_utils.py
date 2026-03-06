@@ -16,7 +16,7 @@ class TestStepLogging:
 
     def test_step_logging_imports(self):
         """Test that step_logging module imports correctly."""
-        from utils.step_logging import (
+        from utils.logging.logging_utils import (
             log_step_start,
             log_step_success,
             log_step_warning,
@@ -31,20 +31,20 @@ class TestStepLogging:
 
     def test_setup_step_logging_returns_logger(self):
         """Test that setup_step_logging returns a logger."""
-        from utils.step_logging import setup_step_logging
+        from utils.logging.logging_utils import setup_step_logging
         logger = setup_step_logging("test_step")
         assert isinstance(logger, logging.Logger)
         assert logger.name == "test_step"
 
     def test_setup_step_logging_verbose(self):
         """Test verbose mode sets DEBUG level."""
-        from utils.step_logging import setup_step_logging
+        from utils.logging.logging_utils import setup_step_logging
         logger = setup_step_logging("test_verbose", verbose=True)
         assert logger.getEffectiveLevel() <= logging.DEBUG
 
     def test_log_step_functions_no_exception(self):
         """Test that log functions don't raise exceptions."""
-        from utils.step_logging import (
+        from utils.logging.logging_utils import (
             log_step_start,
             log_step_success,
             log_step_warning,

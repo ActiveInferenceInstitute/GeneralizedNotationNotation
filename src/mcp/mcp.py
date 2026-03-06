@@ -1444,3 +1444,13 @@ def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
     return None
 
 # Re-export server components from server_core sub-module for backward compatibility
+
+
+def register_tools(server):
+    """No-op: this module IS the MCP server, not a plugin.
+
+    The auto-discovery loop imports ``src.mcp.mcp`` and looks for
+    ``register_tools``.  Providing this stub avoids the warning
+    "Module src.mcp.mcp found but has no register_tools function."
+    """
+    pass

@@ -23,7 +23,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
-from utils.step_logging import log_step_start, log_step_success, log_step_error, log_step_warning
+from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
 # Import execute functionality
 try:

@@ -14,15 +14,7 @@ class FallbackArgumentParser:
     """
     @staticmethod
     def parse_step_arguments(step_name):
-        """
-        Parse step arguments with fallback implementation.
-        
-        Args:
-            step_name: Name of the step
-            
-        Returns:
-            DefaultArgs object with default values
-        """
+        """Return default args (verbose=False, output_dir='output')."""
         class DefaultArgs:
             def __init__(self):
                 self.verbose = False
@@ -31,16 +23,7 @@ class FallbackArgumentParser:
         return DefaultArgs()
 
 def setup_step_logging(step_name: str, verbose: bool = False):
-    """
-    Fallback step logging setup.
-    
-    Args:
-        step_name: Name of the step
-        verbose: Enable verbose logging
-        
-    Returns:
-        Logger instance
-    """
+    """Return a logger set to DEBUG if verbose else INFO."""
     logger = logging.getLogger(step_name)
     if verbose:
         logger.setLevel(logging.DEBUG)

@@ -378,7 +378,7 @@ def _generate_pomdp_transition_analysis(
 
         if 'B' not in matrices:
             attempt.status = "skipped"
-            attempt.error_message = "B matrix (transition matrix) not found"
+            attempt.error_message = "Not applicable to this model type (B matrix not found)"
             return attempt
 
         B_matrix = matrices['B']

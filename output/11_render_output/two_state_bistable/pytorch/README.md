@@ -11,7 +11,7 @@ Generated from GNN POMDP Model: **Two State Bistable POMDP**
 - 2 actions: push-left or push-right.
 - The agent prefers observation 1 ("right") over observation 0 ("left").
 - Tests the absolute smallest POMDP with full active inference structure.
-- **Generation Date**: 2026-03-06 09:48:42
+- **Generation Date**: 2026-03-06 15:00:54
 
 ## POMDP Dimensions
 

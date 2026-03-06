@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/jax/T-Maze Epistemic Foraging Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.950569,
-  "timestamp": "2026-03-06T09:48:57.555919",
+  "execution_time": 1.097068,
+  "timestamp": "2026-03-06T15:01:18.923744",
   "simulation_data": {
     "traces": [],
     "free_energy": [

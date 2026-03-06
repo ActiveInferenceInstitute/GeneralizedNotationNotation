@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 """
-Pipeline Validation Utilities
+Pipeline Pre-Execution Prerequisite Validator
 
-This module provides comprehensive validation capabilities for pipeline steps,
-including dependency checking, prerequisite validation, and step sequencing.
+Role: Checks that required step outputs exist on disk before running dependent steps.
+Validates step sequencing and prerequisite satisfaction at execution time.
+Does NOT analyze source code and does NOT run the pipeline itself.
+
+See also:
+- pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
+- pipeline/pipeline_validator.py: Runtime integration tester (runs pipeline via subprocess)
 """
 
 import logging

@@ -43,7 +43,7 @@ OPTIONAL_GROUPS = {
     'visualization': 'Visualization (plotly, altair, seaborn, bokeh, holoviews, dash)',
     'audio': 'Audio processing (librosa, soundfile, pedalboard, pydub)',
     'gui': 'GUI frameworks (gradio, streamlit)',
-    'graphs': 'Graph analysis (igraph, graphviz, discopy[categorical])',
+    'graphs': 'Graph analysis (igraph, graphviz, discopy)',
     'research': 'Research tools (jupyterlab, sympy, numba, cython)',
     'scaling': 'Scaling (dask, distributed, joblib, fsspec)',
     'database': 'Database (sqlalchemy, alembic)',

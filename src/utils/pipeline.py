@@ -12,19 +12,7 @@ from typing import Optional, Any, Tuple, List
 logger = logging.getLogger(__name__)
 
 def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) -> Path:
-    """
-    Get output directory for a specific script.
-    
-    This is a wrapper that delegates to pipeline.config.get_output_dir_for_script
-    but avoids circular import issues.
-    
-    Args:
-        script_name: Name of the pipeline script (e.g., "3_gnn.py" or "3_gnn")
-        base_output_dir: Base output directory (usually "output/")
-        
-    Returns:
-        Path to step-specific output directory
-    """
+    """Get output directory for a script, delegating to pipeline.config to avoid circular imports."""
     try:
         from pipeline.config import get_output_dir_for_script as _get_output_dir
         return _get_output_dir(script_name, base_output_dir if base_output_dir is not None else Path("output"))
@@ -37,13 +25,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) ->
         return base_output_dir / f"{normalized}_output"
 
 def setup_step_logging(step_name: str, verbose: bool = False):
-    """
-    Setup logging for a pipeline step.
-    
-    Args:
-        step_name: Name of the pipeline step
-        verbose: Enable verbose logging
-    """
+    """Set up logging for a pipeline step, delegating to logging_utils."""
     try:
         from .logging_utils import setup_step_logging as _setup_step_logging
         return _setup_step_logging(step_name, verbose)
@@ -63,15 +45,7 @@ class FallbackArgumentParser:
 
     @staticmethod
     def parse_step_arguments(step_name):
-        """
-        Parse step arguments (fallback implementation).
-        
-        Args:
-            step_name: Name of the step
-            
-        Returns:
-            Default arguments object
-        """
+        """Return default args (verbose=False, output_dir='output')."""
         class DefaultArgs:
             def __init__(self):
                 self.verbose = False

@@ -1,11 +1,11 @@
 {
-  "timestamp": "2026-03-06T09:48:38.948157",
+  "timestamp": "2026-03-06T15:00:23.332838",
   "source_directory": "input/gnn_files/continuous",
   "output_directory": "output/6_validation_output",
   "files_validated": [
     {
       "file_name": "predictive_coding_agent.md",
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "validations": {
         "semantic": {
           "file_path": "unknown",
@@ -60,7 +60,7 @@
     },
     {
       "file_name": "continuous_navigation.md",
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
       "validations": {
         "semantic": {
           "file_path": "unknown",

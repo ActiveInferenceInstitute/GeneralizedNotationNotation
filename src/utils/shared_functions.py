@@ -36,7 +36,8 @@ def find_gnn_files(target_dir: Path, recursive: bool = False) -> List[Path]:
                 # Check for GNN-specific sections
                 if any(section in content for section in ['ModelName', 'StateSpaceBlock', 'Connections']):
                     filtered_files.append(file_path)
-        except Exception:
+        except Exception as e:
+            logging.warning(f"Skipping {file_path}: {e}")
             continue
 
     return filtered_files

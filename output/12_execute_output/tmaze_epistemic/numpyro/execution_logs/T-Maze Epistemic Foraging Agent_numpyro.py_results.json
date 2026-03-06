@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/numpyro/T-Maze Epistemic Foraging Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.045192,
-  "timestamp": "2026-03-06T09:48:54.153479",
+  "execution_time": 1.292083,
+  "timestamp": "2026-03-06T15:01:14.652744",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,7 +14,7 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.641s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.761s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": ""
   },
   "execution_metadata": {

@@ -1,167 +1,167 @@
 {
-  "timestamp": "2026-03-06T09:48:18.395833",
+  "timestamp": "2026-03-06T15:10:23.798438",
   "processed_files": 8,
   "success": true,
   "errors": [],
   "audio_files_generated": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_ambient.wav"
+        "tonal": "output/15_audio_output/simple_mdp_tonal.wav",
+        "rhythmic": "output/15_audio_output/simple_mdp_rhythmic.wav",
+        "ambient": "output/15_audio_output/simple_mdp_ambient.wav"
       },
       "variables_count": 67,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:18.592186"
+      "generation_timestamp": "2026-03-06T15:10:24.142263"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "file_name": "multi_armed_bandit.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_ambient.wav"
+        "tonal": "output/15_audio_output/multi_armed_bandit_tonal.wav",
+        "rhythmic": "output/15_audio_output/multi_armed_bandit_rhythmic.wav",
+        "ambient": "output/15_audio_output/multi_armed_bandit_ambient.wav"
       },
       "variables_count": 60,
       "connections_count": 2,
-      "generation_timestamp": "2026-03-06T09:48:18.794411"
+      "generation_timestamp": "2026-03-06T15:10:24.455092"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "file_name": "deep_planning_horizon.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/deep_planning_horizon_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/deep_planning_horizon_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/deep_planning_horizon_ambient.wav"
+        "tonal": "output/15_audio_output/deep_planning_horizon_tonal.wav",
+        "rhythmic": "output/15_audio_output/deep_planning_horizon_rhythmic.wav",
+        "ambient": "output/15_audio_output/deep_planning_horizon_ambient.wav"
       },
       "variables_count": 83,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:19.052348"
+      "generation_timestamp": "2026-03-06T15:10:24.791150"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "file_name": "actinf_pomdp_agent.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_ambient.wav"
+        "tonal": "output/15_audio_output/actinf_pomdp_agent_tonal.wav",
+        "rhythmic": "output/15_audio_output/actinf_pomdp_agent_rhythmic.wav",
+        "ambient": "output/15_audio_output/actinf_pomdp_agent_ambient.wav"
       },
       "variables_count": 73,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:19.278602"
+      "generation_timestamp": "2026-03-06T15:10:25.078748"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md",
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "file_name": "hmm_baseline.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/hmm_baseline_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/hmm_baseline_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/hmm_baseline_ambient.wav"
+        "tonal": "output/15_audio_output/hmm_baseline_tonal.wav",
+        "rhythmic": "output/15_audio_output/hmm_baseline_rhythmic.wav",
+        "ambient": "output/15_audio_output/hmm_baseline_ambient.wav"
       },
       "variables_count": 49,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:19.446146"
+      "generation_timestamp": "2026-03-06T15:10:25.297580"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "file_name": "two_state_bistable.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/two_state_bistable_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/two_state_bistable_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/two_state_bistable_ambient.wav"
+        "tonal": "output/15_audio_output/two_state_bistable_tonal.wav",
+        "rhythmic": "output/15_audio_output/two_state_bistable_rhythmic.wav",
+        "ambient": "output/15_audio_output/two_state_bistable_ambient.wav"
       },
       "variables_count": 69,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:19.667027"
+      "generation_timestamp": "2026-03-06T15:10:26.412078"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md",
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
       "file_name": "markov_chain.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/markov_chain_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/markov_chain_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/markov_chain_ambient.wav"
+        "tonal": "output/15_audio_output/markov_chain_tonal.wav",
+        "rhythmic": "output/15_audio_output/markov_chain_rhythmic.wav",
+        "ambient": "output/15_audio_output/markov_chain_ambient.wav"
       },
       "variables_count": 46,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:19.831600"
+      "generation_timestamp": "2026-03-06T15:10:26.951716"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "file_name": "tmaze_epistemic.md",
       "audio_files": {
-        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/tmaze_epistemic_tonal.wav",
-        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/tmaze_epistemic_rhythmic.wav",
-        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/tmaze_epistemic_ambient.wav"
+        "tonal": "output/15_audio_output/tmaze_epistemic_tonal.wav",
+        "rhythmic": "output/15_audio_output/tmaze_epistemic_rhythmic.wav",
+        "ambient": "output/15_audio_output/tmaze_epistemic_ambient.wav"
       },
       "variables_count": 115,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T09:48:20.194846"
+      "generation_timestamp": "2026-03-06T15:10:27.523178"
     }
   ],
   "sonification_results": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_sonification.wav",
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "sonification_file": "output/15_audio_output/simple_mdp_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:18.599864"
+      "generation_timestamp": "2026-03-06T15:10:24.159364"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_sonification.wav",
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "sonification_file": "output/15_audio_output/multi_armed_bandit_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:18.805659"
+      "generation_timestamp": "2026-03-06T15:10:24.470892"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/deep_planning_horizon_sonification.wav",
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "sonification_file": "output/15_audio_output/deep_planning_horizon_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:19.056003"
+      "generation_timestamp": "2026-03-06T15:10:24.796621"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/actinf_pomdp_agent_sonification.wav",
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "sonification_file": "output/15_audio_output/actinf_pomdp_agent_sonification.wav",
       "dynamics_analyzed": 1,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:19.287030"
+      "generation_timestamp": "2026-03-06T15:10:25.090038"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/hmm_baseline_sonification.wav",
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+      "sonification_file": "output/15_audio_output/hmm_baseline_sonification.wav",
       "dynamics_analyzed": 0,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:19.450636"
+      "generation_timestamp": "2026-03-06T15:10:25.304394"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/two_state_bistable_sonification.wav",
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+      "sonification_file": "output/15_audio_output/two_state_bistable_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:19.678859"
+      "generation_timestamp": "2026-03-06T15:10:26.430276"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/markov_chain_sonification.wav",
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
+      "sonification_file": "output/15_audio_output/markov_chain_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:19.844051"
+      "generation_timestamp": "2026-03-06T15:10:26.998751"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
-      "sonification_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/tmaze_epistemic_sonification.wav",
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+      "sonification_file": "output/15_audio_output/tmaze_epistemic_sonification.wav",
       "dynamics_analyzed": 2,
       "sonification_type": "model_dynamics",
-      "generation_timestamp": "2026-03-06T09:48:20.208983"
+      "generation_timestamp": "2026-03-06T15:10:27.550270"
     }
   ],
   "audio_analysis": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "input/gnn_files/discrete/simple_mdp.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -205,7 +205,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -249,7 +249,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -293,7 +293,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
+      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -337,7 +337,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md",
+      "file_path": "input/gnn_files/discrete/hmm_baseline.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -381,7 +381,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
+      "file_path": "input/gnn_files/discrete/two_state_bistable.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -425,7 +425,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md",
+      "file_path": "input/gnn_files/discrete/markov_chain.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,
@@ -469,7 +469,7 @@
       "temporal_analysis": {}
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
+      "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
       "audio_characteristics": {
         "tonal": {
           "duration": 5.0,

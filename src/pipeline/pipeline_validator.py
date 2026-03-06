@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 """
-Pipeline Validator
+Pipeline Runtime Integration Tester
 
-This module provides comprehensive validation and testing for the GNN pipeline
-to ensure all improvements are working correctly and SUCCESS status is achieved.
+Role: Runs the GNN pipeline via subprocess and validates that outputs are produced
+correctly. Tests end-to-end pipeline behavior. Does NOT analyze source code.
+
+See also:
+- pipeline/pipeline_validation.py: Static code analysis (checks import patterns, naming)
+- utils/pipeline_validator.py: Pre-execution prerequisite checker (checks step outputs exist)
 """
 
 import logging

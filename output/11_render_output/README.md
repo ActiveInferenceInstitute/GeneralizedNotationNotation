@@ -1,6 +1,6 @@
 # GNN Rendering Results
 
-Generated: 2026-03-06T09:48:42.651162
+Generated: 2026-03-06T15:00:54.961982
 Processing Type: **POMDP-aware rendering**
 
 ## Summary
@@ -14,7 +14,7 @@ Processing Type: **POMDP-aware rendering**
 
 - **Frameworks**: all
 - **Strict Validation**: True
-- **Verbose**: False
+- **Verbose**: True
 - **POMDP Processing**: ✅ Available
 
 ## File Results
