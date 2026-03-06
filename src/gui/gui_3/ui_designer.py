@@ -6,7 +6,7 @@ Low-dependency visual design experience for Active Inference models
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 try:
     import gradio as gr
@@ -26,7 +26,7 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
     - Parameter tuning controls
     - Low-dependency HTML/CSS design
     """
-    
+
     if not GRADIO_AVAILABLE:
         raise ImportError("Gradio is required for Design Studio functionality")
 
@@ -34,21 +34,21 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
 
     # Parse GNN content for design studio
     design_data = _parse_gnn_for_design(markdown_text)
-    
+
     with gr.Blocks(
-        title="State Space Design Studio", 
+        title="State Space Design Studio",
         theme=gr.themes.Base()
     ) as demo:
-        
+
         gr.Markdown("# 🎨 State Space Design Studio")
         gr.Markdown("**Low-dependency visual design experience for Active Inference models**")
-        
+
         with gr.Tabs():
-            
+
             # Tab 1: State Space Designer
             with gr.TabItem("🏗️ State Space"):
                 gr.Markdown("### Visual State Space Architecture")
-                
+
                 with gr.Row():
                     with gr.Column():
                         gr.Markdown("**Current State Spaces:**")
@@ -57,75 +57,75 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                             headers=["Variable", "Dimensions", "Description"],
                             label="State Space Variables"
                         )
-                        
+
                         with gr.Row():
                             add_variable = gr.Button("➕ Add Variable", variant="primary")
                             remove_variable = gr.Button("➖ Remove Selected", variant="secondary")
-                    
+
                     with gr.Column():
                         gr.Markdown("**Visual Designer:**")
                         designer_output = gr.HTML(value=_generate_visual_designer_html())
-                        
-            # Tab 2: Ontology Editor  
+
+            # Tab 2: Ontology Editor
             with gr.TabItem("📚 Ontology"):
                 gr.Markdown("### Active Inference Ontology Terms")
-                
+
                 ontology_editor = gr.Dataframe(
                     value=_format_ontology_data(design_data.get("ontology", {})),
                     headers=["Variable", "Ontology Term", "Description"],
                     label="Ontology Mappings"
                 )
-                
+
                 with gr.Row():
                     ontology_var = gr.Textbox(label="Variable", placeholder="A")
                     ontology_term = gr.Textbox(label="Ontology Term", placeholder="LikelihoodMatrix")
                     add_ontology = gr.Button("Add Mapping", variant="primary")
-            
+
             # Tab 3: Connections
             with gr.TabItem("🔗 Connections"):
                 gr.Markdown("### Model Connections Graph")
-                
+
                 connections_text = gr.Textbox(
                     value=design_data.get("connections_text", "D>s\ns-A\nA-o"),
                     label="Connections (one per line)",
                     lines=8
                 )
-                
+
                 connections_visual = gr.HTML(value=_generate_connections_html())
-                
+
                 with gr.Row():
                     validate_connections = gr.Button("✓ Validate", variant="primary")
                     auto_layout = gr.Button("🔄 Auto Layout", variant="secondary")
-            
+
             # Tab 4: Parameters
             with gr.TabItem("⚙️ Parameters"):
                 gr.Markdown("### Model Parameters")
-                
+
                 with gr.Row():
                     with gr.Column():
                         num_states = gr.Slider(1, 10, value=3, label="Hidden States")
-                        num_obs = gr.Slider(1, 10, value=3, label="Observations") 
+                        num_obs = gr.Slider(1, 10, value=3, label="Observations")
                         num_actions = gr.Slider(1, 10, value=3, label="Actions")
-                        
+
                     with gr.Column():
                         planning_horizon = gr.Slider(1, 5, value=1, label="Planning Horizon")
                         time_horizon = gr.Dropdown(
-                            ["Bounded", "Unbounded"], 
+                            ["Bounded", "Unbounded"],
                             value="Unbounded",
                             label="Time Horizon"
                         )
-        
+
         # Export Section
         gr.Markdown("---")
         with gr.Row():
             with gr.Column():
                 export_btn = gr.Button("💾 Export GNN Model", variant="primary", size="lg")
                 export_status = gr.Textbox(label="Export Status", lines=2)
-                
-            with gr.Column():  
+
+            with gr.Column():
                 preview_btn = gr.Button("👁️ Preview Model", variant="secondary")
                 model_preview = gr.Code(language="markdown", label="GNN Preview")
-        
+
         # Event Handlers
         def export_design(spaces, ontology, connections, states, obs, actions, horizon, time_h):
             """Export current design to GNN format"""
@@ -133,14 +133,14 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                 gnn_content = _generate_gnn_from_design(
                     spaces, ontology, connections, states, obs, actions, horizon, time_h
                 )
-                
+
                 export_path.write_text(gnn_content)
                 return f"✅ Model exported to {export_path.name}"
-                
+
             except Exception as e:
                 logger.error(f"Export failed: {e}")
                 return f"❌ Export failed: {str(e)}"
-        
+
         def preview_design(spaces, ontology, connections, states, obs, actions, horizon, time_h):
             """Preview the current design as GNN"""
             try:
@@ -149,15 +149,15 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                 )
             except Exception as e:
                 return f"Error generating preview: {e}"
-        
+
         # Wire up event handlers
         export_btn.click(
             export_design,
-            inputs=[state_spaces, ontology_editor, connections_text, 
+            inputs=[state_spaces, ontology_editor, connections_text,
                    num_states, num_obs, num_actions, planning_horizon, time_horizon],
             outputs=[export_status]
         )
-        
+
         preview_btn.click(
             preview_design,
             inputs=[state_spaces, ontology_editor, connections_text,
@@ -171,42 +171,42 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
 
 def _parse_gnn_for_design(gnn_content: str) -> Dict[str, Any]:
     """Parse GNN content for design studio"""
-    
+
     design_data = {
         "state_spaces": [],
         "ontology": {},
         "connections_text": "",
         "parameters": {}
     }
-    
+
     lines = gnn_content.split('\n')
     current_section = None
-    
+
     for line in lines:
         line = line.strip()
-        
+
         if line.startswith('## '):
             current_section = line[3:]
             continue
-            
+
         if current_section == "StateSpaceBlock":
             if '[' in line and ']' in line and not line.startswith('#'):
                 var_name = line.split('[')[0].strip()
                 dimensions = line.split('[')[1].split(']')[0].strip()
                 desc = line.split('#')[1].strip() if '#' in line else ""
                 design_data["state_spaces"].append([var_name, dimensions, desc])
-                
+
         elif current_section == "ActInfOntologyAnnotation":
             if '=' in line and not line.startswith('#'):
                 var, concept = line.split('=', 1)
                 design_data["ontology"][var.strip()] = concept.strip()
-                
+
         elif current_section == "Connections":
             if line and not line.startswith('#'):
                 if design_data["connections_text"]:
                     design_data["connections_text"] += "\n"
                 design_data["connections_text"] += line
-    
+
     return design_data
 
 
@@ -214,7 +214,7 @@ def _format_ontology_data(ontology_dict: Dict[str, str]) -> List[List[str]]:
     """Format ontology data for dataframe"""
     if not ontology_dict:
         return [["A", "LikelihoodMatrix", "Maps states to observations"]]
-    
+
     formatted = []
     descriptions = {
         "LikelihoodMatrix": "Maps states to observations",
@@ -222,11 +222,11 @@ def _format_ontology_data(ontology_dict: Dict[str, str]) -> List[List[str]]:
         "LogPreferenceVector": "Preferences over observations",
         "PriorOverHiddenStates": "Initial state beliefs"
     }
-    
+
     for var, term in ontology_dict.items():
         desc = descriptions.get(term, "Active Inference component")
         formatted.append([var, term, desc])
-    
+
     return formatted
 
 
@@ -286,7 +286,7 @@ def _generate_connections_html() -> str:
 
 def _generate_gnn_from_design(spaces, ontology, connections, states, obs, actions, horizon, time_h):
     """Generate GNN content from design studio inputs"""
-    
+
     gnn_lines = [
         "# GNN: State Space Design Studio Export",
         "# Generated by Design Studio GUI",
@@ -296,7 +296,7 @@ def _generate_gnn_from_design(spaces, ontology, connections, states, obs, action
         "",
         "## StateSpaceBlock"
     ]
-    
+
     # Add state spaces
     if hasattr(spaces, 'values'):
         for row in spaces.values:
@@ -305,35 +305,35 @@ def _generate_gnn_from_design(spaces, ontology, connections, states, obs, action
                 desc = row[2] if len(row) > 2 else ""
                 comment = f"   # {desc}" if desc else ""
                 gnn_lines.append(f"{var}[{dims},type=float]{comment}")
-    
+
     gnn_lines.extend([
         "",
         "## Connections"
     ])
-    
-    # Add connections  
+
+    # Add connections
     if connections:
         for line in str(connections).split('\n'):
             if line.strip():
                 gnn_lines.append(line.strip())
-    
+
     gnn_lines.extend([
         "",
         "## ActInfOntologyAnnotation"
     ])
-    
+
     # Add ontology
     if hasattr(ontology, 'values'):
         for row in ontology.values:
             if len(row) >= 2:
                 var, term = row[0], row[1]
                 gnn_lines.append(f"{var}={term}")
-    
+
     gnn_lines.extend([
         "",
         "## ModelParameters",
         f"num_hidden_states: {states}",
-        f"num_obs: {obs}", 
+        f"num_obs: {obs}",
         f"num_actions: {actions}",
         f"planning_horizon: {horizon}",
         f"time_horizon: {time_h}",
@@ -341,5 +341,5 @@ def _generate_gnn_from_design(spaces, ontology, connections, states, obs, action
         "## Footer",
         "Generated by State Space Design Studio - Low Dependency GUI"
     ])
-    
+
     return '\n'.join(gnn_lines)

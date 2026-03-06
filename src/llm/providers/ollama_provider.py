@@ -210,7 +210,7 @@ class OllamaProvider(BaseLLMProvider):
                     metadata_dict["eval_count"] = response.eval_count
                 if hasattr(response, "eval_duration"):
                     metadata_dict["eval_duration"] = response.eval_duration
-            
+
             return LLMResponse(
                 content=content,
                 model_used=model_used,

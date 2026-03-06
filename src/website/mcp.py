@@ -5,18 +5,15 @@ Exposes website generation and inspection tools through MCP with
 full typed schemas and domain-specific functionality.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
-import json
 
 logger = logging.getLogger(__name__)
 
 from .renderer import process_website
-from .generator import WebsiteGenerator, generate_website as _generate_website
+from .generator import generate_website as _generate_website
 
-import inspect, importlib
 
 
 

@@ -7,11 +7,7 @@ This file contains comprehensive tests for the intelligent_analysis module funct
 
 import pytest
 import sys
-import os
-import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

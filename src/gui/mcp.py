@@ -4,9 +4,8 @@ GUI MCP Integration
 This module exposes GUI processing tools via MCP.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

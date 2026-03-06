@@ -15,10 +15,10 @@ No mocking is used - all tests validate real function execution.
 """
 
 import pytest
+
+pytestmark = pytest.mark.pipeline
 import json
-import logging
 from pathlib import Path
-from typing import Dict, Any, List
 
 # Add src to path for imports
 import sys
@@ -84,12 +84,12 @@ D = [0.33, 0.33, 0.34]
             "input/gnn_files/test_pipeline_agent.md",
             sample_gnn_content
         )
-        
+
         # Create output directories for each step
         render_output = safe_filesystem.create_dir("output/11_render_output")
         execute_output = safe_filesystem.create_dir("output/12_execute_output")
         analysis_output = safe_filesystem.create_dir("output/16_analysis_output")
-        
+
         return {
             "input_dir": input_dir,
             "gnn_file": gnn_file,
@@ -104,7 +104,7 @@ D = [0.33, 0.33, 0.34]
     def test_render_execute_analyze_flow(self, pipeline_directories):
         """Test full render -> execute -> analyze pipeline flow."""
         dirs = pipeline_directories
-        
+
         # Step 1: Run render
         try:
             render_success = process_render(
@@ -115,7 +115,7 @@ D = [0.33, 0.33, 0.34]
             assert isinstance(render_success, bool)
         except Exception as e:
             pytest.skip(f"Render step failed (acceptable): {e}")
-        
+
         # Step 2: Run execute (uses render output)
         try:
             execute_success = process_execute(
@@ -127,7 +127,7 @@ D = [0.33, 0.33, 0.34]
             assert isinstance(execute_success, bool)
         except Exception as e:
             pytest.skip(f"Execute step failed (acceptable): {e}")
-        
+
         # Step 3: Run analysis (uses execute output)
         try:
             analysis_success = process_analysis(
@@ -138,7 +138,7 @@ D = [0.33, 0.33, 0.34]
             assert isinstance(analysis_success, bool)
         except Exception as e:
             pytest.skip(f"Analysis step failed (acceptable): {e}")
-        
+
         # If we got here, the full flow completed without crashes
 
     @pytest.mark.integration
@@ -146,41 +146,41 @@ D = [0.33, 0.33, 0.34]
     def test_step_output_handoffs(self, pipeline_directories):
         """Test that each step's output structure is correct for next step."""
         dirs = pipeline_directories
-        
+
         # Create expected structures for validation
         expected_render_structure = [
             "11_render_output",
         ]
-        
+
         expected_execute_structure = [
             "12_execute_output",
         ]
-        
+
         # Run render and check output structure
         try:
             process_render(dirs["input_dir"], dirs["base_output"], verbose=True)
-            
+
             # Verify render output structure exists
             render_dir = dirs["base_output"] / "11_render_output"
             if render_dir.exists():
                 # Should have model subdirectories
                 contents = list(render_dir.iterdir())
                 # Render should create some output
-                
+
         except Exception:
             pass
-        
+
         # Run execute and check output structure
         try:
             process_execute(dirs["input_dir"], dirs["base_output"], verbose=True)
-            
+
             # Verify execute output structure
             execute_dir = dirs["base_output"] / "12_execute_output"
             if execute_dir.exists():
                 # Should have execution summary
                 summary_file = execute_dir / "execution_summary.json"
                 # Summary might be at root level instead
-                
+
         except Exception:
             pass
 
@@ -193,7 +193,7 @@ class TestExecuteAnalyzeIntegration:
     def simulated_execute_output(self, safe_filesystem):
         """Create simulated execution output for analysis testing."""
         execute_dir = safe_filesystem.create_dir("output/12_execute_output")
-        
+
         # Create execution summary
         summary = {
             "timestamp": "2026-01-08T12:00:00",
@@ -215,7 +215,7 @@ class TestExecuteAnalyzeIntegration:
             "output/12_execute_output/execution_summary.json",
             json.dumps(summary, indent=2)
         )
-        
+
         # Create simulated pymdp output
         pymdp_output = safe_filesystem.create_dir("output/12_execute_output/test_agent/pymdp")
         safe_filesystem.create_file(
@@ -227,7 +227,7 @@ class TestExecuteAnalyzeIntegration:
                 "free_energy": [1.2, 0.8, 0.6]
             }, indent=2)
         )
-        
+
         return execute_dir
 
     @pytest.mark.integration
@@ -235,21 +235,21 @@ class TestExecuteAnalyzeIntegration:
         """Test that execution results can be analyzed."""
         if not ANALYSIS_AVAILABLE:
             pytest.skip("Analysis module not available")
-        
+
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.temp_dir / "output"
-        
+
         try:
             success = process_analysis(input_dir, output_dir, verbose=True)
             assert isinstance(success, bool)
-            
+
             # Check that analysis output was created
             analysis_dir = output_dir / "16_analysis_output"
             if analysis_dir.exists():
                 # Should have some analysis output
                 files = list(analysis_dir.rglob("*"))
                 # Analysis creates output files
-                
+
         except Exception as e:
             pytest.skip(f"Analysis failed (acceptable in isolation): {e}")
 
@@ -276,27 +276,27 @@ class TestRenderExecuteIntegration:
         """Test that render output can be executed."""
         # Create pipeline structure
         render_output = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
-        
+
         try:
             # Render to pymdp
             ok, msg, artifacts = render_gnn_spec(sample_gnn_spec, "pymdp", render_output)
-            
+
             if ok:
                 # Find generated Python scripts
                 py_scripts = list(render_output.glob("*.py"))
-                
+
                 for script in py_scripts:
                     content = script.read_text()
-                    
+
                     # Verify script is valid Python
                     try:
                         compile(content, script, 'exec')
                     except SyntaxError as e:
                         pytest.fail(f"Rendered script has syntax error: {e}")
-                    
+
                     # Verify script has expected structure for execution
                     # Should have imports, class/function definitions
                     assert len(content) > 0
-                    
+
         except Exception as e:
             pytest.skip(f"Render failed (acceptable): {e}")

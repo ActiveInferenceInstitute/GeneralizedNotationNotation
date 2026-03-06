@@ -6,14 +6,13 @@ per-framework status, and batch processing through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
 
 from . import process_render
 
-import inspect, importlib
 
 
 
@@ -98,7 +97,8 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
             return {"success": False, "error": f"GNN file not found: {gnn_file_path}"}
 
         # Use process_render on single-file temp dir
-        import tempfile, shutil
+        import tempfile
+        import shutil
         with tempfile.TemporaryDirectory() as tmp:
             tmp_in = Path(tmp) / "input"
             tmp_in.mkdir()

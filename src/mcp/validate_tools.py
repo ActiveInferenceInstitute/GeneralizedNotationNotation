@@ -16,9 +16,7 @@ Usage:
 
 from __future__ import annotations
 import sys
-import os
 import logging
-import inspect
 import json
 from pathlib import Path
 from typing import Any, Dict, List
@@ -102,7 +100,7 @@ def main() -> int:
         print(f"  {flag} [{status:14s}]  {name:55s}  fn={fn:35s}  doc={is_documented}  mod={mod}")
 
     # ── 4. Light callability verification ────────────────────────────────────
-    print(f"\n[4] Callability spot-checks (no-arg tools)...")
+    print("\n[4] Callability spot-checks (no-arg tools)...")
     no_arg_tools = ["list_analysis_tools", "list_render_frameworks", "list_export_formats",
                     "list_standard_ontology_terms", "list_supported_integrations",
                     "list_research_topics", "list_security_checks",
@@ -133,7 +131,7 @@ def main() -> int:
             issues.append({"tool": tname, "issue": f"exception: {e}"})
 
     # ── 5. Logging coverage check ─────────────────────────────────────────────
-    print(f"\n[5] Logging coverage check (register_tools uses logger.info?)...")
+    print("\n[5] Logging coverage check (register_tools uses logger.info?)...")
     submodule_dirs = [d for d in SRC_ROOT.iterdir()
                       if d.is_dir() and (d / "mcp.py").exists()
                       and not d.name.startswith("_") and d.name != "mcp"]

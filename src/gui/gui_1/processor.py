@@ -63,11 +63,11 @@ def run_gui(
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
             else:
                 logger.info("📦 Running GUI 1 in HEADLESS mode - generating artifacts only")
-            
+
             # Persist enhanced artifact describing GUI availability
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Create comprehensive fallback status report
             fallback_status = {
                 "backend": _GUI_BACKEND or "none",
@@ -85,9 +85,9 @@ def run_gui(
                     "Run with --interactive to launch GUI server on port 7860"
                 ]
             }
-            
+
             (gui_output_dir / "gui_status.json").write_text(json.dumps(fallback_status, indent=2))
-            
+
             log_step_success(logger, f"GUI 1 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
@@ -101,7 +101,7 @@ def run_gui(
         logger.info(f"🌐 Launching GUI 1 on http://localhost:7860 (open_browser={open_browser})")
         import threading
         import time
-        
+
         def launch_gui():
             logger.info("🎮 Form-based Constructor starting...")
             demo.launch(
@@ -113,11 +113,11 @@ def run_gui(
                 show_error=True,
                 quiet=False,  # Show server startup messages
             )
-        
+
         # Launch in a separate thread to allow multiple GUIs
         gui_thread = threading.Thread(target=launch_gui, daemon=False)
         gui_thread.start()
-        
+
         # Give it a moment to start and verify
         time.sleep(3)
         logger.info("🎮 GUI 1 is running on http://localhost:7860")

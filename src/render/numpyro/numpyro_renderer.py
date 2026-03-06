@@ -11,7 +11,6 @@ within the standard Active Inference generative loop.
 """
 import logging
 import numpy as np
-import textwrap
 from pathlib import Path
 from typing import Dict, Any, Optional
 

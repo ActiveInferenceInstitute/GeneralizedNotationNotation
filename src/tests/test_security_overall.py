@@ -1,6 +1,4 @@
 import pytest
-import tempfile
-from pathlib import Path
 from security.processor import process_security, perform_security_check, check_vulnerabilities
 
 class TestSecurityOverall:
@@ -39,13 +37,13 @@ os.system("rm -rf /")
     def test_check_vulnerabilities_malicious(self, vulnerable_gnn_file):
         """Test detection of vulnerabilities."""
         vulns = check_vulnerabilities(vulnerable_gnn_file)
-        
+
         # Check for specific vulnerabilities we noticed in the source patterns
         types = [v["vulnerability_type"] for v in vulns]
-        
+
         # Expecting 'Hardcoded credentials' due to 'password ='
         assert any("Hardcoded credentials" in t for t in types)
-        
+
         # Expecting 'OS command injection risk' due to 'import os'
         assert any("OS command injection risk" in t for t in types)
 
@@ -55,11 +53,11 @@ os.system("rm -rf /")
         """Test the full process_security flow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("security_output")
-        
+
         success = process_security(target_dir, output_dir)
-        
+
         assert success is True
-        
+
         # Check output artifacts
         results_dir = output_dir
         assert results_dir.exists()

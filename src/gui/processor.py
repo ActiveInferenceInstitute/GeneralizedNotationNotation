@@ -8,7 +8,7 @@ extracted from __init__.py to follow the thin orchestrator pattern.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 
 def process_gui(

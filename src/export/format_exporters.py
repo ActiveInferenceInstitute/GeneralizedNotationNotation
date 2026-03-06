@@ -29,7 +29,7 @@ try:
         os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
     import networkx as nx
     HAS_NETWORKX = True
-except (ImportError, RecursionError, AttributeError, ValueError) as e:
+except (ImportError, RecursionError, AttributeError, ValueError):
     nx = None
     HAS_NETWORKX = False
     logging.getLogger(__name__).warning("NetworkX library not found. Graph export functionalities (GEXF, GraphML) will be disabled.")
@@ -47,7 +47,7 @@ def _strip_comments_from_multiline_str(m_str: str) -> str:
 
 def _parse_matrix_string(matrix_str: str) -> Any:
     """Safely parses a string representation of a matrix after stripping comments."""
-    
+
     processed_str = _strip_comments_from_multiline_str(matrix_str)
     # After stripping comments, processed_str might be empty or just whitespace
     if not processed_str:
@@ -56,7 +56,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 
     # Heuristic to convert GNN's array-like curly braces into valid Python list syntax for ast.literal_eval.
     # This should happen AFTER comment stripping.
-    
+
     # New, more robust heuristic: If the string contains curly braces but no colons,
     # assume it's a nested array structure (like a multi-dimensional matrix) and convert all braces.
     # This is safer than simple replacement as it avoids accidentally converting dictionaries.
@@ -76,7 +76,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 
     try:
         parsed_value = ast.literal_eval(processed_str)
-        
+
         def convert_structure(item):
             if isinstance(item, set):
                 try: return sorted(list(item))
@@ -251,7 +251,7 @@ def export_to_python_pickle(gnn_model: dict, output_file_path: str):
 def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
     if not HAS_NETWORKX: return None
     graph = nx.DiGraph(name=gnn_model.get('name', 'GNN_Model'))
-    
+
     # Add nodes from StateSpaceBlock (contains all variables including states, observations, etc.)
     statespace_data = gnn_model.get('statespaceblock', [])
     for node_data in statespace_data:
@@ -259,7 +259,7 @@ def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
             # Extract node attributes
             attributes = {k: v for k, v in node_data.items() if k != 'id'}
             graph.add_node(node_data['id'], **attributes)
-    
+
     # Add edges from Connections
     connections_data = gnn_model.get('connections', [])
     for edge_data in connections_data:
@@ -267,11 +267,11 @@ def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
         targets = edge_data.get('targets', [])
         operator = edge_data.get('operator', '-')
         attributes = edge_data.get('attributes', {})
-        
+
         # Add operator information to edge attributes
         edge_attrs = attributes.copy()
         edge_attrs['operator'] = operator
-        
+
         # Create edges from all sources to all targets
         for source in sources:
             for target in targets:
@@ -280,19 +280,19 @@ def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
                     graph.add_node(source, label=source)
                 if not graph.has_node(target):
                     graph.add_node(target, label=target)
-                
+
                 # Add the edge
                 graph.add_edge(source, target, **edge_attrs)
-    
+
     return graph
 
 def export_to_gexf(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a GEXF file."""
     logger.info(f"Exporting GNN model to GEXF: {output_file_path}")
-    if not HAS_NETWORKX: 
+    if not HAS_NETWORKX:
         return False, "NetworkX not available, GEXF export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: 
+    if graph is None:
         return False, "Failed to build NetworkX graph from GNN model."
     try:
         nx.write_gexf(graph, output_file_path)
@@ -305,10 +305,10 @@ def export_to_gexf(gnn_model: dict, output_file_path: str):
 def export_to_graphml(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a GraphML file."""
     logger.info(f"Exporting GNN model to GraphML: {output_file_path}")
-    if not HAS_NETWORKX: 
+    if not HAS_NETWORKX:
         return False, "NetworkX not available, GraphML export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: 
+    if graph is None:
         return False, "Failed to build NetworkX graph from GNN model."
     try:
         nx.write_graphml(graph, output_file_path)
@@ -321,10 +321,10 @@ def export_to_graphml(gnn_model: dict, output_file_path: str):
 def export_to_json_adjacency_list(gnn_model: dict, output_file_path: str):
     """Exports the GNN model graph to a JSON adjacency list format."""
     logger.info(f"Exporting GNN model to JSON Adjacency List: {output_file_path}")
-    if not HAS_NETWORKX: 
+    if not HAS_NETWORKX:
         return False, "NetworkX not available, JSON adjacency export failed."
     graph = _build_networkx_graph(gnn_model)
-    if graph is None: 
+    if graph is None:
         return False, "Failed to build NetworkX graph from GNN model."
     try:
         adj_data = nx.readwrite.json_graph.adjacency_data(graph)
@@ -373,4 +373,4 @@ def export_to_plaintext_dsl(gnn_model: dict, output_file_path: str):
         return False, f"Failed to export to Plaintext DSL: {e}"
 
 # This file is now the single source of truth for GNN parsing and exporting.
-# The main 7_export.py script should now correctly find and use these functions. 
+# The main 7_export.py script should now correctly find and use these functions.

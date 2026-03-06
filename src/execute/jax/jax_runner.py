@@ -46,15 +46,15 @@ def is_jax_available() -> bool:
                 version = jaxlib.__version__
             except (ImportError, AttributeError):
                 version = "unknown"
-        
+
         logger.info(f"JAX version: {version}")
-        
+
         try:
             devices = jax.devices()
             logger.info(f"JAX devices: {[str(d) for d in devices]}")
         except Exception as e:
             logger.warning(f"Could not get JAX devices: {e}")
-        
+
         return True
     except ImportError as e:
         logger.error(f"JAX not available: {e}")
@@ -88,15 +88,15 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
         return False
-    
+
     logger.info(f"Executing JAX script: {script_path}")
-    
+
     # Check JAX and related dependencies
     # Only jax and numpy are required — generated scripts use pure JAX
     required_deps = ["jax", "numpy"]
     optional_deps = ["flax", "optax"]
     missing_deps = []
-    
+
     for dep in required_deps:
         try:
             __import__(dep)
@@ -104,20 +104,20 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
         except ImportError:
             missing_deps.append(dep)
             logger.warning(f"⚠️ Missing required dependency: {dep}")
-    
+
     for dep in optional_deps:
         try:
             __import__(dep)
             logger.debug(f"✅ Optional dependency available: {dep}")
         except ImportError:
             logger.info(f"ℹ️ Optional dependency not installed: {dep}")
-    
+
     if missing_deps:
         logger.error(f"Missing required JAX dependencies: {', '.join(missing_deps)}")
         logger.error("Please install missing dependencies:")
         logger.error(f"uv pip install {' '.join(missing_deps)}")
         return False
-    
+
     # Validate script syntax
     try:
         with open(script_path, 'r') as f:
@@ -127,36 +127,36 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
     except SyntaxError as e:
         logger.error(f"❌ Syntax error in {script_path.name}: {e}")
         return False
-    
+
     env = os.environ.copy()
     if device:
         env["JAX_PLATFORM_NAME"] = device
         logger.info(f"Using JAX device: {device}")
-    
+
     # Set JAX_OUTPUT_DIR environment variable (matching PYMDP_OUTPUT_DIR pattern)
     if output_dir:
         output_dir.mkdir(parents=True, exist_ok=True)
         env["JAX_OUTPUT_DIR"] = str(output_dir)
         logger.debug(f"Set JAX_OUTPUT_DIR={output_dir}")
-    
+
     start_time = time_mod.time()
-    
+
     try:
         # Execute with enhanced error capture
         # Convert to absolute path to avoid path resolution issues
         abs_script_path = script_path.resolve()
         result = subprocess.run(
-            [sys.executable, str(abs_script_path)], 
-            capture_output=True, 
-            text=True, 
+            [sys.executable, str(abs_script_path)],
+            capture_output=True,
+            text=True,
             env=env,
             cwd=abs_script_path.parent,
             timeout=timeout
         )
-        
+
         elapsed = time_mod.time() - start_time
         success = result.returncode == 0
-        
+
         if success:
             logger.info(f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)")
             if verbose and result.stdout.strip():
@@ -168,21 +168,21 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
                 logger.error(f"Error output:\n{result.stderr}")
             if result.stdout.strip():
                 logger.debug(f"Standard output:\n{result.stdout}")
-        
+
         # Save execution logs (E-1/J-1)
         log_dir = output_dir if output_dir else abs_script_path.parent
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Save stdout and stderr
             stdout_file = log_dir / "stdout.txt"
             with open(stdout_file, 'w') as f:
                 f.write(result.stdout or "")
-            
+
             stderr_file = log_dir / "stderr.txt"
             with open(stderr_file, 'w') as f:
                 f.write(result.stderr or "")
-            
+
             # Save execution log JSON
             execution_log = {
                 "script": str(abs_script_path),
@@ -193,15 +193,15 @@ def execute_jax_script(script_path: Path, verbose: bool = False, device: Optiona
                 "timeout": timeout,
                 "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S")
             }
-            
+
             log_file = log_dir / "execution_log.json"
             with open(log_file, 'w') as f:
                 json_mod.dump(execution_log, f, indent=2)
-            
+
             logger.debug(f"Execution logs saved to: {log_dir}")
         except Exception as log_err:
             logger.warning(f"Could not save execution logs: {log_err}")
-        
+
         return success
     except subprocess.TimeoutExpired:
         logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
@@ -215,13 +215,13 @@ def run_jax_scripts(rendered_simulators_dir: Union[str, Path], execution_output_
     if not is_jax_available():
         logger.error("JAX is not available, cannot execute JAX scripts")
         return False
-    
+
     # Set up execution output directory
     if execution_output_dir:
         exec_output_dir = Path(execution_output_dir)
         exec_output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"JAX execution outputs will be saved to: {exec_output_dir}")
-    
+
     jax_dir = Path(rendered_simulators_dir) / "jax"
     logger.info(f"Looking for JAX scripts in: {jax_dir}")
     script_files = find_jax_scripts(jax_dir, recursive_search)
@@ -251,4 +251,4 @@ if __name__ == "__main__":
     if args.verbose:
         logger.setLevel(logging.DEBUG)
     success = run_jax_scripts(rendered_simulators_dir=args.output_dir, recursive_search=args.recursive, verbose=args.verbose, device=args.device)
-    sys.exit(0 if success else 1) 
+    sys.exit(0 if success else 1)

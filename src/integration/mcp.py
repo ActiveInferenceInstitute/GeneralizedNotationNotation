@@ -6,7 +6,7 @@ pymdp integration, Pyro/Stan adapters, and integration status through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

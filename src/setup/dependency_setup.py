@@ -6,15 +6,13 @@ optional package group installation, and project structure creation.
 """
 
 import subprocess
-import sys
 import shutil
 from pathlib import Path
 import logging
-from typing import Dict, Any, List
+from typing import List
 
 from .uv_management import (
     PROJECT_ROOT,
-    VENV_PATH,
     VENV_PYTHON,
     OPTIONAL_GROUPS,
     run_command,
@@ -38,8 +36,6 @@ def install_jax_and_test(verbose: bool = False) -> bool:
 
     This function now tests JAX using the venv Python to avoid import issues.
     """
-    import importlib.util
-    import platform
 
     # Prevent infinite recursion by tracking attempts
     if hasattr(install_jax_and_test, '_attempts'):

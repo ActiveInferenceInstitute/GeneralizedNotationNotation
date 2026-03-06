@@ -1,15 +1,11 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import pickle
 import base64
-import json
-from datetime import datetime
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class BinarySerializer(BaseGNNSerializer):
     """Serializer for binary formats (Pickle) with enhanced round-trip support."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to pickle format with embedded JSON data for round-trip."""
         # Create a comprehensive data structure for pickling
@@ -50,13 +46,13 @@ class BinarySerializer(BaseGNNSerializer):
             'modified_at': model.modified_at.isoformat(),
             'checksum': model.checksum
         }
-        
+
         # Pickle the complete data structure
         pickled_data = pickle.dumps(complete_model_data)
-        
+
         # Return as base64 encoded string for text representation
         return base64.b64encode(pickled_data).decode('ascii')
-    
+
     def serialize_to_file(self, model: GNNInternalRepresentation, file_path: str) -> None:
         """Serialize directly to binary pickle file."""
         complete_model_data = {
@@ -95,14 +91,14 @@ class BinarySerializer(BaseGNNSerializer):
             'modified_at': model.modified_at.isoformat(),
             'checksum': model.checksum
         }
-        
+
         with open(file_path, 'wb') as f:
             pickle.dump(complete_model_data, f)
-    
+
     def serialize_pickle_direct(self, model: GNNInternalRepresentation, file_path: str) -> None:
         """Direct binary pickle serialization."""
         self.serialize_to_file(model, file_path)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -113,7 +109,7 @@ class BinarySerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -125,4 +121,4 @@ class BinarySerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ] 
+        ]

@@ -6,14 +6,13 @@ annotation extraction, and ontology report generation through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List, Union
 import logging
 
 logger = logging.getLogger(__name__)
 
 from . import process_ontology, validate_ontology_terms
 
-import inspect, importlib
 
 
 

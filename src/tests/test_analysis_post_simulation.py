@@ -10,9 +10,6 @@ comparison.
 
 import pytest
 import sys
-import json
-import math
-import logging
 from pathlib import Path
 
 

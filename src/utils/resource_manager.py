@@ -6,13 +6,12 @@ This module provides utilities for tracking and managing system resources
 during pipeline execution, including memory usage, disk space, and timing.
 """
 
-import os
 import time
 import psutil
 import logging
 import functools
 from pathlib import Path
-from typing import Dict, Any, List, Tuple, Callable, TypeVar, Optional
+from typing import Dict, Any, Tuple, Callable, TypeVar, Optional
 from contextlib import contextmanager
 
 logger = logging.getLogger(__name__)
@@ -31,41 +30,41 @@ def get_current_memory_usage() -> float:
 
 class ResourceTracker:
     """Tracks resource usage during operations."""
-    
+
     def __init__(self):
         self.start_time = time.time()
         self.end_time: Optional[float] = None
         self.start_memory = psutil.Process().memory_info().rss / 1024 / 1024  # MB
         self.peak_memory = self.start_memory
         self.current_memory = self.start_memory
-        
+
     def update(self):
         """Update current resource measurements."""
         self.current_memory = psutil.Process().memory_info().rss / 1024 / 1024
         self.peak_memory = max(self.peak_memory, self.current_memory)
-        
+
     def stop(self):
         """Stop tracking and calculate final metrics."""
         self.end_time = time.time()
         self.update()
-        
+
     @property
     def duration(self) -> float:
         """Get operation duration in seconds."""
         if self.end_time is None:
             return time.time() - self.start_time
         return self.end_time - self.start_time
-        
+
     @property
     def memory_used(self) -> float:
         """Get current memory usage in MB."""
         return self.current_memory - self.start_memory
-        
+
     @property
     def max_memory_mb(self) -> float:
         """Get peak memory usage in MB."""
         return self.peak_memory
-        
+
     def to_dict(self) -> Dict[str, float]:
         """Convert metrics to dictionary."""
         return {
@@ -109,7 +108,7 @@ def with_resource_limits(
     start_time = time.time()
     process = psutil.Process()
     start_memory = process.memory_info().rss / 1024 / 1024  # MB
-    
+
     try:
         yield
     finally:
@@ -144,7 +143,7 @@ def check_disk_space(
         RuntimeError if insufficient space
     """
     import shutil
-    
+
     # Get disk usage
     total, used, free = shutil.disk_usage(path)
     # Some tests mock disk_usage with small integer tuples that represent MB.
@@ -153,16 +152,16 @@ def check_disk_space(
         free_mb = float(free)
     else:
         free_mb = free / (1024 * 1024)  # Convert bytes to MB
-    
+
     # Check with buffer
     required_with_buffer = required_mb * buffer_factor
-    
+
     if free_mb < required_with_buffer:
         raise RuntimeError(
             f"Insufficient disk space: {free_mb:.1f}MB free, "
             f"need {required_with_buffer:.1f}MB ({required_mb:.1f}MB + {buffer_factor*100-100:.0f}% buffer)"
         )
-        
+
     return True
 
 def estimate_resources(model_file: Path) -> Dict[str, float]:
@@ -180,17 +179,17 @@ def estimate_resources(model_file: Path) -> Dict[str, float]:
     """
     # Get file size
     file_size_mb = model_file.stat().st_size / (1024 * 1024)
-    
+
     # Count model complexity
     content = model_file.read_text()
     num_states = content.count("StateSpaceBlock") + content.count("[")
     num_connections = content.count("->")
-    
+
     # Basic estimation heuristics
     time_estimate = 0.1 + (num_states * 0.01) + (num_connections * 0.005)
     memory_estimate = 50 + (num_states * 2) + (num_connections * 1)
     disk_estimate = file_size_mb * 10  # Output files typically 10x input
-    
+
     return {
         "time": time_estimate,
         "memory_mb": memory_estimate,
@@ -210,10 +209,10 @@ def log_resource_usage(logger: logging.Logger, tracker: ResourceTracker):
 def get_system_info() -> Dict[str, Any]:
     """Get system information and resource availability."""
     import platform
-    
+
     cpu_count = psutil.cpu_count()
     memory = psutil.virtual_memory()
-    
+
     return {
         "platform": platform.platform(),
         "python_version": platform.python_version(),
@@ -231,13 +230,13 @@ def get_system_info() -> Dict[str, Any]:
 if __name__ == "__main__":
     # Example usage
     logging.basicConfig(level=logging.INFO)
-    
+
     # Track performance
     with performance_tracker() as tracker:
         time.sleep(1)  # Simulate work
         tracker.update()
         log_resource_usage(logger, tracker)
-        
+
     # Check resources
     system_info = get_system_info()
-    logger.info("System information: %s", system_info) 
+    logger.info("System information: %s", system_info)

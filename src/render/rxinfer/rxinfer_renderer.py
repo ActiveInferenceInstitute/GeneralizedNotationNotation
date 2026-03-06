@@ -15,7 +15,6 @@ Author: GNN RxInfer Integration
 Date: 2024
 """
 
-import json
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 import logging
@@ -26,7 +25,7 @@ class RxInferRenderer:
     """
     RxInfer.jl renderer for generating Julia probabilistic programming code from GNN specifications.
     """
-    
+
     def __init__(self, options: Optional[Dict[str, Any]] = None):
         """
         Initialize RxInfer renderer.
@@ -36,7 +35,7 @@ class RxInferRenderer:
         """
         self.options = options or {}
         self.logger = logging.getLogger(__name__)
-    
+
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
         """
         Render a single GNN file to RxInfer.jl simulation code.
@@ -52,26 +51,26 @@ class RxInferRenderer:
             # Read GNN file
             with open(gnn_file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Parse GNN content (simplified for now)
             gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
-            
+
             # Generate RxInfer.jl simulation code
             rxinfer_code = self._generate_rxinfer_simulation_code_simple(gnn_spec, gnn_file_path.stem)
-            
+
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(rxinfer_code)
-            
+
             self.logger.info(f"Generated RxInfer.jl simulation: {output_path}")
-            return True, f"Successfully generated RxInfer.jl simulation code"
-            
+            return True, "Successfully generated RxInfer.jl simulation code"
+
         except Exception as e:
             error_msg = f"Error rendering {gnn_file_path}: {e}"
             self.logger.error(error_msg)
             return False, error_msg
-    
+
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
         gnn_spec = {
@@ -80,11 +79,11 @@ class RxInferRenderer:
             'model_parameters': {},
             'initial_parameterization': {}
         }
-        
+
         # Simple parser for key sections
         lines = content.split('\n')
         current_section = None
-        
+
         for line in lines:
             line = line.strip()
             if line.startswith('## '):
@@ -100,38 +99,38 @@ class RxInferRenderer:
                         gnn_spec['model_parameters'][key] = int(value)
                 except ValueError:
                     gnn_spec['model_parameters'][key] = value
-        
+
         return gnn_spec
-    
+
     def _generate_rxinfer_simulation_code_simple(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """Generate simplified RxInfer code that actually works with modern API."""
         from datetime import datetime
-        
+
         try:
             # Get model parameters with defaults
             model_display_name = gnn_spec.get('model_name', model_name)
             model_params = gnn_spec.get('model_parameters', {})
             num_states = model_params.get('num_hidden_states', 3)
             num_observations = model_params.get('num_obs', 3)
-            
+
             # Extract num_actions from multiple possible sources
             initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
             B_data = initial_params.get('B', [])
-            
+
             # Infer from B matrix dimensions if available
             inferred_actions = len(B_data) if B_data and isinstance(B_data, list) else None
-            
+
             num_actions = (
-                model_params.get('num_actions') or 
-                model_params.get('num_controls') or 
+                model_params.get('num_actions') or
+                model_params.get('num_controls') or
                 model_params.get('n_actions') or
                 inferred_actions or
                 3  # Default to 3 for proper POMDP
             )
-            
+
             # Extract num_timesteps from model parameters (default 20 for backward compat)
             num_timesteps = model_params.get('num_timesteps', 20)
-            
+
             # Validate parameters
             if not isinstance(num_states, int) or num_states < 1:
                 num_states = 3
@@ -141,15 +140,15 @@ class RxInferRenderer:
                 num_actions = 3
             if not isinstance(num_timesteps, int) or num_timesteps < 1:
                 num_timesteps = 20
-            
+
             # Read the minimal working template (no deprecated APIs)
             template_path = Path(__file__).parent / 'minimal_template.jl'
             if not template_path.exists():
                 raise FileNotFoundError(f"Template file not found: {template_path}")
-            
+
             with open(template_path, 'r', encoding='utf-8') as f:
                 template = f.read()
-            
+
             # Fill in the template - use careful formatting to avoid Julia syntax conflicts
             # Replace placeholders one at a time to avoid issues with curly braces
             code = template
@@ -159,11 +158,11 @@ class RxInferRenderer:
             code = code.replace('{num_observations}', str(num_observations))
             code = code.replace('{num_actions}', str(num_actions))
             code = code.replace('{num_timesteps}', str(num_timesteps))
-            
+
             return code
         except Exception as e:
             raise RuntimeError(f"Failed to generate RxInfer code template: {e}") from e
-    
+
     def _generate_rxinfer_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """
         Generate executable RxInfer.jl simulation code from GNN specification.
@@ -182,36 +181,36 @@ class RxInferRenderer:
         model_params = gnn_spec.get('model_parameters', {})
         num_states = model_params.get('num_hidden_states', 3)
         num_observations = model_params.get('num_obs', 3)
-        
+
         # Extract num_actions from multiple possible sources (GNN specs vary)
         # Priority: explicit model param > B matrix dimensions > default
         initial_params = gnn_spec.get('initial_parameterization', {}) or gnn_spec.get('initialparameterization', {})
         B_data = initial_params.get('B', [])
-        
+
         # Try to infer num_actions from B matrix if available
         inferred_actions = None
         if B_data and isinstance(B_data, list) and len(B_data) > 0:
             # B is typically [action][next_state][prev_state] or similar
             inferred_actions = len(B_data)
-        
+
         num_actions = (
-            model_params.get('num_actions') or 
-            model_params.get('num_controls') or 
+            model_params.get('num_actions') or
+            model_params.get('num_controls') or
             model_params.get('n_actions') or
             inferred_actions or
             3  # Default to 3 for proper POMDP simulation
         )
-        
+
         # Extract num_timesteps from model parameters (default 20 for backward compat)
         num_timesteps = model_params.get('num_timesteps', 20)
-        
+
         # Extract action_precision from GNN ModelParameters (RX-3: was hardcoded 4.0)
         action_precision = model_params.get('action_precision', model_params.get('gamma', 4.0))
         A_data = initial_params.get('A', [])
         B_data = initial_params.get('B', [])
         C_data = initial_params.get('C', [])
         D_data = initial_params.get('D', [])
-        
+
         # Generate the Julia code
         code = f'''#!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
@@ -557,7 +556,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
 end
 '''
         return code
-    
+
     def _get_timestamp(self) -> str:
         """Get current timestamp string."""
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -580,17 +579,17 @@ def render_gnn_to_rxinfer(
         Tuple of (success, message, warnings)
     """
     logger = logging.getLogger(__name__)
-    
+
     try:
         # Validate input
         if not isinstance(gnn_spec, dict):
             return False, "Invalid GNN specification: must be a dictionary", []
-        
+
         renderer = RxInferRenderer(options)
-        
+
         # Get model name safely
         model_name = gnn_spec.get('name') or gnn_spec.get('model_name', 'GNN_Model')
-        
+
         # Generate simulation code directly from spec (using simplified working version)
         try:
             # Use the full generator with updated syntax
@@ -598,7 +597,7 @@ def render_gnn_to_rxinfer(
         except Exception as gen_error:
             logger.error(f"Code generation failed: {gen_error}")
             return False, f"Error generating RxInfer.jl code: {gen_error}", []
-        
+
         # Write output file
         try:
             output_script_path.parent.mkdir(parents=True, exist_ok=True)
@@ -607,20 +606,20 @@ def render_gnn_to_rxinfer(
         except Exception as write_error:
             logger.error(f"Failed to write output file: {write_error}")
             return False, f"Error writing RxInfer.jl script: {write_error}", []
-        
+
         message = f"Generated RxInfer.jl simulation script: {output_script_path}"
         warnings = []
-        
+
         # Check for potential issues
         if not gnn_spec.get('initial_parameterization'):
             warnings.append("No initial parameterization found - using defaults")
-        
+
         if not gnn_spec.get('model_parameters'):
             warnings.append("No model parameters found - using inferred dimensions")
-        
+
         logger.info(f"Successfully generated RxInfer.jl script for {model_name}")
         return True, message, warnings
-        
+
     except Exception as e:
         logger.error(f"Unexpected error in render_gnn_to_rxinfer: {e}", exc_info=True)
-        return False, f"Error generating RxInfer.jl script: {e}", [] 
+        return False, f"Error generating RxInfer.jl script: {e}", []

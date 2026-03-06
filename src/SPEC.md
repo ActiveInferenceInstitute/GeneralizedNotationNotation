@@ -1,7 +1,7 @@
 # GNN Source Specification
 
-**Version**: 1.3.0  
-**Last Updated**: 2026-03-03  
+**Version**: 2.0.0  
+**Last Updated**: 2026-03-06  
 **Status**: ✅ Production Ready
 
 ---
@@ -205,6 +205,7 @@ jsonschema>=4.0
 | JAX | Python | `render/jax/`, `execute/jax/` | GPU acceleration |
 | PyTorch | Python | `render/pytorch/`, `execute/pytorch/` | Deep learning inference |
 | NumPyro | Python | `render/numpyro/`, `execute/numpyro/` | Probabilistic programming |
+| Stan | Stan | `render/stan/` | Bayesian statistical modeling |
 
 ---
 

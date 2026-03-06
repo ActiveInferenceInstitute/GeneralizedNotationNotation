@@ -34,11 +34,11 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
             "observations": ["o1"],
             "parameters": {}
         }
-    
+
     # Basic parsing of GNN markdown
     content = sample_file.read_text()
     spec = {"name": "sample_model", "raw_content": content}
-    
+
     # Extract model name if present
     for line in content.splitlines():
         if line.startswith("## ModelName"):
@@ -48,7 +48,7 @@ def load_sample_gnn_spec() -> Dict[str, Any]:
             if remaining:
                 spec["name"] = remaining.split("\n")[0].strip()
             break
-    
+
     return spec
 
 

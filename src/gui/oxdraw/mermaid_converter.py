@@ -6,9 +6,8 @@ compatible with oxdraw editor, with embedded metadata for bidirectional sync.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional
 import json
-import re
 
 from gnn.processor import parse_gnn_file
 
@@ -30,40 +29,40 @@ def gnn_to_mermaid(
         Mermaid flowchart string with embedded GNN metadata
     """
     lines = []
-    
+
     # Header with flowchart directive
     lines.append("flowchart TD")
-    
+
     # Model metadata in comments
     model_name = gnn_model.get('model_name', 'Untitled Model')
     version = gnn_model.get('version', '1.0')
-    
+
     lines.append(f"    %% GNN Model: {model_name}")
     lines.append(f"    %% GNN Version: {version}")
     lines.append("")
-    
+
     # Embed full GNN specification as JSON in comment
     if include_metadata:
         metadata = generate_mermaid_metadata(gnn_model)
         # Split long metadata across multiple comment lines for readability
         metadata_json = json.dumps(metadata, separators=(',', ':'))
-        lines.append(f"    %% GNN_METADATA_START")
+        lines.append("    %% GNN_METADATA_START")
         lines.append(f"    %% {metadata_json}")
-        lines.append(f"    %% GNN_METADATA_END")
+        lines.append("    %% GNN_METADATA_END")
         lines.append("")
-    
+
     # Generate nodes from variables
     variables = gnn_model.get('variables', {})
-    
+
     if variables:
         lines.append("    %% === Nodes (Variables) ===")
-        
+
         # Handle dict, list of dicts, or list of strings formats
         if isinstance(variables, dict):
             for var_name, var_data in variables.items():
                 node_def = _generate_node_definition(var_name, var_data)
                 lines.append(f"    {node_def}")
-                
+
                 # Add ontology annotation as comment
                 ontology = var_data.get('ontology_mapping', '')
                 if ontology:
@@ -76,7 +75,7 @@ def gnn_to_mermaid(
                     if var_name:
                         node_def = _generate_node_definition(var_name, var)
                         lines.append(f"    {node_def}")
-                        
+
                         # Add ontology annotation as comment
                         ontology = var.get('ontology_mapping', '')
                         if ontology:
@@ -84,32 +83,32 @@ def gnn_to_mermaid(
                 elif isinstance(var, str):
                     # List of strings (lightweight parser) - use basic node
                     lines.append(f"    {var}[{var}]")
-        
+
         lines.append("")
-    
+
     # Generate edges from connections
     connections = gnn_model.get('connections', [])
-    
+
     if connections:
         lines.append("    %% === Edges (Connections) ===")
-        
+
         for conn in connections:
             edge_def = _generate_edge_definition(conn)
             lines.append(f"    {edge_def}")
-            
+
             # Add connection type as comment
             conn_type = conn.get('connection_type', '')
             if conn_type:
                 lines.append(f"    %% Connection: {conn_type}")
-        
+
         lines.append("")
-    
+
     # Styling section
     if include_styling and variables:
         lines.append("    %% === Styling ===")
         style_defs = _generate_node_styles(variables)
         lines.extend([f"    {style}" for style in style_defs])
-    
+
     return "\n".join(lines)
 
 
@@ -120,26 +119,26 @@ def _generate_node_definition(var_name: str, var_data: Dict[str, Any]) -> str:
     Returns string like: A[A<br/>3x3<br/>float]
     """
     from .utils import infer_node_shape
-    
+
     # Get shape based on variable characteristics
     shape_open, shape_close = infer_node_shape(var_name, var_data)
-    
+
     # Generate label with dimensions and type
     label_parts = [var_name]
-    
+
     # Handle both 'dimensions' and nested structure
     dimensions = var_data.get('dimensions', [])
     if dimensions:
         dims_str = 'x'.join(str(d) for d in dimensions)
         label_parts.append(dims_str)
-    
+
     # Handle both 'data_type' and 'type'
     data_type = var_data.get('data_type') or var_data.get('type', '')
     if data_type:
         label_parts.append(data_type)
-    
+
     label = '<br/>'.join(label_parts)
-    
+
     return f"{var_name}{shape_open}{label}{shape_close}"
 
 
@@ -150,15 +149,15 @@ def _generate_edge_definition(conn: Dict[str, Any]) -> str:
     Returns string like: D ==> s
     """
     from .utils import infer_edge_style
-    
+
     source = conn.get('source', '')
     target = conn.get('target', '')
     symbol = conn.get('symbol', '')
     description = conn.get('description', '')
-    
+
     # Get edge style based on connection symbol
     edge_style = infer_edge_style(symbol)
-    
+
     # Add label if description exists
     if description:
         # Sanitize description for Mermaid
@@ -166,7 +165,7 @@ def _generate_edge_definition(conn: Dict[str, Any]) -> str:
         edge_def = f"{source} {edge_style}|{safe_desc}| {target}"
     else:
         edge_def = f"{source} {edge_style} {target}"
-    
+
     return edge_def
 
 
@@ -177,7 +176,7 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
     Returns list of style definition strings.
     """
     styles = []
-    
+
     # Define style classes
     style_classes = {
         'matrix': 'fill:#e1f5ff,stroke:#0288d1,stroke-width:2px',
@@ -188,7 +187,7 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
         'policy': 'fill:#e3f2fd,stroke:#1976d2,stroke-width:2px',
         'free_energy': 'fill:#fce4ec,stroke:#c2185b,stroke-width:2px'
     }
-    
+
     # Group variables by type
     var_groups: Dict[str, List[str]] = {
         'matrix': [],
@@ -199,7 +198,7 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
         'policy': [],
         'free_energy': []
     }
-    
+
     # Handle both dict and list formats
     if isinstance(variables, dict):
         for var_name, var_data in variables.items():
@@ -217,7 +216,7 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
             elif isinstance(var, str):
                 # Simple string names - classify as vector by default
                 var_groups['vector'].append(var)
-    
+
     # Generate style definitions
     for style_type, style_def in style_classes.items():
         if var_groups[style_type]:
@@ -226,7 +225,7 @@ def _generate_node_styles(variables: Dict[str, Any]) -> List[str]:
             # Apply to variables
             for var_name in var_groups[style_type]:
                 styles.append(f"class {var_name} {style_type}Style")
-    
+
     return styles
 
 
@@ -238,7 +237,7 @@ def _classify_variable(var_name: str, var_data: Dict[str, Any]) -> str:
     """
     ontology = var_data.get('ontology_mapping', '')
     dims = var_data.get('dimensions', [])
-    
+
     # Check ontology mapping first (most specific)
     if 'State' in ontology:
         return 'state'
@@ -250,7 +249,7 @@ def _classify_variable(var_name: str, var_data: Dict[str, Any]) -> str:
         return 'policy'
     elif 'FreeEnergy' in ontology or var_name in ['F', 'G']:
         return 'free_energy'
-    
+
     # Check dimensionality second
     if len(dims) >= 2:
         return 'matrix'
@@ -276,10 +275,10 @@ def generate_mermaid_metadata(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
         "parameters": gnn_model.get('parameters', {}),
         "ontology_mappings": {}
     }
-    
+
     # Handle variables - can be dict, list of dicts, or list of strings
     variables = gnn_model.get('variables', {})
-    
+
     if isinstance(variables, dict):
         # Dictionary format
         for var_name, var_data in variables.items():
@@ -289,11 +288,11 @@ def generate_mermaid_metadata(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
                 "ontology_mapping": var_data.get('ontology_mapping', ''),
                 "description": var_data.get('description', '')
             }
-            
+
             # Add to ontology mappings if present
             if var_data.get('ontology_mapping'):
                 metadata["ontology_mappings"][var_name] = var_data['ontology_mapping']
-    
+
     elif isinstance(variables, list):
         # List format - can be list of dicts or list of strings
         for var in variables:
@@ -315,7 +314,7 @@ def generate_mermaid_metadata(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
                     "ontology_mapping": "",
                     "description": ""
                 }
-    
+
     # Serialize connections
     for conn in gnn_model.get('connections', []):
         metadata["connections"].append({
@@ -324,7 +323,7 @@ def generate_mermaid_metadata(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
             "symbol": conn.get('symbol', conn.get('type', '')),
             "connection_type": conn.get('connection_type', conn.get('type', ''))
         })
-    
+
     return metadata
 
 
@@ -348,18 +347,18 @@ def convert_gnn_file_to_mermaid(
     """
     # Parse GNN file using existing pipeline module
     parsed_model = parse_gnn_file(gnn_file_path)
-    
+
     # Convert to Mermaid
     mermaid_content = gnn_to_mermaid(
         parsed_model,
         include_metadata=include_metadata,
         include_styling=include_styling
     )
-    
+
     # Save if output path provided
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(mermaid_content, encoding='utf-8')
-    
+
     return mermaid_content
 

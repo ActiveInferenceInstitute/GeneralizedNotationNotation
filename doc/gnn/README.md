@@ -1,9 +1,9 @@
 # GNN Documentation Index
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **MCP Tools**: 131 · **Tests**: 1,522+
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
@@ -44,7 +44,8 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 
 **GNN Syntax and Structure:**
 
-- **[Language Hub](language/README.md)** — Quick syntax cheatsheet + links to all 7 language docs
+- **[Language Hub](language/README.md)** — Syntax cheatsheet, variable grammar, connection grammar
+- **[GNN v1.1 Syntax Specification](gnn_syntax.md)** — Canonical syntax spec (living document)
 - [GNN Syntax Reference](reference/gnn_syntax.md) - Complete syntax guide with examples
 - [GNN DSL Manual](reference/gnn_dsl_manual.md) - Domain-Specific Language specification
 - [GNN Schema Specification](reference/gnn_schema.md) - Parsing and validation schemas
@@ -71,9 +72,9 @@ python src/main.py --only-steps "3,5,8,11,12" --verbose
 **Framework Integration:**
 
 - **[MCP Hub](mcp/README.md)** — 131 tools, client setup, tool development guide
-- [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro
+- [Framework Integration Guide](integration/framework_integration_guide.md) - PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan
 - [GNN Implementation Guide](integration/gnn_implementation.md) - Implementation workflows and patterns
-- **[Framework Implementations](implementations/README.md)** — 8 frameworks: PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, CatColab, PyTorch, NumPyro
+- **[Framework Implementations](implementations/README.md)** — 8 renderers: PyMDP, JAX, RxInfer, ActiveInference.jl, DisCoPy, CatColab, PyTorch, NumPyro, Stan
 - [PyMDP Integration](../pymdp/gnn_pymdp.md) - Python POMDP framework
 - [RxInfer Integration](../rxinfer/gnn_rxinfer.md) - Julia Bayesian inference
 - [ActiveInference.jl Integration](../activeinference_jl/activeinference-jl.md) - Julia Active Inference
@@ -211,10 +212,12 @@ All GNN documentation follows these principles:
 ## 📋 Documentation Status
 
 - ✅ All 25 pipeline steps documented
-- ✅ Complete module AGENTS.md coverage (30/30 modules)
+- ✅ Complete module AGENTS.md coverage (38+ modules)
+- ✅ 8/8 renderers available (pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy)
 - ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
 - ✅ 1,522+ tests passing
-
+- ✅ 10 CLI subcommands (run, validate, parse, render, report, reproduce, preflight, health, serve, lsp)
+- ✅ FastAPI Pipeline-as-a-Service with SSE streaming
 - ✅ Enhanced visual logging across all steps
 - ✅ Comprehensive cross-referencing between documentation
 
@@ -250,9 +253,11 @@ All GNN documentation follows these principles:
 
 ---
 
-**GNN Version**: v1.3.0
-**Pipeline Version**: 1.3.0
-**Total Pipeline Steps**: 25 (0-24)
-**Last Updated**: 2026-03-03
+**GNN Version**: v2.0.0  
+**Pipeline Version**: 2.0.0  
+**Total Pipeline Steps**: 25 (0–24)  
+**Modules**: 38+  
+**Renderers**: 8/8  
+**Last Updated**: 2026-03-06  
 
 **Status**: ✅ All Documentation Complete

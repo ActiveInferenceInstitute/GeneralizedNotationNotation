@@ -17,4 +17,4 @@ __all__ = [
     'render_gnn_to_activeinference_combined',
     'extract_model_info',
     'generate_activeinference_script'
-] 
+]

@@ -16,6 +16,7 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
+import ast
 import numpy as np
 import json
 import pickle
@@ -69,16 +70,16 @@ def safe_json_dump(data: Any, file_path: Path, indent: int = 2) -> bool:
     try:
         # Convert numpy types
         serializable_data = convert_numpy_for_json(data)
-        
+
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write JSON file
         with open(file_path, 'w') as f:
             json.dump(serializable_data, f, indent=indent, ensure_ascii=False)
-        
+
         return True
-        
+
     except Exception as e:
         logging.error(f"Failed to save JSON to {file_path}: {e}")
         return False
@@ -98,13 +99,13 @@ def safe_pickle_dump(data: Any, file_path: Path) -> bool:
     try:
         # Ensure directory exists
         file_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write pickle file
         with open(file_path, 'wb') as f:
             pickle.dump(data, f)
-        
+
         return True
-        
+
     except Exception as e:
         logging.error(f"Failed to save pickle to {file_path}: {e}")
         return False
@@ -120,25 +121,25 @@ def validate_trace_data(trace: Dict[str, Any]) -> bool:
     Returns:
         True if valid, False otherwise
     """
-    required_keys = ['episode', 'true_states', 'observations', 'actions', 
+    required_keys = ['episode', 'true_states', 'observations', 'actions',
                     'rewards', 'beliefs']
-    
+
     # Optional keys that may be present in enhanced traces
     optional_keys = ['policies', 'expected_free_energies', 'variational_free_energies', 'positions']
-    
+
     for key in required_keys:
         if key not in trace:
             logging.warning(f"Missing required key in trace: {key}")
             return False
-    
+
     # Check that lists have consistent lengths (except episode)
     list_keys = [k for k in required_keys if k != 'episode']
     lengths = [len(trace[k]) for k in list_keys if isinstance(trace[k], list)]
-    
+
     if lengths and len(set(lengths)) > 1:
         logging.warning(f"Inconsistent trace lengths: {dict(zip(list_keys, lengths))}")
         return False
-    
+
     return True
 
 
@@ -153,7 +154,7 @@ def clean_trace_for_serialization(trace: Dict[str, Any]) -> Dict[str, Any]:
         Cleaned trace data ready for JSON serialization
     """
     cleaned_trace = {}
-    
+
     for key, value in trace.items():
         if isinstance(value, list):
             cleaned_list = []
@@ -169,11 +170,11 @@ def clean_trace_for_serialization(trace: Dict[str, Any]) -> Dict[str, Any]:
             cleaned_trace[key] = cleaned_list
         else:
             cleaned_trace[key] = convert_numpy_for_json(value)
-    
+
     return cleaned_trace
 
 
-def save_simulation_results(traces: List[Dict], metrics: Dict[str, List], 
+def save_simulation_results(traces: List[Dict], metrics: Dict[str, List],
                            config: Dict, model_matrices: Optional[Dict],
                            output_dir: Path) -> Dict[str, bool]:
     """
@@ -190,26 +191,26 @@ def save_simulation_results(traces: List[Dict], metrics: Dict[str, List],
         Dictionary indicating success/failure of each save operation
     """
     results = {}
-    
+
     # Save configuration
     results['config'] = safe_json_dump(config, output_dir / 'simulation_config.json')
-    
+
     # Save performance metrics
     results['metrics'] = safe_json_dump(metrics, output_dir / 'performance_metrics.json')
-    
+
     # Save traces as pickle (full data)
     results['traces_pickle'] = safe_pickle_dump(traces, output_dir / 'simulation_traces.pkl')
-    
+
     # Save traces as JSON (cleaned data)
     cleaned_traces = [clean_trace_for_serialization(trace) for trace in traces]
     results['traces_json'] = safe_json_dump(cleaned_traces, output_dir / 'simulation_traces.json')
-    
+
     # Save model matrices if provided
     if model_matrices:
         results['matrices'] = safe_pickle_dump(model_matrices, output_dir / 'model_matrices.pkl')
     else:
         results['matrices'] = True  # Not applicable
-    
+
     return results
 
 
@@ -231,15 +232,15 @@ def calculate_episode_statistics(trace: Dict[str, Any]) -> Dict[str, Any]:
         'final_state': None,
         'success': False
     }
-    
+
     # Calculate total reward
     if 'rewards' in trace and trace['rewards']:
         stats['total_reward'] = float(np.sum(trace['rewards']))
-    
+
     # Episode length
     if 'actions' in trace and trace['actions']:
         stats['episode_length'] = len(trace['actions'])
-    
+
     # Mean belief entropy
     if 'beliefs' in trace and trace['beliefs']:
         entropies = []
@@ -250,22 +251,22 @@ def calculate_episode_statistics(trace: Dict[str, Any]) -> Dict[str, Any]:
                 belief_array = belief_array + 1e-16  # Avoid log(0)
                 entropy = -np.sum(belief_array * np.log(belief_array))
                 entropies.append(entropy)
-        
+
         if entropies:
             stats['mean_belief_entropy'] = float(np.mean(entropies))
-    
+
     # Final state
     if 'true_states' in trace and trace['true_states']:
         stats['final_state'] = trace['true_states'][-1]
-    
+
     # Check success (threshold-based on total reward)
     if 'rewards' in trace and trace['rewards']:
         stats['success'] = stats['total_reward'] > 0.0
-    
+
     return stats
 
 
-def generate_simulation_summary(all_traces: List[Dict], 
+def generate_simulation_summary(all_traces: List[Dict],
                                performance_metrics: Dict[str, List]) -> Dict[str, Any]:
     """
     Generate a comprehensive simulation summary.
@@ -286,25 +287,25 @@ def generate_simulation_summary(all_traces: List[Dict],
         'success_rate': 0.0,
         'episode_statistics': []
     }
-    
+
     # Calculate per-episode statistics
     for trace in all_traces:
         episode_stats = calculate_episode_statistics(trace)
         summary['episode_statistics'].append(episode_stats)
-        
+
         if episode_stats['success']:
             summary['successful_episodes'] += 1
-        
+
         summary['total_steps'] += episode_stats['episode_length']
-    
+
     # Calculate averages
     if summary['total_episodes'] > 0:
         summary['success_rate'] = summary['successful_episodes'] / summary['total_episodes']
         summary['average_episode_length'] = summary['total_steps'] / summary['total_episodes']
-        
+
         if 'episode_rewards' in performance_metrics and performance_metrics['episode_rewards']:
             summary['average_reward'] = float(np.mean(performance_metrics['episode_rewards']))
-    
+
     return summary
 
 
@@ -328,7 +329,7 @@ def format_duration(seconds: float) -> str:
         return f"{hours:.2f} hours"
 
 
-def create_output_directory_with_timestamp(base_dir: Union[str, Path], 
+def create_output_directory_with_timestamp(base_dir: Union[str, Path],
                                           prefix: str = "simulation") -> Path:
     """
     Create output directory with timestamp.
@@ -341,13 +342,13 @@ def create_output_directory_with_timestamp(base_dir: Union[str, Path],
         Path to created directory
     """
     from datetime import datetime
-    
+
     # Accept str paths as well as Path
     base_dir = Path(base_dir) if not isinstance(base_dir, Path) else base_dir
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     output_dir = base_dir / f"{prefix}_{timestamp}"
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     return output_dir
 
 
@@ -364,11 +365,11 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
     try:
         # Remove comments and extra whitespace
         cleaned = matrix_str.strip()
-        
+
         # Handle GNN tuple format: {(row1), (row2), ...}
         if cleaned.startswith('{') and cleaned.endswith('}'):
             cleaned = cleaned[1:-1]  # Remove outer braces
-        
+
         # Parse individual rows
         rows = []
         if '(' in cleaned:
@@ -376,7 +377,7 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
             import re
             tuple_pattern = r'\((.*?)\)'
             tuple_matches = re.findall(tuple_pattern, cleaned)
-            
+
             for tuple_str in tuple_matches:
                 row_values = [float(x.strip()) for x in tuple_str.split(',')]
                 rows.append(row_values)
@@ -385,13 +386,13 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
             if ',' in cleaned:
                 values = [float(x.strip()) for x in cleaned.split(',')]
                 rows = [values]  # Single row
-        
+
         if rows:
             return np.array(rows)
         else:
             # Fallback parsing
-            return np.array(eval(matrix_str))
-            
+            return np.array(ast.literal_eval(matrix_str))
+
     except Exception as e:
         logging.warning(f"Failed to parse GNN matrix string: {e}")
         # Return default identity matrix
@@ -411,18 +412,18 @@ def parse_gnn_vector_string(vector_str: str) -> np.ndarray:
     try:
         # Remove comments and extra whitespace
         cleaned = vector_str.strip()
-        
+
         # Handle GNN tuple format: {(val1, val2, ...)}
         if cleaned.startswith('{') and cleaned.endswith('}'):
             cleaned = cleaned[1:-1]  # Remove outer braces
-        
+
         if cleaned.startswith('(') and cleaned.endswith(')'):
             cleaned = cleaned[1:-1]  # Remove outer parentheses
-        
+
         # Parse comma-separated values
         values = [float(x.strip()) for x in cleaned.split(',')]
         return np.array(values)
-        
+
     except Exception as e:
         logging.warning(f"Failed to parse GNN vector string: {e}")
         # Return default vector
@@ -444,7 +445,7 @@ def extract_gnn_dimensions(gnn_spec: Dict[str, Any]) -> Dict[str, int]:
         'num_observations': 3,
         'num_actions': 3
     }
-    
+
     # Try model parameters first
     model_params = gnn_spec.get('model_parameters', {})
     if model_params:
@@ -452,13 +453,13 @@ def extract_gnn_dimensions(gnn_spec: Dict[str, Any]) -> Dict[str, int]:
         dimensions['num_observations'] = int(model_params.get('num_obs', 3))
         dimensions['num_actions'] = int(model_params.get('num_actions', 3))
         return dimensions
-    
+
     # Try to infer from state space variables
     variables = gnn_spec.get('variables', [])
     for var in variables:
         var_name = var.get('name', '').upper()
         dimensions_list = var.get('dimensions', [])
-        
+
         if var_name == 'A' and len(dimensions_list) >= 2:
             dimensions['num_observations'] = dimensions_list[0]
             dimensions['num_states'] = dimensions_list[1]
@@ -469,7 +470,7 @@ def extract_gnn_dimensions(gnn_spec: Dict[str, Any]) -> Dict[str, int]:
             dimensions['num_observations'] = dimensions_list[0]
         elif var_name == 'D' and len(dimensions_list) >= 1:
             dimensions['num_states'] = dimensions_list[0]
-    
+
     return dimensions
 
 
@@ -489,29 +490,29 @@ def validate_gnn_pomdp_structure(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         'warnings': [],
         'dimensions': {}
     }
-    
+
     # Extract dimensions
     try:
         result['dimensions'] = extract_gnn_dimensions(gnn_spec)
     except Exception as e:
         result['errors'].append(f"Failed to extract dimensions: {e}")
         result['valid'] = False
-    
+
     # Check for required POMDP matrices
     initial_params = gnn_spec.get('initial_parameterization', {})
     required_matrices = ['A', 'B', 'C', 'D']
-    
+
     for matrix_name in required_matrices:
         if matrix_name not in initial_params:
             result['warnings'].append(f"Missing initial parameterization for {matrix_name} matrix")
-    
+
     # Check model name
     if not gnn_spec.get('model_name'):
         result['warnings'].append("No model name specified")
-    
+
     return result
 
 
 if __name__ == "__main__":
     print("PyMDP Utilities - Helper functions for PyMDP simulations integrated with GNN pipeline")
-    print("This module should be imported and used with the main simulation class.") 
+    print("This module should be imported and used with the main simulation class.")

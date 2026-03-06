@@ -4,7 +4,7 @@
 
 Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
 
-**Last Updated**: March 3, 2026  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ All tools real (no stubs), 0 skips, 1,522+ tests passing
 
 ## Usage
@@ -20,7 +20,7 @@ python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 | Orchestrator | `src/21_mcp.py` (63 lines) |
 | Core MCP engine | `src/mcp/` |
 | Module function | `process_mcp()` |
-| Instance | `src/mcp/mcp_instance.py` |
+| Server | `src/mcp/server.py` |
 | Audit script | `src/mcp/validate_tools.py` |
 
 ## MCP Tool Registry (131 real tools)

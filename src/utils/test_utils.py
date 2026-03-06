@@ -7,13 +7,11 @@ to be imported by both test modules and fixtures without causing circular import
 
 import logging
 import sys
-import os
 import json
-import tempfile
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union, Tuple, Generator
+from typing import Dict, Any, List, Tuple
 from contextlib import contextmanager
 
 # Ensure src is in Python path for imports
@@ -22,11 +20,11 @@ PROJECT_ROOT = SRC_DIR.parent
 TEST_DIR = SRC_DIR / "tests"
 if str(SRC_DIR) not in sys.path:
     sys.path.insert(0, str(SRC_DIR))
-    
+
 # Test categories and markers
 TEST_CATEGORIES = {
     "fast": "Quick validation tests for core functionality",
-    "standard": "Integration tests and moderate complexity", 
+    "standard": "Integration tests and moderate complexity",
     "slow": "Complex scenarios and benchmarks",
     "performance": "Resource usage and scalability tests",
     "safe_to_fail": "Tests with graceful degradation",
@@ -107,11 +105,11 @@ TEST_CONFIG = {
 # Add TestRunner class definition
 class TestRunner:
     """Basic test runner for compatibility."""
-    
+
     def __init__(self, config=None):
         self.config = config or {}
         self.logger = logging.getLogger("test_runner")
-    
+
     def run_tests(self, test_paths, output_dir):
         """Basic test execution."""
         try:
@@ -126,8 +124,8 @@ class TestRunner:
 # Add TestResult class definition
 class TestResult:
     """Basic test result for compatibility."""
-    
-    def __init__(self, success=False, tests_run=0, tests_passed=0, tests_failed=0, 
+
+    def __init__(self, success=False, tests_run=0, tests_passed=0, tests_failed=0,
                  tests_skipped=0, execution_time=0.0, error_message=None):
         self.success = success
         self.tests_run = tests_run
@@ -136,7 +134,7 @@ class TestResult:
         self.tests_skipped = tests_skipped
         self.execution_time = execution_time
         self.error_message = error_message
-    
+
     def to_dict(self):
         """Convert to dictionary."""
         return {
@@ -152,45 +150,45 @@ class TestResult:
 # Add TestCategory class definition
 class TestCategory:
     """Basic test category for compatibility."""
-    
+
     def __init__(self, name="", description=""):
         self.name = name
         self.description = description
-    
+
     def __str__(self):
         return f"TestCategory({self.name})"
-    
+
     def __repr__(self):
         return self.__str__()
 
 # Add TestStage class definition
 class TestStage:
     """Basic test stage for compatibility."""
-    
+
     def __init__(self, name="", timeout=300, max_failures=10, parallel=True, coverage=False):
         self.name = name
         self.timeout = timeout
         self.max_failures = max_failures
         self.parallel = parallel
         self.coverage = coverage
-    
+
     def __str__(self):
         return f"TestStage({self.name})"
-    
+
     def __repr__(self):
         return self.__str__()
 
 # Add CoverageTarget class definition
 class CoverageTarget:
     """Basic coverage target for compatibility."""
-    
+
     def __init__(self, name="", target_percentage=0.0):
         self.name = name
         self.target_percentage = target_percentage
-    
+
     def __str__(self):
         return f"CoverageTarget({self.name}: {self.target_percentage}%)"
-    
+
     def __repr__(self):
         return self.__str__()
 
@@ -205,7 +203,7 @@ def run_tests(target_dir: Path, output_dir: Path, verbose: bool = False) -> bool
             'output_dir': output_dir,
             'verbose': verbose
         }), logging.getLogger("test_runner"))
-        
+
         # Run tests using the available method
         if hasattr(runner, 'run_all_tests'):
             return runner.run_all_tests()
@@ -407,20 +405,20 @@ def create_missing_test_files() -> None:
         PROJECT_ROOT / "output" / "test_reports",
         PROJECT_ROOT / "output" / "test_coverage",
     ]
-    
+
     for test_dir in test_dirs:
         test_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create sample GNN files if they don't exist
     gnn_dir = PROJECT_ROOT / "input" / "gnn_files"
     if not any(gnn_dir.glob("*.md")):
         create_test_gnn_files(gnn_dir)
-    
+
     # Create test configuration files
     config_files = [
         (PROJECT_ROOT / "input" / "config.yaml", create_sample_config),
     ]
-    
+
     for config_path, creator_func in config_files:
         if not config_path.exists():
             creator_func(config_path)
@@ -477,33 +475,33 @@ def create_sample_ontology(ontology_path: Path) -> None:
 def create_test_gnn_files(target_dir: Path) -> List[Path]:
     """Create test GNN files in the target directory."""
     target_dir.mkdir(parents=True, exist_ok=True)
-    
+
     test_files = []
     gnn_content = create_sample_gnn_content()
-    
+
     for name, content in gnn_content.items():
         file_path = target_dir / f"{name}.md"
         with open(file_path, 'w') as f:
             f.write(content)
         test_files.append(file_path)
-    
+
     return test_files
 
 def create_test_files(target_dir: Path, num_files: int = 3) -> List[Path]:
     """Create generic test files in the target directory."""
     target_dir.mkdir(parents=True, exist_ok=True)
-    
+
     test_files = []
     for i in range(num_files):
         file_path = target_dir / f"test_file_{i+1}.txt"
         content = f"This is test file {i+1} created for testing purposes.\n"
         content += f"Created at: {datetime.now().isoformat()}\n"
         content += f"File number: {i+1}\n"
-        
+
         with open(file_path, 'w') as f:
             f.write(content)
         test_files.append(file_path)
-    
+
     return test_files
 
 def create_sample_gnn_content() -> Dict[str, str]:
@@ -560,7 +558,7 @@ A basic active inference model for testing
 - **Inference**: Variational
 - **Control**: Active Inference
 """,
-        
+
         "complex_model": """## GNNVersionAndFlags
 Version: 2.0.0
 
@@ -610,7 +608,7 @@ A complex active inference model with multiple modalities
 - **Inference**: Message Passing
 - **Control**: Hierarchical Active Inference
 """,
-        
+
         "minimal_model": """## GNNVersionAndFlags
 Version: 0.1.0
 
@@ -678,40 +676,40 @@ def run_all_tests(
     try:
         # Set up test environment
         setup_test_environment()
-        
+
         # Create test output directory
         test_output_dir = output_dir / "test_results"
         test_output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Run different test categories
         test_results = {}
-        
+
         # Run fast tests
         test_results["fast"] = run_fast_tests(target_dir, test_output_dir, verbose)
-        
+
         # Run standard tests
         test_results["standard"] = run_standard_tests(target_dir, test_output_dir, verbose)
-        
+
         # Run slow tests if not in fast-only mode
         if not TEST_CONFIG.get("fast_only", False):
             test_results["slow"] = run_slow_tests(target_dir, test_output_dir, verbose)
-        
+
         # Run performance tests if enabled
         if TEST_CONFIG.get("include_performance", False):
             test_results["performance"] = run_performance_tests(target_dir, test_output_dir, verbose)
-        
+
         # Generate test report
         generate_test_report(test_results, test_output_dir)
-        
+
         # Check overall success
         overall_success = all(test_results.values())
-        
+
         if verbose:
             print(f"Test Results: {test_results}")
             print(f"Overall Success: {overall_success}")
-        
+
         return overall_success
-        
+
     except Exception as e:
         if verbose:
             print(f"Test execution failed: {e}")
@@ -724,50 +722,50 @@ def run_fast_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run fast tests."""
     if verbose:
         print("Running fast tests...")
-    
+
     # Simulate fast test execution
     time.sleep(0.1)  # Simulate test execution time
-    
+
     return True
 
 def run_standard_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run standard tests."""
     if verbose:
         print("Running standard tests...")
-    
+
     # Simulate standard test execution
     time.sleep(0.2)  # Simulate test execution time
-    
+
     return True
 
 def run_slow_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run slow tests."""
     if verbose:
         print("Running slow tests...")
-    
+
     # Simulate slow test execution
     time.sleep(0.3)  # Simulate test execution time
-    
+
     return True
 
 def run_performance_tests(target_dir: Path, output_dir: Path, verbose: bool) -> bool:
     """Run performance tests."""
     if verbose:
         print("Running performance tests...")
-    
+
     # Simulate performance test execution
     time.sleep(0.1)  # Simulate test execution time
-    
+
     return True
 
 def run_coverage_tests(test_results_dir: Path, verbose: bool) -> bool:
     """Run coverage tests."""
     if verbose:
         print("Running coverage tests...")
-    
+
     # Simulate coverage test execution
     time.sleep(0.1)  # Simulate test execution time
-    
+
     return True
 
 def assert_file_exists(file_path: Path, message: str = "") -> None:
@@ -787,14 +785,14 @@ def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any
     """Assert that a directory has the expected structure."""
     for item_name, item_content in expected_structure.items():
         item_path = base_dir / item_name
-        
+
         if isinstance(item_content, dict):
             # This is a directory
             if not item_path.exists():
                 raise AssertionError(f"Directory does not exist: {item_path}")
             if not item_path.is_dir():
                 raise AssertionError(f"Path is not a directory: {item_path}")
-            
+
             # Recursively check subdirectories
             assert_directory_structure(item_path, item_content)
         else:
@@ -811,33 +809,33 @@ def validate_report_data(data: Dict[str, Any]) -> Dict[str, Any]:
         "missing_fields": [],
         "extra_fields": []
     }
-    
+
     # Check required fields
     required_fields = ["timestamp", "step_name", "status"]
     for field in required_fields:
         if field not in data:
             validation_results["is_valid"] = False
             validation_results["missing_fields"].append(field)
-    
+
     # Check data types
     if "timestamp" in data and not isinstance(data["timestamp"], str):
         validation_results["is_valid"] = False
         validation_results["errors"].append("timestamp must be a string")
-    
+
     if "step_name" in data and not isinstance(data["step_name"], str):
         validation_results["is_valid"] = False
         validation_results["errors"].append("step_name must be a string")
-    
+
     if "status" in data and data["status"] not in ["success", "failure", "warning"]:
         validation_results["is_valid"] = False
         validation_results["errors"].append("status must be one of: success, failure, warning")
-    
+
     # Check for extra fields
     allowed_fields = required_fields + ["duration", "files_processed", "errors", "warnings"]
     for field in data:
         if field not in allowed_fields:
             validation_results["warnings"].append(f"Unexpected field: {field}")
-    
+
     return validation_results
 
 def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: bool = False) -> Dict[str, Any]:
@@ -845,10 +843,10 @@ def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: boo
     try:
         target_dir = Path(target_directory)
         output_dir = Path(output_directory)
-        
+
         # Run tests
         success = run_all_tests(target_dir, output_dir, verbose)
-        
+
         return {
             "success": success,
             "target_directory": target_directory,
@@ -863,7 +861,7 @@ def run_all_tests_mcp(target_directory: str, output_directory: str, verbose: boo
                 "performance": True
             }
         }
-        
+
     except Exception as e:
         return {
             "success": False,
@@ -914,25 +912,25 @@ def generate_html_report_file(data: Dict[str, Any], output_path: Path) -> bool:
         <h2>Test Results</h2>
         <ul>
 """
-        
+
         if "results" in data:
             for category, result in data["results"].items():
                 status_class = "success" if result else "failure"
                 status_text = "Passed" if result else "Failed"
                 html_content += f'            <li><span class="{status_class}">{category}: {status_text}</span></li>\n'
-        
+
         html_content += """
         </ul>
     </div>
 </body>
 </html>
 """
-        
+
         with open(output_path, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
+
     except Exception as e:
         print(f"Failed to generate HTML report: {e}")
         return False
@@ -953,25 +951,25 @@ def generate_markdown_report_file(data: Dict[str, Any], output_path: Path) -> bo
 ## Test Results
 
 """
-        
+
         if "results" in data:
             for category, result in data["results"].items():
                 status_icon = "✅" if result else "❌"
                 status_text = "Passed" if result else "Failed"
                 markdown_content += f"- **{category}**: {status_icon} {status_text}\n"
-        
+
         markdown_content += """
 
 ## Details
 
 This report was generated by the GNN test suite.
 """
-        
+
         with open(output_path, 'w') as f:
             f.write(markdown_content)
-        
+
         return True
-        
+
     except Exception as e:
         print(f"Failed to generate Markdown report: {e}")
         return False
@@ -981,9 +979,9 @@ def generate_json_report_file(data: Dict[str, Any], output_path: Path) -> bool:
     try:
         with open(output_path, 'w') as f:
             json.dump(data, f, indent=2)
-        
+
         return True
-        
+
     except Exception as e:
         print(f"Failed to generate JSON report: {e}")
         return False
@@ -994,7 +992,7 @@ def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: 
         # Create report directory
         report_dir = output_dir / "test_reports"
         report_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Generate test data
         test_data = {
             "success": True,
@@ -1008,20 +1006,20 @@ def generate_comprehensive_report(pipeline_dir: Path, output_dir: Path, logger: 
                 "performance": True
             }
         }
-        
+
         # Generate different report formats
         success = True
         success &= generate_html_report_file(test_data, report_dir / "test_report.html")
         success &= generate_markdown_report_file(test_data, report_dir / "test_report.md")
         success &= generate_json_report_file(test_data, report_dir / "test_report.json")
-        
+
         if success:
             logger.info("Comprehensive test report generated successfully")
         else:
             logger.warning("Some report formats failed to generate")
-        
+
         return success
-        
+
     except Exception as e:
         logger.error(f"Failed to generate comprehensive report: {e}")
         return False
@@ -1031,7 +1029,7 @@ def performance_tracker():
     """Context manager for tracking test performance."""
     start_time = time.time()
     start_memory = get_memory_usage()
-    
+
     class PerformanceTracker:
         def __init__(self, start_time, start_memory):
             self.start_time = start_time
@@ -1040,7 +1038,7 @@ def performance_tracker():
             self.end_memory = None
             self.duration = None
             self.memory_delta = None
-            
+
         def finalize(self):
             self.end_time = time.time()
             self.end_memory = get_memory_usage()
@@ -1049,9 +1047,9 @@ def performance_tracker():
             # Use delta for threshold comparisons; still expose peak for reference
             self.peak_memory_mb = max(self.start_memory, self.end_memory)
             self.max_memory_mb = self.memory_delta
-    
+
     tracker = PerformanceTracker(start_time, start_memory)
-    
+
     try:
         yield tracker
     finally:
@@ -1073,22 +1071,22 @@ def track_peak_memory(func):
             import psutil
             process = psutil.Process()
             initial_memory = process.memory_info().rss
-            
+
             result = func(*args, **kwargs)
-            
+
             final_memory = process.memory_info().rss
             peak_memory = max(initial_memory, final_memory)
-            
+
             # Store peak memory in function attributes for testing
             wrapper.peak_memory_mb = peak_memory / 1024 / 1024
             wrapper.memory_delta_mb = (final_memory - initial_memory) / 1024 / 1024
-            
+
             return result
-            
+
         except ImportError:
             # If psutil not available, just run the function
             return func(*args, **kwargs)
-    
+
     return wrapper
 
 @contextmanager
@@ -1097,19 +1095,19 @@ def with_resource_limits(max_memory_mb: int = None, max_cpu_percent: int = None)
     try:
         import psutil
         process = psutil.Process()
-        
+
         # Store initial limits
         initial_memory_limit = getattr(process, 'memory_limit', None)
         initial_cpu_limit = getattr(process, 'cpu_limit', None)
-        
+
         # Set limits if specified
         if max_memory_mb:
             process.memory_limit = max_memory_mb * 1024 * 1024  # Convert to bytes
         if max_cpu_percent:
             process.cpu_limit = max_cpu_percent
-        
+
         yield
-        
+
     except ImportError:
         # If psutil not available, just yield
         yield
@@ -1119,4 +1117,4 @@ def with_resource_limits(max_memory_mb: int = None, max_cpu_percent: int = None)
             if initial_memory_limit is not None:
                 process.memory_limit = initial_memory_limit
             if initial_cpu_limit is not None:
-                process.cpu_limit = initial_cpu_limit 
+                process.cpu_limit = initial_cpu_limit

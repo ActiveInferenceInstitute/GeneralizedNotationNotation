@@ -21,26 +21,26 @@ logger = logging.getLogger(__name__)
 @dataclass
 class PipelineConfig:
     """Configuration for the GNN pipeline."""
-    
+
     # Core directories
     target_dir: Path = field(default_factory=lambda: Path("input/gnn_files"))
     output_dir: Path = field(default_factory=lambda: Path("output"))
-    
+
     # Processing options
     recursive: bool = True
     verbose: bool = True
-    
+
     # Enhanced validation options (enabled by default for comprehensive testing)
     enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
     enable_cross_format: bool = True    # Enable cross-format consistency validation
-    
+
     # Step control
     skip_steps: List[str] = field(default_factory=list)
     only_steps: List[str] = field(default_factory=list)
-    
+
     # Pipeline summary file
     pipeline_summary_file: Optional[Path] = None
-    
+
     def __post_init__(self):
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
@@ -63,7 +63,7 @@ class TypeCheckerConfig:
 class OntologyConfig:
     """Configuration for ontology processing."""
     terms_file: Path = field(default_factory=lambda: Path("src/ontology/act_inf_ontology_terms.json"))
-    
+
     def __post_init__(self):
         if isinstance(self.terms_file, str):
             self.terms_file = Path(self.terms_file)
@@ -99,7 +99,7 @@ class ModelConfig:
 @dataclass
 class GNNPipelineConfig:
     """Complete configuration for the GNN pipeline."""
-    
+
     pipeline: PipelineConfig = field(default_factory=PipelineConfig)
     type_checker: TypeCheckerConfig = field(default_factory=TypeCheckerConfig)
     ontology: OntologyConfig = field(default_factory=OntologyConfig)
@@ -108,28 +108,28 @@ class GNNPipelineConfig:
     setup: SetupConfig = field(default_factory=SetupConfig)
     sapf: SAPFConfig = field(default_factory=SAPFConfig)
     models: ModelConfig = field(default_factory=ModelConfig)
-    
+
     @classmethod
     def load_from_file(cls, config_path: Path) -> 'GNNPipelineConfig':
         """Load configuration from YAML file."""
         if not YAML_AVAILABLE:
             logger.warning("PyYAML not available, returning default configuration")
             return cls()
-            
+
         try:
             with open(config_path, 'r') as f:
                 config_data = yaml.safe_load(f)
-            
+
             return cls._from_dict(config_data)
         except Exception as e:
             logger.error(f"Failed to load configuration from {config_path}: {e}")
             raise
-    
+
     @classmethod
     def _from_dict(cls, config_data: Dict[str, Any]) -> 'GNNPipelineConfig':
         """Create configuration from dictionary."""
         config = cls()
-        
+
         # Load pipeline configuration
         if 'pipeline' in config_data:
             pipeline_data = config_data['pipeline']
@@ -143,48 +143,48 @@ class GNNPipelineConfig:
             config.pipeline.only_steps = pipeline_data.get('only_steps', [])
             if 'pipeline_summary_file' in pipeline_data:
                 config.pipeline.pipeline_summary_file = Path(pipeline_data['pipeline_summary_file'])
-        
+
         # Load type checker configuration
         if 'type_checker' in config_data:
             tc_data = config_data['type_checker']
             config.type_checker.strict = tc_data.get('strict', False)
             config.type_checker.estimate_resources = tc_data.get('estimate_resources', True)
-        
+
         # Load ontology configuration
         if 'ontology' in config_data:
             ontology_data = config_data['ontology']
             config.ontology.terms_file = Path(ontology_data.get('terms_file', 'src/ontology/act_inf_ontology_terms.json'))
-        
+
         # Load LLM configuration
         if 'llm' in config_data:
             llm_data = config_data['llm']
             config.llm.tasks = llm_data.get('tasks', 'all')
             config.llm.timeout = llm_data.get('timeout', 360)
-        
+
         # Load website configuration
         if 'website' in config_data:
             website_data = config_data['website']
             config.website.html_filename = website_data.get('html_filename', 'gnn_pipeline_summary_website.html')
-        
+
         # Load setup configuration
         if 'setup' in config_data:
             setup_data = config_data['setup']
             config.setup.recreate_venv = setup_data.get('recreate_venv', False)
             config.setup.dev = setup_data.get('dev', False)
-        
+
         # Load SAPF configuration
         if 'sapf' in config_data:
             sapf_data = config_data['sapf']
             config.sapf.duration = sapf_data.get('duration', 30.0)
-        
+
         # Load model configuration
         if 'models' in config_data:
             models_data = config_data['models']
             config.models.global_settings = models_data.get('global', {})
             config.models.model_overrides = models_data.get('model_overrides', {})
-        
+
         return config
-    
+
     def to_pipeline_arguments(self) -> Dict[str, Any]:
         """Convert configuration to pipeline arguments dictionary."""
         return {
@@ -207,14 +207,14 @@ class GNNPipelineConfig:
             'dev': self.setup.dev,
             'duration': self.sapf.duration
         }
-    
+
     def validate(self) -> List[str]:
         """Validate configuration and return list of errors."""
         errors = []
-        
+
         # Get project root for relative path resolution
         project_root = Path(__file__).parent.parent.parent
-        
+
         # Validate target directory exists (only if it's an absolute path or we can resolve it)
         target_dir = self.pipeline.target_dir
         if target_dir.is_absolute() and not target_dir.exists():
@@ -224,22 +224,22 @@ class GNNPipelineConfig:
             resolved_target = project_root / target_dir
             if not resolved_target.exists():
                 errors.append(f"Target directory does not exist: {resolved_target}")
-        
+
         # Validate ontology terms file exists
         ontology_file = self.ontology.terms_file
         if not ontology_file.is_absolute():
             ontology_file = project_root / ontology_file
         if not ontology_file.exists():
             errors.append(f"Ontology terms file does not exist: {ontology_file}")
-        
+
         # Validate LLM timeout
         if self.llm.timeout <= 0:
             errors.append(f"LLM timeout must be positive: {self.llm.timeout}")
-        
+
         # Validate SAPF duration
         if self.sapf.duration <= 0:
             errors.append(f"SAPF duration must be positive: {self.sapf.duration}")
-        
+
         return errors
 
 def load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig:
@@ -256,17 +256,17 @@ def load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig:
         # Look for config.yaml in input directory
         input_dir = Path("input")
         config_path = input_dir / "config.yaml"
-        
+
         if not config_path.exists():
             logger.warning(f"Configuration file not found at {config_path}, using defaults")
             return GNNPipelineConfig()
-    
+
     if not config_path.exists():
         raise FileNotFoundError(f"Configuration file not found: {config_path}")
-    
+
     logger.info(f"Loading configuration from {config_path}")
     config = GNNPipelineConfig.load_from_file(config_path)
-    
+
     # Validate configuration
     errors = config.validate()
     if errors:
@@ -274,9 +274,9 @@ def load_config(config_path: Optional[Path] = None) -> GNNPipelineConfig:
         for error in errors:
             logger.error(f"  - {error}")
         raise ValueError("Configuration validation failed")
-    
+
     logger.info("Configuration loaded successfully")
-    return config 
+    return config
 
 def save_config(config: dict, file_path: Path) -> None:
     """
@@ -308,7 +308,7 @@ def save_config(config: dict, file_path: Path) -> None:
         logger.info(f"Configuration saved to {file_path}")
     except Exception as e:
         logger.error(f"Failed to save configuration to {file_path}: {e}")
-        raise 
+        raise
 
 def validate_config(config: dict) -> bool:
     """
@@ -352,4 +352,4 @@ def set_config_value(config: dict, key: str, value):
             d[k] = {}
         d = d[k]
     d[keys[-1]] = value
-    logger.info(f"Set config value: {key} = {value}") 
+    logger.info(f"Set config value: {key} = {value}")

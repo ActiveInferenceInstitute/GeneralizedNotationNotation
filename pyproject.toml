@@ -342,7 +342,7 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 minversion = "6.0"
-addopts = "-ra -q --strict-markers --strict-config"
+addopts = "-ra -q --strict-markers --strict-config --durations=20"
 testpaths = ["src/tests", "tests"]
 python_files = ["test_*.py", "*_test.py"]
 python_classes = ["Test*"]
@@ -353,6 +353,8 @@ markers = [
     "unit: marks tests as unit tests",
     "uv: UV package manager environment management tests",
     "safe_to_fail: Tests that can fail without blocking CI",
+    "pipeline: marks tests as full pipeline integration tests (deselect with '-m \"not pipeline\"')",
+    "mcp: marks MCP audit tests that require module discovery (deselect with '-m \"not mcp\"')",
 ]
 
 [tool.coverage.run]

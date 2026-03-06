@@ -10,7 +10,7 @@ import json
 import logging
 import math
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -314,7 +314,7 @@ def format_jax_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# JAX Inference Results\n\nNo results found.\n"
 
-    lines = [f"# JAX Active Inference Results\n",
+    lines = ["# JAX Active Inference Results\n",
              f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
              f"**Models analyzed**: {len(results)}\n\n"]
 
@@ -344,14 +344,14 @@ def format_jax_report(results: List[Dict[str, Any]]) -> str:
         # Array statistics summary
         fe_stats = arr_stats.get("free_energy")
         if fe_stats:
-            lines.append(f"\n### Free Energy Trajectory")
+            lines.append("\n### Free Energy Trajectory")
             lines.append(f"- Initial: {fe_stats['initial']:.4f}")
             lines.append(f"- Final: {fe_stats['final']:.4f}")
             lines.append(f"- Total change: {fe_stats['total_change']:.4f}")
 
         action_stats = arr_stats.get("actions")
         if action_stats:
-            lines.append(f"\n### Action Distribution")
+            lines.append("\n### Action Distribution")
             for action, count in sorted(action_stats["distribution"].items()):
                 pct = 100 * count / action_stats["count"]
                 lines.append(f"- Action {action}: {count} times ({pct:.1f}%)")

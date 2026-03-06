@@ -39,17 +39,15 @@ To create a new step:
 
 import sys
 from pathlib import Path
-from typing import Optional, List, Any
 
 # Standard imports for all pipeline steps
 from utils import (
     setup_step_logging,
     log_step_start,
-    log_step_success, 
+    log_step_success,
     log_step_warning,
     log_step_error,
-    performance_tracker,
-    UTILS_AVAILABLE
+    performance_tracker
 )
 
 from pipeline import (
@@ -59,7 +57,6 @@ from pipeline import (
 
 import datetime
 import json
-import yaml
 
 # Initialize logger for this step
 # CUSTOMIZE: Replace "X_step_name" with your step name (e.g., "3_gnn", "11_render")
@@ -122,8 +119,8 @@ def validate_step_requirements() -> bool:
     return True
 
 def process_single_file(
-    input_file: Path, 
-    output_dir: Path, 
+    input_file: Path,
+    output_dir: Path,
     options: dict
 ) -> bool:
     """
@@ -138,12 +135,12 @@ def process_single_file(
         True if processing succeeded, False otherwise
     """
     logger.debug(f"Processing file: {input_file}")
-    
+
     try:
         # Read and analyze file content
         with open(input_file, 'r', encoding='utf-8') as f:
             content = f.read()
-        
+
         # Perform comprehensive file analysis
         analysis_results = {
             'file_name': input_file.name,
@@ -154,7 +151,7 @@ def process_single_file(
             'processing_timestamp': datetime.datetime.now().isoformat(),
             'processing_options': options
         }
-        
+
         # Extract metadata based on file type
         if input_file.suffix.lower() == '.md':
             analysis_results['metadata'] = _extract_markdown_metadata(content)
@@ -162,30 +159,30 @@ def process_single_file(
             analysis_results['metadata'] = _extract_structured_metadata(content, input_file.suffix)
         else:
             analysis_results['metadata'] = _extract_generic_metadata(content)
-        
+
         # Generate comprehensive output files
         base_name = input_file.stem
-        
+
         # 1. Analysis report (JSON)
         analysis_file = output_dir / f"{base_name}_analysis.json"
         with open(analysis_file, 'w', encoding='utf-8') as f:
             json.dump(analysis_results, f, indent=2, default=str)
-        
+
         # 2. Processed content with annotations
         processed_file = output_dir / f"{base_name}_processed{input_file.suffix}"
         processed_content = _generate_processed_content(content, analysis_results)
         with open(processed_file, 'w', encoding='utf-8') as f:
             f.write(processed_content)
-        
+
         # 3. Summary report (Markdown)
         summary_file = output_dir / f"{base_name}_summary.md"
         summary_content = _generate_summary_report(analysis_results)
         with open(summary_file, 'w', encoding='utf-8') as f:
             f.write(summary_content)
-        
+
         logger.debug(f"Generated outputs: {analysis_file}, {processed_file}, {summary_file}")
         return True
-        
+
     except Exception as e:
         log_step_error(logger, f"Failed to process {input_file}: {e}")
         return False
@@ -207,16 +204,16 @@ def _extract_markdown_metadata(content: str) -> dict:
     """Extract metadata from markdown content."""
     metadata = {}
     lines = content.splitlines()
-    
+
     # Extract headers
     headers = [line.strip('# ') for line in lines if line.strip().startswith('#')]
     metadata['headers'] = headers[:10]  # First 10 headers
-    
+
     # Extract code blocks
     code_blocks = []
     in_code_block = False
     current_block = []
-    
+
     for line in lines:
         if line.strip().startswith('```'):
             if in_code_block:
@@ -225,10 +222,10 @@ def _extract_markdown_metadata(content: str) -> dict:
             in_code_block = not in_code_block
         elif in_code_block:
             current_block.append(line)
-    
+
     metadata['code_blocks_count'] = len(code_blocks)
     metadata['total_lines'] = len(lines)
-    
+
     return metadata
 
 def _extract_structured_metadata(content: str, file_type: str) -> dict:
@@ -239,18 +236,18 @@ def _extract_structured_metadata(content: str, file_type: str) -> dict:
         else:  # YAML
             import yaml
             data = yaml.safe_load(content)
-        
+
         metadata = {
             'structure_type': 'structured',
             'top_level_keys': list(data.keys()) if isinstance(data, dict) else ['array'],
             'data_type': type(data).__name__,
             'is_valid': True
         }
-        
+
         if isinstance(data, dict):
             metadata['key_count'] = len(data)
             metadata['nested_structure'] = _analyze_nested_structure(data)
-        
+
         return metadata
     except Exception as e:
         return {
@@ -263,7 +260,7 @@ def _extract_generic_metadata(content: str) -> dict:
     """Extract metadata from generic text content."""
     lines = content.splitlines()
     words = content.split()
-    
+
     return {
         'structure_type': 'text',
         'line_count': len(lines),
@@ -278,7 +275,7 @@ def _analyze_nested_structure(data: dict, max_depth: int = 3) -> dict:
     def _analyze_level(obj, depth=0):
         if depth >= max_depth:
             return {'type': 'max_depth_reached'}
-        
+
         if isinstance(obj, dict):
             return {
                 'type': 'dict',
@@ -294,48 +291,48 @@ def _analyze_nested_structure(data: dict, max_depth: int = 3) -> dict:
             }
         else:
             return {'type': type(obj).__name__}
-    
+
     return _analyze_level(data)
 
 def _generate_processed_content(content: str, analysis: dict) -> str:
     """Generate processed content with annotations."""
     processed_lines = []
-    
+
     # Add processing header
     processed_lines.append(f"# Processed File: {analysis['file_name']}")
     processed_lines.append(f"# Processing Timestamp: {analysis['processing_timestamp']}")
     processed_lines.append(f"# Content Type: {analysis['content_type']}")
     processed_lines.append(f"# File Size: {analysis['file_size_bytes']} bytes, {analysis['file_size_lines']} lines")
     processed_lines.append("")
-    
+
     # Add original content with line numbers
     lines = content.splitlines()
     for i, line in enumerate(lines, 1):
         processed_lines.append(f"{i:4d}: {line}")
-    
+
     return '\n'.join(processed_lines)
 
 def _generate_summary_report(analysis: dict) -> str:
     """Generate a comprehensive summary report in Markdown format."""
     report_lines = []
-    
-    report_lines.append(f"# File Processing Summary")
+
+    report_lines.append("# File Processing Summary")
     report_lines.append("")
     report_lines.append(f"**File:** {analysis['file_name']}")
     report_lines.append(f"**Processed:** {analysis['processing_timestamp']}")
     report_lines.append(f"**Content Type:** {analysis['content_type']}")
     report_lines.append("")
-    
+
     report_lines.append("## File Statistics")
     report_lines.append(f"- **Size:** {analysis['file_size_bytes']} bytes")
     report_lines.append(f"- **Lines:** {analysis['file_size_lines']}")
     report_lines.append(f"- **Extension:** {analysis['file_extension']}")
     report_lines.append("")
-    
+
     if 'metadata' in analysis:
         metadata = analysis['metadata']
         report_lines.append("## Content Analysis")
-        
+
         if metadata.get('structure_type') == 'structured':
             report_lines.append(f"- **Structure:** {metadata.get('structure_type', 'Unknown')}")
             report_lines.append(f"- **Valid:** {metadata.get('is_valid', 'Unknown')}")
@@ -349,12 +346,12 @@ def _generate_summary_report(analysis: dict) -> str:
         elif 'headers' in metadata:
             report_lines.append(f"- **Headers Found:** {len(metadata.get('headers', []))}")
             report_lines.append(f"- **Code Blocks:** {metadata.get('code_blocks_count', 0)}")
-    
+
     report_lines.append("")
     report_lines.append("## Processing Options")
     for key, value in analysis.get('processing_options', {}).items():
         report_lines.append(f"- **{key}:** {value}")
-    
+
     return '\n'.join(report_lines)
 
 def main(parsed_args) -> int:
@@ -367,7 +364,7 @@ def main(parsed_args) -> int:
     Returns:
         Exit code (0=success, 1=error, 2=warnings)
     """
-    
+
     # CUSTOMIZE: Update the step description for your specific step
     # Example: "Starting GNN parsing step" or "Starting PyMDP render step"
     log_step_start(logger, "Starting standardized pipeline step")
@@ -407,16 +404,16 @@ def main(parsed_args) -> int:
     #   frameworks = getattr(parsed_args, 'frameworks', 'all')  # For render/execute
     #   llm_provider = getattr(parsed_args, 'llm_provider', 'ollama')  # For LLM steps
     #   audio_format = getattr(parsed_args, 'audio_format', 'wav')  # For audio steps
-    
+
     logger.info(f"Processing files from: {input_dir}")
     logger.info(f"Recursive processing: {'enabled' if recursive else 'disabled'}")
     logger.info(f"Output directory: {step_output_dir}")
-    
+
     # Validate input directory
     if not input_dir.exists():
         log_step_error(logger, f"Input directory does not exist: {input_dir}")
         return 1
-    
+
     # Find input files
     # CUSTOMIZE: Update the pattern for your step's input file types. Examples:
     #   GNN steps: "**/*.md" or "**/*.gnn"
@@ -426,17 +423,17 @@ def main(parsed_args) -> int:
     #   Multiple types: Use multiple globs and combine results
     pattern = "**/*.md" if recursive else "*.md"
     input_files = list(input_dir.glob(pattern))
-    
+
     if not input_files:
         log_step_warning(logger, f"No input files found in {input_dir} using pattern '{pattern}'")
         return 2  # Warning exit code
-    
+
     logger.info(f"Found {len(input_files)} files to process")
-    
+
     # Process files with performance tracking
     successful_files = 0
     failed_files = 0
-    
+
     processing_options = {
         'verbose': verbose,
         'recursive': recursive,
@@ -446,30 +443,30 @@ def main(parsed_args) -> int:
         #   'frameworks': frameworks.split(',') if isinstance(frameworks, str) else frameworks,
         #   'output_format': output_format,
     }
-    
+
     with performance_tracker.track_operation("process_all_files"):
         for input_file in input_files:
             try:
                 with performance_tracker.track_operation(f"process_{input_file.name}"):
                     success = process_single_file(
-                        input_file, 
-                        step_output_dir, 
+                        input_file,
+                        step_output_dir,
                         processing_options
                     )
-                
+
                 if success:
                     successful_files += 1
                 else:
                     failed_files += 1
-                    
+
             except Exception as e:
                 log_step_error(logger, f"Unexpected error processing {input_file}: {e}")
                 failed_files += 1
-    
+
     # Report results
     total_files = successful_files + failed_files
     logger.info(f"Processing complete: {successful_files}/{total_files} files successful")
-    
+
     # Generate summary report with processing results
     # CUSTOMIZE: Add step-specific fields to the summary as needed
     summary_file = step_output_dir / "processing_summary.json"
@@ -490,12 +487,12 @@ def main(parsed_args) -> int:
         #   "simulations_completed": simulation_count,
         #   "warnings": warning_messages,
     }
-    
+
     with open(summary_file, 'w') as f:
         json.dump(summary, f, indent=2)
-    
+
     logger.info(f"Summary report saved: {summary_file}")
-    
+
     # Determine exit code
     if failed_files == 0:
         log_step_success(logger, "All files processed successfully")
@@ -532,4 +529,4 @@ if __name__ == '__main__':
         import_dependencies=step_dependencies
     )
 
-    sys.exit(exit_code) 
+    sys.exit(exit_code)

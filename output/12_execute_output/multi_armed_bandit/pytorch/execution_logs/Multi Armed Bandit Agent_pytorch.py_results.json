@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.589906,
-  "timestamp": "2026-03-05T10:35:19.527335",
+  "execution_time": 0.720336,
+  "timestamp": "2026-03-06T09:49:01.602397",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/pytorch"
+    "output_directory": "output/12_execute_output/multi_armed_bandit/pytorch"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/pytorch_simulation_results.json"
+      "output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/pytorch_simulation_results.json"
     ],
     "traces": [],
     "other": []

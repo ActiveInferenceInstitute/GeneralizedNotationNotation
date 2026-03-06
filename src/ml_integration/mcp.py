@@ -4,9 +4,8 @@ ML Integration MCP Integration
 This module exposes ML integration processing tools via MCP.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

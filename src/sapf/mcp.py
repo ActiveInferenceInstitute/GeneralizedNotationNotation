@@ -6,12 +6,12 @@ backend discovery, audio status, and module metadata through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import logging
 
 logger = logging.getLogger(__name__)
 
-from . import process_gnn_to_audio, convert_gnn_to_sapf, validate_sapf_code, get_module_info as _get_mod_info
+from . import process_gnn_to_audio, get_module_info as _get_mod_info
 
 
 def process_sapf_mcp(target_directory: str, output_directory: str,

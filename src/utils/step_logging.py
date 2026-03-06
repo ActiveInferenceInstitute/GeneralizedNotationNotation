@@ -21,7 +21,6 @@ except ImportError:
     # Minimal fallback if the canonical module is unavailable.
     # This ensures step_logging is always importable.
     import logging
-    from typing import Optional
 
     def log_step_start(logger: logging.Logger, message: str) -> None:
         """Log the start of a step with prefix."""

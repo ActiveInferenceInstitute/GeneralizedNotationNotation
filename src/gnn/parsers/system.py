@@ -8,12 +8,9 @@ This module provides the main parsing system functionality.
 from typing import Dict, Any, List, Optional, Union, Type
 from pathlib import Path
 import logging
-from abc import ABC, abstractmethod
-from dataclasses import dataclass
-from enum import Enum
 
 # Import all parser modules
-from .unified_parser import UnifiedGNNParser, GNNFormat, ParseResult
+from .unified_parser import GNNFormat, ParseResult
 from .markdown_parser import MarkdownGNNParser
 from .scala_parser import ScalaGNNParser
 from .lean_parser import LeanGNNParser
@@ -49,15 +46,14 @@ from .isabelle_serializer import IsabelleSerializer
 from .maxima_serializer import MaximaSerializer
 from .alloy_serializer import AlloySerializer
 from .znotation_serializer import ZNotationSerializer
-from .schema_serializer import SchemaSerializer
-from .temporal_serializer import TemporalSerializer, TLASerializer, AgdaSerializer
+from .temporal_serializer import TLASerializer, AgdaSerializer
 from .functional_serializer import FunctionalSerializer
 from .binary_serializer import BinarySerializer
 
 # Import converters and validators
-from .converters import FormatConverter, ConversionError
-from .validators import GNNValidator, ValidationError, ValidationWarning
-from .common import GNNInternalRepresentation, ASTNode, ParseError, GNNParser
+from .converters import FormatConverter
+from .validators import GNNValidator
+from .common import GNNInternalRepresentation, ParseError, GNNParser
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -121,7 +117,7 @@ class GNNParsingSystem:
     Provides comprehensive parsing, serialization, and conversion capabilities
     for all supported GNN specification formats.
     """
-    
+
     def __init__(self, strict_validation: bool = True):
         """
         Initialize the parsing system.
@@ -136,10 +132,10 @@ class GNNParsingSystem:
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
         self.validator = GNNValidator()
-        
+
         self._initialize_parsers()
         self._initialize_serializers()
-    
+
     def _initialize_parsers(self):
         """Initialize all available parsers."""
         for format_type, parser_class in PARSER_REGISTRY.items():
@@ -147,7 +143,7 @@ class GNNParsingSystem:
                 self.parsers[format_type] = parser_class()
             except Exception as e:
                 logger.warning(f"Failed to initialize parser for {format_type}: {e}")
-    
+
     def _initialize_serializers(self):
         """Initialize all available serializers."""
         for format_type, serializer_class in SERIALIZER_REGISTRY.items():
@@ -155,8 +151,8 @@ class GNNParsingSystem:
                 self.serializers[format_type] = serializer_class()
             except Exception as e:
                 logger.warning(f"Failed to initialize serializer for {format_type}: {e}")
-    
-    def parse_file(self, file_path: Union[str, Path], 
+
+    def parse_file(self, file_path: Union[str, Path],
                    format_hint: Optional[GNNFormat] = None) -> ParseResult:
         """
         Parse a GNN file.
@@ -169,14 +165,14 @@ class GNNParsingSystem:
             ParseResult containing the parsed model
         """
         file_path = Path(file_path)
-        
+
         if not file_path.exists():
             raise FileNotFoundError(f"File not found: {file_path}")
-        
+
         # Detect format if not provided
         if format_hint is None:
             format_hint = self._detect_format(file_path)
-        
+
         # Delegate to the concrete parser's file method to avoid double-reading
         parser = self.parsers.get(format_hint)
         if parser is None:
@@ -189,8 +185,8 @@ class GNNParsingSystem:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             return parser.parse_string(content)
-    
-    def parse_string(self, content: str, 
+
+    def parse_string(self, content: str,
                      format: GNNFormat) -> ParseResult:
         """
         Parse GNN content from string.
@@ -204,25 +200,25 @@ class GNNParsingSystem:
         """
         if format not in self.parsers:
             raise ValueError(f"Unsupported format: {format}")
-        
+
         parser = self.parsers[format]
-        
+
         try:
             # Parse the content using the parser's string API
             result = parser.parse_string(content)
-            
+
             # Validate if strict validation is enabled
             if self.strict_validation:
                 validation_result = self.validator.validate(result.model)
                 if not validation_result.is_valid:
                     logger.warning(f"Validation warnings: {validation_result.warnings}")
-            
+
             return result
-            
+
         except Exception as e:
             logger.error(f"Parsing failed for format {format}: {e}")
             raise ParseError(f"Failed to parse {format} content: {e}")
-    
+
     def convert(self, model: GNNInternalRepresentation,
                 from_format: GNNFormat,
                 to_format: GNNFormat) -> GNNInternalRepresentation:
@@ -238,7 +234,7 @@ class GNNParsingSystem:
             Converted model
         """
         return self.converter.convert(model, from_format, to_format)
-    
+
     def serialize(self, model: GNNInternalRepresentation,
                   format: GNNFormat) -> str:
         """
@@ -253,15 +249,15 @@ class GNNParsingSystem:
         """
         if format not in self.serializers:
             raise ValueError(f"Unsupported format: {format}")
-        
+
         serializer = self.serializers[format]
-        
+
         try:
             return serializer.serialize(model)
         except Exception as e:
             logger.error(f"Serialization failed for format {format}: {e}")
             raise ParseError(f"Failed to serialize to {format}: {e}")
-    
+
     def serialize_to_file(self, model: GNNInternalRepresentation,
                           file_path: Union[str, Path],
                           format: Optional[GNNFormat] = None):
@@ -274,19 +270,19 @@ class GNNParsingSystem:
             format: Optional format hint
         """
         file_path = Path(file_path)
-        
+
         # Detect format from file extension if not provided
         if format is None:
             format = self._detect_format(file_path)
-        
+
         # Serialize to string
         content = self.serialize(model, format)
-        
+
         # Write to file
         file_path.parent.mkdir(parents=True, exist_ok=True)
         with open(file_path, 'w', encoding='utf-8') as f:
             f.write(content)
-    
+
     def _detect_format(self, file_path: Path) -> GNNFormat:
         """
         Detect format from file extension.
@@ -298,7 +294,7 @@ class GNNParsingSystem:
             Detected format
         """
         extension = file_path.suffix.lower()
-        
+
         format_map = {
             '.md': GNNFormat.MARKDOWN,
             '.scala': GNNFormat.SCALA,
@@ -324,12 +320,12 @@ class GNNParsingSystem:
             '.agda': GNNFormat.AGDA,
             '.hs': GNNFormat.HASKELL
         }
-        
+
         if extension in format_map:
             return format_map[extension]
         else:
             raise ValueError(f"Unknown file extension: {extension}")
-    
+
     def _detect_format_from_content(self, content: str) -> GNNFormat:
         """
         Detect format from content.
@@ -358,17 +354,17 @@ class GNNParsingSystem:
         else:
             # Default to markdown for unknown formats
             return GNNFormat.MARKDOWN
-    
+
     def get_supported_formats(self) -> List[GNNFormat]:
         """Get list of supported formats that can be parsed and serialized."""
         return [fmt for fmt in self.parsers.keys() if fmt in self.serializers]
-    
+
     def get_available_parsers(self) -> Dict[GNNFormat, str]:
         """Get available parsers with their descriptions."""
-        return {format: parser.__class__.__name__ 
+        return {format: parser.__class__.__name__
                 for format, parser in self.parsers.items()}
-    
+
     def get_available_serializers(self) -> Dict[GNNFormat, str]:
         """Get available serializers with their descriptions."""
-        return {format: serializer.__class__.__name__ 
+        return {format: serializer.__class__.__name__
                 for format, serializer in self.serializers.items()}

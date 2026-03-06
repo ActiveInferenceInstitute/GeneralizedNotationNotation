@@ -41,25 +41,25 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         "psutil": False,
         "coverage": False
     }
-    
+
     try:
         import pytest
         dependencies["pytest"] = True
     except ImportError:
         pass
-    
+
     try:
         import pytest_cov
         dependencies["pytest-cov"] = True
     except ImportError:
         pass
-    
+
     try:
         import xdist
         dependencies["pytest-xdist"] = True
     except ImportError:
         pass
-    
+
     try:
         import psutil
         dependencies["psutil"] = True
@@ -71,14 +71,14 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         dependencies["coverage"] = True
     except ImportError:
         pass
-    
+
     # Log results
     missing_deps = [name for name, available in dependencies.items() if not available]
     if missing_deps:
         logger.warning(f"⚠️ Missing test dependencies: {missing_deps}")
     else:
         logger.info("✅ All test dependencies available")
-            
+
     return dependencies
 
 
@@ -130,12 +130,12 @@ def build_pytest_command(
         "--durations=10",
         "--disable-warnings"
     ]
-    
+
     # Add markers
     if test_markers:
         for marker in test_markers:
             cmd.extend(["-m", marker])
-    
+
     # Add coverage if enabled
     if generate_coverage:
         cmd.extend([
@@ -144,14 +144,14 @@ def build_pytest_command(
             "--cov-report=html",
             "--cov-report=term-missing"
         ])
-    
+
     # Add parallel execution if enabled
     if parallel:
         cmd.extend(["-n", "auto"])
-    
+
     # Add test path
     cmd.append(str(TEST_DIR))
-    
+
     return cmd
 
 
@@ -182,7 +182,7 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
     """
     errors = []
     combined_output = stdout + "\n" + stderr
-    
+
     # Look for ERROR collecting patterns
     error_patterns = [
         r'ERROR collecting ([^\n]+)\n([^\n]+: [^\n]+)',
@@ -190,7 +190,7 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
         r'ImportError: ([^\n]+)',
         r'SyntaxError: ([^\n]+)',
     ]
-    
+
     for pattern in error_patterns:
         matches = re.finditer(pattern, combined_output, re.MULTILINE)
         for match in matches:
@@ -212,7 +212,7 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
             elif 'SyntaxError' in error_msg:
                 syntax_error = match.group(1) if match.groups() else 'unknown'
                 errors.append(f"SyntaxError: {syntax_error}")
-    
+
     # Also check for "ERRORS" section
     if "ERRORS" in combined_output or "ERROR collecting" in combined_output:
         # Extract all unique error messages
@@ -223,7 +223,7 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
             error_blocks = re.findall(r'ERROR collecting ([^\n]+)\n([^\n]+: [^\n]+)', error_text)
             for file_path, error_msg in error_blocks:
                 errors.append(f"{file_path}: {error_msg}")
-    
+
     # Remove duplicates while preserving order
     seen = set()
     unique_errors = []
@@ -231,7 +231,7 @@ def extract_collection_errors(stdout: str, stderr: str) -> List[str]:
         if error not in seen:
             seen.add(error)
             unique_errors.append(error)
-    
+
     return unique_errors
 
 
@@ -254,25 +254,25 @@ def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
             if (" passed" in line or " failed" in line or " skipped" in line) and " in " in line:
                 # Parse patterns like: "534 passed, 12 skipped in 3.45s"
                 # or "22 passed, 5 failed, 3 skipped in 1.23s"
-                
+
                 # Extract passed count
                 passed_match = re.search(r'(\d+)\s+passed', line)
                 if passed_match:
                     stats["tests_passed"] = int(passed_match.group(1))
                     stats["tests_run"] += int(passed_match.group(1))
-                
+
                 # Extract failed count
                 failed_match = re.search(r'(\d+)\s+failed', line)
                 if failed_match:
                     stats["tests_failed"] = int(failed_match.group(1))
                     stats["tests_run"] += int(failed_match.group(1))
-                
+
                 # Extract skipped count
                 skipped_match = re.search(r'(\d+)\s+skipped', line)
                 if skipped_match:
                     stats["tests_skipped"] = int(skipped_match.group(1))
                     stats["tests_run"] += int(skipped_match.group(1))
-                
+
                 # If we found any stats, break
                 if stats["tests_run"] > 0:
                     break
@@ -289,7 +289,7 @@ def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
                     stats["tests_failed"] += 1
                 elif " SKIPPED" in line_stripped:
                     stats["tests_skipped"] += 1
-            
+
             # Update tests_run from counted results
             if stats["tests_passed"] > 0 or stats["tests_failed"] > 0 or stats["tests_skipped"] > 0:
                 stats["tests_run"] = stats["tests_passed"] + stats["tests_failed"] + stats["tests_skipped"]
@@ -315,24 +315,24 @@ def parse_coverage_statistics(coverage_json_path: Path, logger: logging.Logger) 
     try:
         if not coverage_json_path.exists():
             return {"error": "Coverage file not found"}
-        
+
         with open(coverage_json_path) as f:
             coverage_data = json.load(f)
-        
+
         # Extract overall coverage
         total_coverage = coverage_data.get("totals", {}).get("percent_covered", 0.0)
-        
+
         # Extract per-file coverage
         files_coverage = {}
         for file_path, file_data in coverage_data.get("files", {}).items():
             files_coverage[file_path] = file_data.get("summary", {}).get("percent_covered", 0.0)
-        
+
         return {
             "total_coverage": total_coverage,
             "files_coverage": files_coverage,
             "files_count": len(files_coverage)
         }
-        
+
     except Exception as e:
         logger.warning(f"Failed to parse coverage statistics: {e}")
         return {"error": str(e)}

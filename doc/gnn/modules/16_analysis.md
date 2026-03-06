@@ -16,10 +16,10 @@ python src/16_analysis.py --target-dir input/gnn_files --output-dir output --ver
 |-----------|------|
 | Orchestrator | `src/16_analysis.py` (53 lines) |
 | Module | `src/analysis/` |
-| Processor | `src/analysis/processor.py` (475 lines) |
-| Analyzer | `src/analysis/analyzer.py` (1141 lines) |
-| Post-simulation | `src/analysis/post_simulation.py` (273 lines) |
-| Visualizations | `src/analysis/visualizations.py` (1241 lines) |
+| Processor | `src/analysis/processor.py` (529 lines) |
+| Analyzer | `src/analysis/analyzer.py` (1457 lines) |
+| Post-simulation | `src/analysis/post_simulation.py` (316 lines) |
+| Visualizations | `src/analysis/visualizations.py` (1397 lines) |
 | Math utilities | `src/analysis/math_utils.py` |
 | Framework extractors | `src/analysis/framework_extractors.py` |
 

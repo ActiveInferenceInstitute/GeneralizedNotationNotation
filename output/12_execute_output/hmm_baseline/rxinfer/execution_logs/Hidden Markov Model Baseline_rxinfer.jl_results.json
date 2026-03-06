@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 16.577248,
-  "timestamp": "2026-03-03T08:26:05.637922",
+  "execution_time": 18.211199,
+  "timestamp": "2026-03-06T09:52:29.489441",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

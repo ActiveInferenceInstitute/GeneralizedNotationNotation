@@ -17,7 +17,6 @@ This test file validates:
 import unittest
 import sys
 import tempfile
-import json
 from pathlib import Path
 # Mocks removed - using real implementations per testing policy
 
@@ -40,11 +39,11 @@ except ImportError as e:
 
 class TestD2VisualizerImport(unittest.TestCase):
     """Test D2 visualizer module imports"""
-    
+
     def test_d2_visualizer_module_available(self):
         """Test that D2 visualizer module can be imported"""
         self.assertTrue(D2_MODULE_AVAILABLE, "D2 visualizer module should be importable")
-    
+
     @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
     def test_d2_classes_available(self):
         """Test that D2 classes are available"""
@@ -57,20 +56,20 @@ class TestD2VisualizerImport(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2VisualizerInitialization(unittest.TestCase):
     """Test D2Visualizer initialization and setup"""
-    
+
     def test_d2_visualizer_init(self):
         """Test D2Visualizer initialization"""
         visualizer = D2Visualizer()
         self.assertIsNotNone(visualizer)
         self.assertIsNotNone(visualizer.logger)
-    
+
     def test_d2_visualizer_with_logger(self):
         """Test D2Visualizer initialization with custom logger"""
         import logging
         logger = logging.getLogger("test_logger")
         visualizer = D2Visualizer(logger=logger)
         self.assertEqual(visualizer.logger, logger)
-    
+
     def test_d2_availability_check(self):
         """Test D2 CLI availability checking"""
         visualizer = D2Visualizer()
@@ -81,11 +80,11 @@ class TestD2VisualizerInitialization(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2DiagramGeneration(unittest.TestCase):
     """Test D2 diagram generation methods"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.visualizer = D2Visualizer()
-        
+
         # Sample GNN model data (Active Inference POMDP)
         self.model_data = {
             "model_name": "Test POMDP Agent",
@@ -129,66 +128,66 @@ class TestD2DiagramGeneration(unittest.TestCase):
                 "o": "Observation"
             }
         }
-    
+
     def test_generate_model_structure_diagram(self):
         """Test generation of model structure diagram"""
         spec = self.visualizer.generate_model_structure_diagram(self.model_data)
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertIn("structure", spec.name.lower())
         self.assertTrue(len(spec.d2_content) > 0)
         self.assertIn("State Space", spec.d2_content)
         self.assertIn("# GNN Model", spec.d2_content)
-    
+
     def test_generate_pomdp_diagram(self):
         """Test generation of POMDP diagram"""
         spec = self.visualizer.generate_pomdp_diagram(self.model_data)
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertIn("pomdp", spec.name.lower())
         self.assertTrue(len(spec.d2_content) > 0)
         self.assertIn("Active Inference", spec.d2_content)
         self.assertIn("Generative Model", spec.d2_content)
-    
+
     def test_generate_pipeline_flow_diagram(self):
         """Test generation of pipeline flow diagram"""
         spec = self.visualizer.generate_pipeline_flow_diagram(include_frameworks=True)
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertEqual(spec.name, "gnn_pipeline_flow")
         self.assertTrue(len(spec.d2_content) > 0)
         self.assertIn("GNN Pipeline", spec.d2_content)
         self.assertIn("Code Generation", spec.d2_content)
-    
+
     def test_generate_pipeline_flow_diagram_no_frameworks(self):
         """Test pipeline flow diagram without framework details"""
         spec = self.visualizer.generate_pipeline_flow_diagram(include_frameworks=False)
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertTrue(len(spec.d2_content) > 0)
-    
+
     def test_generate_framework_mapping_diagram(self):
         """Test generation of framework mapping diagram"""
         spec = self.visualizer.generate_framework_mapping_diagram()
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertEqual(spec.name, "framework_integration")
         self.assertTrue(len(spec.d2_content) > 0)
         self.assertIn("Framework Integration", spec.d2_content)
-    
+
     def test_generate_framework_mapping_custom_frameworks(self):
         """Test framework mapping with custom framework list"""
         frameworks = ["pymdp", "jax"]
         spec = self.visualizer.generate_framework_mapping_diagram(frameworks=frameworks)
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertIn("pymdp", spec.d2_content.lower())
         self.assertIn("jax", spec.d2_content.lower())
-    
+
     def test_generate_active_inference_concepts_diagram(self):
         """Test generation of Active Inference concepts diagram"""
         spec = self.visualizer.generate_active_inference_concepts_diagram()
-        
+
         self.assertIsInstance(spec, D2DiagramSpec)
         self.assertEqual(spec.name, "active_inference_concepts")
         self.assertTrue(len(spec.d2_content) > 0)
@@ -199,13 +198,13 @@ class TestD2DiagramGeneration(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2DiagramCompilation(unittest.TestCase):
     """Test D2 diagram compilation to output formats"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.visualizer = D2Visualizer()
         self.temp_dir = tempfile.mkdtemp()
         self.output_dir = Path(self.temp_dir)
-        
+
         # Simple test diagram spec
         self.test_spec = D2DiagramSpec(
             name="test_diagram",
@@ -215,48 +214,48 @@ class TestD2DiagramCompilation(unittest.TestCase):
             layout_engine="dagre",
             theme=1
         )
-    
+
     def tearDown(self):
         """Clean up test directory"""
         import shutil
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
-    
+
     def test_compile_d2_diagram_no_cli(self):
         """Test compilation when D2 CLI is not available"""
         # Temporarily set d2_available to False
         original_available = self.visualizer.d2_available
         self.visualizer.d2_available = False
-        
+
         result = self.visualizer.compile_d2_diagram(
             self.test_spec,
             self.output_dir
         )
-        
+
         self.assertIsInstance(result, D2GenerationResult)
         self.assertFalse(result.success)
         self.assertIn("not available", result.error_message.lower())
-        
+
         # Restore original state
         self.visualizer.d2_available = original_available
-    
+
     def test_compile_d2_diagram_write_d2_file(self):
         """Test that D2 source file is written"""
         # This test doesn't require D2 CLI
         original_available = self.visualizer.d2_available
         self.visualizer.d2_available = False  # Skip compilation
-        
+
         result = self.visualizer.compile_d2_diagram(
             self.test_spec,
             self.output_dir
         )
-        
+
         # D2 file should still be written
         d2_file = self.output_dir / "test_diagram.d2"
         # File won't exist because compilation failed, but we tested the logic
-        
+
         self.visualizer.d2_available = original_available
-    
+
     @unittest.skipIf(not D2Visualizer().d2_available, "D2 CLI not available")
     def test_compile_d2_diagram_with_cli(self):
         """Test actual D2 compilation with CLI (if available)"""
@@ -265,7 +264,7 @@ class TestD2DiagramCompilation(unittest.TestCase):
             self.output_dir,
             formats=["svg"]
         )
-        
+
         if result.success:
             self.assertTrue(len(result.output_files) > 0)
             self.assertIsNotNone(result.d2_file)
@@ -275,11 +274,11 @@ class TestD2DiagramCompilation(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2HelperMethods(unittest.TestCase):
     """Test D2 helper and utility methods"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.visualizer = D2Visualizer()
-    
+
     def test_sanitize_name(self):
         """Test name sanitization for D2 identifiers"""
         test_cases = {
@@ -288,11 +287,11 @@ class TestD2HelperMethods(unittest.TestCase):
             "simple": "simple",
             "Multi Word Name": "multi_word_name"
         }
-        
+
         for input_name, expected_output in test_cases.items():
             result = self.visualizer._sanitize_name(input_name)
             self.assertEqual(result, expected_output)
-    
+
     def test_get_d2_shape_for_variable(self):
         """Test D2 shape determination for variables"""
         test_cases = [
@@ -300,7 +299,7 @@ class TestD2HelperMethods(unittest.TestCase):
             ({"dimensions": [3]}, {"C": "Vector"}, "diamond"),
             ({"dimensions": [3, 1]}, {"s": "State"}, "cylinder"),
         ]
-        
+
         for var_info, annotations, _ in test_cases:
             var_name = list(annotations.keys())[0]
             shape = self.visualizer._get_d2_shape_for_variable(
@@ -308,7 +307,7 @@ class TestD2HelperMethods(unittest.TestCase):
             )
             self.assertIsInstance(shape, str)
             self.assertTrue(len(shape) > 0)
-    
+
     def test_get_d2_arrow(self):
         """Test D2 arrow notation conversion"""
         arrow_tests = {
@@ -319,23 +318,23 @@ class TestD2HelperMethods(unittest.TestCase):
             ">": "->",
             "<": "<-"
         }
-        
+
         for conn_type, expected_arrow in arrow_tests.items():
             result = self.visualizer._get_d2_arrow(conn_type)
             self.assertEqual(result, expected_arrow)
-    
+
     def test_is_pomdp_model(self):
         """Test POMDP model detection"""
         pomdp_model = {
             "state_space": {"A": {}, "B": {}, "C": {}},
             "actinf_annotations": {"A": "Likelihood"}
         }
-        
+
         non_pomdp_model = {
             "state_space": {"x": {}, "y": {}},
             "actinf_annotations": {}
         }
-        
+
         self.assertTrue(self.visualizer._is_pomdp_model(pomdp_model))
         self.assertFalse(self.visualizer._is_pomdp_model(non_pomdp_model))
 
@@ -343,13 +342,13 @@ class TestD2HelperMethods(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2EndToEndProcessing(unittest.TestCase):
     """Test end-to-end D2 processing workflows"""
-    
+
     def setUp(self):
         """Set up test fixtures"""
         self.visualizer = D2Visualizer()
         self.temp_dir = tempfile.mkdtemp()
         self.output_dir = Path(self.temp_dir)
-        
+
         self.test_model = {
             "model_name": "Integration Test Model",
             "state_space": {
@@ -359,13 +358,13 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             "connections": [],
             "actinf_annotations": {"A": "LikelihoodMatrix"}
         }
-    
+
     def tearDown(self):
         """Clean up test directory"""
         import shutil
         if self.output_dir.exists():
             shutil.rmtree(self.output_dir)
-    
+
     def test_generate_all_diagrams_for_model(self):
         """Test generating all diagrams for a model"""
         results = self.visualizer.generate_all_diagrams_for_model(
@@ -373,10 +372,10 @@ class TestD2EndToEndProcessing(unittest.TestCase):
             self.output_dir,
             formats=["svg"]
         )
-        
+
         self.assertIsInstance(results, list)
         self.assertTrue(len(results) > 0)
-        
+
         for result in results:
             self.assertIsInstance(result, D2GenerationResult)
             self.assertIsNotNone(result.diagram_name)
@@ -385,50 +384,47 @@ class TestD2EndToEndProcessing(unittest.TestCase):
 @unittest.skipIf(not D2_MODULE_AVAILABLE, "D2 module not available")
 class TestD2ProcessorIntegration(unittest.TestCase):
     """Test D2 integration with advanced_visualization processor"""
-    
+
     def test_processor_has_d2_methods(self):
         """Test that processor has D2 generation methods"""
         from advanced_visualization.processor import (
             _generate_d2_visualizations_safe,
             _generate_pipeline_d2_diagrams_safe
         )
-        
+
         self.assertIsNotNone(_generate_d2_visualizations_safe)
         self.assertIsNotNone(_generate_pipeline_d2_diagrams_safe)
-    
+
     def test_init_exports_d2_components(self):
         """Test that __init__ exports D2 components"""
         from advanced_visualization import (
-            D2Visualizer,
-            D2DiagramSpec,
-            D2GenerationResult,
             D2_AVAILABLE
         )
-        
+
         # These should all be importable (even if None when not available)
         self.assertIsNotNone(D2_AVAILABLE)
 
 
 class TestD2Documentation(unittest.TestCase):
     """Test D2 module documentation and setup"""
-    
+
     def test_d2_visualizer_has_docstrings(self):
         """Test that D2Visualizer class has comprehensive docstrings"""
         if not D2_MODULE_AVAILABLE:
             self.skipTest("D2 module not available")
-        
+
         self.assertIsNotNone(D2Visualizer.__doc__)
         self.assertTrue(len(D2Visualizer.__doc__) > 50)
-    
+
     def test_d2_diagram_spec_has_fields(self):
         """Test that D2DiagramSpec has required fields"""
         if not D2_MODULE_AVAILABLE:
             self.skipTest("D2 module not available")
-        
+
         # Check dataclass fields
         from dataclasses import fields
         spec_fields = [f.name for f in fields(D2DiagramSpec)]
-        
+
         required_fields = ["name", "description", "d2_content", "output_formats"]
         for field in required_fields:
             self.assertIn(field, spec_fields)
@@ -439,7 +435,7 @@ def run_tests():
     # Create test suite
     loader = unittest.TestLoader()
     suite = unittest.TestSuite()
-    
+
     # Add all test classes
     suite.addTests(loader.loadTestsFromTestCase(TestD2VisualizerImport))
     suite.addTests(loader.loadTestsFromTestCase(TestD2VisualizerInitialization))
@@ -449,11 +445,11 @@ def run_tests():
     suite.addTests(loader.loadTestsFromTestCase(TestD2EndToEndProcessing))
     suite.addTests(loader.loadTestsFromTestCase(TestD2ProcessorIntegration))
     suite.addTests(loader.loadTestsFromTestCase(TestD2Documentation))
-    
+
     # Run tests
     runner = unittest.TextTestRunner(verbosity=2)
     result = runner.run(suite)
-    
+
     return result.wasSuccessful()
 
 

@@ -77,7 +77,7 @@ __all__ = [
     'ensure_directory',
     'find_gnn_files',
     'get_output_paths',
-    
+
     # UV-based setup functions
     'setup_uv_environment',
     'validate_uv_setup',
@@ -95,29 +95,29 @@ __all__ = [
     'install_all_optional_packages',
     'setup_complete_environment',
     'check_environment_health',
-    
+
     # Native UV dependency management functions
     'add_uv_dependency',
     'remove_uv_dependency',
     'update_uv_dependencies',
     'lock_uv_dependencies',
-    
+
     # Validator functions
     'validate_system',
     'get_environment_info',
     'get_uv_status',
-    
+
     # Utility functions
     'get_module_info',
     'get_setup_options',
     'setup_environment',
     'install_dependencies',
-    
+
     # Constants and Metadata
     'OPTIONAL_GROUPS',
     'FEATURES',
     '__version__'
-] 
+]
 
 # Minimal classes/APIs expected by tests
 class EnvironmentManager:

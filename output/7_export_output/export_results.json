@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-05T10:37:39.051319",
-  "source_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
-  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output",
+  "timestamp": "2026-03-06T09:48:39.298659",
+  "source_directory": "input/gnn_files/discrete",
+  "output_directory": "output/7_export_output",
   "files_exported": [
     {
       "file_name": "predictive_coding_agent.md",
@@ -9,27 +9,27 @@
       "exports": {
         "json": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
           "file_size": 24936
         },
         "xml": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
           "file_size": 1380
         },
         "graphml": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
+          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
           "file_size": 2026
         },
         "gexf": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
+          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
           "file_size": 1660
         },
         "pickle": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
+          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
           "file_size": 13371
         }
       },
@@ -41,27 +41,27 @@
       "exports": {
         "json": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/continuous_navigation/continuous_navigation_json.json",
+          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_json.json",
           "file_size": 26335
         },
         "xml": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/continuous_navigation/continuous_navigation_xml.xml",
+          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_xml.xml",
           "file_size": 1516
         },
         "graphml": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/continuous_navigation/continuous_navigation_graphml.graphml",
+          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_graphml.graphml",
           "file_size": 2278
         },
         "gexf": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/continuous_navigation/continuous_navigation_gexf.gexf",
+          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_gexf.gexf",
           "file_size": 1796
         },
         "pickle": {
           "success": true,
-          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/continuous_navigation/continuous_navigation_pickle.pkl",
+          "export_file": "output/7_export_output/continuous_navigation/continuous_navigation_pickle.pkl",
           "file_size": 13175
         }
       },

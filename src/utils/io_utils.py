@@ -9,9 +9,8 @@ import time
 import logging
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List, Union
 import tempfile
-import shutil
 
 logger = logging.getLogger(__name__)
 
@@ -28,15 +27,15 @@ def batch_write_files(files_data: List[Dict[str, Any]], output_dir: Path) -> Dic
     """
     start_time = time.time()
     results = []
-    
+
     for file_data in files_data:
         file_path = output_dir / file_data['path']
         content = file_data['content']
-        
+
         try:
             # Ensure directory exists
             file_path.parent.mkdir(parents=True, exist_ok=True)
-            
+
             # Write file
             if isinstance(content, str):
                 file_path.write_text(content, encoding='utf-8')
@@ -45,27 +44,27 @@ def batch_write_files(files_data: List[Dict[str, Any]], output_dir: Path) -> Dic
             else:
                 # Assume JSON-serializable
                 file_path.write_text(json.dumps(content, indent=2), encoding='utf-8')
-            
+
             results.append({
                 'path': str(file_path),
                 'success': True,
                 'size': file_path.stat().st_size if file_path.exists() else 0
             })
-            
+
         except Exception as e:
             results.append({
                 'path': str(file_path),
                 'success': False,
                 'error': str(e)
             })
-    
+
     end_time = time.time()
-    
+
     successful_writes = [r for r in results if r['success']]
     failed_writes = [r for r in results if not r['success']]
-    
+
     total_size = sum(r.get('size', 0) for r in successful_writes)
-    
+
     return {
         'total_files': len(files_data),
         'successful_writes': len(successful_writes),
@@ -88,7 +87,7 @@ def batch_read_files(file_paths: List[Path]) -> Dict[str, Any]:
     """
     start_time = time.time()
     results = []
-    
+
     for file_path in file_paths:
         try:
             if file_path.exists():
@@ -100,7 +99,7 @@ def batch_read_files(file_paths: List[Path]) -> Dict[str, Any]:
                     # Fall back to binary
                     content = file_path.read_bytes()
                     content_type = 'binary'
-                
+
                 results.append({
                     'path': str(file_path),
                     'success': True,
@@ -114,21 +113,21 @@ def batch_read_files(file_paths: List[Path]) -> Dict[str, Any]:
                     'success': False,
                     'error': 'File not found'
                 })
-                
+
         except Exception as e:
             results.append({
                 'path': str(file_path),
                 'success': False,
                 'error': str(e)
             })
-    
+
     end_time = time.time()
-    
+
     successful_reads = [r for r in results if r['success']]
     failed_reads = [r for r in results if not r['success']]
-    
+
     total_size = sum(r.get('size', 0) for r in successful_reads)
-    
+
     return {
         'total_files': len(file_paths),
         'successful_reads': len(successful_reads),
@@ -154,16 +153,16 @@ def get_file_performance_metrics(file_path: Path) -> Dict[str, Any]:
             'exists': False,
             'error': 'File not found'
         }
-    
+
     try:
         stat = file_path.stat()
-        
+
         # Test read performance
         read_start = time.time()
         with open(file_path, 'rb') as f:
             content = f.read()
         read_time = time.time() - read_start
-        
+
         return {
             'exists': True,
             'size_bytes': stat.st_size,
@@ -173,7 +172,7 @@ def get_file_performance_metrics(file_path: Path) -> Dict[str, Any]:
             'modified_time': stat.st_mtime,
             'created_time': stat.st_ctime
         }
-        
+
     except Exception as e:
         return {
             'exists': True,
@@ -191,7 +190,7 @@ def create_temp_file_with_content(content: Union[str, bytes], suffix: str = '.tm
     Returns:
         Path to the created temporary file
     """
-    with tempfile.NamedTemporaryFile(mode='w' if isinstance(content, str) else 'wb', 
+    with tempfile.NamedTemporaryFile(mode='w' if isinstance(content, str) else 'wb',
                                     suffix=suffix, delete=False) as f:
         if isinstance(content, str):
             f.write(content)
@@ -211,7 +210,7 @@ def cleanup_temp_files(temp_files: List[Path]) -> Dict[str, Any]:
     """
     start_time = time.time()
     results = []
-    
+
     for temp_file in temp_files:
         try:
             if temp_file.exists():
@@ -234,12 +233,12 @@ def cleanup_temp_files(temp_files: List[Path]) -> Dict[str, Any]:
                 'success': False,
                 'error': str(e)
             })
-    
+
     end_time = time.time()
-    
+
     successful_cleanups = [r for r in results if r['success']]
     total_size = sum(r.get('size_bytes', 0) for r in successful_cleanups)
-    
+
     return {
         'total_files': len(temp_files),
         'successful_cleanups': len(successful_cleanups),
@@ -247,4 +246,4 @@ def cleanup_temp_files(temp_files: List[Path]) -> Dict[str, Any]:
         'total_size_bytes': total_size,
         'cleanup_time_seconds': end_time - start_time,
         'results': results
-    } 
+    }

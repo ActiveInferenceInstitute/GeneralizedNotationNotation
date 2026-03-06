@@ -5,8 +5,9 @@ Tests MCP tool registration, execution, and server functionality.
 """
 
 import pytest
+
+pytestmark = pytest.mark.mcp
 import json
-from pathlib import Path
 
 
 class TestMCPModule:
@@ -15,12 +16,6 @@ class TestMCPModule:
     def test_module_imports(self):
         """Test that MCP module can be imported."""
         from mcp import (
-            MCPTool,
-            MCPResource,
-            MCPServer,
-            MCPError,
-            MCPToolExecutionError,
-            MCPValidationError,
             FEATURES,
             __version__
         )

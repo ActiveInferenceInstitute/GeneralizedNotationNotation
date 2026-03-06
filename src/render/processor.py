@@ -31,7 +31,7 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
         Tuple of (is_valid, error_messages)
     """
     errors = []
-    
+
     # Check basic dimensions
     if not hasattr(pomdp_space, 'num_states') or pomdp_space.num_states is None:
         errors.append("Missing number of states")
@@ -40,18 +40,18 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
             errors.append("Invalid state dimensions (must be positive)")
     elif pomdp_space.num_states <= 0:
         errors.append("Invalid number of states (must be positive)")
-        
+
     if not hasattr(pomdp_space, 'num_observations') or pomdp_space.num_observations is None:
         errors.append("Missing number of observations")
-        
+
     if not hasattr(pomdp_space, 'num_actions') or pomdp_space.num_actions is None:
         errors.append("Missing number of actions")
-        
+
     # Check matrices if present
     if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
         # Basic shape check would go here if we assume numpy arrays
         pass
-        
+
     return len(errors) == 0, errors
 
 
@@ -172,28 +172,28 @@ def process_render(
         True if processing succeeded, False otherwise
     """
     try:
-        logger.info(f"🚀 Starting POMDP-aware render processing")
+        logger.info("🚀 Starting POMDP-aware render processing")
         logger.info(f"Processing GNN files in: {target_dir}")
         logger.info(f"Output directory: {output_dir}")
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Import POMDP processing capabilities
         try:
             # Use absolute imports to avoid relative import issues
             import sys
             from pathlib import Path
-            
+
             # Add both src directory and project root to path
             src_path = Path(__file__).parent.parent
             project_root = src_path.parent
-            
+
             if str(src_path) not in sys.path:
                 sys.path.insert(0, str(src_path))
             if str(project_root) not in sys.path:
                 sys.path.insert(0, str(project_root))
-            
+
             # Try multiple import strategies
             try:
                 from gnn.pomdp_extractor import extract_pomdp_from_file
@@ -202,49 +202,49 @@ def process_render(
                 # Fallback to src-prefixed imports
                 from src.gnn.pomdp_extractor import extract_pomdp_from_file
                 from src.render.pomdp_processor import POMDPRenderProcessor
-            
+
             pomdp_available = True
         except ImportError as e:
             logger.warning(f"POMDP processing modules not available: {e}")
             logger.info("Falling back to basic rendering")
             pomdp_available = False
-        
+
         # Find GNN files
         gnn_files = []
         for pattern in ['*.md', '*.json', '*.yaml', '*.yml']:
             gnn_files.extend(target_dir.glob(pattern))
-        
+
         if not gnn_files:
             logger.warning(f"No GNN files found in {target_dir}")
             return True
-        
+
         logger.info(f"Found {len(gnn_files)} GNN files to process")
-        
+
         # Processing configuration
         frameworks = kwargs.get('frameworks', None)  # None means all frameworks
         strict_validation = kwargs.get('strict_validation', True)
-        
+
         if frameworks:
             logger.info(f"Target frameworks: {frameworks}")
         else:
             logger.info("Target frameworks: all available")
-        
+
         results = {}
         success_count = 0
         total_framework_successes = 0
         total_framework_attempts = 0
-        
+
         if pomdp_available:
             # Use POMDP-aware processing
             pomdp_processor = POMDPRenderProcessor(output_dir)
-            
+
             for gnn_file in gnn_files:
                 try:
                     logger.info(f"📁 Processing: {gnn_file}")
-                    
+
                     # Extract POMDP state space from GNN file
                     pomdp_space = extract_pomdp_from_file(gnn_file, strict_validation=strict_validation)
-                    
+
                     if pomdp_space is None:
                         logger.warning(f"Could not extract POMDP from {gnn_file}, trying basic rendering")
                         # Fall back to basic processing for this file
@@ -253,44 +253,44 @@ def process_render(
                         if file_result['success']:
                             success_count += 1
                         continue
-                    
+
                     logger.info(f"✅ Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions")
-                    
+
                     # Validate POMDP space
                     is_valid, validation_errors = validate_pomdp_for_rendering(pomdp_space)
                     if not is_valid:
                         logger.warning(f"POMDP validation failed for {gnn_file.name}: {validation_errors}")
                         # Continue anyway but log warning
-                        
+
                     # Normalize matrices
                     pomdp_space = normalize_matrices(pomdp_space, logger)
-                    
+
                     # Create file-specific output directory
                     file_output_dir = output_dir / gnn_file.stem
-                    
+
                     # Create processor with file-specific directory
                     file_processor = POMDPRenderProcessor(file_output_dir)
-                    
+
                     # Process POMDP for all frameworks
                     processing_result = file_processor.process_pomdp_for_all_frameworks(
                         pomdp_space, gnn_file_path=gnn_file, frameworks=frameworks, **kwargs
                     )
                     processing_result['base_output_dir'] = str(file_output_dir)
-                    
+
                     results[str(gnn_file)] = processing_result
-                    
+
                     if processing_result['overall_success']:
                         success_count += 1
                         logger.info(f"✅ Successfully processed {gnn_file.name}")
                     else:
                         logger.error(f"❌ Failed to process {gnn_file.name}")
-                    
+
                     # Count framework-level successes
                     for framework, result in processing_result['framework_results'].items():
                         total_framework_attempts += 1
                         if result['success']:
                             total_framework_successes += 1
-                            
+
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
                     logger.error(error_msg)
@@ -311,7 +311,7 @@ def process_render(
                         logger.info(f"✅ Processed {gnn_file.name}")
                     else:
                         logger.error(f"❌ Failed to process {gnn_file.name}")
-                        
+
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
                     logger.error(error_msg)
@@ -319,7 +319,7 @@ def process_render(
                         'success': False,
                         'error': error_msg
                     }
-        
+
         # Create overall processing summary
         summary = {
             'timestamp': datetime.now().isoformat(),
@@ -338,20 +338,20 @@ def process_render(
             },
             'file_results': results
         }
-        
+
         summary_file = output_dir / 'render_processing_summary.json'
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
-        
+
         # Create overview documentation
         _create_overview_documentation(output_dir, summary)
-        
-        logger.info(f"🎉 Render processing completed!")
+
+        logger.info("🎉 Render processing completed!")
         logger.info(f"📊 Files: {success_count}/{len(gnn_files)} successful")
         if pomdp_available:
             logger.info(f"🧠 Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)")
         logger.info(f"📄 Summary saved to: {summary_file}")
-        
+
         # Consider rendering successful if:
         # 1. At least one file was processed successfully, OR
         # 2. At least 80% of framework renderings succeeded
@@ -360,7 +360,7 @@ def process_render(
             return framework_success_rate >= 80.0 or success_count > 0
         else:
             return success_count == len(gnn_files)
-        
+
     except Exception as e:
         logger.error(f"Render processing failed: {e}")
         return False
@@ -384,20 +384,20 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
             generate_pymdp_code, generate_rxinfer_code,
             generate_activeinference_jl_code, generate_discopy_code
         )
-        
+
         # Create basic model data from filename
         model_data = {
             'model_name': gnn_file.stem,
             'variables': [],
             'connections': []
         }
-        
+
         # Create file-specific output directory
         file_output_dir = output_dir / gnn_file.stem
         file_output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         generated_files = []
-        
+
         # Generate code for each framework
         frameworks = {
             'pymdp': (generate_pymdp_code, '.py'),
@@ -405,13 +405,13 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
             'activeinference_jl': (generate_activeinference_jl_code, '.jl'),
             'discopy': (generate_discopy_code, '.py')
         }
-        
+
         for framework_name, (generator_func, extension) in frameworks.items():
             try:
                 # Create framework subdirectory
                 framework_dir = file_output_dir / framework_name
                 framework_dir.mkdir(parents=True, exist_ok=True)
-                
+
                 # Generate code
                 code = generator_func(model_data)
                 if code:
@@ -419,17 +419,17 @@ def _process_single_gnn_file_basic(gnn_file: Path, output_dir: Path, verbose: bo
                     with open(output_file, 'w') as f:
                         f.write(code)
                     generated_files.append(str(output_file))
-                    
+
             except Exception as e:
                 logger.warning(f"Failed to generate {framework_name} code for {gnn_file}: {e}")
-        
+
         return {
             'success': len(generated_files) > 0,
             'message': f"Generated {len(generated_files)} files" if generated_files else "No files generated",
             'generated_files': generated_files,
             'output_directory': str(file_output_dir)
         }
-        
+
     except Exception as e:
         return {
             'success': False,
@@ -478,7 +478,7 @@ Processing Type: **{summary['processing_type']}**
             file_name = Path(file_path).name
             if result.get('overall_success', result.get('success', False)):
                 doc_content += f"- ✅ **{file_name}** - Successfully processed\n"
-                
+
                 # Add framework details if available
                 if 'framework_results' in result:
                     for framework, framework_result in result['framework_results'].items():
@@ -526,9 +526,9 @@ Each framework subdirectory contains:
         doc_file = output_dir / 'README.md'
         with open(doc_file, 'w') as f:
             f.write(doc_content)
-        
+
         logger.info(f"Created overview documentation: {doc_file}")
-        
+
     except Exception as e:
         logger.warning(f"Failed to create overview documentation: {e}")
 
@@ -553,7 +553,7 @@ def render_gnn_spec(
     try:
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Try to use POMDP-aware processing first
         try:
             # Use same import strategy as above
@@ -563,11 +563,11 @@ def render_gnn_spec(
             except ImportError:
                 from src.gnn.pomdp_extractor import POMDPExtractor
                 from src.render.pomdp_processor import POMDPRenderProcessor
-            
+
             # Create a synthetic POMDP space from GNN spec
             # This is a simplified conversion - real usage should use proper extraction
             pomdp_extractor = POMDPExtractor()
-            
+
             # For now, create basic model data and use generators
             files = []
             if target.lower() == "pymdp":
@@ -577,7 +577,7 @@ def render_gnn_spec(
                 if code:
                     output_file.write_text(code)
                     files.append(str(output_file))
-                    
+
             elif target.lower() == "rxinfer":
                 from .generators import generate_rxinfer_code
                 code = generate_rxinfer_code(gnn_spec)
@@ -585,7 +585,7 @@ def render_gnn_spec(
                 if code:
                     output_file.write_text(code)
                     files.append(str(output_file))
-                    
+
             elif target.lower() == "rxinfer_toml":
                 # Try to use specific renderer for TOML if avail, else fallback
                 try:
@@ -604,7 +604,7 @@ def render_gnn_spec(
                 if code:
                     output_file.write_text(code)
                     files.append(str(output_file))
-                    
+
             elif target.lower() == "discopy":
                 from .generators import generate_discopy_code
                 code = generate_discopy_code(gnn_spec)
@@ -612,14 +612,14 @@ def render_gnn_spec(
                 if code:
                     output_file.write_text(code)
                     files.append(str(output_file))
-            
+
             elif target.lower() == "discopy_combined":
                 # DisCoPy renderer generates all diagrams by default
                 try:
                     from .discopy import render_gnn_to_discopy
                     output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
                     success, msg, warnings = render_gnn_to_discopy(gnn_spec, output_file)
-                    
+
                     if success:
                         return True, msg, [str(output_file)]
                     else:
@@ -637,19 +637,19 @@ def render_gnn_spec(
                         return True, msg, art
                 except ImportError:
                      return False, "JAX renderer not available", []
-            
+
             else:
                 return False, f"Unsupported target: {target}", []
-            
+
             if files:
                 return True, f"Successfully generated {target} code", files
             else:
                 return False, f"Failed to generate {target} code", []
-                
+
         except ImportError:
             # Fall back to basic rendering
             return _render_gnn_spec_basic(gnn_spec, target, output_directory, options)
-            
+
     except Exception as e:
         return False, f"Error rendering {target}: {e}", []
 
@@ -663,12 +663,12 @@ def _render_gnn_spec_basic(
     try:
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         from .generators import (
             generate_pymdp_code, generate_rxinfer_code,
             generate_activeinference_jl_code, generate_discopy_code
         )
-        
+
         if target.lower() == "pymdp":
             code = generate_pymdp_code(gnn_spec)
             output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_pymdp.py"
@@ -683,14 +683,14 @@ def _render_gnn_spec_basic(
             output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
         else:
             return False, f"Unsupported target: {target}", []
-        
+
         if code:
             with open(output_file, 'w') as f:
                 f.write(code)
             return True, f"Successfully generated {target} code", []
         else:
             return False, f"Failed to generate {target} code", []
-            
+
     except Exception as e:
         return False, f"Error rendering {target}: {e}", []
 
@@ -705,9 +705,9 @@ def get_module_info() -> Dict[str, Any]:
         "features": [
             "POMDP state space extraction",
             "Modular framework injection",
-            "Implementation-specific output directories", 
+            "Implementation-specific output directories",
             "PyMDP code generation",
-            "RxInfer.jl code generation", 
+            "RxInfer.jl code generation",
             "ActiveInference.jl code generation",
             "JAX code generation",
             "DisCoPy categorical diagram generation",
@@ -743,7 +743,7 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
         "activeinference_jl": {
             "name": "ActiveInference.jl",
             "description": "Julia Active Inference library",
-            "language": "Julia", 
+            "language": "Julia",
             "file_extension": ".jl",
             "supported_features": ["Free Energy Minimization", "Active Inference", "POMDP"],
             "function": "render_gnn_to_activeinference_jl",
@@ -754,7 +754,7 @@ def get_available_renderers() -> Dict[str, Dict[str, Any]]:
             "name": "JAX",
             "description": "High-performance numerical computing with automatic differentiation",
             "language": "Python",
-            "file_extension": ".py", 
+            "file_extension": ".py",
             "supported_features": ["GPU Acceleration", "Automatic Differentiation", "JIT Compilation"],
             "function": "render_gnn_to_jax",
             "output_format": "python",

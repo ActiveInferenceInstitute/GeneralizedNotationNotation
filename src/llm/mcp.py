@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -18,8 +18,6 @@ from . import (
     process_llm,
     analyze_gnn_file_with_llm,
     generate_documentation,
-    generate_llm_summary,
-    create_processor_from_env,
 )
 
 
@@ -224,7 +222,7 @@ def initialize_llm_module(mcp_instance) -> None:
         from src.llm import create_processor_from_env
         import asyncio
         logger.info("Initializing LLM module prior to MCP registration...")
-        
+
         # create_processor_from_env is a coroutine; must be awaited
         try:
             loop = asyncio.get_running_loop()

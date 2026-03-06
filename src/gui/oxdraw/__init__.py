@@ -89,21 +89,21 @@ def oxdraw_gui(
     """
     import time
     start_time = time.time()
-    
+
     # Determine mode - headless by default for pipeline integration
     headless = kwargs.get('headless', True)
     mode = kwargs.get('mode', 'headless' if headless else 'interactive')
-    
+
     # Override headless if explicitly set to interactive
     if mode == 'interactive':
         headless = False
-    
+
     logger.info(f"🎨 oxdraw GUI - Mode: {mode.upper()}")
-    
+
     # Create oxdraw-specific output directory
     oxdraw_output = output_dir / "oxdraw_output"
     oxdraw_output.mkdir(parents=True, exist_ok=True)
-    
+
     try:
         # Call core oxdraw processing function
         success = process_oxdraw(
@@ -113,15 +113,15 @@ def oxdraw_gui(
             mode=mode,
             **kwargs
         )
-        
+
         # Collect outputs
         outputs = []
         if oxdraw_output.exists():
             outputs = [str(f) for f in oxdraw_output.glob("*.mmd")]
             outputs.extend([str(f) for f in oxdraw_output.glob("*.json")])
-        
+
         duration = time.time() - start_time
-        
+
         result = {
             "gui_type": "oxdraw",
             "success": success,
@@ -131,14 +131,14 @@ def oxdraw_gui(
             "duration": duration,
             "output_dir": str(oxdraw_output)
         }
-        
+
         if success:
             logger.info(f"✅ oxdraw processing complete in {duration:.2f}s")
         else:
-            logger.warning(f"⚠️ oxdraw processing completed with warnings")
-        
+            logger.warning("⚠️ oxdraw processing completed with warnings")
+
         return result
-        
+
     except Exception as e:
         logger.error(f"❌ oxdraw processing failed: {e}")
         duration = time.time() - start_time

@@ -184,7 +184,7 @@ def process_validation(target_dir: Path, output_dir: Path, verbose: bool = False
         with open(validation_summary_file, 'w') as f:
             json.dump(validation_results["summary"], f, indent=2)
 
-        logger.info(f"Validation processing completed:")
+        logger.info("Validation processing completed:")
         logger.info(f"  Total files: {validation_results['summary']['total_files']}")
         logger.info(f"  Successful validations: {validation_results['summary']['successful_validations']}")
         logger.info(f"  Failed validations: {validation_results['summary']['failed_validations']}")

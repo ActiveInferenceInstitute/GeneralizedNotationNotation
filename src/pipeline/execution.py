@@ -5,9 +5,7 @@ Pipeline execution module.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
-import json
+from typing import List, Optional
 from datetime import datetime
 from dataclasses import dataclass
 import time
@@ -22,7 +20,7 @@ class StepExecutionResult:
     output: Optional[str] = None
     error: Optional[str] = None
     warnings: List[str] = None
-    
+
     def __post_init__(self):
         if self.warnings is None:
             self.warnings = []
@@ -174,4 +172,4 @@ def execute_pipeline_steps(steps: List[str], pipeline_data: dict) -> List[StepEx
         step_config = {}  # Simplified
         result = execute_pipeline_step(step_name, step_config, pipeline_data)
         results.append(result)
-    return results 
+    return results

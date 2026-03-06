@@ -14,7 +14,7 @@ from typing import Dict, Any, List, Optional, Union
 
 class ModelVersion:
     """Represents a specific version of a model."""
-    
+
     def __init__(self, version: str, file_path: Path, created_at: Optional[str] = None):
         """
         Initialize a model version.
@@ -29,7 +29,7 @@ class ModelVersion:
         self.created_at = created_at or datetime.datetime.now().isoformat()
         self.metadata: Dict[str, Any] = {}
         self.hash = self._compute_hash()
-    
+
     def _compute_hash(self) -> str:
         """Compute a hash of the model file content."""
         try:
@@ -38,7 +38,7 @@ class ModelVersion:
             return hashlib.sha256(content).hexdigest()
         except Exception:
             return ""
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
@@ -48,7 +48,7 @@ class ModelVersion:
             "metadata": self.metadata,
             "hash": self.hash
         }
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ModelVersion':
         """Create a ModelVersion from a dictionary."""
@@ -63,7 +63,7 @@ class ModelVersion:
 
 class ModelEntry:
     """Represents a model entry in the registry."""
-    
+
     def __init__(self, model_id: str, name: Optional[str] = None):
         """
         Initialize a model entry.
@@ -81,7 +81,7 @@ class ModelEntry:
         self.tags: List[str] = []
         self.metadata: Dict[str, Any] = {}
         self.current_version: Optional[str] = None
-    
+
     def add_version(self, version: ModelVersion) -> None:
         """
         Add a new version to the model.
@@ -92,7 +92,7 @@ class ModelEntry:
         self.versions[version.version] = version
         self.current_version = version.version
         self.updated_at = datetime.datetime.now().isoformat()
-    
+
     def get_version(self, version: Optional[str] = None) -> Optional[ModelVersion]:
         """
         Get a specific version of the model.
@@ -108,7 +108,7 @@ class ModelEntry:
                 return self.versions.get(self.current_version)
             return None
         return self.versions.get(version)
-    
+
     def add_tag(self, tag: str) -> None:
         """
         Add a tag to the model.
@@ -119,7 +119,7 @@ class ModelEntry:
         if tag not in self.tags:
             self.tags.append(tag)
             self.updated_at = datetime.datetime.now().isoformat()
-    
+
     def remove_tag(self, tag: str) -> None:
         """
         Remove a tag from the model.
@@ -130,7 +130,7 @@ class ModelEntry:
         if tag in self.tags:
             self.tags.remove(tag)
             self.updated_at = datetime.datetime.now().isoformat()
-    
+
     def update_metadata(self, metadata: Dict[str, Any]) -> None:
         """
         Update model metadata.
@@ -140,7 +140,7 @@ class ModelEntry:
         """
         self.metadata.update(metadata)
         self.updated_at = datetime.datetime.now().isoformat()
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary for serialization."""
         return {
@@ -154,7 +154,7 @@ class ModelEntry:
             "metadata": self.metadata,
             "current_version": self.current_version
         }
-    
+
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> 'ModelEntry':
         """Create a ModelEntry from a dictionary."""
@@ -168,16 +168,16 @@ class ModelEntry:
         entry.tags = data.get("tags", [])
         entry.metadata = data.get("metadata", {})
         entry.current_version = data.get("current_version")
-        
+
         # Load versions
         for v, ver_data in data.get("versions", {}).items():
             entry.versions[v] = ModelVersion.from_dict(ver_data)
-        
+
         return entry
 
 class ModelRegistry:
     """Centralized registry for GNN models."""
-    
+
     def __init__(self, registry_path: Union[str, Path]):
         """
         Initialize the model registry.
@@ -188,32 +188,32 @@ class ModelRegistry:
         self.registry_path = Path(registry_path)
         self.models: Dict[str, ModelEntry] = {}
         self.load()
-    
+
     def load(self) -> None:
         """Load the registry from file."""
         if self.registry_path.exists():
             try:
                 with open(self.registry_path, 'r') as f:
                     data = json.load(f)
-                
+
                 for model_id, model_data in data.get("models", {}).items():
                     self.models[model_id] = ModelEntry.from_dict(model_data)
             except Exception as e:
                 print(f"Error loading registry: {e}")
-    
+
     def save(self) -> None:
         """Save the registry to file."""
         self.registry_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         data = {
             "version": "1.0.0",
             "updated_at": datetime.datetime.now().isoformat(),
             "models": {model_id: model.to_dict() for model_id, model in self.models.items()}
         }
-        
+
         with open(self.registry_path, 'w') as f:
             json.dump(data, f, indent=2)
-    
+
     def register_model(self, model_path: Path) -> bool:
         """
         Register a model in the registry.
@@ -228,11 +228,11 @@ class ModelRegistry:
             # Extract model metadata
             with open(model_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Extract model ID and name
             model_id = model_path.stem
             model_name = self._extract_model_name(content) or model_id
-            
+
             # Create or update model entry
             if model_id in self.models:
                 model = self.models[model_id]
@@ -240,42 +240,42 @@ class ModelRegistry:
             else:
                 model = ModelEntry(model_id, model_name)
                 self.models[model_id] = model
-            
+
             # Extract version
             version_str = self._extract_version(content) or "1.0.0"
-            
+
             # Create version
             model_version = ModelVersion(version_str, model_path)
-            
+
             # Extract additional metadata
             metadata = self._extract_metadata(content)
             model_version.metadata = metadata
-            
+
             # Also store metadata at the model level for direct access
             # Merge with existing model metadata (version-specific metadata takes precedence for updates)
             for key, value in metadata.items():
                 if key not in model.metadata or model.metadata[key] != value:
                     model.metadata[key] = value
-            
+
             # Add version to model
             model.add_version(model_version)
-            
+
             # Extract tags
             tags = self._extract_tags(content)
             for tag in tags:
                 model.add_tag(tag)
-            
+
             # Update model description
             description = self._extract_description(content)
             if description:
                 model.description = description
-            
+
             return True
-            
+
         except Exception as e:
             print(f"Error registering model {model_path}: {e}")
             return False
-    
+
     def get_model(self, model_id: str) -> Optional[ModelEntry]:
         """
         Get a model by ID.
@@ -287,7 +287,7 @@ class ModelRegistry:
             ModelEntry if found, None otherwise
         """
         return self.models.get(model_id)
-    
+
     def search_models(self, query: str) -> List[ModelEntry]:
         """
         Search models by name, description, or tags.
@@ -300,15 +300,15 @@ class ModelRegistry:
         """
         query = query.lower()
         results = []
-        
+
         for model in self.models.values():
             if (query in model.name.lower() or
                 query in model.description.lower() or
                 any(query in tag.lower() for tag in model.tags)):
                 results.append(model)
-        
+
         return results
-    
+
     def list_models(self) -> List[ModelEntry]:
         """
         List all models in the registry.
@@ -317,7 +317,7 @@ class ModelRegistry:
             List of all ModelEntry objects
         """
         return list(self.models.values())
-    
+
     def delete_model(self, model_id: str) -> bool:
         """
         Delete a model from the registry.
@@ -332,28 +332,28 @@ class ModelRegistry:
             del self.models[model_id]
             return True
         return False
-    
+
     def _extract_model_name(self, content: str) -> Optional[str]:
         """Extract model name from content."""
         # Try to find ModelName: <name>
         model_name_match = re.search(r'ModelName:\s*([^\n]+)', content)
         if model_name_match:
             return model_name_match.group(1).strip()
-        
+
         # Try to find # <name>
         title_match = re.search(r'^#\s+([^\n]+)', content)
         if title_match:
             return title_match.group(1).strip()
-        
+
         return None
-    
+
     def _extract_version(self, content: str) -> Optional[str]:
         """Extract version from content."""
         version_match = re.search(r'Version:\s*([^\n]+)', content)
         if version_match:
             return version_match.group(1).strip()
         return None
-    
+
     def _extract_tags(self, content: str) -> List[str]:
         """Extract tags from content."""
         tags_match = re.search(r'Tags:\s*([^\n]+)', content)
@@ -361,55 +361,55 @@ class ModelRegistry:
             tags_str = tags_match.group(1).strip()
             return [tag.strip() for tag in tags_str.split(',')]
         return []
-    
+
     def _extract_description(self, content: str) -> Optional[str]:
         """Extract description from content."""
         # Try to find Description: <description>
         desc_match = re.search(r'Description:\s*([^\n]+)', content)
         if desc_match:
             return desc_match.group(1).strip()
-        
+
         # Try to find the first paragraph after the title
         lines = content.split('\n')
         in_paragraph = False
         paragraph_lines = []
-        
+
         for line in lines:
             if line.startswith('#'):
                 continue
-            
+
             if not line.strip():
                 if in_paragraph:
                     break
                 continue
-            
+
             in_paragraph = True
             paragraph_lines.append(line.strip())
-        
+
         if paragraph_lines:
             return ' '.join(paragraph_lines)
-        
+
         return None
-    
+
     def _extract_metadata(self, content: str) -> Dict[str, Any]:
         """Extract metadata from content."""
         metadata = {}
-        
+
         # Extract author
         author_match = re.search(r'Author:\s*([^\n]+)', content)
         if author_match:
             metadata["author"] = author_match.group(1).strip()
-        
+
         # Extract date
         date_match = re.search(r'Date:\s*([^\n]+)', content)
         if date_match:
             metadata["date"] = date_match.group(1).strip()
-        
+
         # Extract license
         license_match = re.search(r'License:\s*([^\n]+)', content)
         if license_match:
             metadata["license"] = license_match.group(1).strip()
-        
+
         return metadata
 
 
@@ -427,25 +427,25 @@ def process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict
     """
     registry_path = output_dir / "model_registry.json"
     registry = ModelRegistry(registry_path)
-    
+
     processed_files = 0
     successful_registrations = 0
-    
+
     # Find all GNN files
     gnn_extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
     gnn_files = []
-    
+
     for ext in gnn_extensions:
         gnn_files.extend(target_dir.glob(f"**/*{ext}"))
-    
+
     for gnn_file in gnn_files:
         processed_files += 1
         if registry.register_model(gnn_file):
             successful_registrations += 1
-    
+
     # Save registry
     registry.save()
-    
+
     # Create summary
     results = {
         "processed_files": processed_files,
@@ -453,5 +453,5 @@ def process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict
         "registry_path": str(registry_path),
         "total_models": len(registry.models)
     }
-    
-    return results 
+
+    return results

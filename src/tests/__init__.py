@@ -52,7 +52,7 @@ try:
         TEST_CATEGORIES,
         TEST_STAGES,
         COVERAGE_TARGETS,
-        
+
         # Utility functions
         is_safe_mode,
         validate_test_environment,
@@ -63,18 +63,18 @@ try:
         create_sample_gnn_content,
         get_test_filesystem_structure,
         run_all_tests,
-        
+
         # Performance tracking functions
         performance_tracker,
         get_memory_usage,
         track_peak_memory,
         with_resource_limits,
-        
+
         # Validation functions
         assert_file_exists,
         assert_valid_json,
         assert_directory_structure,
-        
+
         # Report functions
         validate_report_data,
         generate_html_report_file,
@@ -201,7 +201,7 @@ except ImportError:
         """Fallback test function when module unavailable."""
         logger.warning("Tests module not available - using fallback")
         return True
-    
+
     def create_test_runner(args, logger):
         """Fallback test runner creation."""
         logger.warning("Test runner not available - using fallback")
@@ -214,7 +214,7 @@ except ImportError:
     # Fallback definition if conftest import fails
     PYTEST_MARKERS = {
         "unit": "Unit tests for individual components",
-        "integration": "Integration tests for component interactions", 
+        "integration": "Integration tests for component interactions",
         "performance": "Performance and resource usage tests",
         "slow": "Tests that take significant time to complete",
         "fast": "Quick tests for rapid feedback",
@@ -237,14 +237,14 @@ __all__ = [
     "TEST_DIR",
     "TEST_CONFIG",
     "TEST_CATEGORIES",
-    "TEST_STAGES", 
+    "TEST_STAGES",
     "COVERAGE_TARGETS",
     "PYTEST_MARKERS",
-    
+
     # Test runner functions
     "run_tests",
     "create_test_runner",
-    
+
     # Utility functions
     "is_safe_mode",
     "validate_test_environment",
@@ -255,25 +255,25 @@ __all__ = [
     "create_sample_gnn_content",
     "get_test_filesystem_structure",
     "run_all_tests",
-    
+
     # Performance tracking functions
     "performance_tracker",
     "get_memory_usage",
     "track_peak_memory",
     "with_resource_limits",
-    
+
     # Validation functions
     "assert_file_exists",
     "assert_valid_json",
     "assert_directory_structure",
-    
+
     # Report functions
     "validate_report_data",
     "generate_html_report_file",
     "generate_markdown_report_file",
     "generate_json_report_file",
     "generate_comprehensive_report",
-    
+
     # Module metadata
     "__version__",
     "__author__",

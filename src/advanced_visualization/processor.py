@@ -19,7 +19,7 @@ This file re-exports all public names for backward compatibility.
 import logging
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional
 import time
 from datetime import datetime
 
@@ -60,12 +60,7 @@ except ImportError:
 
 # Re-export shared items for backward compatibility
 from ._shared import (
-    AdvancedVisualizationAttempt,
     AdvancedVisualizationResults,
-    _normalize_connection_format,
-    _calculate_semantic_positions,
-    _generate_fallback_report,
-    validate_visualization_data,
 )
 
 
@@ -482,7 +477,7 @@ def process_advanced_viz_standardized_impl(
         _save_results(output_dir, results, logger)
 
         # Log summary
-        logger.info(f"Advanced visualization complete:")
+        logger.info("Advanced visualization complete:")
         logger.info(f"  Total attempts: {results.total_attempts}")
         logger.info(f"  Successful: {results.successful}")
         logger.info(f"  Failed: {results.failed}")

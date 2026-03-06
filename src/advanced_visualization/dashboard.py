@@ -8,8 +8,7 @@ that combine multiple visualization types and interactive features.
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+from typing import Dict, Any, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +20,7 @@ class DashboardGenerator:
     """
     Generates comprehensive dashboards for GNN models.
     """
-    
+
     def __init__(self, strict_validation: bool = True):
         """
         Initialize the dashboard generator.
@@ -31,7 +30,7 @@ class DashboardGenerator:
         """
         self.data_extractor = VisualizationDataExtractor(strict_validation=strict_validation)
         self.html_generator = HTMLVisualizationGenerator()
-    
+
     def generate_dashboard(self, content: str, model_name: str, output_dir: Path) -> Optional[Path]:
         """
         Generate a comprehensive dashboard for a GNN model.
@@ -48,31 +47,31 @@ class DashboardGenerator:
             # Create model-specific output directory
             model_output_dir = output_dir / model_name
             model_output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Extract visualization data
             extracted_data = self.data_extractor.extract_from_content(content)
-            
+
             if not extracted_data.get("success", False):
                 return None
-            
+
             # Add statistics to the extracted data
             statistics = self.data_extractor.get_model_statistics(extracted_data)
             extracted_data["statistics"] = statistics
-            
+
             # Generate dashboard HTML
             dashboard_html = self._generate_dashboard_html(extracted_data, model_name)
-            
+
             # Save dashboard file
             dashboard_file = model_output_dir / f"{model_name}_dashboard.html"
             with open(dashboard_file, 'w', encoding='utf-8') as f:
                 f.write(dashboard_html)
-            
+
             return dashboard_file
-            
+
         except Exception as e:
             logger.error(f"Failed to generate dashboard for {model_name}: {e}")
             return None
-    
+
     def _generate_dashboard_html(self, extracted_data: Dict[str, Any], model_name: str) -> str:
         """
         Generate comprehensive dashboard HTML.
@@ -90,7 +89,7 @@ class DashboardGenerator:
         equations = extracted_data.get("equations", [])
         model_info = extracted_data.get("model_info", {})
         statistics = extracted_data.get("statistics", {})
-        
+
         html = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -390,7 +389,7 @@ class DashboardGenerator:
                     <div id="variables" class="tab-content active">
                         <div class="model-variables">
 """
-        
+
         # Add variables
         for block in blocks:
             html += f"""
@@ -404,14 +403,14 @@ class DashboardGenerator:
                                 </div>
                             </div>
 """
-        
+
         html += """
                         </div>
                     </div>
                     
                     <div id="connections" class="tab-content">
 """
-        
+
         # Add connections
         for conn in connections:
             html += f"""
@@ -422,13 +421,13 @@ class DashboardGenerator:
                             {f"<br><strong>Description:</strong> {conn.get('description', '')}" if conn.get('description') else ''}
                         </div>
 """
-        
+
         html += """
                     </div>
                     
                     <div id="parameters" class="tab-content">
 """
-        
+
         # Add parameters
         for param in parameters:
             html += f"""
@@ -438,13 +437,13 @@ class DashboardGenerator:
                             {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get('description') else ''}
                         </div>
 """
-        
+
         html += """
                     </div>
                     
                     <div id="equations" class="tab-content">
 """
-        
+
         # Add equations
         for eq in equations:
             html += f"""
@@ -454,7 +453,7 @@ class DashboardGenerator:
                             {f"<div style='margin-top: 8px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get('description') else ''}
                         </div>
 """
-        
+
         html += """
                     </div>
                 </div>
@@ -465,7 +464,7 @@ class DashboardGenerator:
                     <h3>ℹ️ Model Information</h3>
                     <div class="model-info">
 """
-        
+
         # Add model information
         info_items = [
             ("Name", model_info.get('name', 'Unknown')),
@@ -474,7 +473,7 @@ class DashboardGenerator:
             ("Created", model_info.get('created_at', 'Unknown')[:10] if model_info.get('created_at') else 'Unknown'),
             ("Modified", model_info.get('modified_at', 'Unknown')[:10] if model_info.get('modified_at') else 'Unknown')
         ]
-        
+
         for label, value in info_items:
             html += f"""
                         <div class="info-item">
@@ -482,7 +481,7 @@ class DashboardGenerator:
                             <span>{value}</span>
                         </div>
 """
-        
+
         html += """
                     </div>
                 </div>
@@ -491,7 +490,7 @@ class DashboardGenerator:
                     <h3>📊 Type Distribution</h3>
                     <div class="stats-grid">
 """
-        
+
         # Add type distribution statistics
         type_stats = statistics.get('variable_types', {})
         for var_type, count in type_stats.items():
@@ -501,7 +500,7 @@ class DashboardGenerator:
                             <div class="stat-label">{var_type.replace('_', ' ').title()}</div>
                         </div>
 """
-        
+
         html += """
                     </div>
                 </div>
@@ -545,11 +544,11 @@ class DashboardGenerator:
 </body>
 </html>
 """
-        
+
         return html
 
 
-def generate_dashboard(content: str, model_name: str, output_dir: Path, 
+def generate_dashboard(content: str, model_name: str, output_dir: Path,
                       strict_validation: bool = True) -> Optional[Path]:
     """
     Generate a comprehensive dashboard for a GNN model.
@@ -567,4 +566,4 @@ def generate_dashboard(content: str, model_name: str, output_dir: Path,
         Path to the generated dashboard file, or None if generation failed
     """
     generator = DashboardGenerator(strict_validation=strict_validation)
-    return generator.generate_dashboard(content, model_name, output_dir) 
+    return generator.generate_dashboard(content, model_name, output_dir)

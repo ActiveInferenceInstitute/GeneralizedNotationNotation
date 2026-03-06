@@ -6,12 +6,9 @@ target platforms, including RxInfer.jl and PyMDP.
 """
 
 import argparse
-import importlib
 import logging
-import os
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Import renderers with proper error handling
 try:
@@ -77,22 +74,22 @@ def main(cli_args=None):
     parser = argparse.ArgumentParser(description="Render GNN specifications to various target platforms")
     parser.add_argument("gnn_file", help="Path to the GNN specification file")
     parser.add_argument("output_dir", help="Output directory for rendered files")
-    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined", "jax", "jax_pomdp"], 
+    parser.add_argument("target", choices=["pymdp", "rxinfer_toml", "discopy", "discopy_jax", "discopy_combined", "activeinference_jl", "activeinference_combined", "jax", "jax_pomdp"],
                        default="pymdp", help="Target platform")
     parser.add_argument("--output_filename", help="Base filename for the output (without extension)")
     parser.add_argument("--debug", "--verbose", action="store_true", help="Enable debug logging")
     parser.add_argument("--jax-seed", type=int, default=0, help="Seed for JAX PRNG (for discopy_jax targets)")
-    
+
     args = parser.parse_args(cli_args)
-    
+
     if args.debug:
         logging.getLogger().setLevel(logging.DEBUG)
-    
+
     gnn_file_path = Path(args.gnn_file)
     if not gnn_file_path.exists():
         logger.error(f"GNN file not found: {gnn_file_path}")
         return 1
-    
+
     # Parse the GNN file using proper parsing
     try:
         # Try to import and use the GNN parser
@@ -125,30 +122,30 @@ def main(cli_args=None):
             except Exception as e:
                 logger.error(f"Failed to parse GNN file: {gnn_file_path} - {e}")
                 return 1
-    
+
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Use custom filename if provided, otherwise use model name from spec
     if args.output_filename:
         base_filename = args.output_filename
     else:
         base_filename = gnn_spec.get("name", gnn_file_path.stem)
-    
+
     # Determine output file path based on target and base filename
     if args.target == "pymdp":
         output_path = output_dir / f"{base_filename}_pymdp.py"
     elif args.target == "rxinfer_toml":
         output_path = output_dir / f"{base_filename}_config.toml"
-    
+
     # Render the specification
     success, message, artifacts = render_gnn_spec(
-        gnn_spec, 
-        args.target, 
+        gnn_spec,
+        args.target,
         output_dir,
         {"output_filename": base_filename}
     )
-    
+
     if success:
         print(f"Successfully rendered to {args.target}: {message}")
         print(f"Output artifacts: {', '.join(artifacts)}")
@@ -158,4 +155,4 @@ def main(cli_args=None):
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

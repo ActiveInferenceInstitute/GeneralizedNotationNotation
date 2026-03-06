@@ -11,7 +11,6 @@ import sys
 import tempfile
 import shutil
 from pathlib import Path
-from typing import List, Dict, Any
 
 # Import test utilities
 PROJECT_ROOT = Path(__file__).parent.parent.parent
@@ -30,6 +29,8 @@ def create_test_files(count=3):
     return []
 
 import pytest
+
+pytestmark = pytest.mark.pipeline
 
 
 class TestPipelineMain:

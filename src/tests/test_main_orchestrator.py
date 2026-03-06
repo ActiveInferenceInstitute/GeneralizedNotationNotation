@@ -22,14 +22,12 @@ All tests execute real methods and subprocesses; no mocking is used.
 """
 
 import pytest
-import os
+
+pytestmark = pytest.mark.pipeline
 import sys
-import json
 import logging
 import subprocess
-import argparse
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 import tempfile
 
 # Test markers
@@ -41,30 +39,30 @@ SRC_DIR = PROJECT_ROOT / "src"
 
 class TestMainOrchestratorImport:
     """Test main orchestrator import validation and component checking."""
-    
+
     @pytest.mark.unit
     def test_main_orchestrator_file_exists(self):
         """Test that main.py exists and is readable."""
         main_script = SRC_DIR / "main.py"
-        
+
         assert main_script.exists(), f"Main orchestrator script not found: {main_script}"
         assert main_script.is_file(), f"Main orchestrator path is not a file: {main_script}"
-        
+
         # Test that file is readable
         try:
             content = main_script.read_text()
             assert len(content) > 0, "Main orchestrator script is empty"
-            
+
             # Test basic Python structure
             assert "import" in content, "Main script should have import statements"
             assert "def main" in content or "if __name__" in content, \
                 "Main script should have main function or entry point"
-            
+
             logging.info("Main orchestrator file structure validated")
-            
+
         except Exception as e:
             pytest.fail(f"Failed to read main orchestrator script: {e}")
-    
+
     @pytest.mark.unit
     def test_main_orchestrator_help_executes(self):
         """main.py should print help and exit 0."""
@@ -72,7 +70,7 @@ class TestMainOrchestratorImport:
         result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
         assert result.returncode == 0
         assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
-    
+
     @pytest.mark.unit
     def test_main_orchestrator_component_availability(self):
         """Test that main orchestrator components are available."""
@@ -82,12 +80,12 @@ class TestMainOrchestratorImport:
             "pipeline_package": SRC_DIR / "pipeline" / "__init__.py",
             "main_script": SRC_DIR / "main.py"
         }
-        
+
         missing_components = []
         for name, path in components.items():
             if not path.exists():
                 missing_components.append(f"{name}: {path}")
-        
+
         assert not missing_components, f"Missing main orchestrator components: {missing_components}"
         logging.info(f"All {len(components)} main orchestrator components available")
 
@@ -101,13 +99,13 @@ class TestArgumentParsing:
 
 class TestPipelineScriptDiscovery:
     """Test pipeline script discovery and metadata extraction."""
-    
+
     @pytest.mark.unit
     def test_pipeline_script_discovery_logic(self):
         """Test pipeline script discovery logic."""
         # Test script discovery pattern
         expected_pattern = r"^(\d+)_.*\.py$"
-        
+
         test_scripts = [
             ("1_setup.py", True, 1),
             ("3_gnn.py", True, 3),  # Fixed: regex extracts 3, not 2
@@ -118,22 +116,22 @@ class TestPipelineScriptDiscovery:
             ("utils.py", False, None),
             ("not_a_script.txt", False, None)
         ]
-        
+
         import re
         pattern = re.compile(expected_pattern)
-        
+
         for script_name, should_match, expected_num in test_scripts:
             match = pattern.match(script_name)
-            
+
             if should_match:
                 assert match is not None, f"Script {script_name} should match pattern"
                 assert int(match.group(1)) == expected_num, \
                     f"Script {script_name} should extract number {expected_num}"
             else:
                 assert match is None, f"Script {script_name} should not match pattern"
-        
+
         logging.info("Pipeline script discovery logic validated")
-    
+
     @pytest.mark.unit
     def test_pipeline_script_sorting(self):
         """Test pipeline script sorting logic."""
@@ -145,14 +143,14 @@ class TestPipelineScriptDiscovery:
             {"num": 14, "basename": "14_ml_integration.py"},
             {"num": 2, "basename": "2_tests.py"}
         ]
-        
+
         # Sort like the main orchestrator would
         sorted_scripts = sorted(mock_scripts, key=lambda x: (x['num'], x['basename']))
-        
+
         # Verify correct order - include all scripts that exist
         expected_order = [1, 2, 3, 13, 14]
         actual_order = [script['num'] for script in sorted_scripts]
-        
+
         assert actual_order == expected_order, f"Scripts should be sorted correctly: {actual_order}"
         logging.info("Pipeline script sorting logic validated")
 
@@ -164,7 +162,7 @@ class TestVirtualEnvironmentHandling:
 
 class TestStepExecution:
     """Execute a core step for real."""
-    
+
     @pytest.mark.integration
     def test_run_core_step(self):
         script = SRC_DIR / "3_gnn.py"
@@ -185,13 +183,13 @@ class TestPipelineCoordination:
             outdir = Path(td) / "output"
             cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-            
+
             # Check for summary in the correct location (00_pipeline_summary subdirectory)
             summary = outdir / "00_pipeline_summary" / "pipeline_execution_summary.json"
-            
+
             # Also check alternate location (directly in output dir) and existence of output dir
             summary_alt = outdir / "pipeline_execution_summary.json"
-            
+
             # Test passes if summary exists OR if output directory was created with step outputs
             if summary.exists() or summary_alt.exists():
                 pass  # Success - summary file exists
@@ -201,7 +199,7 @@ class TestPipelineCoordination:
                 assert len(step_outputs) > 0 or result.returncode == 0, \
                     f"Pipeline should either create summary file or complete with step outputs. " \
                     f"Return code: {result.returncode}, stderr: {result.stderr[:500] if result.stderr else 'None'}"
-    
+
     @pytest.mark.unit
     def test_environment_info_function(self):
         from src.main import get_environment_info

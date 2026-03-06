@@ -5,7 +5,6 @@ This module handles UV virtual environment creation, dependency installation,
 package management, and environment validation.
 """
 
-import os
 import subprocess
 import sys
 import platform
@@ -14,7 +13,7 @@ from pathlib import Path
 import logging
 import time
 import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -199,7 +198,7 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
         sys.stdout.flush()
         try:
             start_time = time.time()
-            logger.info(f"📦 Creating virtual environment using UV...")
+            logger.info("📦 Creating virtual environment using UV...")
             run_command(["uv", "venv", str(VENV_PATH)], verbose=verbose)
 
             duration = time.time() - start_time
@@ -226,18 +225,18 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
                                                     "import sys; import pathlib; print('Core imports work')"],
                                                    capture_output=True, text=True, timeout=10)
                         if test_imports.returncode == 0:
-                            logger.info(f"✅ Core packages are available in existing environment")
+                            logger.info("✅ Core packages are available in existing environment")
                             sys.stdout.flush()
                             return True
                         else:
-                            logger.warning(f"⚠️ Core packages missing, will reinstall...")
+                            logger.warning("⚠️ Core packages missing, will reinstall...")
                     except Exception:
-                        logger.warning(f"⚠️ Could not test core packages, will reinstall...")
+                        logger.warning("⚠️ Could not test core packages, will reinstall...")
                 else:
-                    logger.warning(f"⚠️ Existing environment may be corrupted, will recreate...")
+                    logger.warning("⚠️ Existing environment may be corrupted, will recreate...")
                     return create_uv_environment(verbose=verbose, recreate=True)
             else:
-                logger.warning(f"⚠️ Virtual environment Python not found, will recreate...")
+                logger.warning("⚠️ Virtual environment Python not found, will recreate...")
                 return create_uv_environment(verbose=verbose, recreate=True)
         except Exception as e:
             logger.warning(f"⚠️ Error checking existing environment: {e}, will recreate...")
@@ -264,7 +263,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
         logger.error(f"❌ pyproject.toml not found at {pyproject_path}")
         return False
 
-    logger.info(f"📦 Installing dependencies from pyproject.toml using UV sync")
+    logger.info("📦 Installing dependencies from pyproject.toml using UV sync")
     sys.stdout.flush()
 
     try:
@@ -276,7 +275,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
             sync_cmd.append("--verbose")
 
         if dev:
-            logger.info(f"📦 Installing development dependencies...")
+            logger.info("📦 Installing development dependencies...")
             sync_cmd.append("--all-extras")
 
         if extras:

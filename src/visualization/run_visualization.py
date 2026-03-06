@@ -6,7 +6,6 @@ This script runs the GNN visualization module on all examples in the input/gnn_f
 It generates comprehensive visualizations and saves them to the output directory.
 """
 
-import os
 import sys
 import argparse
 from pathlib import Path
@@ -29,16 +28,16 @@ def main():
     parser.add_argument('--recursive', '-r', action='store_true',
                         help='Recursively process all subdirectories')
     args = parser.parse_args()
-    
+
     print(f"Processing GNN examples from {args.input}")
     print(f"Saving visualizations to {args.output}")
-    
+
     # Create visualizer
     visualizer = GNNVisualizer(output_dir=args.output)
-    
+
     # Process examples
     input_path = Path(args.input)
-    
+
     if input_path.is_file() and input_path.suffix.lower() == '.md':
         # If input is a single file
         md_files = [input_path]
@@ -48,19 +47,19 @@ def main():
         if not input_path.exists():
             print(f"Error: Input path {input_path} does not exist")
             return 1
-        
+
         # Find all markdown files
         if args.recursive:
             md_files = list(input_path.glob('**/*.md'))
         else:
             md_files = list(input_path.glob('*.md'))
-        
+
         if not md_files:
             print(f"No Markdown files found in {input_path}")
             return 1
-    
+
     print(f"Found {len(md_files)} Markdown files")
-    
+
     # Process each file
     success_count = 0
     for md_file in md_files:
@@ -71,10 +70,10 @@ def main():
             success_count += 1
         except Exception as e:
             print(f"Error processing {md_file}: {e}")
-    
+
     print(f"\nProcessed {len(md_files)} files, {success_count} succeeded")
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main()) 
+    sys.exit(main())

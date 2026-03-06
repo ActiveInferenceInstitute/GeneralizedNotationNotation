@@ -6,13 +6,11 @@ This module provides PyMDP environment validation capabilities.
 """
 
 import logging
-from typing import Dict, Any, Optional
-from pathlib import Path
+from typing import Dict, Any
 
 from .package_detector import (
     detect_pymdp_installation,
-    get_pymdp_installation_instructions,
-    is_correct_pymdp_package
+    get_pymdp_installation_instructions
 )
 
 logger = logging.getLogger(__name__)
@@ -31,10 +29,10 @@ def validate_pymdp_environment() -> Dict[str, Any]:
         "warnings": [],
         "recommendations": []
     }
-    
+
     # Check PyMDP availability using package detector
     detection = detect_pymdp_installation()
-    
+
     if detection.get("correct_package"):
         validation_results["pymdp_available"] = True
         validation_results["dependencies"]["pymdp"] = {
@@ -88,7 +86,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "PyMDP not available for execution - using fallback analysis. "
             f"Install with: {instructions}"
         )
-    
+
     # Check numpy availability
     try:
         import numpy as np
@@ -102,7 +100,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "error": "NumPy not available"
         }
         validation_results["errors"].append("NumPy not available - install with: uv pip install numpy")
-    
+
     # Check matplotlib for visualizations
     try:
         import matplotlib
@@ -116,7 +114,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "error": "Matplotlib not available"
         }
         validation_results["warnings"].append("Matplotlib not available - visualizations will be disabled")
-    
+
     # Check scipy for advanced computations
     try:
         import scipy
@@ -130,7 +128,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "error": "SciPy not available"
         }
         validation_results["warnings"].append("SciPy not available - some advanced features may be limited")
-    
+
     # Overall health assessment
     if validation_results["pymdp_available"]:
         validation_results["overall_health"] = "healthy"
@@ -147,7 +145,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             validation_results["recommendations"].append(
                 "Install inferactively-pymdp to enable PyMDP simulations"
             )
-    
+
     return validation_results
 
 def get_pymdp_health_status() -> Dict[str, Any]:
@@ -158,7 +156,7 @@ def get_pymdp_health_status() -> Dict[str, Any]:
         Dictionary with health status information
     """
     validation_results = validate_pymdp_environment()
-    
+
     health_status = {
         "status": "unknown",
         "pymdp_available": validation_results["pymdp_available"],
@@ -167,12 +165,12 @@ def get_pymdp_health_status() -> Dict[str, Any]:
         "errors_count": len(validation_results["errors"]),
         "recommendations": validation_results["recommendations"]
     }
-    
+
     if validation_results["pymdp_available"] and len(validation_results["errors"]) == 0:
         health_status["status"] = "healthy"
     elif validation_results["pymdp_available"] and len(validation_results["warnings"]) > 0:
         health_status["status"] = "warning"
     else:
         health_status["status"] = "unhealthy"
-    
+
     return health_status

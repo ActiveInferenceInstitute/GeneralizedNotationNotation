@@ -10,7 +10,6 @@ Validates that a GNN specification with explicit POMDP matrices can be:
 import json
 import numpy as np
 import pytest
-from pathlib import Path
 
 from render.processor import render_gnn_spec
 from execute.pymdp.pymdp_simulation import PyMDPSimulation

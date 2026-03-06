@@ -22,41 +22,27 @@ Key Features:
 """
 
 import importlib
-import os
 import sys
 from pathlib import Path
 import logging
-import inspect
-import json
 import time
-import traceback
 import threading
-from typing import Dict, List, Any, Callable, Optional, TypedDict, Union, Tuple
-from dataclasses import dataclass, field
+from typing import Dict, List, Any, Callable, Optional, Tuple
 from contextlib import contextmanager
-from collections import defaultdict, deque
-import weakref
-import hashlib
-import pickle
-from concurrent.futures import ThreadPoolExecutor, as_completed
+from collections import defaultdict
+from concurrent.futures import ThreadPoolExecutor
 
 # Configure logging
 logger = logging.getLogger("mcp")
 
 # --- Import MCP Exceptions from dedicated module ---
 from .exceptions import (
-    MCPError,
     MCPToolNotFoundError,
     MCPResourceNotFoundError,
     MCPInvalidParamsError,
     MCPToolExecutionError,
     MCPSDKNotFoundError,
     MCPValidationError,
-    MCPModuleLoadError,
-    MCPPerformanceError,
-    MCPRateLimitError,
-    MCPCacheError,
-    MCPModuleDiscoveryError,
 )
 
 # --- Enhanced MCP Data Structures (imported from models.py) ---
@@ -85,7 +71,7 @@ class MCP:
     - Thread-safe operations with proper locking
     - Enhanced error handling and validation
     """
-    
+
     def __init__(self, enable_caching: bool = True, enable_rate_limiting: bool = True,
                  strict_validation: bool = False, max_workers: int = 4):
         """Initialize the enhanced MCP server with configurable features."""
@@ -135,22 +121,22 @@ class MCP:
 
         logger.info(f"Enhanced MCP server initialized (caching={enable_caching}, "
                    f"rate_limiting={enable_rate_limiting}, strict_validation={strict_validation})")
-    
+
     @property
     def uptime(self) -> float:
         """Get server uptime in seconds."""
         return time.time() - self._start_time
-    
+
     @property
     def request_count(self) -> int:
         """Get total number of requests processed."""
         return self._request_count
-    
+
     @property
     def error_count(self) -> int:
         """Get total number of errors encountered."""
         return self._error_count
-    
+
     @property
     def performance_metrics(self) -> MCPPerformanceMetrics:
         """Get performance metrics."""
@@ -208,7 +194,7 @@ class MCP:
                 return sorted(result, key=lambda r: r["uri"])
             else:
                 return sorted(self.resources.keys())
-    
+
     def discover_modules(self, force_refresh: bool = False, modules_allowlist: Optional[List[str]] = None,
                          per_module_timeout: float = 30.0, overall_timeout: float = 120.0) -> bool:
         """
@@ -231,17 +217,17 @@ class MCP:
             if self._modules_discovered and not force_refresh:
                 logger.debug("MCP modules already discovered. Skipping redundant discovery.")
                 return True
-            
+
             # Prevent concurrent discoveries
             self._modules_discovered = True
 
         root_dir = Path(__file__).parent.parent
         logger.info(f"Discovering MCP modules in {root_dir}")
         all_modules_loaded_successfully = True
-        
+
         # Track discovery performance
         discovery_start = time.time()
-        
+
         # Clear existing modules if forcing refresh
         if force_refresh:
             with self._lock:
@@ -249,14 +235,14 @@ class MCP:
                 self.tools.clear()
                 self.resources.clear()
                 self._discovery_cache.clear()
-        
+
         # Get list of directories to scan
-        directories = [d for d in root_dir.iterdir() 
+        directories = [d for d in root_dir.iterdir()
                       if d.is_dir() and not d.name.startswith('_')]
         if modules_allowlist:
             allow = set(modules_allowlist)
             directories = [d for d in directories if d.name in allow or d.name == 'mcp']
-        
+
         # Use thread pool if available, otherwise load sequentially
         if self._executor is not None:
             module_load_futures = {}
@@ -270,7 +256,7 @@ class MCP:
 
             start_wait = time.time()
             from concurrent.futures import TimeoutError as FuturesTimeoutError
-                
+
             for module_name, future in list(module_load_futures.items()):
                 remaining = max(0.0, overall_timeout - (time.time() - start_wait))
                 try:
@@ -306,7 +292,7 @@ class MCP:
         # Special handling for core MCP tools in the mcp directory itself
         mcp_dir = Path(__file__).parent
         logger.debug(f"Discovering core MCP tools in {mcp_dir}")
-        
+
         # Load SymPy MCP integration (special case - located in mcp directory)
         sympy_mcp_file = mcp_dir / "sympy_mcp.py"
         if sympy_mcp_file.exists():
@@ -315,12 +301,12 @@ class MCP:
                 import_start = time.time()
                 sympy_module = importlib.import_module("src.mcp.sympy_mcp")
                 import_time = time.time() - import_start
-                
+
                 if hasattr(sympy_module, "register_tools") and callable(sympy_module.register_tools):
                     tools_before = len(self.tools)
                     sympy_module.register_tools(self)
                     tools_added = len(self.tools) - tools_before
-                    
+
                     self.modules["sympy_mcp"] = MCPModuleInfo(
                         name="src.mcp.sympy_mcp",
                         path=sympy_mcp_file,
@@ -335,7 +321,7 @@ class MCP:
             except Exception as e:
                 logger.error(f"Failed to load core MCP module src.mcp.sympy_mcp: {str(e)}")
                 all_modules_loaded_successfully = False
-                
+
                 self.modules["sympy_mcp"] = MCPModuleInfo(
                     name="src.mcp.sympy_mcp",
                     path=sympy_mcp_file,
@@ -347,12 +333,12 @@ class MCP:
             discovery_time = time.time() - discovery_start
             logger.info(f"Enhanced module discovery completed in {discovery_time:.2f}s: "
                        f"{len(self.modules)} modules, {len(self.tools)} tools, {len(self.resources)} resources")
-            
+
             self._modules_discovered = True
             self._cache_timestamp = time.time()
-            
+
             return all_modules_loaded_successfully
-    
+
     def _load_module(self, directory: Path, mcp_file: Path, module_name: Optional[str] = None) -> bool:
         """
         Load a single MCP module with enhanced error handling and performance tracking.
@@ -367,23 +353,23 @@ class MCP:
         """
         if module_name is None:
             module_name = directory.name
-            
+
         module_start = time.time()
         import_start = time.time()
-        
+
         try:
             # Add parent directory to path if needed
             root_dir = Path(__file__).parent.parent
             if str(root_dir.parent) not in sys.path:
                 sys.path.append(str(root_dir.parent))
-            
+
             # Import the module
             full_module_name = f"src.{module_name}.mcp"
             module = importlib.import_module(full_module_name)
             import_time = time.time() - import_start
-            
+
             logger.debug(f"Loaded MCP module: {full_module_name} (import: {import_time:.3f}s)")
-            
+
             # Special handling for llm module initialization
             if full_module_name == "src.llm.mcp":
                 if hasattr(module, "initialize_llm_module") and callable(module.initialize_llm_module):
@@ -397,15 +383,15 @@ class MCP:
             if hasattr(module, "register_tools") and callable(module.register_tools):
                 tools_before = len(self.tools)
                 resources_before = len(self.resources)
-                
+
                 module.register_tools(self)
-                
+
                 tools_added = len(self.tools) - tools_before
                 resources_added = len(self.resources) - resources_before
                 register_time = time.time() - register_start
-                
+
                 module_load_time = time.time() - module_start
-                
+
                 # Create module info with enhanced metadata
                 self.modules[module_name] = MCPModuleInfo(
                     name=full_module_name,
@@ -421,10 +407,10 @@ class MCP:
                     dependencies=getattr(module, "__dependencies__", []),
                     last_updated=time.time()
                 )
-                
+
                 # Update performance metrics
                 self._performance_metrics.module_load_times[module_name] = module_load_time
-                
+
                 logger.info(f"Successfully loaded module {module_name}: "
                            f"{tools_added} tools, {resources_added} resources "
                            f"(load: {module_load_time:.3f}s, import: {import_time:.3f}s, register: {register_time:.3f}s)")
@@ -439,11 +425,11 @@ class MCP:
                     last_updated=time.time()
                 )
                 return False
-                
+
         except Exception as e:
             module_load_time = time.time() - module_start
             logger.error(f"Failed to load MCP module {full_module_name}: {str(e)}")
-            
+
             self.modules[module_name] = MCPModuleInfo(
                 name=full_module_name,
                 path=mcp_file,
@@ -565,7 +551,7 @@ class MCP:
                 input_validation=input_validation,
                 output_validation=output_validation
             )
-            
+
             self.tools[name] = tool
             logger.debug(f"Registered tool: {name}")
 
@@ -599,7 +585,7 @@ class MCP:
         with self._lock:
             if uri_template in self.resources:
                 logger.warning(f"Resource '{uri_template}' already registered, overwriting")
-            
+
             resource = MCPResource(
                 uri_template=uri_template,
                 retriever=retriever,
@@ -617,7 +603,7 @@ class MCP:
                 compression=compression,
                 encryption=encryption
             )
-            
+
             self.resources[uri_template] = resource
             logger.debug(f"Registered resource: {uri_template}")
 
@@ -641,21 +627,21 @@ class MCP:
         with self._lock:
             self._request_count += 1
             self._last_activity = time.time()
-            
+
             # Check if tool exists
             if tool_name not in self.tools:
                 available_tools = list(self.tools.keys())
                 raise MCPToolNotFoundError(tool_name, available_tools)
-            
+
             tool = self.tools[tool_name]
-            
+
             # Simplified validation
             if tool.input_validation:
                 if 'required' in tool.schema:
                     for req in tool.schema['required']:
                         if req not in params:
                             raise MCPInvalidParamsError(f"Missing required param: {req}")
-            
+
             # Synchronous execution
             start_time = time.time()
             try:
@@ -670,13 +656,13 @@ class MCP:
                 self._performance_metrics.failed_requests += 1
                 self._performance_metrics.error_counts[tool_name] = \
                     self._performance_metrics.error_counts.get(tool_name, 0) + 1
-                
+
                 # Log detailed error information
                 logger.error(f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}")
                 logger.debug(f"Tool {tool_name} parameters: {params}")
-                
+
                 raise MCPToolExecutionError(tool_name, e, execution_time)
-                
+
             finally:
                 # Clean up execution tracking
                 with self._execution_lock:
@@ -699,21 +685,21 @@ class MCP:
         with self._lock:
             self._request_count += 1
             self._last_activity = time.time()
-            
+
             # Find matching resource
             matching_resource = None
             for resource_template, resource in self.resources.items():
                 if self._match_uri_template(resource_template, uri):
                     matching_resource = resource
                     break
-            
+
             if not matching_resource:
                 raise MCPResourceNotFoundError(uri)
-            
+
             try:
                 # Retrieve resource content
                 content = matching_resource.retriever(uri)
-                
+
                 # Add metadata
                 result = {
                     "content": content,
@@ -722,10 +708,10 @@ class MCP:
                     "cacheable": matching_resource.cacheable,
                     "retrieved_at": time.time()
                 }
-                
+
                 logger.debug(f"Resource '{uri}' retrieved successfully")
                 return result
-                
+
             except Exception as e:
                 logger.error(f"Resource '{uri}' retrieval failed: {e}")
                 raise MCPResourceNotFoundError(uri)
@@ -754,7 +740,7 @@ class MCP:
                     "input_validation": tool.input_validation,
                     "output_validation": tool.output_validation
                 })
-            
+
             resources_list = []
             for resource in self.resources.values():
                 resources_list.append({
@@ -773,7 +759,7 @@ class MCP:
                     "compression": resource.compression,
                     "encryption": resource.encryption
                 })
-            
+
             return {
                 "tools": tools_list,
                 "resources": resources_list,
@@ -793,17 +779,17 @@ class MCP:
         with self._lock:
             uptime_seconds = self.uptime
             uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
-            
+
             # Calculate tool categories
             categories = defaultdict(int)
             for tool in self.tools.values():
                 categories[tool.category or "uncategorized"] += 1
-            
+
             # Calculate resource categories
             resource_categories = defaultdict(int)
             for resource in self.resources.values():
                 resource_categories[resource.category or "uncategorized"] += 1
-            
+
             return {
                 "uptime": uptime_seconds,
                 "uptime_formatted": uptime_str,
@@ -830,21 +816,21 @@ class MCP:
         with self._lock:
             if module_name not in self.modules:
                 return None
-            
+
             module_info = self.modules[module_name]
-            
+
             # Get tools for this module
             module_tools = [
                 tool.name for tool in self.tools.values()
                 if tool.module == module_name
             ]
-            
+
             # Get resources for this module
             module_resources = [
                 resource.uri_template for resource in self.resources.values()
                 if resource.module == module_name
             ]
-            
+
             return {
                 "name": module_info.name,
                 "path": str(module_info.path),
@@ -866,13 +852,13 @@ class MCP:
         with self._lock:
             if tool_name not in self.tools:
                 return None
-            
+
             tool = self.tools[tool_name]
-            
+
             # Get execution statistics
             execution_times = self._tool_execution_times.get(tool_name, [])
             avg_execution_time = sum(execution_times) / len(execution_times) if execution_times else 0.0
-            
+
             return {
                 "name": tool.name,
                 "description": tool.description,
@@ -917,7 +903,7 @@ class MCP:
 
         if not isinstance(params, dict):
             raise MCPValidationError("Parameters must be a dictionary")
-        
+
         # Check required fields
         if "required" in schema:
             for required_field in schema["required"]:
@@ -926,25 +912,25 @@ class MCP:
                         f"Required parameter '{required_field}' is missing",
                         field=required_field
                     )
-        
+
         # Validate properties
         if "properties" in schema:
             for field_name, field_schema in schema["properties"].items():
                 if field_name in params:
                     field_value = params[field_name]
                     self._validate_field(field_name, field_value, field_schema)
-        
+
         # Validate additional constraints
         if "minProperties" in schema and len(params) < schema["minProperties"]:
             raise MCPValidationError(
                 f"Too few properties: {len(params)} < {schema['minProperties']}"
             )
-        
+
         if "maxProperties" in schema and len(params) > schema["maxProperties"]:
             raise MCPValidationError(
                 f"Too many properties: {len(params)} > {schema['maxProperties']}"
             )
-    
+
     def _validate_field(self, field_name: str, field_value: Any, field_schema: Dict[str, Any]) -> None:
         """
         Validate a single field against its schema.
@@ -958,7 +944,7 @@ class MCP:
             MCPValidationError: If validation fails
         """
         field_type = field_schema.get("type")
-        
+
         # Type validation
         if field_type == "string":
             if not isinstance(field_value, str):
@@ -967,7 +953,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             # String-specific validations
             if "minLength" in field_schema and len(field_value) < field_schema["minLength"]:
                 raise MCPValidationError(
@@ -975,14 +961,14 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             if "maxLength" in field_schema and len(field_value) > field_schema["maxLength"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too long: {len(field_value)} > {field_schema['maxLength']}",
                     field=field_name,
                     value=field_value
                 )
-            
+
             if "pattern" in field_schema:
                 import re
                 if not re.match(field_schema["pattern"], field_value):
@@ -991,14 +977,14 @@ class MCP:
                         field=field_name,
                         value=field_value
                     )
-            
+
             if "enum" in field_schema and field_value not in field_schema["enum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' must be one of: {field_schema['enum']}",
                     field=field_name,
                     value=field_value
                 )
-        
+
         elif field_type == "integer":
             if not isinstance(field_value, int):
                 raise MCPValidationError(
@@ -1006,7 +992,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             # Integer-specific validations
             if "minimum" in field_schema and field_value < field_schema["minimum"]:
                 raise MCPValidationError(
@@ -1014,14 +1000,14 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             if "maximum" in field_schema and field_value > field_schema["maximum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
                     field=field_name,
                     value=field_value
                 )
-        
+
         elif field_type == "number":
             if not isinstance(field_value, (int, float)):
                 raise MCPValidationError(
@@ -1029,7 +1015,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             # Number-specific validations
             if "minimum" in field_schema and field_value < field_schema["minimum"]:
                 raise MCPValidationError(
@@ -1037,14 +1023,14 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             if "maximum" in field_schema and field_value > field_schema["maximum"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too large: {field_value} > {field_schema['maximum']}",
                     field=field_name,
                     value=field_value
                 )
-        
+
         elif field_type == "boolean":
             if not isinstance(field_value, bool):
                 raise MCPValidationError(
@@ -1052,7 +1038,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-        
+
         elif field_type == "array":
             if not isinstance(field_value, list):
                 raise MCPValidationError(
@@ -1060,7 +1046,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             # Array-specific validations
             if "minItems" in field_schema and len(field_value) < field_schema["minItems"]:
                 raise MCPValidationError(
@@ -1068,14 +1054,14 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             if "maxItems" in field_schema and len(field_value) > field_schema["maxItems"]:
                 raise MCPValidationError(
                     f"Parameter '{field_name}' too many items: {len(field_value)} > {field_schema['maxItems']}",
                     field=field_name,
                     value=field_value
                 )
-            
+
             # Validate array items if schema provided
             if "items" in field_schema:
                 for i, item in enumerate(field_value):
@@ -1087,7 +1073,7 @@ class MCP:
                             field=field_name,
                             value=field_value
                         )
-        
+
         elif field_type == "object":
             if not isinstance(field_value, dict):
                 raise MCPValidationError(
@@ -1095,7 +1081,7 @@ class MCP:
                     field=field_name,
                     value=field_value
                 )
-            
+
             # Object-specific validations
             if "properties" in field_schema:
                 for prop_name, prop_value in field_value.items():
@@ -1108,7 +1094,7 @@ class MCP:
                                 field=field_name,
                                 value=field_value
                             )
-            
+
             # Check for additional properties
             if "additionalProperties" in field_schema and field_schema["additionalProperties"] is False:
                 allowed_props = set(field_schema.get("properties", {}).keys())
@@ -1126,25 +1112,25 @@ class MCP:
         # Simple template matching - can be enhanced with regex
         if template == uri:
             return True
-        
+
         # Handle simple {param} patterns
         if "{" in template and "}" in template:
             # This is a simplified implementation
             # In a real implementation, you'd want more sophisticated pattern matching
             template_parts = template.split("/")
             uri_parts = uri.split("/")
-            
+
             if len(template_parts) != len(uri_parts):
                 return False
-            
+
             for template_part, uri_part in zip(template_parts, uri_parts):
                 if template_part.startswith("{") and template_part.endswith("}"):
                     continue  # Parameter placeholder
                 if template_part != uri_part:
                     return False
-            
+
             return True
-        
+
         return False
 
     @contextmanager
@@ -1161,7 +1147,7 @@ class MCP:
         """Validate tool output (basic validation)."""
         if result is None:
             raise MCPValidationError("Tool output cannot be None")
-        
+
         # Add more validation as needed
         if isinstance(result, dict) and "error" in result:
             raise MCPValidationError(f"Tool returned error: {result['error']}")
@@ -1182,14 +1168,14 @@ class MCP:
                 memory_usage = process.memory_info().rss
             except ImportError:
                 pass
-            
+
             # Calculate cache statistics
             cache_size = len(self._result_cache)
             cache_memory_estimate = cache_size * 1024  # Rough estimate
-            
+
             # Get active executions
             active_executions = dict(self._active_executions)
-            
+
             # Get rate limit status
             rate_limit_status = {}
             with self._rate_limit_lock:
@@ -1200,7 +1186,7 @@ class MCP:
                         "recent_requests": recent_requests,
                         "total_requests": len(timestamps)
                     }
-            
+
             return {
                 "server_info": {
                     "name": "GNN MCP Server",
@@ -1265,10 +1251,10 @@ class MCP:
         with self._cache_lock:
             cache_size_before = len(self._result_cache)
             self._result_cache.clear()
-            
+
             discovery_cache_size = len(self._discovery_cache)
             self._discovery_cache.clear()
-            
+
             return {
                 "result_cache_cleared": cache_size_before,
                 "discovery_cache_cleared": discovery_cache_size,
@@ -1287,7 +1273,7 @@ class MCP:
         """
         if tool_name not in self.tools:
             return None
-        
+
         execution_times = self._tool_execution_times.get(tool_name, [])
         if not execution_times:
             return {
@@ -1300,7 +1286,7 @@ class MCP:
                 "error_count": self._performance_metrics.error_counts.get(tool_name, 0),
                 "success_rate": 1.0
             }
-        
+
         total_executions = len(execution_times)
         total_time = sum(execution_times)
         avg_time = total_time / total_executions
@@ -1310,7 +1296,7 @@ class MCP:
         success_count = self._performance_metrics.tool_usage_stats.get(tool_name, 0)
         total_attempts = success_count + error_count
         success_rate = success_count / max(1, total_attempts)
-        
+
         return {
             "tool_name": tool_name,
             "execution_count": total_executions,
@@ -1332,13 +1318,13 @@ class MCP:
             Dict containing shutdown statistics
         """
         logger.info("Shutting down MCP server...")
-        
+
         # Shutdown thread pool
         self._executor.shutdown(wait=True)
-        
+
         # Clear caches
         cache_stats = self.clear_cache()
-        
+
         # Get final statistics
         final_stats = {
             "uptime": self.uptime,
@@ -1348,7 +1334,7 @@ class MCP:
             "cache_stats": cache_stats,
             "shutdown_time": time.time()
         }
-        
+
         logger.info(f"MCP server shutdown complete: {final_stats}")
         return final_stats
 
@@ -1386,10 +1372,10 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
         MCPSDKNotFoundError: If SDK is missing and halt_on_missing_sdk is True
     """
     global _critical_mcp_warning_issued
-    
+
     # Check SDK status
     sdk_found = _MCP_SDK_STATUS.check_status()
-    
+
     if not sdk_found:
         if halt_on_missing_sdk and not force_proceed_flag:
             error_message = (
@@ -1403,7 +1389,7 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
             logger.debug(
                 "MCP SDK optional dependency not available - proceeding with core functionality"
             )
-    
+
     # Apply performance mode
     try:
         mcp_instance.set_performance_mode(performance_mode)
@@ -1417,12 +1403,12 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
         per_module_timeout=per_module_timeout,
         overall_timeout=overall_timeout
     )
-    
+
     if all_modules_loaded:
         logger.info("MCP initialization completed successfully")
     else:
         logger.warning("MCP initialization completed with some module loading failures")
-    
+
     return mcp_instance, sdk_found, all_modules_loaded
 
 def get_mcp_instance() -> MCP:
@@ -1458,4 +1444,3 @@ def get_resource_info(uri_template: str) -> Optional[Dict[str, Any]]:
     return None
 
 # Re-export server components from server_core sub-module for backward compatibility
-from .server_core import MCPServer, create_mcp_server, start_mcp_server, register_tools

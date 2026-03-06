@@ -7,9 +7,7 @@ This file contains comprehensive tests for the ontology module functionality.
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestOntologyModuleComprehensive:
     """Comprehensive tests for the ontology module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_module_imports(self):
@@ -32,7 +30,7 @@ class TestOntologyModuleComprehensive:
             assert hasattr(ontology, 'get_module_info')
         except ImportError:
             pytest.skip("Ontology module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_processor_instantiation(self):
@@ -45,7 +43,7 @@ class TestOntologyModuleComprehensive:
             assert hasattr(processor, 'validate_terms')
         except ImportError:
             pytest.skip("OntologyProcessor not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_validator_instantiation(self):
@@ -58,7 +56,7 @@ class TestOntologyModuleComprehensive:
             assert hasattr(validator, 'check_consistency')
         except ImportError:
             pytest.skip("OntologyValidator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_module_info(self):
@@ -72,7 +70,7 @@ class TestOntologyModuleComprehensive:
             assert 'ontology_types' in info
         except ImportError:
             pytest.skip("Ontology module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_processing_options(self):
@@ -89,7 +87,7 @@ class TestOntologyModuleComprehensive:
 
 class TestOntologyFunctionality:
     """Tests for ontology functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_processing(self, comprehensive_test_data):
@@ -97,14 +95,14 @@ class TestOntologyFunctionality:
         try:
             from ontology import OntologyProcessor
             processor = OntologyProcessor()
-            
+
             # Test ontology processing with sample data
             ontology_data = comprehensive_test_data.get('ontology_data', {})
             result = processor.process_ontology(ontology_data)
             assert result is not None
         except ImportError:
             pytest.skip("OntologyProcessor not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_validation(self):
@@ -112,14 +110,14 @@ class TestOntologyFunctionality:
         try:
             from ontology import OntologyValidator
             validator = OntologyValidator()
-            
+
             # Test ontology validation
             ontology_content = "test ontology content"
             result = validator.validate_ontology(ontology_content)
             assert isinstance(result, bool)
         except ImportError:
             pytest.skip("OntologyValidator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_term_validation(self):
@@ -134,7 +132,7 @@ class TestOntologyFunctionality:
 
 class TestOntologyIntegration:
     """Integration tests for ontology module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_ontology_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -142,18 +140,18 @@ class TestOntologyIntegration:
         try:
             from ontology import OntologyProcessor
             processor = OntologyProcessor()
-            
+
             # Test end-to-end ontology processing
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
                 gnn_content = f.read()
-            
+
             result = processor.process_ontology({'content': gnn_content})
             assert result is not None
-            
+
         except ImportError:
             pytest.skip("Ontology module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_ontology_mcp_integration(self):
@@ -175,7 +173,7 @@ def test_ontology_module_completeness():
         'get_ontology_processing_options',
         'validate_ontology_terms'
     ]
-    
+
     try:
         import ontology
         for component in required_components:
@@ -190,15 +188,15 @@ def test_ontology_module_performance():
     try:
         from ontology import OntologyProcessor
         import time
-        
+
         processor = OntologyProcessor()
         start_time = time.time()
-        
+
         # Test processing performance
         result = processor.process_ontology({'test': 'data'})
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 10.0  # Should complete within 10 seconds
-        
+
     except ImportError:
-        pytest.skip("Ontology module not available") 
+        pytest.skip("Ontology module not available")

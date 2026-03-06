@@ -7,17 +7,14 @@ Website renderer module for GNN pipeline.
 from pathlib import Path
 from typing import Dict, Any, List
 import logging
-import json
-import shutil
-from datetime import datetime
 
 class WebsiteRenderer:
     """Renders HTML content and manages website assets."""
-    
+
     def __init__(self):
         """Initialize the website renderer."""
         self.css_styles = self._get_default_styles()
-    
+
     def render_html(self, content: str) -> str:
         """Render content as HTML with default styling."""
         return f"""<!DOCTYPE html>
@@ -36,7 +33,7 @@ class WebsiteRenderer:
     </div>
 </body>
 </html>"""
-    
+
     def render_css(self, styles: dict) -> str:
         """Render CSS styles as a string."""
         css = ""
@@ -46,7 +43,7 @@ class WebsiteRenderer:
                 css += f"    {property_name}: {value};\n"
             css += "}\n"
         return css
-    
+
     def _get_default_styles(self) -> dict:
         """Get default CSS styles."""
         return {
@@ -125,12 +122,12 @@ def process_website(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("website")
-    
+
     try:
         # Create output directory structure expected by tests
         website_dir = output_dir
         website_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Generate website; if target_dir missing, return failure
         from .generator import generate_website
         if not Path(target_dir).exists():
@@ -147,16 +144,16 @@ def process_website(
                 }, f)
         except Exception:
             pass
-        
+
         if result["success"]:
             logger.info(f"Website generated successfully with {result['pages_created']} pages")
         else:
             logger.error("Website generation failed")
             for error in result["errors"]:
                 logger.error(f"Error: {error}")
-        
+
         return result["success"]
-        
+
     except Exception as e:
         logger.error(f"Website processing failed: {e}")
         return False
@@ -166,14 +163,14 @@ def generate_html_report(content: str, output_file: Path) -> bool:
     try:
         renderer = WebsiteRenderer()
         html_content = renderer.render_html(content)
-        
+
         output_file.parent.mkdir(parents=True, exist_ok=True)
         with open(output_file, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def embed_image(image_path: Path, output_file: Path) -> bool:
@@ -181,7 +178,7 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
     try:
         if not image_path.exists():
             return False
-        
+
         # Create HTML with embedded image
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -199,13 +196,13 @@ def embed_image(image_path: Path, output_file: Path) -> bool:
     <img src="{image_path}" alt="Embedded image">
 </body>
 </html>"""
-        
+
         with open(output_file, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
@@ -213,11 +210,11 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
     try:
         if not md_path.exists():
             return False
-        
+
         # Read markdown content
         with open(md_path, 'r') as f:
             md_content = f.read()
-        
+
         # Convert markdown to HTML (simplified)
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -239,13 +236,13 @@ def embed_markdown_file(md_path: Path, output_file: Path) -> bool:
     </div>
 </body>
 </html>"""
-        
+
         with open(output_file, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def embed_text_file(text_path: Path, output_file: Path) -> bool:
@@ -253,11 +250,11 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
     try:
         if not text_path.exists():
             return False
-        
+
         # Read text content
         with open(text_path, 'r') as f:
             text_content = f.read()
-        
+
         # Convert text to HTML
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -275,13 +272,13 @@ def embed_text_file(text_path: Path, output_file: Path) -> bool:
     <pre>{text_content}</pre>
 </body>
 </html>"""
-        
+
         with open(output_file, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def embed_json_file(json_path: Path, output_file: Path) -> bool:
@@ -289,11 +286,11 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
     try:
         if not json_path.exists():
             return False
-        
+
         # Read JSON content
         with open(json_path, 'r') as f:
             json_content = f.read()
-        
+
         # Convert JSON to HTML
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -314,13 +311,13 @@ def embed_json_file(json_path: Path, output_file: Path) -> bool:
     <pre>{json_content}</pre>
 </body>
 </html>"""
-        
+
         with open(output_file, 'w') as f:
             f.write(html_content)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def embed_html_file(html_path: Path, output_file: Path) -> bool:
@@ -328,11 +325,11 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
     try:
         if not html_path.exists():
             return False
-        
+
         # Read HTML content
         with open(html_path, 'r') as f:
             html_content = f.read()
-        
+
         # Create wrapper HTML
         wrapper_html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -352,13 +349,13 @@ def embed_html_file(html_path: Path, output_file: Path) -> bool:
     </div>
 </body>
 </html>"""
-        
+
         with open(output_file, 'w') as f:
             f.write(wrapper_html)
-        
+
         return True
-        
-    except Exception as e:
+
+    except Exception:
         return False
 
 def get_module_info() -> Dict[str, Any]:
@@ -413,14 +410,14 @@ def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, An
         "errors": [],
         "warnings": []
     }
-    
+
     # Check required fields
     required_fields = ["output_dir"]  # input_dir optional per tests
     for field in required_fields:
         if field not in config:
             validation_result["valid"] = False
             validation_result["errors"].append(f"Missing required field: {field}")
-    
+
     # Check output directory
     if "output_dir" in config:
         output_dir = Path(config["output_dir"])
@@ -431,11 +428,11 @@ def validate_website_config(config: Dict[str, Any] | str) -> bool | Dict[str, An
             # If nonexistent, consider invalid for this test
             validation_result["valid"] = False
             validation_result["errors"].append("Output directory does not exist")
-    
+
     # Check input directory
     if "input_dir" in config:
         input_dir = Path(config["input_dir"])
         if not input_dir.exists():
             validation_result["warnings"].append("Input directory does not exist")
-    
+
     return validation_result

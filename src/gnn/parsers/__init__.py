@@ -99,7 +99,7 @@ __all__ = [
     'ASTNode',
     'ParseError',
     'GNNParser',
-    
+
     # Parsers
     'MarkdownGNNParser',
     'ScalaGNNParser',
@@ -124,7 +124,7 @@ __all__ = [
     'AgdaParser',
     'HaskellGNNParser',
     'PickleGNNParser',
-    
+
     # Serializers
     'MarkdownSerializer',
     'JSONSerializer',
@@ -149,7 +149,7 @@ __all__ = [
     'AgdaSerializer',
     'FunctionalSerializer',
     'BinarySerializer',
-    
+
     # Utilities
     'FormatConverter',
     'ConversionError',
@@ -158,8 +158,8 @@ __all__ = [
     'ValidationWarning',
     'parse_gnn_file',
     'convert_gnn_format',
-    
+
     # Registries
     'PARSER_REGISTRY',
     'SERIALIZER_REGISTRY'
-] 
+]

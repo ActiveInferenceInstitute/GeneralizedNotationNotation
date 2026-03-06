@@ -8,7 +8,6 @@ Tests verification and management of Python package dependencies.
 import pytest
 import sys
 from pathlib import Path
-from typing import Dict, Any, List
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -21,7 +20,7 @@ class TestCoreDependencies:
     def test_numpy_available(self):
         """Test NumPy is installed and functional."""
         import numpy as np
-        
+
         # Basic functionality test
         arr = np.array([1, 2, 3])
         assert arr.shape == (3,)
@@ -31,7 +30,7 @@ class TestCoreDependencies:
     def test_pathlib_available(self):
         """Test pathlib is available (stdlib)."""
         from pathlib import Path
-        
+
         p = Path(".")
         assert p.exists()
 
@@ -39,7 +38,7 @@ class TestCoreDependencies:
     def test_json_available(self):
         """Test json is available (stdlib)."""
         import json
-        
+
         data = {"key": "value"}
         encoded = json.dumps(data)
         decoded = json.loads(encoded)
@@ -49,7 +48,7 @@ class TestCoreDependencies:
     def test_logging_available(self):
         """Test logging is available (stdlib)."""
         import logging
-        
+
         logger = logging.getLogger("test")
         assert logger is not None
 
@@ -86,9 +85,9 @@ class TestAudioDependencies:
     def test_audio_backends(self):
         """Test audio backend availability."""
         from audio import check_audio_backends
-        
+
         backends = check_audio_backends()
-        
+
         assert isinstance(backends, dict)
         assert 'numpy' in backends
         # NumPy is core and should always be available
@@ -151,7 +150,7 @@ class TestDependencyVersions:
     def test_python_version(self):
         """Test Python version meets requirements."""
         import sys
-        
+
         # Require Python 3.9+
         assert sys.version_info >= (3, 9)
 
@@ -159,10 +158,10 @@ class TestDependencyVersions:
     def test_numpy_version(self):
         """Test NumPy version."""
         import numpy as np
-        
+
         version_parts = np.__version__.split('.')
         major = int(version_parts[0])
-        
+
         # Require NumPy 1.x or 2.x
         assert major >= 1
 
@@ -189,7 +188,6 @@ class TestDependencyConflicts:
     def test_visualization_imports_compatible(self):
         """Test visualization imports are compatible."""
         try:
-            import numpy as np
             import matplotlib
             matplotlib.use('Agg')  # Non-interactive backend
             import matplotlib.pyplot as plt
@@ -216,16 +214,16 @@ class TestOptionalDependencies:
             available = True
         except ImportError:
             available = False
-        
+
         assert available is False
 
     @pytest.mark.fast
     def test_feature_flags_reflect_deps(self):
         """Test feature flags reflect dependency availability."""
         from audio import FEATURES, check_audio_backends
-        
+
         backends = check_audio_backends()
-        
+
         # Features should be consistent with backends
         assert isinstance(FEATURES, dict)
 
@@ -259,7 +257,7 @@ class TestDependencyDiscovery:
     def test_pyproject_toml_exists(self):
         """Test pyproject.toml dependency file exists (uv-managed)."""
         from pathlib import Path
-        
+
         # GNN uses pyproject.toml exclusively for dependency management via uv
         pyproject = Path(__file__).parent.parent.parent / "pyproject.toml"
         assert pyproject.exists(), "pyproject.toml must exist for uv-managed dependencies"

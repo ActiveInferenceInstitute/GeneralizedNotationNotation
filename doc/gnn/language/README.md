@@ -1,15 +1,29 @@
 # GNN Language Documentation
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+
 
-This directory contains documentation and references for the Language domain of Generalized Notation Notation (GNN).
+This directory contains the language-level specification and syntax documentation for Generalized Notation Notation (GNN).
 
 ## Available Documents
 
-(No markdown files currently reside in this subdirectory.)
+| Document | Purpose |
+|----------|---------|
+| [GNN Syntax Quick Reference](gnn_syntax_quickref.md) | One-page cheatsheet of GNN syntax |
+| [GNN Variable Grammar](gnn_variable_grammar.md) | Formal grammar for variable declarations |
+| [GNN Connection Grammar](gnn_connection_grammar.md) | Formal grammar for connection edge syntax |
+
+## Related Documents
+
+The following documents in sibling directories expand on language topics:
+
+- **[`gnn_syntax.md`](../gnn_syntax.md)** — GNN v1.1 syntax specification (canonical, living document)
+- **[`reference/gnn_syntax.md`](../reference/gnn_syntax.md)** — Complete syntax guide with examples
+- **[`reference/gnn_dsl_manual.md`](../reference/gnn_dsl_manual.md)** — Domain-Specific Language specification
+- **[`reference/gnn_schema.md`](../reference/gnn_schema.md)** — Parsing and validation schemas
+- **[`reference/gnn_type_system.md`](../reference/gnn_type_system.md)** — Type system reference
 
 ## Navigation
 

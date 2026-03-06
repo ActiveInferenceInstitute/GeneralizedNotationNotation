@@ -18,11 +18,11 @@ import pytest
 
 class TestCoverageStrategy:
     """Strategic assessment of coverage gaps and priorities."""
-    
+
     @pytest.mark.unit
     def test_critical_module_coverage_strategy(self):
         """Document coverage improvement strategy for critical modules."""
-        
+
         # Critical modules that need >95% coverage
         critical_modules = {
             'gnn': 'Parser and core GNN processing - highest impact',
@@ -33,7 +33,7 @@ class TestCoverageStrategy:
             'validation': 'Consistency checking and validation',
             'utils': 'Shared utilities used across all modules',
         }
-        
+
         # Core improvements needed
         strategies = {
             'gnn': [
@@ -79,20 +79,20 @@ class TestCoverageStrategy:
                 'Test performance utilities and monitoring',
             ]
         }
-        
+
         # Assert coverage improvement strategy exists
         assert len(critical_modules) > 0
         assert len(strategies) > 0
-        
+
         # Verify all critical modules have improvement strategies
         for module in critical_modules:
             assert module in strategies, f"No strategy for {module}"
             assert len(strategies[module]) >= 2, f"Insufficient strategies for {module}"
-    
+
     @pytest.mark.unit
     def test_performance_regression_test_framework(self):
         """Framework for adding performance regression tests."""
-        
+
         # Performance test areas
         performance_areas = {
             'gnn_parsing': {
@@ -121,14 +121,14 @@ class TestCoverageStrategy:
                 'threshold': 0.9,  # 10% regression threshold
             },
         }
-        
-        assert all(k in p for p in performance_areas.values() 
+
+        assert all(k in p for p in performance_areas.values()
                   for k in ['metric', 'baseline', 'threshold'])
-    
+
     @pytest.mark.unit
     def test_error_scenario_coverage(self):
         """Document error scenario test coverage strategy."""
-        
+
         error_scenarios = {
             'invalid_input': [
                 'Empty/null inputs',
@@ -155,9 +155,9 @@ class TestCoverageStrategy:
                 'Out-of-order execution',
             ],
         }
-        
+
         assert all(len(scenarios) > 0 for scenarios in error_scenarios.values())
-        
+
         # Each error scenario should have multiple test cases
         for category, scenarios in error_scenarios.items():
             assert len(scenarios) >= 3, f"Insufficient scenarios for {category}"
@@ -165,11 +165,11 @@ class TestCoverageStrategy:
 
 class TestCoverageImprovementPriorities:
     """Prioritized list of coverage improvements."""
-    
+
     @pytest.mark.unit
     def test_priority_1_critical_apis(self):
         """Highest priority: Test all public APIs thoroughly."""
-        
+
         # All public API functions should have >=95% coverage
         critical_apis = [
             'gnn.parse_gnn_file',
@@ -181,13 +181,13 @@ class TestCoverageImprovementPriorities:
             'type_checker.validate_types',
             'validation.validate_model_consistency',
         ]
-        
+
         assert len(critical_apis) >= 5
-    
+
     @pytest.mark.unit
     def test_priority_2_integration_scenarios(self):
         """Second priority: Integration between modules."""
-        
+
         integration_scenarios = [
             ('gnn', 'type_checker', 'parsing followed by type validation'),
             ('gnn', 'render', 'parsing followed by code generation'),
@@ -195,13 +195,13 @@ class TestCoverageImprovementPriorities:
             ('render', 'execute', 'code generation followed by simulation'),
             ('type_checker', 'validation', 'type checking with consistency validation'),
         ]
-        
+
         assert len(integration_scenarios) >= 3
-    
+
     @pytest.mark.unit
     def test_priority_3_edge_cases_and_recovery(self):
         """Third priority: Edge cases and error recovery."""
-        
+
         edge_cases = [
             'Empty input files',
             'Extremely large models (>10K nodes)',
@@ -211,13 +211,13 @@ class TestCoverageImprovementPriorities:
             'Resource exhaustion',
             'Concurrent access patterns',
         ]
-        
+
         assert len(edge_cases) >= 5
 
 
 def test_coverage_improvement_action_plan():
     """Document concrete action plan for coverage improvement."""
-    
+
     action_plan = """
     COVERAGE IMPROVEMENT ACTION PLAN
     ================================
@@ -258,7 +258,7 @@ def test_coverage_improvement_action_plan():
     3. Add integration test framework
     4. Establish performance baseline metrics
     """
-    
+
     assert len(action_plan) > 0
     assert "Phase 1" in action_plan
     assert "ACTION PLAN" in action_plan

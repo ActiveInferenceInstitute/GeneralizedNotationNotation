@@ -26,7 +26,7 @@ def get_module_info() -> Dict[str, Any]:
         'export_methods': [],
         'available_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl']
     }
-    
+
     # Export capabilities
     info['export_capabilities'].extend([
         'JSON export',
@@ -37,7 +37,7 @@ def get_module_info() -> Dict[str, Any]:
         'Plaintext summary',
         'DSL export'
     ])
-    
+
     # Export methods
     info['export_methods'].extend([
         'Single file export',
@@ -45,13 +45,13 @@ def get_module_info() -> Dict[str, Any]:
         'Format-specific export',
         'Model data export'
     ])
-    
+
     # Supported formats
     info['supported_formats'].extend(['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl'])
     info['graph_formats'] = ['graphml', 'gexf']
     info['text_formats'] = ['txt', 'dsl']
     info['data_formats'] = ['json', 'xml', 'pickle']
-    
+
     return info
 
 def get_supported_formats() -> Dict[str, List[str]]:

@@ -14,7 +14,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 
 | Component | Path |
 |-----------|------|
-| Orchestrator | `src/3_gnn.py` (31 lines) |
+| Orchestrator | `src/3_gnn.py` (30 lines) |
 | Module | `src/gnn/` |
 | Processor | `src/gnn/processor.py` |
 | Module function | `process_gnn_multi_format()` |

@@ -5,7 +5,7 @@ Module for parsing GNN files specifically for RxInfer.jl configuration generatio
 import logging
 import re
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -37,17 +37,17 @@ def parse_initial_value(value_str: str) -> Any:
         The parsed value (string, number, boolean, tuple, etc.)
     """
     value_str = value_str.strip()
-    
+
     # Boolean
     if value_str.lower() == "true":
         return True
     if value_str.lower() == "false":
         return False
-    
+
     # String (already a string, just remove quotes if present)
     if value_str.startswith('"') and value_str.endswith('"'):
         return value_str[1:-1]
-    
+
     # Try parsing as number
     try:
         # Integer
@@ -57,16 +57,16 @@ def parse_initial_value(value_str: str) -> Any:
         return float(value_str)
     except ValueError:
         pass
-    
+
     # Check for tuple/matrix notation {(a,b), (c,d)}
     if value_str.startswith('{') and value_str.endswith('}'):
         inner_content = value_str[1:-1].strip()
-        
+
         # Check for tuple notation (a, b)
         if inner_content.startswith('(') and inner_content.endswith(')'):
             # Single tuple
             return parse_tuple(inner_content)
-        
+
         # Check for list of tuples notation (a,b),(c,d)
         if "," in inner_content and "(" in inner_content and ")" in inner_content:
             # Try to split by "),(" which is the separator between tuples
@@ -79,16 +79,16 @@ def parse_initial_value(value_str: str) -> Any:
                         part = part[1:] if part.startswith('(') else part
                     if i == len(parts) - 1:
                         part = part[:-1] if part.endswith(')') else part
-                    
+
                     # Parse tuple elements
                     elements = [parse_initial_value(e.strip()) for e in part.split(',')]
                     tuples.append(tuple(elements))
                 return tuples
-        
+
         # Simple tuple inside braces {(a, b)}
         if inner_content.count('(') == 1 and inner_content.count(')') == 1:
             return parse_tuple(inner_content)
-    
+
     # Default to returning the string as is
     return value_str
 
@@ -106,7 +106,7 @@ def parse_tuple(tuple_str: str) -> Tuple:
     tuple_str = tuple_str.strip()
     if tuple_str.startswith('(') and tuple_str.endswith(')'):
         tuple_str = tuple_str[1:-1]
-    
+
     # Split by comma and parse each element
     elements = [parse_initial_value(e.strip()) for e in tuple_str.split(',')]
     return tuple(elements)
@@ -124,18 +124,18 @@ def parse_initial_parameterization(content: str) -> Dict[str, Any]:
     section = parse_gnn_section(content, "InitialParameterization")
     if not section:
         return {}
-    
+
     params = {}
     # Split by lines, ignoring comments
     lines = [line.strip() for line in section.split('\n') if line.strip() and not line.strip().startswith('#')]
-    
+
     for line in lines:
         # Find parameter assignments (param=value)
         if '=' in line:
             name, value_str = line.split('=', 1)
             name = name.strip()
             params[name] = parse_initial_value(value_str)
-    
+
     return params
 
 def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
@@ -151,20 +151,20 @@ def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
     section = parse_gnn_section(content, "StateSpaceBlock")
     if not section:
         return {}
-    
+
     variables = {}
     # Split by lines, ignoring comments
     lines = [line.strip() for line in section.split('\n') if line.strip() and not line.strip().startswith('#')]
-    
+
     for line in lines:
         # Parse variable definitions like: var_name[dim1,dim2,type=type_name]
         match = re.match(r'(\w+)\[([^\]]+)\]\s*(#.*)?', line)
         if match:
             var_name = match.group(1)
             dimensions_type = match.group(2)
-            
+
             var_info = {'name': var_name}
-            
+
             # Parse dimensions and type
             if 'type=' in dimensions_type:
                 dims_part, type_part = dimensions_type.split('type=', 1)
@@ -173,7 +173,7 @@ def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
             else:
                 dims = [d.strip() for d in dimensions_type.strip().split(',')]
                 var_info['type'] = 'float'  # Default type
-            
+
             # Convert dimensions to integers if possible
             var_info['dimensions'] = []
             for dim in dims:
@@ -181,9 +181,9 @@ def parse_state_space_block(content: str) -> Dict[str, Dict[str, Any]]:
                     var_info['dimensions'].append(int(dim))
                 except ValueError:
                     var_info['dimensions'].append(dim)  # Keep as string if not a number
-            
+
             variables[var_name] = var_info
-    
+
     return variables
 
 def parse_model_name(content: str) -> str:
@@ -211,11 +211,11 @@ def parse_model_parameters(content: str) -> Dict[str, Any]:
     section = parse_gnn_section(content, "ModelParameters")
     if not section:
         return {}
-    
+
     params = {}
     # Split by lines, ignoring comments
     lines = [line.strip() for line in section.split('\n') if line.strip() and not line.strip().startswith('#')]
-    
+
     for line in lines:
         # Find parameter assignments (param=value or param: value)
         if '=' in line:
@@ -226,7 +226,7 @@ def parse_model_parameters(content: str) -> Dict[str, Any]:
             name, value_str = line.split(':', 1)
             name = name.strip()
             params[name] = parse_initial_value(value_str)
-    
+
     return params
 
 def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
@@ -242,16 +242,16 @@ def parse_gnn_file(file_path: Path) -> Dict[str, Any]:
     if not file_path.exists():
         logger.error(f"GNN file not found: {file_path}")
         raise FileNotFoundError(f"GNN file not found: {file_path}")
-    
+
     with open(file_path, 'r', encoding='utf-8') as f:
         content = f.read()
-    
+
     # Parse the various sections
     model_name = parse_model_name(content)
     initial_params = parse_initial_parameterization(content)
     variables = parse_state_space_block(content)
     model_params = parse_model_parameters(content)
-    
+
     # Combine into a structured dictionary
     return {
         'model_name': model_name,
@@ -268,4 +268,4 @@ if __name__ == "__main__":
         test_file = Path(sys.argv[1])
         result = parse_gnn_file(test_file)
         import json
-        print(json.dumps(result, indent=2, default=str)) 
+        print(json.dumps(result, indent=2, default=str))

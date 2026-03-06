@@ -4,7 +4,7 @@ LLM analyzer module for GNN file analysis.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Coroutine
+from typing import Dict, Any, List, Coroutine
 import logging
 import re
 from datetime import datetime
@@ -29,21 +29,21 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         # Extract GNN structure
         variables = extract_variables(content)
         connections = extract_connections(content)
         sections = extract_sections(content)
-        
+
         # Perform semantic analysis
         semantic_analysis = perform_semantic_analysis(content, variables, connections)
-        
+
         # Generate model complexity metrics
         complexity_metrics = calculate_complexity_metrics(variables, connections)
-        
+
         # Identify patterns and anti-patterns
         patterns = identify_patterns(content, variables, connections)
-        
+
         result: Dict[str, Any] = {
             "file_path": str(file_path),
             "file_name": file_path.name,
@@ -90,7 +90,7 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
         # Provide minimal documentation block expected by tests
         result.setdefault("documentation", {"file_path": str(file_path), "model_overview": ""})
         return result
-        
+
     except Exception as e:
         raise Exception(f"Failed to analyze {file_path}: {e}")
 
@@ -114,14 +114,14 @@ def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[st
 def extract_variables(content: str) -> List[Dict[str, Any]]:
     """Extract variables from GNN content."""
     variables = []
-    
+
     # Look for variable definitions
     var_patterns = [
         r'(\w+)\s*:\s*(\w+)',  # name: type
         r'(\w+)\s*=\s*([^;\n]+)',  # name = value
         r'(\w+)\s*\[([^\]]+)\]',  # name[dimensions]
     ]
-    
+
     for pattern in var_patterns:
         matches = re.finditer(pattern, content)
         for match in matches:
@@ -130,7 +130,7 @@ def extract_variables(content: str) -> List[Dict[str, Any]]:
                 "definition": match.group(0),
                 "line": content[:match.start()].count('\n') + 1
             })
-    
+
     return variables
 
 def extract_connections(content: str) -> List[Dict[str, Any]]:
@@ -140,7 +140,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
     and falls back to legacy patterns (->. →, connects).
     """
     connections = []
-    
+
     # Primary: parse ## Connections section for GNN-specific operators
     conn_section = re.search(
         r'##\s*Connections\s*\n(.*?)(?=\n##\s|\Z)', content, re.DOTALL
@@ -163,7 +163,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
                     "connection_type": conn_type,
                     "line": content[:conn_match.start() + conn_section.start()].count('\n') + 1
                 })
-    
+
     # Fallback: legacy patterns throughout the entire file
     if not connections:
         conn_patterns = [
@@ -180,19 +180,19 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
                     "connection": match.group(0),
                     "line": content[:match.start()].count('\n') + 1
                 })
-    
+
     return connections
 
 def extract_sections(content: str) -> List[Dict[str, Any]]:
     """Extract sections from GNN content."""
     sections = []
-    
+
     # Look for section headers
     section_patterns = [
         r'^#+\s+(.+)$',  # Markdown headers
         r'^(\w+):\s*$',  # Section labels
     ]
-    
+
     for pattern in section_patterns:
         matches = re.finditer(pattern, content, re.MULTILINE)
         for match in matches:
@@ -200,7 +200,7 @@ def extract_sections(content: str) -> List[Dict[str, Any]]:
                 "name": match.group(1),
                 "line": content[:match.start()].count('\n') + 1
             })
-    
+
     return sections
 
 def perform_semantic_analysis(content: str, variables: List[Dict], connections: List[Dict]) -> Dict[str, Any]:
@@ -211,23 +211,23 @@ def perform_semantic_analysis(content: str, variables: List[Dict], connections: 
         "complexity_score": len(variables) + len(connections),
         "semantic_patterns": []
     }
-    
+
     # Analyze variable types
     var_types = {}
     for var in variables:
         var_type = var.get("definition", "").split(":")[-1].strip() if ":" in var.get("definition", "") else "unknown"
         var_types[var_type] = var_types.get(var_type, 0) + 1
-    
+
     analysis["variable_types"] = var_types
-    
+
     # Analyze connection patterns
     connection_types = {}
     for conn in connections:
         conn_type = conn.get("connection", "").split()[1] if len(conn.get("connection", "").split()) > 1 else "unknown"
         connection_types[conn_type] = connection_types.get(conn_type, 0) + 1
-    
+
     analysis["connection_types"] = connection_types
-    
+
     return analysis
 
 def calculate_complexity_metrics(variables: List[Dict], connections: List[Dict]) -> Dict[str, Any]:
@@ -239,7 +239,7 @@ def calculate_complexity_metrics(variables: List[Dict], connections: List[Dict])
         "density": len(connections) / max(len(variables), 1),
         "cyclomatic_complexity": len(connections) - len(variables) + 2
     }
-    
+
     return metrics
 
 def identify_patterns(content: str, variables: List[Dict], connections: List[Dict]) -> Dict[str, Any]:
@@ -249,26 +249,26 @@ def identify_patterns(content: str, variables: List[Dict], connections: List[Dic
         "anti_patterns": [],
         "suggestions": []
     }
-    
+
     # Check for common patterns
     if len(variables) > 10:
         patterns["patterns"].append("High variable count - complex model")
-    
+
     if len(connections) > len(variables) * 2:
         patterns["patterns"].append("High connectivity - dense graph")
-    
+
     # Check for anti-patterns
     if len(variables) == 0:
         patterns["anti_patterns"].append("No variables defined")
-    
+
     if len(connections) == 0:
         patterns["anti_patterns"].append("No connections defined")
-    
+
     # Generate suggestions
     if len(variables) > 20:
         patterns["suggestions"].append("Consider breaking down into smaller modules")
-    
+
     if len(connections) > 50:
         patterns["suggestions"].append("Consider simplifying the model structure")
-    
-    return patterns 
+
+    return patterns

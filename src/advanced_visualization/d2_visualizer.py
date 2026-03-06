@@ -19,7 +19,7 @@ import json
 import subprocess
 import shutil
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Tuple
+from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
 from datetime import datetime
 import time
@@ -67,7 +67,7 @@ class D2Visualizer:
     This class handles conversion of GNN specifications to D2 diagram format
     and manages compilation to various output formats.
     """
-    
+
     def __init__(self, logger: Optional[logging.Logger] = None):
         """
         Initialize D2 visualizer.
@@ -77,14 +77,14 @@ class D2Visualizer:
         """
         self.logger = logger or logging.getLogger(__name__)
         self.d2_available = self._check_d2_availability()
-        
+
         if not self.d2_available:
             self.logger.warning("D2 CLI not available. Install from https://d2lang.com")
-    
+
     def _check_d2_availability(self) -> bool:
         """Check if D2 CLI is available in system PATH"""
         return shutil.which("d2") is not None
-    
+
     def generate_model_structure_diagram(
         self,
         model_data: Dict[str, Any],
@@ -102,12 +102,12 @@ class D2Visualizer:
         """
         model_name = model_data.get("model_name", "Unknown Model")
         safe_name = output_name or self._sanitize_name(model_name)
-        
+
         # Extract state space and connections
         state_space = model_data.get("state_space", {})
         connections = model_data.get("connections", [])
         annotations = model_data.get("actinf_annotations", {})
-        
+
         # Build D2 content
         d2_lines = [
             f"# GNN Model: {model_name}",
@@ -121,22 +121,22 @@ class D2Visualizer:
             "    direction: right",
             ""
         ]
-        
+
         # Add state space variables
         for var_name, var_info in state_space.items():
             shape = self._get_d2_shape_for_variable(var_name, var_info, annotations)
             label = self._format_variable_label(var_name, var_info, annotations)
-            
+
             d2_lines.extend([
                 f"    {var_name}: {label} {{",
                 f"      shape: {shape}",
                 "    }",
                 ""
             ])
-        
+
         d2_lines.append("  }")
         d2_lines.append("")
-        
+
         # Add connections
         if connections:
             d2_lines.append("  # Model Connections")
@@ -145,7 +145,7 @@ class D2Visualizer:
                 target = conn.get("target", "")
                 conn_type = conn.get("type", "->")
                 label = conn.get("label", "")
-                
+
                 if source and target:
                     arrow = self._get_d2_arrow(conn_type)
                     if label:
@@ -153,7 +153,7 @@ class D2Visualizer:
                     else:
                         d2_lines.append(f"  state_space.{source} {arrow} state_space.{target}")
             d2_lines.append("")
-        
+
         # Add Active Inference annotations
         if annotations:
             d2_lines.append("  # Active Inference Ontology")
@@ -167,11 +167,11 @@ class D2Visualizer:
             d2_lines.append("    |")
             d2_lines.append("  }")
             d2_lines.append("")
-        
+
         d2_lines.append("}")
-        
+
         d2_content = "\n".join(d2_lines)
-        
+
         return D2DiagramSpec(
             name=f"{safe_name}_structure",
             description=f"GNN Model Structure for {model_name}",
@@ -180,7 +180,7 @@ class D2Visualizer:
             theme=1,
             metadata={"model_name": model_name, "type": "structure"}
         )
-    
+
     def generate_pomdp_diagram(
         self,
         model_data: Dict[str, Any],
@@ -198,14 +198,14 @@ class D2Visualizer:
         """
         model_name = model_data.get("model_name", "POMDP Agent")
         safe_name = output_name or self._sanitize_name(model_name)
-        
+
         state_space = model_data.get("state_space", {})
-        
+
         # Identify POMDP components
         matrices = {}
         vectors = {}
         states = {}
-        
+
         for var_name, var_info in state_space.items():
             dims = var_info.get("dimensions", [])
             if len(dims) == 2 and dims[0] > 1 and dims[1] > 1:
@@ -214,7 +214,7 @@ class D2Visualizer:
                 vectors[var_name] = var_info
             elif len(dims) >= 3:
                 matrices[var_name] = var_info  # Tensor treated as matrix
-        
+
         # Build D2 content for POMDP structure
         d2_lines = [
             f"# Active Inference POMDP: {model_name}",
@@ -228,13 +228,13 @@ class D2Visualizer:
             "    direction: right",
             ""
         ]
-        
+
         # Add matrices (A, B, etc.)
         for var_name, var_info in matrices.items():
             dims = var_info.get("dimensions", [])
             dims_str = "×".join(map(str, dims))
             label = f"{var_name} [{dims_str}]"
-            
+
             d2_lines.extend([
                 f"    {var_name}: {label} {{",
                 "      shape: hexagon",
@@ -242,10 +242,10 @@ class D2Visualizer:
                 "    }",
                 ""
             ])
-        
+
         d2_lines.append("  }")
         d2_lines.append("")
-        
+
         # Add state inference
         d2_lines.extend([
             "  # Inference Process",
@@ -273,9 +273,9 @@ class D2Visualizer:
             "  inference -> generative_model: Belief updates",
             "}"
         ])
-        
+
         d2_content = "\n".join(d2_lines)
-        
+
         return D2DiagramSpec(
             name=f"{safe_name}_pomdp",
             description=f"POMDP Structure for {model_name}",
@@ -284,7 +284,7 @@ class D2Visualizer:
             theme=1,
             metadata={"model_name": model_name, "type": "pomdp"}
         )
-    
+
     def generate_pipeline_flow_diagram(
         self,
         include_frameworks: bool = True
@@ -346,7 +346,7 @@ class D2Visualizer:
             "  }",
             ""
         ]
-        
+
         if include_frameworks:
             d2_lines.extend([
                 "  # Framework Generation",
@@ -394,9 +394,9 @@ class D2Visualizer:
         else:
             d2_lines.append("  input -> processing")
             d2_lines.append("}")
-        
+
         d2_content = "\n".join(d2_lines)
-        
+
         return D2DiagramSpec(
             name="gnn_pipeline_flow",
             description="GNN Pipeline Data Flow and Architecture",
@@ -405,7 +405,7 @@ class D2Visualizer:
             theme=1,
             metadata={"type": "pipeline_architecture"}
         )
-    
+
     def generate_framework_mapping_diagram(
         self,
         frameworks: Optional[List[str]] = None
@@ -421,7 +421,7 @@ class D2Visualizer:
         """
         if frameworks is None:
             frameworks = ["pymdp", "rxinfer", "activeinference_jl", "discopy", "jax"]
-        
+
         d2_lines = [
             "# GNN Framework Integration",
             f"# Generated: {datetime.now().isoformat()}",
@@ -438,7 +438,7 @@ class D2Visualizer:
             "    direction: right",
             ""
         ]
-        
+
         # Framework definitions
         framework_info = {
             "pymdp": ("Python Active Inference", "rectangle"),
@@ -447,7 +447,7 @@ class D2Visualizer:
             "discopy": ("Python Categorical Diagrams", "rectangle"),
             "jax": ("Python HPC Simulation", "rectangle")
         }
-        
+
         for fw in frameworks:
             if fw in framework_info:
                 label, shape = framework_info[fw]
@@ -458,7 +458,7 @@ class D2Visualizer:
                     "    }",
                     ""
                 ])
-        
+
         d2_lines.extend([
             "  }",
             "",
@@ -466,10 +466,10 @@ class D2Visualizer:
             "    direction: right",
             ""
         ])
-        
+
         for fw in frameworks:
             d2_lines.append(f"    {fw}_exec: {fw.upper()} Simulation")
-        
+
         d2_lines.extend([
             "  }",
             "",
@@ -478,9 +478,9 @@ class D2Visualizer:
             "  render_step -> execution: Generated Code → Execution",
             "}"
         ])
-        
+
         d2_content = "\n".join(d2_lines)
-        
+
         return D2DiagramSpec(
             name="framework_integration",
             description="GNN Framework Integration Mapping",
@@ -489,7 +489,7 @@ class D2Visualizer:
             theme=1,
             metadata={"type": "framework_mapping", "frameworks": frameworks}
         )
-    
+
     def generate_active_inference_concepts_diagram(self) -> D2DiagramSpec:
         """
         Generate D2 diagram explaining Active Inference concepts.
@@ -555,7 +555,7 @@ Active Inference Free Energy Principle: {
   inference -> generative_model: Update beliefs
 }
 """
-        
+
         return D2DiagramSpec(
             name="active_inference_concepts",
             description="Active Inference Free Energy Principle",
@@ -564,7 +564,7 @@ Active Inference Free Energy Principle: {
             theme=1,
             metadata={"type": "conceptual", "domain": "active_inference"}
         )
-    
+
     def compile_d2_diagram(
         self,
         spec: D2DiagramSpec,
@@ -583,18 +583,18 @@ Active Inference Free Energy Principle: {
             D2GenerationResult with compilation results
         """
         start_time = time.time()
-        
+
         if not self.d2_available:
             return D2GenerationResult(
                 success=False,
                 diagram_name=spec.name,
                 error_message="D2 CLI not available. Install from https://d2lang.com"
             )
-        
+
         formats = formats or spec.output_formats
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Write D2 source file
         d2_file = output_dir / f"{spec.name}.d2"
         try:
@@ -605,29 +605,29 @@ Active Inference Free Energy Principle: {
                 diagram_name=spec.name,
                 error_message=f"Failed to write D2 file: {e}"
             )
-        
+
         output_files = []
         warnings = []
-        
+
         # Compile to each format
         for fmt in formats:
             output_file = output_dir / f"{spec.name}.{fmt}"
-            
+
             cmd = [
                 "d2",
                 f"--layout={spec.layout_engine}",
                 f"--theme={spec.theme}",
                 f"--pad={spec.pad}"
             ]
-            
+
             if spec.dark_theme is not None:
                 cmd.append(f"--dark-theme={spec.dark_theme}")
-            
+
             if spec.sketch_mode:
                 cmd.append("--sketch")
-            
+
             cmd.extend([str(d2_file), str(output_file)])
-            
+
             try:
                 result = subprocess.run(
                     cmd,
@@ -635,7 +635,7 @@ Active Inference Free Energy Principle: {
                     text=True,
                     timeout=30
                 )
-                
+
                 if result.returncode == 0:
                     output_files.append(output_file)
                     self.logger.info(f"Generated {fmt}: {output_file}")
@@ -643,7 +643,7 @@ Active Inference Free Energy Principle: {
                     warning = f"Failed to generate {fmt}: {result.stderr}"
                     warnings.append(warning)
                     self.logger.warning(warning)
-                    
+
             except subprocess.TimeoutExpired:
                 warning = f"Timeout compiling to {fmt}"
                 warnings.append(warning)
@@ -652,9 +652,9 @@ Active Inference Free Energy Principle: {
                 warning = f"Error compiling to {fmt}: {e}"
                 warnings.append(warning)
                 self.logger.warning(warning)
-        
+
         compilation_time = time.time() - start_time
-        
+
         return D2GenerationResult(
             success=len(output_files) > 0,
             diagram_name=spec.name,
@@ -663,7 +663,7 @@ Active Inference Free Energy Principle: {
             compilation_time=compilation_time,
             warnings=warnings
         )
-    
+
     def generate_all_diagrams_for_model(
         self,
         model_data: Dict[str, Any],
@@ -682,7 +682,7 @@ Active Inference Free Energy Principle: {
             List of D2GenerationResult for each generated diagram
         """
         results = []
-        
+
         # Generate model structure diagram
         try:
             struct_spec = self.generate_model_structure_diagram(model_data)
@@ -695,7 +695,7 @@ Active Inference Free Energy Principle: {
                 diagram_name="structure",
                 error_message=str(e)
             ))
-        
+
         # Generate POMDP diagram if applicable
         try:
             if self._is_pomdp_model(model_data):
@@ -704,21 +704,21 @@ Active Inference Free Energy Principle: {
                 results.append(pomdp_result)
         except Exception as e:
             self.logger.error(f"Failed to generate POMDP diagram: {e}")
-        
+
         return results
-    
+
     def _is_pomdp_model(self, model_data: Dict[str, Any]) -> bool:
         """Check if model appears to be a POMDP/Active Inference model"""
         state_space = model_data.get("state_space", {})
         annotations = model_data.get("actinf_annotations", {})
-        
+
         # Check for typical POMDP matrices
         pomdp_indicators = ["A", "B", "C", "D", "E", "F", "G"]
         has_pomdp_vars = any(var in state_space for var in pomdp_indicators)
         has_actinf_annotations = bool(annotations)
-        
+
         return has_pomdp_vars or has_actinf_annotations
-    
+
     def _sanitize_name(self, name: str) -> str:
         """Sanitize name for use in D2 identifiers"""
         import re
@@ -726,7 +726,7 @@ Active Inference Free Energy Principle: {
         sanitized = re.sub(r'[^\w\s-]', '', name)
         sanitized = re.sub(r'[-\s]+', '_', sanitized)
         return sanitized.lower()
-    
+
     def _get_d2_shape_for_variable(
         self,
         var_name: str,
@@ -736,7 +736,7 @@ Active Inference Free Energy Principle: {
         """Determine appropriate D2 shape for a variable"""
         # Check Active Inference ontology
         concept = annotations.get(var_name, "")
-        
+
         if "Matrix" in concept:
             return "hexagon"
         elif "Vector" in concept or "Preference" in concept:
@@ -749,16 +749,16 @@ Active Inference Free Energy Principle: {
             return "square"
         elif "Policy" in concept:
             return "parallelogram"
-        
+
         # Fallback based on dimensions
         dims = var_info.get("dimensions", [])
         if len(dims) == 2 and dims[0] > 1 and dims[1] > 1:
             return "hexagon"  # Matrix
         elif len(dims) == 1 or (len(dims) == 2 and (dims[0] == 1 or dims[1] == 1)):
             return "diamond"  # Vector
-        
+
         return "rectangle"
-    
+
     def _format_variable_label(
         self,
         var_name: str,
@@ -769,9 +769,9 @@ Active Inference Free Energy Principle: {
         dims = var_info.get("dimensions", [])
         dtype = var_info.get("type", "")
         concept = annotations.get(var_name, "")
-        
+
         dims_str = "×".join(map(str, dims)) if dims else ""
-        
+
         if concept:
             if dims_str:
                 return f"{var_name} [{dims_str}]\\n{concept}"
@@ -780,7 +780,7 @@ Active Inference Free Energy Principle: {
             if dims_str:
                 return f"{var_name} [{dims_str}]"
             return var_name
-    
+
     def _get_d2_arrow(self, conn_type: str) -> str:
         """Convert connection type to D2 arrow notation"""
         arrow_map = {
@@ -813,16 +813,16 @@ def process_gnn_file_with_d2(
         List of D2GenerationResult for generated diagrams
     """
     logger = logger or logging.getLogger(__name__)
-    
+
     # Try to load parsed model data
     model_data = None
-    
+
     # Look for parsed JSON from GNN processing step
     gnn_output_dir = Path("output/3_gnn_output")
     if gnn_output_dir.exists():
         model_name = gnn_file.stem
         parsed_json = gnn_output_dir / model_name / f"{model_name}_parsed.json"
-        
+
         if parsed_json.exists():
             try:
                 with open(parsed_json, 'r') as f:
@@ -830,7 +830,7 @@ def process_gnn_file_with_d2(
                 logger.info(f"Loaded parsed model data from {parsed_json}")
             except Exception as e:
                 logger.warning(f"Failed to load parsed JSON: {e}")
-    
+
     # Fallback: parse GNN file directly
     if model_data is None:
         try:
@@ -844,7 +844,7 @@ def process_gnn_file_with_d2(
                 diagram_name=gnn_file.stem,
                 error_message=f"Failed to parse GNN file: {e}"
             )]
-    
+
     # Generate D2 diagrams
     visualizer = D2Visualizer(logger=logger)
     results = visualizer.generate_all_diagrams_for_model(
@@ -852,6 +852,6 @@ def process_gnn_file_with_d2(
         output_dir,
         formats
     )
-    
+
     return results
 

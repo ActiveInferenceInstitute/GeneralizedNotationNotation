@@ -6,7 +6,7 @@ options, metric summaries, and batch processing through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 from . import process_visualization
 from . import get_visualization_options, get_module_info as _get_mod_info
 
-import inspect, importlib
 
 
 

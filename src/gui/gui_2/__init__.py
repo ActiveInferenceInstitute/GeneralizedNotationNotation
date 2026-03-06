@@ -39,9 +39,9 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
         export_filename = kwargs.get('export_filename', 'visual_model_gui2.md')
         open_browser = kwargs.get('open_browser', True)
         verbose = kwargs.get('verbose', False)
-        
+
         logger.info("🎯 Starting GUI 2: Visual Matrix Editor")
-        
+
         success = run_gui(
             target_dir=target_dir,
             output_dir=output_dir,
@@ -51,7 +51,7 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             export_filename=export_filename,
             open_browser=open_browser,
         )
-        
+
         result = {
             "gui_type": "gui_2",
             "description": "Visual Matrix Editor for GNN Models",
@@ -67,14 +67,14 @@ def gui_2(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
                 "Matrix dimension validation"
             ]
         }
-        
+
         if success:
             logger.info("✅ GUI 2 completed successfully")
         else:
             logger.error("❌ GUI 2 failed")
-            
+
         return result
-        
+
     except Exception as e:
         logger.error(f"❌ GUI 2 failed with exception: {e}")
         return {
@@ -111,7 +111,7 @@ __all__ = [
     "gui_2",
     "get_gui_2_info",
     "run_gui",
-    "create_matrix_from_gnn", 
+    "create_matrix_from_gnn",
     "update_gnn_from_matrix",
     "get_pomdp_template",
 ]

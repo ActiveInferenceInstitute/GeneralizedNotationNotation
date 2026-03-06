@@ -6,16 +6,14 @@ This script installs missing dependencies for all execution environments.
 """
 
 import subprocess
-import sys
 import logging
-from pathlib import Path
 
 logger = logging.getLogger(__name__)
 
 def install_python_dependencies():
     """Install missing Python dependencies."""
     logger.info("Installing Python dependencies...")
-    
+
     # Core dependencies
     core_deps = [
         "numpy",
@@ -28,7 +26,7 @@ def install_python_dependencies():
         "networkx",
         "matplotlib"
     ]
-    
+
     for dep in core_deps:
         logger.info(f"  Installing {dep}...")
         try:
@@ -48,7 +46,7 @@ def install_python_dependencies():
 def install_julia_dependencies():
     """Install Julia dependencies for ActiveInference.jl."""
     logger.info("Installing Julia dependencies...")
-    
+
     # Julia packages needed for ActiveInference.jl
     julia_packages = [
         "DelimitedFiles",
@@ -60,7 +58,7 @@ def install_julia_dependencies():
         "Random",
         "Distributions"
     ]
-    
+
     for pkg in julia_packages:
         logger.info(f"  Installing Julia package {pkg}...")
         try:
@@ -83,7 +81,7 @@ def install_julia_dependencies():
 def verify_installations():
     """Verify that all dependencies are properly installed."""
     logger.info("Verifying installations...")
-    
+
     # Test Python imports
     python_deps = ["numpy", "pymdp", "flax", "jax", "optax"]
     for dep in python_deps:
@@ -92,7 +90,7 @@ def verify_installations():
             logger.info(f"  ✅ {dep} (Python)")
         except ImportError:
             logger.warning(f"  ❌ {dep} (Python) - not available")
-    
+
     # Test Julia availability
     try:
         result = subprocess.run(
@@ -112,16 +110,16 @@ def main():
     """Main installation function."""
     logger.info("GNN Execution System Dependency Installer")
     logger.info("=" * 50)
-    
+
     # Install Python dependencies
     install_python_dependencies()
-    
+
     # Install Julia dependencies
     install_julia_dependencies()
-    
+
     # Verify installations
     verify_installations()
-    
+
     logger.info("Installation complete!")
     logger.info("If any dependencies failed to install, you may need to:")
     logger.info("   - Install them manually: uv pip install <package_name>")
@@ -129,4 +127,4 @@ def main():
     logger.info("   - Check your Python environment and virtual environment")
 
 if __name__ == "__main__":
-    main() 
+    main()

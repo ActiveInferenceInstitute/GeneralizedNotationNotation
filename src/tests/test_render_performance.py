@@ -9,7 +9,6 @@ import pytest
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -49,15 +48,15 @@ class TestRenderingSpeed:
     def test_framework_render_speed(self, tmp_path):
         """Test framework-specific rendering speed."""
         from render import get_supported_frameworks
-        
+
         frameworks = get_supported_frameworks()
-        
+
         # Just verify we can get frameworks quickly
         start = time.time()
         for _ in range(100):
             _ = get_supported_frameworks()
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0, f"100 framework lookups took {elapsed:.2f}s"
 
 
@@ -68,23 +67,23 @@ class TestRendererPerformance:
     def test_renderer_instantiation_speed(self):
         """Test renderer instantiation is fast."""
         from render import PyMDPRenderer
-        
+
         start = time.time()
         for _ in range(100):
             renderer = PyMDPRenderer()
         elapsed = time.time() - start
-        
+
         assert elapsed < 1.0, f"100 instantiations took {elapsed:.2f}s"
 
     @pytest.mark.slow
     def test_template_loading_speed(self):
         """Test template loading performance."""
         from render import get_module_info
-        
+
         start = time.time()
         info = get_module_info()
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.5, f"Module info took {elapsed:.2f}s"
         assert info is not None
 
@@ -145,14 +144,14 @@ class TestRenderThroughput:
         """Test batch rendering throughput."""
         if not sample_gnn_files or len(sample_gnn_files) < 2:
             pytest.skip("Need multiple sample GNN files")
-        
+
         from render import process_render
         import logging
-        
+
         logger = logging.getLogger("test_render")
         output_dir = tmp_path / "batch_output"
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         start = time.time()
         result = process_render(
             target_dir=sample_gnn_files[0].parent,
@@ -160,10 +159,10 @@ class TestRenderThroughput:
             logger=logger
         )
         elapsed = time.time() - start
-        
+
         files_per_second = len(sample_gnn_files) / elapsed if elapsed > 0 else 0
         print(f"\nRender throughput: {files_per_second:.2f} files/sec")
-        
+
         # Should process at reasonable rate
         assert elapsed < 30.0
 
@@ -171,19 +170,19 @@ class TestRenderThroughput:
     def test_render_validation_speed(self):
         """Test render output validation is fast."""
         from render import validate_render
-        
+
         # Sample render output
         render_output = {
             "code": "import pymdp\n# Generated code",
             "framework": "pymdp",
             "status": "success"
         }
-        
+
         start = time.time()
         for _ in range(100):
             validate_render(render_output)
         elapsed = time.time() - start
-        
+
         assert elapsed < 0.5, f"100 validations took {elapsed:.2f}s"
 
 
@@ -194,16 +193,16 @@ class TestRenderBenchmarks:
     def test_render_initialization_benchmark(self):
         """Benchmark render module initialization."""
         times = []
-        
+
         for _ in range(5):
             start = time.time()
             from render import PyMDPRenderer
             renderer = PyMDPRenderer()
             times.append(time.time() - start)
-        
+
         avg = sum(times) / len(times)
         print(f"\nRenderer init benchmark: avg={avg:.4f}s")
-        
+
         assert avg < 0.5
 
     @pytest.mark.slow

@@ -7,7 +7,6 @@ demonstrating various configurations and capabilities.
 """
 
 import asyncio
-import os
 import sys
 from pathlib import Path
 import logging
@@ -31,11 +30,8 @@ except Exception:
 from src.llm import (
     LLMProcessor,
     AnalysisType,
-    ProviderType,
     LLMConfig,
     LLMMessage,
-    initialize_global_processor,
-    create_processor_from_env,
     load_api_keys_from_env,
     get_default_provider_configs
 )
@@ -99,19 +95,19 @@ ModelTimeHorizon: 10
 def test_environment_setup():
     """Test that environment variables are properly loaded."""
     print("🔧 Testing Environment Setup...")
-    
+
     api_keys = load_api_keys_from_env()
     configs = get_default_provider_configs()
-    
+
     print(f"✅ API Keys loaded: {list(api_keys.keys())}")
     print(f"✅ Provider configs: {list(configs.keys())}")
-    
+
     # Check specific keys (without exposing them)
     if 'openai' in api_keys:
         print(f"✅ OpenAI key format: {'Valid' if api_keys['openai'].startswith('sk-') else 'Invalid'}")
     if 'openrouter' in api_keys:
         print(f"✅ OpenRouter key format: {'Valid' if api_keys['openrouter'].startswith('sk-or-') else 'Invalid'}")
-    
+
     # Basic assertions for offline test
     assert isinstance(api_keys, dict)
     assert isinstance(configs, dict)
@@ -120,7 +116,7 @@ def test_environment_setup():
 def test_provider_initialization():
     """Test individual provider initialization."""
     print("\n🚀 Testing Provider Initialization...")
-    
+
     processor = LLMProcessor()
 
     initialized = False
@@ -142,7 +138,7 @@ def test_provider_initialization():
 def test_basic_analysis():
     """Test basic GNN analysis functionality."""
     print("\n📊 Testing Basic Analysis...")
-    
+
     # Test summary analysis
     try:
         # Don't actually initialize external providers; simulate a response object
@@ -153,16 +149,16 @@ def test_basic_analysis():
                 self.provider = None
                 self.usage = {"tokens": 0}
         response = _Resp()
-        
-        print(f"✅ Summary Analysis Success!")
+
+        print("✅ Summary Analysis Success!")
         print(f"   Provider: {response.provider}")
         print(f"   Model: {response.model_used}")
         print(f"   Content length: {len(response.content)} characters")
         print(f"   Usage: {response.usage}")
         print(f"   First 200 chars: {response.content[:200]}...")
-        
+
         assert response is not None
-        
+
     except Exception as e:
         print(f"❌ Summary Analysis Failed: {e}")
         return None
@@ -170,7 +166,7 @@ def test_basic_analysis():
 def test_different_analysis_types():
     """Test different analysis types."""
     print("\n🔍 Testing Different Analysis Types...")
-    
+
     analysis_types = [
         AnalysisType.STRUCTURE,
         AnalysisType.QUESTIONS,
@@ -180,32 +176,32 @@ def test_different_analysis_types():
         try:
             _ = analysis_type
             print(f"✅ {analysis_type.value.upper()} Analysis Success!")
-            print(f"   Provider: stub")
-            print(f"   Content length: 7 characters")
+            print("   Provider: stub")
+            print("   Content length: 7 characters")
         except Exception as e:
             print(f"❌ {analysis_type.value.upper()} Analysis Failed: {e}")
 
 def test_provider_specific_calls():
     """Test calling specific providers."""
     print("\n🎯 Testing Provider-Specific Calls...")
-    
+
     available_providers = []
-    
+
     for provider_type in available_providers:
         try:
             _ = provider_type
-            
+
             print(f"✅ {provider_type.value.upper()} Provider Success!")
-            print(f"   Model: stub")
-            print(f"   Content length: 7 characters")
-            
+            print("   Model: stub")
+            print("   Content length: 7 characters")
+
         except Exception as e:
             print(f"❌ {provider_type.value.upper()} Provider Failed: {e}")
 
 def test_custom_configurations():
     """Test custom LLM configurations."""
     print("\n⚙️ Testing Custom Configurations...")
-    
+
     # Test different configurations
     configs = [
         LLMConfig(
@@ -224,7 +220,7 @@ def test_custom_configurations():
             top_p=0.9
         )
     ]
-    
+
     for i, config in enumerate(configs):
         try:
             _ = config
@@ -234,48 +230,48 @@ def test_custom_configurations():
             print(f"   Provider: {response.provider}")
             print(f"   Model: {response.model_used}")
             print(f"   Usage: {response.usage}")
-            
+
         except Exception as e:
             print(f"❌ Config {i+1} Failed: {e}")
 
 def test_streaming_responses():
     """Test streaming response functionality."""
     print("\n🌊 Testing Streaming Responses...")
-    
+
     try:
         messages = [
             LLMMessage(
-                role="system", 
+                role="system",
                 content="You are an expert in Active Inference and GNN specifications."
             ),
             LLMMessage(
-                role="user", 
+                role="user",
                 content=f"Provide a brief summary of this GNN model:\n{SAMPLE_GNN_CONTENT}"
             )
         ]
-        
+
         config = LLMConfig(max_tokens=500, temperature=0.3)
-        
+
         print("✅ Starting stream...")
         response_chunks = []
-        
+
         # Skip streaming in offline test environment; simulate chunks
         response_chunks = ["chunk1", "chunk2"]
-        
+
         print(f"\n✅ Streaming completed! Total chunks: {len(response_chunks)}")
-        
+
     except Exception as e:
         print(f"❌ Streaming Failed: {e}")
 
 def test_provider_comparison():
     """Test comparing responses from multiple providers."""
     print("\n🔄 Testing Provider Comparison...")
-    
+
     try:
         results = {}
-        
+
         print(f"✅ Comparison completed for {len(results)} providers")
-        
+
         for provider_name, response in results.items():
             if response:
                 print(f"✅ {provider_name.upper()}:")
@@ -284,21 +280,21 @@ def test_provider_comparison():
                 print(f"   Usage: {response.usage}")
             else:
                 print(f"❌ {provider_name.upper()}: Failed")
-                
+
     except Exception as e:
         print(f"❌ Provider Comparison Failed: {e}")
 
 def test_error_handling():
     """Test error handling and fallback mechanisms."""
     print("\n🛡️ Testing Error Handling...")
-    
+
     # Test with invalid model
     try:
         config = LLMConfig(model="invalid-model-name")
         _ = config
         print("✅ Invalid model handled gracefully")
-        print(f"   Fallback provider: stub")
-        
+        print("   Fallback provider: stub")
+
     except Exception as e:
         print(f"⚠️ Error handling test: {e}")
 
@@ -332,18 +328,18 @@ def main():
     """Run all tests."""
     print("🧪 LLM System Comprehensive Test Suite")
     print("=" * 50)
-    
+
     try:
         # Test environment setup
         api_keys, configs = test_environment_setup()
-        
+
         # Initialize processor
         processor = test_provider_initialization()
-        
+
         if not processor or not processor.get_available_providers():
             print("❌ No providers available, stopping tests")
             return
-        
+
         # Run functionality tests
         test_basic_analysis()
         test_different_analysis_types()
@@ -352,21 +348,21 @@ def main():
         test_streaming_responses()
         test_provider_comparison()
         test_error_handling()
-        
+
         # Test global processor
         test_global_processor()
-        
+
         # Clean up
         if processor:
             try:
                 asyncio.run(processor.close())
             except Exception as exc:
                 print(f"⚠️ Processor close failed: {exc}")
-        
+
         print("\n" + "=" * 50)
         print("🎉 LLM System Test Suite Completed!")
         print("✅ All major functionality verified")
-        
+
     except Exception as e:
         print(f"❌ Test suite failed: {e}")
         import traceback

@@ -3,142 +3,24 @@
   "model_name": "markov_chain",
   "script_name": "Simple Markov Chain_pymdp.py",
   "script_path": "output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.638308,
-  "timestamp": "2026-03-05T10:35:37.262823",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.741552,
+  "timestamp": "2026-03-06T09:49:20.033303",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
-    "actions": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-05 10:35:38,706 - INFO - A matrix shape: (3, 3)\n2026-03-05 10:35:38,707 - INFO - B matrix shape: (3, 3)\n2026-03-05 10:35:38,707 - INFO - C vector shape: (3,)\n2026-03-05 10:35:38,707 - INFO - D vector shape: (3,)\n2026-03-05 10:35:38,707 - INFO - Starting PyMDP simulation for Simple Markov Chain\n2026-03-05 10:35:38,707 - INFO - Output directory: output/pymdp_simulations/Simple Markov Chain\n2026-03-05 10:35:38,707 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-05 10:35:38,707 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-05 10:35:38,707 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-05 10:35:38,707 - INFO - Starting simple PyMDP simulation\n2026-03-05 10:35:38,707 - INFO - Expanded 2D B matrix (3, 3) to 3D (3, 3, 1) (passive model, 1 action)\n2026-03-05 10:35:38,707 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-05 10:35:38,707 - INFO - Created matrices: A=(3, 3), B=(3, 3, 1), C=(3,), D=(3,)\n2026-03-05 10:35:38,707 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-05 10:35:38,707 - INFO - Successfully created PyMDP agent\n2026-03-05 10:35:38,707 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-05 10:35:38,707 - INFO - Step 0: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 1: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 2: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 3: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 4: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 5: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 6: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-05 10:35:38,708 - INFO - Step 7: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,709 - INFO - Step 8: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,709 - INFO - Step 9: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,709 - INFO - Step 10: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,710 - INFO - Step 11: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,710 - INFO - Step 12: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-05 10:35:38,710 - INFO - Step 13: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-05 10:35:38,710 - INFO - Step 14: true_s=0, obs=0, belief=[1. 0. 0.], action=0.0\n2026-03-05 10:35:38,710 - INFO - Saving raw simulation data for analysis step...\n2026-03-05 10:35:38,711 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Simple Markov Chain/simulation_results.json\n2026-03-05 10:35:38,711 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-05 10:35:38,711 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-05 10:35:38,711 - INFO - PyMDP simulation completed successfully\n2026-03-05 10:35:38,711 - INFO - \u2713 Simulation completed successfully!\n2026-03-05 10:35:38,711 - INFO - Results summary:\n2026-03-05 10:35:38,711 - INFO -   Correlation ID: render_generated_script\n2026-03-05 10:35:38,711 - INFO -   Success: True\n2026-03-05 10:35:38,711 - INFO -   Output: output/pymdp_simulations/Simple Markov Chain\n",
-    "beliefs": [
-      [
-        1.0,
-        5.999999999999991e-17,
-        3.9999999999999824e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        3.4999999999999864e-16,
-        0.9999999999999996,
-        5.0000000000000067e-17
-      ],
-      [
-        7.499999999999981e-17,
-        1.0,
-        7.499999999999981e-17
-      ],
-      [
-        0.9999999999999998,
-        1.333333333333327e-16,
-        9.999999999999963e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ],
-      [
-        1.0,
-        2.857142857142847e-17,
-        1.428571428571431e-17
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_error": "Execute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nExecute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/markov_chain/pymdp/Simple Markov Chain_pymdp.py\", line 65, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 27, in <module>\n    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/__init__.py\", line 45, in <module>\n    from .post_simulation import (\nImportError: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py)\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 221,
-    "stderr_length": 3350,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/pymdp"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/pymdp/simulation_data/Simple Markov Chain_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
+    "stderr_length": 1233,
+    "output_directory": "output/12_execute_output/markov_chain/pymdp"
   }
 }

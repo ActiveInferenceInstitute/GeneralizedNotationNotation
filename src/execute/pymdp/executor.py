@@ -8,21 +8,8 @@ This module provides PyMDP simulation execution capabilities.
 import logging
 import traceback
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
-from datetime import datetime
+from typing import Dict, Any, Optional, Tuple
 
-from .pymdp_simulation import PyMDPSimulation
-from .pymdp_utils import (
-    convert_numpy_for_json,
-    safe_json_dump,
-    safe_pickle_dump,
-    clean_trace_for_serialization,
-    save_simulation_results,
-    generate_simulation_summary,
-    create_output_directory_with_timestamp,
-    format_duration
-)
-from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations
 
 logger = logging.getLogger(__name__)
 
@@ -46,22 +33,22 @@ def execute_pymdp_simulation_from_gnn(
     """
     try:
         logger.info(f"Starting PyMDP simulation from GNN spec (correlation_id: {correlation_id})")
-        
+
         # Create enhanced context
         context = create_enhanced_pymdp_context(
             gnn_spec, output_dir, correlation_id, config_overrides
         )
-        
+
         # Execute simulation
         success, results = execute_pymdp_simulation(gnn_spec, output_dir, correlation_id)
-        
+
         if success:
             logger.info(f"PyMDP simulation completed successfully (correlation_id: {correlation_id})")
         else:
             logger.error(f"PyMDP simulation failed (correlation_id: {correlation_id})")
-        
+
         return success, results
-        
+
     except Exception as e:
         logger.error(f"PyMDP simulation execution failed: {e}")
         return False, {"error": str(e), "traceback": traceback.format_exc()}
@@ -84,21 +71,21 @@ def execute_pymdp_simulation(
     """
     try:
         logger.info(f"Executing PyMDP simulation (correlation_id: {correlation_id})")
-        
+
         # Use simple simulation based on official PyMDP tutorial
         from .simple_simulation import run_simple_pymdp_simulation
-        
+
         success, results = run_simple_pymdp_simulation(gnn_spec, output_dir)
-        
+
         if success:
-            logger.info(f"PyMDP simulation completed successfully")
+            logger.info("PyMDP simulation completed successfully")
             results["correlation_id"] = correlation_id
             return True, results
         else:
             logger.error(f"PyMDP simulation failed: {results.get('error', 'Unknown')}")
             results["correlation_id"] = correlation_id
             return False, results
-            
+
     except Exception as e:
         logger.error(f"PyMDP simulation execution failed: {e}")
         import traceback

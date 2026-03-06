@@ -22,7 +22,6 @@ import pytest
 import json
 import logging
 from pathlib import Path
-from typing import Dict, Any
 
 # Add src to path for imports
 import sys
@@ -51,7 +50,7 @@ class TestExecuteOverall:
     def sample_render_output(self, safe_filesystem):
         """Create sample render output directory structure."""
         base = safe_filesystem.create_dir("output/11_render_output")
-        
+
         # Create pymdp directory with sample script
         pymdp_dir = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")
         pymdp_script = safe_filesystem.create_file(
@@ -62,7 +61,7 @@ import json
 print(json.dumps({"status": "success", "framework": "pymdp"}))
 """
         )
-        
+
         # Create rxinfer directory with sample script
         rxinfer_dir = safe_filesystem.create_dir("output/11_render_output/test_model/rxinfer")
         rxinfer_script = safe_filesystem.create_file(
@@ -71,7 +70,7 @@ print(json.dumps({"status": "success", "framework": "pymdp"}))
 println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
 """
         )
-        
+
         return {
             "base": base,
             "pymdp_script": pymdp_script,
@@ -89,7 +88,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test framework parameter parsing with 'all' preset."""
         logger = logging.getLogger("test")
         frameworks = parse_frameworks_parameter("all", logger)
-        
+
         assert isinstance(frameworks, list)
         assert "pymdp" in frameworks
         assert "jax" in frameworks
@@ -100,7 +99,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test framework parameter parsing with 'lite' preset."""
         logger = logging.getLogger("test")
         frameworks = parse_frameworks_parameter("lite", logger)
-        
+
         assert isinstance(frameworks, list)
         assert "pymdp" in frameworks
         # Lite should be a subset of all
@@ -110,7 +109,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test framework parameter parsing with custom comma-separated list."""
         logger = logging.getLogger("test")
         frameworks = parse_frameworks_parameter("pymdp,jax", logger)
-        
+
         assert isinstance(frameworks, list)
         assert "pymdp" in frameworks
         assert "jax" in frameworks
@@ -125,7 +124,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             "render_output/model/pymdp/script.py",
             "# PyMDP script"
         )
-        
+
         framework_dirs = {
             "pymdp": "pymdp",
             "rxinfer": "rxinfer",
@@ -133,7 +132,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
             "discopy": "discopy",
             "activeinference_jl": "activeinference_jl"
         }
-        
+
         framework = determine_script_framework(pymdp_script, base, framework_dirs)
         assert framework == "pymdp"
 
@@ -142,24 +141,24 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test script discovery in render output directory."""
         logger = logging.getLogger("test")
         base = sample_render_output["base"]
-        
+
         # Find all scripts
         scripts = find_executable_scripts(base, True, logger, ["pymdp", "rxinfer"])
-        
+
         assert isinstance(scripts, list)
         # Should find at least the scripts we created
         if len(scripts) > 0:
             assert all("path" in s or "script_path" in s for s in scripts)
 
-    @pytest.mark.fast  
+    @pytest.mark.fast
     def test_find_executable_scripts_with_framework_filter(self, sample_render_output):
         """Test script discovery with framework filtering."""
         logger = logging.getLogger("test")
         base = sample_render_output["base"]
-        
+
         # Find only pymdp scripts
         scripts = find_executable_scripts(base, True, logger, ["pymdp"])
-        
+
         assert isinstance(scripts, list)
         # Should filter to only pymdp
         for script in scripts:
@@ -170,19 +169,19 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
     def test_collect_execution_outputs(self, safe_filesystem):
         """Test collection of execution outputs."""
         logger = logging.getLogger("test")
-        
+
         # Create a script that generates output
         script_dir = safe_filesystem.create_dir("scripts")
         script = safe_filesystem.create_file(
             "scripts/test_script.py",
             "print('test output')"
         )
-        
+
         output_dir = safe_filesystem.create_dir("exec_output")
-        
+
         # Create some dummy output files that would be alongside the script
         safe_filesystem.create_file("scripts/output.json", '{"result": "ok"}')
-        
+
         # Test collection
         try:
             result = collect_execution_outputs(script, output_dir, "pymdp", logger)
@@ -197,11 +196,11 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test the execution processing wrapper."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
-        
+
         try:
             success = process_execute(input_dir, output_dir, verbose=True)
             assert isinstance(success, bool)
-            
+
             # Check that the execution summary was created
             summary_file = output_dir / "execution_summary.json"
             if summary_file.exists():
@@ -209,7 +208,7 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
                     summary = json.load(f)
                 assert "timestamp" in summary
                 assert "success" in summary
-                   
+
         except Exception as e:
             pytest.fail(f"Execution process crashed: {e}")
 
@@ -218,26 +217,26 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         """Test execution with actual render output present."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
-        
+
         # The sample_render_output fixture creates output/11_render_output
         # process_execute should find these scripts
-        
+
         try:
             success = process_execute(
-                input_dir, 
-                output_dir, 
+                input_dir,
+                output_dir,
                 verbose=True,
                 frameworks="pymdp"  # Only test pymdp to keep it fast
             )
             assert isinstance(success, bool)
-            
+
             # Check summary was created
             summary_file = output_dir / "execution_summary.json"
             if summary_file.exists():
                 with open(summary_file) as f:
                     summary = json.load(f)
                 assert "scripts_found" in summary or "total_scripts" in summary or "timestamp" in summary
-                   
+
         except Exception as e:
             pytest.fail(f"Execution with render output crashed: {e}")
 
@@ -270,19 +269,19 @@ print(json.dumps(result))
         """Test execution of a simple script."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
-        
+
         script_info = {
             "path": executable_python_script,
             "script_path": executable_python_script,
             "framework": "test",
             "name": "test_script"
         }
-        
+
         try:
             result = execute_single_script(script_info, results_dir, True, logger)
             assert isinstance(result, dict)
             assert "success" in result or "status" in result or "returncode" in result
-        except Exception as e:
+        except Exception:
             # Script execution might fail in test environment, that's ok
             # We just want to verify the function runs without crashing
             pass
@@ -292,7 +291,7 @@ print(json.dumps(result))
         """Test that script execution handles timeouts gracefully."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
-        
+
         # Create a script that would hang
         hanging_script = safe_filesystem.create_file(
             "hanging_script.py",
@@ -301,14 +300,14 @@ import time
 time.sleep(1000)  # Sleep for a long time
 """
         )
-        
+
         script_info = {
             "path": hanging_script,
             "script_path": hanging_script,
             "framework": "test",
             "name": "hanging_script"
         }
-        
+
         # This should return with timeout status, not hang
         try:
             result = execute_single_script(script_info, results_dir, True, logger)
@@ -329,7 +328,7 @@ class TestExecuteIntegration:
         # Create the expected directory structure
         render_output = safe_filesystem.create_dir("output/11_render_output")
         execute_output = safe_filesystem.create_dir("output/12_execute_output")
-        
+
         # Create a model subdirectory with a pymdp script
         model_dir = safe_filesystem.create_dir("output/11_render_output/actinf_model/pymdp")
         script = safe_filesystem.create_file(
@@ -339,11 +338,11 @@ import json
 print(json.dumps({"status": "executed", "model": "actinf_model"}))
 """
         )
-        
+
         # Run execution
         logger = logging.getLogger("test")
         input_dir = safe_filesystem.create_dir("input")
-        
+
         try:
             success = process_execute(
                 input_dir,
@@ -362,14 +361,14 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
         """Test that execution summary has expected structure."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
-        
+
         process_execute(input_dir, output_dir, verbose=True)
-        
+
         summary_file = output_dir / "execution_summary.json"
         if summary_file.exists():
             with open(summary_file) as f:
                 summary = json.load(f)
-            
+
             # Verify expected fields
             assert isinstance(summary, dict)
             # Common fields in execution summaries
@@ -391,7 +390,7 @@ class TestJAXExecute:
     def jax_render_output(self, safe_filesystem):
         """Create sample render output with a JAX script."""
         base = safe_filesystem.create_dir("output/11_render_output")
-        
+
         # Create jax directory with a valid Python script
         jax_dir = safe_filesystem.create_dir("output/11_render_output/actinf_model/jax")
         jax_script = safe_filesystem.create_file(
@@ -428,7 +427,7 @@ print(json.dumps(result))
 print("JAX Active Inference model test successful!")
 '''
         )
-        
+
         return {
             "base": base,
             "jax_script": jax_script,
@@ -439,10 +438,10 @@ print("JAX Active Inference model test successful!")
         """Test that JAX scripts are discovered in render output."""
         logger = logging.getLogger("test")
         base = jax_render_output["base"]
-        
+
         # Find JAX scripts specifically
         scripts = find_executable_scripts(base, True, logger, ["jax"])
-        
+
         assert isinstance(scripts, list)
         assert len(scripts) > 0, "Should discover JAX scripts in jax/ directory"
         # Verify they are identified as jax framework
@@ -454,7 +453,7 @@ print("JAX Active Inference model test successful!")
         """Test execution of a JAX-style script via execute_single_script."""
         logger = logging.getLogger("test")
         results_dir = safe_filesystem.create_dir("results")
-        
+
         script_info = {
             "path": jax_render_output["jax_script"],
             "script_path": jax_render_output["jax_script"],
@@ -464,7 +463,7 @@ print("JAX Active Inference model test successful!")
             "relative_path": Path("actinf_model/jax/actinf_model_jax.py"),
             "size_bytes": jax_render_output["jax_script"].stat().st_size
         }
-        
+
         try:
             result = execute_single_script(script_info, results_dir, True, logger)
             assert isinstance(result, dict), "Execution result should be a dict"
@@ -482,7 +481,7 @@ print("JAX Active Inference model test successful!")
             "render_output/model/jax/model_jax.py",
             "# JAX Active Inference script"
         )
-        
+
         framework_dirs = {
             "pymdp": "pymdp",
             "rxinfer": "rxinfer",
@@ -490,7 +489,7 @@ print("JAX Active Inference model test successful!")
             "discopy": "discopy",
             "activeinference_jl": "activeinference_jl"
         }
-        
+
         framework = determine_script_framework(jax_script, base, framework_dirs)
         assert framework == "jax", f"Should detect jax framework, got: {framework}"
 
@@ -499,7 +498,7 @@ print("JAX Active Inference model test successful!")
         """Test execution processing with JAX framework filter."""
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output_exec")
-        
+
         try:
             success = process_execute(
                 input_dir,
@@ -508,7 +507,7 @@ print("JAX Active Inference model test successful!")
                 frameworks="jax"
             )
             assert isinstance(success, bool)
-            
+
             # Check summary was created
             summary_file = output_dir / "execution_summary.json"
             if summary_file.exists():

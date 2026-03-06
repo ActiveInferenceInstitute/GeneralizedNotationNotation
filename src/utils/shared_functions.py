@@ -11,7 +11,7 @@ import json
 import logging
 from pathlib import Path
 from typing import List, Dict, Any, Optional, Tuple
-from . import log_step_start, log_step_success, log_step_warning, log_step_error
+from . import log_step_success, log_step_warning, log_step_error
 
 def find_gnn_files(target_dir: Path, recursive: bool = False) -> List[Path]:
     """
@@ -26,7 +26,7 @@ def find_gnn_files(target_dir: Path, recursive: bool = False) -> List[Path]:
     """
     pattern = "**/*.md" if recursive else "*.md"
     gnn_files = list(target_dir.glob(pattern))
-    
+
     # Filter for actual GNN files (containing GNN-specific content)
     filtered_files = []
     for file_path in gnn_files:
@@ -38,7 +38,7 @@ def find_gnn_files(target_dir: Path, recursive: bool = False) -> List[Path]:
                     filtered_files.append(file_path)
         except Exception:
             continue
-    
+
     return filtered_files
 
 def parse_gnn_sections(content: str) -> Dict[str, Any]:
@@ -52,29 +52,29 @@ def parse_gnn_sections(content: str) -> Dict[str, Any]:
         Dictionary with parsed sections
     """
     sections = {}
-    
+
     # Common GNN section headers
     section_headers = [
         'ModelName', 'ModelAnnotation', 'StateSpaceBlock', 'Connections',
         'InitialParameterization', 'Equations', 'Time', 'ActInfOntologyAnnotation'
     ]
-    
+
     for header in section_headers:
         pattern = rf"^##\s*{re.escape(header)}\s*$"
         match = re.search(pattern, content, re.MULTILINE | re.IGNORECASE)
-        
+
         if match:
             # Extract content between this header and the next header
             start_pos = match.end()
             next_header_match = re.search(r"^##\s+\w+", content[start_pos:], re.MULTILINE)
-            
+
             if next_header_match:
                 section_content = content[start_pos:start_pos + next_header_match.start()]
             else:
                 section_content = content[start_pos:]
-            
+
             sections[header] = section_content.strip()
-    
+
     return sections
 
 def extract_model_parameters(content: str) -> Dict[str, Any]:
@@ -88,20 +88,20 @@ def extract_model_parameters(content: str) -> Dict[str, Any]:
         Dictionary of parameter names and values
     """
     parameters = {}
-    
+
     # Look for ModelParameters section
     pattern = r"^##\s*ModelParameters\s*$"
     match = re.search(pattern, content, re.MULTILINE | re.IGNORECASE)
-    
+
     if match:
         start_pos = match.end()
         next_header_match = re.search(r"^##\s+\w+", content[start_pos:], re.MULTILINE)
-        
+
         if next_header_match:
             param_section = content[start_pos:start_pos + next_header_match.start()]
         else:
             param_section = content[start_pos:]
-        
+
         # Parse parameter assignments
         param_pattern = r"^\s*(\w+)\s*=\s*(.+?)(?:\s*###.*)?$"
         for line in param_section.splitlines():
@@ -111,16 +111,16 @@ def extract_model_parameters(content: str) -> Dict[str, Any]:
                 if param_match:
                     param_name = param_match.group(1)
                     param_value_str = param_match.group(2).strip()
-                    
+
                     # Try to parse the value
                     try:
                         import ast
                         param_value = ast.literal_eval(param_value_str)
                     except (ValueError, SyntaxError):
                         param_value = param_value_str
-                    
+
                     parameters[param_name] = param_value
-    
+
     return parameters
 
 def create_processing_report(
@@ -160,10 +160,10 @@ def create_processing_report(
         "errors": errors,
         "warnings": warnings
     }
-    
+
     if additional_info:
         report.update(additional_info)
-    
+
     return report
 
 def save_processing_report(
@@ -184,10 +184,10 @@ def save_processing_report(
     """
     output_dir.mkdir(parents=True, exist_ok=True)
     report_path = output_dir / filename
-    
+
     with open(report_path, 'w', encoding='utf-8') as f:
         json.dump(report, f, indent=2, ensure_ascii=False)
-    
+
     return report_path
 
 def validate_file_paths(*paths: Path) -> Tuple[bool, List[str]]:
@@ -201,13 +201,13 @@ def validate_file_paths(*paths: Path) -> Tuple[bool, List[str]]:
         Tuple of (is_valid, list_of_errors)
     """
     errors = []
-    
+
     for path in paths:
         if not path.exists():
             errors.append(f"Path does not exist: {path}")
         elif not os.access(path, os.R_OK):
             errors.append(f"Path is not readable: {path}")
-    
+
     return len(errors) == 0, errors
 
 def ensure_output_directory(output_dir: Path, logger: logging.Logger) -> bool:
@@ -223,12 +223,12 @@ def ensure_output_directory(output_dir: Path, logger: logging.Logger) -> bool:
     """
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Test write access
         test_file = output_dir / ".test_write_access"
         test_file.write_text("test")
         test_file.unlink()
-        
+
         return True
     except Exception as e:
         log_step_error(logger, f"Failed to create/validate output directory {output_dir}: {e}")
@@ -263,6 +263,6 @@ def log_processing_summary(
         log_step_warning(logger, f"{step_name} completed with issues: {successful_files}/{total_files} files successful ({success_rate:.1f}%)")
     else:
         log_step_error(logger, f"{step_name} failed: {failed_files}/{total_files} files failed")
-    
+
     if warnings > 0:
-        logger.warning(f"{warnings} warnings were generated during processing") 
+        logger.warning(f"{warnings} warnings were generated during processing")

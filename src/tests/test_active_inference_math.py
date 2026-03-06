@@ -8,7 +8,6 @@ using known-correct mathematical inputs/outputs.
 
 import numpy as np
 import pytest
-from pathlib import Path
 
 # Import the functions under test
 from analysis.post_simulation import (

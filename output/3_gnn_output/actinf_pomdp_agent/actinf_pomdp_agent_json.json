@@ -124,7 +124,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-05T10:37:35.192571",
+  "created_at": "2026-03-06T09:42:43.732995",
   "equations": [],
   "extensions": {
     "footer": "Active Inference POMDP Agent v1 - GNN Representation. \nCurrently there is a planning horizon of 1 step (no deep planning), no precision modulation, no hierarchical nesting.",
@@ -132,7 +132,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Active Inference POMDP Agent",
-  "modified_at": "2026-03-05T10:37:35.192572",
+  "modified_at": "2026-03-06T09:42:43.732996",
   "ontology_mappings": [
     {
       "description": null,

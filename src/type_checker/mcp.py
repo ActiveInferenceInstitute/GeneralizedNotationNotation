@@ -4,9 +4,8 @@ MCP (Model Context Protocol) integration for type_checker utilities.
 This module exposes utility functions from the type_checker module through MCP.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -85,7 +84,7 @@ def validate_single_gnn_file_mcp(gnn_file_path: str, strict: bool = False, estim
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register type_checker utility tools with the MCP."""
-    
+
     mcp_instance.register_tool(
         "validate_gnn_files",
         validate_gnn_files_mcp,
@@ -98,7 +97,7 @@ def register_tools(mcp_instance):
         },
         "Validate GNN files for syntax and type correctness."
     )
-    
+
     mcp_instance.register_tool(
         "validate_single_gnn_file",
         validate_single_gnn_file_mcp,
@@ -109,5 +108,5 @@ def register_tools(mcp_instance):
         },
         "Validate a single GNN file for syntax and type correctness."
     )
-    
+
     logger.info("Type checker module MCP tools registered.")

@@ -46,7 +46,7 @@ def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
                 gnn_files.append(file_path)
     except Exception as e:
         logger.error(f"Failed to find GNN files in {directory}: {e}")
-    
+
     return gnn_files
 
 def get_output_paths(base_output_dir: Path) -> Dict[str, Path]:
@@ -251,4 +251,4 @@ def setup_uv_project_structure(base_path: Path) -> bool:
         return success
     except Exception as e:
         logger.error(f"Failed to setup UV project structure: {e}")
-        return False 
+        return False

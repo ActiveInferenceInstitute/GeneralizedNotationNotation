@@ -46,7 +46,7 @@ STEP_METADATA = {
 
 class StepConfig:
     """Configuration for a pipeline step."""
-    
+
     def __init__(self, step_name: str, **kwargs):
         self.step_name = step_name
         self.enabled = kwargs.get('enabled', True)
@@ -57,11 +57,11 @@ class StepConfig:
 
 class PipelineConfig:
     """Pipeline configuration manager."""
-    
+
     def __init__(self, config_path: Optional[Path] = None):
         self.config_path = config_path or Path("pipeline_config.yaml")
         self.config = self._load_config()
-    
+
     def _load_config(self) -> Dict[str, Any]:
         """Load configuration from file."""
         if self.config_path.exists():
@@ -80,12 +80,12 @@ class PipelineConfig:
                 # Any parsing error should not crash pipeline; return empty config
                 return {}
         return {}
-    
+
     def get_step_config(self, step_name: str) -> StepConfig:
         """Get configuration for a specific step."""
         step_data = self.config.get(step_name, {})
         return StepConfig(step_name, **step_data)
-    
+
     def save_config(self):
         """Save configuration to file."""
         try:
@@ -181,13 +181,13 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
 
     # Get expected output directory name for this script
     expected_dir_name = f"{normalized}_output"
-    
+
     # Check if base_output_dir already ends with the expected directory name
     # This prevents nested directories like "10_ontology_output/10_ontology_output"
     if base_output_dir.name == expected_dir_name:
         # Already at the correct output directory - return as is
         return base_output_dir
-    
+
     # Check if base_output_dir is already inside a step output directory
     # (e.g., "output/10_ontology_output/subdir" should not create another layer)
     if "_output" in base_output_dir.name and base_output_dir.parent.name != "output":

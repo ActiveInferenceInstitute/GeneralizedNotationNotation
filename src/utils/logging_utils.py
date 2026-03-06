@@ -9,10 +9,8 @@ It serves as the central import point for logging functionality.
 import logging
 import sys
 import threading
-import time
 from pathlib import Path
-from typing import Optional, Dict, Any
-from datetime import datetime
+from typing import Dict, Any
 
 # Import PerformanceTracker from the dedicated module
 from .performance_tracker import PerformanceTracker, performance_tracker

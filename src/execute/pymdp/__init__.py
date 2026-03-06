@@ -56,25 +56,25 @@ __all__ = [
     # Core classes
     'PyMDPSimulation',
     'PyMDPVisualizer',
-    
+
     # Execution functions
     'execute_pymdp_simulation_from_gnn',
     'execute_pymdp_simulation',
-    
+
     # Validation functions
     'validate_pymdp_environment',
     'get_pymdp_health_status',
-    
+
     # Package detection functions
     'detect_pymdp_installation',
     'is_correct_pymdp_package',
     'get_pymdp_installation_instructions',
     'attempt_pymdp_auto_install',
     'validate_pymdp_for_execution',
-    
+
     # Context functions
     'create_enhanced_pymdp_context',
-    
+
     # Utility functions
     'convert_numpy_for_json',
     'safe_json_dump',
@@ -88,4 +88,4 @@ __all__ = [
     'save_all_visualizations'
 ]
 
-logger = logging.getLogger(__name__) 
+logger = logging.getLogger(__name__)

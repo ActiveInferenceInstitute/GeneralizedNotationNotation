@@ -14,11 +14,9 @@ Key Features:
 - Server configuration and capabilities introspection
 """
 
-import os
 import time
 import logging
-from typing import Dict, Any, List, Optional
-from pathlib import Path
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -38,10 +36,10 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
     """
     uptime_seconds = time.time() - SERVER_START_TIME
     uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
-    
+
     # Get server status from the instance
     server_status = mcp_instance_ref.get_server_status()
-    
+
     # Get module information
     modules_info = {}
     for name, module_info in mcp_instance_ref.modules.items():
@@ -54,7 +52,7 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
             "load_time": module_info.load_time,
             "error_message": module_info.error_message
         }
-    
+
     # Get enhanced status information
     config = mcp_instance_ref.config
     performance_metrics = mcp_instance_ref.performance_metrics
@@ -195,13 +193,13 @@ def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
             "error": f"Module '{module_name}' not found",
             "available_modules": list(mcp_instance_ref.modules.keys())
         }
-    
+
     module_info = mcp_instance_ref.modules[module_name]
-    
+
     # Get tools and resources from this module
     module_tools = []
     module_resources = []
-    
+
     for tool_name, tool in mcp_instance_ref.tools.items():
         if tool.module == module_info.name:
             module_tools.append({
@@ -210,7 +208,7 @@ def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
                 "category": tool.category,
                 "version": tool.version
             })
-    
+
     for uri, resource in mcp_instance_ref.resources.items():
         if resource.module == module_info.name:
             module_resources.append({
@@ -219,7 +217,7 @@ def get_mcp_module_info(mcp_instance_ref, module_name: str) -> Dict[str, Any]:
                 "category": resource.category,
                 "version": resource.version
             })
-    
+
     return {
         "success": True,
         "module_name": module_name,
@@ -245,19 +243,19 @@ def get_mcp_tool_categories(mcp_instance_ref) -> Dict[str, Any]:
         Dictionary with tools organized by category.
     """
     categories = {}
-    
+
     for tool_name, tool in mcp_instance_ref.tools.items():
         category = tool.category or "General"
         if category not in categories:
             categories[category] = []
-        
+
         categories[category].append({
             "name": tool_name,
             "description": tool.description,
             "module": tool.module,
             "version": tool.version
         })
-    
+
     return {
         "success": True,
         "categories": categories,
@@ -402,23 +400,23 @@ def register_tools(mcp_instance):
         mcp_instance: The main MCP instance to register tools with.
     """
     logger.info("Registering MCP meta-tools")
-    
+
     # Create wrapper functions to pass the mcp_instance
     def get_status_wrapper():
         return get_mcp_server_status(mcp_instance)
-        
+
     def get_auth_wrapper():
         return get_mcp_auth_status(mcp_instance)
-        
+
     def get_encryption_wrapper():
         return get_mcp_encryption_status(mcp_instance)
-    
+
     def get_module_info_wrapper(module_name: str):
         return get_mcp_module_info(mcp_instance, module_name)
-    
+
     def get_tool_categories_wrapper():
         return get_mcp_tool_categories(mcp_instance)
-    
+
     def get_performance_metrics_wrapper():
         return get_mcp_performance_metrics(mcp_instance)
 
@@ -435,7 +433,7 @@ def register_tools(mcp_instance):
         category="Server Info",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_server_status",
         func=get_status_wrapper,
@@ -445,7 +443,7 @@ def register_tools(mcp_instance):
         category="Server Info",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_server_auth_status",
         func=get_auth_wrapper,
@@ -455,7 +453,7 @@ def register_tools(mcp_instance):
         category="Security",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_server_encryption_status",
         func=get_encryption_wrapper,
@@ -465,7 +463,7 @@ def register_tools(mcp_instance):
         category="Security",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_module_info",
         func=get_module_info_wrapper,
@@ -484,7 +482,7 @@ def register_tools(mcp_instance):
         category="Diagnostics",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_tool_categories",
         func=get_tool_categories_wrapper,
@@ -494,7 +492,7 @@ def register_tools(mcp_instance):
         category="Discovery",
         version="1.0.0"
     )
-    
+
     mcp_instance.register_tool(
         name="get_mcp_performance_metrics",
         func=get_performance_metrics_wrapper,
@@ -514,5 +512,5 @@ def register_tools(mcp_instance):
         category="Diagnostics",
         version="1.0.0"
     )
-    
-    logger.info("Successfully registered MCP meta-tools") 
+
+    logger.info("Successfully registered MCP meta-tools")

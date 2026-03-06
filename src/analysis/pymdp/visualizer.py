@@ -17,12 +17,11 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import logging
 import warnings
 warnings.filterwarnings('ignore')
 
 # Import shared visualization utilities (centralized matplotlib setup)
-from ..viz_base import plt, np, patches, sns, MATPLOTLIB_AVAILABLE
+from ..viz_base import plt, np, MATPLOTLIB_AVAILABLE
 
 from typing import Union
 from pathlib import Path
@@ -73,21 +72,21 @@ class PyMDPVisualizer:
         save_target = save_dir or output_dir
         self.save_dir = Path(save_target) if save_target is not None else None
         self.show_plots = bool(show_plots)
-        
+
         # Set matplotlib style if available
         if MATPLOTLIB_AVAILABLE and plt is not None:
             plt.style.use(self.style)
-        
+
         # Color schemes for different visualizations
         self.colors = {
             'agent': 'red',
-            'goal': 'green', 
+            'goal': 'green',
             'obstacle': 'black',
             'empty': 'white',
             'visited': 'lightblue',
             'path': 'blue'
         }
-        
+
         # Track visualization metadata
         self.figures = {}
         self.plot_count = 0
@@ -145,8 +144,8 @@ class PyMDPVisualizer:
         return fig
 
     def visualize_discrete_states(
-        self, 
-        states: List[int], 
+        self,
+        states: List[int],
         num_states: int,
         title: str = "Discrete State Sequence"
     ) -> Optional[Any]:
@@ -163,9 +162,9 @@ class PyMDPVisualizer:
         """
         if not MATPLOTLIB_AVAILABLE or plt is None:
             return None
-            
+
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=self.figsize)
-        
+
         # Plot state sequence over time
         ax1.plot(states, 'o-', color=self.colors['agent'], linewidth=2, markersize=6)
         ax1.set_xlabel('Time Step')
@@ -173,7 +172,7 @@ class PyMDPVisualizer:
         ax1.set_title(f'{title} - State Trajectory')
         ax1.grid(True, alpha=0.3)
         ax1.set_ylim(-0.5, num_states - 0.5)
-        
+
         # Plot state histogram
         state_counts = np.bincount(states, minlength=num_states)
         ax2.bar(range(num_states), state_counts, color=self.colors['visited'], alpha=0.7)
@@ -181,15 +180,15 @@ class PyMDPVisualizer:
         ax2.set_ylabel('Visit Count')
         ax2.set_title(f'{title} - State Visitation')
         ax2.grid(True, alpha=0.3)
-        
+
         plt.tight_layout()
         self.figures[f'discrete_states_{self.plot_count}'] = fig
         self.plot_count += 1
-        
+
         return fig
 
     def visualize_belief_evolution(
-        self, 
+        self,
         beliefs: List[np.ndarray],
         title: str = "Belief Evolution"
     ) -> Optional[Any]:
@@ -205,36 +204,36 @@ class PyMDPVisualizer:
         """
         if not MATPLOTLIB_AVAILABLE or plt is None:
             return None
-        
+
         # Convert beliefs to numpy array and handle various input formats
         beliefs_array = np.array(beliefs)
-        
+
         # Squeeze out singleton dimensions (e.g., shape (10, 4, 1) -> (10, 4))
         beliefs_array = np.squeeze(beliefs_array)
-        
+
         # Ensure 2D (timesteps, states) - handle edge cases
         if beliefs_array.ndim == 1:
             beliefs_array = beliefs_array.reshape(1, -1)
         elif beliefs_array.ndim == 3:
             # If still 3D after squeeze, take first factor modality
             beliefs_array = beliefs_array[:, :, 0] if beliefs_array.shape[2] <= beliefs_array.shape[0] else beliefs_array[0, :, :]
-        
+
         # Transpose if needed to get (timesteps, states) format
         if beliefs_array.shape[0] < beliefs_array.shape[1]:
             # Likely (states, timesteps), transpose it
             beliefs_array = beliefs_array.T
-        
+
         num_states = beliefs_array.shape[1]
-        
+
         fig, (ax1, ax2) = plt.subplots(2, 1, figsize=self.figsize)
-        
+
         # Heatmap of beliefs over time
         im = ax1.imshow(beliefs_array.T, aspect='auto', cmap='Blues', origin='lower')
         ax1.set_xlabel('Time Step')
         ax1.set_ylabel('State Index')
         ax1.set_title(f'{title} - Belief Heatmap')
         plt.colorbar(im, ax=ax1, label='Belief Probability')
-        
+
         # Plot belief entropy over time
         entropies = []
         for b in beliefs:
@@ -245,15 +244,15 @@ class PyMDPVisualizer:
         ax2.set_ylabel('Entropy (nats)')
         ax2.set_title(f'{title} - Belief Entropy')
         ax2.grid(True, alpha=0.3)
-        
+
         plt.tight_layout()
         self.figures[f'belief_evolution_{self.plot_count}'] = fig
         self.plot_count += 1
-        
+
         return fig
 
     def visualize_performance_metrics(
-        self, 
+        self,
         metrics: Dict[str, Any],
         title: str = "Performance Metrics"
     ) -> Optional[Any]:
@@ -269,52 +268,52 @@ class PyMDPVisualizer:
         """
         if not MATPLOTLIB_AVAILABLE or plt is None:
             return None
-            
+
         fig, axes = plt.subplots(2, 2, figsize=(12, 10))
-        
+
         # Expected free energy over time
         if 'expected_free_energy' in metrics:
-            axes[0, 0].plot(metrics['expected_free_energy'], 'o-', 
+            axes[0, 0].plot(metrics['expected_free_energy'], 'o-',
                           color=self.colors['agent'], linewidth=2)
             axes[0, 0].set_xlabel('Time Step')
             axes[0, 0].set_ylabel('Expected Free Energy')
             axes[0, 0].set_title('Expected Free Energy')
             axes[0, 0].grid(True, alpha=0.3)
-        
+
         # Action distribution
         if 'actions' in metrics and len(metrics['actions']) > 0:
             actions_arr = np.asarray(metrics['actions'])
             action_counts = np.bincount(actions_arr.astype(int))
-            axes[0, 1].bar(range(len(action_counts)), action_counts, 
+            axes[0, 1].bar(range(len(action_counts)), action_counts,
                           color=self.colors['visited'], alpha=0.7)
             axes[0, 1].set_xlabel('Action Index')
             axes[0, 1].set_ylabel('Count')
             axes[0, 1].set_title('Action Distribution')
             axes[0, 1].grid(True, alpha=0.3)
-        
+
         # Belief confidence over time
         if 'belief_confidence' in metrics:
-            axes[1, 0].plot(metrics['belief_confidence'], 'o-', 
+            axes[1, 0].plot(metrics['belief_confidence'], 'o-',
                           color=self.colors['goal'], linewidth=2)
             axes[1, 0].set_xlabel('Time Step')
             axes[1, 0].set_ylabel('Max Belief Probability')
             axes[1, 0].set_title('Belief Confidence')
             axes[1, 0].grid(True, alpha=0.3)
-        
+
         # Cumulative reward/preference
         if 'cumulative_preference' in metrics:
-            axes[1, 1].plot(np.cumsum(metrics['cumulative_preference']), 'o-', 
+            axes[1, 1].plot(np.cumsum(metrics['cumulative_preference']), 'o-',
                           color=self.colors['path'], linewidth=2)
             axes[1, 1].set_xlabel('Time Step')
             axes[1, 1].set_ylabel('Cumulative Preference')
             axes[1, 1].set_title('Cumulative Preference')
             axes[1, 1].grid(True, alpha=0.3)
-        
+
         plt.suptitle(title, fontsize=14)
         plt.tight_layout()
         self.figures[f'performance_{self.plot_count}'] = fig
         self.plot_count += 1
-        
+
         return fig
 
     def save_all_plots(self, output_dir: Optional[Path] = None) -> Dict[str, Path]:
@@ -330,17 +329,17 @@ class PyMDPVisualizer:
         save_dir = output_dir or self.save_dir
         if not save_dir:
             raise ValueError("No save directory specified")
-        
+
         save_dir = Path(save_dir)
         save_dir.mkdir(parents=True, exist_ok=True)
-        
+
         saved_files = {}
-        
+
         for plot_name, fig in self.figures.items():
             filepath = save_dir / f"{plot_name}.png"
             fig.savefig(filepath, dpi=300, bbox_inches='tight')
             saved_files[plot_name] = filepath
-            
+
         return saved_files
 
     def close_all_plots(self):
@@ -388,9 +387,9 @@ def save_all_visualizations(
     """
     config = config or {}
     visualizer = create_visualizer({**config, 'save_dir': output_dir})
-    
+
     saved_files = {}
-    
+
     try:
         # Visualize state sequence
         if 'states' in simulation_results:
@@ -399,30 +398,30 @@ def save_all_visualizations(
                 simulation_results.get('num_states', max(simulation_results['states']) + 1),
                 "Agent State Trajectory"
             )
-            
+
         # Visualize belief evolution
         if 'beliefs' in simulation_results:
             fig = visualizer.visualize_belief_evolution(
                 simulation_results['beliefs'],
                 "Belief State Evolution"
             )
-            
+
         # Visualize performance metrics
         if 'metrics' in simulation_results:
             fig = visualizer.visualize_performance_metrics(
                 simulation_results['metrics'],
                 "Simulation Performance"
             )
-        
+
         # Save all plots
         saved_files = visualizer.save_all_plots()
-        
+
     finally:
         visualizer.close_all_plots()
-    
+
     return saved_files
 
 
 if __name__ == "__main__":
     print("PyMDP Visualizer - Visualization utilities for PyMDP simulations")
-    print("This module should be imported and used with the PyMDP simulation class.") 
+    print("This module should be imported and used with the PyMDP simulation class.")

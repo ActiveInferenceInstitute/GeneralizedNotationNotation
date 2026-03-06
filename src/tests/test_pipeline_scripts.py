@@ -18,16 +18,11 @@ and assert on real artifacts. No mocking is used.
 """
 
 import pytest
-import os
 import sys
-import json
 import logging
 import subprocess
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 import tempfile
-import argparse
-import importlib.util
 import re
 
 # Test markers
@@ -38,7 +33,7 @@ SRC_DIR = PROJECT_ROOT / "src"
 
 class TestPipelineScriptDiscovery:
     """Test discovery and basic structure of all pipeline scripts."""
-    
+
     @pytest.mark.unit
     def test_all_pipeline_scripts_exist(self):
         """Test that all expected pipeline scripts exist."""
@@ -46,21 +41,21 @@ class TestPipelineScriptDiscovery:
         script_pattern = r"^(\d+)_.*\.py$"
         existing_scripts = []
         missing_scripts = []
-        
+
         for script_path in SRC_DIR.iterdir():
             if script_path.is_file() and script_path.name.endswith('.py'):
                 match = re.match(script_pattern, script_path.name)
                 if match:
                     script_num = int(match.group(1))
                     existing_scripts.append((script_num, script_path.name))
-        
+
         # Sort by script number
         existing_scripts.sort(key=lambda x: x[0])
-        
+
         # Check for expected scripts (based on actual pipeline structure)
         expected_scripts = [
             (0, "0_template.py"),
-            (1, "1_setup.py"), 
+            (1, "1_setup.py"),
             (2, "2_tests.py"),
             (3, "3_gnn.py"),
             (4, "4_model_registry.py"),
@@ -84,23 +79,23 @@ class TestPipelineScriptDiscovery:
             (22, "22_gui.py"),
             (23, "23_report.py")
         ]
-        
+
         # Find missing scripts
         existing_nums = {num for num, _ in existing_scripts}
         missing_scripts = [(num, name) for num, name in expected_scripts if num not in existing_nums]
-        
+
         if missing_scripts:
             logging.warning(f"Missing pipeline scripts: {missing_scripts}")
-        
+
         # At minimum, we expect core scripts to exist
         core_scripts = [0, 1, 2, 3, 4, 5]  # Core pipeline steps
         missing_core = [num for num, _ in missing_scripts if num in core_scripts]
-        
+
         assert not missing_core, f"Core pipeline scripts missing: {missing_core}"
         assert len(existing_scripts) >= 5, f"Expected at least 5 pipeline scripts, found {len(existing_scripts)}"
-        
+
         logging.info(f"Found {len(existing_scripts)} pipeline scripts")
-    
+
     @pytest.mark.unit
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py", "5_type_checker.py",
@@ -114,23 +109,23 @@ class TestPipelineScriptDiscovery:
         script_path = SRC_DIR / script_name
         if not script_path.exists():
             pytest.skip(f"Script {script_name} not found")
-        
+
         # Read script content
         content = script_path.read_text()
         assert len(content) > 0, f"Script {script_name} is empty"
-        
+
         # Check for shebang
         assert content.startswith("#!/usr/bin/env python3"), f"Script {script_name} should start with shebang"
-        
+
         # Check for main function or main execution pattern
         has_main_func = "def main(" in content
-        has_main_execution = ('if __name__ == "__main__"' in content or 
+        has_main_execution = ('if __name__ == "__main__"' in content or
                              "if __name__ == '__main__'" in content)
         assert has_main_func or has_main_execution, f"Script {script_name} should have main function or main execution block"
-        
+
         # Check for proper imports
         assert "import" in content, f"Script {script_name} should have imports"
-        
+
         # Check for argument parsing - multiple patterns including standardized pipeline scripts
         has_argparse = (
             "argparse" in content or
@@ -142,12 +137,12 @@ class TestPipelineScriptDiscovery:
             "create_standardized_pipeline_script" in content  # Standardized pipeline scripts
         )
         assert has_argparse, f"Script {script_name} should handle arguments"
-        
+
         logging.info(f"Script {script_name} structure validated")
 
 class TestPipelineScriptImports:
     """Test import capabilities of pipeline scripts."""
-    
+
     @pytest.mark.unit
     @pytest.mark.slow
     @pytest.mark.parametrize("script_name", [
@@ -168,7 +163,7 @@ class TestPipelineScriptExecution:
     @pytest.mark.slow
     @pytest.mark.parametrize("script_name,artifact_checker", [
         ("3_gnn.py", lambda outdir: (outdir / "3_gnn_output").exists()),
-        ("5_type_checker.py", lambda outdir: (outdir / "5_type_checker_output").exists() or 
+        ("5_type_checker.py", lambda outdir: (outdir / "5_type_checker_output").exists() or
                                               (outdir / "5_type_checker_output" / "type_check_results.json").exists()),
         ("7_export.py", lambda outdir: (outdir / "7_export_output").exists()),
         ("8_visualization.py", lambda outdir: (outdir / "8_visualization_output").exists()),
@@ -181,7 +176,7 @@ class TestPipelineScriptExecution:
             tmp = Path(td)
             input_dir = PROJECT_ROOT / "input" / "gnn_files"
             output_dir = tmp / "output"
-            
+
             # If testing type_checker, run GNN processing first to provide input
             if script_name == "5_type_checker.py":
                 gnn_script = SRC_DIR / "3_gnn.py"
@@ -190,7 +185,7 @@ class TestPipelineScriptExecution:
                         [sys.executable, str(gnn_script), "--target-dir", str(input_dir), "--output-dir", str(output_dir)],
                         capture_output=True, text=True, cwd=str(PROJECT_ROOT)
                     )
-            
+
             cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
             result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
             assert result.returncode in [0, 1]
@@ -200,7 +195,7 @@ class TestPipelineScriptExecution:
     @pytest.mark.slow
     def test_render_execute_analysis_chain_scripts(self):
         """test that 11_render, 12_execute, 16_analysis run sequentially via CLI."""
-        
+
         # We need pymdp for execution to work (at least minimally)
         # Check if render/execute/analysis modules are importable first to avoid failures on environments without them
         try:
@@ -215,7 +210,7 @@ class TestPipelineScriptExecution:
             input_dir = tmp / "input" / "gnn_files"
             input_dir.mkdir(parents=True)
             output_dir = tmp / "output"
-            
+
             # 0. Create a valid GNN file for testing
             gnn_content = """# Active Inference Test Agent
 ## ModelName
@@ -230,52 +225,52 @@ g[2,1,type=int]
 s -> o
 """
             (input_dir / "test_agent.md").write_text(gnn_content)
-            
+
             # Scripts to test in order
             scripts = [
                 ("11_render.py", [], lambda out: (out / "11_render_output").exists()),
                 ("12_execute.py", ["--frameworks", "pymdp"], lambda out: True), # Execute might skip if no pymdp but should run
                 ("16_analysis.py", [], lambda out: True) # Analysis should run
             ]
-            
+
             for script_name, extra_args, checker in scripts:
                 script_path = SRC_DIR / script_name
                 if not script_path.exists():
                     pytest.fail(f"Script {script_name} not found")
-                
+
                 cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir), "--verbose"] + extra_args
-                
+
                 # Run script
                 result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
-                
+
                 # Check return code
                 if result.returncode != 0:
                     # Allow failure if it's just missing dependencies in the environment (e.g. pymdp not installed)
                     # But the script itself should have handled it gracefully if it was designed to.
                     # For now, we assert success because these are "thin orchestrators" and should mostly work or fail gracefully.
-                    # However, 12_execute might fail if no frameworks are runnable. 
+                    # However, 12_execute might fail if no frameworks are runnable.
                     # Let's inspect stdout/stderr if it fails.
                     logging.warning(f"{script_name} failed with {result.returncode}")
                     logging.warning(f"STDOUT: {result.stdout}")
                     logging.warning(f"STDERR: {result.stderr}")
-                
+
                 assert result.returncode == 0, f"{script_name} failed: {result.stderr}"
                 assert checker(output_dir), f"{script_name} verification failed"
 
 class TestStep2GNNComprehensive:
     """Comprehensive tests for Step 2: GNN File Processing."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step2_gnn_file_discovery(self, sample_gnn_files, isolated_temp_dir):
         """Test GNN file discovery functionality."""
         try:
             from src.gnn import discover_gnn_files, parse_gnn_file
-            
+
             # Test file discovery
             gnn_files = discover_gnn_files(list(sample_gnn_files.values())[0].parent)
             assert len(gnn_files) > 0, "Should discover GNN files"
-            
+
             # Test file parsing
             for file_path in gnn_files[:2]:  # Test first 2 files
                 try:
@@ -287,14 +282,14 @@ class TestStep2GNNComprehensive:
                     logging.warning(f"Failed to parse {file_path.name}: {e}")
         except ImportError as e:
             logging.warning(f"GNN module functions not available: {e}")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step2_gnn_validation(self, sample_gnn_files):
         """Test GNN validation functionality."""
         try:
             from src.gnn import validate_gnn_structure
-            
+
             for file_path in sample_gnn_files.values():
                 try:
                     is_valid = validate_gnn_structure(file_path)
@@ -307,14 +302,14 @@ class TestStep2GNNComprehensive:
 
 class TestStep1SetupComprehensive:
     """Comprehensive tests for Step 1: Environment Setup."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step1_environment_validation(self):
         """Test environment validation functionality."""
         try:
             from src.setup import validate_environment, check_dependencies
-            
+
             # Test environment validation
             try:
                 env_status = validate_environment()
@@ -322,7 +317,7 @@ class TestStep1SetupComprehensive:
                 logging.info("Environment validation completed")
             except Exception as e:
                 logging.warning(f"Environment validation failed: {e}")
-            
+
             # Test dependency checking
             try:
                 deps_status = check_dependencies()
@@ -335,24 +330,24 @@ class TestStep1SetupComprehensive:
 
 class TestStep4TypeCheckerComprehensive:
     """Comprehensive tests for Step 4: GNN Type Checking."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step4_type_checking(self, sample_gnn_files):
         """Test type checking functionality."""
         try:
             from src.type_checker import check_gnn_file, generate_type_report
-            
+
             for file_path in sample_gnn_files.values():
                 try:
                     # Test type checking
                     check_result = check_gnn_file(file_path)
                     assert isinstance(check_result, dict), "Check result should be a dictionary"
-                    
+
                     # Test report generation
                     report = generate_type_report([check_result])
                     assert isinstance(report, dict), "Report should be a dictionary"
-                    
+
                     logging.info(f"Type checking completed for {file_path.name}")
                 except Exception as e:
                     logging.warning(f"Type checking failed for {file_path.name}: {e}")
@@ -361,21 +356,21 @@ class TestStep4TypeCheckerComprehensive:
 
 class TestStep5ExportComprehensive:
     """Comprehensive tests for Step 5: Export Functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step5_export_formats(self, sample_gnn_files, isolated_temp_dir):
         """Test export to various formats."""
         try:
             from src.export import export_gnn_data
-            
+
             # Create sample data
             sample_data = {
                 "ModelName": "TestModel",
                 "StateSpaceBlock": {"s_1": [2, "categorical"]},
                 "Connections": ["s_1 > s_2"]
             }
-            
+
             # Test JSON export
             try:
                 json_path = isolated_temp_dir / "test_export.json"
@@ -384,7 +379,7 @@ class TestStep5ExportComprehensive:
                 logging.info("JSON export successful")
             except Exception as e:
                 logging.warning(f"JSON export failed: {e}")
-            
+
             # Test XML export
             try:
                 xml_path = isolated_temp_dir / "test_export.xml"
@@ -398,14 +393,14 @@ class TestStep5ExportComprehensive:
 
 class TestStep6VisualizationComprehensive:
     """Comprehensive tests for Step 6: Visualization."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step6_visualization_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test visualization generation."""
         try:
             from src.visualization import create_graph_visualization, create_matrix_visualization
-            
+
             # Test graph visualization
             try:
                 graph_path = isolated_temp_dir / "test_graph.png"
@@ -413,7 +408,7 @@ class TestStep6VisualizationComprehensive:
                 logging.info("Graph visualization test completed")
             except Exception as e:
                 logging.warning(f"Graph visualization failed: {e}")
-            
+
             # Test matrix visualization
             try:
                 matrix_path = isolated_temp_dir / "test_matrix.png"
@@ -426,7 +421,7 @@ class TestStep6VisualizationComprehensive:
 
 class TestStep7MCPComprehensive:
     """Comprehensive tests for Step 7: Model Context Protocol."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step7_mcp_tools(self):
@@ -440,29 +435,29 @@ class TestStep7MCPComprehensive:
 
 class TestStep8OntologyComprehensive:
     """Comprehensive tests for Step 8: Ontology Processing."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step8_ontology_processing(self):
         """Test ontology processing functionality."""
         from src.ontology import process_ontology, validate_ontology_terms
-        
+
         try:
             # Test ontology processing
             ontology_data = process_ontology()
             assert isinstance(ontology_data, dict), "Ontology data should be a dictionary"
-            
+
             # Test term validation
             validation_result = validate_ontology_terms(ontology_data)
             assert isinstance(validation_result, dict), "Validation result should be a dictionary"
-            
+
             logging.info("Ontology processing test completed")
         except Exception as e:
             logging.warning(f"Ontology processing test failed: {e}")
 
 class TestStep9RenderComprehensive:
     """Comprehensive tests for Step 9: Code Rendering."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step9_code_rendering(self, sample_gnn_files, isolated_temp_dir):
@@ -485,7 +480,7 @@ class TestStep9RenderComprehensive:
 
 class TestStep10ExecuteComprehensive:
     """Comprehensive tests for Step 10: Script Execution."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step10_execution_safety(self):
@@ -494,7 +489,7 @@ class TestStep10ExecuteComprehensive:
             from src.execute import execute_script_safely, validate_execution_environment
         except ImportError:
             pytest.skip("Execute module not available")
-        
+
         # Test execution environment validation
         try:
             env_valid = validate_execution_environment()
@@ -502,7 +497,7 @@ class TestStep10ExecuteComprehensive:
             logging.info("Execution environment validation completed")
         except Exception as e:
             logging.warning(f"Execution environment validation failed: {e}")
-        
+
         # Test safe script execution with actual safe command
         try:
             result = execute_script_safely("echo 'test'", timeout=5)
@@ -513,7 +508,7 @@ class TestStep10ExecuteComprehensive:
 
 class TestStep11LLMComprehensive:
     """Comprehensive tests for Step 11: LLM Integration."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step11_llm_operations(self):
@@ -522,7 +517,7 @@ class TestStep11LLMComprehensive:
             from src.llm import analyze_gnn_model, generate_model_description
         except ImportError:
             pytest.skip("LLM module not available")
-        
+
         # Check if LLM provider is available before running tests
         try:
             from src.llm.llm_processor import LLMProcessor
@@ -540,7 +535,7 @@ class TestStep11LLMComprehensive:
         except Exception:
             # If we can't check providers, try to run the tests anyway
             pass
-        
+
         # Test model analysis
         try:
             analysis = analyze_gnn_model({"ModelName": "TestModel"})
@@ -548,7 +543,7 @@ class TestStep11LLMComprehensive:
             logging.info("Model analysis test completed")
         except Exception as e:
             logging.warning(f"Model analysis test failed: {e}")
-        
+
         # Test description generation
         try:
             description = generate_model_description({"ModelName": "TestModel"})
@@ -559,7 +554,7 @@ class TestStep11LLMComprehensive:
 
 class TestStep20WebsiteComprehensive:
     """Comprehensive tests for Step 20: Website Generation."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step20_website_generation(self, isolated_temp_dir):
@@ -582,40 +577,40 @@ class TestStep20WebsiteComprehensive:
 
 class TestStep15AudioComprehensive:
     """Comprehensive tests for Step 15: SAPF Audio Generation."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step15_audio_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test SAPF audio generation."""
         try:
             from src.audio.sapf.audio_generators import generate_oscillator_audio, SyntheticAudioGenerator
-            
+
             # Test oscillator generation directly
             audio_data = generate_oscillator_audio(440.0, 0.5, 1.0)
             assert len(audio_data) > 0
-            
+
             # Test generator class
             generator = SyntheticAudioGenerator()
             audio_path = isolated_temp_dir / "test_audio.wav"
             # Simple SAPF code for testing
-            sapf_code = "440.0 = base_freq" 
+            sapf_code = "440.0 = base_freq"
             success = generator.generate_from_sapf(sapf_code, audio_path, duration=1.0)
             assert success
             assert audio_path.exists()
-            
+
         except Exception as e:
             pytest.skip(f"SAPF audio backend unavailable: {e}")
 
 
 class TestStep14ReportComprehensive:
     """Comprehensive tests for Step 14: Report Generation."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_step14_report_generation(self, sample_gnn_files, isolated_temp_dir):
         """Test report generation."""
-        from src.report import generate_report, analyze_pipeline_data
-        
+        from src.report import generate_report
+
         try:
             # Test report generation
             report_data = {
@@ -624,15 +619,15 @@ class TestStep14ReportComprehensive:
                 "success_rate": 0.95,
                 "execution_time": 120.5
             }
-            
+
             report_file = isolated_temp_dir / "pipeline_report.html"
             success = generate_report(report_data, report_file)
-            
+
             assert success, "Report generation should succeed"
             assert report_file.exists(), "Report file should be created"
-            
+
             logging.info("Step 14 report generation validated")
-            
+
         except Exception as e:
             logging.warning(f"Report generation test failed: {e}")
 
@@ -655,44 +650,44 @@ class TestPipelineScriptIntegration:
                 cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
                 result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
                 assert result.returncode in [0, 1]
-    
+
     @pytest.mark.integration
     @pytest.mark.slow
     @pytest.mark.safe_to_fail
     def test_pipeline_argument_consistency(self):
         """Test that scripts handle common arguments consistently."""
         logging.info("Testing pipeline argument consistency")
-        
+
         common_args = ["--target-dir", "--output-dir", "--verbose"]
-        
+
         scripts = ["1_setup.py", "3_gnn.py", "2_tests.py", "5_type_checker.py", "7_export.py"]
-        
+
         for script_name in scripts:
             script_path = SRC_DIR / script_name
             if not script_path.exists():
                 continue
-            
+
             # Check script content for argument handling
             content = script_path.read_text()
-            
+
             # Check if script uses standardized pipeline template (more flexible approach)
             uses_template = "create_standardized_pipeline_script" in content
             has_argument_parser = "ArgumentParser" in content
             has_argparse = "argparse" in content
-            
+
             if uses_template:
                 # Scripts using standardized template inherit standard arguments
                 logging.info(f"Script {script_name} uses standardized pipeline template - arguments handled automatically")
             elif has_argparse:
                 # For scripts with explicit argument parsing, check for core arguments
                 for arg in common_args:
-                    arg_found = (arg in content or 
+                    arg_found = (arg in content or
                                arg.replace("--", "").replace("-", "_") in content or  # Check for variable names
                                "target_dir" in content or "output_dir" in content)  # Check for common patterns
                     assert arg_found, f"Script {script_name} should handle {arg} or equivalent"
             else:
                 logging.warning(f"Script {script_name} has unclear argument handling pattern")
-            
+
             logging.info(f"Script {script_name} argument consistency validated")
 
 def test_pipeline_script_completeness():
@@ -744,4 +739,4 @@ def test_pipeline_script_performance():
             pass  # Module not available
 
     assert len(slow_imports) == 0, f"Slow imports detected: {slow_imports}"
-    logging.info("Pipeline script performance test completed") 
+    logging.info("Pipeline script performance test completed")

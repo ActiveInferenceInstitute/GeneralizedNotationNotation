@@ -19,9 +19,7 @@ Test Coverage:
 
 import pytest
 import json
-import logging
 from pathlib import Path
-from typing import Dict, Any, List
 
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -30,7 +28,6 @@ from security.processor import (
     process_security,
     perform_security_check,
     check_vulnerabilities,
-    generate_security_recommendations,
     calculate_security_score,
     generate_security_summary,
 )

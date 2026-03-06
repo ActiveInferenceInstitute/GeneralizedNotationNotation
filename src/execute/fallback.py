@@ -121,14 +121,14 @@ class ExecutionEngine:
     """
     Fallback execution engine.
     """
-    def __init__(self): 
+    def __init__(self):
         pass
 
 class PyMdpExecutor:
     """
     Fallback PyMDP executor.
     """
-    def __init__(self): 
+    def __init__(self):
         pass
 
 def execute_simulation_from_gnn(*args, **kwargs):

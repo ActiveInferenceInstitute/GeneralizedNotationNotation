@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python
 > **Framework Base**: `pymdp` (Python Package)
 > **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 1.3.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 

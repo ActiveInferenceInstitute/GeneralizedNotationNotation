@@ -128,7 +128,7 @@ def plot_tensor_output(tensor_data, output_file_path: Path, title: str = "Tensor
                     img = plt.imshow(numpy_tensor, aspect='auto', cmap=cmap, norm=norm)
                 else:
                     img = plt.imshow(numpy_tensor, aspect='auto', cmap=cmap)
-                
+
                 plt.title(f"{title} (2D Heatmap)")
                 plt.xlabel("Column Index")
                 plt.ylabel("Row Index")
@@ -174,12 +174,12 @@ def plot_tensor_output(tensor_data, output_file_path: Path, title: str = "Tensor
 if __name__ == '__main__':
     # Basic logging for standalone testing
     logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    
+
     # Create a dummy output directory for testing
     test_output_dir = Path("output/discopy_translator_module_test_visuals")
     test_output_dir.mkdir(parents=True, exist_ok=True)
 
-    logger.info(f"--- Running visualize_jax_output.py Standalone Tests ---")
+    logger.info("--- Running visualize_jax_output.py Standalone Tests ---")
     logger.info(f"Matplotlib available: {MATPLOTLIB_AVAILABLE}")
     logger.info(f"JAX available: {JAX_AVAILABLE}")
 
@@ -211,10 +211,10 @@ if __name__ == '__main__':
     logger.info("Testing with non-array data (list):")
     plot_tensor_output([1,2,3,4], test_output_dir / "list_data", title="Test: Python List", verbose=True)
     print("-" * 20)
-    
+
     logger.info("Testing with non-array data (int):")
     plot_tensor_output(12345, test_output_dir / "int_data", title="Test: Python Int", verbose=True)
     print("-" * 20)
 
 
-    logger.info(f"--- Standalone Tests Finished. Check '{test_output_dir}' directory. ---") 
+    logger.info(f"--- Standalone Tests Finished. Check '{test_output_dir}' directory. ---")

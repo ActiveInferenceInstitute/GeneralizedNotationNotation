@@ -2,7 +2,7 @@
 
 Connect any MCP-compatible client to the GNN pipeline and access all 131 tools interactively.
 
-**Last Updated**: March 3, 2026
+**Last Updated**: March 6, 2026
 
 ## Prerequisites
 

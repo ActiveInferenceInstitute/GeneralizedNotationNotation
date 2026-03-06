@@ -8,7 +8,6 @@ without relying on prior pipeline steps.
 
 import importlib
 import inspect
-import pytest
 
 
 class TestCoverageOverall:

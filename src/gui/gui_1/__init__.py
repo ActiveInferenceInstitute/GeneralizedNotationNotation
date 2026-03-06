@@ -43,19 +43,19 @@ def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
         export_filename = kwargs.get('export_filename', 'constructed_model_gui1.md')
         open_browser = kwargs.get('open_browser', True)
         verbose = kwargs.get('verbose', False)
-        
+
         logger.info("🎮 Starting GUI 1: Form-based Interactive GNN Constructor")
-        
+
         success = run_gui(
             target_dir=target_dir,
-            output_dir=output_dir, 
+            output_dir=output_dir,
             logger=logger,
             verbose=verbose,
             headless=headless,
             export_filename=export_filename,
             open_browser=open_browser,
         )
-        
+
         result = {
             "gui_type": "gui_1",
             "description": "Form-based Interactive GNN Constructor",
@@ -64,24 +64,24 @@ def gui_1(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "backend": "gradio" if not headless else "headless",
             "features": [
                 "Component management via forms",
-                "State space editing", 
+                "State space editing",
                 "Live markdown synchronization",
                 "Two-pane interface"
             ]
         }
-        
+
         if success:
             logger.info("✅ GUI 1 completed successfully")
         else:
             logger.error("❌ GUI 1 failed")
-            
+
         return result
-        
+
     except Exception as e:
         logger.error(f"❌ GUI 1 failed with exception: {e}")
         return {
             "gui_type": "gui_1",
-            "description": "Form-based Interactive GNN Constructor", 
+            "description": "Form-based Interactive GNN Constructor",
             "success": False,
             "error": str(e),
             "backend": "error"

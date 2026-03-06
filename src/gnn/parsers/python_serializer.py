@@ -1,28 +1,26 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 from datetime import datetime
 import json
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class PythonSerializer(BaseGNNSerializer):
     """Serializer for Python format."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Python format."""
         lines = []
-        
+
         # Header
-        lines.append(f'"""')
+        lines.append('"""')
         lines.append(f'GNN Model: {model.model_name}')
         lines.append(f'{model.annotation}')
         lines.append(f'Generated: {datetime.now().isoformat()}')
-        lines.append(f'"""')
+        lines.append('"""')
         lines.append("")
         lines.append("import numpy as np")
         lines.append("from typing import Dict, List, Any")
         lines.append("")
-        
+
         # Model class
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
         lines.append(f"class {model_name_clean}Model:")
@@ -33,7 +31,7 @@ class PythonSerializer(BaseGNNSerializer):
         lines.append(f'        self.version = "{model.version}"')
         lines.append(f'        self.annotation = "{model.annotation}"')
         lines.append("")
-        
+
         # Variables
         if model.variables:
             lines.append("        # Variables")
@@ -48,7 +46,7 @@ class PythonSerializer(BaseGNNSerializer):
                 lines.append("            },")
             lines.append("        }")
             lines.append("")
-        
+
         # Parameters
         if model.parameters:
             lines.append("        # Parameters")
@@ -58,7 +56,7 @@ class PythonSerializer(BaseGNNSerializer):
                 lines.append(f'            "{param.name}": {value_repr},')
             lines.append("        }")
             lines.append("")
-        
+
         # Embed complete model data as Python comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -92,13 +90,13 @@ class PythonSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as Python comment
         lines.append("# MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
-        
+
         return '\n'.join(lines)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -109,7 +107,7 @@ class PythonSerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -121,4 +119,4 @@ class PythonSerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ] 
+        ]

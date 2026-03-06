@@ -14,26 +14,26 @@ try:
         validate_cross_format_consistency,
         validate_schema_consistency
     )
-    
+
     # Create alias for strategy pattern
     CrossFormatValidationStrategy = CrossFormatValidator
-    
+
 except ImportError as e:
     import logging
     logger = logging.getLogger(__name__)
     logger.warning(f"Cross-format validation not available: {e}")
-    
+
     # Fallback implementation
     class CrossFormatValidationStrategy:
         def __init__(self):
             pass
-        
+
         def configure(self, **kwargs):
             pass
-        
+
         def validate(self, files):
             return {
                 'success': False,
                 'error': 'Cross-format validation not available',
                 'files_validated': 0
-            } 
+            }

@@ -7,9 +7,8 @@ This module provides audio analysis functionality.
 
 from __future__ import annotations
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import json
-from datetime import datetime
 
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive information about the audio module and its capabilities."""
@@ -28,7 +27,7 @@ def get_module_info() -> Dict[str, Any]:
         'sonification_methods': [],
         'supported_formats': []
     }
-    
+
     # Audio capabilities
     info['audio_capabilities'].extend([
         'Tonal generation',
@@ -37,17 +36,17 @@ def get_module_info() -> Dict[str, Any]:
         'Sonification',
         'Audio analysis'
     ])
-    
+
     # Sonification methods
     info['sonification_methods'].extend([
         'Variable-to-frequency mapping',
         'Connection-to-rhythm mapping',
         'Model-dynamics-to-ambient mapping'
     ])
-    
+
     # Supported formats
     info['supported_formats'].extend(['wav', 'mp3', 'flac', 'ogg'])
-    
+
     return info
 
 def get_audio_generation_options() -> Dict[str, Any]:
@@ -90,23 +89,23 @@ def process_gnn_to_audio(gnn_content: str, model_name: str | None = None, output
                 "success": False,
                 "error": "Empty GNN content provided"
             }
-        
+
         # Determine output directory if provided
         output_path = Path(output_dir) if output_dir else Path("output/15_audio_output")
         output_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Create processor
         from .classes import SAPFGNNProcessor
         processor = SAPFGNNProcessor()
-        
+
         # Process GNN content
         model_data = processor.process_gnn_content(gnn_content)
         if not model_data["success"]:
             return model_data
-        
+
         # Generate audio
         audio_result = processor.generate_audio(model_data, output_path)
-        
+
         if audio_result["success"]:
             return {
                 "success": True,
@@ -116,7 +115,7 @@ def process_gnn_to_audio(gnn_content: str, model_name: str | None = None, output
             }
         else:
             return audio_result
-            
+
     except Exception as e:
         return {
             "success": False,
@@ -142,15 +141,15 @@ def convert_gnn_to_sapf(gnn_content: str, output_dir: Path) -> Dict[str, Any]:
         # Create processor
         from .processor import SAPFGNNProcessor
         processor = SAPFGNNProcessor()
-        
+
         # Process GNN content
         model_data = processor.process_gnn_content(gnn_content)
         if not model_data["success"]:
             return model_data
-        
+
         # Generate SAPF-specific output
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create SAPF configuration file
         sapf_config = {
             "model_type": "gnn",
@@ -159,18 +158,18 @@ def convert_gnn_to_sapf(gnn_content: str, output_dir: Path) -> Dict[str, Any]:
             "variables": model_data.get("variables", []),
             "connections": model_data.get("connections", [])
         }
-        
+
         config_file = output_dir / "sapf_config.json"
         with open(config_file, 'w') as f:
             json.dump(sapf_config, f, indent=2)
-        
+
         return {
             "success": True,
             "output_dir": str(output_dir),
             "sapf_config": str(config_file),
             "model_data": model_data
         }
-        
+
     except Exception as e:
         return {
             "success": False,
@@ -192,16 +191,16 @@ def generate_audio_from_sapf(sapf_config: Dict[str, Any], output_dir: Path) -> D
         # Create processor
         from .processor import SAPFGNNProcessor
         processor = SAPFGNNProcessor()
-        
+
         # Extract model data from SAPF config
         model_data = {
             "variables": sapf_config.get("variables", []),
             "connections": sapf_config.get("connections", [])
         }
-        
+
         # Generate audio
         audio_result = processor.generate_audio(model_data, output_dir)
-        
+
         if audio_result["success"]:
             return {
                 "success": True,
@@ -211,7 +210,7 @@ def generate_audio_from_sapf(sapf_config: Dict[str, Any], output_dir: Path) -> D
             }
         else:
             return audio_result
-            
+
     except Exception as e:
         return {
             "success": False,
@@ -235,26 +234,26 @@ def validate_sapf_code(sapf_code: str) -> Dict[str, Any]:
                 "valid": False,
                 "errors": ["Empty SAPF code provided"]
             }
-        
+
         # Check for required sections
         required_sections = ["oscillators", "envelopes", "effects"]
         missing_sections = []
-        
+
         for section in required_sections:
             if section not in sapf_code.lower():
                 missing_sections.append(section)
-        
+
         if missing_sections:
             return {
                 "valid": False,
                 "errors": [f"Missing required sections: {', '.join(missing_sections)}"]
             }
-        
+
         return {
             "valid": True,
             "errors": []
         }
-        
+
     except Exception as e:
         return {
             "valid": False,

@@ -19,4 +19,4 @@ __all__ = [
     'find_activeinference_scripts',
     'execute_activeinference_script',
     'is_julia_available'
-] 
+]

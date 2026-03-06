@@ -18,8 +18,7 @@ import json
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_error
 )
 
 logger = logging.getLogger(__name__)

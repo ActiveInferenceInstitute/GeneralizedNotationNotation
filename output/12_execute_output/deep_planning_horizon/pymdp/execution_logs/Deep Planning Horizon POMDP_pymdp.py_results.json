@@ -3,157 +3,24 @@
   "model_name": "deep_planning_horizon",
   "script_name": "Deep Planning Horizon POMDP_pymdp.py",
   "script_path": "output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.691019,
-  "timestamp": "2026-03-05T10:35:32.424746",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.808105,
+  "timestamp": "2026-03-06T09:49:15.102944",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      3,
-      3,
-      2,
-      2,
-      3,
-      0,
-      1,
-      1,
-      2,
-      2,
-      2,
-      3,
-      3,
-      3,
-      3
-    ],
-    "actions": [
-      1,
-      1,
-      3,
-      3,
-      0,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      0,
-      1,
-      1,
-      1
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-05 10:35:33,934 - INFO - A matrix shape: (4, 4)\n2026-03-05 10:35:33,934 - INFO - B matrix shape: (4, 4, 4)\n2026-03-05 10:35:33,934 - INFO - C vector shape: (4,)\n2026-03-05 10:35:33,934 - INFO - D vector shape: (4,)\n2026-03-05 10:35:33,934 - INFO - Starting PyMDP simulation for Deep Planning Horizon POMDP\n2026-03-05 10:35:33,934 - INFO - Output directory: output/pymdp_simulations/Deep Planning Horizon POMDP\n2026-03-05 10:35:33,934 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-05 10:35:33,934 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-05 10:35:33,934 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-05 10:35:33,934 - INFO - Starting simple PyMDP simulation\n2026-03-05 10:35:33,934 - INFO - Transposed B from (4, 4, 4) to (4, 4, 4)\n2026-03-05 10:35:33,934 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-05 10:35:33,934 - INFO - Created matrices: A=(4, 4), B=(4, 4, 4), C=(4,), D=(4,)\n2026-03-05 10:35:33,934 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-05 10:35:33,935 - INFO - Successfully created PyMDP agent\n2026-03-05 10:35:33,935 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-05 10:35:33,935 - INFO - Step 0: true_s=3, obs=3, belief=[0.03 0.03 0.05 0.9 ], action=1.0\n2026-03-05 10:35:33,936 - INFO - Step 1: true_s=3, obs=3, belief=[0.   0.   0.01 0.99], action=1.0\n2026-03-05 10:35:33,936 - INFO - Step 2: true_s=2, obs=2, belief=[0.   0.   0.68 0.32], action=3.0\n2026-03-05 10:35:33,936 - INFO - Step 3: true_s=2, obs=2, belief=[0.01 0.01 0.96 0.03], action=3.0\n2026-03-05 10:35:33,937 - INFO - Step 4: true_s=0, obs=3, belief=[0.02 0.02 0.23 0.73], action=0.0\n2026-03-05 10:35:33,937 - INFO - Step 5: true_s=0, obs=0, belief=[0.78 0.01 0.05 0.16], action=3.0\n2026-03-05 10:35:33,937 - INFO - Step 6: true_s=1, obs=1, belief=[0.22 0.72 0.02 0.04], action=3.0\n2026-03-05 10:35:33,937 - INFO - Step 7: true_s=1, obs=1, belief=[0.02 0.96 0.01 0.01], action=3.0\n2026-03-05 10:35:33,938 - INFO - Step 8: true_s=2, obs=2, belief=[0.02 0.14 0.79 0.04], action=3.0\n2026-03-05 10:35:33,938 - INFO - Step 9: true_s=2, obs=2, belief=[0.01 0.01 0.97 0.01], action=3.0\n2026-03-05 10:35:33,939 - INFO - Step 10: true_s=2, obs=2, belief=[0.   0.   0.98 0.01], action=3.0\n2026-03-05 10:35:33,939 - INFO - Step 11: true_s=3, obs=3, belief=[0.02 0.02 0.26 0.7 ], action=0.0\n2026-03-05 10:35:33,939 - INFO - Step 12: true_s=3, obs=3, belief=[0.   0.   0.02 0.98], action=1.0\n2026-03-05 10:35:33,940 - INFO - Step 13: true_s=3, obs=3, belief=[0.   0.   0.01 0.99], action=1.0\n2026-03-05 10:35:33,940 - INFO - Step 14: true_s=3, obs=3, belief=[0.   0.   0.01 0.99], action=1.0\n2026-03-05 10:35:33,940 - INFO - Saving raw simulation data for analysis step...\n2026-03-05 10:35:33,941 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Deep Planning Horizon POMDP/simulation_results.json\n2026-03-05 10:35:33,941 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-05 10:35:33,941 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-05 10:35:33,941 - INFO - PyMDP simulation completed successfully\n2026-03-05 10:35:33,941 - INFO - \u2713 Simulation completed successfully!\n2026-03-05 10:35:33,941 - INFO - Results summary:\n2026-03-05 10:35:33,941 - INFO -   Correlation ID: render_generated_script\n2026-03-05 10:35:33,941 - INFO -   Success: True\n2026-03-05 10:35:33,941 - INFO -   Output: output/pymdp_simulations/Deep Planning Horizon POMDP\n",
-    "beliefs": [
-      [
-        0.025000000000000095,
-        0.025000000000000095,
-        0.050000000000000065,
-        0.8999999999999998
-      ],
-      [
-        0.0008453799983092494,
-        0.0009299179981401734,
-        0.00913010398173982,
-        0.9890945980218108
-      ],
-      [
-        0.0001513970500060156,
-        0.00031028900347765555,
-        0.6838230003597551,
-        0.3157153135867612
-      ],
-      [
-        0.005226754178187753,
-        0.005231732590975825,
-        0.9593134674832932,
-        0.030228045747543206
-      ],
-      [
-        0.01775032012136323,
-        0.017750834209803893,
-        0.23254534970825233,
-        0.7319534959605806
-      ],
-      [
-        0.775636078543664,
-        0.00857790306884646,
-        0.050997830232138726,
-        0.16478818815535085
-      ],
-      [
-        0.21556753365156103,
-        0.7216223424617787,
-        0.02489719943960801,
-        0.03791292444705242
-      ],
-      [
-        0.023068530349079353,
-        0.9649774799793261,
-        0.005780614156687814,
-        0.0061733755149068386
-      ],
-      [
-        0.024092864141043124,
-        0.1436978963839055,
-        0.7883142561518758,
-        0.043894983323175596
-      ],
-      [
-        0.0054037138155587465,
-        0.00879180856712637,
-        0.9738751664866026,
-        0.01192931113071249
-      ],
-      [
-        0.004120042286101481,
-        0.004201166612128173,
-        0.9831262095523986,
-        0.008552581549371902
-      ],
-      [
-        0.019084162069652924,
-        0.01909322711807022,
-        0.2569618412445122,
-        0.7048607695677646
-      ],
-      [
-        0.0036021968762271735,
-        0.0007845410403401885,
-        0.01916323792843125,
-        0.9764500241550013
-      ],
-      [
-        0.0001041355171083214,
-        8.224416447219279e-05,
-        0.007206491017078828,
-        0.9926071293013408
-      ],
-      [
-        3.149094613145367e-06,
-        2.454709376285639e-05,
-        0.006532961743156133,
-        0.9934393420684677
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_error": "Execute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nExecute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/pymdp/Deep Planning Horizon POMDP_pymdp.py\", line 65, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 27, in <module>\n    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/__init__.py\", line 45, in <module>\n    from .post_simulation import (\nImportError: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py)\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 230,
-    "stderr_length": 3521,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/pymdp"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/pymdp/simulation_data/Deep Planning Horizon POMDP_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
+    "stderr_length": 1250,
+    "output_directory": "output/12_execute_output/deep_planning_horizon/pymdp"
   }
 }

@@ -5,7 +5,6 @@ SAPF Utils module for GNN Processing Pipeline.
 This module provides SAPF utility functions.
 """
 
-from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)

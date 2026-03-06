@@ -49,7 +49,7 @@ def check_julia_dependencies(verbose: bool, logger) -> bool:
     try:
         # check basic julia availability
         subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)
-        
+
         # Check for key packages
         check_script = 'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
         result = subprocess.run(
@@ -58,12 +58,12 @@ def check_julia_dependencies(verbose: bool, logger) -> bool:
             text=True,
             timeout=30
         )
-        
+
         if result.returncode != 0:
             if verbose:
                 logger.warning(f"Julia package check failed: {result.stderr}")
             return False
-            
+
         return True
     except (subprocess.CalledProcessError, FileNotFoundError):
         return False
@@ -157,7 +157,7 @@ def process_execute(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("execute")
-    
+
     try:
         log_step_start(logger, "Processing execute - searching for rendered implementations")
 
@@ -168,7 +168,7 @@ def process_execute(
         # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize execution results
         execution_results = {
             "timestamp": datetime.now().isoformat(),
@@ -182,40 +182,40 @@ def process_execute(
             "framework_status": {},
             "success": True
         }
-        
+
         # Look for rendered implementations from render output
         render_output_dir = None
-        
+
         # Priority 1: Check if --render-output-dir was specified
         if kwargs.get('render_output_dir'):
             render_output_dir = Path(kwargs['render_output_dir'])
-            
+
         # Priority 2: Check if target_dir is already a render output directory
         elif "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
             render_output_dir = target_dir
-            
+
         # Priority 3: Search for render output directories in common locations
         else:
             potential_dirs = [
                 # Standard pipeline location
                 target_dir.parent / "output" / "11_render_output",
                 target_dir / "11_render_output",
-                
+
                 # Recent test locations
                 Path("output/test_render/11_render_output/11_render_output"),
                 Path("output/test_render_improved/11_render_output/11_render_output"),
-                
+
                 # Search in all output directories
                 *list(Path("output").glob("*/11_render_output/11_render_output")),
                 *list(Path("output").glob("**/11_render_output")),
             ]
-            
+
             for potential_dir in potential_dirs:
                 if potential_dir.exists() and any(potential_dir.rglob("*")):
                     render_output_dir = potential_dir
                     logger.info(f"Found render output directory: {render_output_dir}")
                     break
-        
+
         if verbose:
             logger.info(f"Searching for executable scripts in: {render_output_dir}")
 
@@ -228,22 +228,22 @@ def process_execute(
             executable_scripts = find_executable_scripts(render_output_dir, verbose, logger, requested_frameworks)
             execution_results["total_scripts_found"] = len(executable_scripts)
             execution_results["requested_frameworks"] = requested_frameworks
-            
+
             if not executable_scripts:
                 log_step_warning(logger, "No executable scripts found in render output")
                 execution_results["message"] = "No executable scripts found"
                 execution_results["success"] = True
             else:
                 logger.info(f"Found {len(executable_scripts)} executable scripts to run")
-                
+
                 # Extract timeout from kwargs
                 timeout = kwargs.get('timeout', 300)
-                
+
                 # Execute each script
                 for script_info in executable_scripts:
                     exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
                     execution_results["execution_details"].append(exec_result)
-                    
+
                     # Update framework status
                     framework = exec_result.get("framework", "unknown")
                     if framework not in execution_results["framework_status"]:
@@ -259,17 +259,17 @@ def process_execute(
                         execution_results["framework_status"][framework]["status"] = "failed"
                         if "error" in exec_result:
                             execution_results["framework_status"][framework]["error"] = exec_result["error"]
-        
+
         # Save detailed results to summaries subfolder
         summaries_dir = results_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
         results_file = summaries_dir / "execution_summary.json"
         with open(results_file, 'w') as f:
             json.dump(execution_results, f, indent=2, default=str)
-            
+
         # Generate execution report
         generate_execution_report(execution_results, results_dir, logger)
-        
+
         # Determine overall success with improved logic
         total_scripts = execution_results["total_scripts_found"]
         failed_scripts = execution_results["failed_executions"]
@@ -287,7 +287,7 @@ def process_execute(
         # Return True if we found and attempted to run scripts (even if some failed)
         # Return False only if there was a critical error preventing execution
         return True
-        
+
     except Exception as e:
         log_step_error(logger, f"Execute processing failed: {e}")
         return False
@@ -319,7 +319,7 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
             - size_bytes: File size in bytes
     """
     executable_scripts = []
-    
+
     # Define supported script types and their executors
     script_types = {
         '*.py': {'executor': sys.executable, 'framework': 'python'},
@@ -364,12 +364,12 @@ def find_executable_scripts(render_output_dir: Path, verbose: bool, logger, requ
                 'relative_path': script_path.relative_to(render_output_dir),
                 'size_bytes': script_path.stat().st_size if script_path.exists() else 0
             }
-            
+
             executable_scripts.append(script_info)
-            
+
             if verbose:
                 logger.info(f"Found {config['framework']} script: {script_info['relative_path']}")
-    
+
     return executable_scripts
 
 
@@ -388,17 +388,17 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
     """
     script_path = script_info['path']
     executor = script_info['executor']
-    
+
     # Extract model name and framework from script path for organization
     # Expected path: .../11_render_output/model_name/framework/script.ext
     path_parts = script_path.parts
     if len(path_parts) >= 3:
-        model_name = path_parts[-3]  # e.g., 'actinf_pomdp_agent' 
+        model_name = path_parts[-3]  # e.g., 'actinf_pomdp_agent'
         framework = path_parts[-2]   # e.g., 'pymdp'
     else:
         model_name = 'unknown_model'
         framework = script_info['framework']
-    
+
     # Prepare execution result
     exec_result = {
         'script_path': str(script_path),
@@ -413,14 +413,14 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         'execution_time': 0,
         'timestamp': datetime.now().isoformat()
     }
-    
+
     try:
 
         if verbose:
             logger.info(f"Executing {script_info['framework']} script: {script_info['name']}")
-        
+
         start_time = datetime.now()
-        
+
         # Check if the executor is available
         try:
             # For Python scripts, check if Python is available (most are Python scripts)
@@ -430,7 +430,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                              text=True,
                              timeout=5,
                              check=True)
-                             
+
                 # For PyMDP, specifically check if it's importable
                 if framework == "pymdp":
                     try:
@@ -452,7 +452,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 if not check_julia_dependencies(verbose, logger):
                     logger.warning("Julia dependencies (RxInfer/ActiveInference) may be missing")
                     # Don't fail here, let the script try to run, but log warning
-                    
+
                 subprocess.run([executor, '--version'],
                              capture_output=True,
                              text=True,
@@ -469,7 +469,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['error'] = f"Executor '{executor}' is not available or not working: {e}"
             logger.warning(f"Executor '{executor}' is not available - skipping {script_info['name']}")
             return exec_result
-        
+
         # Execute the script with improved error handling
         script_name = script_path.name
         result = None
@@ -486,7 +486,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             env = os.environ.copy()
             if framework == "pymdp":
                 env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
-                
+
             result = subprocess.run(
                 [executor, script_name],
                 capture_output=True,
@@ -509,7 +509,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                     logger.info(f"Script output: {result.stdout[:200]}...")  # Show first 200 chars
             else:
                 exec_result['error'] = f"Script failed with return code {result.returncode}"
-                
+
                 # Analyze stderr for common errors
                 if "ModuleNotFoundError" in result.stderr:
                     exec_result['error_type'] = "DependencyError"
@@ -519,7 +519,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                     logger.error(f"Syntax error in {script_info['name']}")
                 else:
                     exec_result['error_type'] = "RuntimeError"
-                    
+
                 logger.warning(f"⚠️ Script {script_info['name']} failed with return code {result.returncode}")
                 if result.stderr:
                     logger.warning(f"Error output: {result.stderr[:500]}...")  # Show first 500 chars
@@ -543,25 +543,25 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             exec_result['stderr'] = str(e)
             logger.warning(f"❌ Script {script_info['name']} execution failed: {e}")
             result = ErrorResult(-2, "", str(e))
-        
+
         # Ensure result is defined before using it
         if result is None:
             result = ErrorResult(-3, "", "Unknown error")
-        
+
         # Save individual script output in implementation-specific subdirectory
         # Create the implementation-specific directory structure
         impl_specific_dir = results_dir / model_name / framework / "execution_logs"
         impl_specific_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Note: Framework-specific subdirectories (visualizations, simulation_data, etc.)
         # are created on-demand by collect_execution_outputs() only when actual content
         # is copied to them, avoiding empty folder creation.
 
-        
+
         # Extract simulation data from stdout/stderr
         simulation_data = _extract_simulation_data(result.stdout, result.stderr, framework, logger)
         exec_result['simulation_data'] = simulation_data
-        
+
         # Save structured execution results in JSON format
         structured_result = {
             "framework": framework,
@@ -580,14 +580,14 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 "output_directory": str(impl_specific_dir.parent)
             }
         }
-        
+
         # Save structured JSON result
         json_output_file = impl_specific_dir / f"{script_info['name']}_results.json"
         with open(json_output_file, 'w') as f:
             json.dump(structured_result, f, indent=2, default=str)
-        
+
         exec_result['structured_result_file'] = str(json_output_file)
-        
+
         # Also save human-readable log
         output_file = impl_specific_dir / f"{script_info['name']}_execution.log"
         with open(output_file, 'w') as f:
@@ -602,30 +602,30 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             f.write(result.stdout)
             f.write("\n\nSTDERR:\n")
             f.write(result.stderr)
-            
+
         exec_result['output_file'] = str(output_file)
         exec_result['implementation_directory'] = str(impl_specific_dir.parent)
-        
+
         # Collect execution outputs (visualizations, simulation data, traces)
         if exec_result['success']:
             try:
                 logger.info(f"Collecting execution outputs for {framework} script {script_info['name']}")
                 collected_outputs = collect_execution_outputs(
-                    script_path, 
-                    impl_specific_dir.parent, 
-                    framework, 
+                    script_path,
+                    impl_specific_dir.parent,
+                    framework,
                     logger
                 )
                 exec_result['collected_outputs'] = collected_outputs
-                
+
                 # Update structured result with collected file paths
                 structured_result['collected_outputs'] = collected_outputs
-                
+
                 # Re-save structured result with collected outputs
                 with open(json_output_file, 'w') as f:
                     json.dump(structured_result, f, indent=2, default=str)
-                logger.debug(f"Updated results JSON with collected outputs")
-                
+                logger.debug("Updated results JSON with collected outputs")
+
                 # Enhance simulation data extraction from collected files
                 if collected_outputs:
                     logger.info(f"Extracting simulation data from collected files for {framework}")
@@ -639,48 +639,36 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                         simulation_data.update(enhanced_data)
                         exec_result['simulation_data'] = simulation_data
                         structured_result['simulation_data'] = simulation_data
-                        
+
                         # Re-save again with enhanced data
                         with open(json_output_file, 'w') as f:
                             json.dump(structured_result, f, indent=2, default=str)
-                        logger.debug(f"Updated results JSON with enhanced simulation data")
+                        logger.debug("Updated results JSON with enhanced simulation data")
                     else:
                         logger.debug(f"No additional data extracted from files for {framework}")
-                
+
             except Exception as e:
                 logger.warning(f"Failed to collect execution outputs: {e}")
                 import traceback
                 logger.debug(traceback.format_exc())
-        
+
     except subprocess.TimeoutExpired:
         exec_result['error'] = f'Script execution timed out ({timeout} seconds)'
         logger.error(f"Script {script_info['name']} timed out")
-        
+
     except Exception as e:
         exec_result['error'] = str(e)
         exec_result['error_type'] = type(e).__name__
         logger.error(f"Error executing {script_info['name']}: {e}")
-    
+
     return exec_result
 
 
 # --- Re-export everything from sub-modules for backward compatibility ---
 from .data_extractors import (
-    normalize_and_deduplicate_paths as _normalize_and_deduplicate_paths,
     collect_execution_outputs,
     extract_simulation_data_from_files as _extract_simulation_data_from_files,
-    extract_pymdp_data_from_files as _extract_pymdp_data_from_files,
-    extract_rxinfer_data_from_files as _extract_rxinfer_data_from_files,
-    extract_activeinference_jl_data_from_files as _extract_activeinference_jl_data_from_files,
-    extract_discopy_data_from_files as _extract_discopy_data_from_files,
-    extract_jax_data_from_files as _extract_jax_data_from_files,
     extract_simulation_data as _extract_simulation_data,
-    extract_pymdp_data as _extract_pymdp_data,
-    extract_rxinfer_data as _extract_rxinfer_data,
-    extract_activeinference_jl_data as _extract_activeinference_jl_data,
-    extract_jax_data as _extract_jax_data,
-    extract_discopy_data as _extract_discopy_data,
-    extract_generic_data as _extract_generic_data,
 )
 
 
@@ -696,22 +684,22 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
     summaries_dir = results_dir / "summaries"
     summaries_dir.mkdir(parents=True, exist_ok=True)
     report_file = summaries_dir / "execution_report.md"
-    
+
     try:
         with open(report_file, 'w') as f:
             f.write("# GNN Script Execution Report\n\n")
             f.write(f"**Generated:** {execution_results['timestamp']}\n")
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
             f.write(f"**Output Directory:** {execution_results['output_directory']}\n\n")
-            
+
             f.write("## Summary\n\n")
             f.write(f"- **Total Scripts Found:** {execution_results['total_scripts_found']}\n")
             f.write(f"- **Successful Executions:** {execution_results['successful_executions']}\n")
             f.write(f"- **Failed Executions:** {execution_results['failed_executions']}\n\n")
-            
+
             if execution_results['execution_details']:
                 f.write("## Execution Details\n\n")
-                
+
                 for detail in execution_results['execution_details']:
                     status = "✅ SUCCESS" if detail['success'] else "❌ FAILED"
                     f.write(f"### {detail['script_name']} - {status}\n\n")
@@ -720,15 +708,15 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
                     f.write(f"- **Path:** `{detail['script_path']}`\n")
                     f.write(f"- **Return Code:** {detail.get('return_code', 'N/A')}\n")
                     f.write(f"- **Execution Time:** {detail.get('execution_time', 0):.2f} seconds\n")
-                    
+
                     if not detail['success'] and 'error' in detail:
                         f.write(f"- **Error:** {detail['error']}\n")
-                    
+
                     if 'output_file' in detail:
                         f.write(f"- **Detailed Output:** {detail['output_file']}\n")
-                    
+
                     f.write("\n")
-            
+
             f.write("## Next Steps\n\n")
             if execution_results['failed_executions'] > 0:
                 f.write("1. Review failed executions above\n")
@@ -737,9 +725,9 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
                 f.write("4. Verify script syntax and functionality\n\n")
             else:
                 f.write("All scripts executed successfully! Check individual output files for results.\n\n")
-            
+
         logger.info(f"Generated execution report: {report_file}")
-        
+
     except Exception as e:
         logger.error(f"Failed to generate execution report: {e}")
 
@@ -757,18 +745,18 @@ def execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, A
     """
     try:
         logger.info(f"Executing simulation for {gnn_file}")
-        
+
         # Import execution engine
         from .executor import ExecutionEngine
-        
+
         # Create execution engine
         engine = ExecutionEngine()
-        
+
         # Execute simulation
         result = engine.execute_simulation_from_gnn(gnn_file, output_dir)
-        
+
         return result
-        
+
     except Exception as e:
         logger.error(f"Failed to execute simulation for {gnn_file}: {e}")
         return {

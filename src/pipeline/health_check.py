@@ -21,8 +21,7 @@ import subprocess
 import platform
 import time
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
-from datetime import datetime
+from typing import Dict, List, Any
 import logging
 
 # Optional psutil import with fallback

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/discopy/Multi Armed Bandit Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.368132,
-  "timestamp": "2026-03-05T10:35:20.976719",
+  "execution_time": 0.363787,
+  "timestamp": "2026-03-06T09:49:03.320009",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1566,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/discopy"
+    "output_directory": "output/12_execute_output/multi_armed_bandit/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "output/12_execute_output/multi_armed_bandit/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/multi_armed_bandit/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

@@ -13,7 +13,7 @@ from typing import Dict, List, Any, Optional
 
 class MCPError(Exception):
     """Enhanced base class for MCP related errors with better context tracking."""
-    def __init__(self, message: str, code: int = -32000, data: Optional[Any] = None, 
+    def __init__(self, message: str, code: int = -32000, data: Optional[Any] = None,
                  tool_name: Optional[str] = None, module_name: Optional[str] = None):
         super().__init__(message)
         self.code = code
@@ -21,7 +21,7 @@ class MCPError(Exception):
         self.tool_name = tool_name
         self.module_name = module_name
         self.timestamp = time.time()
-        
+
         # Add context information
         if tool_name:
             self.data["tool_name"] = tool_name
@@ -33,7 +33,7 @@ class MCPToolNotFoundError(MCPError):
     """Raised when a requested tool is not found."""
     def __init__(self, tool_name: str, available_tools: Optional[List[str]] = None):
         super().__init__(
-            f"Tool '{tool_name}' not found", 
+            f"Tool '{tool_name}' not found",
             code=-32601,
             data={"available_tools": available_tools or []},
             tool_name=tool_name
@@ -44,7 +44,7 @@ class MCPResourceNotFoundError(MCPError):
     """Raised when a requested resource is not found."""
     def __init__(self, uri: str, available_resources: Optional[List[str]] = None):
         super().__init__(
-            f"Resource '{uri}' not found", 
+            f"Resource '{uri}' not found",
             code=-32601,
             data={"available_resources": available_resources or []},
             tool_name=uri
@@ -53,11 +53,11 @@ class MCPResourceNotFoundError(MCPError):
 
 class MCPInvalidParamsError(MCPError):
     """Raised when tool parameters are invalid."""
-    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None, 
+    def __init__(self, message: str, details: Optional[Dict[str, Any]] = None,
                  tool_name: Optional[str] = None, schema: Optional[Dict[str, Any]] = None):
         super().__init__(
-            message, 
-            code=-32602, 
+            message,
+            code=-32602,
             data={"details": details or {}, "schema": schema},
             tool_name=tool_name
         )
@@ -65,13 +65,13 @@ class MCPInvalidParamsError(MCPError):
 
 class MCPToolExecutionError(MCPError):
     """Raised when tool execution fails."""
-    def __init__(self, tool_name: str, original_exception: Exception, 
+    def __init__(self, tool_name: str, original_exception: Exception,
                  execution_time: Optional[float] = None):
         super().__init__(
             f"Tool '{tool_name}' execution failed: {str(original_exception)}",
             code=-32603,
             data={
-                "original_exception": str(original_exception), 
+                "original_exception": str(original_exception),
                 "traceback": traceback.format_exc(),
                 "execution_time": execution_time
             },
@@ -81,10 +81,10 @@ class MCPToolExecutionError(MCPError):
 
 class MCPSDKNotFoundError(MCPError):
     """Raised when required SDK is not found."""
-    def __init__(self, message: str = "MCP SDK not found or failed to initialize.", 
+    def __init__(self, message: str = "MCP SDK not found or failed to initialize.",
                  sdk_paths: Optional[List[str]] = None):
         super().__init__(
-            message, 
+            message,
             code=-32001,
             data={"sdk_paths": sdk_paths or []}
         )
@@ -92,11 +92,11 @@ class MCPSDKNotFoundError(MCPError):
 
 class MCPValidationError(MCPError):
     """Raised when validation fails."""
-    def __init__(self, message: str, field: Optional[str] = None, 
+    def __init__(self, message: str, field: Optional[str] = None,
                  tool_name: Optional[str] = None, value: Optional[Any] = None):
         super().__init__(
-            message, 
-            code=-32602, 
+            message,
+            code=-32602,
             data={"field": field, "value": value},
             tool_name=tool_name
         )

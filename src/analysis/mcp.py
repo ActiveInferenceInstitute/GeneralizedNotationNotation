@@ -112,7 +112,7 @@ def compute_complexity_metrics_mcp(gnn_content: str,
         variables   = [l for l in lines if "[" in l and "]" in l
                        and not l.strip().startswith("#")]
         parameters  = [l for l in lines if "=" in l and not l.strip().startswith("#")
-                       and not "->" in l]
+                       and "->" not in l]
 
         n_vars   = len(variables)
         n_conns  = len(connections)

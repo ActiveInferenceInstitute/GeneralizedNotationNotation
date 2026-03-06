@@ -12,17 +12,16 @@ License: MIT
 
 import re
 from typing import List, Dict, Any, Optional
-from pathlib import Path
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
     Variable, Connection, Parameter, Equation, TimeSpecification,
-    VariableType, DataType, ConnectionType, ParseError
+    VariableType, DataType, ConnectionType
 )
 
 class TLAParser(BaseGNNParser):
     """Parser for TLA+ (Temporal Logic of Actions) specifications."""
-    
+
     def __init__(self):
         super().__init__()
         self.module_pattern = re.compile(r'MODULE\s+(\w+)', re.IGNORECASE)
@@ -30,10 +29,10 @@ class TLAParser(BaseGNNParser):
         self.constant_pattern = re.compile(r'CONSTANTS?\s+([\w\s,]+)', re.IGNORECASE)
         self.operator_pattern = re.compile(r'(\w+)\s*==\s*(.+?)(?=\n\w+\s*==|\n\n|$)', re.DOTALL)
         self.temporal_pattern = re.compile(r'(ALWAYS|EVENTUALLY|NEXT|LEADS_TO|UNTIL)\s*\(([^)]+)\)', re.IGNORECASE)
-        
+
     def get_supported_extensions(self) -> List[str]:
         return ['.tla']
-    
+
     def parse_file(self, file_path: str) -> ParseResult:
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -43,16 +42,16 @@ class TLAParser(BaseGNNParser):
             result = ParseResult(model=self.create_empty_model())
             result.add_error(f"Failed to read TLA+ file: {e}")
             return result
-    
+
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())
             return self._parse_from_embedded_data(embedded_data, result)
-        
+
         result = ParseResult(model=self.create_empty_model())
-        
+
         try:
             # Parse module name
             module_match = self.module_pattern.search(content)
@@ -60,7 +59,7 @@ class TLAParser(BaseGNNParser):
                 result.model.model_name = module_match.group(1)
             else:
                 result.model.model_name = "TLAModel"
-            
+
             # Parse variables
             var_match = self.variable_pattern.search(content)
             if var_match:
@@ -72,10 +71,10 @@ class TLAParser(BaseGNNParser):
                             var_type=self._infer_variable_type(var_name),
                             dimensions=[1],
                             data_type=DataType.CATEGORICAL,
-                            description=f"TLA+ variable"
+                            description="TLA+ variable"
                         )
                         result.model.variables.append(variable)
-            
+
             # Parse constants as parameters
             const_match = self.constant_pattern.search(content)
             if const_match:
@@ -85,15 +84,15 @@ class TLAParser(BaseGNNParser):
                         parameter = Parameter(
                             name=const_name,
                             value=None,
-                            description=f"TLA+ constant"
+                            description="TLA+ constant"
                         )
                         result.model.parameters.append(parameter)
-            
+
             # Parse operators as equations
             for match in self.operator_pattern.finditer(content):
                 op_name = match.group(1)
                 op_def = match.group(2).strip()
-                
+
                 equation = Equation(
                     label=op_name,
                     content=op_def,
@@ -101,16 +100,16 @@ class TLAParser(BaseGNNParser):
                     description="TLA+ operator definition"
                 )
                 result.model.equations.append(equation)
-                
+
                 # Extract variable dependencies
                 connections = self._extract_tla_connections(op_name, op_def, result.model.variables)
                 result.model.connections.extend(connections)
-            
+
             # Parse temporal formulas
             for match in self.temporal_pattern.finditer(content):
                 temporal_op = match.group(1)
                 formula = match.group(2)
-                
+
                 equation = Equation(
                     label=f"temporal_{temporal_op.lower()}_{len(result.model.equations)}",
                     content=f"{temporal_op}({formula})",
@@ -118,21 +117,21 @@ class TLAParser(BaseGNNParser):
                     description=f"TLA+ temporal formula using {temporal_op}"
                 )
                 result.model.equations.append(equation)
-            
+
             # Set time specification for TLA+ (always dynamic)
             result.model.time_specification = TimeSpecification(
                 time_type="Dynamic",
                 discretization="DiscreteTime",
                 horizon="Unbounded"
             )
-            
+
             result.model.annotation = "Parsed from TLA+ temporal logic specification"
-            
+
         except Exception as e:
             result.add_error(f"Parsing error: {e}")
-        
+
         return result
-    
+
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from TLA+ comments."""
         import json
@@ -141,7 +140,7 @@ class TLAParser(BaseGNNParser):
             r'\\\*\s*MODEL_DATA:\s*(\{.+\})',  # \* MODEL_DATA: {...}
             r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
@@ -150,18 +149,18 @@ class TLAParser(BaseGNNParser):
                 except json.JSONDecodeError:
                     continue
         return None
-    
+
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
-            
+
             # Create model from embedded data
             model = GNNInternalRepresentation(
                 model_name=embedded_data.get('model_name', 'Unknown Model'),
                 annotation=embedded_data.get('annotation', ''),
             )
-            
+
             # Parse variables
             for var_data in embedded_data.get('variables', []):
                 var = Variable(
@@ -171,7 +170,7 @@ class TLAParser(BaseGNNParser):
                     dimensions=var_data.get('dimensions', [])
                 )
                 model.variables.append(var)
-            
+
             # Parse connections
             for conn_data in embedded_data.get('connections', []):
                 conn = Connection(
@@ -180,7 +179,7 @@ class TLAParser(BaseGNNParser):
                     connection_type=ConnectionType(conn_data['connection_type'])
                 )
                 model.connections.append(conn)
-            
+
             # Parse parameters
             for param_data in embedded_data.get('parameters', []):
                 param = Parameter(
@@ -189,7 +188,7 @@ class TLAParser(BaseGNNParser):
                     type_hint=param_data.get('param_type', 'constant')
                 )
                 model.parameters.append(param)
-            
+
             # Set time specification if present
             if embedded_data.get('time_specification'):
                 time_data = embedded_data['time_specification']
@@ -200,7 +199,7 @@ class TLAParser(BaseGNNParser):
                     horizon=time_data.get('horizon'),
                     step_size=time_data.get('step_size')
                 )
-            
+
             # Set ontology mappings if present
             if embedded_data.get('ontology_mappings'):
                 from .common import OntologyMapping
@@ -211,29 +210,29 @@ class TLAParser(BaseGNNParser):
                         description=mapping_data.get('description')
                     )
                     model.ontology_mappings.append(mapping)
-            
+
             result.model = model
             result.success = True
             return result
-            
+
         except Exception as e:
             result.add_error(f"Failed to parse embedded data: {e}")
             return result
-    
+
     def _extract_tla_connections(self, op_name: str, op_def: str, variables: List[Variable]) -> List[Connection]:
         """Extract variable dependencies from TLA+ operator definition."""
         connections = []
         var_names = {var.name for var in variables}
-        
+
         # Find variable references in the operator definition
         var_pattern = re.compile(r'\b([a-zA-Z_]\w*)\b')
         referenced_vars = []
-        
+
         for match in var_pattern.finditer(op_def):
             var_ref = match.group(1)
             if var_ref in var_names and var_ref != op_name:
                 referenced_vars.append(var_ref)
-        
+
         # Create connections from referenced variables to this operator
         for var_ref in set(referenced_vars):
             connection = Connection(
@@ -243,9 +242,9 @@ class TLAParser(BaseGNNParser):
                 description=f"TLA+ operator dependency: {var_ref} -> {op_name}"
             )
             connections.append(connection)
-        
+
         return connections
-    
+
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""
         name_lower = name.lower()
@@ -263,17 +262,17 @@ class TLAParser(BaseGNNParser):
 
 class AgdaParser(BaseGNNParser):
     """Parser for Agda dependently typed functional programming language."""
-    
+
     def __init__(self):
         super().__init__()
         self.module_pattern = re.compile(r'module\s+([\w.]+)\s+where', re.IGNORECASE)
         self.data_pattern = re.compile(r'data\s+(\w+).*?where\s*(.*?)(?=\ndata|\n\w+\s*:|\Z)', re.DOTALL | re.IGNORECASE)
         self.function_pattern = re.compile(r'(\w+)\s*:\s*([^=\n]+)(?:\n\1\s*(.+?))?(?=\n\w+\s*:|\Z)', re.DOTALL)
         self.import_pattern = re.compile(r'import\s+([\w.]+)', re.IGNORECASE)
-        
+
     def get_supported_extensions(self) -> List[str]:
         return ['.agda']
-    
+
     def parse_file(self, file_path: str) -> ParseResult:
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -283,16 +282,16 @@ class AgdaParser(BaseGNNParser):
             result = ParseResult(model=self.create_empty_model())
             result.add_error(f"Failed to read Agda file: {e}")
             return result
-    
+
     def parse_string(self, content: str) -> ParseResult:
         # First try to extract embedded JSON model data
         embedded_data = self._extract_embedded_json_data(content)
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())
             return self._parse_from_embedded_data(embedded_data, result)
-        
+
         result = ParseResult(model=self.create_empty_model())
-        
+
         try:
             # Parse module name
             module_match = self.module_pattern.search(content)
@@ -300,12 +299,12 @@ class AgdaParser(BaseGNNParser):
                 result.model.model_name = module_match.group(1).replace('.', '_')
             else:
                 result.model.model_name = "AgdaModel"
-            
+
             # Parse data types (variables)
             for match in self.data_pattern.finditer(content):
                 data_name = match.group(1)
                 data_body = match.group(2) if match.group(2) else ""
-                
+
                 variable = Variable(
                     name=data_name,
                     var_type=self._infer_variable_type(data_name),
@@ -314,13 +313,13 @@ class AgdaParser(BaseGNNParser):
                     description=f"Agda data type: {data_body.strip()[:50]}..."
                 )
                 result.model.variables.append(variable)
-            
+
             # Parse function definitions
             for match in self.function_pattern.finditer(content):
                 func_name = match.group(1)
                 func_type = match.group(2).strip()
                 func_body = match.group(3).strip() if match.group(3) else ""
-                
+
                 if self._is_agda_parameter(func_type, func_body):
                     # Create parameter
                     parameter = Parameter(
@@ -339,18 +338,18 @@ class AgdaParser(BaseGNNParser):
                         description=f"Agda function with type {func_type}"
                     )
                     result.model.equations.append(equation)
-                    
+
                     # Extract dependencies
                     connections = self._extract_agda_connections(func_name, func_type, func_body)
                     result.model.connections.extend(connections)
-            
+
             result.model.annotation = "Parsed from Agda dependently typed specification"
-            
+
         except Exception as e:
             result.add_error(f"Parsing error: {e}")
-        
+
         return result
-    
+
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Agda comments."""
         import json
@@ -359,7 +358,7 @@ class AgdaParser(BaseGNNParser):
             r'--\s*MODEL_DATA:\s*(\{.+\})',  # -- MODEL_DATA: {...}
             r'\{-\s*MODEL_DATA:\s*(\{.+?\})\s*-\}',  # {- MODEL_DATA: {...} -}
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
@@ -368,18 +367,18 @@ class AgdaParser(BaseGNNParser):
                 except json.JSONDecodeError:
                     continue
         return None
-    
+
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
-            
+
             # Create model from embedded data
             model = GNNInternalRepresentation(
                 model_name=embedded_data.get('model_name', 'Unknown Model'),
                 annotation=embedded_data.get('annotation', ''),
             )
-            
+
             # Parse variables
             for var_data in embedded_data.get('variables', []):
                 var = Variable(
@@ -389,7 +388,7 @@ class AgdaParser(BaseGNNParser):
                     dimensions=var_data.get('dimensions', [])
                 )
                 model.variables.append(var)
-            
+
             # Parse connections
             for conn_data in embedded_data.get('connections', []):
                 conn = Connection(
@@ -398,7 +397,7 @@ class AgdaParser(BaseGNNParser):
                     connection_type=ConnectionType(conn_data['connection_type'])
                 )
                 model.connections.append(conn)
-            
+
             # Parse parameters
             for param_data in embedded_data.get('parameters', []):
                 param = Parameter(
@@ -407,7 +406,7 @@ class AgdaParser(BaseGNNParser):
                     type_hint=param_data.get('param_type', 'constant')
                 )
                 model.parameters.append(param)
-            
+
             # Set time specification if present
             if embedded_data.get('time_specification'):
                 time_data = embedded_data['time_specification']
@@ -418,7 +417,7 @@ class AgdaParser(BaseGNNParser):
                     horizon=time_data.get('horizon'),
                     step_size=time_data.get('step_size')
                 )
-            
+
             # Set ontology mappings if present
             if embedded_data.get('ontology_mappings'):
                 from .common import OntologyMapping
@@ -429,24 +428,24 @@ class AgdaParser(BaseGNNParser):
                         description=mapping_data.get('description')
                     )
                     model.ontology_mappings.append(mapping)
-            
+
             result.model = model
             result.success = True
             return result
-            
+
         except Exception as e:
             result.add_error(f"Failed to parse embedded data: {e}")
             return result
-    
+
     def _parse_agda_dimensions(self, data_body: str) -> List[int]:
         """Parse dimensions from Agda data type body."""
         if not data_body.strip():
             return [1]
-        
+
         # Count constructors as dimension
         constructors = re.findall(r'\n\s*(\w+)', data_body)
         return [len(constructors)] if constructors else [1]
-    
+
     def _infer_agda_data_type(self, data_body: str) -> DataType:
         """Infer data type from Agda data body."""
         if 'ℕ' in data_body or 'Nat' in data_body:
@@ -457,15 +456,15 @@ class AgdaParser(BaseGNNParser):
             return DataType.FLOAT
         else:
             return DataType.CATEGORICAL
-    
+
     def _is_agda_parameter(self, func_type: str, func_body: str) -> bool:
         """Check if function definition represents a parameter."""
         # Simple heuristics for parameter detection
-        return (func_body and 
+        return (func_body and
                 (func_body.replace(' ', '').isdigit() or
                  any(const in func_body for const in ['true', 'false', 'zero', 'suc']) or
                  func_type in ['ℕ', 'Nat', 'Bool', 'ℝ']))
-    
+
     def _extract_agda_value(self, func_body: str) -> Any:
         """Extract value from Agda function body."""
         body_clean = func_body.strip()
@@ -482,14 +481,14 @@ class AgdaParser(BaseGNNParser):
             return body_clean.count('suc')
         else:
             return body_clean
-    
+
     def _extract_agda_connections(self, func_name: str, func_type: str, func_body: str) -> List[Connection]:
         """Extract dependencies from Agda function."""
         connections = []
-        
+
         # Simple pattern to find type/function references
         ref_pattern = re.compile(r'\b([A-Z][a-zA-Z0-9]*)\b')
-        
+
         # Check type signature for dependencies
         type_refs = ref_pattern.findall(func_type)
         for ref in type_refs:
@@ -501,9 +500,9 @@ class AgdaParser(BaseGNNParser):
                     description=f"Agda type dependency: {ref} -> {func_name}"
                 )
                 connections.append(connection)
-        
+
         return connections
-    
+
     def _infer_variable_type(self, name: str) -> VariableType:
         """Infer variable type from name."""
         name_lower = name.lower()
@@ -519,4 +518,4 @@ class AgdaParser(BaseGNNParser):
 
 # Compatibility aliases
 TLAPlusParser = TLAParser
-AgdaGNNParser = AgdaParser 
+AgdaGNNParser = AgdaParser

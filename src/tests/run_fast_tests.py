@@ -16,7 +16,7 @@ def run_fast_tests():
     """Run only the fast tests."""
     print("Running fast test suite...")
     start_time = time.time()
-    
+
     # Prepare pytest command for fast tests only
     pytest_cmd = [
         sys.executable, "-m", "pytest",
@@ -28,11 +28,11 @@ def run_fast_tests():
         "-m", "fast",
         "src/tests/test_fast_suite.py"
     ]
-    
+
     # Add timeout plugin if available
     # Timeout configuration is handled by pytest.ini or defaults
     pytest_cmd.extend(["--timeout=10"])
-    
+
     try:
         # Run pytest with 60 second timeout
         result = subprocess.run(
@@ -42,22 +42,22 @@ def run_fast_tests():
             cwd=Path(__file__).parent.parent.parent,  # Project root
             timeout=60
         )
-        
+
         elapsed_time = time.time() - start_time
-        
+
         print(f"Fast tests completed in {elapsed_time:.2f} seconds")
         print(f"Exit code: {result.returncode}")
-        
+
         if result.stdout:
             print("Test output:")
             print(result.stdout)
-        
+
         if result.stderr:
             print("Test errors:")
             print(result.stderr)
-        
+
         return result.returncode == 0
-        
+
     except subprocess.TimeoutExpired:
         print("Fast tests timed out after 60 seconds")
         return False
@@ -67,4 +67,4 @@ def run_fast_tests():
 
 if __name__ == "__main__":
     success = run_fast_tests()
-    sys.exit(0 if success else 1) 
+    sys.exit(0 if success else 1)

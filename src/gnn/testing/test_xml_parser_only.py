@@ -15,7 +15,7 @@ from gnn.parsers.xml_parser import XMLGNNParser
 def test_xml_parser_only():
     """Test XML parser with minimal embedded data."""
     print("🔍 Testing XML parser with minimal embedded data...")
-    
+
     # Create minimal embedded data
     minimal_data = {
         'model_name': 'Test Model',
@@ -35,12 +35,12 @@ def test_xml_parser_only():
         'time_specification': None,
         'ontology_mappings': []
     }
-    
-    print(f"📊 Input data:")
+
+    print("📊 Input data:")
     print(f"   Variables: {len(minimal_data['variables'])}")
     print(f"   Connections: {len(minimal_data['connections'])}")
     print(f"   Parameters: {len(minimal_data['parameters'])}")
-    
+
     # Create XML content with embedded data
     xml_content = f"""<?xml version="1.0" ?>
 <gnn_model name="Test Model" version="1.0">
@@ -63,51 +63,51 @@ def test_xml_parser_only():
   </parameters>
   <!-- MODEL_DATA: {json.dumps(minimal_data, separators=(',', ':'))} -->
 </gnn_model>"""
-    
+
     print(f"\n📄 Created XML content ({len(xml_content)} characters)")
-    
+
     # Parse with XML parser
     xml_parser = XMLGNNParser()
     parsed_result = xml_parser.parse_string(xml_content)
-    
+
     if not parsed_result.success:
         print(f"❌ Failed to parse XML: {parsed_result.errors}")
         return
-    
+
     model = parsed_result.model
     print(f"\n✅ Parsed model: {model.model_name}")
     print(f"   └─ Variables: {len(model.variables)}")
     print(f"   └─ Connections: {len(model.connections)}")
     print(f"   └─ Parameters: {len(model.parameters)}")
-    
+
     # Show variable names
-    print(f"\n📊 Variable names:")
+    print("\n📊 Variable names:")
     for i, var in enumerate(model.variables):
         print(f"   {i+1:2d}. {var.name}")
-    
+
     # Show parameter names
-    print(f"\n📊 Parameter names:")
+    print("\n📊 Parameter names:")
     for i, param in enumerate(model.parameters):
         print(f"   {i+1:2d}. {param.name}")
-    
+
     # Check for duplicates
     var_names = [var.name for var in model.variables]
     param_names = [param.name for param in model.parameters]
-    
-    print(f"\n🔍 Checking for duplicates:")
+
+    print("\n🔍 Checking for duplicates:")
     print(f"   Variables: {len(var_names)} total, {len(set(var_names))} unique")
     print(f"   Parameters: {len(param_names)} total, {len(set(param_names))} unique")
-    
+
     if len(var_names) != len(set(var_names)):
-        print(f"   ❌ DUPLICATE VARIABLES!")
+        print("   ❌ DUPLICATE VARIABLES!")
         from collections import Counter
         var_counts = Counter(var_names)
         for name, count in var_counts.items():
             if count > 1:
                 print(f"      '{name}' appears {count} times")
-    
+
     if len(param_names) != len(set(param_names)):
-        print(f"   ❌ DUPLICATE PARAMETERS!")
+        print("   ❌ DUPLICATE PARAMETERS!")
         from collections import Counter
         param_counts = Counter(param_names)
         for name, count in param_counts.items():
@@ -115,4 +115,4 @@ def test_xml_parser_only():
                 print(f"      '{name}' appears {count} times")
 
 if __name__ == "__main__":
-    test_xml_parser_only() 
+    test_xml_parser_only()

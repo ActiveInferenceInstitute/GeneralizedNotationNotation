@@ -18,11 +18,7 @@ Date: 2024
 
 import pytest
 import sys
-import json
-import time
-import numpy as np
 from pathlib import Path
-from typing import Dict, Any, List
 
 # Add project root to path for imports
 project_root = Path(__file__).parent.parent.parent  # src/tests → src → project root
@@ -36,7 +32,6 @@ try:
     from execute.pymdp.pymdp_utils import format_duration
 except ImportError:
     from src.execute.pymdp.pymdp_simulation import PyMDPSimulation
-    from src.execute.pymdp.pymdp_utils import format_duration
 
 
 @pytest.fixture
@@ -52,10 +47,10 @@ class TestGNNPyMDPIntegration:
         """Test GNN file parsing and parameter extraction."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")
-        
+
         parser = MarkdownGNNParser()
         parsed_data = parser.parse_file(gnn_file)
-        
+
         assert parsed_data is not None
         # Check we got a ParseResult or dict with data
         if hasattr(parsed_data, 'success'):
@@ -71,9 +66,9 @@ class TestGNNPyMDPIntegration:
         """Test PyMDP renderer can be instantiated and has render_file method."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")
-        
+
         renderer = PyMDPRenderer()
-        
+
         # Verify renderer has the expected methods
         assert hasattr(renderer, 'render_file')
         assert hasattr(renderer, 'render_directory')
@@ -87,7 +82,7 @@ class TestGNNPyMDPIntegration:
             'num_actions': 3,
             'num_timesteps': 5,
         }
-        
+
         simulation = PyMDPSimulation(config)
         assert simulation is not None
 
@@ -99,13 +94,13 @@ class TestGNNPyMDPIntegration:
             'num_actions': 3,
             'num_timesteps': 5,
         }
-        
+
         simulation = PyMDPSimulation(config)
         # Create model first
         simulation.create_model()
         # Use correct method name
         results = simulation.run_simulation()
-        
+
         assert results is not None
         # Check expected keys in results
         assert isinstance(results, dict)
@@ -114,12 +109,12 @@ class TestGNNPyMDPIntegration:
         """Test full GNN-to-PyMDP integration pipeline."""
         if not gnn_file.exists():
             pytest.skip(f"GNN file not found: {gnn_file}")
-        
+
         # Step 1: Render GNN file to PyMDP code
         renderer = PyMDPRenderer()
         output_path = tmp_path / "rendered_pymdp.py"
         success, message = renderer.render_file(gnn_file, output_path)
-        
+
         assert success, f"Rendering failed: {message}"
 
 

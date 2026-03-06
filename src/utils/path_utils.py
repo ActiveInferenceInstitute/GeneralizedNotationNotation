@@ -8,4 +8,4 @@ def get_relative_path_if_possible(absolute_path_obj: Path, project_root: Optiona
             return str(absolute_path_obj.relative_to(project_root))
         except ValueError:
             return str(absolute_path_obj)
-    return str(absolute_path_obj) 
+    return str(absolute_path_obj)

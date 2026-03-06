@@ -1,17 +1,14 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import json
-from datetime import datetime
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class LeanSerializer(BaseGNNSerializer):
     """Serializer for Lean theorem prover format."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Lean format."""
         lines = []
-        
+
         # Header
         lines.append("-- GNN Model in Lean 4")
         lines.append(f"-- Model: {model.model_name}")
@@ -20,12 +17,12 @@ class LeanSerializer(BaseGNNSerializer):
         lines.append("import Mathlib.Data.Matrix.Basic")
         lines.append("import Mathlib.Data.Real.Basic")
         lines.append("")
-        
+
         # Model namespace
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
         lines.append(f"namespace {model_name_clean}")
         lines.append("")
-        
+
         # Variable definitions
         if model.variables:
             lines.append("-- Variables")
@@ -33,7 +30,7 @@ class LeanSerializer(BaseGNNSerializer):
                 lean_type = self._map_to_lean_type(var.data_type.value)
                 lines.append(f"variable ({var.name} : {lean_type})")
             lines.append("")
-        
+
         # Structure definition
         lines.append(f"structure {model_name_clean}Model where")
         if model.variables:
@@ -41,9 +38,9 @@ class LeanSerializer(BaseGNNSerializer):
                 lean_type = self._map_to_lean_type(var.data_type.value)
                 lines.append(f"  {var.name} : {lean_type}")
         lines.append("")
-        
+
         lines.append(f"end {model_name_clean}")
-        
+
         # Embed complete model data as Lean comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -77,13 +74,13 @@ class LeanSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as Lean comment
         lines.append("-- MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
-        
+
         return '\n'.join(lines)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -94,7 +91,7 @@ class LeanSerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -107,7 +104,7 @@ class LeanSerializer(BaseGNNSerializer):
             }
             for mapping in mappings
         ]
-    
+
     def _map_to_lean_type(self, data_type: str) -> str:
         """Map GNN data types to Lean types."""
         mapping = {
@@ -118,4 +115,4 @@ class LeanSerializer(BaseGNNSerializer):
             "float": "ℝ",
             "complex": "ℂ"
         }
-        return mapping.get(data_type, "String") 
+        return mapping.get(data_type, "String")

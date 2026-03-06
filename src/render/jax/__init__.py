@@ -14,6 +14,6 @@ from .jax_renderer import (
 
 __all__ = [
     'render_gnn_to_jax',
-    'render_gnn_to_jax_pomdp', 
+    'render_gnn_to_jax_pomdp',
     'render_gnn_to_jax_combined'
-] 
+]

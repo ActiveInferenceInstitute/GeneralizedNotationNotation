@@ -5,7 +5,7 @@ Render recovery helper for testing pipeline resilience.
 import logging
 import json
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
     """Recovery-friendly bulk render used by tests.
@@ -31,7 +31,7 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
         files = list(Path(str(target_dir)).glob("**/*.json")) + list(Path(str(target_dir)).glob("**/*.md"))
         output_dir.mkdir(parents=True, exist_ok=True)
         summary = {"rendered": 0}
-        
+
         # Simple generation logic sufficient for recovery tests
         for fp in files:
             try:
@@ -39,7 +39,7 @@ def render_gnn_files(target_dir: Path, output_dir: Path) -> Dict[str, Any]:
                     model = json.loads(fp.read_text())
                 else:
                     model = {"model_name": fp.stem, "variables": [], "connections": []}
-                
+
                 # We simply write a dummy file to simulate success
                 code = f"# Generated for {fp.name}\nprint('Success')"
                 (output_dir / f"{fp.stem}_pymdp.py").write_text(code)

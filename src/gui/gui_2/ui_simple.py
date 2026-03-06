@@ -6,7 +6,7 @@ This version focuses on core functionality without complex event handling
 
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Union
+from typing import List, Optional
 
 try:
     import gradio as gr
@@ -26,7 +26,7 @@ except ImportError:
 
 def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logger) -> "gr.Blocks":
     """Build a simplified visual matrix editor that actually works"""
-    
+
     if not GRADIO_AVAILABLE:
         raise ImportError("Gradio is required for GUI functionality")
 
@@ -40,7 +40,7 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
         """Create a simple heatmap"""
         if not PLOTLY_AVAILABLE or not data:
             return None
-        
+
         try:
             fig = go.Figure(data=go.Heatmap(
                 z=data,
@@ -62,11 +62,11 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
         """Create a simple bar plot for vectors"""
         if not PLOTLY_AVAILABLE or not data:
             return None
-            
+
         try:
             # Extract values from vector format
             values = [row[0] if isinstance(row, list) and len(row) > 0 else 0.0 for row in data]
-            
+
             fig = go.Figure(data=go.Bar(
                 y=values,
                 x=list(range(len(values))),
@@ -103,15 +103,15 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
             d_data = safe_convert(vector_d) or default_d
 
             results = []
-            
+
             if PLOTLY_AVAILABLE:
                 results.append(create_simple_heatmap(a_data, "Matrix A"))
-                results.append(create_simple_heatmap(b_data, "Matrix B"))  
+                results.append(create_simple_heatmap(b_data, "Matrix B"))
                 results.append(create_bar_plot(c_data, "Vector C"))
                 results.append(create_bar_plot(d_data, "Vector D"))
             else:
                 results.extend([None, None, None, None])
-            
+
             # Simple statistics
             stats = f"""
 **Matrix Statistics:**
@@ -121,9 +121,9 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
 - Vector D: {len(d_data)} elements
 """
             results.append(stats)
-            
+
             return results
-            
+
         except Exception as e:
             logger.error(f"Error in update_visualizations: {e}")
             error_fig = None
@@ -133,13 +133,13 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
 
     # Build the simplified interface
     with gr.Blocks(
-        title="Visual Matrix Editor - Simplified", 
+        title="Visual Matrix Editor - Simplified",
         theme=gr.themes.Default()
     ) as demo:
-        
+
         gr.Markdown("# 🎯 Visual Matrix Editor (Simplified)")
         gr.Markdown("Interactive matrix editor for Active Inference models")
-        
+
         with gr.Row():
             with gr.Column():
                 gr.Markdown("### Matrix A (Likelihood)")
@@ -148,14 +148,14 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
                     label="Matrix A",
                     interactive=True
                 )
-                
+
                 gr.Markdown("### Matrix B (Transition)")
                 matrix_b_input = gr.Dataframe(
                     value=default_b,
-                    label="Matrix B", 
+                    label="Matrix B",
                     interactive=True
                 )
-            
+
             with gr.Column():
                 gr.Markdown("### Vector C (Preference)")
                 vector_c_input = gr.Dataframe(
@@ -163,30 +163,30 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
                     label="Vector C",
                     interactive=True
                 )
-                
+
                 gr.Markdown("### Vector D (Prior)")
                 vector_d_input = gr.Dataframe(
                     value=default_d,
                     label="Vector D",
                     interactive=True
                 )
-        
+
         # Update button
         update_btn = gr.Button("🔄 Update Visualizations", variant="primary")
-        
+
         # Visualizations row
         if PLOTLY_AVAILABLE:
             with gr.Row():
                 plot_a = gr.Plot(label="Matrix A Heatmap")
-                plot_b = gr.Plot(label="Matrix B Heatmap") 
-            
+                plot_b = gr.Plot(label="Matrix B Heatmap")
+
             with gr.Row():
                 plot_c = gr.Plot(label="Vector C Plot")
                 plot_d = gr.Plot(label="Vector D Plot")
-        
+
         # Statistics
         stats_output = gr.Markdown("Click 'Update Visualizations' to see statistics")
-        
+
         # Event handling - only on button click to avoid loading issues
         if PLOTLY_AVAILABLE:
             update_btn.click(
@@ -197,18 +197,18 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
         else:
             def update_stats_only(matrix_a, matrix_b, vector_c, vector_d):
                 return update_visualizations(matrix_a, matrix_b, vector_c, vector_d)[-1]
-            
+
             update_btn.click(
                 update_stats_only,
-                inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input], 
+                inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input],
                 outputs=[stats_output]
             )
-        
+
         # Export functionality
         with gr.Row():
             export_btn = gr.Button("💾 Export GNN", variant="secondary")
             export_output = gr.Textbox(label="Export Status", lines=2)
-        
+
         def export_matrices(matrix_a, matrix_b, vector_c, vector_d):
             """Export current matrices to GNN format"""
             try:
@@ -223,14 +223,14 @@ def build_simple_visual_gui(markdown_text: str, export_path: Path, logger: loggi
 
 Generated by Visual Matrix Editor (Simplified)
 """
-                
+
                 export_path.write_text(gnn_content)
                 return f"✅ Exported to {export_path.name}"
-                
+
             except Exception as e:
                 logger.error(f"Export failed: {e}")
                 return f"❌ Export failed: {str(e)}"
-        
+
         export_btn.click(
             export_matrices,
             inputs=[matrix_a_input, matrix_b_input, vector_c_input, vector_d_input],

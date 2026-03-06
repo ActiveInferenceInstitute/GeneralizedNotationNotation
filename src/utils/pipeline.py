@@ -7,7 +7,7 @@ This module provides pipeline utility functions.
 
 import logging
 from pathlib import Path
-from typing import Optional, Any, Tuple, Dict, List
+from typing import Optional, Any, Tuple, List
 
 logger = logging.getLogger(__name__)
 
@@ -60,9 +60,9 @@ class FallbackArgumentParser:
     """
     Fallback argument parser for fallback scenarios.
     """
-    
+
     @staticmethod
-    def parse_step_arguments(step_name): 
+    def parse_step_arguments(step_name):
         """
         Parse step arguments (fallback implementation).
         
@@ -77,7 +77,7 @@ class FallbackArgumentParser:
                 self.verbose = False
                 self.output_dir = Path("output")
                 self.step_name = step_name
-        
+
         return DefaultArgs()
 
 def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, ...]:
@@ -95,17 +95,17 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
         # Try to import actual utilities
         from .logging_utils import setup_step_logging
         from .argument_utils import ArgumentParser
-        
+
         logger = setup_step_logging(step_name, verbose)
         parser = ArgumentParser
-        
+
         return logger, parser
-        
+
     except ImportError:
         # Fallback to default utilities
         logger = setup_step_logging(step_name, verbose)
         parser = FallbackArgumentParser()
-        
+
         return logger, parser
 
 def validate_output_directory(output_dir: Path, step_name: str) -> bool:
@@ -122,7 +122,7 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
     try:
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Check if directory is writable
         test_file = output_dir / f"{step_name}_test.tmp"
         try:
@@ -131,10 +131,10 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         except Exception as e:
             logger.error(f"Output directory {output_dir} is not writable: {e}")
             return False
-        
+
         logger.info(f"Output directory validated: {output_dir}")
         return True
-        
+
     except Exception as e:
         logger.error(f"Failed to validate output directory {output_dir}: {e}")
         return False
@@ -157,11 +157,11 @@ def execute_pipeline_step_template(
     try:
         # Setup logging
         logger = setup_step_logging(step_name, verbose=True)
-        
+
         # Log step start
         from .logging_utils import log_step_start
         log_step_start(logger, step_description)
-        
+
         # Import dependencies if specified
         if import_dependencies:
             for dep in import_dependencies:
@@ -170,16 +170,16 @@ def execute_pipeline_step_template(
                     logger.debug(f"Imported dependency: {dep}")
                 except ImportError as e:
                     logger.warning(f"Failed to import dependency {dep}: {e}")
-        
+
         # Execute main function
         result = main_function()
-        
+
         # Log step completion
         from .logging_utils import log_step_success
         log_step_success(logger, f"{step_description} completed successfully")
-        
+
         return result
-        
+
     except Exception as e:
         # Log step error
         from .logging_utils import log_step_error

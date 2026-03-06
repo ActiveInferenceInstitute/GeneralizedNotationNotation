@@ -6,14 +6,12 @@ This module provides integration processing capabilities.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
 import logging
 
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_error
 )
 
 logger = logging.getLogger(__name__)
@@ -40,14 +38,14 @@ def process_integration(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("integration")
-    
+
     try:
         log_step_start(logger, "Processing integration")
-        
+
         # Create results directory (with integration_results subdirectory)
         results_dir = output_dir / "integration_results"
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         results = {
             "processed_files": 0,
             "success": True,
@@ -55,11 +53,11 @@ def process_integration(
             "system_graph_stats": {},
             "issues": []
         }
-        
+
         # Search for GNN files in multiple locations
         import re
         gnn_files = list(target_dir.glob("*.md"))
-        
+
         # Also check parent/input directories for GNN source files
         project_root = target_dir
         for _ in range(5):  # Walk up to find project root
@@ -71,7 +69,7 @@ def process_integration(
             if parent == project_root:
                 break
             project_root = parent
-        
+
         # Deduplicate by filename
         seen_names = set()
         unique_gnn_files = []
@@ -80,7 +78,7 @@ def process_integration(
                 seen_names.add(f.name)
                 unique_gnn_files.append(f)
         gnn_files = unique_gnn_files
-        
+
         results["processed_files"] = len(gnn_files)
 
         # Build System Graph
@@ -93,14 +91,14 @@ def process_integration(
             G = {}
 
         component_locations = {}  # component_name -> filename
-        
+
         if verbose:
             logger.debug(f"Processing {len(gnn_files)} GNN files for integration analysis")
-        
+
         for gnn_file in gnn_files:
             try:
                 content = gnn_file.read_text()
-                
+
                 # 1. Extract variables from ## StateSpaceBlock section
                 state_section = re.search(
                     r'##\s*StateSpaceBlock\s*\n(.*?)(?=\n##\s|\Z)', content, re.DOTALL
@@ -120,7 +118,7 @@ def process_integration(
                                 G.add_node(comp, file=gnn_file.name)
                             else:
                                 G.setdefault(comp, [])
-                
+
                 # 2. Also extract from YAML-style definitions (legacy support)
                 matches = re.finditer(r'^\s*-\s*name:\s*(\w+)', content, re.MULTILINE)
                 for match in matches:
@@ -130,7 +128,7 @@ def process_integration(
                         G.add_node(comp, file=gnn_file.name)
                     else:
                         G.setdefault(comp, [])
-                
+
                 # 3. Extract connections from ## Connections section
                 conn_section = re.search(
                     r'##\s*Connections\s*\n(.*?)(?=\n##\s|\Z)', content, re.DOTALL
@@ -153,7 +151,7 @@ def process_integration(
                                 else:
                                     G.setdefault(node, [])
                                 component_locations.setdefault(node, gnn_file.name)
-                            
+
                             if op == '>':
                                 if has_networkx:
                                     G.add_edge(src, tgt, type="directional")
@@ -171,20 +169,20 @@ def process_integration(
                                     G.add_edge(tgt, src, type="reverse")
                                 else:
                                     G.setdefault(tgt, []).append(src)
-                
+
                 if verbose:
                     logger.debug(f"Parsed {gnn_file.name}: found {len(component_locations)} components")
-                    
+
             except Exception as e:
                 logger.warning(f"Failed to parse {gnn_file.name}: {e}")
                 continue
-        
+
         # NOTE: Cross-file reference edges via content matching have been removed.
         # GNN models share a common mathematical vocabulary (s_prime, beta, alpha,
         # s_tau1, etc.), so substring/word-boundary matching always generates
         # false-positive edges. Real cross-file dependencies are detected via
         # explicit $ref: syntax (see the "Verify cross-references" section below).
-        
+
         if has_networkx:
             try:
                 # Count cycles for structural analysis. Intra-model cycles from
@@ -192,10 +190,10 @@ def process_integration(
                 # bidirectional s - A creates s→A→s loops), so we report them
                 # as informational structure, not as dependency issues.
                 import time as _t
-                
+
                 MAX_CYCLE_LENGTH = 6   # Short cycles only for structural metrics
                 MAX_CYCLE_TIME = 5     # Quick scan — not a critical check
-                
+
                 cycle_count = 0
                 try:
                     _deadline = _t.monotonic() + MAX_CYCLE_TIME
@@ -213,12 +211,12 @@ def process_integration(
                                 break
                     except Exception:
                         cycle_count = 0
-                
+
                 # Detect isolated nodes
                 isolated = list(nx.isolates(G))
                 if isolated:
                     results["issues"].append(f"Isolated components (no connections): {isolated}")
-                
+
                 results["system_graph_stats"] = {
                     "nodes": G.number_of_nodes(),
                     "edges": G.number_of_edges(),
@@ -226,7 +224,7 @@ def process_integration(
                     "isolated_nodes": len(isolated),
                     "components": nx.number_weakly_connected_components(G)
                 }
-                
+
                 logger.info(f"System graph: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges, "
                            f"{cycle_count} intra-model cycles (structural), {len(isolated)} isolated")
             except Exception as e:
@@ -238,7 +236,7 @@ def process_integration(
                 "nodes": node_count,
                 "edges": edge_count
             }
-        
+
         # Verify cross-references
         for gnn_file in gnn_files:
             try:
@@ -264,11 +262,11 @@ def process_integration(
         results_file = results_dir / "integration_results.json"
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
-        
+
         # Generate summary
         node_count = results['system_graph_stats'].get('nodes', 0)
         edge_count = results['system_graph_stats'].get('edges', 0)
-        summary = f"# System Integration Report\n\n"
+        summary = "# System Integration Report\n\n"
         summary += f"Scanned {len(gnn_files)} files.\n\n"
         summary += f"- **Graph Nodes**: {node_count}\n"
         summary += f"- **Graph Edges**: {edge_count}\n"
@@ -282,16 +280,16 @@ def process_integration(
                 summary += f"- {issue}\n"
         else:
             summary += "\nNo issues detected.\n"
-        
+
         (results_dir / "integration_summary.md").write_text(summary)
 
         if results["success"]:
             log_step_success(logger, f"Integration processing completed: {node_count} nodes, {edge_count} edges")
         else:
             log_step_error(logger, "integration processing failed")
-        
+
         return results["success"]
-        
+
     except Exception as e:
         log_step_error(logger, "integration processing failed", {"error": str(e)})
         return False

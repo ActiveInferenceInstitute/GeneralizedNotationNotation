@@ -24,7 +24,7 @@ def register_tools(mcp_instance):
         mcp_instance: The main MCP instance to register tools with
     """
     logger.debug("Registering SymPy MCP tools...")
-    
+
     # Register mathematical validation tools
     mcp_instance.register_tool(
         name="sympy_validate_equation",
@@ -46,7 +46,7 @@ def register_tools(mcp_instance):
         },
         description="Validate a mathematical equation using SymPy symbolic processing"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_validate_matrix",
         func=validate_matrix_tool,
@@ -67,7 +67,7 @@ def register_tools(mcp_instance):
         },
         description="Validate matrix properties including stochasticity constraints"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_analyze_stability",
         func=analyze_stability_tool,
@@ -83,7 +83,7 @@ def register_tools(mcp_instance):
         },
         description="Analyze system stability using eigenvalue analysis"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_simplify_expression",
         func=simplify_expression_tool,
@@ -99,7 +99,7 @@ def register_tools(mcp_instance):
         },
         description="Simplify a mathematical expression to canonical form"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_solve_equation",
         func=solve_equation_tool,
@@ -124,7 +124,7 @@ def register_tools(mcp_instance):
         },
         description="Solve an equation algebraically for a specified variable"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_get_latex",
         func=get_latex_tool,
@@ -140,7 +140,7 @@ def register_tools(mcp_instance):
         },
         description="Convert a mathematical expression to LaTeX format"
     )
-    
+
     # Register setup and cleanup tools
     mcp_instance.register_tool(
         name="sympy_initialize",
@@ -157,7 +157,7 @@ def register_tools(mcp_instance):
         },
         description="Initialize SymPy MCP integration"
     )
-    
+
     mcp_instance.register_tool(
         name="sympy_cleanup",
         func=cleanup_sympy_tool,
@@ -167,14 +167,14 @@ def register_tools(mcp_instance):
         },
         description="Clean up SymPy MCP integration and reset state"
     )
-    
+
     logger.info("Successfully registered SymPy MCP tools")
 
 
 async def get_sympy_integration():
     """Get or create the SymPy integration instance"""
     global sympy_integration_instance
-    
+
     if sympy_integration_instance is None:
         try:
             from .sympy_mcp_client import create_sympy_integration
@@ -185,7 +185,7 @@ async def get_sympy_integration():
         except Exception as e:
             logger.error(f"Failed to initialize SymPy MCP integration: {e}")
             raise
-    
+
     return sympy_integration_instance
 
 
@@ -197,13 +197,13 @@ def find_sympy_server_executable() -> Optional[str]:
         "../sympy-mcp/server.py",  # Adjacent directory
         "~/sympy-mcp/server.py",  # Home directory
     ]
-    
+
     for location in possible_locations:
         path = Path(location).expanduser()
         if path.exists():
             logger.debug(f"Found SymPy MCP server at: {path}")
             return str(path)
-    
+
     logger.warning("SymPy MCP server executable not found, will try without auto-start")
     return None
 
@@ -267,10 +267,10 @@ async def simplify_expression_tool(expression: str) -> Dict[str, Any]:
     """Tool function for expression simplification"""
     try:
         integration = await get_sympy_integration()
-        
+
         # Validate and simplify the expression
         validation_result = await integration.validate_gnn_equation(expression)
-        
+
         if validation_result["valid"]:
             return {
                 "success": True,
@@ -295,20 +295,20 @@ async def solve_equation_tool(equation: str, variable: str, domain: str = "COMPL
     """Tool function for equation solving"""
     try:
         integration = await get_sympy_integration()
-        
+
         # First validate the equation
         validation_result = await integration.validate_gnn_equation(equation)
-        
+
         if not validation_result["valid"]:
             return {
                 "success": False,
                 "error": f"Invalid equation: {validation_result.get('error', 'Unknown error')}"
             }
-        
+
         # Solve the equation
         expr_key = validation_result["expr_key"]
         solution = await integration.sympy_client.solve_algebraically(expr_key, variable, domain)
-        
+
         return {
             "success": True,
             "equation": equation,
@@ -328,10 +328,10 @@ async def get_latex_tool(expression: str) -> Dict[str, Any]:
     """Tool function for LaTeX conversion"""
     try:
         integration = await get_sympy_integration()
-        
+
         # Validate the expression and get LaTeX
         validation_result = await integration.validate_gnn_equation(expression)
-        
+
         if validation_result["valid"]:
             return {
                 "success": True,
@@ -354,17 +354,17 @@ async def get_latex_tool(expression: str) -> Dict[str, Any]:
 async def initialize_sympy_tool(server_executable: Optional[str] = None) -> Dict[str, Any]:
     """Tool function for SymPy initialization"""
     global sympy_integration_instance
-    
+
     try:
         # Clean up existing instance
         if sympy_integration_instance:
             await sympy_integration_instance.cleanup()
             sympy_integration_instance = None
-        
+
         # Create new instance
         from .sympy_mcp_client import create_sympy_integration
         sympy_integration_instance = await create_sympy_integration(server_executable)
-        
+
         return {
             "success": True,
             "message": "SymPy MCP integration initialized successfully"
@@ -380,12 +380,12 @@ async def initialize_sympy_tool(server_executable: Optional[str] = None) -> Dict
 async def cleanup_sympy_tool() -> Dict[str, Any]:
     """Tool function for SymPy cleanup"""
     global sympy_integration_instance
-    
+
     try:
         if sympy_integration_instance:
             await sympy_integration_instance.cleanup()
             sympy_integration_instance = None
-        
+
         return {
             "success": True,
             "message": "SymPy MCP integration cleaned up successfully"
@@ -403,60 +403,60 @@ def validate_equation_tool_sync(equation: str, context: Optional[Dict[str, Any]]
     """Synchronous wrapper for equation validation"""
     if context is None:
         context = {}
-    
+
     # Store reference to async function to avoid recursion
     async def _async_wrapper():
         return await validate_equation_tool_async(equation, context)
-    
+
     return asyncio.run(_async_wrapper())
 
 def validate_matrix_tool_sync(matrix_data: List[List[Any]], matrix_type: str = "transition") -> Dict[str, Any]:
     """Synchronous wrapper for matrix validation"""
     async def _async_wrapper():
         return await validate_matrix_tool_async(matrix_data, matrix_type)
-    
+
     return asyncio.run(_async_wrapper())
 
 def analyze_stability_tool_sync(transition_matrices: List[List[List[Any]]]) -> Dict[str, Any]:
     """Synchronous wrapper for stability analysis"""
     async def _async_wrapper():
         return await analyze_stability_tool_async(transition_matrices)
-    
+
     return asyncio.run(_async_wrapper())
 
 def simplify_expression_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for expression simplification"""
     async def _async_wrapper():
         return await simplify_expression_tool_async(expression)
-    
+
     return asyncio.run(_async_wrapper())
 
 def solve_equation_tool_sync(equation: str, variable: str, domain: str = "COMPLEX") -> Dict[str, Any]:
     """Synchronous wrapper for equation solving"""
     async def _async_wrapper():
         return await solve_equation_tool_async(equation, variable, domain)
-    
+
     return asyncio.run(_async_wrapper())
 
 def get_latex_tool_sync(expression: str) -> Dict[str, Any]:
     """Synchronous wrapper for LaTeX conversion"""
     async def _async_wrapper():
         return await get_latex_tool_async(expression)
-    
+
     return asyncio.run(_async_wrapper())
 
 def initialize_sympy_tool_sync(server_executable: Optional[str] = None) -> Dict[str, Any]:
     """Synchronous wrapper for SymPy initialization"""
     async def _async_wrapper():
         return await initialize_sympy_tool_async(server_executable)
-    
+
     return asyncio.run(_async_wrapper())
 
 def cleanup_sympy_tool_sync() -> Dict[str, Any]:
     """Synchronous wrapper for SymPy cleanup"""
     async def _async_wrapper():
         return await cleanup_sympy_tool_async()
-    
+
     return asyncio.run(_async_wrapper())
 
 
@@ -478,4 +478,4 @@ simplify_expression_tool = simplify_expression_tool_sync
 solve_equation_tool = solve_equation_tool_sync
 get_latex_tool = get_latex_tool_sync
 initialize_sympy_tool = initialize_sympy_tool_sync
-cleanup_sympy_tool = cleanup_sympy_tool_sync 
+cleanup_sympy_tool = cleanup_sympy_tool_sync

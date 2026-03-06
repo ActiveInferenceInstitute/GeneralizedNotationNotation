@@ -51,7 +51,7 @@ def detailed_memory_breakdown(
     """Create detailed memory breakdown by variable and type."""
     breakdown: Dict[str, Any] = {
         "by_variable": {},
-        "by_type": {t: 0 for t in memory_factors},
+        "by_type": dict.fromkeys(memory_factors, 0),
         "total_bytes": 0,
         "representation_overhead": 1024,
     }

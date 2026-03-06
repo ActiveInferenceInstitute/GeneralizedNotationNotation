@@ -1,26 +1,23 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import json
-from datetime import datetime
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class GrammarSerializer(BaseGNNSerializer):
     """Serializer for BNF/EBNF grammar format with embedded data support."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to BNF format with embedded data."""
         lines = []
-        
+
         # Header
         lines.append(f"# Grammar for GNN Model: {model.model_name}")
         lines.append(f"# {model.annotation}")
         lines.append("")
-        
+
         # Root rule
         lines.append("<gnn_model> ::= <variables> <connections> <parameters>")
         lines.append("")
-        
+
         # Variables
         if model.variables:
             lines.append("<variables> ::= <variable> | <variable> <variables>")
@@ -30,15 +27,15 @@ class GrammarSerializer(BaseGNNSerializer):
                 var_names.append(f'"{var.name}"')
             lines.append("<variable_name> ::= " + " | ".join(var_names))
             lines.append("")
-        
+
         # Connections
         if model.connections:
             lines.append("<connections> ::= <connection> | <connection> <connections>")
             lines.append("<connection> ::= <source_var> <connection_op> <target_var>")
             lines.append('<connection_op> ::= ">" | "-" | "->"')
             lines.append("")
-        
-        # Parameters  
+
+        # Parameters
         if model.parameters:
             lines.append("<parameters> ::= <parameter> | <parameter> <parameters>")
             lines.append("<parameter> ::= <param_name> = <param_value>")
@@ -47,7 +44,7 @@ class GrammarSerializer(BaseGNNSerializer):
                 param_names.append(f'"{param.name}"')
             lines.append("<param_name> ::= " + " | ".join(param_names))
             lines.append("")
-        
+
         # Embed complete model data as BNF comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -81,13 +78,13 @@ class GrammarSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as BNF comment
         lines.append("# MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
-        
+
         return '\n'.join(lines)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -98,7 +95,7 @@ class GrammarSerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -110,4 +107,4 @@ class GrammarSerializer(BaseGNNSerializer):
                 'description': getattr(mapping, 'description', None)
             }
             for mapping in mappings
-        ] 
+        ]

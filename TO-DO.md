@@ -1,171 +1,120 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-03-02  
-**Current Version**: 1.3.0
+**Last Updated**: 2026-03-06  
+**Current Version**: 2.0.0  
+**Pipeline Steps**: 25 (0–24) · **Modules**: 38 · **MCP Tools**: 131 · **Tests**: 1,522+ · **Renderers**: 8/8
 
 ---
-
-## Completed Releases
 
 <details>
-<summary><strong>v1.2.0 — Data Accuracy & ActiveInference.jl</strong> ✅ Released 2026-02-23</summary>
+<summary><strong>Changelog</strong> (completed releases)</summary>
 
-Fixed ActiveInference.jl renderer bugs (`POLICY_LEN` typo, `validation_status` reorder), unified test counts (1,319), version strings, execution-time claims, and coverage percentages across 35+ documentation files.
+- **v2.0.0** (2026-03-06) — `src/api/app.py` (FastAPI, 6 endpoints, SSE streaming), `src/render/health.py` (8/8 renderer health check), `src/gnn/parse_cache.py` (section-level incremental cache), `src/pipeline/preflight.py` (config + environment validation).
+- **v1.9.0** (2026-03-06) — `src/gnn/multimodel.py` (multi-model file support), `src/render/stan/stan_renderer.py` (Stan code generation), `src/lsp/__init__.py` (LSP diagnostics + hover).
+- **v1.8.0** (2026-03-06) — `src/cli/__init__.py` (6 subcommands), `src/pipeline/hasher.py` (content-addressable hashing), `src/gnn/frontmatter.py` (YAML front-matter with fallback).
+- **v1.7.0** (2026-03-06) — `src/pipeline/schemas.py` (Pydantic models), `src/gnn/contracts.py` (framework validation), `src/intelligent_analysis/remediation.py` (auto-fix suggestions).
+- **v1.6.0** (2026-03-06) — `src/pipeline/context.py` (PipelineContext), `src/pipeline/dag.py` (Kahn topological sort), `src/pipeline/step_registry.py` (`@pipeline_step` decorator, 25-step auto-discovery).
+- **v1.5.0** (2026-03-06) — `src/report/pipeline_report.py` (6-section report), `src/website/dashboard.py` (self-contained HTML SPA), `src/report/diff_report.py` (run comparison + archival).
+- **v1.4.0** (2026-03-06) — GNN v1.1 syntax spec, `src/gnn/schema.py`, TextMate grammar.
+- **v1.3.2** (2026-03-06) — Test markers, `--durations=20`, CI workflow.
+- **v1.3.1** (2026-03-06) — LLM pre-pull guard, timeouts, `--skip-llm`, content-hash caching.
+- **v1.3.0** (2026-03-02) — MCP deadlock fix, LLM recursive glob, ML class-imbalance cap.
+- **v1.2.0** (2026-02-23) — ActiveInference.jl renderer bugs, unified test counts.
+
 </details>
 
-<details>
-<summary><strong>v1.3.0 — MCP Deadlock Fix & Pipeline Hardening</strong> ✅ Released 2026-03-02</summary>
+---
 
-- **MCP deadlock resolved** — multithreading lock in `src/mcp/mcp.py` prevented module discovery; 131 tools now register across 30 modules in <5s
-- **LLM glob fix** — `glob("*.md")` → `rglob("*.md")` in `src/llm/processor.py` for recursive file discovery
-- **ML class imbalance fix** — `n_folds` capped by `min_class_count` in `src/ml_integration/processor.py`
-- **Full documentation audit** — all files synchronized to v1.3.0, 30 modules, 131 tools, dates updated repo-wide
+## v2.1.0a — CLI Polish & `gnn preflight`
 
-</details>
+> **Scope**: Add preflight check subcommand and wire lsp/api subcommands into CLI.
+
+- [ ] **`gnn preflight`** subcommand — Runs `run_preflight()` from `src/pipeline/preflight.py`. Outputs Markdown report.
+- [ ] **`gnn lsp`** subcommand — Launches `start_server()` from `src/lsp/__init__.py` on stdio.
+- [ ] **`gnn serve`** subcommand — Starts `start_server()` from `src/api/app.py` with `--host` and `--port`.
+- [ ] **`gnn health`** subcommand — Runs `check_renderers()` + `check_environment()` and prints summary.
+- [ ] **pyproject.toml** — Update entrypoint to `gnn = "src.cli:main"`.
+
+### v2.1.0a Acceptance
+
+- [ ] `gnn preflight` produces Markdown report with 🟢/🔴 status
+- [ ] `gnn health` shows 8/8 renderers
 
 ---
 
-## v1.3.1 — LLM Step Performance & Reliability
+## v2.1.0b — Pipeline Event Hooks
 
-> The LLM step (Step 13) is currently disabled due to slow `ollama pull` operations. Fix & optimize.
+> **Scope**: Wire PipelineContext event callbacks for SSE integration.
 
-### Core Performance
+- [ ] **`PipelineContext.on_step_start`** callback — Optional callable invoked at step start.
+- [ ] **`PipelineContext.on_step_complete`** callback — Optional callable invoked at step end.
+- [ ] **`PipelineContext.on_error`** callback — Optional callable invoked on step failure.
+- [ ] **API integration** — Wire callbacks to SSE event broadcasting in `api/app.py`.
 
-- [ ] **Pre-pull guard** — check if model is already available before calling `ollama pull`; skip pull entirely if hash matches
-- [ ] **Configurable model** — move model name from hardcoded to `config.yaml` (`llm.model: "llama3.2"`)
-- [ ] **Async prompt batching** — merge prompts that analyze the same file into fewer round-trips (currently 9 sequential calls)
-- [ ] **Content-hash caching** — skip re-analysis for unchanged GNN inputs; cache keyed on `sha256(input + model + prompt)`
+### v2.1.0b Acceptance
 
-### Developer Ergonomics
-
-- [ ] **`--skip-llm` convenience flag** — alias for `--skip-steps 13` for quick dev cycles
-- [ ] **LLM timeout configuration** — expose `llm.timeout_seconds` in `config.yaml` (currently hardcoded 600s)
-- [ ] **Graceful degradation** — if LLM step times out, log warning and continue pipeline instead of hard-failing
-
-### Re-enablement Criteria
-
-- [ ] Confirm `ollama pull` completes in <30s for pre-cached models
-- [ ] Pipeline run with LLM step enabled completes in <5 min total
-- [ ] Re-enable Step 13 in `config.yaml` (`enabled: true`)
+- [ ] SSE stream emits `step_start` / `step_complete` events during run
 
 ---
 
-## v1.3.2 — Test Infrastructure Modernization
+## v2.1.0c — Structured Logging & JSON Log Output
 
-> Increase test robustness and enable CI enforcement.
+> **Scope**: Machine-readable logs for pipeline observability.
 
-### Test Organization
+- [ ] **`src/pipeline/logging_config.py`** [NEW] — Configures structured JSON logging (stdlib `logging`). Fields: timestamp, level, step, message, duration.
+- [ ] **`--log-format json`** CLI flag — Switches to JSON line output for piping to log aggregators.
+- [ ] **Log rotation** — Configured via `logging.handlers.RotatingFileHandler`, 10 MB per file, 5 backups.
 
-- [ ] **Add `@pytest.mark.pipeline` marker** — separate full-pipeline integration tests from fast unit tests
-- [ ] **Add `@pytest.mark.mcp` marker** — isolate MCP audit tests that require module discovery
-- [ ] **Reproducible test count** — generate badge number from `pytest --co -q | tail -1` so docs never go stale
-- [ ] **Test timing report** — add `--durations=20` to default pytest config to catch slow tests early
+### v2.1.0c Acceptance
 
-### CI/CD Pipeline
-
-- [ ] **GitHub Actions CI gate** — block merges on pipeline success + test-suite pass
-- [ ] **Matrix testing** — Python 3.10, 3.11, 3.12 in CI
-- [ ] **Per-module coverage enforcement** — fail CI if any module drops below 80%
-- [ ] **Automated pipeline regression test** — single `pytest` integration test running `main.py` on `input/gnn_files/`, asserting 25/25 SUCCESS
-
-### MCP Audit Automation
-
-- [ ] **MCP tool count assertion** — CI test that asserts `tool_count >= 131` to catch regressions in module registration
-- [ ] **Stale documentation detector** — CI check that greps for outdated version strings or tool counts in `doc/`
+- [ ] `gnn run --log-format json 2>&1 | python -m json.tool` parses each line
 
 ---
 
-## v1.4.0 — GNN Language & Parser Improvements
+## v2.2.0a — Watcher Mode & Auto-Reparse
 
-> Formalize the GNN specification and improve developer experience with the notation.
+> **Scope**: File-watching for live re-validation during development.
 
-### Syntax Specification
+- [ ] **`src/gnn/watcher.py`** [NEW] — Uses `watchdog` (or `inotify` fallback) to monitor GNN files.
+- [ ] **`gnn watch <dir>`** subcommand — Monitors `input/gnn_files/` and re-runs validate on change.
+- [ ] **Debouncing** — 250ms debounce to avoid rapid-fire re-validation.
+- [ ] **Integration** — On change, runs `validate_required_sections()` + `parse_state_space()` and prints results.
 
-- [ ] **GNN v1.1 syntax spec** — formalize `## Connections` operator semantics (`>`, `-`, `<`) in `doc/gnn/gnn_syntax.md`
-- [ ] **Connection type annotations** — support optional labels: `D >weight=0.5 s`
-- [ ] **Matrix dimension validation** — parse state counts from `## StateSpaceBlock` and verify matrix dimensions match
-- [ ] **Default value syntax** — allow `A = uniform(3,2)` shorthand for common initializations
+### v2.2.0a Acceptance
 
-### Parser Enhancements
-
-- [ ] **Multi-model file support** — allow multiple `## ModelName` blocks in a single `.md` with independent state-space sections
-- [ ] **Better error messages** — report line numbers and expected structure when a section is missing/malformed
-- [ ] **GNN schema validation** — JSON Schema for parsed GNN objects; validate at Step 3 and reject malformed specs early
-- [ ] **Incremental parsing** — parse only changed sections when re-running pipeline on modified files
-
-### Editor Support
-
-- [ ] **GNN TextMate grammar** — basic `.gnn.md` syntax highlighting for VSCode/Cursor
-- [ ] **GNN snippets package** — common templates (POMDP, MDP, HMM) as editor snippets
-- [ ] **Markdown front-matter** — support YAML front-matter for GNN metadata (author, version, framework targets)
+- [ ] Editing a `.md` file triggers re-validation within 500ms
 
 ---
 
-## v1.5.0 — Website & Reporting
+## v2.2.0b — Model Dependency Graph Visualization
 
-> Replace static output with interactive, shareable reports.
+> **Scope**: Generate visual dependency graph from multi-model files.
 
-### Interactive Dashboard
+- [ ] **`src/gnn/dep_graph.py`** [NEW] — Builds networkx/mermaid graph from inter-model connections.
+- [ ] **`gnn graph <file.md>`** subcommand — Outputs Mermaid diagram to stdout or `.svg` file.
+- [ ] **Dashboard integration** — Embed dependency graph in `dashboard.html`.
 
-- [ ] **Single-page app** — replace static `index.html` with a dashboard showing per-step status, artifacts, and drill-down analysis
-- [ ] **Pipeline timeline visualization** — Gantt-style chart showing step durations and dependencies
-- [ ] **Output artifact browser** — navigate rendered code, analysis results, and visualizations from the browser
-- [ ] **Diff-aware reporting** — detect when new pipeline results differ from previous run and highlight deltas
+### v2.2.0b Acceptance
 
-### Export & Sharing
-
-- [ ] **PDF report export** — polished PDF from Step 23 output with embedded visualizations
-- [ ] **Self-contained HTML snapshots** — shareable single-file HTML reports (no server required)
-- [ ] **Markdown summary export** — auto-generate a `PIPELINE_REPORT.md` after each run
-
-### MCP Client Integration
-
-- [ ] **Web-based MCP playground** — browser UI to invoke individual MCP tools and inspect results
-- [ ] **Tool chain builder** — visual tool for composing multi-step MCP workflows
-- [ ] **Streaming output** — real-time pipeline progress via Server-Sent Events
+- [ ] `gnn graph multi_model.md` outputs valid Mermaid diagram
 
 ---
 
-## v2.0.0 — Deep Roadmap
+## v2.3.0 — Deep Roadmap (Unscheduled)
 
-> Major feature milestones. Breaking changes acceptable.
+> Major features requiring significant effort.
 
-### Multi-Model Composition
-
-- [ ] Compose multiple GNN models into a single multi-agent simulation
-- [ ] Shared state-space definitions with inter-model message passing
-- [ ] Visual composition editor in GUI (Step 22)
-
-### GNN Language Server Protocol (LSP)
-
-- [ ] VSCode/Cursor extension with full syntax highlighting, linting, and autocompletion
-- [ ] Live preview of parsed state-space and connections as you type
-- [ ] Jump-to-definition for matrix references across sections
-
-### Cloud Execution Backend
-
-- [ ] Remote simulation execution for Julia frameworks without local install
-- [ ] Pipeline-as-a-Service API — submit a GNN file, receive rendered code and results
-- [ ] GPU-accelerated JAX execution on cloud instances
-
-### Provenance & Reproducibility
-
-- [ ] Content-addressable model registry — every GNN spec gets a unique hash
-- [ ] Immutable pipeline run records with full input/output/config snapshot
-- [ ] `gnn reproduce <run-hash>` CLI command
-
-### Framework Ecosystem Expansion
-
-- [ ] **SPM** (Statistical Parametric Mapping) renderer and executor
-- [ ] **Stan** probabilistic programming renderer
-- [ ] **Turing.jl** renderer for Julia-native probabilistic programming
-- [ ] **NumPyro** (JAX-based PPL) renderer enhancement
+- [ ] Full VSCode extension (beyond LSP diagnostics)
+- [ ] Distributed Ray/Dask execution for parallel parameter sweeps
+- [ ] GPU-accelerated JAX on cloud instances
+- [ ] Content-addressable model registry with `gnn reproduce <run-hash>` CLI
 
 ---
 
 ## Conventions
 
 - Versions follow [SemVer](https://semver.org/) — `MAJOR.MINOR.PATCH`
-- Patch releases (`x.y.z`) should be completable in 1 focused session
-- Minor releases (`x.y.0`) should be completable in 1–3 focused sessions
-- Deep roadmap items are tracked for visibility but not scheduled until prior milestones ship
+- Sub-patches (`x.y.za`, `x.y.zb`) denote incremental shipments within a patch
+- Patch releases completable in 1 focused session
+- Minor releases completable in 1–3 focused sessions
+- Deep roadmap items tracked for visibility but not scheduled

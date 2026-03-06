@@ -11,9 +11,6 @@ Tests the GUI module's core functionality including:
 """
 
 import pytest
-from pathlib import Path
-import json
-import logging
 
 from gui import (
     add_component_to_markdown,

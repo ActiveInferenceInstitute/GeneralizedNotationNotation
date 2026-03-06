@@ -1,27 +1,24 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import json
-from datetime import datetime
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class FunctionalSerializer(BaseGNNSerializer):
     """Serializer for functional programming languages."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Haskell format."""
         lines = []
-        
+
         # Module declaration
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
         lines.append(f"module {model_name_clean} where")
         lines.append("")
-        
+
         # Imports
         lines.append("import Data.List (sort)")
         lines.append("import Numeric.LinearAlgebra ()")
         lines.append("")
-        
+
         # Data types for variables
         if model.variables:
             lines.append("-- Variable Types")
@@ -29,7 +26,7 @@ class FunctionalSerializer(BaseGNNSerializer):
                 haskell_type = self._map_to_haskell_type(var.data_type.value)
                 lines.append(f"data {var.name} = {var.name} {haskell_type}")
             lines.append("")
-        
+
         # Connections as functions
         if model.connections:
             lines.append("-- Connections as Functions")
@@ -42,7 +39,7 @@ class FunctionalSerializer(BaseGNNSerializer):
                             lines.append(f"{source}To{target} :: {source} -> {target}")
                             lines.append(f"{source}To{target} x = undefined  -- TODO: implement connection")
             lines.append("")
-        
+
         # Embed complete model data as Haskell comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -76,13 +73,13 @@ class FunctionalSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as Haskell comment
         lines.append("-- MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')))
         lines.append("")
-        
+
         return '\n'.join(lines)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -93,7 +90,7 @@ class FunctionalSerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -106,7 +103,7 @@ class FunctionalSerializer(BaseGNNSerializer):
             }
             for mapping in mappings
         ]
-    
+
     def _map_to_haskell_type(self, data_type: str) -> str:
         """Map GNN data types to Haskell types."""
         mapping = {
@@ -117,4 +114,4 @@ class FunctionalSerializer(BaseGNNSerializer):
             "float": "Double",
             "complex": "String"
         }
-        return mapping.get(data_type, "String") 
+        return mapping.get(data_type, "String")

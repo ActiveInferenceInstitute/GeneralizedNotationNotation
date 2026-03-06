@@ -7,9 +7,7 @@ This file contains comprehensive tests for the environment module functionality.
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestEnvironmentModuleComprehensive:
     """Comprehensive tests for the environment module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_environment_module_imports(self):
@@ -32,7 +30,7 @@ class TestEnvironmentModuleComprehensive:
             assert hasattr(setup, 'get_environment_info')
         except ImportError:
             pytest.skip("Environment module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_environment_manager_instantiation(self):
@@ -45,7 +43,7 @@ class TestEnvironmentModuleComprehensive:
             assert hasattr(manager, 'validate_environment')
         except ImportError:
             pytest.skip("EnvironmentManager not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_virtual_environment_instantiation(self):
@@ -58,7 +56,7 @@ class TestEnvironmentModuleComprehensive:
             assert hasattr(venv, 'activate')
         except ImportError:
             pytest.skip("VirtualEnvironment not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_environment_module_info(self):
@@ -72,7 +70,7 @@ class TestEnvironmentModuleComprehensive:
             assert 'environment_types' in info
         except ImportError:
             pytest.skip("Environment module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_environment_validation(self):
@@ -89,7 +87,7 @@ class TestEnvironmentModuleComprehensive:
 
 class TestEnvironmentFunctionality:
     """Tests for environment functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_environment_setup(self, isolated_temp_dir):
@@ -97,13 +95,13 @@ class TestEnvironmentFunctionality:
         try:
             from setup import EnvironmentManager
             manager = EnvironmentManager()
-            
+
             # Test environment setup
             result = manager.setup_environment(isolated_temp_dir)
             assert result is not None
         except ImportError:
             pytest.skip("EnvironmentManager not available")
-    
+
     @pytest.mark.slow  # Makes subprocess calls to install packages
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
@@ -115,7 +113,7 @@ class TestEnvironmentFunctionality:
             assert isinstance(result, bool)
         except ImportError:
             pytest.skip("Dependency installation not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_python_version_check(self):
@@ -130,7 +128,7 @@ class TestEnvironmentFunctionality:
 
 class TestEnvironmentIntegration:
     """Integration tests for environment module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_environment_pipeline_integration(self, isolated_temp_dir):
@@ -138,15 +136,15 @@ class TestEnvironmentIntegration:
         try:
             from setup import EnvironmentManager
             manager = EnvironmentManager()
-            
+
             # Test environment integration
             result = manager.validate_environment()
             assert result is not None
             assert isinstance(result, dict)
-            
+
         except ImportError:
             pytest.skip("Environment module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_environment_mcp_integration(self):
@@ -169,7 +167,7 @@ def test_environment_module_completeness():
         'install_dependencies',
         'check_python_version'
     ]
-    
+
     try:
         import setup
         for component in required_components:
@@ -184,16 +182,16 @@ def test_environment_module_performance():
     try:
         from setup import EnvironmentManager
         import time
-        
+
         manager = EnvironmentManager()
         start_time = time.time()
-        
+
         # Test environment validation performance
         result = manager.validate_environment()
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds
-        
+
     except ImportError:
         pytest.skip("Environment module not available")
 

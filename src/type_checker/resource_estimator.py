@@ -15,13 +15,11 @@ import os
 import sys
 import json
 import logging
-import math
 import argparse
 from pathlib import Path
-from typing import Dict, List, Set, Tuple, Any, Optional, Union
+from typing import Dict, List, Any, Optional, Union
 
 import matplotlib.pyplot as plt
-import numpy as np
 
 from .estimation_strategies import (
     estimate_memory as _est_memory,
@@ -43,7 +41,7 @@ class GNNResourceEstimator:
     """
     Estimates computational resources required for GNN models.
     """
-    
+
     # Default computational cost factors (realistic units)
     MEMORY_FACTORS = {
         'float': 4,    # bytes per float (single precision)
@@ -54,7 +52,7 @@ class GNNResourceEstimator:
         'string': 16,  # average bytes per string reference
         'categorical': 4  # bytes per category (int encoding)
     }
-    
+
     # Operation cost factors in FLOPS
     OPERATION_COSTS = {
         'matrix_multiply': 2,  # 2 FLOPS per element (multiply and add)
@@ -67,7 +65,7 @@ class GNNResourceEstimator:
         'sigmoid': 25,        # ~25 FLOPS per element
         'tanh': 30            # ~30 FLOPS per element
     }
-    
+
     # Inference speed factors (relative to static models)
     INFERENCE_FACTORS = {
         'Static': 1.0,          # Base reference
@@ -80,7 +78,7 @@ class GNNResourceEstimator:
         'string': 1.2,          # String ops ~1.2x of float cost
         'categorical': 1.1      # Categorical ~1.1x of float cost
     }
-    
+
     # Hardware specifications (representative values)
     HARDWARE_SPECS = {
         'cpu_flops_per_second': 50e9,   # 50 GFLOPS for typical CPU
@@ -88,7 +86,7 @@ class GNNResourceEstimator:
         'disk_read_speed': 500e6,       # 500 MB/s disk read
         'disk_write_speed': 450e6,      # 450 MB/s disk write
     }
-    
+
     def __init__(self, type_check_data: Optional[str] = None):
         """
         Initialize the resource estimator.
@@ -98,7 +96,7 @@ class GNNResourceEstimator:
         """
         self.results = {}
         self.detailed_metrics = {}
-        
+
         if type_check_data:
             try:
                 with open(type_check_data, 'r') as f:
@@ -108,7 +106,7 @@ class GNNResourceEstimator:
                 self.type_check_data = None
         else:
             self.type_check_data = None
-    
+
     def estimate_from_file(self, file_path: str) -> Dict[str, Any]:
         """
         Estimate resources for a single GNN file.
@@ -120,9 +118,9 @@ class GNNResourceEstimator:
             Dictionary with resource estimates
         """
         from visualization.parser import GNNParser
-        
+
         parser = GNNParser()
-        
+
         try:
             # Parse the file
             content = parser.parse_file(file_path)
@@ -136,7 +134,7 @@ class GNNResourceEstimator:
                 "inference_estimate": None,
                 "storage_estimate": None
             }
-    
+
     def estimate_from_directory(self, dir_path: str, recursive: bool = False) -> Dict[str, Dict[str, Any]]:
         """
         Estimate resources for all GNN files in a directory.
@@ -150,17 +148,17 @@ class GNNResourceEstimator:
         """
         path = Path(dir_path)
         results = {}
-        
+
         # Define pattern for GNN files
         pattern = "**/*.md" if recursive else "*.md"
-        
+
         for file_path in path.glob(pattern):
             file_str = str(file_path)
             results[file_str] = self.estimate_from_file(file_str)
-        
+
         self.results = results
         return results
-    
+
     def _analyze_model(self, content: Dict[str, Any], file_path: str) -> Dict[str, Any]:
         """
         Analyze a GNN model and estimate resources.
@@ -177,37 +175,37 @@ class GNNResourceEstimator:
         time_spec = content.get('Time', 'Static').split('\n')[0].strip()
         edges = content.get('Edges', [])
         equations = content.get('Equations', '')
-        
+
         # Extract model name
         model_name = content.get('ModelName', os.path.basename(file_path))
-        
+
         # Determine if model is hierarchical
         is_hierarchical = any('hierarchical' in key.lower() for key in content.keys())
         if is_hierarchical:
             model_type = 'Hierarchical'
         else:
             model_type = time_spec
-        
+
         # Basic estimates
         memory_estimate = self._estimate_memory(variables)
         inference_estimate = self._estimate_inference(variables, model_type, edges, equations)
         storage_estimate = self._estimate_storage(variables, edges, equations)
-        
+
         # Advanced estimates
         flops_estimate = self._estimate_flops(variables, edges, equations, model_type)
         inference_time_estimate = self._estimate_inference_time(flops_estimate)
         batched_inference_estimate = self._estimate_batched_inference(variables, model_type, flops_estimate)
         model_overhead = self._estimate_model_overhead(variables, edges, equations)
-        
+
         # More detailed matrix operation estimates
         matrix_operation_costs = self._estimate_matrix_operation_costs(variables, edges, equations)
-        
+
         # Detailed memory breakdowns
         memory_breakdown = self._detailed_memory_breakdown(variables)
-        
+
         # Calculate complexity metrics
         complexity = self._calculate_complexity(variables, edges, equations)
-        
+
         # Store detailed metrics for HTML report
         self.detailed_metrics[file_path] = {
             "flops_estimate": flops_estimate,
@@ -218,7 +216,7 @@ class GNNResourceEstimator:
             "memory_breakdown": memory_breakdown,
             "model_type": model_type
         }
-        
+
         return {
             "file": file_path,
             "model_name": model_name,
@@ -237,24 +235,24 @@ class GNNResourceEstimator:
                 "equation_count": len(equations.split('\n'))
             }
         }
-    
+
     def _estimate_memory(self, variables: Dict[str, Any]) -> float:
         """Estimate memory requirements based on variables (KB)."""
         return _est_memory(variables, self.MEMORY_FACTORS)
-    
+
     def _detailed_memory_breakdown(self, variables: Dict[str, Any]) -> Dict[str, Any]:
         """Create detailed memory breakdown by variable and type."""
         return _est_memory_breakdown(variables, self.MEMORY_FACTORS)
-    
+
     def _estimate_flops(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
                        equations: str, model_type: str) -> Dict[str, Any]:
         """Estimate floating-point operations (FLOPS) required for inference."""
         return _est_flops(variables, edges, equations, model_type, self.OPERATION_COSTS)
-    
+
     def _estimate_inference_time(self, flops_estimate: Dict[str, Any]) -> Dict[str, float]:
         """Estimate inference time based on FLOPS and hardware specs."""
         return _est_inference_time(flops_estimate, self.HARDWARE_SPECS)
-    
+
     def _estimate_batched_inference(self, variables: Dict[str, Any], model_type: str,
                                    flops_estimate: Dict[str, Any]) -> Dict[str, Any]:
         """Estimate batched inference performance."""
@@ -269,20 +267,20 @@ class GNNResourceEstimator:
                                equations: str) -> Dict[str, Any]:
         """Estimate model overhead including compile-time and optimization costs."""
         return _est_model_overhead(variables, edges, equations)
-    
+
     def _estimate_inference(self, variables: Dict[str, Any], model_type: str,
                             edges: List[Dict[str, Any]], equations: str) -> float:
         """Estimate inference time requirements (arbitrary units)."""
         return _est_inference(variables, model_type, edges, equations, self.INFERENCE_FACTORS)
-    
+
     def _estimate_storage(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> float:
         """Estimate storage requirements in KB."""
         return _est_storage(variables, edges, equations, self.MEMORY_FACTORS)
-    
+
     def _calculate_complexity(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> Dict[str, float]:
         """Calculate detailed complexity metrics for the model."""
         return _calc_complexity(variables, edges, equations)
-    
+
     def generate_html_report(self, output_dir: Optional[str] = None) -> str:
         """
         Generate a comprehensive HTML report with visualizations and detailed explanations.
@@ -295,30 +293,30 @@ class GNNResourceEstimator:
         """
         import json
         from datetime import datetime
-        
+
         if not self.results:
             return "No results to report. Run estimation first."
-        
+
         # Create output directory
         if output_dir:
             output_path = Path(output_dir)
         else:
             output_path = Path("output/type_checker/resources")
-        
+
         output_path.mkdir(parents=True, exist_ok=True)
-        
+
         # Generate visualizations for HTML embedding
         vis_path = output_path / "html_vis"
         vis_path.mkdir(exist_ok=True)
         self._generate_visualizations_for_html(vis_path)
-        
+
         # Create model comparison arrays for visualizations
         models = []
         memory_values = []
         inference_values = []
         storage_values = []
         flops_values = []
-        
+
         for file_path, result in sorted(self.results.items()):
             if "error" not in result:
                 models.append(os.path.basename(file_path).replace(".md", ""))
@@ -329,7 +327,7 @@ class GNNResourceEstimator:
                     flops_values.append(result["flops_estimate"]["total_flops"])
                 else:
                     flops_values.append(0)
-        
+
         # Start creating HTML content
         html_content = f"""<!DOCTYPE html>
 <html lang="en">
@@ -465,7 +463,7 @@ class GNNResourceEstimator:
             if "error" not in result and "flops_estimate" in result:
                 model_name = os.path.basename(file_path).replace(".md", "")
                 flops = result["flops_estimate"]
-                
+
                 html_content += f"""
             <tr>
                 <td>{model_name}</td>
@@ -496,20 +494,20 @@ class GNNResourceEstimator:
         for file_path, result in sorted(self.results.items()):
             if "error" not in result:
                 model_name = os.path.basename(file_path).replace(".md", "")
-                
+
                 # Get model type
                 model_type = "Static"
                 if file_path in self.detailed_metrics:
                     model_type = self.detailed_metrics[file_path].get("model_type", "Static")
-                
+
                 # Get complexity metrics
                 complexity = result.get("complexity", {})
-                
+
                 # Create memory breakdown
                 memory_breakdown = {}
                 if file_path in self.detailed_metrics:
                     memory_breakdown = self.detailed_metrics[file_path].get("memory_breakdown", {})
-                
+
                 html_content += f"""
         <div class="model-card">
             <h3>{model_name}</h3>
@@ -827,9 +825,9 @@ class GNNResourceEstimator:
         html_report_path = output_path / "resource_report_detailed.html"
         with open(html_report_path, 'w') as f:
             f.write(html_content)
-        
+
         return str(html_report_path)
-    
+
     def _generate_visualizations_for_html(self, output_dir: Path) -> None:
         """
         Generate visualizations specifically for HTML embedding.
@@ -839,33 +837,33 @@ class GNNResourceEstimator:
         """
         if not self.results:
             return
-        
+
         # Extract data for plots
         files = [os.path.basename(file_path) for file_path in self.results.keys()]
         memory_values = [result["memory_estimate"] for result in self.results.values() if "error" not in result and result["memory_estimate"] is not None]
         inference_values = [result["inference_estimate"] for result in self.results.values() if "error" not in result and result["inference_estimate"] is not None]
         storage_values = [result["storage_estimate"] for result in self.results.values() if "error" not in result and result["storage_estimate"] is not None]
-        
+
         # Check if we have any valid data for visualization
         if not memory_values or not inference_values or not storage_values:
             logger.warning("No valid resource estimates available for HTML visualizations")
             return
-            
+
         # Short file names for better display
         short_files = [f[:20] + "..." if len(f) > 20 else f for f in files[:len(memory_values)]]
-        
+
         # Memory usage plot with custom styling for HTML
         plt.figure(figsize=(10, 6))
         ax = plt.gca()
         bars = plt.bar(short_files, memory_values, color='skyblue')
-        
+
         # Add data labels on top of bars
         for bar in bars:
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                     f'{height:.2f}',
                     ha='center', va='bottom', fontsize=9)
-        
+
         plt.title('Memory Usage Estimates', fontsize=14, fontweight='bold')
         plt.xlabel('Model File', fontsize=12)
         plt.ylabel('Memory Usage (KB)', fontsize=12)
@@ -874,18 +872,18 @@ class GNNResourceEstimator:
         plt.tight_layout()
         plt.savefig(output_dir / "memory_usage_html.png", dpi=120, bbox_inches='tight')
         plt.close()
-        
+
         # Inference time plot with custom styling
         plt.figure(figsize=(10, 6))
         bars = plt.bar(short_files, inference_values, color='lightgreen')
-        
+
         # Add data labels
         for bar in bars:
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                     f'{height:.2f}',
                     ha='center', va='bottom', fontsize=9)
-        
+
         plt.title('Inference Time Estimates', fontsize=14, fontweight='bold')
         plt.xlabel('Model File', fontsize=12)
         plt.ylabel('Inference Time (arbitrary units)', fontsize=12)
@@ -894,18 +892,18 @@ class GNNResourceEstimator:
         plt.tight_layout()
         plt.savefig(output_dir / "inference_time_html.png", dpi=120, bbox_inches='tight')
         plt.close()
-        
+
         # Storage requirements plot with custom styling
         plt.figure(figsize=(10, 6))
         bars = plt.bar(short_files, storage_values, color='salmon')
-        
+
         # Add data labels
         for bar in bars:
             height = bar.get_height()
             plt.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                     f'{height:.2f}',
                     ha='center', va='bottom', fontsize=9)
-        
+
         plt.title('Storage Requirements Estimates', fontsize=14, fontweight='bold')
         plt.xlabel('Model File', fontsize=12)
         plt.ylabel('Storage (KB)', fontsize=12)
@@ -932,7 +930,7 @@ class GNNResourceEstimator:
 
         output_path = Path(output_dir if output_dir else "resource_estimates").resolve()
         output_path.mkdir(parents=True, exist_ok=True)
-        
+
         report_file = output_path / "resource_report.md"
         json_file = output_path / "resource_data.json"
 
@@ -944,12 +942,12 @@ class GNNResourceEstimator:
         # Calculate averages
         total_files = len(self.results)
         valid_results = [r for r in self.results.values() if "error" not in r and r["memory_estimate"] is not None]
-        
+
         if valid_results:
             avg_memory = sum(r["memory_estimate"] for r in valid_results) / len(valid_results)
             avg_inference = sum(r["inference_estimate"] for r in valid_results) / len(valid_results)
             avg_storage = sum(r["storage_estimate"] for r in valid_results) / len(valid_results)
-            
+
             report_content = ["# GNN Resource Estimation Report", ""]
             report_content.append(f"Analyzed {total_files} files")
             report_content.append(f"Average Memory Usage: {avg_memory:.2f} KB")
@@ -969,7 +967,7 @@ class GNNResourceEstimator:
                 report_content.append(f"Error: {res['error']}")
                 report_content.append("")
                 continue
-            
+
             file_path_obj = Path(file_path_str).resolve()
             display_path = file_path_str
             if actual_project_root:
@@ -984,20 +982,20 @@ class GNNResourceEstimator:
             report_content.append(f"Inference Estimate: {res['inference_estimate']:.2f} units")
             report_content.append(f"Storage Estimate: {res['storage_estimate']:.2f} KB")
             report_content.append("")
-            
+
             report_content.append("### Model Info")
             for key, value in res["model_info"].items():
                 report_content.append(f"- {key}: {value}")
-            
+
             report_content.append("")
-            
+
             report_content.append("### Complexity Metrics")
             for key, value in res["complexity"].items():
                 if isinstance(value, (int, float)):
                     report_content.append(f"- {key}: {value:.4f}")
                 else:
                     report_content.append(f"- {key}: {value}")
-            
+
             report_content.append("")
 
         report_content.append("# Metric Definitions")
@@ -1021,23 +1019,23 @@ class GNNResourceEstimator:
         report_content.append("")
 
         report = "\n".join(report_content)
-        
+
         # Save text report
         report_path = output_path / "resource_report.md"
         with open(report_path, 'w') as f:
             f.write(report)
-        
+
         # Generate visualizations
         self._generate_visualizations_for_html(output_path)
-        
+
         # Generate HTML report with detailed explanations
         html_report_path = self.generate_html_report(str(output_path))
-        
+
         # Save JSON data
         json_path = output_path / "resource_data.json"
         with open(json_path, 'w') as f:
             json.dump(self.results, f, indent=2)
-        
+
         return report
 
     def _generate_visualizations(self, output_dir: Path) -> None:
@@ -1061,14 +1059,14 @@ def main():
     parser.add_argument("-o", "--output-dir", help="Directory to save resource reports")
     parser.add_argument("--recursive", action="store_true", help="Recursively process directories")
     parser.add_argument("--html-only", action="store_true", help="Generate only HTML report with visualizations")
-    
+
     args = parser.parse_args()
-    
+
     estimator = GNNResourceEstimator(args.type_check_data)
-    
+
     input_path = args.input_path
     path = Path(input_path)
-    
+
     if path.is_file():
         # Estimate single file
         result = estimator.estimate_from_file(str(path))
@@ -1076,10 +1074,10 @@ def main():
     else:
         # Estimate directory
         estimator.estimate_from_directory(str(path), recursive=args.recursive)
-    
+
     # Generate and display report
     report = estimator.generate_report(args.output_dir)
-    
+
     if not args.html_only:
         print(report)
     else:
@@ -1088,9 +1086,9 @@ def main():
         html_path = os.path.join(output_dir, "resource_report_detailed.html")
         print(f"Generated HTML resource report at: {html_path}")
         print(f"Analyzed {len(estimator.results)} files")
-    
+
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

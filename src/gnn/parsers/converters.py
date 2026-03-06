@@ -5,8 +5,7 @@ This module provides format conversion capabilities for GNN specifications.
 """
 
 import logging
-from typing import Dict, Any, Optional
-from pathlib import Path
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -18,11 +17,11 @@ class FormatConverter:
     """
     Converts GNN models between different formats.
     """
-    
+
     def __init__(self):
         """Initialize the format converter."""
         self.supported_conversions = {}
-    
+
     def convert(self, model: Any, from_format: str, to_format: str) -> Any:
         """
         Convert a GNN model between formats.
@@ -39,15 +38,15 @@ class FormatConverter:
             ConversionError: If conversion is not supported or fails
         """
         conversion_key = (from_format, to_format)
-        
+
         if conversion_key not in self.supported_conversions:
             raise ConversionError(f"Conversion from {from_format} to {to_format} not supported")
-        
+
         try:
             return self.supported_conversions[conversion_key](model)
         except Exception as e:
             raise ConversionError(f"Conversion failed: {e}")
-    
+
     def register_conversion(self, from_format: str, to_format: str, converter_func):
         """
         Register a conversion function.
@@ -59,7 +58,7 @@ class FormatConverter:
         """
         self.supported_conversions[(from_format, to_format)] = converter_func
         logger.debug(f"Registered conversion: {from_format} -> {to_format}")
-    
+
     def is_supported(self, from_format: str, to_format: str) -> bool:
         """
         Check if a conversion is supported.
@@ -71,4 +70,4 @@ class FormatConverter:
         Returns:
             True if conversion is supported
         """
-        return (from_format, to_format) in self.supported_conversions 
+        return (from_format, to_format) in self.supported_conversions

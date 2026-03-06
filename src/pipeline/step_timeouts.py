@@ -1,7 +1,6 @@
 """Step timeout configuration for the GNN pipeline."""
 
 import os
-from typing import Optional
 
 # Timeout configuration in seconds
 STEP_TIMEOUTS = {

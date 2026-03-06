@@ -90,7 +90,7 @@ except ImportError:
 def check_analysis_tools():
     """Check availability of analysis tools."""
     tools = {}
-    
+
     # Check numpy
     try:
         import numpy
@@ -100,7 +100,7 @@ def check_analysis_tools():
         }
     except ImportError:
         tools['numpy'] = {'available': False, 'version': None}
-    
+
     # Check pandas
     try:
         import pandas
@@ -110,7 +110,7 @@ def check_analysis_tools():
         }
     except ImportError:
         tools['pandas'] = {'available': False, 'version': None}
-    
+
     # Check scipy
     try:
         import scipy
@@ -120,7 +120,7 @@ def check_analysis_tools():
         }
     except ImportError:
         tools['scipy'] = {'available': False, 'version': None}
-    
+
     # Check matplotlib
     try:
         import matplotlib
@@ -130,7 +130,7 @@ def check_analysis_tools():
         }
     except ImportError:
         tools['matplotlib'] = {'available': False, 'version': None}
-    
+
     return tools
 
 

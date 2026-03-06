@@ -7,9 +7,7 @@ This file contains comprehensive tests for the visualization module functionalit
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestVisualizationModuleComprehensive:
     """Comprehensive tests for the visualization module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_visualization_module_imports(self):
@@ -32,7 +30,7 @@ class TestVisualizationModuleComprehensive:
             assert hasattr(visualization, 'OntologyVisualizer')
         except ImportError:
             pytest.skip("Visualization module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_matrix_visualizer_instantiation(self):
@@ -45,7 +43,7 @@ class TestVisualizationModuleComprehensive:
             assert hasattr(visualizer, 'create_heatmap')
         except ImportError:
             pytest.skip("MatrixVisualizer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_graph_visualizer_instantiation(self):
@@ -58,7 +56,7 @@ class TestVisualizationModuleComprehensive:
             assert hasattr(visualizer, 'create_network_diagram')
         except ImportError:
             pytest.skip("GraphVisualizer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_visualizer_instantiation(self):
@@ -71,7 +69,7 @@ class TestVisualizationModuleComprehensive:
             assert hasattr(visualizer, 'create_ontology_table')
         except ImportError:
             pytest.skip("OntologyVisualizer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_visualization_module_info(self):
@@ -85,7 +83,7 @@ class TestVisualizationModuleComprehensive:
             assert 'visualization_types' in info
         except ImportError:
             pytest.skip("Visualization module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_visualization_options(self):
@@ -103,7 +101,7 @@ class TestVisualizationModuleComprehensive:
 
 class TestVisualizationFunctionality:
     """Tests for visualization functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_matrix_visualization(self, comprehensive_test_data):
@@ -111,14 +109,14 @@ class TestVisualizationFunctionality:
         try:
             from visualization import MatrixVisualizer
             visualizer = MatrixVisualizer()
-            
+
             # Test matrix visualization with sample data
             matrix_data = comprehensive_test_data.get('matrix_data', [[1, 2], [3, 4]])
             result = visualizer.generate_matrix_analysis(matrix_data)
             assert result is not None
         except ImportError:
             pytest.skip("MatrixVisualizer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_graph_visualization(self, comprehensive_test_data):
@@ -126,14 +124,14 @@ class TestVisualizationFunctionality:
         try:
             from visualization import GraphVisualizer
             visualizer = GraphVisualizer()
-            
+
             # Test graph visualization with sample data
             graph_data = comprehensive_test_data.get('graph_data', {'nodes': [], 'edges': []})
             result = visualizer.generate_graph_visualization(graph_data)
             assert result is not None
         except ImportError:
             pytest.skip("GraphVisualizer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_ontology_visualization(self, comprehensive_test_data):
@@ -141,7 +139,7 @@ class TestVisualizationFunctionality:
         try:
             from visualization import OntologyVisualizer
             visualizer = OntologyVisualizer()
-            
+
             # Test ontology visualization with sample data
             ontology_data = comprehensive_test_data.get('ontology_data', {})
             result = visualizer.extract_ontology_mappings(ontology_data)
@@ -152,7 +150,7 @@ class TestVisualizationFunctionality:
 
 class TestVisualizationIntegration:
     """Integration tests for visualization module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_visualization_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -160,18 +158,18 @@ class TestVisualizationIntegration:
         try:
             from visualization import MatrixVisualizer
             visualizer = MatrixVisualizer()
-            
+
             # Test end-to-end visualization
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
                 gnn_content = f.read()
-            
+
             result = visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
             assert result is not None
-            
+
         except ImportError:
             pytest.skip("Visualization module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_visualization_mcp_integration(self):
@@ -193,7 +191,7 @@ def test_visualization_module_completeness():
         'get_module_info',
         'get_visualization_options'
     ]
-    
+
     try:
         import visualization
         for component in required_components:
@@ -208,16 +206,16 @@ def test_visualization_module_performance():
     try:
         from visualization import MatrixVisualizer
         import time
-        
+
         visualizer = MatrixVisualizer()
         start_time = time.time()
-        
+
         # Test visualization performance
         result = visualizer.generate_matrix_analysis([[1, 2], [3, 4]])
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 10.0  # Should complete within 10 seconds
-        
+
     except ImportError:
         pytest.skip("Visualization module not available")
 

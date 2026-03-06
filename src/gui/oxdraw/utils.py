@@ -4,7 +4,7 @@ Utility functions for oxdraw integration
 Provides helper functions for node/edge styling, validation, and configuration.
 """
 
-from typing import Dict, Any, Tuple, List, Optional
+from typing import Dict, Any, Tuple, List
 import re
 
 
@@ -30,7 +30,7 @@ def infer_node_shape(var_name: str, var_data: Dict[str, Any]) -> Tuple[str, str]
     """
     dims = var_data.get('dimensions', [])
     ontology = var_data.get('ontology_mapping', '')
-    
+
     # Check ontology mapping first (more specific)
     if 'State' in ontology:
         # States use stadium shape
@@ -47,7 +47,7 @@ def infer_node_shape(var_name: str, var_data: Dict[str, Any]) -> Tuple[str, str]
     elif 'FreeEnergy' in ontology or var_name in ['F', 'G']:
         # Free energy uses trapezoid
         return '[/', '\\]'
-    
+
     # Check dimensionality second
     if len(dims) >= 2:
         # Matrices use rectangles
@@ -79,7 +79,7 @@ def infer_edge_style(symbol: str) -> str:
         '*': '-..->',# Modulation
         '~': '-->'    # Coupling
     }
-    
+
     return style_map.get(symbol, '-->')  # Default to normal arrow
 
 
@@ -100,28 +100,28 @@ def validate_mermaid_syntax(mermaid_content: str) -> Tuple[bool, List[str]]:
         Tuple of (is_valid, list_of_errors)
     """
     errors = []
-    
+
     # Check for flowchart directive
     if not re.search(r'^\s*flowchart\s+(TD|LR|TB|RL)', mermaid_content, re.MULTILINE):
         errors.append("Missing flowchart directive (e.g., 'flowchart TD')")
-    
+
     # Check bracket balance
     bracket_pairs = [
         ('[', ']'),
         ('(', ')'),
         ('{', '}')
     ]
-    
+
     for open_b, close_b in bracket_pairs:
         open_count = mermaid_content.count(open_b)
         close_count = mermaid_content.count(close_b)
         if open_count != close_count:
             errors.append(f"Unbalanced brackets: {open_count} '{open_b}' vs {close_count} '{close_b}'")
-    
+
     # Check for common syntax errors
     if '-->' in mermaid_content and '-- >' in mermaid_content:
         errors.append("Inconsistent arrow spacing (mix of '-->' and '-- >')")
-    
+
     return (len(errors) == 0, errors)
 
 
@@ -161,14 +161,14 @@ def sanitize_variable_name(var_name: str) -> str:
     # Allow alphanumeric, underscore, and common math symbols
     allowed_pattern = r'[^a-zA-Z0-9_πσμαβγδεζηθλρτφψωΣΠΩ]'
     sanitized = re.sub(allowed_pattern, '_', var_name)
-    
+
     # Remove leading/trailing underscores
     sanitized = sanitized.strip('_')
-    
+
     # Ensure not empty
     if not sanitized:
         sanitized = 'var'
-    
+
     return sanitized
 
 
@@ -185,16 +185,16 @@ def extract_node_positions(mermaid_content: str) -> Dict[str, Tuple[float, float
         Dictionary mapping node IDs to (x, y) positions
     """
     positions = {}
-    
+
     # Look for position comments like: %% node_id: x=100, y=200
     position_pattern = r'%%\s*(\w+):\s*x=([0-9.]+),\s*y=([0-9.]+)'
-    
+
     for match in re.finditer(position_pattern, mermaid_content):
         node_id = match.group(1)
         x = float(match.group(2))
         y = float(match.group(3))
         positions[node_id] = (x, y)
-    
+
     return positions
 
 
@@ -238,7 +238,7 @@ def generate_color_scheme(var_type: str) -> Dict[str, str]:
             'stroke': '#c2185b'
         }
     }
-    
+
     return color_schemes.get(var_type, {'fill': '#f5f5f5', 'stroke': '#9e9e9e'})
 
 
@@ -254,10 +254,10 @@ def estimate_diagram_complexity(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
     """
     num_variables = len(gnn_model.get('variables', {}))
     num_connections = len(gnn_model.get('connections', []))
-    
+
     # Calculate average degree (connections per node)
     avg_degree = (num_connections / num_variables) if num_variables > 0 else 0
-    
+
     # Determine complexity level
     if num_variables <= 10 and num_connections <= 20:
         complexity = 'simple'
@@ -265,7 +265,7 @@ def estimate_diagram_complexity(gnn_model: Dict[str, Any]) -> Dict[str, Any]:
         complexity = 'moderate'
     else:
         complexity = 'complex'
-    
+
     return {
         'num_variables': num_variables,
         'num_connections': num_connections,

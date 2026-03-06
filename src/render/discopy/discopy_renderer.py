@@ -15,7 +15,6 @@ Author: GNN DisCoPy Integration
 Date: 2024
 """
 
-import json
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 import logging
@@ -26,7 +25,7 @@ class DisCoPyRenderer:
     """
     DisCoPy renderer for generating categorical diagram code from GNN specifications.
     """
-    
+
     def __init__(self, options: Optional[Dict[str, Any]] = None):
         """
         Initialize DisCoPy renderer.
@@ -36,7 +35,7 @@ class DisCoPyRenderer:
         """
         self.options = options or {}
         self.logger = logging.getLogger(__name__)
-    
+
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
         """
         Render a single GNN file to DisCoPy categorical diagram code.
@@ -52,26 +51,26 @@ class DisCoPyRenderer:
             # Read GNN file
             with open(gnn_file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Parse GNN content (simplified for now)
             gnn_spec = self._parse_gnn_content(content, gnn_file_path.stem)
-            
+
             # Generate DisCoPy categorical diagram code
             discopy_code = self._generate_discopy_diagram_code(gnn_spec, gnn_file_path.stem)
-            
+
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(discopy_code)
-            
+
             self.logger.info(f"Generated DisCoPy diagram: {output_path}")
-            return True, f"Successfully generated DisCoPy categorical diagram code"
-            
+            return True, "Successfully generated DisCoPy categorical diagram code"
+
         except Exception as e:
             error_msg = f"Error rendering {gnn_file_path}: {e}"
             self.logger.error(error_msg)
             return False, error_msg
-    
+
     def _parse_gnn_content(self, content: str, model_name: str) -> Dict[str, Any]:
         """Parse GNN content into a structured dictionary (simplified parser)."""
         gnn_spec = {
@@ -111,7 +110,7 @@ class DisCoPyRenderer:
 
         self.logger.info(f"Parsed {len(sections_found)} sections, {len(gnn_spec['model_parameters'])} model parameters")
         return gnn_spec
-    
+
     def _generate_discopy_diagram_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """
         Generate executable DisCoPy categorical diagram code from GNN specification.
@@ -125,13 +124,13 @@ class DisCoPyRenderer:
         """
         # Extract key information from GNN spec
         model_display_name = gnn_spec.get('model_name', model_name)
-        
+
         # Extract dimensions from model parameters
         model_params = gnn_spec.get('model_parameters', {})
         num_states = model_params.get('num_hidden_states', 3)
         num_observations = model_params.get('num_obs', 3)
         num_actions = model_params.get('num_actions', 3)
-        
+
         # Try to extract from variables if available
         variables = gnn_spec.get('variables', [])
         variable_names = []
@@ -139,7 +138,7 @@ class DisCoPyRenderer:
             var_name = var.get('name', '')
             if var_name:
                 variable_names.append(var_name)
-                
+
             if var.get('name') == 'A' and 'dimensions' in var:
                 dims = var['dimensions']
                 if len(dims) >= 2:
@@ -149,13 +148,13 @@ class DisCoPyRenderer:
                 dims = var['dimensions']
                 if len(dims) >= 3:
                     num_actions = dims[2]
-        
+
         # Get initial parameterization if available
         initial_params = gnn_spec.get('initial_parameterization', {})
-        
+
         # Extract connections if available
         connections = gnn_spec.get('connections', [])
-        
+
         # Generate the Python code
         code = f'''#!/usr/bin/env python3
 """
@@ -422,9 +421,9 @@ def main():
 if __name__ == "__main__":
     exit(main())
 '''
-        
+
         return code
-    
+
     def _get_timestamp(self) -> str:
         """Get current timestamp string."""
         return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -448,30 +447,30 @@ def render_gnn_to_discopy(
     """
     try:
         renderer = DisCoPyRenderer(options)
-        
+
         # Generate simulation code directly from spec
         model_name = gnn_spec.get('model_name', 'GNN_Model')
         discopy_code = renderer._generate_discopy_diagram_code(gnn_spec, model_name)
-        
+
         # Write output file
         output_script_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_script_path, 'w', encoding='utf-8') as f:
             f.write(discopy_code)
-        
+
         message = f"Generated DisCoPy categorical diagram script: {output_script_path}"
         warnings = []
-        
+
         # Check for potential issues
         if not gnn_spec.get('initial_parameterization'):
             warnings.append("No initial parameterization found - using defaults")
-        
+
         if not gnn_spec.get('model_parameters'):
             warnings.append("No model parameters found - using inferred dimensions")
-        
+
         if not gnn_spec.get('connections'):
             warnings.append("No explicit connections found - using default Active Inference structure")
-        
+
         return True, message, warnings
-        
+
     except Exception as e:
-        return False, f"Error generating DisCoPy script: {e}", [] 
+        return False, f"Error generating DisCoPy script: {e}", []

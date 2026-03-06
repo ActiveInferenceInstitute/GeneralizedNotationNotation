@@ -2,9 +2,9 @@
 
 ## Project Overview and Context
 
-GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, PyTorch, NumPyro), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
+GeneralizedNotationNotation (GNN) is a text-based language for standardizing Active Inference generative models. The project implements a comprehensive modular pipeline that transforms GNN plaintext specifications into executable simulations, visualizations, GUI construction, and advanced representations including audio sonification. The system enables model specification, multi-format validation, visualization, translation to executable code for simulation environments (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, Stan, PyTorch, NumPyro), categorical diagram representation (DisCoPy), LLM-enhanced analysis, and more.
 
-This system represents a complete scientific computing framework with 25 integrated pipeline steps (0-24), 29 specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
+This system represents a complete scientific computing framework with 25 integrated pipeline steps (0-24), 38+ specialized agent modules, and comprehensive documentation covering all aspects of Active Inference model processing from specification through execution and analysis.
 
 ## Overall AI Behavior & Persona
 
@@ -167,7 +167,7 @@ The pipeline consists of exactly 25 steps (steps 0-24), executed in order:
 8. **8_visualization.py** → `src/visualization/` - Graph and matrix visualization generation
 9. **9_advanced_viz.py** → `src/advanced_visualization/` - Advanced visualization and interactive plots
 10. **10_ontology.py** → `src/ontology/` - Active Inference Ontology processing and validation
-11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl, JAX, PyTorch, NumPyro, DisCoPy simulation environments
+11. **11_render.py** → `src/render/` - Code generation for PyMDP, RxInfer, ActiveInference.jl, JAX, Stan, PyTorch, NumPyro, DisCoPy simulation environments
 12. **12_execute.py** → `src/execute/` - Execute rendered simulation scripts with result capture
 13. **13_llm.py** → `src/llm/` - LLM-enhanced analysis, model interpretation, and AI assistance
 14. **14_ml_integration.py** → `src/ml_integration/` - Machine learning integration and model training

@@ -1,9 +1,9 @@
 # GNN Tools and Resources
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 This document provides information about tools, libraries, and resources for working with Generalized Notation Notation (GNN).
 
@@ -532,7 +532,7 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 ### MCP Tools (Step 21)
 
-The MCP step exposes every pipeline module as a callable tool. As of v1.3.0 there are **131 real tools** (no stubs, no lambdas) across 30 domains:
+The MCP step exposes every pipeline module as a callable tool. As of v2.0.0 there are **131 real tools** (no stubs, no lambdas) across 38+ domains:
 
 ```bash
 # Run the MCP audit to list all tools

@@ -15,7 +15,7 @@ class SimulationMonitor:
     """
     Monitors real simulation execution with function call tracking and logging.
     """
-    
+
     def __init__(self, log_file: Path = None):
         """Initialize simulation monitor with logging"""
         self.log_file = log_file or Path("simulation_execution.log")
@@ -27,7 +27,7 @@ class SimulationMonitor:
             "total_successful": 0,
             "total_failed": 0
         }
-        
+
         # Configure logging as suggested in web results
         logging.basicConfig(
             level=logging.INFO,
@@ -39,7 +39,7 @@ class SimulationMonitor:
         )
         self.logger = logging.getLogger("SimulationMonitor")
         self.logger.info("🔍 SimulationMonitor initialized")
-    
+
     def track_simulation(self, simulation_name: str):
         """
         Decorator to track simulation function execution.
@@ -48,27 +48,27 @@ class SimulationMonitor:
             @functools.wraps(func)
             def wrapper(*args, **kwargs):
                 self.execution_data["total_attempted"] += 1
-                
+
                 # Real Call Tracker implementation
                 class CallTracker:
                     def __init__(self, target_func):
                         self.func = target_func
                         self.call_count = 0
                         self.called = False
-                        
+
                     def __call__(self, *a, **kw):
                         self.called = True
                         self.call_count += 1
                         return self.func(*a, **kw)
-                
+
                 tracked_func = CallTracker(func)
-                
+
                 try:
                     self.logger.info(f"🚀 Starting simulation: {simulation_name}")
-                    
+
                     # Execute the actual simulation function
                     result = tracked_func(*args, **kwargs)
-                    
+
                     if tracked_func.called:
                         self.logger.info(f"✅ Simulation '{simulation_name}' executed successfully")
                         self.execution_data["simulations"][simulation_name] = {
@@ -85,9 +85,9 @@ class SimulationMonitor:
                             "timestamp": datetime.now().isoformat()
                         }
                         self.execution_data["total_failed"] += 1
-                    
+
                     return result
-                    
+
                 except Exception as e:
                     self.logger.error(f"❌ Simulation '{simulation_name}' failed: {str(e)}")
                     self.execution_data["failures"][simulation_name] = {
@@ -97,10 +97,10 @@ class SimulationMonitor:
                     }
                     self.execution_data["total_failed"] += 1
                     raise
-                    
+
             return wrapper
         return decorator
-    
+
     def check_function_exists(self, func_name: str, func_obj: Callable) -> bool:
         """
         Check if simulation function exists and is callable
@@ -116,7 +116,7 @@ class SimulationMonitor:
                 "timestamp": datetime.now().isoformat()
             }
         return exists
-    
+
     def monitor_data_collection(self, data_list: List, simulation_name: str) -> bool:
         """
         Monitor if simulation data was collected (SimPy-style from web results)
@@ -127,34 +127,34 @@ class SimulationMonitor:
         else:
             self.logger.error(f"❌ No data collected for simulation '{simulation_name}'")
             self.execution_data["failures"][simulation_name] = {
-                "error": "No data collected", 
+                "error": "No data collected",
                 "timestamp": datetime.now().isoformat()
             }
             return False
-    
+
     def log_simulation_step(self, simulation_name: str, step: int, data: Dict[str, Any]):
         """Log individual simulation steps for monitoring"""
         self.logger.info(f"📊 {simulation_name} Step {step}: {data}")
-    
+
     def generate_report(self) -> Dict[str, Any]:
         """Generate comprehensive simulation execution report"""
         self.execution_data["completion_timestamp"] = datetime.now().isoformat()
         self.execution_data["success_rate"] = (
             self.execution_data["total_successful"] / max(1, self.execution_data["total_attempted"])
         ) * 100
-        
+
         # Save report to JSON
         report_file = self.log_file.parent / f"simulation_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
         with open(report_file, 'w') as f:
             json.dump(self.execution_data, f, indent=2)
-        
-        self.logger.info(f"📊 Simulation Report Generated:")
+
+        self.logger.info("📊 Simulation Report Generated:")
         self.logger.info(f"  - Total Attempted: {self.execution_data['total_attempted']}")
         self.logger.info(f"  - Successful: {self.execution_data['total_successful']}")
         self.logger.info(f"  - Failed: {self.execution_data['total_failed']}")
         self.logger.info(f"  - Success Rate: {self.execution_data['success_rate']:.1f}%")
         self.logger.info(f"  - Report saved: {report_file}")
-        
+
         return self.execution_data
 
 # Global monitor instance

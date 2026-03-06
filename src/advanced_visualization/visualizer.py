@@ -20,8 +20,7 @@ import numpy as np
 
 # Use local data extraction and visualization utilities
 try:
-    from .data_extractor import VisualizationDataExtractor, extract_visualization_data
-    from .processor import _generate_fallback_report
+    from .data_extractor import VisualizationDataExtractor
     VIS_PROCESSOR_AVAILABLE = True
 except Exception:
     VIS_PROCESSOR_AVAILABLE = False
@@ -362,7 +361,7 @@ def create_visualization_from_data(data: Dict[str, Any]) -> Optional[Dict[str, A
     """Create a visualization from data."""
     try:
         viz_type = data.get("type", "default")
-        
+
         if viz_type == "network":
             return create_network_visualization(data)
         elif viz_type == "timeline":
@@ -371,8 +370,8 @@ def create_visualization_from_data(data: Dict[str, Any]) -> Optional[Dict[str, A
             return create_heatmap_visualization(data)
         else:
             return create_default_visualization(data)
-            
-    except Exception as e:
+
+    except Exception:
         return None
 
 def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -384,10 +383,10 @@ def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
             "content": data.get("content", ""),
             "metrics": data.get("metrics", {})
         }
-        
+
         return section
-        
-    except Exception as e:
+
+    except Exception:
         return None
 
 def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
@@ -395,7 +394,7 @@ def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
     try:
         nodes = data.get("nodes", [])
         edges = data.get("edges", [])
-        
+
         # Create network visualization data
         viz_data = {
             "type": "network",
@@ -409,9 +408,9 @@ def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
                 "edge_color": "gray"
             }
         }
-        
+
         return viz_data
-        
+
     except Exception as e:
         return {"error": str(e)}
 
@@ -419,7 +418,7 @@ def create_timeline_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
     """Create a timeline visualization."""
     try:
         events = data.get("events", [])
-        
+
         # Create timeline visualization data
         viz_data = {
             "type": "timeline",
@@ -430,9 +429,9 @@ def create_timeline_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
                 "show_labels": True
             }
         }
-        
+
         return viz_data
-        
+
     except Exception as e:
         return {"error": str(e)}
 
@@ -440,7 +439,7 @@ def create_heatmap_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
     """Create a heatmap visualization."""
     try:
         matrix = data.get("matrix", [])
-        
+
         # Create heatmap visualization data
         viz_data = {
             "type": "heatmap",
@@ -451,9 +450,9 @@ def create_heatmap_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
                 "aspect_ratio": "auto"
             }
         }
-        
+
         return viz_data
-        
+
     except Exception as e:
         return {"error": str(e)}
 
@@ -471,8 +470,8 @@ def create_default_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
                 "y_label": "Value"
             }
         }
-        
+
         return viz_data
-        
+
     except Exception as e:
-        return {"error": str(e)} 
+        return {"error": str(e)}

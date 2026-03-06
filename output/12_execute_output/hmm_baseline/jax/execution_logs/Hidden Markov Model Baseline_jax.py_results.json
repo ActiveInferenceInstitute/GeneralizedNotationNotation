@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/jax/Hidden Markov Model Baseline_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.29362,
-  "timestamp": "2026-03-05T10:35:29.515953",
+  "execution_time": 1.195263,
+  "timestamp": "2026-03-06T09:49:12.389460",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -149,12 +149,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1325,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/jax"
+    "output_directory": "output/12_execute_output/hmm_baseline/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/hmm_baseline/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

@@ -13,7 +13,6 @@ logger = logging.getLogger(__name__)
 
 from . import process_export, get_supported_formats, validate_export_format
 
-import inspect, importlib
 
 
 
@@ -104,7 +103,8 @@ def export_single_file_mcp(gnn_file_path: str, output_directory: str,
         Dictionary with success status and paths of generated export files.
     """
     try:
-        import tempfile, shutil
+        import tempfile
+        import shutil
         gnn_path = Path(gnn_file_path)
         out_dir  = Path(output_directory)
 

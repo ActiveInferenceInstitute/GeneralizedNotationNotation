@@ -7,12 +7,11 @@ It registers tools that can be used by MCP-enabled applications to interact with
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any
 
 # Set up logging
 logger = logging.getLogger(__name__)
 
-import inspect, importlib
 
 
 
@@ -64,7 +63,7 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         # Register process_directory tool
         registry.register_tool(
             name="template.process_directory",
@@ -110,7 +109,7 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         # Register get_template_info tool
         registry.register_tool(
             name="template.get_info",
@@ -128,10 +127,10 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         logger.info("Successfully registered template MCP tools")
         return True
-        
+
     except Exception as e:
         logger.error(f"Failed to register template MCP tools: {e}")
         return False
@@ -152,20 +151,20 @@ def process_file(file_path: str, output_dir: str = "output/template", options: D
         # Convert string paths to Path objects
         file_path = Path(file_path)
         output_dir = Path(output_dir)
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Set default options if none provided
         if options is None:
             options = {}
-        
+
         # Import the actual processing function from the template module
         from .processor import process_single_file
-        
+
         # Process the file
         success = process_single_file(file_path, output_dir, options)
-        
+
         # Generate result
         result = {
             "status": "success" if success else "error",
@@ -173,18 +172,18 @@ def process_file(file_path: str, output_dir: str = "output/template", options: D
             "output_directory": str(output_dir),
             "processing_options": options
         }
-        
+
         # Add output file paths if successful
         if success:
             file_output_dir = output_dir / file_path.stem
             output_file = file_output_dir / f"{file_path.stem}_processed{file_path.suffix}"
             report_file = file_output_dir / f"{file_path.stem}_report.json"
-            
+
             result["output_file"] = str(output_file)
             result["report_file"] = str(report_file)
-        
+
         return result
-        
+
     except Exception as e:
         logger.error(f"Failed to process file {file_path}: {e}")
         return {
@@ -210,20 +209,20 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
         # Convert string paths to Path objects
         directory_path = Path(directory_path)
         output_dir = Path(output_dir)
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Set default options if none provided
         if options is None:
             options = {}
-        
+
         # Import the template module's main processing function
         from .processor import process_template_standardized
-        
+
         # Set up a basic logger for this operation
         operation_logger = logging.getLogger("template.mcp.process_directory")
-        
+
         # Process the directory
         success = process_template_standardized(
             target_dir=directory_path,
@@ -233,7 +232,7 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
             verbose=options.get('verbose', False),
             **options
         )
-        
+
         # Generate result
         result = {
             "status": "success" if success else "error",
@@ -242,18 +241,18 @@ def process_directory(directory_path: str, recursive: bool = False, output_dir: 
             "recursive": recursive,
             "processing_options": options
         }
-        
+
         # Add summary file path if it exists
         summary_file = output_dir / "template_processing_summary.json"
         if summary_file.exists():
             import json
             with open(summary_file, 'r') as f:
                 summary = json.load(f)
-            
+
             result["summary"] = summary
-        
+
         return result
-        
+
     except Exception as e:
         logger.error(f"Failed to process directory {directory_path}: {e}")
         return {
@@ -285,4 +284,4 @@ def get_template_info() -> Dict[str, Any]:
         "input_formats": ["any"],
         "output_formats": ["processed files", "JSON reports"],
         "dependencies": []
-    } 
+    }

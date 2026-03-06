@@ -9,7 +9,7 @@ This module contains test files and performance benchmarks.
 # Import only essential classes without heavy dependencies
 # Use lazy imports to avoid circular dependencies
 __all__ = [
-    'ComprehensiveTestReport', 
+    'ComprehensiveTestReport',
     'RoundTripResult',
     'SimpleTestResult',
     'GNNRoundTripTester',

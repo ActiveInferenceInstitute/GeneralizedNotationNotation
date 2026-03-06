@@ -55,7 +55,7 @@ class StdioMCPClient:
         self.server_stderr_queue = queue.Queue()
 
         self.stdout_thread = threading.Thread(
-            target=read_server_output, 
+            target=read_server_output,
             args=(self.process, self.server_stdout_queue)
         )
         self.stderr_thread = threading.Thread(
@@ -73,7 +73,7 @@ class StdioMCPClient:
 
         request_id = f"inspector-{self.request_id_counter}"
         self.request_id_counter += 1
-        
+
         rpc_request = {
             "jsonrpc": "2.0",
             "method": method,
@@ -92,7 +92,7 @@ class StdioMCPClient:
         while True:
             if time.time() - start_time > self.response_timeout:
                 raise TimeoutError(f"Timeout waiting for response to request ID {request_id}")
-            
+
             try:
                 # Check stderr first for server-side issues unrelated to this request
                 while not self.server_stderr_queue.empty():
@@ -122,7 +122,7 @@ class StdioMCPClient:
                 raise # Re-raise for now
 
     def get_capabilities(self) -> dict:
-        # MCP standard often uses "mcp/discover" or similar, 
+        # MCP standard often uses "mcp/discover" or similar,
         # but GNN server's meta_mcp.py registers "get_mcp_server_capabilities"
         return self._send_request(method="get_mcp_server_capabilities")
 
@@ -138,7 +138,7 @@ class StdioMCPClient:
         # Based on GNN MCP spec, there isn't a generic "get resource" tool.
         # Resources are typically outputs of other tools. This function might be less useful directly.
         # For now, let's make it try to call the URI as if it were a tool (unlikely to work).
-        print(f"INSPECTOR (warning): Direct resource GET not well-defined in GNN MCP. Trying URI as method.", file=sys.stderr)
+        print("INSPECTOR (warning): Direct resource GET not well-defined in GNN MCP. Trying URI as method.", file=sys.stderr)
         return self._send_request(method=uri) # This is a guess
 
 # --- CLI Subcommands ---
@@ -208,7 +208,7 @@ def main():
     exec_parser.add_argument("tool_name", help="The name of the tool to execute (e.g., meta.get_server_status).")
     exec_parser.add_argument("--params", help="JSON string of parameters for the tool (e.g., '{\"key\": \"value\"}').", default="{}")
     exec_parser.set_defaults(func=handle_execute_tool)
-    
+
     # Get Resource (Experimental for GNN MCP) - Currently commented out as per previous structure
     # resource_parser = subparsers.add_parser("get-resource", help="Attempt to retrieve a resource by URI (experimental).")
     # resource_parser.add_argument("uri", help="The URI of the resource.")
@@ -218,7 +218,7 @@ def main():
 
     server_cmd_str = args.server_cmd
     print(f"Inspector: Using server command: {server_cmd_str}", file=sys.stderr)
-    
+
     # Prepare server command for subprocess
     # shlex.split is good for this if the command is a single string.
     # If it's already a list, use that.
@@ -229,9 +229,9 @@ def main():
 
     if not Path(server_cmd_list[1]).is_file() and server_cmd_list[0] == PYTHON_EXECUTABLE : # Check if script path exists
          print(f"Inspector Error: MCP CLI script not found at {server_cmd_list[1]}", file=sys.stderr)
-         print(f"Please ensure GNN_PROJECT_ROOT is correct or provide full path in --server-cmd.", file=sys.stderr)
+         print("Please ensure GNN_PROJECT_ROOT is correct or provide full path in --server-cmd.", file=sys.stderr)
          sys.exit(1)
-    
+
     if args.verbose:
         if "--verbose" not in server_cmd_list and "server" in server_cmd_list : # Add verbose to server if not present
             try:
@@ -247,7 +247,7 @@ def main():
     server_process = None
     client = None
     try:
-        print(f"Inspector: Starting GNN MCP server process...", file=sys.stderr)
+        print("Inspector: Starting GNN MCP server process...", file=sys.stderr)
         server_process = subprocess.Popen(
             server_cmd_list,
             stdin=subprocess.PIPE,
@@ -256,7 +256,7 @@ def main():
             text=True, # Work with text streams
             cwd=GNN_PROJECT_ROOT # Run from project root
         )
-        
+
         # Give server a moment to start, especially if it logs to stderr/stdout on startup
         time.sleep(1 if "stdio" in server_cmd_str else 3) # Longer for http potentially
 
@@ -303,7 +303,7 @@ def main():
             print("Inspector: Shutting down server process...", file=sys.stderr)
             if server_process.stdin:
                 server_process.stdin.close() # Signal EOF to server if it's reading stdin
-            
+
             # Give threads a chance to process remaining output
             if client and client.stdout_thread.is_alive(): client.stdout_thread.join(timeout=0.5)
             if client and client.stderr_thread.is_alive(): client.stderr_thread.join(timeout=0.5)
@@ -316,7 +316,7 @@ def main():
                     print("Inspector: Server did not terminate gracefully, killing.", file=sys.stderr)
                     server_process.kill()
             print("Inspector: Server process shut down.", file=sys.stderr)
-            
+
             # Drain any remaining output from queues (after threads might have exited)
             if client:
                 print("--- Remaining Server Stdout ---", file=sys.stderr)

@@ -4,7 +4,7 @@ GNN parser module for GNN pipeline.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Union, Optional
+from typing import Dict, Any, Union, Optional
 from enum import Enum
 
 class ValidationLevel(Enum):
@@ -15,7 +15,7 @@ class ValidationLevel(Enum):
 
 class ParsedGNN:
     """Represents a parsed GNN file."""
-    
+
     def __init__(self, file_path: Union[str, Path]):
         self.file_path = Path(file_path)
         self.file_name = self.file_path.name
@@ -25,14 +25,14 @@ class ParsedGNN:
         self.connections = []
         self.parse_errors = []
         self.parse_warnings = []
-    
+
     def add_section(self, section_name: str, section_content: str = ""):
         """Add a section to the parsed GNN."""
         self.sections.append({
             "name": section_name,
             "content": section_content
         })
-    
+
     def add_variable(self, variable_name: str, variable_type: str = "", variable_value: str = ""):
         """Add a variable to the parsed GNN."""
         self.variables.append({
@@ -40,7 +40,7 @@ class ParsedGNN:
             "type": variable_type,
             "value": variable_value
         })
-    
+
     def add_connection(self, source: str, target: str, connection_type: str = ""):
         """Add a connection to the parsed GNN."""
         self.connections.append({
@@ -48,15 +48,15 @@ class ParsedGNN:
             "target": target,
             "type": connection_type
         })
-    
+
     def add_error(self, error_message: str):
         """Add a parse error."""
         self.parse_errors.append(error_message)
-    
+
     def add_warning(self, warning_message: str):
         """Add a parse warning."""
         self.parse_warnings.append(warning_message)
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         return {
@@ -71,31 +71,31 @@ class ParsedGNN:
 
 class GNNParsingSystem:
     """System for parsing GNN files."""
-    
+
     def __init__(self):
         """Initialize the GNN parsing system."""
         self.parsers = {}
         self.validators = {}
-    
+
     def register_parser(self, format_name: str, parser_func):
         """Register a parser for a specific format."""
         self.parsers[format_name] = parser_func
-    
+
     def register_validator(self, format_name: str, validator_func):
         """Register a validator for a specific format."""
         self.validators[format_name] = validator_func
-    
+
     def parse_file(self, file_path: Union[str, Path], format_name: str = "auto") -> Optional[ParsedGNN]:
         """Parse a GNN file."""
         file_path = Path(file_path)
-        
+
         if not file_path.exists():
             return None
-        
+
         # Auto-detect format if not specified
         if format_name == "auto":
             format_name = self._detect_format(file_path)
-        
+
         # Get appropriate parser
         parser = self.parsers.get(format_name)
         if parser:
@@ -103,11 +103,11 @@ class GNNParsingSystem:
         else:
             # Fallback to basic parser
             return self._basic_parser(file_path)
-    
+
     def _detect_format(self, file_path: Path) -> str:
         """Detect the format of a GNN file."""
         extension = file_path.suffix.lower()
-        
+
         if extension == ".md":
             return "markdown"
         elif extension == ".gnn":
@@ -116,30 +116,30 @@ class GNNParsingSystem:
             return "text"
         else:
             return "markdown"  # Default to markdown
-    
+
     def _basic_parser(self, file_path: Path) -> ParsedGNN:
         """Basic parser for GNN files."""
         parsed = ParsedGNN(file_path)
-        
+
         try:
             with open(file_path, 'r') as f:
                 parsed.content = f.read()
-            
+
             # Extract sections
             import re
             section_pattern = r'^#+\s+(.+)$'
             matches = re.finditer(section_pattern, parsed.content, re.MULTILINE)
-            
+
             for match in matches:
                 section_name = match.group(1).strip()
                 parsed.add_section(section_name)
-            
+
             # Extract variables
             var_patterns = [
                 r'(\w+)\s*:\s*(\w+)',  # name: type
                 r'(\w+)\s*=\s*([^;\n]+)',  # name = value
             ]
-            
+
             for pattern in var_patterns:
                 matches = re.finditer(pattern, parsed.content)
                 for match in matches:
@@ -150,28 +150,28 @@ class GNNParsingSystem:
                         dims = [d for d in var_value.split(',') if not d.strip().startswith('type=')]
                         var_value = ','.join(dims)
                     parsed.add_variable(var_name, "", var_value)
-            
+
             # Extract connections
             conn_patterns = [
                 r'(\w+)\s*->\s*(\w+)',  # source -> target
                 r'(\w+)\s*→\s*(\w+)',   # source → target
             ]
-            
+
             for pattern in conn_patterns:
                 matches = re.finditer(pattern, parsed.content)
                 for match in matches:
                     source = match.group(1)
                     target = match.group(2)
                     parsed.add_connection(source, target)
-            
+
         except Exception as e:
             parsed.add_error(f"Failed to parse file: {e}")
-        
+
         return parsed
 
 class GNNFormat:
     """Represents a GNN format specification."""
-    
+
     def __init__(self):
         """Initialize the GNN format."""
         self.name = "GNN"
@@ -221,50 +221,50 @@ def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD
         else:
             # It's content
             content = str(file_path_or_content)
-        
+
         errors = []
-        
+
         # Basic validation
         if not content.strip():
             errors.append("Content is empty")
             return False, errors
-        
+
         # Structure validation
         if validation_level in [ValidationLevel.STANDARD, ValidationLevel.STRICT]:
             # Check for basic GNN structure
             import re
-            
+
             # Check for sections
             sections = re.findall(r'^#+\s+(.+)$', content, re.MULTILINE)
             if not sections:
                 errors.append("No sections found (use # headers)")
-            
+
             # Check for variables
             variables = re.findall(r'(\w+)\s*[:=]', content)
             if not variables:
                 errors.append("No variables found")
-            
+
             # Check for connections
             connections = re.findall(r'(\w+)\s*[->→]\s*(\w+)', content)
             if not connections:
                 errors.append("No connections found")
-        
+
         # Strict validation
         if validation_level == ValidationLevel.STRICT:
             # Check for balanced braces
             if content.count('{') != content.count('}'):
                 errors.append("Unmatched braces")
-            
+
             # Check for balanced brackets
             if content.count('[') != content.count(']'):
                 errors.append("Unmatched brackets")
-            
+
             # Check for minimum content length
             if len(content) < 50:
                 errors.append("Content too short for valid GNN")
-        
+
         return len(errors) == 0, errors
-        
+
     except Exception as e:
         return False, [f"Validation error: {e}"]
 
@@ -281,12 +281,12 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
     """
     if parse_result is None:
         return None
-    
+
     try:
         # Import types needed for conversion
         from .types import ParsedGNN, GNNVariable, GNNConnection
         from .parsers.common import ParseResult as ParseResultType
-        
+
         # Verify it's a ParseResult
         if not isinstance(parse_result, ParseResultType):
             # If it's already a ParsedGNN, return as-is
@@ -308,9 +308,9 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
                 footer="",
                 source_format=source_format
             )
-        
+
         model = parse_result.model
-        
+
         # Convert variables
         variables = {}
         for var in getattr(model, 'variables', []):
@@ -322,7 +322,7 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
                 description=getattr(var, 'description', ''),
                 ontology_mapping=getattr(var, 'ontology_mapping', None)
             )
-        
+
         # Helper function to infer connection symbol
         def _infer_symbol_from_type(connection_type: str) -> str:
             """Infer connection symbol from type."""
@@ -335,7 +335,7 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
                 return "|"
             else:
                 return ">"
-        
+
         # Convert connections
         connections = []
         for conn in getattr(model, 'connections', []):
@@ -346,13 +346,13 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
                 symbol=_infer_symbol_from_type(str(getattr(conn, 'connection_type', 'directed'))),
                 description=getattr(conn, 'description', '')
             ))
-        
+
         # Convert parameters
         parameters = {}
         for param in getattr(model, 'parameters', []):
             param_name = getattr(param, 'name', 'unknown')
             parameters[param_name] = getattr(param, 'value', None)
-        
+
         return ParsedGNN(
             gnn_section=getattr(model, 'gnn_section', f"{source_format.upper()}GNN"),
             version=getattr(model, 'version', '1.0'),

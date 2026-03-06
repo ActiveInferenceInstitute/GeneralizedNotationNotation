@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python / JAX-based Probabilistic Programming
 > **Framework Base**: `numpyro >= 0.14` (NumPy-interface Pyro with JAX backend)
 > **Simulation Architecture**: Inference-as-sampling POMDP agent
-> **Documentation Version**: 1.3.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 
@@ -146,7 +146,7 @@ python src/12_execute.py --target-dir input/gnn_files/ --framework numpyro
 
 ## Correlation Results
 
-During the **March 3, 2026** pipeline benchmarking audit, NumPyro was verified as **Fully Operational**. NumPyro's posterior *mean* beliefs correlate with PyMDP and JAX beliefs at ~1.0 for deterministic GNN matrices. Posterior *variance* is the unique contribution, supplying rich uncertainty mechanics while maintaining cross-framework fidelity.
+During the **March 6, 2026** pipeline benchmarking audit, NumPyro was verified as **Fully Operational**. NumPyro's posterior *mean* beliefs correlate with PyMDP and JAX beliefs at ~1.0 for deterministic GNN matrices. Posterior *variance* is the unique contribution, supplying rich uncertainty mechanics while maintaining cross-framework fidelity.
 
 ## Source Code Connections
 

@@ -15,7 +15,7 @@ import numpy as np
 from pathlib import Path
 import json
 import logging
-from typing import Dict, Any, Tuple, List
+from typing import Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -49,7 +49,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         except ImportError:
             Agent = None
             utils = None
-        
+
         if Agent is None or utils is None:
             logger.error("PyMDP (inferactively-pymdp) not found. Required for simulation.")
             raise ImportError(
@@ -58,10 +58,10 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             )
 
         logger.info("Starting simple PyMDP simulation")
-        
+
         # Extract matrices from GNN spec
         init_params = gnn_spec.get('initialparameterization', {})
-        
+
         # 1. Get A matrix (observation model)
         # PyMDP expects A to be an obj_array of modalities, each a (num_obs, num_states) matrix
         A_data = init_params.get('A')
@@ -70,7 +70,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             A = np.array([[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9]], dtype=np.float64)
         else:
             A = np.array(A_data, dtype=np.float64)
-        
+
         # 2. Get B matrix (transition model)
         # PyMDP expects B to be an obj_array of factors, each a (num_states, num_states, num_actions) matrix
         B_data = init_params.get('B')
@@ -93,7 +93,7 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             else:
                 B = B_raw
                 logger.warning(f"B matrix has unexpected dimensions: {B_raw.ndim}D, expected 2D or 3D")
-            
+
             # Normalize B columns so each column sums to 1.0 (required by PyMDP)
             for action_idx in range(B.shape[2] if B.ndim == 3 else 1):
                 col_sums = B[:, :, action_idx].sum(axis=0) if B.ndim == 3 else B.sum(axis=0)
@@ -110,51 +110,51 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
                             B[:, col, action_idx] = 1.0 / n
                         else:
                             B[:, col] = 1.0 / n
-            logger.info(f"B matrix normalized (columns sum to 1.0)")
-        
+            logger.info("B matrix normalized (columns sum to 1.0)")
+
         # 3. Get C vector (preferences)
         C_data = init_params.get('C')
         if C_data is None:
             C = np.zeros(A.shape[0], dtype=np.float64)
         else:
             C = np.array(C_data, dtype=np.float64).flatten()
-            
+
         # 4. Get D vector (prior over states)
         D_data = init_params.get('D')
         if D_data is None:
             D = np.ones(A.shape[1], dtype=np.float64) / A.shape[1]
         else:
             D = np.array(D_data, dtype=np.float64).flatten()
-            
+
         # 5. Get E vector (habit/policy prior) - optional
         E_data = init_params.get('E')
         if E_data is not None:
             E = np.array(E_data, dtype=np.float64).flatten()
         else:
             E = None
-        
+
         logger.info(f"Created matrices: A={A.shape}, B={B.shape}, C={C.shape}, D={D.shape}")
-        
+
         # PyMDP expects obj_array format (numpy object arrays)
         A_obj = utils.obj_array(1)
         A_obj[0] = A
-        
+
         B_obj = utils.obj_array(1)
         B_obj[0] = B
-        
+
         C_obj = utils.obj_array(1)
         C_obj[0] = C
-        
+
         D_obj = utils.obj_array(1)
         D_obj[0] = D
-        
+
         # E vector is policy-level, so pass directly (pyMDP expects 1D array over policies)
         logger.info("Wrapped arrays in obj_array format (except E)")
-        
+
         # Create PyMDP agent
         agent = Agent(A=A_obj, B=B_obj, C=C_obj, D=D_obj, E=E)
         logger.info("Successfully created PyMDP agent")
-        
+
         # Get number of timesteps from GNN spec (fall back to 20 for consistency)
         model_params = gnn_spec.get('model_parameters', {})
         num_timesteps = model_params.get('num_timesteps', 20)
@@ -165,30 +165,30 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
         actions = []
         beliefs_raw = []  # Store raw numpy arrays for visualization
         efe_history = []  # Store Expected Free Energy values
-        
+
         # Initial true state
         current_state = np.random.choice(range(A.shape[1]), p=D)
-        
+
         for t in range(num_timesteps):
             # Track true state
             true_states.append(int(current_state))
-            
+
             # Sample observation from current true state
             obs_probs = A[:, current_state]
             obs_idx = np.random.choice(range(A.shape[0]), p=obs_probs)
             obs = np.array([obs_idx])
             observations.append(int(obs_idx))
-            
+
             # Infer states
             qs = agent.infer_states(obs)
             # Ensure we store a flat list of floats for the belief state
             belief_vec = np.array(qs[0]).flatten()
             beliefs.append(belief_vec.tolist())
             beliefs_raw.append(belief_vec.copy())  # Store for visualization
-            
+
             # Infer policy
             q_pi, neg_efe = agent.infer_policies()
-            
+
             # Store Expected Free Energy for this step (all policies)
             if hasattr(neg_efe, 'tolist'):
                 efe_vals = neg_efe.tolist()
@@ -197,23 +197,23 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
             else:
                 efe_vals = [float(neg_efe)]
             efe_history.append(efe_vals)
-            
+
             # Sample action
             action = agent.sample_action()
             actions.append(int(action[0]))
-            
+
             # Transition true state using B matrix
             # B is (next_state, prev_state, action)
             next_state_probs = B[:, current_state, int(action[0])]
             current_state = np.random.choice(range(B.shape[0]), p=next_state_probs)
-            
+
             logger.info(f"Step {t}: true_s={true_states[-1]}, obs={obs_idx}, belief={np.round(qs[0], 2)}, action={action[0]}")
-        
+
         # NOTE: Visualization generation has been moved to Analysis step (16_analysis.py)
         # This execute step only saves raw simulation data for post-hoc analysis
         logger.info("Saving raw simulation data for analysis step...")
         model_name = gnn_spec.get('model_name', gnn_spec.get('name', 'pymdp_model'))
-        
+
         # Save results - enhanced structure for analysis step visualization
         output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -256,18 +256,18 @@ def run_simple_pymdp_simulation(gnn_spec: Dict[str, Any], output_dir: Path) -> T
                 "actions_in_range": all(0 <= a < B.shape[2] for a in actions) if B.ndim == 3 else True
             }
         }
-        
+
         results_file = output_dir / "simulation_results.json"
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
-        
+
         logger.info(f"💾 Saved raw simulation data to {results_file}")
         logger.info(f"📊 Validation: beliefs_valid={results['validation']['all_beliefs_valid']}, "
                    f"sum_to_one={results['validation']['beliefs_sum_to_one']}")
         logger.info(f"📈 Trace data saved: {num_timesteps} timesteps, ready for analysis step visualization")
-        
+
         return True, results
-        
+
     except ImportError as e:
         logger.error(f"PyMDP not available: {e}")
         return False, {

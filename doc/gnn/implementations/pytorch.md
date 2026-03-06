@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python / GPU-Accelerated Neural Active Inference
 > **Framework Base**: `torch >= 2.0` with optional CUDA
 > **Simulation Architecture**: Neural network–augmented POMDP agent
-> **Documentation Version**: 1.3.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 
@@ -113,7 +113,7 @@ python src/12_execute.py --target-dir input/gnn_files/ --framework pytorch
 
 ## Correlation Results
 
-During the **March 3, 2026** pipeline benchmarking audit, the PyTorch integration was verified as **Fully Operational**, achieving a pristine `1.0` correlation baseline against both PyMDP and JAX reference implementations:
+During the **March 6, 2026** pipeline benchmarking audit, the PyTorch integration was verified as **Fully Operational**, achieving a pristine `1.0` correlation baseline against both PyMDP and JAX reference implementations:
 
 | Pair | Correlation |
 |---|---|

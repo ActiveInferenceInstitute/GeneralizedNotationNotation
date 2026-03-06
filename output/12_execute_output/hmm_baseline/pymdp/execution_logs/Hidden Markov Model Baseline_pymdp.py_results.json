@@ -3,157 +3,24 @@
   "model_name": "hmm_baseline",
   "script_name": "Hidden Markov Model Baseline_pymdp.py",
   "script_path": "output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.750583,
-  "timestamp": "2026-03-05T10:35:27.032486",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.7887,
+  "timestamp": "2026-03-06T09:49:09.892572",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      3,
-      3,
-      1,
-      1,
-      1,
-      1,
-      5,
-      5,
-      5,
-      1,
-      1,
-      3,
-      4,
-      2,
-      2
-    ],
-    "actions": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-05 10:35:28,552 - INFO - A matrix shape: (6, 4)\n2026-03-05 10:35:28,552 - INFO - B matrix shape: (4, 4)\n2026-03-05 10:35:28,552 - INFO - C vector shape: (6,)\n2026-03-05 10:35:28,552 - INFO - D vector shape: (4,)\n2026-03-05 10:35:28,552 - INFO - Starting PyMDP simulation for Hidden Markov Model Baseline\n2026-03-05 10:35:28,553 - INFO - Output directory: output/pymdp_simulations/Hidden Markov Model Baseline\n2026-03-05 10:35:28,553 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-05 10:35:28,553 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-05 10:35:28,553 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-05 10:35:28,553 - INFO - Starting simple PyMDP simulation\n2026-03-05 10:35:28,553 - INFO - Expanded 2D B matrix (4, 4) to 3D (4, 4, 1) (passive model, 1 action)\n2026-03-05 10:35:28,553 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-05 10:35:28,553 - INFO - Created matrices: A=(6, 4), B=(4, 4, 1), C=(6,), D=(4,)\n2026-03-05 10:35:28,553 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-05 10:35:28,553 - INFO - Successfully created PyMDP agent\n2026-03-05 10:35:28,553 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-05 10:35:28,553 - INFO - Step 0: true_s=3, obs=3, belief=[0.1 0.1 0.1 0.7], action=0.0\n2026-03-05 10:35:28,553 - INFO - Step 1: true_s=3, obs=3, belief=[0.04 0.05 0.06 0.85], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 2: true_s=1, obs=1, belief=[0.07 0.52 0.12 0.29], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 3: true_s=1, obs=1, belief=[0.04 0.84 0.05 0.07], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 4: true_s=1, obs=1, belief=[0.03 0.92 0.03 0.03], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 5: true_s=1, obs=1, belief=[0.02 0.93 0.02 0.02], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 6: true_s=1, obs=5, belief=[0.14 0.79 0.03 0.03], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 7: true_s=1, obs=5, belief=[0.22 0.71 0.04 0.04], action=0.0\n2026-03-05 10:35:28,554 - INFO - Step 8: true_s=1, obs=5, belief=[0.28 0.64 0.04 0.04], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 9: true_s=1, obs=1, belief=[0.07 0.87 0.03 0.03], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 10: true_s=1, obs=1, belief=[0.03 0.92 0.02 0.02], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 11: true_s=3, obs=3, belief=[0.07 0.39 0.07 0.47], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 12: true_s=3, obs=4, belief=[0.06 0.13 0.28 0.53], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 13: true_s=2, obs=2, belief=[0.05 0.08 0.75 0.13], action=0.0\n2026-03-05 10:35:28,555 - INFO - Step 14: true_s=2, obs=2, belief=[0.03 0.06 0.87 0.04], action=0.0\n2026-03-05 10:35:28,555 - INFO - Saving raw simulation data for analysis step...\n2026-03-05 10:35:28,556 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Hidden Markov Model Baseline/simulation_results.json\n2026-03-05 10:35:28,556 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-05 10:35:28,556 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-05 10:35:28,556 - INFO - PyMDP simulation completed successfully\n2026-03-05 10:35:28,556 - INFO - \u2713 Simulation completed successfully!\n2026-03-05 10:35:28,556 - INFO - Results summary:\n2026-03-05 10:35:28,556 - INFO -   Correlation ID: render_generated_script\n2026-03-05 10:35:28,556 - INFO -   Success: True\n2026-03-05 10:35:28,556 - INFO -   Output: output/pymdp_simulations/Hidden Markov Model Baseline\n",
-    "beliefs": [
-      [
-        0.10000000000000012,
-        0.10000000000000012,
-        0.10000000000000012,
-        0.6999999999999996
-      ],
-      [
-        0.04324324324324332,
-        0.04594594594594602,
-        0.05945945945945957,
-        0.8513513513513512
-      ],
-      [
-        0.06992797118847542,
-        0.51890756302521,
-        0.11929771908763516,
-        0.29186674669867935
-      ],
-      [
-        0.04010479816179284,
-        0.8370668385039975,
-        0.05334870825243141,
-        0.06947965508177827
-      ],
-      [
-        0.02670632190096905,
-        0.9155248599625105,
-        0.02876412923055588,
-        0.029004688905964575
-      ],
-      [
-        0.023614960055886786,
-        0.9292085903005057,
-        0.023871158397989842,
-        0.023305291245617806
-      ],
-      [
-        0.1374600842462362,
-        0.7945380556399637,
-        0.03439425801636433,
-        0.03360760209743574
-      ],
-      [
-        0.22199607286328069,
-        0.7058117642073722,
-        0.03666697339011051,
-        0.03552518953923658
-      ],
-      [
-        0.28429599706974973,
-        0.6426638804871889,
-        0.037148427994767565,
-        0.03589169444829375
-      ],
-      [
-        0.068746421426213,
-        0.8702483421204746,
-        0.031038398949287047,
-        0.02996683750402524
-      ],
-      [
-        0.02972689579875669,
-        0.9211310515709336,
-        0.02494274595966499,
-        0.024199306670644904
-      ],
-      [
-        0.07045096497454291,
-        0.39170974548016396,
-        0.06869033033717828,
-        0.46914895920811495
-      ],
-      [
-        0.05584705660537713,
-        0.13420780930729903,
-        0.2846081309064091,
-        0.5253370031809147
-      ],
-      [
-        0.04821486157707819,
-        0.0754725502024704,
-        0.7453393060229905,
-        0.13097328219746082
-      ],
-      [
-        0.032935384147656586,
-        0.05615320971259348,
-        0.8686372117620492,
-        0.042274194377700615
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_error": "Execute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nExecute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/hmm_baseline/pymdp/Hidden Markov Model Baseline_pymdp.py\", line 65, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 27, in <module>\n    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/__init__.py\", line 45, in <module>\n    from .post_simulation import (\nImportError: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py)\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 221,
-    "stderr_length": 3547,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/pymdp"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/pymdp/simulation_data/Hidden Markov Model Baseline_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
+    "stderr_length": 1242,
+    "output_directory": "output/12_execute_output/hmm_baseline/pymdp"
   }
 }

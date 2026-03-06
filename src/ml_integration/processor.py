@@ -20,7 +20,7 @@ import logging
 import re
 import json
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
 
@@ -357,7 +357,6 @@ def _train_models(
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import cross_val_score
-    from sklearn.metrics import classification_report
 
     # Build feature matrix using real GNN features
     numeric_feature_names = [

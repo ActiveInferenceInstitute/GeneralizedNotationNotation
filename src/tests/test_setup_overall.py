@@ -4,8 +4,6 @@ Test suite for Setup module.
 Tests environment setup, UV integration, and dependency management.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestSetupModule:

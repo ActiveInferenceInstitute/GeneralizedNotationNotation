@@ -35,7 +35,7 @@ class TestExecutionResult:
     error_message: Optional[str] = None
     stdout: str = ""
     stderr: str = ""
-    
+
     def to_dict(self):
         """Convert to dictionary."""
         return asdict(self)

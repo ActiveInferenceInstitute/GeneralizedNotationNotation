@@ -35,7 +35,6 @@ sys.path.insert(0, str(PROJECT_ROOT / "src"))
 from setup.setup import (
     install_optional_package_group,
     install_all_optional_packages,
-    get_installed_package_versions,
     logger
 )
 
@@ -54,33 +53,33 @@ Examples:
 Available groups: jax, pymdp, visualization, audio, llm, ml
         """
     )
-    
+
     parser.add_argument(
         "--all",
         action="store_true",
         help="Install all optional package groups"
     )
-    
+
     parser.add_argument(
         "--groups",
         type=str,
         help="Comma-separated list of package groups to install"
     )
-    
+
     parser.add_argument(
         "--verbose",
         action="store_true",
         help="Enable verbose output"
     )
-    
+
     parser.add_argument(
         "--list",
         action="store_true",
         help="List available package groups and exit"
     )
-    
+
     args = parser.parse_args()
-    
+
     # List available groups
     if args.list:
         print("Available package groups:")
@@ -91,66 +90,66 @@ Available groups: jax, pymdp, visualization, audio, llm, ml
         print("  - llm: openai, anthropic (LLM integration)")
         print("  - ml: torch, torchvision, transformers (machine learning)")
         return 0
-    
+
     # Check that at least one option is provided
     if not args.all and not args.groups:
         parser.error("Please specify --all or --groups")
-    
+
     try:
         logger.info("🚀 Starting optional package installation...")
-        
+
         # Install all or specific groups
         if args.all:
             logger.info("📦 Installing ALL optional package groups...")
             results = install_all_optional_packages(verbose=args.verbose)
-            
+
             # Print summary
             successful = sum(1 for v in results.values() if v)
             total = len(results)
-            
+
             print(f"\n{'='*70}")
             print(f"📊 Installation Summary: {successful}/{total} groups installed successfully")
             print(f"{'='*70}")
-            
+
             for group, success in results.items():
                 status = "✅" if success else "❌"
                 print(f"  {status} {group}")
-            
+
             if successful < total:
-                print(f"\n⚠️  Some packages failed to install (non-critical)")
+                print("\n⚠️  Some packages failed to install (non-critical)")
                 return 2  # Success with warnings
             else:
-                print(f"\n✅ All optional packages installed successfully!")
+                print("\n✅ All optional packages installed successfully!")
                 return 0
-                
+
         else:
             # Install specific groups
             groups = [g.strip() for g in args.groups.split(',')]
             logger.info(f"📦 Installing package groups: {', '.join(groups)}")
-            
+
             results = {}
             for group in groups:
                 results[group] = install_optional_package_group(group, verbose=args.verbose)
-            
+
             # Print summary
             successful = sum(1 for v in results.values() if v)
             total = len(results)
-            
+
             print(f"\n{'='*70}")
             print(f"📊 Installation Summary: {successful}/{total} groups installed successfully")
             print(f"{'='*70}")
-            
+
             for group, success in results.items():
                 status = "✅" if success else "❌"
                 print(f"  {status} {group}")
-            
+
             if successful < total:
-                print(f"\n⚠️  Some packages failed to install")
+                print("\n⚠️  Some packages failed to install")
                 return 2  # Success with warnings
             else:
-                print(f"\n✅ Selected packages installed successfully!")
+                print("\n✅ Selected packages installed successfully!")
                 return 0
-        
+
     except KeyboardInterrupt:
         print("\n\n⚠️  Installation cancelled by user")
         return 1

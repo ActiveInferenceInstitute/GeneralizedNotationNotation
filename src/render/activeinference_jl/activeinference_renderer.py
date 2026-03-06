@@ -7,10 +7,8 @@ ActiveInference.jl code, focusing on core functionality and scientific validity.
 """
 
 import logging
-import tempfile
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple, Union
-import json
+from typing import Any, Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +26,7 @@ def _matrix_to_julia(matrix_data: Any) -> str:
                 matrix_data = ast.literal_eval(matrix_data)
             except (ValueError, SyntaxError):
                 pass  # Keep as string if parsing fails
-    
+
     # Normalize tuple to list for unified handling
     if isinstance(matrix_data, tuple):
         matrix_data = list(matrix_data)
@@ -59,10 +57,10 @@ def _matrix_to_julia(matrix_data: Any) -> str:
         else:
             # 1D vector
             return "[" + ", ".join(str(x) for x in matrix_data) + "]"
-    
+
     elif isinstance(matrix_data, tuple):
         return "[" + ", ".join(str(x) for x in matrix_data) + "]"
-        
+
     return str(matrix_data)
 
 
@@ -84,24 +82,24 @@ def render_gnn_to_activeinference_jl(
     """
     try:
         logger.info(f"Rendering GNN specification to ActiveInference.jl script for model: {gnn_spec.get('name', 'unknown')}")
-        
+
         # Extract model information from GNN spec
         model_info = extract_model_info(gnn_spec)
-        
+
         # Generate Julia script content
         julia_script = generate_activeinference_script(model_info)
-        
+
         # Ensure output directory exists
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Write the Julia script
         with open(output_path, 'w', encoding='utf-8') as f:
             f.write(julia_script)
-        
+
         success_msg = f"Successfully rendered ActiveInference.jl script to {output_path.name}"
         logger.info(success_msg)
         return True, success_msg, [str(output_path.resolve())]
-        
+
     except Exception as e:
         error_msg = f"Failed to render ActiveInference.jl script: {e}"
         logger.error(error_msg, exc_info=True)
@@ -126,11 +124,11 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     # --- Primary extraction: from POMDP processor format (model_parameters) ---
     model_params = gnn_spec.get("model_parameters", {})
     n_states = model_params.get("num_hidden_states")
-    n_obs = model_params.get("num_obs") 
+    n_obs = model_params.get("num_obs")
     n_actions = model_params.get("num_actions")
     n_timesteps = model_params.get("num_timesteps", 20)  # Default 20 for backward compat
     model_info["n_timesteps"] = n_timesteps
-    
+
     # --- Fallback 1: from original statespaceblock format ---
     if n_states is None or n_obs is None or n_actions is None:
         statespace = gnn_spec.get("statespaceblock", [])
@@ -173,7 +171,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_actions = int(dims.split(",")[2])
                 except Exception:
                     pass
-    
+
     # --- Fallback 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:
         params = gnn_spec.get("raw_sections", {}).get("ModelParameters", "")
@@ -190,11 +188,11 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             m_actions = re.search(r"num_actions:\s*(\d+)", params)
             if m_actions:
                 n_actions = int(m_actions.group(1))
-    
+
     # --- Fallback 3: infer from matrix shapes in initialparameterization ---
     if n_states is None or n_obs is None or n_actions is None:
         init_params = gnn_spec.get("initialparameterization", {})
-        
+
         # Try A matrix for n_obs, n_states
         if "A" in init_params and (n_obs is None or n_states is None):
             try:
@@ -206,7 +204,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_states = len(A_matrix[0])  # cols = states
             except Exception:
                 pass
-        
+
         # Try B matrix for n_states, n_actions
         if "B" in init_params and (n_states is None or n_actions is None):
             try:
@@ -218,18 +216,18 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_states = len(B_matrix[0])  # rows = states
             except Exception:
                 pass
-    
+
     # --- Final validation ---
     if n_states is None or n_obs is None or n_actions is None:
         missing = []
         if n_states is None:
             missing.append("n_states")
         if n_obs is None:
-            missing.append("n_obs") 
+            missing.append("n_obs")
         if n_actions is None:
             missing.append("n_actions")
         raise ValueError(f"Could not extract {missing} from GNN spec. Available keys: {list(gnn_spec.keys())}")
-    
+
     model_info["n_states"] = [n_states]
     model_info["n_observations"] = [n_obs]
     model_info["n_controls"] = [n_actions]
@@ -241,19 +239,19 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         initial_params = gnn_spec.get("InitialParameterization", {})
     if not initial_params:
         raise ValueError("No initialparameterization found in GNN spec.")
-    
+
     model_info["A"] = initial_params.get("A")
     model_info["B"] = initial_params.get("B")
     model_info["C"] = initial_params.get("C")
     model_info["D"] = initial_params.get("D")
     model_info["E"] = initial_params.get("E")
-    
+
     # A, B, C, D are required; E (habit/policy prior) is optional
     required = {"A": model_info["A"], "B": model_info["B"], "C": model_info["C"], "D": model_info["D"]}
     missing = [k for k, v in required.items() if v is None]
     if missing:
         raise ValueError(f"Missing required matrices {missing} in initialparameterization.")
-    
+
     # Generate uniform E if not provided (many models don't define explicit habits)
     if model_info["E"] is None:
         n_act = model_info["n_controls"][0] if model_info["n_controls"] else 3
@@ -283,11 +281,11 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     n_obs = model_info["n_observations"][0]
     n_actions = model_info["n_controls"][0]
     n_timesteps = model_info.get("n_timesteps", 20)  # From GNN ModelParameters
-    
+
     # Extract matrices
     A_matrix = model_info["A"]
     B_matrix = model_info["B"]
-    
+
     if isinstance(B_matrix, list):
         logger.debug(f"B_matrix is list with len {len(B_matrix)}")
         if len(B_matrix) > 0 and isinstance(B_matrix[0], list):
@@ -296,7 +294,7 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
         logger.debug(f"B_matrix type is {type(B_matrix)}")
 
     logger.debug(f"Initial n_actions={n_actions}")
-    
+
     # Fix mangled B matrix from GNN parser
     # The parser sometimes splits tuples incorrectly, leaving strings like '(1.0' instead of tuples
     if isinstance(B_matrix, (list, tuple)) and len(B_matrix) > 0:
@@ -319,19 +317,19 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
                                     pass
                         elif isinstance(item, (int, float)):
                             current_row.append(float(item))
-                        
+
                         # Check if we completed a row (every 3 items for 3x3 matrices)
                         if len(current_row) >= n_states:
                             fixed_slice.append(current_row)
                             current_row = []
-                    
+
                     # Handle any remaining items
                     if current_row:
                         fixed_slice.append(current_row)
-                    
+
                     if fixed_slice:
                         fixed_B.append(fixed_slice)
-                
+
                 if fixed_B:
                     B_matrix = fixed_B
                     logger.info(f"Fixed mangled B matrix: {len(B_matrix)} slices of {len(B_matrix[0])}x{len(B_matrix[0][0])}")
@@ -347,13 +345,13 @@ def generate_activeinference_script(model_info: Dict[str, Any]) -> str:
     C_vector = model_info["C"]
     D_vector = model_info["D"]
     E_vector = model_info.get("E") or [1.0 / n_actions] * n_actions
-    
+
     julia_A = _matrix_to_julia(A_matrix)
     julia_B = _matrix_to_julia(B_matrix)
     julia_C = _matrix_to_julia(C_vector)
     julia_D = _matrix_to_julia(D_vector)
     julia_E = _matrix_to_julia(E_vector)
-    
+
     script = f'''#!/usr/bin/env julia
 
 """
@@ -742,7 +740,7 @@ end
 println("\\nActiveInference.jl script completed!")
 println("Model: $MODEL_NAME")
 '''
-    
+
     return script
 
 # Main rendering function that can be called from other modules
@@ -764,15 +762,15 @@ def render_gnn_to_activeinference_combined(
     """
     options = options or {}
     model_name = gnn_spec.get("name", "gnn_model")
-    
+
     # Ensure output directory exists
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Render main script
     main_path = output_dir / f"{model_name}.jl"
     success, msg, artifacts = render_gnn_to_activeinference_jl(gnn_spec, main_path, options)
-    
+
     if success:
         return True, f"ActiveInference.jl script rendered: {msg}", artifacts
     else:
-        return False, f"Failed to render ActiveInference.jl script: {msg}", [] 
+        return False, f"Failed to render ActiveInference.jl script: {msg}", []

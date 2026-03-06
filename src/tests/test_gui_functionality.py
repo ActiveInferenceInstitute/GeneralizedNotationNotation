@@ -11,7 +11,6 @@ Tests the GUI module's process_gui function and related functionality:
 """
 
 import pytest
-from pathlib import Path
 import logging
 import json
 
@@ -24,18 +23,18 @@ def get_real_logger():
     """Create a real logger that captures output to a StringIO stream."""
     logger = logging.getLogger("test_gui_logger")
     logger.setLevel(logging.DEBUG)
-    
+
     # Remove existing handlers to avoid duplicate logs in parametrized tests
     for handler in logger.handlers[:]:
         logger.removeHandler(handler)
-        
+
     stream = io.StringIO()
     handler = logging.StreamHandler(stream)
     handler.setFormatter(logging.Formatter('%(levelname)s:%(message)s'))
     logger.addHandler(handler)
-    
+
     logger.stream = stream
-    
+
     # Helper to retrieve trapped messages exactly like the mock
     def get_messages(level=None):
         content = stream.getvalue().splitlines()
@@ -43,7 +42,7 @@ def get_real_logger():
             return [line.split(":", 1)[1] for line in content if ":" in line]
         level_str = level.upper()
         return [line.split(":", 1)[1] for line in content if line.startswith(f"{level_str}:")]
-    
+
     logger.get_messages = get_messages
     return logger
 

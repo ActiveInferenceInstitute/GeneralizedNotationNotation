@@ -3,7 +3,7 @@
 Fixed Render generators module for GNN code generation with enhanced visualizations.
 """
 
-from typing import Dict, Any, Optional, Union
+from typing import Dict, Optional, Union
 from pathlib import Path
 import re
 
@@ -81,29 +81,29 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
     try:
         # Import the template
         from .pymdp_template import PYMDP_TEMPLATE
-        
+
         # Get model name and sanitize identifiers
         model_name = model_data.get('model_name', 'GNN Model')
         model_snake = _sanitize_identifier(model_name, lowercase=True, allow_empty_fallback="model")
         gnn_file = model_data.get('source_file', 'unknown.md')
-        
+
         # Extract POMDP matrices with proper formatting
         state_space = model_data.get('state_space', {})
-        
+
         # Extract config parameters
         model_params = model_data.get('model_parameters', {})
         num_timesteps = model_params.get('num_timesteps', 15)
-        
+
         # Format matrices for template (with fallbacks)
         a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])
         b_matrix = state_space.get('B', [[[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]], [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]]])
         c_vector = state_space.get('C', [0.1, 0.1, 1.0, 0.0])
         d_vector = state_space.get('D', [0.333, 0.333, 0.333])
-        
+
         # Generate PyMDP code using template
         code = PYMDP_TEMPLATE.format(
             model_name=model_name,
-            model_snake=model_snake, 
+            model_snake=model_snake,
             gnn_file=gnn_file,
             a_matrix=a_matrix,
             b_matrix=b_matrix,
@@ -111,14 +111,14 @@ def generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]
             d_vector=d_vector,
             num_timesteps=num_timesteps
         )
-        
+
         # Save to file if output_path specified
         if output_path:
             with open(output_path, 'w') as f:
                 f.write(code)
-        
+
         return code
-        
+
     except Exception as e:
         print(f"Error generating PyMDP code: {e}")
         return ""
@@ -130,11 +130,11 @@ def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Uni
         model_snake = _sanitize_identifier(model_name, lowercase=True)
         model_pascal = _to_pascal_case(model_name)
         gnn_file = model_data.get('source_file', 'unknown.md')
-        
+
         # Extract parameters and state space information
         model_params = model_data.get('model_parameters', {})
         num_timesteps = model_params.get('num_timesteps', 15)
-        
+
         state_space = model_data.get('state_space', {})
         a_matrix = state_space.get('A', [[0.9, 0.05, 0.05], [0.05, 0.9, 0.05], [0.05, 0.05, 0.9], [0.33, 0.33, 0.33]])
         b_matrix = state_space.get('B', [[[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8]], [[0.2, 0.3, 0.5], [0.2, 0.3, 0.5], [0.1, 0.1, 0.8]]])
@@ -524,13 +524,13 @@ if abspath(PROGRAM_FILE) == @__FILE__
     main()
 end
 '''
-        
+
         if output_path:
             with open(output_path, 'w') as f:
                 f.write(code)
-        
+
         return code
-        
+
     except Exception as e:
         print(f"Error generating ActiveInference.jl code: {e}")
         return ""
@@ -899,13 +899,13 @@ def main():
 if __name__ == "__main__":
     main()
 '''
-        
+
         if output_path:
             with open(output_path, 'w') as f:
                 f.write(code)
-        
+
         return code
-        
+
     except Exception as e:
         print(f"Error generating DisCoPy code: {e}")
         return ""
@@ -1329,13 +1329,13 @@ if abspath(PROGRAM_FILE) == @__FILE__
     main()
 end
 '''
-        
+
         if output_path:
             with open(output_path, 'w') as f:
                 f.write(code)
-        
+
         return code
-        
+
     except Exception as e:
         print(f"Error generating RxInfer code: {e}")
         return ""

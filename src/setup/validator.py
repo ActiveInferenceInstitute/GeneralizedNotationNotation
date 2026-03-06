@@ -39,16 +39,16 @@ def get_environment_info() -> Dict[str, Any]:
     """
     try:
         from .setup import get_uv_setup_info, get_installed_package_versions
-        
+
         uv_info = get_uv_setup_info()
         package_versions = get_installed_package_versions()
-        
+
         return {
             "uv_info": uv_info,
             "package_versions": package_versions,
             "status": "healthy"
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to get environment info: {e}")
         return {
@@ -65,16 +65,16 @@ def get_uv_status() -> Dict[str, Any]:
     """
     try:
         from .setup import check_uv_availability, get_uv_setup_info
-        
+
         uv_available = check_uv_availability()
         uv_info = get_uv_setup_info()
-        
+
         return {
             "uv_available": uv_available,
             "uv_info": uv_info,
             "status": "healthy" if uv_available else "unavailable"
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to get UV status: {e}")
         return {

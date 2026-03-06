@@ -14,7 +14,7 @@ import threading
 import uuid
 from enum import Enum
 from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional, Union, Callable
+from typing import Dict, Any, List, Optional
 from contextlib import contextmanager
 from pathlib import Path
 import os

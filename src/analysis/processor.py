@@ -4,11 +4,10 @@ Analysis processor module for GNN analysis.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import logging
 import json
 import numpy as np
-import re
 from datetime import datetime
 
 try:
@@ -49,26 +48,26 @@ def aggregate_simulation_results(results_list: List[Dict[str, Any]]) -> Dict[str
         "metrics": {},
         "frameworks_used": set()
     }
-    
+
     # Extract common metrics
     metrics_to_gather = ["execution_time", "free_energy_final", "steps_completed"]
-    
+
     for res in results_list:
         if "framework" in res:
             aggregated["frameworks_used"].add(res["framework"])
-            
+
         for metric in metrics_to_gather:
             if metric not in aggregated["metrics"]:
                 aggregated["metrics"][metric] = []
-            
+
             if metric in res:
                 aggregated["metrics"][metric].append(res[metric])
             elif "metrics" in res and metric in res["metrics"]:
                 aggregated["metrics"][metric].append(res["metrics"][metric])
-                
+
     # Convert sets to lists
     aggregated["frameworks_used"] = list(aggregated["frameworks_used"])
-    
+
     return aggregated
 
 
@@ -83,17 +82,17 @@ def generate_summary_statistics(aggregated_data: Dict[str, Any]) -> Dict[str, An
         Dictionary with statistical summaries (mean, std, min, max)
     """
     stats = {}
-    
+
     for metric, values in aggregated_data.get("metrics", {}).items():
         if not values:
             continue
-            
+
         # Filter out None values
         valid_values = [v for v in values if v is not None and isinstance(v, (int, float))]
-        
+
         if not valid_values:
             continue
-            
+
         stats[metric] = {
             "mean": float(np.mean(valid_values)),
             "std": float(np.std(valid_values)),
@@ -101,7 +100,7 @@ def generate_summary_statistics(aggregated_data: Dict[str, Any]) -> Dict[str, An
             "max": float(np.max(valid_values)),
             "count": len(valid_values)
         }
-        
+
     return stats
 
 def process_analysis(
@@ -123,14 +122,14 @@ def process_analysis(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("analysis")
-    
+
     try:
         log_step_start(logger, "Processing analysis")
-        
+
         # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize results
         results = {
             "timestamp": datetime.now().isoformat(),
@@ -142,7 +141,7 @@ def process_analysis(
             "performance_benchmarks": [],
             "model_comparisons": []
         }
-        
+
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
         if not gnn_files:
@@ -151,22 +150,22 @@ def process_analysis(
             results["errors"].append("No GNN files found")
         else:
             results["processed_files"] = len(gnn_files)
-            
+
             # Process each GNN file
             for gnn_file in gnn_files:
                 try:
                     # Perform statistical analysis
                     stats_analysis = perform_statistical_analysis(gnn_file, verbose)
                     results["statistical_analysis"].append(stats_analysis)
-                    
+
                     # Calculate complexity metrics
                     complexity = calculate_complexity_metrics(gnn_file, verbose)
                     results["complexity_metrics"].append(complexity)
-                    
+
                     # Run performance benchmarks
                     benchmarks = run_performance_benchmarks(gnn_file, verbose)
                     results["performance_benchmarks"].append(benchmarks)
-                    
+
                     # Generate matrix visualizations (moved from Step 8)
                     matrix_viz = generate_matrix_visualizations({"matrices": stats_analysis.get("matrices", [])}, results_dir, gnn_file.stem)
                     results["visualization_files"] = results.get("visualization_files", []) + matrix_viz
@@ -179,29 +178,29 @@ def process_analysis(
                     }
                     results["errors"].append(error_info)
                     logger.error(f"Error processing {gnn_file}: {e}")
-            
+
             # 2. Post-Simulation Analysis: Load execution results if available
             execution_dir = output_dir.parent / "12_execute_output"
-            
+
             # Log the exact path being searched for debugging
             logger.info(f"Looking for execution results in: {execution_dir}")
-            
+
             if execution_dir.exists():
                 logger.info("Found execution results directory, performing post-simulation analysis")
-                
+
                 # First, check for execution summary file (generated by 12_execute step)
                 # New location: summaries/ subfolder; fallback: root for backward compatibility
                 execution_summary_file = execution_dir / "summaries" / "execution_summary.json"
                 if not execution_summary_file.exists():
                     execution_summary_file = execution_dir / "execution_summary.json"
                 logger.info(f"Looking for execution summary at: {execution_summary_file}")
-                
+
                 if execution_summary_file.exists():
                     logger.info(f"Found execution summary: {execution_summary_file}")
                     try:
                         with open(execution_summary_file, 'r') as f:
                             execution_results_data = json.load(f)
-                        
+
                         # Generate empirical visualizations from execution summary
                         empirical_viz = visualize_simulation_results(execution_results_data, results_dir)
                         results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
@@ -210,15 +209,15 @@ def process_analysis(
                         logger.warning(f"Failed to load execution summary: {e}")
                 else:
                     logger.warning(f"Execution summary not found at {execution_summary_file}")
-                
+
                 # Perform detailed post-simulation analysis for each model
                 try:
                     from .post_simulation import analyze_execution_results
-                    
+
                     for gnn_file in gnn_files:
                         model_name = gnn_file.stem
                         logger.info(f"Analyzing execution results for {model_name}")
-                        
+
                         # Find execution results for this model
                         model_execution_dir = execution_dir / model_name
                         if model_execution_dir.exists():
@@ -226,13 +225,13 @@ def process_analysis(
                                 model_execution_dir,
                                 model_name=model_name
                             )
-                            
+
                             analysis_cross_fw_dir = results_dir / "cross_framework"
                             analysis_cross_fw_dir.mkdir(parents=True, exist_ok=True)
                             analysis_file = analysis_cross_fw_dir / f"{model_name}_post_simulation_analysis.json"
                             with open(analysis_file, 'w') as f:
                                 json.dump(post_sim_analysis, f, indent=2, default=convert_numpy_types)
-                            
+
                             results["post_simulation_analysis"] = results.get("post_simulation_analysis", [])
                             results["post_simulation_analysis"].append({
                                 "model_name": model_name,
@@ -240,11 +239,11 @@ def process_analysis(
                                 "framework_count": len(post_sim_analysis.get("framework_results", {})),
                                 "has_comparison": "cross_framework_comparison" in post_sim_analysis
                             })
-                            
+
                             logger.info(f"Post-simulation analysis completed for {model_name}")
                         else:
                             logger.debug(f"No model-specific execution directory for {model_name}")
-                            
+
                     # Aggregate results and generate statistics
                     if results.get("post_simulation_analysis"):
                         aggregated = aggregate_simulation_results(results["post_simulation_analysis"])
@@ -255,7 +254,7 @@ def process_analysis(
                     logger.error(f"Failed to process post-simulation analysis: {e}")
                     import traceback
                     logger.debug(traceback.format_exc())
-                
+
                 # 2.5: Generate PyMDP Visualizations from Execution Logs
                 try:
                     from .pymdp.analyzer import generate_analysis_from_logs
@@ -272,14 +271,14 @@ def process_analysis(
                     logger.warning(f"PyMDP visualization generation failed: {e}")
             else:
                 logger.warning(f"Execution directory not found at {execution_dir}. Skipping post-simulation analysis.")
-            
+
             # 2.6: Generate ActiveInference.jl Visualizations
             try:
                 from .activeinference_jl.analyzer import generate_analysis_from_logs as analyze_actinf
                 actinf_output_dir = output_dir / "activeinference_jl"
                 actinf_output_dir.mkdir(parents=True, exist_ok=True)
                 logger.info("Generating ActiveInference.jl visualizations...")
-                # We pass output_dir as the destination, but the analyzer might write back to the source dirs 
+                # We pass output_dir as the destination, but the analyzer might write back to the source dirs
                 # or a specific subfolder. The implementation handles finding the right inputs.
                 actinf_viz = analyze_actinf(execution_dir, actinf_output_dir, verbose)
                 if actinf_viz:
@@ -289,7 +288,7 @@ def process_analysis(
                 logger.debug(f"analysis.activeinference_jl.analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"ActiveInference.jl analysis failed: {e}")
-            
+
             # 2.7: Generate DisCoPy Visualizations
             try:
                 from .discopy.analyzer import generate_analysis_from_logs as analyze_discopy
@@ -304,7 +303,7 @@ def process_analysis(
                 logger.debug(f"discopy analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"DisCoPy analysis failed: {e}")
-            
+
             # 2.8: Generate JAX Visualizations
             try:
                 from .jax.analyzer import generate_analysis_from_logs as analyze_jax
@@ -319,7 +318,7 @@ def process_analysis(
                 logger.debug(f"jax analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"JAX analysis failed: {e}")
-            
+
             # 2.9: Generate RxInfer Visualizations
             try:
                 from .rxinfer.analyzer import generate_analysis_from_logs as analyze_rxinfer
@@ -334,7 +333,7 @@ def process_analysis(
                 logger.debug(f"rxinfer analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"RxInfer analysis failed: {e}")
-            
+
             # 2.10: Generate PyTorch Visualizations
             try:
                 from .pytorch.analyzer import generate_analysis_from_logs as analyze_pytorch
@@ -349,7 +348,7 @@ def process_analysis(
                 logger.debug(f"pytorch analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"PyTorch analysis failed: {e}")
-            
+
             # 2.11: Generate NumPyro Visualizations
             try:
                 from .numpyro.analyzer import generate_analysis_from_logs as analyze_numpyro
@@ -364,39 +363,39 @@ def process_analysis(
                 logger.debug(f"numpyro analyzer not available: {e}")
             except Exception as e:
                 logger.warning(f"NumPyro analysis failed: {e}")
-            
+
             # Perform cross-model comparisons if multiple files
             if len(gnn_files) > 1:
                 comparisons = perform_model_comparisons(results["statistical_analysis"], verbose)
                 results["model_comparisons"].append(comparisons)
-        
+
         # Perform cross-framework analysis if execution results exist
         # Use the same execution_dir variable from above if set, otherwise resolve it
         if 'execution_dir' not in locals() or not execution_dir.exists():
             execution_dir = output_dir.parent / "12_execute_output"
-        
+
         if execution_dir.exists():
             logger.info("Performing cross-framework analysis...")
             try:
                 from .analyzer import analyze_framework_outputs, generate_framework_comparison_report, visualize_cross_framework_metrics
-                
+
                 framework_comparison = analyze_framework_outputs(execution_dir, logger)
                 results["framework_comparison"] = framework_comparison
-                
+
                 # Generate comparison report
                 report_file = generate_framework_comparison_report(framework_comparison, results_dir, logger)
                 results["framework_comparison_report"] = report_file
-                
+
                 # Generate comparison visualizations
                 comparison_viz = visualize_cross_framework_metrics(framework_comparison, results_dir, logger)
                 results["visualization_files"] = results.get("visualization_files", []) + comparison_viz
-                
+
                 logger.info(f"Generated {len(comparison_viz)} cross-framework comparison visualizations")
             except Exception as e:
                 logger.warning(f"Cross-framework analysis failed: {e}")
                 import traceback
                 logger.debug(traceback.format_exc())
-            
+
             # 3. Comprehensive visualization of all execution outputs
             logger.info("Generating comprehensive visualizations for all execution outputs...")
             try:
@@ -472,25 +471,25 @@ def process_analysis(
                 logger.warning(f"Cross-model report generation failed: {e}")
                 import traceback
                 logger.debug(traceback.format_exc())
-        
+
         # Save detailed results
         results_file = results_dir / "analysis_results.json"
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2, default=convert_numpy_types)
-        
+
         # Generate summary report
         summary = generate_analysis_summary(results)
         summary_file = results_dir / "analysis_summary.md"
         with open(summary_file, 'w') as f:
             f.write(summary)
-        
+
         if results["success"]:
             log_step_success(logger, "Analysis processing completed successfully")
         else:
             log_step_error(logger, "Analysis processing failed")
-        
+
         return results["success"]
-        
+
     except Exception as e:
         # Use supported signature for log_step_error
         log_step_error(logger, f"Analysis processing failed: {e}")

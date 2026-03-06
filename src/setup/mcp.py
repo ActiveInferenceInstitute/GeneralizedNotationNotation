@@ -5,9 +5,8 @@ This module exposes utility functions from the setup module through MCP,
 with support for UV-based environment management and modern Python packaging.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,7 +20,6 @@ from .utils import (
     setup_uv_project_structure
 )
 
-import inspect, importlib
 
 
 
@@ -182,18 +180,18 @@ def install_uv_dependency_mcp(package_name: str, extras: Optional[str] = None) -
     """
     try:
         import subprocess
-        
+
         cmd = ["uv", "add", package_name]
         if extras:
             cmd.extend(["--extras", extras])
-        
+
         result = subprocess.run(
             cmd,
             capture_output=True,
             text=True,
             timeout=300  # 5 minutes timeout
         )
-        
+
         if result.returncode == 0:
             return {
                 "success": True,
@@ -209,7 +207,7 @@ def install_uv_dependency_mcp(package_name: str, extras: Optional[str] = None) -
                 "error": result.stderr,
                 "message": f"Failed to install {package_name}"
             }
-            
+
     except subprocess.TimeoutExpired:
         return {
             "success": False,
@@ -240,7 +238,7 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
     """
     try:
         import subprocess
-        
+
         project_root = Path(project_directory)
         result = subprocess.run(
             ["uv", "sync"],
@@ -249,7 +247,7 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
             text=True,
             timeout=1800  # 30 minutes timeout
         )
-        
+
         if result.returncode == 0:
             return {
                 "success": True,
@@ -263,7 +261,7 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
                 "error": result.stderr,
                 "message": "Failed to sync dependencies"
             }
-            
+
     except subprocess.TimeoutExpired:
         return {
             "success": False,
@@ -283,7 +281,7 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register UV-based setup utility tools with the MCP."""
-    
+
     # Generic namespaced tools
     mcp_instance.register_tool(
         "ensure_directory_exists",
@@ -293,7 +291,7 @@ def register_tools(mcp_instance):
         },
         "Ensures a directory exists, creating it if necessary. Returns the absolute path."
     )
-    
+
     mcp_instance.register_tool(
         "find_project_gnn_files",
         find_project_gnn_files_mcp,
@@ -303,7 +301,7 @@ def register_tools(mcp_instance):
         },
         "Finds all GNN (.md) files in a specified directory within the project."
     )
-    
+
     mcp_instance.register_tool(
         "get_standard_output_paths",
         get_standard_output_paths_mcp,
@@ -312,7 +310,7 @@ def register_tools(mcp_instance):
         },
         "Gets a dictionary of standard output directory paths (e.g., for type_check, visualization), creating them if needed."
     )
-    
+
     mcp_instance.register_tool(
         "check_uv_project_status",
         check_uv_project_status_mcp,
@@ -321,14 +319,14 @@ def register_tools(mcp_instance):
         },
         "Checks the status of a UV project including pyproject.toml, uv.lock, and virtual environment."
     )
-    
+
     mcp_instance.register_tool(
         "get_uv_environment_info",
         get_uv_environment_info_mcp,
         {},
         "Gets information about the current UV environment including paths and status."
     )
-    
+
     mcp_instance.register_tool(
         "setup_uv_project_structure",
         setup_uv_project_structure_mcp,
@@ -337,7 +335,7 @@ def register_tools(mcp_instance):
         },
         "Sets up a new UV project structure with standard directories and configuration."
     )
-    
+
     mcp_instance.register_tool(
         "install_uv_dependency",
         install_uv_dependency_mcp,
@@ -347,7 +345,7 @@ def register_tools(mcp_instance):
         },
         "Installs a dependency using UV with optional extras support."
     )
-    
+
     mcp_instance.register_tool(
         "sync_uv_dependencies",
         sync_uv_dependencies_mcp,
@@ -356,5 +354,5 @@ def register_tools(mcp_instance):
         },
         "Syncs dependencies using UV from pyproject.toml and updates the lock file."
     )
-    
-    logger.info("UV-based setup module MCP tools registered.") 
+
+    logger.info("UV-based setup module MCP tools registered.")

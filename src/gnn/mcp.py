@@ -13,12 +13,11 @@ Enhanced Features:
 - Binary file validation for pickle/binary formats
 """
 
-import json
 import yaml
 import tempfile
 import time
 from pathlib import Path
-from typing import Dict, Any, Literal, Union, List, Optional
+from typing import Dict, Any, Literal, List, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -26,7 +25,7 @@ logger = logging.getLogger(__name__)
 # Import enhanced GNN capabilities
 try:
     from .schema_validator import (
-        GNNValidator, GNNParser, ValidationResult, ValidationLevel, 
+        GNNValidator, GNNParser, ValidationResult, ValidationLevel,
         validate_gnn_file, ParsedGNN
     )
     from .cross_format_validator import (
@@ -34,7 +33,7 @@ try:
         validate_cross_format_consistency, validate_schema_consistency
     )
     from .processors import (
-        process_gnn_folder, run_gnn_round_trip_tests, 
+        process_gnn_folder, run_gnn_round_trip_tests,
         validate_gnn_cross_format_consistency
     )
     ENHANCED_CAPABILITIES_AVAILABLE = True
@@ -56,17 +55,17 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
     Returns:
         Dictionary containing document content or an error.
     """
-    
+
     base_path = Path(__file__).parent
-    
+
     file_map = {
         "file_structure": "documentation/file_structure.md",
         "punctuation": "documentation/punctuation.md",
         "schema_json": "schemas/json.json",
-        "schema_yaml": "schemas/yaml.yaml", 
+        "schema_yaml": "schemas/yaml.yaml",
         "grammar": "grammars/ebnf.ebnf"
     }
-    
+
     if doc_name not in file_map:
         error_msg = f"Invalid document name: {doc_name}. Allowed: {', '.join(file_map.keys())}."
         logger.error(f"get_gnn_documentation: {error_msg}")
@@ -74,9 +73,9 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
             "success": False,
             "error": error_msg
         }
-    
+
     file_to_read = base_path / file_map[doc_name]
-        
+
     if not file_to_read.exists():
         error_msg = f"Documentation file not found: {file_to_read.name} (expected at {file_to_read.resolve()})"
         logger.error(f"get_gnn_documentation: {error_msg}")
@@ -84,7 +83,7 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
             "success": False,
             "error": error_msg
         }
-        
+
     try:
         content = file_to_read.read_text()
         return {
@@ -101,7 +100,7 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
         }
 
 
-def validate_gnn_content(content: str, 
+def validate_gnn_content(content: str,
                         validation_level: Literal["basic", "standard", "strict", "research", "round_trip"] = "standard",
                         enable_round_trip: bool = False,
                         format_hint: Optional[str] = None) -> Dict[str, Any]:
@@ -122,7 +121,7 @@ def validate_gnn_content(content: str,
             "success": False,
             "error": "Enhanced validation capabilities not available"
         }
-    
+
     try:
         # Map validation levels
         level_map = {
@@ -132,24 +131,24 @@ def validate_gnn_content(content: str,
             "research": ValidationLevel.RESEARCH,
             "round_trip": ValidationLevel.ROUND_TRIP
         }
-        
+
         val_level = level_map.get(validation_level, ValidationLevel.STANDARD)
-        
+
         # Create temporary file for validation
         with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
             f.write(content)
             temp_file = Path(f.name)
-        
+
         try:
             # Initialize enhanced validator
             validator = GNNValidator(
                 validation_level=val_level,
                 enable_round_trip_testing=enable_round_trip
             )
-            
+
             # Perform validation
             result = validator.validate_file(temp_file, val_level)
-            
+
             # Convert result to JSON-serializable format
             return {
                 "success": True,
@@ -165,11 +164,11 @@ def validate_gnn_content(content: str,
                 "round_trip_success_rate": result.get_round_trip_success_rate(),
                 "performance_metrics": result.performance_metrics
             }
-            
+
         finally:
             # Clean up temporary file
             temp_file.unlink(missing_ok=True)
-        
+
     except Exception as e:
         logger.error(f"validate_gnn_content: {str(e)}", exc_info=True)
         return {
@@ -178,7 +177,7 @@ def validate_gnn_content(content: str,
         }
 
 
-def parse_gnn_content(content: str, 
+def parse_gnn_content(content: str,
                      format_hint: str = "markdown",
                      enhanced_validation: bool = True) -> Dict[str, Any]:
     """
@@ -197,14 +196,14 @@ def parse_gnn_content(content: str,
             "success": False,
             "error": "Enhanced parsing capabilities not available"
         }
-    
+
     try:
         # Initialize enhanced parser
         parser = GNNParser(enhanced_validation=enhanced_validation)
-        
+
         # Parse content
         parsed_gnn = parser.parse_content(content, format_hint=format_hint)
-        
+
         # Convert to JSON-serializable format
         variables_dict = {}
         for var_name, var in parsed_gnn.variables.items():
@@ -216,7 +215,7 @@ def parse_gnn_content(content: str,
                 "ontology_mapping": var.ontology_mapping,
                 "line_number": var.line_number
             }
-        
+
         connections_list = []
         for conn in parsed_gnn.connections:
             connections_list.append({
@@ -227,7 +226,7 @@ def parse_gnn_content(content: str,
                 "description": conn.description,
                 "line_number": conn.line_number
             })
-        
+
         return {
             "success": True,
             "gnn_section": parsed_gnn.gnn_section,
@@ -247,7 +246,7 @@ def parse_gnn_content(content: str,
             "source_format": parsed_gnn.source_format,
             "semantic_checksum": parsed_gnn.semantic_checksum
         }
-        
+
     except Exception as e:
         logger.error(f"parse_gnn_content: {str(e)}", exc_info=True)
         return {
@@ -275,11 +274,11 @@ def validate_cross_format_consistency_content(content: str,
             "success": False,
             "error": "Cross-format validation capabilities not available"
         }
-    
+
     try:
         # Perform cross-format validation
         result = validate_cross_format_consistency(content, enable_round_trip)
-        
+
         # Convert result to JSON-serializable format
         format_results_dict = {}
         for format_name, validation_result in result.format_results.items():
@@ -291,7 +290,7 @@ def validate_cross_format_consistency_content(content: str,
                 "validation_level": validation_result.validation_level.value,
                 "format_tested": validation_result.format_tested
             }
-        
+
         return {
             "success": True,
             "is_consistent": result.is_consistent,
@@ -306,7 +305,7 @@ def validate_cross_format_consistency_content(content: str,
             "round_trip_compatibility": result.round_trip_compatibility,
             "format_specific_issues": result.format_specific_issues
         }
-        
+
     except Exception as e:
         logger.error(f"validate_cross_format_consistency_content: {str(e)}", exc_info=True)
         return {
@@ -327,11 +326,11 @@ def validate_schema_definitions_consistency() -> Dict[str, Any]:
             "success": False,
             "error": "Schema validation capabilities not available"
         }
-    
+
     try:
         # Perform schema consistency validation
         result = validate_schema_consistency()
-        
+
         # Convert result to JSON-serializable format
         return {
             "success": True,
@@ -342,7 +341,7 @@ def validate_schema_definitions_consistency() -> Dict[str, Any]:
             "warnings": result.warnings,
             "metadata": result.metadata
         }
-        
+
     except Exception as e:
         logger.error(f"validate_schema_definitions_consistency: {str(e)}", exc_info=True)
         return {
@@ -376,18 +375,18 @@ def process_gnn_directory(target_dir: str,
             "success": False,
             "error": "Enhanced processing capabilities not available"
         }
-    
+
     try:
         import logging
-        
+
         # Create a logger for this operation
         logger_instance = logging.getLogger(f"gnn_mcp_processing_{int(time.time())}")
         logger_instance.setLevel(logging.INFO)
-        
+
         # Convert paths
         target_path = Path(target_dir)
         output_path = Path(output_dir)
-        
+
         # Process the directory
         success = process_gnn_folder(
             target_dir=target_path,
@@ -398,7 +397,7 @@ def process_gnn_directory(target_dir: str,
             validation_level=validation_level,
             enable_round_trip=enable_round_trip
         )
-        
+
         return {
             "success": success,
             "target_directory": str(target_path),
@@ -408,7 +407,7 @@ def process_gnn_directory(target_dir: str,
             "round_trip_enabled": enable_round_trip,
             "message": "Processing completed successfully" if success else "Processing completed with issues"
         }
-        
+
     except Exception as e:
         logger.error(f"process_gnn_directory: {str(e)}", exc_info=True)
         return {
@@ -440,18 +439,18 @@ def run_round_trip_tests(target_dir: str,
             "success": False,
             "error": "Round-trip testing capabilities not available"
         }
-    
+
     try:
         import logging
-        
+
         # Create a logger for this operation
         logger_instance = logging.getLogger(f"gnn_mcp_roundtrip_{int(time.time())}")
         logger_instance.setLevel(logging.INFO)
-        
+
         # Convert paths
         target_path = Path(target_dir)
         output_path = Path(output_dir)
-        
+
         # Run round-trip tests
         success = run_gnn_round_trip_tests(
             target_dir=target_path,
@@ -461,7 +460,7 @@ def run_round_trip_tests(target_dir: str,
             test_subset=test_subset,
             enable_parallel=enable_parallel
         )
-        
+
         return {
             "success": success,
             "target_directory": str(target_path),
@@ -471,7 +470,7 @@ def run_round_trip_tests(target_dir: str,
             "parallel_enabled": enable_parallel,
             "message": "Round-trip tests completed successfully" if success else "Round-trip tests completed with issues"
         }
-        
+
     except Exception as e:
         logger.error(f"run_round_trip_tests: {str(e)}", exc_info=True)
         return {
@@ -501,18 +500,18 @@ def validate_directory_cross_format_consistency(target_dir: str,
             "success": False,
             "error": "Cross-format validation capabilities not available"
         }
-    
+
     try:
         import logging
-        
+
         # Create a logger for this operation
         logger_instance = logging.getLogger(f"gnn_mcp_crossformat_{int(time.time())}")
         logger_instance.setLevel(logging.INFO)
-        
+
         # Convert paths
         target_path = Path(target_dir)
         output_path = Path(output_dir)
-        
+
         # Validate cross-format consistency
         success = validate_gnn_cross_format_consistency(
             target_dir=target_path,
@@ -521,7 +520,7 @@ def validate_directory_cross_format_consistency(target_dir: str,
             files_to_test=files_to_test,
             include_binary=include_binary
         )
-        
+
         return {
             "success": success,
             "target_directory": str(target_path),
@@ -530,7 +529,7 @@ def validate_directory_cross_format_consistency(target_dir: str,
             "binary_included": include_binary,
             "message": "Cross-format validation completed successfully" if success else "Cross-format validation completed with issues"
         }
-        
+
     except Exception as e:
         logger.error(f"validate_directory_cross_format_consistency: {str(e)}", exc_info=True)
         return {
@@ -548,13 +547,13 @@ def get_gnn_schema_info() -> Dict[str, Any]:
     """
     try:
         base_path = Path(__file__).parent
-        
+
         # Load schema info from YAML if available
         yaml_path = base_path / "schemas/yaml.yaml"
         if yaml_path.exists():
             with open(yaml_path, 'r') as f:
                 schema_data = yaml.safe_load(f)
-            
+
             return {
                 "success": True,
                 "schema_info": schema_data.get("schema_info", {}),
@@ -571,7 +570,7 @@ def get_gnn_schema_info() -> Dict[str, Any]:
                 "error": "Schema YAML file not found",
                 "enhanced_capabilities_available": ENHANCED_CAPABILITIES_AVAILABLE
             }
-            
+
     except Exception as e:
         logger.error(f"get_gnn_schema_info: {str(e)}", exc_info=True)
         return {
@@ -589,8 +588,8 @@ def get_gnn_module_info() -> Dict[str, Any]:
         Dictionary containing module metadata and feature information
     """
     try:
-        from . import FEATURES, __version__, get_module_info
-        
+        from . import get_module_info
+
         module_info = get_module_info()
         module_info.update({
             "success": True,
@@ -598,7 +597,7 @@ def get_gnn_module_info() -> Dict[str, Any]:
             "mcp_integration_version": "2.0.0",
             "supported_operations": [
                 "validate_gnn_content",
-                "parse_gnn_content", 
+                "parse_gnn_content",
                 "validate_cross_format_consistency_content",
                 "validate_schema_definitions_consistency",
                 "process_gnn_directory",
@@ -608,9 +607,9 @@ def get_gnn_module_info() -> Dict[str, Any]:
                 "get_gnn_schema_info"
             ]
         })
-        
+
         return module_info
-        
+
     except Exception as e:
         logger.error(f"get_gnn_module_info: {str(e)}", exc_info=True)
         return {
@@ -630,18 +629,18 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
         error_msg = f"Invalid URI format for GNN documentation: {uri}"
         logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
         raise ValueError(error_msg)
-    
+
     doc_name_part = uri.replace("gnn://documentation/", "")
-    
+
     allowed_docs = ["file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"]
     if doc_name_part not in allowed_docs:
         error_msg = f"Invalid document name in URI: {doc_name_part}"
         logger.error(f"_retrieve_gnn_doc_resource: {error_msg}")
         raise ValueError(error_msg)
-        
+
     # Type casting for Literal
     doc_name_literal = doc_name_part # type: Literal["file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"]
-    
+
     result = get_gnn_documentation(doc_name=doc_name_literal)
     if not result["success"]:
         error_msg = f"Failed to retrieve document {doc_name_part}: {result.get('error', 'Unknown error')}"
@@ -653,21 +652,21 @@ def _retrieve_gnn_doc_resource(uri: str) -> Dict[str, Any]:
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register comprehensive GNN tools and resources with the MCP."""
-    
+
     # Documentation tools
     mcp_instance.register_tool(
         "get_gnn_documentation",
         get_gnn_documentation,
         {
             "doc_name": {
-                "type": "string", 
+                "type": "string",
                 "description": "Name of the GNN document (e.g., 'file_structure', 'punctuation', 'schema_json', 'schema_yaml', 'grammar')",
                 "enum": ["file_structure", "punctuation", "schema_json", "schema_yaml", "grammar"]
             }
         },
         "Retrieve the content of a GNN documentation file, schema definition, or grammar specification."
     )
-    
+
     # Enhanced validation tools
     mcp_instance.register_tool(
         "validate_gnn_content",
@@ -696,7 +695,7 @@ def register_tools(mcp_instance):
         },
         "Enhanced validation of GNN file content with comprehensive testing capabilities."
     )
-    
+
     # Parsing tools
     mcp_instance.register_tool(
         "parse_gnn_content",
@@ -720,7 +719,7 @@ def register_tools(mcp_instance):
         },
         "Parse GNN content with enhanced multi-format support and return structured model representation."
     )
-    
+
     # Cross-format validation tools
     mcp_instance.register_tool(
         "validate_cross_format_consistency_content",
@@ -744,7 +743,7 @@ def register_tools(mcp_instance):
         },
         "Validate cross-format consistency for GNN content across all supported formats."
     )
-    
+
     # Schema validation tools
     mcp_instance.register_tool(
         "validate_schema_definitions_consistency",
@@ -752,7 +751,7 @@ def register_tools(mcp_instance):
         {},
         "Validate consistency between GNN schema definition files across different formats."
     )
-    
+
     # Directory processing tools
     mcp_instance.register_tool(
         "process_gnn_directory",
@@ -763,7 +762,7 @@ def register_tools(mcp_instance):
                 "description": "Directory containing GNN files to process"
             },
             "output_dir": {
-                "type": "string", 
+                "type": "string",
                 "description": "Output directory for results"
             },
             "recursive": {
@@ -790,7 +789,7 @@ def register_tools(mcp_instance):
         },
         "Process a directory of GNN files with enhanced validation and testing capabilities."
     )
-    
+
     # Round-trip testing tools
     mcp_instance.register_tool(
         "run_round_trip_tests",
@@ -821,7 +820,7 @@ def register_tools(mcp_instance):
         },
         "Run comprehensive round-trip tests on GNN files across all supported formats."
     )
-    
+
     # Directory cross-format validation tools
     mcp_instance.register_tool(
         "validate_directory_cross_format_consistency",
@@ -848,7 +847,7 @@ def register_tools(mcp_instance):
         },
         "Validate cross-format consistency for files in a directory with comprehensive analysis."
     )
-    
+
     # Information tools
     mcp_instance.register_tool(
         "get_gnn_schema_info",
@@ -856,20 +855,20 @@ def register_tools(mcp_instance):
         {},
         "Get comprehensive information about the GNN schema structure and validation rules."
     )
-    
+
     mcp_instance.register_tool(
         "get_gnn_module_info",
         get_gnn_module_info,
         {},
         "Get comprehensive information about the GNN module capabilities and features."
     )
-    
+
     # Resources
     mcp_instance.register_resource(
         "gnn://documentation/{doc_name}",
         _retrieve_gnn_doc_resource,
         "Access GNN core documentation files like syntax and file structure definitions."
     )
-    
+
     logger.info("Enhanced GNN MCP tools and resources registered successfully.")
-    logger.info(f"Enhanced capabilities available: {ENHANCED_CAPABILITIES_AVAILABLE}") 
+    logger.info(f"Enhanced capabilities available: {ENHANCED_CAPABILITIES_AVAILABLE}")

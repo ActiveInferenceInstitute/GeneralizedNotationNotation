@@ -7,18 +7,17 @@ This script verifies that the complete GNN Processing Pipeline is working correc
 
 import sys
 from pathlib import Path
-import json
-from typing import Dict, Any, List
+from typing import Dict, Any
 
 def verify_pipeline_discovery() -> Dict[str, Any]:
     """Verify pipeline step discovery."""
     try:
         from pipeline.discovery import get_pipeline_scripts
         scripts = get_pipeline_scripts(Path(__file__).parent)
-        
+
         expected_steps = list(range(25))  # 0-24
         found_steps = [s['num'] for s in scripts]
-        
+
         return {
             "success": found_steps == expected_steps,
             "expected_count": len(expected_steps),
@@ -63,10 +62,10 @@ def verify_module_imports() -> Dict[str, Any]:
         "report",
         "intelligent_analysis"
     ]
-    
+
     results = {}
     failed_imports = []
-    
+
     for module_name in modules_to_test:
         try:
             __import__(module_name)
@@ -74,7 +73,7 @@ def verify_module_imports() -> Dict[str, Any]:
         except ImportError as e:
             results[module_name] = False
             failed_imports.append(f"{module_name}: {e}")
-    
+
     return {
         "success": len(failed_imports) == 0,
         "total_modules": len(modules_to_test),
@@ -89,7 +88,7 @@ def verify_pipeline_config() -> Dict[str, Any]:
     try:
         from pipeline import get_pipeline_config
         config = get_pipeline_config()
-        
+
         return {
             "success": True,
             "total_steps": len(config.steps),
@@ -133,17 +132,17 @@ def verify_step_files() -> Dict[str, Any]:
         "report.py",
         "intelligent_analysis.py"
     ])]
-    
+
     existing_files = []
     missing_files = []
-    
+
     for filename in expected_files:
         file_path = Path(__file__).parent / filename
         if file_path.exists():
             existing_files.append(filename)
         else:
             missing_files.append(filename)
-    
+
     return {
         "success": len(missing_files) == 0,
         "expected_count": len(expected_files),
@@ -157,14 +156,14 @@ def verify_mcp_integration() -> Dict[str, Any]:
     """Verify MCP integration files."""
     modules_with_mcp = [
         "tests",
-        "type_checker", 
+        "type_checker",
         "export",
         "setup"
     ]
-    
+
     results = {}
     missing_mcp = []
-    
+
     for module_name in modules_with_mcp:
         mcp_file = Path(__file__).parent / module_name / "mcp.py"
         if mcp_file.exists():
@@ -172,7 +171,7 @@ def verify_mcp_integration() -> Dict[str, Any]:
         else:
             results[module_name] = False
             missing_mcp.append(module_name)
-    
+
     return {
         "success": len(missing_mcp) == 0,
         "total_modules": len(modules_with_mcp),
@@ -187,23 +186,23 @@ def verify_test_modules() -> Dict[str, Any]:
     expected_test_files = [
         "__init__.py",
         "unit_tests.py",
-        "integration_tests.py", 
+        "integration_tests.py",
         "performance_tests.py",
         "coverage_tests.py",
         "mcp.py"
     ]
-    
+
     test_dir = Path(__file__).parent / "tests"
     existing_files = []
     missing_files = []
-    
+
     for filename in expected_test_files:
         file_path = test_dir / filename
         if file_path.exists():
             existing_files.append(filename)
         else:
             missing_files.append(filename)
-    
+
     return {
         "success": len(missing_files) == 0,
         "expected_count": len(expected_test_files),
@@ -217,37 +216,37 @@ def main():
     """Main verification function."""
     print("🔍 GNN Processing Pipeline Verification")
     print("=" * 50)
-    
+
     verification_results = {}
-    
+
     # Run all verifications
     print("\n1. Verifying pipeline discovery...")
     verification_results["pipeline_discovery"] = verify_pipeline_discovery()
-    
+
     print("2. Verifying module imports...")
     verification_results["module_imports"] = verify_module_imports()
-    
+
     print("3. Verifying pipeline configuration...")
     verification_results["pipeline_config"] = verify_pipeline_config()
-    
+
     print("4. Verifying step files...")
     verification_results["step_files"] = verify_step_files()
-    
+
     print("5. Verifying MCP integration...")
     verification_results["mcp_integration"] = verify_mcp_integration()
-    
+
     print("6. Verifying test modules...")
     verification_results["test_modules"] = verify_test_modules()
-    
+
     # Print results
     print("\n📊 Verification Results")
     print("=" * 50)
-    
+
     all_successful = True
     for test_name, result in verification_results.items():
         status = "✅ PASS" if result.get("success", False) else "❌ FAIL"
         print(f"{test_name:20} {status}")
-        
+
         if not result.get("success", False):
             all_successful = False
             if "error" in result:
@@ -256,7 +255,7 @@ def main():
                 print(f"    Missing: {result['missing_files']}")
             if "failed_modules" in result and result["failed_modules"]:
                 print(f"    Failed: {result['failed_modules']}")
-    
+
     # Overall status
     print("\n" + "=" * 50)
     if all_successful:
@@ -269,4 +268,4 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

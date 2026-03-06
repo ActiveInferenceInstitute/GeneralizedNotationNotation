@@ -7,7 +7,6 @@ analysis, policy visualization, network metrics, and D2 diagram generation.
 Extracted from processor.py for maintainability.
 """
 
-import json
 import logging
 import time
 from pathlib import Path
@@ -217,9 +216,7 @@ def _generate_interactive_dashboard(
             attempt.output_files.append(str(output_dir / f"{model_name}_dashboard_fallback.html"))
         else:
             import plotly.graph_objects as go
-            from plotly.subplots import make_subplots
             import plotly.express as px
-            import pandas as pd
 
             variables = model_data.get("variables", [])
             connections = model_data.get("connections", [])

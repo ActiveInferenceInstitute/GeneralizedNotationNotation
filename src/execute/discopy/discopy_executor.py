@@ -10,7 +10,7 @@ import logging
 import os
 import json
 from pathlib import Path
-from typing import List, Optional, Union, Dict, Any, Tuple
+from typing import Optional, Union, Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -58,13 +58,13 @@ def execute_discopy_script(
     import subprocess
     import sys
     import time as time_mod
-    
+
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")
         return False
-    
+
     logger.info(f"Executing DisCoPy script: {script_path}")
-    
+
     # Validate Python syntax before execution
     try:
         with open(script_path, 'r') as f:
@@ -74,14 +74,14 @@ def execute_discopy_script(
     except SyntaxError as e:
         logger.error(f"❌ Syntax error in {script_path.name}: {e}")
         return False
-    
+
     env = os.environ.copy()
     if output_dir:
         output_dir.mkdir(parents=True, exist_ok=True)
         env["DISCOPY_OUTPUT_DIR"] = str(output_dir)
-    
+
     start_time = time_mod.time()
-    
+
     try:
         abs_script_path = script_path.resolve()
         result = subprocess.run(
@@ -92,10 +92,10 @@ def execute_discopy_script(
             cwd=abs_script_path.parent,
             timeout=timeout
         )
-        
+
         elapsed = time_mod.time() - start_time
         success = result.returncode == 0
-        
+
         if success:
             logger.info(f"✅ Script executed successfully: {script_path.name} ({elapsed:.1f}s)")
             if verbose and result.stdout.strip():
@@ -105,12 +105,12 @@ def execute_discopy_script(
             logger.error(f"Return code: {result.returncode}")
             if result.stderr.strip():
                 logger.error(f"Error output:\n{result.stderr}")
-        
+
         # Save execution logs
         log_dir = output_dir if output_dir else abs_script_path.parent
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
-            
+
             execution_log = {
                 "script": str(abs_script_path),
                 "return_code": result.returncode,
@@ -119,15 +119,15 @@ def execute_discopy_script(
                 "timeout": timeout,
                 "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S")
             }
-            
+
             log_file = log_dir / "execution_log.json"
             with open(log_file, 'w') as f:
                 json.dump(execution_log, f, indent=2)
-            
+
             logger.debug(f"Execution logs saved to: {log_dir}")
         except Exception as log_err:
             logger.warning(f"Could not save execution logs: {log_err}")
-        
+
         return success
     except subprocess.TimeoutExpired:
         logger.error(f"❌ Script execution timed out after {timeout}s: {script_path.name}")
@@ -141,7 +141,7 @@ class DisCoPyExecutor:
     """
     DisCoPy Executor for validating and analyzing rendered DisCoPy diagrams.
     """
-    
+
     def __init__(self, verbose: bool = False):
         """
         Initialize the DisCoPy executor.
@@ -152,7 +152,7 @@ class DisCoPyExecutor:
         self.verbose = verbose
         if verbose:
             logger.setLevel(logging.DEBUG)
-    
+
     def validate_diagram(self, diagram_path: Path) -> Tuple[bool, str]:
         """
         Validate that a DisCoPy diagram file exists and is accessible.
@@ -165,22 +165,22 @@ class DisCoPyExecutor:
         """
         if not diagram_path.exists():
             return False, f"Diagram file not found: {diagram_path}"
-        
+
         if diagram_path.suffix.lower() not in ['.png', '.jpg', '.jpeg', '.svg']:
             return False, f"Unexpected diagram file format: {diagram_path.suffix}"
-        
+
         try:
             # Check if the file is readable and has content
             file_size = diagram_path.stat().st_size
             if file_size == 0:
                 return False, f"Diagram file is empty: {diagram_path}"
-            
+
             logger.debug(f"Validated diagram file: {diagram_path} ({file_size} bytes)")
-            return True, f"Diagram file validated successfully"
-            
+            return True, "Diagram file validated successfully"
+
         except Exception as e:
             return False, f"Error validating diagram file: {e}"
-    
+
     def analyze_jax_output(self, jax_output_path: Path) -> Tuple[bool, str, Dict[str, Any]]:
         """
         Analyze a JAX evaluation output file.
@@ -193,37 +193,37 @@ class DisCoPyExecutor:
         """
         if not jax_output_path.exists():
             return False, f"JAX output file not found: {jax_output_path}", {}
-        
+
         analysis = {
             "file_path": str(jax_output_path),
             "file_size_bytes": 0,
             "file_type": jax_output_path.suffix.lower(),
             "validation_status": "unknown"
         }
-        
+
         try:
             file_size = jax_output_path.stat().st_size
             analysis["file_size_bytes"] = file_size
-            
+
             if file_size == 0:
                 analysis["validation_status"] = "empty"
                 return False, f"JAX output file is empty: {jax_output_path}", analysis
-            
+
             # For image files, just validate they exist and have content
             if jax_output_path.suffix.lower() in ['.png', '.jpg', '.jpeg']:
                 analysis["validation_status"] = "valid_image"
-                return True, f"JAX output image validated successfully", analysis
-            
+                return True, "JAX output image validated successfully", analysis
+
             # For other files, try to read and analyze content
             analysis["validation_status"] = "valid_file"
             logger.debug(f"Analyzed JAX output: {jax_output_path} ({file_size} bytes)")
-            return True, f"JAX output file analyzed successfully", analysis
-            
+            return True, "JAX output file analyzed successfully", analysis
+
         except Exception as e:
             analysis["validation_status"] = "error"
             analysis["error"] = str(e)
             return False, f"Error analyzing JAX output: {e}", analysis
-    
+
     def execute_directory(self, target_dir: Path, output_dir: Path) -> Dict[str, Any]:
         """
         Execute validation and analysis on all DisCoPy outputs in a directory.
@@ -245,32 +245,32 @@ class DisCoPyExecutor:
                 "total_files_processed": 0
             }
         }
-        
+
         if not target_dir.exists():
             logger.warning(f"Target directory does not exist: {target_dir}")
             return results
-        
+
         # Create output directory
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Find DisCoPy diagram files
         diagram_files = []
         jax_files = []
-        
+
         # Look for common DisCoPy output patterns
         for pattern in ["*_diagram.png", "*_diagram.jpg", "*_diagram.svg"]:
             diagram_files.extend(target_dir.glob(f"**/{pattern}"))
-        
+
         for pattern in ["*_jax_evaluation.png", "*_jax_evaluation.jpg", "*_evaluation*.png"]:
             jax_files.extend(target_dir.glob(f"**/{pattern}"))
-        
+
         logger.info(f"Found {len(diagram_files)} diagram files and {len(jax_files)} JAX output files")
-        
+
         # Validate diagram files
         for diagram_file in diagram_files:
             try:
                 success, message = self.validate_diagram(diagram_file)
-                
+
                 execution_result = {
                     "script": diagram_file.name,
                     "type": "diagram_validation",
@@ -278,17 +278,17 @@ class DisCoPyExecutor:
                     "message": message,
                     "file_path": str(diagram_file)
                 }
-                
+
                 results["executions"].append(execution_result)
-                
+
                 if success:
                     results["successes"] += 1
                     results["analysis_summary"]["diagrams_validated"] += 1
                 else:
                     results["failures"] += 1
-                
+
                 results["analysis_summary"]["total_files_processed"] += 1
-                
+
             except Exception as e:
                 logger.error(f"Error processing diagram {diagram_file}: {e}")
                 results["failures"] += 1
@@ -299,12 +299,12 @@ class DisCoPyExecutor:
                     "message": str(e),
                     "file_path": str(diagram_file)
                 })
-        
+
         # Analyze JAX output files
         for jax_file in jax_files:
             try:
                 success, message, analysis = self.analyze_jax_output(jax_file)
-                
+
                 execution_result = {
                     "script": jax_file.name,
                     "type": "jax_analysis",
@@ -313,17 +313,17 @@ class DisCoPyExecutor:
                     "file_path": str(jax_file),
                     "analysis": analysis
                 }
-                
+
                 results["executions"].append(execution_result)
-                
+
                 if success:
                     results["successes"] += 1
                     results["analysis_summary"]["jax_outputs_analyzed"] += 1
                 else:
                     results["failures"] += 1
-                
+
                 results["analysis_summary"]["total_files_processed"] += 1
-                
+
             except Exception as e:
                 logger.error(f"Error processing JAX output {jax_file}: {e}")
                 results["failures"] += 1
@@ -334,7 +334,7 @@ class DisCoPyExecutor:
                     "message": str(e),
                     "file_path": str(jax_file)
                 })
-        
+
         # Save execution report
         report_file = output_dir / "discopy_execution_report.json"
         try:
@@ -343,7 +343,7 @@ class DisCoPyExecutor:
             logger.info(f"DisCoPy execution report saved to: {report_file}")
         except Exception as e:
             logger.error(f"Failed to save execution report: {e}")
-        
+
         return results
 
 
@@ -373,27 +373,27 @@ def run_discopy_analysis(
         results_dir = exec_output_dir
     else:
         results_dir = Path(rendered_simulators_dir) / "execution_results" / "discopy_results"
-    
+
     # Construct the path to the DisCoPy outputs
     discopy_dir = Path(rendered_simulators_dir) / "discopy"
-    
+
     logger.info(f"Looking for DisCoPy outputs in: {discopy_dir}")
-    
+
     if not discopy_dir.exists():
         logger.info("No DisCoPy output directory found")
         return True  # Not an error, just nothing to do
-    
+
     # Create executor and run analysis
     executor = DisCoPyExecutor(verbose=verbose)
     results = executor.execute_directory(discopy_dir, results_dir)
-    
+
     # Report analysis results
     total_processed = results["analysis_summary"]["total_files_processed"]
     successes = results["successes"]
     failures = results["failures"]
-    
+
     logger.info(f"DisCoPy analysis summary: {successes} succeeded, {failures} failed, {total_processed} total")
-    
+
     # Consider the overall run successful if any files were processed successfully
     return failures == 0 or successes > 0
 
@@ -406,7 +406,7 @@ if __name__ == "__main__":
         format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
         stream=sys.stdout
     )
-    
+
     # Parse command-line arguments for standalone execution
     import argparse
     parser = argparse.ArgumentParser(description="Analyze DisCoPy outputs generated by the GNN rendering step")
@@ -416,19 +416,19 @@ if __name__ == "__main__":
                        help="Recursively search for outputs in the output directory")
     parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False,
                        help="Enable verbose output")
-    
+
     args = parser.parse_args()
-    
+
     # Enable verbose logging if requested
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    
+
     # Run the analysis
     success = run_discopy_analysis(
         rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose
     )
-    
+
     # Exit with appropriate status code
-    sys.exit(0 if success else 1) 
+    sys.exit(0 if success else 1)

@@ -1,9 +1,9 @@
 # GNN Implementation Guide
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 This document provides guidance on how to implement GNN models in computational environments, with practical code examples and workflows.
 

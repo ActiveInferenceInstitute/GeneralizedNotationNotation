@@ -72,7 +72,7 @@ FEATURES = {
 def check_audio_backends() -> Dict[str, Any]:
     """Check availability of audio backends."""
     backends = {}
-    
+
     # Check librosa
     try:
         import librosa
@@ -82,7 +82,7 @@ def check_audio_backends() -> Dict[str, Any]:
         }
     except ImportError:
         backends['librosa'] = {'available': False, 'version': None}
-    
+
     # Check soundfile
     try:
         import soundfile
@@ -92,7 +92,7 @@ def check_audio_backends() -> Dict[str, Any]:
         }
     except ImportError:
         backends['soundfile'] = {'available': False, 'version': None}
-    
+
     # Check pedalboard
     try:
         import pedalboard
@@ -102,7 +102,7 @@ def check_audio_backends() -> Dict[str, Any]:
         }
     except ImportError:
         backends['pedalboard'] = {'available': False, 'version': None}
-    
+
     # Check numpy (always needed for audio generation)
     try:
         import numpy
@@ -112,7 +112,7 @@ def check_audio_backends() -> Dict[str, Any]:
         }
     except ImportError:
         backends['numpy'] = {'available': False, 'version': None}
-    
+
     return backends
 
 __all__ = [

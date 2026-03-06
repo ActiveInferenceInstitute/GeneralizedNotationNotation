@@ -9,8 +9,7 @@ It analyzes pipeline results and provides actionable insights and recommendation
 import json
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
-from datetime import datetime
+from typing import Dict, Any, List
 import logging
 
 logger = logging.getLogger(__name__)
@@ -23,7 +22,7 @@ class PipelineDiagnosticEnhancer:
     Provides detailed analysis of pipeline performance, failures, warnings,
     and actionable recommendations for improvements.
     """
-    
+
     def __init__(self):
         self.known_issues = {
             "gradio.*has no attribute.*Blocks": {
@@ -47,7 +46,7 @@ class PipelineDiagnosticEnhancer:
                 "priority": "low"
             }
         }
-    
+
     def enhance_summary(self, summary_path: Path) -> Dict[str, Any]:
         """
         Enhance an existing pipeline summary with diagnostic information.
@@ -61,31 +60,31 @@ class PipelineDiagnosticEnhancer:
         try:
             with open(summary_path, 'r') as f:
                 summary = json.load(f)
-            
+
             # Add diagnostic analysis
             diagnostics = self._analyze_pipeline_execution(summary)
             summary["diagnostics"] = diagnostics
-            
+
             # Add recommendations
             recommendations = self._generate_recommendations(summary)
             summary["recommendations"] = recommendations
-            
+
             # Add health score
             health_score = self._calculate_health_score(summary)
             summary["health_score"] = health_score
-            
+
             # Save enhanced summary
             enhanced_path = summary_path.parent / f"enhanced_{summary_path.name}"
             with open(enhanced_path, 'w') as f:
                 json.dump(summary, f, indent=2, default=str)
-            
+
             logger.info(f"Enhanced pipeline summary saved to: {enhanced_path}")
             return summary
-            
+
         except Exception as e:
             logger.error(f"Failed to enhance pipeline summary: {e}")
             return {}
-    
+
     def _analyze_pipeline_execution(self, summary: Dict[str, Any]) -> Dict[str, Any]:
         """Analyze pipeline execution for issues and patterns."""
         diagnostics = {
@@ -95,17 +94,17 @@ class PipelineDiagnosticEnhancer:
             "warning_analysis": {},
             "dependency_analysis": {}
         }
-        
+
         steps = summary.get("steps", [])
         if not steps:
             return diagnostics
-        
+
         # Execution analysis
         total_steps = len(steps)
         successful_steps = sum(1 for step in steps if step.get("status") == "SUCCESS")
         warning_steps = sum(1 for step in steps if step.get("status") == "SUCCESS_WITH_WARNINGS")
         failed_steps = sum(1 for step in steps if step.get("status", "").startswith("FAILED"))
-        
+
         diagnostics["execution_analysis"] = {
             "total_steps": total_steps,
             "successful_steps": successful_steps,
@@ -114,7 +113,7 @@ class PipelineDiagnosticEnhancer:
             "success_rate": (successful_steps + warning_steps) / total_steps * 100 if total_steps > 0 else 0,
             "critical_failure_rate": failed_steps / total_steps * 100 if total_steps > 0 else 0
         }
-        
+
         # Performance analysis
         durations = [step.get("duration_seconds", 0) for step in steps]
         if durations:
@@ -125,15 +124,15 @@ class PipelineDiagnosticEnhancer:
                 "slowest_step": max(steps, key=lambda s: s.get("duration_seconds", 0)),
                 "fastest_step": min(steps, key=lambda s: s.get("duration_seconds", 0))
             }
-        
+
         # Error and warning analysis
         all_errors = []
         all_warnings = []
-        
+
         for step in steps:
             stderr = step.get("stderr", "")
             stdout = step.get("stdout", "")
-            
+
             # Extract error patterns
             for pattern, info in self.known_issues.items():
                 if re.search(pattern, stderr + stdout, re.IGNORECASE):
@@ -146,48 +145,48 @@ class PipelineDiagnosticEnhancer:
                         all_errors.append(issue_info)
                     else:
                         all_warnings.append(issue_info)
-        
+
         diagnostics["error_analysis"] = all_errors
         diagnostics["warning_analysis"] = all_warnings
-        
+
         # Dependency analysis
         diagnostics["dependency_analysis"] = self._analyze_dependencies(steps)
-        
+
         return diagnostics
-    
+
     def _analyze_dependencies(self, steps: List[Dict[str, Any]]) -> Dict[str, Any]:
         """Analyze dependency-related issues."""
         missing_deps = set()
         optional_deps = set()
         version_issues = set()
-        
+
         for step in steps:
             stderr = step.get("stderr", "")
-            
+
             # Common dependency patterns
             if "ModuleNotFoundError" in stderr or "ImportError" in stderr:
                 # Extract module name if possible
                 module_match = re.search(r"No module named ['\"]([^'\"]+)['\"]", stderr)
                 if module_match:
                     missing_deps.add(module_match.group(1))
-            
+
             if "not available" in stderr.lower():
                 # Extract optional dependency names
                 optional_match = re.search(r"(\w+) not available", stderr)
                 if optional_match:
                     optional_deps.add(optional_match.group(1))
-        
+
         return {
             "missing_dependencies": list(missing_deps),
             "optional_dependencies": list(optional_deps),
             "version_issues": list(version_issues)
         }
-    
+
     def _generate_recommendations(self, summary: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Generate actionable recommendations based on analysis."""
         recommendations = []
         diagnostics = summary.get("diagnostics", {})
-        
+
         # Check for critical failures
         execution = diagnostics.get("execution_analysis", {})
         if execution.get("failed_steps", 0) > 0:
@@ -198,19 +197,19 @@ class PipelineDiagnosticEnhancer:
                 "description": f"Pipeline has {execution['failed_steps']} failed steps that need immediate attention",
                 "action": "Review failed step logs and resolve blocking issues before proceeding"
             })
-        
+
         # Performance recommendations
         performance = diagnostics.get("performance_analysis", {})
         if performance.get("average_duration", 0) > 5.0:
             slowest = performance.get("slowest_step", {})
             recommendations.append({
                 "type": "optimization",
-                "category": "performance", 
+                "category": "performance",
                 "title": "Performance Optimization Opportunity",
                 "description": f"Step {slowest.get('script_name', 'unknown')} takes {slowest.get('duration_seconds', 0):.2f}s",
                 "action": "Consider optimizing visualization or processing algorithms"
             })
-        
+
         # Dependency recommendations
         deps = diagnostics.get("dependency_analysis", {})
         if deps.get("missing_dependencies"):
@@ -221,7 +220,7 @@ class PipelineDiagnosticEnhancer:
                 "description": f"Missing: {', '.join(deps['missing_dependencies'])}",
                 "action": f"Install missing dependencies: uv add {' '.join(deps['missing_dependencies'])}"
             })
-        
+
         # Error-specific recommendations
         for error in diagnostics.get("error_analysis", []):
             recommendations.append({
@@ -231,42 +230,42 @@ class PipelineDiagnosticEnhancer:
                 "description": f"{error['category'].title()} issue in {error['step']}",
                 "action": error["solution"]
             })
-        
+
         return recommendations
-    
+
     def _calculate_health_score(self, summary: Dict[str, Any]) -> Dict[str, Any]:
         """Calculate overall pipeline health score."""
         diagnostics = summary.get("diagnostics", {})
         execution = diagnostics.get("execution_analysis", {})
-        
+
         base_score = 100
         deductions = 0
-        
+
         # Deduct for failures
         failed_steps = execution.get("failed_steps", 0)
         deductions += failed_steps * 25  # 25 points per failed step
-        
+
         # Deduct for warnings
-        warning_steps = execution.get("warning_steps", 0) 
+        warning_steps = execution.get("warning_steps", 0)
         deductions += warning_steps * 5   # 5 points per warning
-        
+
         # Deduct for performance issues
         performance = diagnostics.get("performance_analysis", {})
         if performance.get("average_duration", 0) > 10.0:
             deductions += 10  # Performance penalty
-        
+
         final_score = max(0, base_score - deductions)
-        
+
         # Health rating
         if final_score >= 90:
             rating = "excellent"
         elif final_score >= 75:
-            rating = "good" 
+            rating = "good"
         elif final_score >= 50:
             rating = "fair"
         else:
             rating = "poor"
-        
+
         return {
             "score": final_score,
             "rating": rating,

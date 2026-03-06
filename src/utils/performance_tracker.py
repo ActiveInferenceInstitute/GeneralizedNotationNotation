@@ -24,25 +24,25 @@ except (ImportError, RecursionError, RuntimeError):
 # Define PerformanceTracker here to avoid circular imports
 class PerformanceTracker:
     """Track performance metrics across pipeline steps."""
-    
+
     def __init__(self):
         self._metrics: Dict[str, List[Dict[str, Any]]] = {}
         self._lock = threading.Lock()
         self._memory_usage: List[float] = []
         self._max_memory_mb: float = 0.0
-    
+
     def record_timing(self, operation: str, duration: float, metadata: Optional[Dict[str, Any]] = None):
         """Record timing information for an operation."""
         with self._lock:
             if operation not in self._metrics:
                 self._metrics[operation] = []
-            
+
             self._metrics[operation].append({
                 'duration': duration,
                 'timestamp': datetime.now().isoformat(),
                 'metadata': metadata or {}
             })
-    
+
     @contextmanager
     def track_operation(self, operation: str, metadata: Optional[Dict[str, Any]] = None):
         """Context manager to automatically track operation timing."""
@@ -52,7 +52,7 @@ class PerformanceTracker:
         finally:
             duration = time.time() - start_time
             self.record_timing(operation, duration, metadata)
-    
+
     def get_summary(self) -> Dict[str, Any]:
         """Get summary statistics for all tracked operations."""
         with self._lock:
@@ -67,19 +67,19 @@ class PerformanceTracker:
                     'max_duration': max(durations) if durations else 0
                 }
             return summary
-    
+
     def record_memory_usage(self, memory_mb: float):
         """Record memory usage in MB."""
         with self._lock:
             self._memory_usage.append(memory_mb)
             if memory_mb > self._max_memory_mb:
                 self._max_memory_mb = memory_mb
-    
+
     @property
     def max_memory_mb(self) -> float:
         """Get maximum memory usage in MB."""
         return self._max_memory_mb
-    
+
     @property
     def current_memory_mb(self) -> float:
         """Get current memory usage in MB."""
@@ -192,4 +192,4 @@ def generate_performance_report() -> dict:
         'unique_operations': list(metrics['operations'].keys()),
         'system_info': metrics['system_info'],
     }
-    return {'summary': summary, 'details': metrics} 
+    return {'summary': summary, 'details': metrics}

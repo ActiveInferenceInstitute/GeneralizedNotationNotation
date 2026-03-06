@@ -13,7 +13,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "gnn": {
         "name": "GNN Module Tests",
         "description": "GNN processing and validation tests",
-        "files": ["test_gnn_overall.py", "test_gnn_parsing.py", "test_gnn_validation.py", 
+        "files": ["test_gnn_overall.py", "test_gnn_parsing.py", "test_gnn_validation.py",
                   "test_gnn_processing.py", "test_gnn_integration.py"],
         "markers": [],
         "timeout_seconds": 120,
@@ -21,7 +21,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
         "parallel": True
     },
     "render": {
-        "name": "Render Module Tests", 
+        "name": "Render Module Tests",
         "description": "Code generation and rendering tests",
         "files": ["test_render_overall.py", "test_render_integration.py", "test_render_performance.py",
                   "test_activeinference_matrix_formatting.py"],
@@ -33,7 +33,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "mcp": {
         "name": "MCP Module Tests",
         "description": "Model Context Protocol tests",
-        "files": ["test_mcp_overall.py", "test_mcp_tools.py", "test_mcp_transport.py", 
+        "files": ["test_mcp_overall.py", "test_mcp_tools.py", "test_mcp_transport.py",
                   "test_mcp_integration.py", "test_mcp_performance.py"],
         "markers": [],
         "timeout_seconds": 120,
@@ -43,7 +43,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "audio": {
         "name": "Audio Module Tests",
         "description": "Audio generation and SAPF tests",
-        "files": ["test_audio_overall.py", "test_audio_sapf.py", "test_audio_generation.py", 
+        "files": ["test_audio_overall.py", "test_audio_sapf.py", "test_audio_generation.py",
                   "test_audio_integration.py"],
         "markers": [],
         "timeout_seconds": 120,
@@ -53,7 +53,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "visualization": {
         "name": "Visualization Module Tests",
         "description": "Graph and matrix visualization tests",
-        "files": ["test_visualization_overall.py", "test_visualization_matrices.py", 
+        "files": ["test_visualization_overall.py", "test_visualization_matrices.py",
                   "test_visualization_ontology.py", "test_visualization_comprehensive.py",
                   "test_d2_visualizer.py", "test_mermaid_converter.py", "test_mermaid_parser.py",
                   "test_oxdraw_integration.py"],
@@ -65,9 +65,9 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "pipeline": {
         "name": "Pipeline Module Tests",
         "description": "Pipeline orchestration and step tests",
-        "files": ["test_pipeline_overall.py", "test_pipeline_integration.py", 
-                  "test_pipeline_orchestration.py", "test_pipeline_performance.py", 
-                  "test_pipeline_recovery.py", "test_pipeline_scripts.py", 
+        "files": ["test_pipeline_overall.py", "test_pipeline_integration.py",
+                  "test_pipeline_orchestration.py", "test_pipeline_performance.py",
+                  "test_pipeline_recovery.py", "test_pipeline_scripts.py",
                   "test_pipeline_infrastructure.py", "test_pipeline_functionality.py",
                   "test_pipeline_render_execute_analyze.py", "test_pipeline_error_scenarios.py",
                   "test_pipeline_improvements_validation.py", "test_pipeline_main.py",
@@ -136,7 +136,7 @@ MODULAR_TEST_CATEGORIES: Dict[str, Dict[str, Any]] = {
     "report": {
         "name": "Report Module Tests",
         "description": "Report generation and formatting tests",
-        "files": ["test_report_overall.py", "test_report_generation.py", 
+        "files": ["test_report_overall.py", "test_report_generation.py",
                   "test_report_integration.py", "test_report_formats.py"],
         "markers": [],
         "timeout_seconds": 90,
@@ -287,6 +287,6 @@ __all__ = [
     "MODULAR_TEST_CATEGORIES",
     "get_category_names",
     "get_category",
-    "get_category_files", 
+    "get_category_files",
     "get_all_test_files",
 ]

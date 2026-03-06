@@ -9,7 +9,7 @@ Date: 2025-01-11
 License: MIT
 """
 
-from typing import Dict, Any, List, Optional, Union, TypeVar, Generic, Protocol
+from typing import Dict, Any, List, Optional, Union, TypeVar, Protocol
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -27,15 +27,15 @@ V = TypeVar('V')
 
 class ParseError(Exception):
     """Base exception for parsing errors."""
-    
-    def __init__(self, message: str, line: Optional[int] = None, 
+
+    def __init__(self, message: str, line: Optional[int] = None,
                  column: Optional[int] = None, source: Optional[str] = None):
         self.message = message
         self.line = line
         self.column = column
         self.source = source
         super().__init__(self._format_message())
-    
+
     def _format_message(self) -> str:
         """Format the error message with location information."""
         msg = self.message
@@ -127,11 +127,11 @@ class ASTNode:
     source_location: Optional[Dict[str, Any]] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
     id: str = field(default_factory=lambda: str(uuid.uuid4()))
-    
+
     def __post_init__(self):
         if not self.node_type:
             self.node_type = self.__class__.__name__
-    
+
     def get_children(self) -> List['ASTNode']:
         """Get all child nodes."""
         children = []
@@ -141,7 +141,7 @@ class ASTNode:
             elif isinstance(value, list):
                 children.extend([item for item in value if isinstance(item, ASTNode)])
         return children
-    
+
     def accept(self, visitor: 'ASTVisitor') -> Any:
         """Accept a visitor for traversal."""
         return visitor.visit(self)
@@ -155,7 +155,7 @@ class Variable(ASTNode):
     data_type: DataType = DataType.CATEGORICAL
     description: Optional[str] = None
     constraints: Dict[str, Any] = field(default_factory=dict)
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "Variable"
@@ -168,7 +168,7 @@ class Connection(ASTNode):
     connection_type: ConnectionType = ConnectionType.DIRECTED
     weight: Optional[float] = None
     description: Optional[str] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "Connection"
@@ -180,7 +180,7 @@ class Parameter(ASTNode):
     value: Any = None
     type_hint: Optional[str] = None
     description: Optional[str] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "Parameter"
@@ -192,7 +192,7 @@ class Equation(ASTNode):
     content: str = ""
     format: str = "latex"  # latex, mathml, ascii
     description: Optional[str] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "Equation"
@@ -204,7 +204,7 @@ class TimeSpecification(ASTNode):
     discretization: Optional[str] = None  # "DiscreteTime", "ContinuousTime"
     horizon: Optional[Union[int, str]] = None
     step_size: Optional[float] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "TimeSpecification"
@@ -215,7 +215,7 @@ class OntologyMapping(ASTNode):
     variable_name: str = ""
     ontology_term: str = ""
     description: Optional[str] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "OntologyMapping"
@@ -226,7 +226,7 @@ class Section(ASTNode):
     section_name: str = ""
     content: List[ASTNode] = field(default_factory=list)
     raw_content: Optional[str] = None
-    
+
     def __post_init__(self):
         super().__post_init__()
         self.node_type = "Section"
@@ -247,7 +247,7 @@ class GNNInternalRepresentation:
     model_name: str
     version: str = "1.0"
     annotation: str = ""
-    
+
     # Model structure
     variables: List[Variable] = field(default_factory=list)
     connections: List[Connection] = field(default_factory=list)
@@ -255,70 +255,70 @@ class GNNInternalRepresentation:
     equations: List[Equation] = field(default_factory=list)
     time_specification: Optional[TimeSpecification] = None
     ontology_mappings: List[OntologyMapping] = field(default_factory=list)
-    
+
     # Metadata
     source_format: Optional[GNNFormat] = None
     created_at: datetime = field(default_factory=datetime.now)
     modified_at: datetime = field(default_factory=datetime.now)
     checksum: Optional[str] = None
-    
+
     # Extension points
     extensions: Dict[str, Any] = field(default_factory=dict)
     raw_sections: Dict[str, str] = field(default_factory=dict)
-    
+
     def get_variables_by_type(self, var_type: VariableType) -> List[Variable]:
         """Get all variables of a specific type."""
         return [var for var in self.variables if var.var_type == var_type]
-    
+
     def get_variable_by_name(self, name: str) -> Optional[Variable]:
         """Get a variable by name."""
         for var in self.variables:
             if var.name == name:
                 return var
         return None
-    
+
     def get_connections_for_variable(self, variable_name: str) -> List[Connection]:
         """Get all connections involving a specific variable."""
         connections = []
         for conn in self.connections:
-            if (variable_name in conn.source_variables or 
+            if (variable_name in conn.source_variables or
                 variable_name in conn.target_variables):
                 connections.append(conn)
         return connections
-    
+
     def get_parameter_by_name(self, name: str) -> Optional[Parameter]:
         """Get a parameter by name."""
         for param in self.parameters:
             if param.name == name:
                 return param
         return None
-    
+
     def validate_structure(self) -> List[str]:
         """Validate the internal structure and return any issues."""
         issues = []
-        
+
         # Check required fields
         if not self.model_name:
             issues.append("Model name is required")
-        
+
         # Check variable name uniqueness
         variable_names = [var.name for var in self.variables]
         if len(variable_names) != len(set(variable_names)):
             issues.append("Variable names must be unique")
-        
+
         # Check connection references
         for conn in self.connections:
             for var_name in conn.source_variables + conn.target_variables:
                 if not self.get_variable_by_name(var_name):
                     issues.append(f"Connection references unknown variable: {var_name}")
-        
+
         # Check ontology mapping references
         for mapping in self.ontology_mappings:
             if not self.get_variable_by_name(mapping.variable_name):
                 issues.append(f"Ontology mapping references unknown variable: {mapping.variable_name}")
-        
+
         return issues
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to dictionary representation."""
         def serialize_obj(obj):
@@ -329,10 +329,10 @@ class GNNInternalRepresentation:
                     if isinstance(value, Enum):
                         result[key] = value.value
                     elif isinstance(value, list):
-                        result[key] = [serialize_obj(item) if hasattr(item, '__dict__') else 
+                        result[key] = [serialize_obj(item) if hasattr(item, '__dict__') else
                                      item.value if isinstance(item, Enum) else item for item in value]
                     elif isinstance(value, dict):
-                        result[key] = {k: serialize_obj(v) if hasattr(v, '__dict__') else 
+                        result[key] = {k: serialize_obj(v) if hasattr(v, '__dict__') else
                                      v.value if isinstance(v, Enum) else v for k, v in value.items()}
                     elif hasattr(value, '__dict__'):
                         result[key] = serialize_obj(value)
@@ -343,7 +343,7 @@ class GNNInternalRepresentation:
                 return obj.value
             else:
                 return obj
-        
+
         return {
             'model_name': self.model_name,
             'version': self.version,
@@ -368,37 +368,37 @@ class GNNInternalRepresentation:
 
 class ASTVisitor(ABC):
     """Abstract base class for AST visitors."""
-    
+
     @abstractmethod
     def visit(self, node: ASTNode) -> Any:
         """Visit an AST node."""
         pass
-    
+
     def visit_children(self, node: ASTNode) -> List[Any]:
         """Visit all children of a node."""
         return [child.accept(self) for child in node.get_children()]
 
 class PrintVisitor(ASTVisitor):
     """Visitor that prints the AST structure."""
-    
+
     def __init__(self, indent: int = 0):
         self.indent = indent
-    
+
     def visit(self, node: ASTNode) -> str:
         """Visit and print a node."""
         indent_str = "  " * self.indent
         result = f"{indent_str}{node.node_type}"
-        
+
         if hasattr(node, 'name'):
             result += f": {node.name}"
         elif hasattr(node, 'label') and node.label:
             result += f": {node.label}"
-        
+
         # Visit children with increased indentation
         child_visitor = PrintVisitor(self.indent + 1)
         for child in node.get_children():
             result += "\n" + child.accept(child_visitor)
-        
+
         return result
 
 # ================================
@@ -407,26 +407,26 @@ class PrintVisitor(ASTVisitor):
 
 class GNNParser(Protocol):
     """Protocol defining the interface for GNN parsers."""
-    
+
     def parse_file(self, file_path: str) -> 'ParseResult':
         """Parse a GNN file and return the result."""
         ...
-    
+
     def parse_string(self, content: str) -> 'ParseResult':
         """Parse GNN content from a string."""
         ...
-    
+
     def get_supported_extensions(self) -> List[str]:
         """Get file extensions supported by this parser."""
         ...
 
 class GNNSerializer(Protocol):
     """Protocol defining the interface for GNN serializers."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Serialize a GNN model to string format."""
         ...
-    
+
     def serialize_to_file(self, model: GNNInternalRepresentation, file_path: str) -> None:
         """Serialize a GNN model to a file."""
         ...
@@ -445,20 +445,20 @@ class ParseResult:
     parse_time: Optional[float] = None
     source_file: Optional[str] = None
     validation_result: Optional['ValidationResult'] = None
-    
+
     def has_errors(self) -> bool:
         """Check if there are any errors."""
         return len(self.errors) > 0
-    
+
     def has_warnings(self) -> bool:
         """Check if there are any warnings."""
         return len(self.warnings) > 0
-    
+
     def add_error(self, error: str):
         """Add an error to the result."""
         self.errors.append(error)
         self.success = False
-    
+
     def add_warning(self, warning: str):
         """Add a warning to the result."""
         self.warnings.append(warning)
@@ -469,28 +469,28 @@ class ParseResult:
 
 class BaseGNNParser(ABC):
     """Abstract base class for GNN parsers."""
-    
+
     def __init__(self):
         self.current_file: Optional[str] = None
         self.current_line: int = 0
         self.current_column: int = 0
-    
+
     @abstractmethod
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a GNN file."""
         pass
-    
+
     @abstractmethod
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN content from string."""
         pass
-    
+
     @abstractmethod
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
         pass
-    
-    def create_parse_error(self, message: str, 
+
+    def create_parse_error(self, message: str,
                           line: Optional[int] = None,
                           column: Optional[int] = None) -> ParseError:
         """Create a parse error with location information."""
@@ -500,7 +500,7 @@ class BaseGNNParser(ABC):
             column=column or self.current_column,
             source=self.current_file
         )
-    
+
     def create_empty_model(self, name: str = "Unnamed Model") -> GNNInternalRepresentation:
         """Create an empty GNN model."""
         return GNNInternalRepresentation(
@@ -529,14 +529,14 @@ def normalize_variable_name(name: str) -> str:
     # Handle special Unicode characters like π
     if name == 'π' or name.lower() == 'pi':
         return 'π'  # Standardize on Unicode π
-    
+
     # Remove any whitespace
     name = name.strip()
-    
+
     # Keep case sensitivity for specific Active Inference standard variables
     if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
         return name
-        
+
     # For other variables, use lowercase for normalization
     return name
 
@@ -547,7 +547,7 @@ def parse_dimensions(dim_str: str) -> List[int]:
         dim_str = dim_str.strip('[]')
         if not dim_str:
             return []
-        
+
         dimensions = []
         for dim in dim_str.split(','):
             dim = dim.strip()
@@ -559,7 +559,7 @@ def parse_dimensions(dim_str: str) -> List[int]:
             else:
                 # Handle symbolic dimensions by defaulting to 1
                 dimensions.append(1)
-        
+
         return dimensions
     except Exception:
         return [1]  # Default dimension
@@ -568,26 +568,26 @@ def safe_enum_convert(enum_class, value, default=None):
     """Safely convert string to enum, handling case insensitivity."""
     if isinstance(value, enum_class):
         return value
-    
+
     if isinstance(value, str):
         # Try exact match first
         try:
             return enum_class(value)
         except ValueError:
             pass
-        
+
         # Try lowercase
         try:
             return enum_class(value.lower())
         except ValueError:
             pass
-        
+
         # Try uppercase
         try:
             return enum_class(value.upper())
         except ValueError:
             pass
-    
+
     # Return default if provided, otherwise first enum value
     if default is not None:
         return default
@@ -604,11 +604,11 @@ def infer_variable_type(name: str) -> VariableType:
         Inferred variable type
     """
     name_lower = name.lower()
-    
+
     # Handle Unicode π (pi) character
     if name == 'π' or name_lower == 'pi':
         return VariableType.POLICY
-    
+
     # Single character variable conventions in Active Inference
     if name == 'A':
         return VariableType.LIKELIHOOD_MATRIX
@@ -624,7 +624,7 @@ def infer_variable_type(name: str) -> VariableType:
         return VariableType.HIDDEN_STATE  # Variational free energy is often computed on states
     elif name == 'G':
         return VariableType.POLICY  # EFE drives policy
-    
+
     # Other standard Active Inference variables
     if name_lower.startswith('s'):
         return VariableType.HIDDEN_STATE
@@ -632,7 +632,7 @@ def infer_variable_type(name: str) -> VariableType:
         return VariableType.OBSERVATION
     elif name_lower.startswith('u') or name_lower.startswith('a'):
         return VariableType.ACTION
-    
+
     # Check for common prefixes/patterns
     if 'state' in name_lower or 'hidden' in name_lower:
         return VariableType.HIDDEN_STATE
@@ -650,14 +650,14 @@ def infer_variable_type(name: str) -> VariableType:
         return VariableType.TRANSITION_MATRIX
     elif 'preference' in name_lower or 'utility' in name_lower:
         return VariableType.PREFERENCE_VECTOR
-    
+
     # Default
     return VariableType.HIDDEN_STATE
 
 def parse_connection_operator(op: str) -> ConnectionType:
     """Parse connection operator string to ConnectionType."""
     op = op.strip()
-    
+
     if op in ['>', '->']:
         return ConnectionType.DIRECTED
     elif op == '-':
@@ -673,10 +673,10 @@ def parse_connection_operator(op: str) -> ConnectionType:
 __all__ = [
     'ParseError', 'ValidationError', 'ValidationWarning', 'ConversionError',
     'GNNFormat', 'VariableType', 'DataType', 'ConnectionType',
-    'ASTNode', 'Variable', 'Connection', 'Parameter', 'Equation', 
+    'ASTNode', 'Variable', 'Connection', 'Parameter', 'Equation',
     'TimeSpecification', 'OntologyMapping', 'Section',
     'GNNInternalRepresentation', 'ParseResult',
     'ASTVisitor', 'PrintVisitor',
     'GNNParser', 'GNNSerializer', 'BaseGNNParser',
     'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator'
-] 
+]

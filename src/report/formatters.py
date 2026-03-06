@@ -24,7 +24,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
     # Calculate health score
     health_score = get_pipeline_health_score(pipeline_data)
     health_color = get_health_color(health_score)
-    
+
     html_content = f"""
 <!DOCTYPE html>
 <html lang="en">
@@ -301,11 +301,11 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
             <p><strong>{pipeline_data.get('summary', {}).get('success_rate', 0):.1f}%</strong> of pipeline steps completed successfully</p>
         </div>
 """
-    
+
     # Add performance metrics if available
     performance_metrics = pipeline_data.get('performance_metrics', {})
     if performance_metrics:
-        html_content += f"""
+        html_content += """
         <h2>⚡ Performance Metrics</h2>
         <div class="performance-section">
             <table>
@@ -317,7 +317,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
             </table>
         </div>
 """
-    
+
     # Add error analysis if available
     error_analysis = pipeline_data.get('error_analysis', {})
     if error_analysis and error_analysis.get('total_errors', 0) > 0:
@@ -334,24 +334,24 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
             </ul>
         </div>
 """
-    
+
     # Add step-by-step analysis
     html_content += """
         <h2>🔍 Step-by-Step Analysis</h2>
         <div class="step-grid">
 """
-    
+
     for step_name, step_data in pipeline_data.get('steps', {}).items():
         status_class = "success" if step_data.get('exists', False) else "missing"
         if step_data.get('status') == "error":
             status_class = "error"
-        
+
         html_content += f"""
         <div class="step-card {status_class}">
             <div class="step-title">📁 {step_name.replace('_', ' ').title()}</div>
             <div class="step-details">
 """
-        
+
         if step_data.get('exists', False):
             html_content += f"""
                 <p><strong>Files:</strong> {step_data.get('file_count', 0)}</p>
@@ -359,7 +359,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
                 <p><strong>Last Modified:</strong> {step_data.get('last_modified', 'Unknown')}</p>
                 <p><strong>Status:</strong> {step_data.get('status', 'success')}</p>
 """
-            
+
             # Add file types
             file_types = step_data.get('file_types', {})
             if file_types:
@@ -368,7 +368,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
                     count = info.get('count', 0) if isinstance(info, dict) else info
                     html_content += f'<span class="file-type-tag">{ext}: {count}</span>'
                 html_content += '</div>'
-            
+
             # Add key files
             key_files = step_data.get('key_files', [])
             if key_files:
@@ -376,7 +376,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
                 for key_file in key_files[:3]:  # Show first 3 key files
                     html_content += f'<div class="key-file">{key_file["name"]} ({key_file["size_mb"]} MB)</div>'
                 html_content += '</div>'
-            
+
             # Add dependency information
             dependencies = pipeline_data.get('step_dependencies', {}).get('dependency_chain', {}).get(step_name, {})
             if dependencies:
@@ -387,16 +387,16 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
                     html_content += '<div class="dependency-chain"><strong>Dependencies:</strong> <span class="complete-deps">Complete</span></div>'
         else:
             html_content += '<p><em>Step directory not found or empty</em></p>'
-        
+
         html_content += """
             </div>
         </div>
 """
-    
+
     html_content += """
         </div>
 """
-    
+
     # Add file type analysis
     file_type_analysis = pipeline_data.get('file_type_analysis', {})
     if file_type_analysis.get('total_by_type'):
@@ -410,7 +410,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
         html_content += """
         </table>
 """
-    
+
     # Add visualizations section if available
     visualizations = pipeline_data.get('visualizations', {})
     if visualizations and visualizations.get('total_count', 0) > 0:
@@ -421,7 +421,7 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
             {_format_visualization_gallery(visualizations)}
         </div>
 """
-    
+
     # Add pipeline summary if available
     if 'pipeline_summary' in pipeline_data:
         summary = pipeline_data['pipeline_summary']
@@ -434,13 +434,13 @@ def generate_html_report(pipeline_data: Dict[str, Any], logger: logging.Logger) 
             <p><strong>Total Steps:</strong> {len(summary.get('steps', []))}</p>
         </div>
 """
-    
+
     html_content += """
     </div>
 </body>
 </html>
 """
-    
+
     return html_content
 
 def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
@@ -455,9 +455,9 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
     """
     if not visualizations or visualizations.get('total_count', 0) == 0:
         return "<p>No visualizations found.</p>"
-    
+
     html = ""
-    
+
     # Group by step
     by_step = visualizations.get('by_step', {})
     if by_step:
@@ -477,7 +477,7 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
                 rel_path = viz.get('relative_path', '')
                 file_type = viz.get('type', 'image')
                 size_mb = viz.get('size_mb', 0)
-                
+
                 if file_type == 'image':
                     html += f"""
                         <div class="key-file">
@@ -490,17 +490,17 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
                             <a href="../{rel_path}" target="_blank" class="link">{viz_name}</a>
                             <span style="color: #6c757d; font-size: 11px;"> (HTML)</span>
                         </div>"""
-            
+
             if step_data.get('count', 0) > 5:
                 html += f'<div class="key-file" style="color: #6c757d; font-style: italic;">... and {step_data.get("count", 0) - 5} more</div>'
-            
+
             html += """
                     </div>
                 </div>
             </div>
 """
         html += '</div>'
-    
+
     # Add summary by type
     by_type = visualizations.get('by_type', {})
     if by_type:
@@ -508,7 +508,7 @@ def _format_visualization_gallery(visualizations: Dict[str, Any]) -> str:
         for viz_type, viz_list in by_type.items():
             html += f'<tr><td>{viz_type.title()}</td><td>{len(viz_list)}</td></tr>'
         html += '</table>'
-    
+
     return html
 
 def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logger) -> str:
@@ -524,7 +524,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
     """
     # Calculate health score
     health_score = get_pipeline_health_score(pipeline_data)
-    
+
     markdown_content = f"""# 🎯 GNN Pipeline Comprehensive Analysis Report
 
 **Generated:** {pipeline_data.get('report_generation_time', 'Unknown')}  
@@ -541,7 +541,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 ## ⚡ Performance Metrics
 
 """
-    
+
     # Add performance metrics if available
     performance_metrics = pipeline_data.get('performance_metrics', {})
     if performance_metrics:
@@ -549,7 +549,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
             markdown_content += f"- **{metric.replace('_', ' ').title()}:** {value}\n"
     else:
         markdown_content += "*No performance metrics available*\n"
-    
+
     # Add error analysis if available
     error_analysis = pipeline_data.get('error_analysis', {})
     if error_analysis and error_analysis.get('total_errors', 0) > 0:
@@ -562,19 +562,19 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 """
         for error_type, count in error_analysis.get('error_types', {}).items():
             markdown_content += f"- **{error_type}:** {count}\n"
-        
+
         if error_analysis.get('critical_errors'):
             markdown_content += f"\n**Critical Errors:** {len(error_analysis['critical_errors'])}\n"
-        
+
         if error_analysis.get('warnings'):
             markdown_content += f"\n**Warnings:** {len(error_analysis['warnings'])}\n"
-    
+
     # Add step-by-step analysis
     markdown_content += """
 ## 🔍 Step-by-Step Analysis
 
 """
-    
+
     for step_name, step_data in pipeline_data.get('steps', {}).items():
         if step_data.get('exists', False):
             status_icon = "✅" if step_data.get('status') == "success" else "⚠️" if step_data.get('status') == "error" else "❌"
@@ -586,7 +586,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 - **Status:** {step_data.get('status', 'success')}
 
 """
-            
+
             # Add file types
             file_types = step_data.get('file_types', {})
             if file_types:
@@ -595,14 +595,14 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
                     count = info.get('count', 0) if isinstance(info, dict) else info
                     file_type_list.append(f"{ext}: {count}")
                 markdown_content += f"- **File Types:** {', '.join(file_type_list)}\n"
-            
+
             # Add key files
             key_files = step_data.get('key_files', [])
             if key_files:
                 markdown_content += "- **Key Files:**\n"
                 for key_file in key_files[:3]:  # Show first 3 key files
                     markdown_content += f"  - {key_file['name']} ({key_file['size_mb']} MB)\n"
-            
+
             # Add dependency information
             dependencies = pipeline_data.get('step_dependencies', {}).get('dependency_chain', {}).get(step_name, {})
             if dependencies:
@@ -611,7 +611,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
                     markdown_content += f"- **Missing Dependencies:** {', '.join(missing)}\n"
                 else:
                     markdown_content += "- **Dependencies:** Complete\n"
-            
+
             markdown_content += "\n"
         else:
             markdown_content += f"""### ❌ {step_name.replace('_', ' ').title()}
@@ -619,7 +619,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 *Step directory not found or empty*
 
 """
-    
+
     # Add file type analysis
     file_type_analysis = pipeline_data.get('file_type_analysis', {})
     if file_type_analysis.get('total_by_type'):
@@ -631,7 +631,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 """
         for file_ext, info in file_type_analysis['total_by_type'].items():
             markdown_content += f"| {file_ext} | {info['count']} | {info['total_size_mb']} |\n"
-    
+
     # Add visualizations section if available
     visualizations = pipeline_data.get('visualizations', {})
     if visualizations and visualizations.get('total_count', 0) > 0:
@@ -655,7 +655,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
             if step_data.get('count', 0) > 10:
                 markdown_content += f"- ... and {step_data.get('count', 0) - 10} more\n"
             markdown_content += "\n"
-    
+
     # Add dependency analysis
     dependencies = pipeline_data.get('step_dependencies', {})
     if dependencies.get('missing_prerequisites'):
@@ -666,7 +666,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 """
         for missing in dependencies['missing_prerequisites']:
             markdown_content += f"- **{missing['step']}** missing: {', '.join(missing['missing'])}\n"
-    
+
     # Add pipeline summary if available
     if 'pipeline_summary' in pipeline_data:
         summary = pipeline_data['pipeline_summary']
@@ -679,7 +679,7 @@ def generate_markdown_report(pipeline_data: Dict[str, Any], logger: logging.Logg
 - **Total Steps:** {len(summary.get('steps', []))}
 
 """
-    
+
     return markdown_content
 
 def get_health_color(health_score: float) -> str:
@@ -699,4 +699,4 @@ def get_health_color(health_score: float) -> str:
     elif health_score >= 40:
         return "#fd7e14"  # Orange
     else:
-        return "#dc3545"  # Red 
+        return "#dc3545"  # Red

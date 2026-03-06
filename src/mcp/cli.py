@@ -22,7 +22,6 @@ import logging
 import time
 from pathlib import Path
 import importlib.util
-from typing import Dict, Any, Optional
 
 # Configure logging
 logger = logging.getLogger("mcp.cli")
@@ -37,11 +36,11 @@ def import_mcp():
         mcp_path = Path(__file__).parent / "mcp.py"
         if not mcp_path.exists():
             raise ImportError("MCP module not found")
-            
+
         spec = importlib.util.spec_from_file_location("mcp", mcp_path)
         mcp_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(mcp_module)
-        
+
         return mcp_module.mcp_instance, mcp_module.initialize, getattr(mcp_module, 'MCPError', Exception)
 
 def list_capabilities(args):
@@ -61,7 +60,7 @@ def list_capabilities(args):
         print("=" * 50)
 
         server_info = capabilities.get('server', {})
-        print(f"\n📋 Server Information:")
+        print("\n📋 Server Information:")
         print(f"  Name: {server_info.get('name', 'Unknown GNN MCP Server')}")
         print(f"  Version: {server_info.get('version', 'Unknown')}")
         print(f"  Description: {server_info.get('description', 'No description available')}")
@@ -150,7 +149,7 @@ def execute_tool(args):
         if args.tool_name not in mcp_instance.tools:
             available_tools = list(mcp_instance.tools.keys())
             print(f"\n❌ Error: Tool '{args.tool_name}' not found", file=sys.stderr)
-            print(f"\n💡 Available tools:", file=sys.stderr)
+            print("\n💡 Available tools:", file=sys.stderr)
             for tool in sorted(available_tools):
                 print(f"  • {tool}", file=sys.stderr)
             sys.exit(1)
@@ -165,7 +164,7 @@ def execute_tool(args):
                 params = json.loads(args.params)
             except json.JSONDecodeError as e:
                 print(f"\n❌ Error: Invalid JSON parameters: {e}", file=sys.stderr)
-                print(f"\n💡 Expected format: --params '{{\"key\": \"value\"}}'", file=sys.stderr)
+                print("\n💡 Expected format: --params '{\"key\": \"value\"}'", file=sys.stderr)
                 sys.exit(1)
 
         if not isinstance(params, dict):
@@ -203,7 +202,7 @@ def execute_tool(args):
             print(json.dumps(result, indent=2))
         else:
             print(f"\n✅ Tool executed successfully in {execution_time:.3f}s")
-            print(f"📊 Result:")
+            print("📊 Result:")
             print(json.dumps(result, indent=2))
 
             if args.verbose:
@@ -211,7 +210,7 @@ def execute_tool(args):
                 try:
                     stats = mcp_instance.get_tool_performance_stats(args.tool_name)
                     if stats:
-                        print(f"\n📈 Tool Statistics:")
+                        print("\n📈 Tool Statistics:")
                         print(f"  Uses: {stats.get('use_count', 0)}")
                         print(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
                         print(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
@@ -237,16 +236,16 @@ def get_resource(args):
     try:
         mcp_instance, initialize, MCPError = import_mcp()
         initialize()
-        
+
         result = mcp_instance.get_resource(args.uri)
-        
+
         if args.format == "json":
             print(json.dumps(result, indent=2))
         else:
             # Human-readable format
             print(f"Resource '{args.uri}' retrieved successfully:")
             print(json.dumps(result, indent=2))
-            
+
     except MCPError as e:
         logger.error(f"MCP Error: {e}")
         sys.exit(1)
@@ -259,9 +258,9 @@ def get_server_status(args):
     try:
         mcp_instance, initialize, MCPError = import_mcp()
         initialize()
-        
+
         status = mcp_instance.get_server_status()
-        
+
         if args.format == "json":
             print(json.dumps(status, indent=2))
         else:
@@ -275,14 +274,14 @@ def get_server_status(args):
             print(f"Tools: {status.get('tools_count', 0)}")
             print(f"Resources: {status.get('resources_count', 0)}")
             print(f"Modules: {status.get('modules_count', 0)} loaded, {status.get('modules_failed', 0)} failed")
-            
+
             # Average execution times
             avg_times = status.get('avg_execution_times', {})
             if avg_times:
-                print(f"\nAverage Execution Times:")
+                print("\nAverage Execution Times:")
                 for tool, time_avg in avg_times.items():
                     print(f"  {tool}: {time_avg:.3f}s")
-                    
+
     except Exception as e:
         logger.error(f"Error getting server status: {e}")
         sys.exit(1)
@@ -297,7 +296,7 @@ def get_tool_info(args):
         if not tool_info:
             available_tools = list(mcp_instance.tools.keys())
             print(f"\n❌ Error: Tool '{args.tool_name}' not found", file=sys.stderr)
-            print(f"\n💡 Available tools:", file=sys.stderr)
+            print("\n💡 Available tools:", file=sys.stderr)
             for tool in sorted(available_tools):
                 print(f"  • {tool}", file=sys.stderr)
             sys.exit(1)
@@ -321,19 +320,19 @@ def get_tool_info(args):
             print(f"🔍 Tool Information: {detailed_info['name']}")
             print("=" * 50)
 
-            print(f"\n📋 Basic Info:")
+            print("\n📋 Basic Info:")
             print(f"  Description: {detailed_info['description']}")
             print(f"  Module: {detailed_info['module']}")
             print(f"  Category: {detailed_info['category']}")
             print(f"  Version: {detailed_info['version']}")
 
             if detailed_info.get('use_count', 0) > 0:
-                print(f"\n📈 Usage Statistics:")
+                print("\n📈 Usage Statistics:")
                 print(f"  Times Used: {detailed_info.get('use_count', 0)}")
                 print(f"  Avg Execution Time: {detailed_info.get('average_execution_time', 0):.3f}s")
                 print(f"  Success Rate: {detailed_info.get('success_rate', 0):.1%}")
 
-            print(f"\n⚙️ Configuration:")
+            print("\n⚙️ Configuration:")
             print(f"  Input Validation: {'Enabled' if detailed_info.get('input_validation', True) else 'Disabled'}")
             print(f"  Output Validation: {'Enabled' if detailed_info.get('output_validation', True) else 'Disabled'}")
             print(f"  Timeout: {detailed_info.get('timeout', 'None')}s")
@@ -342,11 +341,11 @@ def get_tool_info(args):
             print(f"  Cache TTL: {detailed_info.get('cache_ttl', 'None')}s")
 
             if detailed_info.get('deprecated'):
-                print(f"\n⚠️  Status: DEPRECATED")
+                print("\n⚠️  Status: DEPRECATED")
             if detailed_info.get('experimental'):
-                print(f"\n🧪 Status: EXPERIMENTAL")
+                print("\n🧪 Status: EXPERIMENTAL")
 
-            print(f"\n📋 Schema:")
+            print("\n📋 Schema:")
             print(json.dumps(detailed_info['schema'], indent=2))
 
     except Exception as e:
@@ -409,7 +408,7 @@ def get_diagnostics(args):
         # Show health checks
         health_checks = diagnostics.get('health_checks', {})
         if health_checks:
-            print(f"\n🔍 Health Checks:")
+            print("\n🔍 Health Checks:")
             for check_name, check_result in health_checks.items():
                 status = "✅ PASS" if check_result else "❌ FAIL"
                 print(f"  • {check_name}: {status}")
@@ -420,7 +419,7 @@ def get_diagnostics(args):
                 status = mcp_instance.get_enhanced_server_status()
                 perf = status.get('performance', {})
 
-                print(f"\n📊 Detailed Performance:")
+                print("\n📊 Detailed Performance:")
                 print(f"  Total Requests: {perf.get('total_requests', 0)}")
                 print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
                 print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
@@ -430,7 +429,7 @@ def get_diagnostics(args):
                 # Show module status
                 modules = status.get('modules', {})
                 if modules:
-                    print(f"\n📦 Module Status:")
+                    print("\n📦 Module Status:")
                     for name, info in modules.items():
                         status_icon = "✅" if info.get('status') == 'loaded' else "❌"
                         print(f"  {status_icon} {name}: {info.get('status', 'unknown')}")
@@ -477,40 +476,40 @@ def main():
         description="Model Context Protocol CLI for GNN",
         epilog="Example: python -m src.mcp.cli list --format human"
     )
-    
+
     # Global options
     parser.add_argument("--format", choices=["json", "human"], default="human",
                        help="Output format (default: human)")
     parser.add_argument("--verbose", "-v", action="store_true",
                        help="Enable verbose logging")
-    
+
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
-    
+
     # List capabilities
     list_parser = subparsers.add_parser("list", help="List available capabilities")
     list_parser.set_defaults(func=list_capabilities)
-    
+
     # Execute tool
     execute_parser = subparsers.add_parser("execute", help="Execute a tool with enhanced validation")
     execute_parser.add_argument("tool_name", help="Name of the tool to execute")
     execute_parser.add_argument("--params", help="JSON parameters for the tool")
     execute_parser.add_argument("--validate", action="store_true", help="Validate parameters against tool schema")
     execute_parser.set_defaults(func=execute_tool)
-    
+
     # Get resource
     resource_parser = subparsers.add_parser("resource", help="Get a resource")
     resource_parser.add_argument("uri", help="URI of the resource to retrieve")
     resource_parser.set_defaults(func=get_resource)
-    
+
     # Get server status
     status_parser = subparsers.add_parser("status", help="Get server status")
     status_parser.set_defaults(func=get_server_status)
-    
+
     # Get tool info
     info_parser = subparsers.add_parser("info", help="Get tool information")
     info_parser.add_argument("tool_name", help="Name of the tool")
     info_parser.set_defaults(func=get_tool_info)
-    
+
     # Get diagnostics
     diagnostics_parser = subparsers.add_parser("diagnostics", help="Get comprehensive diagnostic information")
     diagnostics_parser.set_defaults(func=get_diagnostics)
@@ -522,9 +521,9 @@ def main():
     server_parser.add_argument("--host", default="127.0.0.1", help="Host for HTTP server")
     server_parser.add_argument("--port", type=int, default=8080, help="Port for HTTP server")
     server_parser.set_defaults(func=start_server)
-    
+
     args = parser.parse_args()
-    
+
     # Configure logging based on verbosity
     if args.verbose:
         logging.basicConfig(level=logging.DEBUG,
@@ -532,12 +531,12 @@ def main():
     else:
         logging.basicConfig(level=logging.INFO,
                            format='%(asctime)s - %(levelname)s - %(message)s')
-    
+
     if not hasattr(args, "func"):
         parser.print_help()
         sys.exit(1)
-    
+
     args.func(args)
 
 if __name__ == "__main__":
-    main() 
+    main()

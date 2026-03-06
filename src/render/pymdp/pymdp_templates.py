@@ -6,7 +6,7 @@ Separating templates from converter logic makes the code more maintainable and m
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, List
 
 logger = logging.getLogger(__name__)
 
@@ -216,7 +216,7 @@ def generate_conversion_summary(log_entries: List[str]) -> str:
 
 
 def generate_debug_block(
-    action_names_dict_str: str, 
+    action_names_dict_str: str,
     qs_initial_str: str,
     agent_hyperparams_dict_str: str
 ) -> str:
@@ -231,7 +231,7 @@ def generate_debug_block(
 def generate_example_usage_template(
     model_name: str,
     num_modalities: int,
-    num_factors: int, 
+    num_factors: int,
     control_factor_indices: List[int],
     sim_timesteps: int = 5,
     use_gp_copy: bool = True,
@@ -265,7 +265,7 @@ def generate_example_usage_template(
     usage_lines.append(f"{indent}# Initialize agent (already done above)")
     usage_lines.append(f"{indent}# agent = {model_name}  # Agent is already instantiated above as 'agent'")
     usage_lines.append(f"{indent}print(f\"Agent '{model_name}' initialized with {{agent.num_factors if hasattr(agent, 'num_factors') else 'N/A'}} factors and {{agent.num_modalities if hasattr(agent, 'num_modalities') else 'N/A'}} modalities.\")")
-    
+
     # Define observation and state names for display
     usage_lines.append(f"{indent}# Define names for display purposes")
     usage_lines.append(f"{indent}obs_names = [f'Modality_{{i}}' for i in range({num_modalities})] if {num_modalities} > 0 else []")
@@ -277,7 +277,7 @@ def generate_example_usage_template(
     # Initial observation and state
     default_o = [0] * num_modalities if num_modalities > 0 else []
     usage_lines.append(f"{indent}o_current = {default_o} # Example initial observation (e.g. first outcome for each modality)")
-    
+
     default_s = [0] * num_factors if num_factors > 0 else []
     usage_lines.append(f"{indent}s_current = {default_s} # Example initial true states for simulation")
 
@@ -291,7 +291,7 @@ def generate_example_usage_template(
     else:
         usage_lines.append(f"{indent}A_gen_process = A")
         usage_lines.append(f"{indent}B_gen_process = B")
-    
+
     # Simulation loop
     usage_lines.append("")
     usage_lines.append(f"{indent}for t_step in range(T):")
@@ -303,11 +303,11 @@ def generate_example_usage_template(
         usage_lines.append(f"{inner_indent}if o_current is not None:")
         usage_lines.append(f"{inner_indent}{indent}for g_idx, o_val in enumerate(o_current):")
         usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"Observation ({{obs_names[g_idx] if obs_names else f'Modality {{g_idx}}'}}): {{o_val}}\")")
-    
+
     # Inference
     usage_lines.append(f"{inner_indent}# Infer states")
     usage_lines.append(f"{inner_indent}qs_current = agent.infer_states(o_current)")
-    
+
     # Print beliefs
     if print_beliefs:
         usage_lines.append(f"{inner_indent}if qs_current is not None:")
@@ -323,7 +323,7 @@ def generate_example_usage_template(
     usage_lines.append(f"{inner_indent}if efe_current is not None:")
     usage_lines.append(f"{inner_indent}{indent}print(f\"Expected Free Energy (EFE): {{efe_current}}\")")
     usage_lines.append(f"{inner_indent}action_agent = agent.sample_action()")
-    
+
     # Map agent action to environment action
     usage_lines.append(f"{inner_indent}# Map agent's action (on control factors) to full environment action vector")
     usage_lines.append(f"{inner_indent}action_env = np.zeros(num_factors, dtype=int)")
@@ -381,7 +381,7 @@ def generate_example_usage_template(
 
     usage_lines.append(f"{inner_indent}{indent}{indent}o_next[g_idx] = utils.sample(prob_vector)")
     usage_lines.append(f"{inner_indent}o_current = o_next.tolist()")
-    
+
     # Simulation conclusion
     usage_lines.append("")
     usage_lines.append(f"{indent}print(f\"\\nSimulation finished after {{T}} timesteps.\")")
@@ -409,19 +409,19 @@ def generate_placeholder_matrices(num_modalities: int, num_states: List[int]) ->
         "C": [],
         "D": []
     }
-    
+
     # A matrix generation (likelihood mapping: observations -> states)
     if num_modalities > 0 and len(num_states) > 0:
         matrix_defs["A"].append("# A matrix: Likelihood mapping P(o|s) - observations given states")
         matrix_defs["A"].append("# Generated using softmax of random weights for functional simulation")
         matrix_defs["A"].append(f"A = utils.obj_array({num_modalities})")
-        
+
         for i in range(num_modalities):
             # Create a functional likelihood matrix for each modality
             # Use softmax to ensure proper probability distributions
             matrix_defs["A"].append(f"# Modality {i} likelihood matrix")
             matrix_defs["A"].append(f"# Shape: (num_obs[{i}], {', '.join(str(n) for n in num_states)})")
-            
+
             # Generate random weights and apply softmax for proper probabilities
             matrix_defs["A"].append(f"raw_weights_{i} = np.random.randn({max(1, num_states[0] if num_states else 1)}, {max(1, num_states[0] if num_states else 1)})")
             matrix_defs["A"].append(f"likelihood_{i} = utils.softmax(raw_weights_{i}, axis=0)")  # Normalize across states
@@ -430,38 +430,38 @@ def generate_placeholder_matrices(num_modalities: int, num_states: List[int]) ->
         matrix_defs["A"].append("# No modalities or states defined - using minimal functional matrix")
         matrix_defs["A"].append("A = utils.obj_array(1)")
         matrix_defs["A"].append("A[0] = np.array([[0.8, 0.2], [0.2, 0.8]])  # 2x2 identity-like matrix")
-        
+
     # B matrix generation (transition mapping: states -> states given actions)
     if len(num_states) > 0:
         matrix_defs["B"].append("# B matrix: Transition mapping P(s'|s,u) - next states given current states and actions")
         matrix_defs["B"].append("# Generated using identity-like transitions with small noise for exploration")
         matrix_defs["B"].append(f"B = utils.obj_array({len(num_states)})")
-        
+
         for i, num_state in enumerate(num_states):
             # Create functional transition matrices for each state factor
             # Use identity-like matrices with small noise for realistic transitions
             matrix_defs["B"].append(f"# State factor {i} transition matrix")
             matrix_defs["B"].append(f"# Shape: ({num_state}, {num_state}, 2) - 2 actions for PyMDP compatibility")
-            
+
             # Generate identity-like transition matrix with small noise
             matrix_defs["B"].append(f"identity_{i} = np.eye({num_state})")
             matrix_defs["B"].append(f"noise_{i} = np.random.uniform(0.05, 0.15, ({num_state}, {num_state}))")
             matrix_defs["B"].append(f"transition_base_{i} = identity_{i} + noise_{i}")
             matrix_defs["B"].append(f"transition_base_{i} = transition_base_{i} / np.sum(transition_base_{i}, axis=0, keepdims=True)")  # Normalize
-            
+
             # Create action-dependent transitions (action 0: stay, action 1: move)
             matrix_defs["B"].append(f"B[{i}] = np.stack([transition_base_{i}, np.roll(transition_base_{i}, 1, axis=1)], axis=2)")
     else:
         matrix_defs["B"].append("# No state factors defined - using minimal functional transition matrix")
         matrix_defs["B"].append("B = utils.obj_array(1)")
         matrix_defs["B"].append("B[0] = np.array([[[0.9, 0.1], [0.1, 0.9]], [[0.1, 0.9], [0.9, 0.1]]])  # 2x2x2 transition matrix")
-    
+
     # C vector generation (preferences over observations)
     if num_modalities > 0:
         matrix_defs["C"].append("# C vector: Preferences over observations (negative log likelihood)")
         matrix_defs["C"].append("# Generated with slight preference for certain observations")
         matrix_defs["C"].append(f"C = utils.obj_array({num_modalities})")
-        
+
         for i in range(num_modalities):
             # Create preference vector for each modality
             # Use small negative values to indicate preferences
@@ -473,13 +473,13 @@ def generate_placeholder_matrices(num_modalities: int, num_states: List[int]) ->
         matrix_defs["C"].append("# No modalities defined - using neutral preferences")
         matrix_defs["C"].append("C = utils.obj_array(1)")
         matrix_defs["C"].append("C[0] = np.array([0.0, 0.0])  # Neutral preferences")
-    
+
     # D vector generation (initial beliefs over states)
     if len(num_states) > 0:
         matrix_defs["D"].append("# D vector: Initial beliefs over states (prior)")
         matrix_defs["D"].append("# Generated using uniform distribution for unbiased initialization")
         matrix_defs["D"].append(f"D = utils.obj_array({len(num_states)})")
-        
+
         for i, num_state in enumerate(num_states):
             # Create initial belief vector for each state factor
             # Use uniform distribution for unbiased initialization
@@ -490,5 +490,5 @@ def generate_placeholder_matrices(num_modalities: int, num_states: List[int]) ->
         matrix_defs["D"].append("# No state factors defined - using minimal initial beliefs")
         matrix_defs["D"].append("D = utils.obj_array(1)")
         matrix_defs["D"].append("D[0] = np.array([0.5, 0.5])  # Uniform initial beliefs")
-        
-    return matrix_defs 
+
+    return matrix_defs

@@ -3,7 +3,7 @@
 > **GNN Integration Layer**: Python
 > **Framework Base**: `discopy` (Categorical Quantum Diagrams)
 > **Simulation Architecture**: Structural / Categorical Semantics (No POMDP Simulation)
-> **Documentation Version**: 1.3.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 

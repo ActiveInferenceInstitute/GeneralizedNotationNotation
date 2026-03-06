@@ -17,7 +17,6 @@ Date: 2024
 """
 
 import re
-import json
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 import logging
@@ -59,7 +58,7 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
     try:
         parser = MarkdownGNNParser()
         result = parser.parse_string(content)
-        
+
         if result.success:
             # Convert internal representation to dictionary
             gnn_spec = result.model.to_dict()
@@ -67,7 +66,7 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
         else:
             logging.error(f"Failed to parse GNN file {file_path}: {result.errors}")
             return None
-            
+
     except Exception as e:
         logging.error(f"Exception parsing GNN file {file_path}: {e}")
         return None
@@ -76,17 +75,17 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
 def parse_state_space_block(content: str) -> Dict[str, Any]:
     """Parse StateSpaceBlock section from GNN content."""
     variables = {}
-    
+
     # Find StateSpaceBlock section
     state_space_pattern = r'## StateSpaceBlock\s*\n(.*?)(?=\n##|\Z)'
     match = re.search(state_space_pattern, content, re.DOTALL)
-    
+
     if match:
         block_content = match.group(1)
-        
+
         # Parse variable definitions
         var_pattern = r'^([A-Za-z_][A-Za-z0-9_]*)\[([0-9,]+)(?:,type=(\w+))?\]'
-        
+
         for line in block_content.split('\n'):
             line = line.strip()
             if line and not line.startswith('#'):
@@ -95,33 +94,33 @@ def parse_state_space_block(content: str) -> Dict[str, Any]:
                     var_name = var_match.group(1)
                     dimensions_str = var_match.group(2)
                     var_type = var_match.group(3) or 'float'
-                    
+
                     dimensions = [int(d.strip()) for d in dimensions_str.split(',')]
-                    
+
                     variables[var_name] = {
                         'name': var_name,
                         'dimensions': dimensions,
                         'type': var_type
                     }
-    
+
     return variables
 
 
 def parse_initial_parameterization(content: str) -> dict:
     """Parse InitialParameterization section from GNN content."""
     params = {}
-    
+
     # Find InitialParameterization section
     params_pattern = r'## InitialParameterization\s*\n(.*?)(?=\n##|\Z)'
     match = re.search(params_pattern, content, re.DOTALL)
-    
+
     if match:
         block_content = match.group(1)
-        
+
         # Parse parameter assignments
         current_param = None
         current_value = []
-        
+
         for line in block_content.split('\n'):
             line = line.strip()
             if line and not line.startswith('#'):
@@ -130,7 +129,7 @@ def parse_initial_parameterization(content: str) -> dict:
                     # Save previous parameter if exists
                     if current_param and current_value:
                         params[current_param] = ''.join(current_value)
-                    
+
                     # Start new parameter
                     param_name, param_start = line.split('=', 1)
                     current_param = param_name.strip()
@@ -138,32 +137,32 @@ def parse_initial_parameterization(content: str) -> dict:
                 elif current_param and (line.startswith('{') or line.startswith('(') or current_value):
                     # Continue current parameter value
                     current_value.append(' ' + line)
-        
+
         # Save last parameter
         if current_param and current_value:
             params[current_param] = ''.join(current_value)
-    
+
     return params
 
 
 def parse_model_parameters(content: str) -> Dict[str, Any]:
     """Parse ModelParameters section from GNN content."""
     params = {}
-    
+
     # Find ModelParameters section
     params_pattern = r'## ModelParameters\s*\n(.*?)(?=\n##|\Z)'
     match = re.search(params_pattern, content, re.DOTALL)
-    
+
     if match:
         block_content = match.group(1)
-        
+
         for line in block_content.split('\n'):
             line = line.strip()
             if line and not line.startswith('#') and ':' in line:
                 key, value = line.split(':', 1)
                 key = key.strip()
                 value = value.strip()
-                
+
                 # Try to parse as number
                 try:
                     if '.' in value:
@@ -172,7 +171,7 @@ def parse_model_parameters(content: str) -> Dict[str, Any]:
                         params[key] = int(value)
                 except ValueError:
                     params[key] = value
-    
+
     return params
 
 
@@ -180,7 +179,7 @@ class PyMDPRenderer:
     """
     PyMDP renderer for generating executable PyMDP simulation code from GNN specifications.
     """
-    
+
     def __init__(self, options: Optional[Dict[str, Any]] = None):
         """
         Initialize PyMDP renderer.
@@ -190,7 +189,7 @@ class PyMDPRenderer:
         """
         self.options = options or {}
         self.logger = logging.getLogger(__name__)
-    
+
     def render_file(self, gnn_file_path: Path, output_path: Path) -> Tuple[bool, str]:
         """
         Render a single GNN file to PyMDP simulation code.
@@ -206,28 +205,28 @@ class PyMDPRenderer:
             # Read GNN file
             with open(gnn_file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             # Parse GNN content
             gnn_spec = parse_gnn_markdown(content, gnn_file_path)
             if not gnn_spec:
                 return False, f"Failed to parse GNN file: {gnn_file_path}"
-            
+
             # Generate PyMDP simulation code
             pymdp_code = self._generate_pymdp_simulation_code(gnn_spec, gnn_file_path.stem)
-            
+
             # Write output file
             output_path.parent.mkdir(parents=True, exist_ok=True)
             with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(pymdp_code)
-            
+
             self.logger.info(f"Generated PyMDP simulation: {output_path}")
-            return True, f"Successfully generated PyMDP simulation code"
-            
+            return True, "Successfully generated PyMDP simulation code"
+
         except Exception as e:
             error_msg = f"Error rendering {gnn_file_path}: {e}"
             self.logger.error(error_msg)
             return False, error_msg
-    
+
     def render_directory(self, output_dir: Path, input_dir: Optional[Path] = None) -> Dict[str, Any]:
         """
         Render all GNN files in a directory to PyMDP simulation code.
@@ -245,20 +244,20 @@ class PyMDPRenderer:
             'total_files': 0,
             'successful_renders': 0
         }
-        
+
         # Find GNN files
         if input_dir:
             gnn_files = list(input_dir.glob("*.md")) + list(input_dir.glob("*.gnn"))
         else:
             # Use default input directory
             gnn_files = list(Path("input/gnn_files").glob("*.md"))
-        
+
         results['total_files'] = len(gnn_files)
-        
+
         for gnn_file in gnn_files:
             output_file = output_dir / f"{gnn_file.stem}_pymdp_simulation.py"
             success, message = self.render_file(gnn_file, output_file)
-            
+
             if success:
                 results['rendered_files'].append({
                     'input_file': str(gnn_file),
@@ -271,9 +270,9 @@ class PyMDPRenderer:
                     'input_file': str(gnn_file),
                     'error': message
                 })
-        
+
         return results
-    
+
     def _generate_pymdp_simulation_code(self, gnn_spec: Dict[str, Any], model_name: str) -> str:
         """
         Generate executable PyMDP simulation code from GNN specification.
@@ -288,45 +287,45 @@ class PyMDPRenderer:
         # Extract key information from GNN spec
         model_display_name = gnn_spec.get('model_name', model_name)
         model_annotation = gnn_spec.get('annotation', '')
-        
-        # Parse state space variables  
+
+        # Parse state space variables
         variables = gnn_spec.get('variables', [])
         state_vars = {var['name']: var for var in variables if var.get('name') in ['A', 'B', 'C', 'D', 'E']}
-        
+
         # Extract dimensions
         num_states = 3
-        num_observations = 3  
+        num_observations = 3
         num_actions = 3
-        
+
         # Try to get dimensions from variables
         if 'A' in state_vars and 'dimensions' in state_vars['A']:
             dims = state_vars['A']['dimensions']
             if len(dims) >= 2:
                 num_observations = dims[0]
                 num_states = dims[1]
-        
+
         if 'B' in state_vars and 'dimensions' in state_vars['B']:
             dims = state_vars['B']['dimensions']
             if len(dims) >= 3:
                 num_actions = dims[2]
-        
+
         # Try model parameters
         model_params = gnn_spec.get('model_parameters', {})
         if model_params:
             num_states = model_params.get('num_hidden_states', num_states)
             num_observations = model_params.get('num_obs', num_observations)
             num_actions = model_params.get('num_actions', num_actions)
-        
+
         # Get initial parameterization (try both key variations)
         initial_params = gnn_spec.get('initialparameterization', {}) or gnn_spec.get('initial_parameterization', {})
-        
+
         # Extract state space matrices/vectors
         A_matrix = initial_params.get('A')
         B_matrix = initial_params.get('B')
         C_vector = initial_params.get('C')
         D_vector = initial_params.get('D')
         E_vector = initial_params.get('E')
-        
+
         # Validate state spaces are present
         if not A_matrix:
             self.logger.warning("A matrix (likelihood) not found in initial parameterization")
@@ -336,18 +335,18 @@ class PyMDPRenderer:
             self.logger.warning("C vector (preferences) not found in initial parameterization")
         if not D_vector:
             self.logger.warning("D vector (prior) not found in initial parameterization")
-        
+
         # Format matrices for embedding in code
         import json as json_module
         import numpy as np
-        
+
         # Convert matrices to JSON-serializable format for embedding
         # Convert matrices to JSON-serializable format for embedding
         def format_matrix_for_code(matrix):
             """Convert matrix to string representation for code embedding."""
             if matrix is None:
                 return "None"
-            
+
             # recursive helper to ensure everything is a list or primitive
             def to_clean_list(obj):
                 if isinstance(obj, (np.ndarray, list, tuple)):
@@ -366,13 +365,13 @@ class PyMDPRenderer:
                 # Fallback to string representation
                 logger.warning(f"Failed to cleanly format matrix: {e}. using raw dumps.")
                 return json_module.dumps(matrix)
-        
+
         A_matrix_str = format_matrix_for_code(A_matrix)
         B_matrix_str = format_matrix_for_code(B_matrix)
         C_vector_str = format_matrix_for_code(C_vector)
         D_vector_str = format_matrix_for_code(D_vector)
         E_vector_str = format_matrix_for_code(E_vector)
-        
+
         # Generate the code
         code = f'''#!/usr/bin/env python3
 """
@@ -568,9 +567,9 @@ def main():
 if __name__ == "__main__":
     sys.exit(main())
 '''
-        
+
         return code
-    
+
     def _get_timestamp(self) -> str:
         """Get current timestamp string."""
         from datetime import datetime
@@ -595,27 +594,27 @@ def render_gnn_to_pymdp(
     """
     try:
         renderer = PyMDPRenderer(options)
-        
+
         # Generate simulation code directly from spec
         model_name = gnn_spec.get('model_name', 'GNN_Model')
         pymdp_code = renderer._generate_pymdp_simulation_code(gnn_spec, model_name)
-        
+
         # Write output file
         output_script_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_script_path, 'w', encoding='utf-8') as f:
             f.write(pymdp_code)
-        
+
         message = f"Generated PyMDP simulation script: {output_script_path}"
         warnings = []
-        
+
         # Check for potential issues
         if not gnn_spec.get('initial_parameterization'):
             warnings.append("No initial parameterization found - using defaults")
-        
+
         if not gnn_spec.get('model_parameters'):
             warnings.append("No model parameters found - using inferred dimensions")
-        
+
         return True, message, warnings
-        
+
     except Exception as e:
-        return False, f"Error generating PyMDP script: {e}", [] 
+        return False, f"Error generating PyMDP script: {e}", []

@@ -14,16 +14,11 @@ import os
 import json
 import time
 from pathlib import Path
-from typing import Dict, Any, List
 
-from .categories import MODULAR_TEST_CATEGORIES
 
 # Import from infrastructure
 from .infrastructure import (
-    TestExecutionConfig,
-    TestExecutionResult,
     _generate_markdown_report,
-    _generate_fallback_report,
     _generate_timeout_report,
     _generate_error_report,
     _extract_collection_errors,
@@ -60,7 +55,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         "--durations=10",
         "-ra",
     ]
-    
+
     if has_timeout:
         timeout_value = os.getenv("FAST_TESTS_TIMEOUT", "600")
         cmd.extend(["--timeout", timeout_value])
@@ -78,18 +73,18 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
         "--ignore=src/tests/test_pipeline_recovery.py",
         "--ignore=src/tests/test_report_integration.py",
     ])
-    
+
     cmd.append("src/tests/")
 
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     project_root = Path(__file__).parent.parent.parent
-    
+
     logger.info(f"Executing fast tests: {' '.join(cmd)}")
 
     try:
         overall_timeout = int(os.getenv("FAST_TESTS_TIMEOUT", "600")) + 30
-        
+
         result = subprocess.run(
             cmd,
             cwd=project_root,

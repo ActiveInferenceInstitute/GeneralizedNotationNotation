@@ -11,4 +11,4 @@ __all__ = [
     'find_rxinfer_scripts',
     'execute_rxinfer_script',
     'is_julia_available'
-] 
+]

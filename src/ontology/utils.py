@@ -5,10 +5,7 @@ Ontology utils module for GNN Processing Pipeline.
 This module provides ontology utility functions.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List, Optional
-import logging
-import json
+from typing import Dict, Any
 
 def get_module_info() -> Dict[str, Any]:
     """
@@ -24,7 +21,7 @@ def get_module_info() -> Dict[str, Any]:
         "author": "GNN Team",
         "capabilities": [
             "ontology_parsing",
-            "ontology_validation", 
+            "ontology_validation",
             "ontology_mapping",
             "ontology_reporting"
         ],
@@ -54,7 +51,7 @@ def get_ontology_processing_options() -> Dict[str, Any]:
         ],
         "processing_modes": [
             "basic",
-            "comprehensive", 
+            "comprehensive",
             "validation_only"
         ],
         "parsing_options": {"allow_comments": True},
@@ -89,7 +86,7 @@ def get_mcp_interface() -> Dict[str, Any]:
                 "name": "parse_gnn_ontology_section",
                 "description": "Parse GNN ontology section from content",
                 "inputSchema": {
-                    "type": "object", 
+                    "type": "object",
                     "properties": {
                         "content": {"type": "string"}
                     }

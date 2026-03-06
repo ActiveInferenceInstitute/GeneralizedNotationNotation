@@ -7,9 +7,7 @@ This file contains comprehensive tests for the LLM module functionality.
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestLLMModuleComprehensive:
     """Comprehensive tests for the LLM module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_llm_module_imports(self):
@@ -32,7 +30,7 @@ class TestLLMModuleComprehensive:
             assert hasattr(llm, 'get_module_info')
         except ImportError:
             pytest.skip("LLM module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_llm_processor_instantiation(self):
@@ -45,7 +43,7 @@ class TestLLMModuleComprehensive:
             assert hasattr(processor, 'generate_description')
         except ImportError:
             pytest.skip("LLMProcessor not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_llm_analyzer_instantiation(self):
@@ -58,7 +56,7 @@ class TestLLMModuleComprehensive:
             assert hasattr(analyzer, 'extract_insights')
         except ImportError:
             pytest.skip("LLMAnalyzer not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_llm_module_info(self):
@@ -72,7 +70,7 @@ class TestLLMModuleComprehensive:
             assert 'providers' in info
         except ImportError:
             pytest.skip("LLM module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_llm_providers(self):
@@ -88,7 +86,7 @@ class TestLLMModuleComprehensive:
 
 class TestLLMFunctionality:
     """Tests for LLM functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_model_analysis(self, comprehensive_test_data):
@@ -96,14 +94,14 @@ class TestLLMFunctionality:
         try:
             from llm import LLMProcessor
             processor = LLMProcessor()
-            
+
             # Test model analysis with sample data
             model_data = comprehensive_test_data.get('model_data', {})
             result = processor.analyze_model(model_data)
             assert result is not None
         except ImportError:
             pytest.skip("LLMProcessor not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_description_generation(self):
@@ -111,7 +109,7 @@ class TestLLMFunctionality:
         try:
             from llm import LLMProcessor
             processor = LLMProcessor()
-            
+
             # Test description generation
             content = "Test model content"
             result = processor.generate_description(content)
@@ -119,7 +117,7 @@ class TestLLMFunctionality:
             assert isinstance(result, str)
         except ImportError:
             pytest.skip("LLMProcessor not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_content_analysis(self):
@@ -127,7 +125,7 @@ class TestLLMFunctionality:
         try:
             from llm import LLMAnalyzer
             analyzer = LLMAnalyzer()
-            
+
             # Test content analysis
             content = "Test content for analysis"
             result = analyzer.analyze_content(content)
@@ -138,7 +136,7 @@ class TestLLMFunctionality:
 
 class TestLLMIntegration:
     """Integration tests for LLM module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_llm_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -146,18 +144,18 @@ class TestLLMIntegration:
         try:
             from llm import LLMProcessor
             processor = LLMProcessor()
-            
+
             # Test end-to-end LLM analysis
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
                 gnn_content = f.read()
-            
+
             result = processor.analyze_model({'content': gnn_content})
             assert result is not None
-            
+
         except ImportError:
             pytest.skip("LLM module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_llm_mcp_integration(self):
@@ -178,7 +176,7 @@ def test_llm_module_completeness():
         'get_module_info',
         'get_available_providers'
     ]
-    
+
     try:
         import llm
         for component in required_components:
@@ -193,15 +191,15 @@ def test_llm_module_performance():
     try:
         from llm import LLMProcessor
         import time
-        
+
         processor = LLMProcessor()
         start_time = time.time()
-        
+
         # Test analysis performance
         result = processor.analyze_model({'test': 'data'})
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 30.0  # Should complete within 30 seconds
-        
+
     except ImportError:
-        pytest.skip("LLM module not available") 
+        pytest.skip("LLM module not available")

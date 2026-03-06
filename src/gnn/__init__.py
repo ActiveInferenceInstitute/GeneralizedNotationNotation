@@ -68,7 +68,7 @@ __all__ = [
 
     # Multi-format processor
     'process_gnn_multi_format',
-    
+
     # Parser classes and functions
     'ValidationLevel',
     'ParsedGNN',
@@ -86,4 +86,4 @@ __all__ = [
     'FEATURES',
     'process_gnn',
     'validate_gnn_file'
-] 
+]

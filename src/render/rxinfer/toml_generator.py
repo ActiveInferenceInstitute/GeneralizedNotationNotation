@@ -7,7 +7,7 @@ to TOML configuration files compatible with RxInfer.jl simulations.
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Union, Tuple
+from typing import Dict, Any, Optional, List, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -30,16 +30,16 @@ def render_gnn_to_rxinfer_toml(
     try:
         options = options or {}
         generate_toml = options.get('generate_toml', False)
-        
+
         logger.info(f"Generating RxInfer Julia script at {output_path.with_suffix('.jl')}")
-        
+
         # Extract model information
         model_name = gnn_spec.get("name", "GNN_Model")
         model_annotation = gnn_spec.get("annotation", "")
-        
+
         # Extract parameters from the GNN specification
         initial_params = gnn_spec.get("model_parameters", {})
-        
+
         # Try to extract from initial_parameterization if available
         if "initial_parameterization" in gnn_spec:
             init_param_section = gnn_spec["initial_parameterization"]
@@ -50,22 +50,22 @@ def render_gnn_to_rxinfer_toml(
                     param_value = _extract_parameter_from_section(init_param_section, param_name)
                     if param_value:
                         initial_params[param_name] = param_value
-        
+
         # Parse the parameter matrices from the GNN format
         A_matrix = _parse_gnn_matrix(initial_params.get("A", "{(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)}"))
         B_matrix = _parse_gnn_3d_matrix(initial_params.get("B", "{( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )}"))
         C_vector = _parse_gnn_vector(initial_params.get("C", "(0.0, 0.0, 1.0)"))
         D_vector = _parse_gnn_vector(initial_params.get("D", "(0.33333, 0.33333, 0.33333)"))
         E_vector = _parse_gnn_vector(initial_params.get("E", "(0.33333, 0.33333, 0.33333)"))
-        
+
         # Get dimensions
         num_states = len(D_vector)
         num_obs = len(C_vector)
         num_actions = len(B_matrix)
-        
+
         # Default time horizon
         T = options.get('time_horizon', 10)
-        
+
         # Generate comprehensive Julia code
         julia_code = _generate_rxinfer_pomdp_code(
             model_name=model_name,
@@ -80,16 +80,16 @@ def render_gnn_to_rxinfer_toml(
             num_actions=num_actions,
             T=T
         )
-        
+
         # Write Julia script
         julia_path = output_path.with_suffix('.jl')
         julia_path.parent.mkdir(parents=True, exist_ok=True)
         with open(julia_path, 'w', encoding='utf-8') as f:
             f.write(julia_code)
-        
+
         artifacts = [str(julia_path.resolve())]
         msg = f"Successfully wrote RxInfer Julia script to {julia_path}"
-        
+
         # Optionally generate TOML if flagged
         if generate_toml:
             toml_config = _create_toml_config_structure(gnn_spec, options)
@@ -98,10 +98,10 @@ def render_gnn_to_rxinfer_toml(
                 _write_toml_with_exact_formatting(f, toml_config)
             artifacts.append(str(toml_path.resolve()))
             msg += f" and TOML to {toml_path}"
-        
+
         logger.info(msg)
         return True, msg, artifacts
-    
+
     except Exception as e:
         msg = f"Error generating RxInfer script: {e}"
         logger.error(msg, exc_info=True)
@@ -122,7 +122,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         matrix_str = matrix_str.strip()
         if matrix_str.startswith('{') and matrix_str.endswith('}'):
             matrix_str = matrix_str[1:-1]
-        
+
         # Handle the specific GNN format: "(1.0, 0.0, 0.0), (0.0, 1.0, 0.0), (0.0, 0.0, 1.0)"
         # Split by "), (" to separate rows
         parts = matrix_str.split('), (')
@@ -134,30 +134,30 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
                     part = part[1:] if part.startswith('(') else part
                 if i == len(parts) - 1:
                     part = part[:-1] if part.endswith(')') else part
-                
+
                 # Split by comma and convert to floats
                 elements = [float(e.strip()) for e in part.split(',')]
                 matrix.append(elements)
             return matrix
-        
+
         # Fallback: try parsing as individual rows
         rows = []
         current_row = ""
         brace_count = 0
-        
+
         for char in matrix_str:
             if char == '(':
                 brace_count += 1
             elif char == ')':
                 brace_count -= 1
-            
+
             current_row += char
-            
+
             if brace_count == 0 and char == ')':
                 # End of a row
                 rows.append(current_row.strip())
                 current_row = ""
-        
+
         # Parse each row
         matrix = []
         for row in rows:
@@ -166,11 +166,11 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
                 row_content = row.strip()
                 if row_content.startswith('(') and row_content.endswith(')'):
                     row_content = row_content[1:-1]
-                
+
                 # Split by comma and convert to floats
                 elements = [float(e.strip()) for e in row_content.split(',')]
                 matrix.append(elements)
-        
+
         return matrix
     except Exception as e:
         logger.warning(f"Failed to parse matrix {matrix_str}: {e}")
@@ -192,25 +192,25 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
         matrix_str = matrix_str.strip()
         if matrix_str.startswith('{') and matrix_str.endswith('}'):
             matrix_str = matrix_str[1:-1]
-        
+
         # Split by action matrices (looking for ), ( pattern at the top level)
         action_matrices = []
         current_matrix = ""
         brace_count = 0
-        
+
         for char in matrix_str:
             if char == '(':
                 brace_count += 1
             elif char == ')':
                 brace_count -= 1
-            
+
             current_matrix += char
-            
+
             if brace_count == 0 and char == ')':
                 # End of an action matrix
                 action_matrices.append(current_matrix.strip())
                 current_matrix = ""
-        
+
         # Parse each action matrix
         tensor = []
         for action_matrix in action_matrices:
@@ -218,7 +218,7 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
                 # Parse the 2D matrix for this action
                 matrix = _parse_gnn_matrix(action_matrix)
                 tensor.append(matrix)
-        
+
         return tensor
     except Exception as e:
         logger.warning(f"Failed to parse 3D matrix {matrix_str}: {e}")
@@ -226,7 +226,7 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
         try:
             # Handle the specific format from the GNN file
             # B={ ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ), ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ), ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ) }
-            
+
             # Split by "), (" to separate action matrices
             parts = matrix_str.split('), (')
             if len(parts) > 1:
@@ -237,14 +237,14 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
                         part = part[1:] if part.startswith('(') else part
                     if i == len(parts) - 1:
                         part = part[:-1] if part.endswith(')') else part
-                    
+
                     # Parse the action matrix
                     action_matrix = _parse_gnn_matrix(part)
                     tensor.append(action_matrix)
                 return tensor
         except Exception as e2:
             logger.warning(f"Alternative parsing also failed: {e2}")
-        
+
         # Return default 3D matrix as fallback
         return [
             [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
@@ -269,7 +269,7 @@ def _parse_gnn_vector(vector_str: str) -> List[float]:
             vector_str = vector_str[1:-1]
         if vector_str.startswith('(') and vector_str.endswith(')'):
             vector_str = vector_str[1:-1]
-        
+
         # Split by comma and convert to floats
         elements = [float(e.strip()) for e in vector_str.split(',')]
         return elements
@@ -292,7 +292,7 @@ def _extract_parameter_from_section(section_content: str, param_name: str) -> Op
     try:
         # Look for pattern like "A={...}" or "A= {...}"
         import re
-        
+
         # First try to find the parameter assignment line
         lines = section_content.split('\n')
         for line in lines:
@@ -313,13 +313,13 @@ def _extract_parameter_from_section(section_content: str, param_name: str) -> Op
                             brace_count -= 1
                             if brace_count == 0:
                                 return section_content[start_idx:start_idx + i + 1]
-        
+
         # Fallback regex pattern
         pattern = rf"{param_name}\s*=\s*(\{{[^}}]*\}})"
         match = re.search(pattern, section_content)
         if match:
             return match.group(1)
-        
+
         return None
     except Exception as e:
         logger.warning(f"Failed to extract parameter {param_name}: {e}")
@@ -341,20 +341,20 @@ def _generate_rxinfer_pomdp_code(
     """
     Generate comprehensive RxInfer.jl POMDP code based on the RxInfer.jl example.
     """
-    
+
     # Convert matrices to Julia format
     A_julia = _matrix_to_julia(A_matrix)
     B_julia = _tensor_to_julia(B_matrix)
     C_julia = _vector_to_julia(C_vector)
     D_julia = _vector_to_julia(D_vector)
     E_julia = _vector_to_julia(E_vector)
-    
+
     # Create Dirichlet priors for A and B matrices
     A_prior = _create_dirichlet_prior(A_matrix)
     B_prior = _create_dirichlet_prior_3d(B_matrix)
-    
+
     model_func_name = model_name.lower().replace(' ', '_').replace('-', '_')
-    
+
     code = f'''# RxInfer.jl POMDP Model for {model_name}
 # Generated from GNN specification
 # {model_annotation}
@@ -555,7 +555,7 @@ println("- C Preferences: [$(join(C_vector, ", "))]")
 println("- D Prior: [$(join(D_vector, ", "))]")
 println("- E Habit: [$(join(E_vector, ", "))]")
 '''
-    
+
     return code
 
 def _matrix_to_julia(matrix: List[List[float]]) -> str:
@@ -570,13 +570,13 @@ def _tensor_to_julia(tensor: List[List[List[float]]]) -> str:
     """Convert Python 3D tensor to Julia tensor string."""
     if not tensor:
         return "[]"
-    
+
     # Handle 3D tensor (actions x states x states)
     action_matrices = []
     for action_matrix in tensor:
         matrix_str = _matrix_to_julia(action_matrix)
         action_matrices.append(matrix_str)
-    
+
     return "[" + ", ".join(action_matrices) + "]"
 
 def _vector_to_julia(vector: List[float]) -> str:
@@ -597,12 +597,12 @@ def _create_dirichlet_prior_3d(tensor: List[List[List[float]]]) -> str:
     """Create Dirichlet prior for 3D tensor."""
     if not tensor:
         return "[]"
-    
+
     action_matrices = []
     for action_matrix in tensor:
         matrix_str = _create_dirichlet_prior(action_matrix)
         action_matrices.append(matrix_str)
-    
+
     return "[" + ", ".join(action_matrices) + "]"
 
 def _write_toml_with_exact_formatting(f, config):
@@ -613,36 +613,36 @@ def _write_toml_with_exact_formatting(f, config):
     # Model section
     f.write("#\n# Model parameters\n#\n")
     f.write("[model]\n")
-    
+
     # Write model parameters
     f.write("# Time step for the state space model\n")
     f.write(f"dt = {config['model']['dt']}\n\n")
-    
+
     f.write("# Constraint parameter for the Halfspace node\n")
     f.write(f"gamma = {config['model']['gamma']}\n\n")
-    
+
     f.write("# Number of time steps in the trajectory\n")
     f.write(f"nr_steps = {config['model']['nr_steps']}\n\n")
-    
+
     f.write("# Number of inference iterations\n")
     f.write(f"nr_iterations = {config['model']['nr_iterations']}\n\n")
-    
+
     f.write("# Number of agents in the simulation (currently fixed at 4)\n")
     f.write(f"nr_agents = {config['model']['nr_agents']}\n\n")
-    
+
     f.write("# Temperature parameter for the softmin function\n")
     f.write(f"softmin_temperature = {config['model']['softmin_temperature']}\n\n")
-    
+
     f.write("# Intermediate results saving interval (every N iterations)\n")
     f.write(f"intermediate_steps = {config['model']['intermediate_steps']}\n\n")
-    
+
     f.write("# Whether to save intermediate results\n")
     f.write(f"save_intermediates = {str(config['model']['save_intermediates']).lower()}\n\n")
-    
+
     # Matrices section
     f.write("#\n# State Space Matrices\n#\n")
     f.write("[model.matrices]\n")
-    
+
     # State transition matrix
     f.write("# State transition matrix\n")
     f.write("# [1 dt 0 0; 0 1 0 0; 0 0 1 dt; 0 0 0 1]\n")
@@ -654,7 +654,7 @@ def _write_toml_with_exact_formatting(f, config):
         else:
             f.write("\n")
     f.write("]\n\n")
-    
+
     # Control input matrix
     f.write("# Control input matrix\n")
     f.write("# [0 0; dt 0; 0 0; 0 dt]\n")
@@ -666,7 +666,7 @@ def _write_toml_with_exact_formatting(f, config):
         else:
             f.write("\n")
     f.write("]\n\n")
-    
+
     # Observation matrix
     f.write("# Observation matrix\n")
     f.write("# [1 0 0 0; 0 0 1 0]\n")
@@ -678,53 +678,53 @@ def _write_toml_with_exact_formatting(f, config):
         else:
             f.write("\n")
     f.write("]\n\n")
-    
+
     # Priors section
     f.write("#\n# Prior distributions\n#\n")
     f.write("[priors]\n")
-    
+
     f.write("# Prior on initial state\n")
     f.write(f"initial_state_variance = {config['priors']['initial_state_variance']}\n\n")
-    
+
     f.write("# Prior on control inputs\n")
     f.write(f"control_variance = {config['priors']['control_variance']}\n\n")
-    
+
     f.write("# Goal constraints variance\n")
     # Use scientific notation with exact format to match gold standard
     f.write(f"goal_constraint_variance = {config['priors']['goal_constraint_variance']:.1e}\n\n")
-    
+
     f.write("# Parameters for GammaShapeRate prior on constraint parameters\n")
     f.write(f"gamma_shape = {config['priors']['gamma_shape']}  # 3/2\n")
     f.write(f"gamma_scale_factor = {config['priors']['gamma_scale_factor']}  # γ^2/2\n\n")
-    
+
     # Visualization section
     f.write("#\n# Visualization parameters\n#\n")
     f.write("[visualization]\n")
-    
+
     f.write("# Plot boundaries\n")
     f.write(f"x_limits = {config['visualization']['x_limits']}\n")
     f.write(f"y_limits = {config['visualization']['y_limits']}\n\n")
-    
+
     f.write("# Animation frames per second\n")
     f.write(f"fps = {config['visualization']['fps']}\n\n")
-    
+
     f.write("# Heatmap resolution\n")
     f.write(f"heatmap_resolution = {config['visualization']['heatmap_resolution']}\n\n")
-    
+
     f.write("# Plot size\n")
     f.write(f"plot_width = {config['visualization']['plot_width']}\n")
     f.write(f"plot_height = {config['visualization']['plot_height']}\n\n")
-    
+
     f.write("# Visualization alpha values\n")
     f.write(f"agent_alpha = {config['visualization']['agent_alpha']}\n")
     f.write(f"target_alpha = {config['visualization']['target_alpha']}\n\n")
-    
+
     f.write("# Color palette\n")
     f.write(f"color_palette = \"{config['visualization']['color_palette']}\"\n\n")
-    
+
     # Environments section
     f.write("#\n# Environment definitions\n#\n")
-    
+
     # Door environment
     if 'door' in config['environments'] and config['environments']['door']['obstacles']:
         env = config['environments']['door']
@@ -754,27 +754,27 @@ def _write_toml_with_exact_formatting(f, config):
             f.write("[[environments.combined.obstacles]]\n")
             f.write(f"center = {obstacle['center']}\n")
             f.write(f"size = {obstacle['size']}\n\n")
-    
+
     # Agents section
     f.write("#\n# Agent configurations\n#\n")
-    
+
     for agent in config['agents']:
         f.write("[[agents]]\n")
         f.write(f"id = {agent['id']}\n")
         f.write(f"radius = {agent['radius']}\n")
         f.write(f"initial_position = {agent['initial_position']}\n")
         f.write(f"target_position = {agent['target_position']}\n\n")
-    
+
     # Experiments section
     f.write("#\n# Experiment configurations\n#\n")
     f.write("[experiments]\n")
-    
+
     f.write("# Random seeds for reproducibility\n")
     f.write(f"seeds = {config['experiments']['seeds']}\n\n")
-    
+
     f.write("# Base directory for results\n")
     f.write(f"results_dir = \"{config['experiments']['results_dir']}\"\n\n")
-    
+
     f.write("# Filename templates\n")
     f.write(f"animation_template = \"{config['experiments']['animation_template']}\"\n")
     f.write(f"control_vis_filename = \"{config['experiments']['control_vis_filename']}\"\n")
@@ -798,7 +798,7 @@ def _create_toml_config_structure(
         Dictionary representing the TOML configuration
     """
     params = gnn_spec.get("initialparameterization", {})
-    
+
     # Start with a standard structure based on the config.toml example
     toml_config = {
         "model": {
@@ -812,7 +812,7 @@ def _create_toml_config_structure(
             "save_intermediates": str(params.get("save_intermediates", False)).lower().strip().startswith("true"),
             "matrices": _extract_matrices(gnn_spec)
         },
-        
+
         "priors": {
             "initial_state_variance": params.get("initial_state_variance", 100.0),
             "control_variance": params.get("control_variance", 0.1),
@@ -820,7 +820,7 @@ def _create_toml_config_structure(
             "gamma_shape": params.get("gamma_shape", 1.5),
             "gamma_scale_factor": params.get("gamma_scale_factor", 0.5)
         },
-        
+
         "visualization": {
             "x_limits": params.get("x_limits", [-20, 20]),
             "y_limits": params.get("y_limits", [-20, 20]),
@@ -832,12 +832,12 @@ def _create_toml_config_structure(
             "target_alpha": params.get("target_alpha", 0.2),
             "color_palette": params.get("color_palette", "tab10")
         },
-        
+
         "environments": _extract_environments(gnn_spec),
         "agents": _extract_agents(gnn_spec),
         "experiments": _extract_experiments(gnn_spec)
     }
-    
+
     return toml_config
 
 def _get_agent_count(gnn_spec: Dict[str, Any]) -> int:
@@ -851,7 +851,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract state space matrices from the GNN specification."""
     matrices = {}
     params = gnn_spec.get("initialparameterization", {})
-    
+
     # Use provided matrices if available, otherwise use defaults
     if "A" in params:
         matrices["A"] = params["A"]
@@ -863,7 +863,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             [0.0, 0.0, 1.0, 1.0],
             [0.0, 0.0, 0.0, 1.0]
         ]
-    
+
     if "B" in params:
         matrices["B"] = params["B"]
     else:
@@ -874,7 +874,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             [0.0, 0.0],
             [0.0, 1.0]
         ]
-    
+
     if "C" in params:
         matrices["C"] = params["C"]
     else:
@@ -889,7 +889,7 @@ def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract environment definitions from the GNN specification."""
     params = gnn_spec.get("initialparameterization", {})
-    
+
     environments = {
         "door": {
             "description": "Two parallel walls with a gap between them",
@@ -937,7 +937,7 @@ def _extract_environments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             "center": params["combined_obstacle_center_3"],
             "size": params["combined_obstacle_size_3"]
         })
-        
+
     return environments
 
 def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
@@ -962,7 +962,7 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
                 })
         if len(agents) == nr_agents:
             return agents
-            
+
     # Fallback to default agents if extraction fails
     return [
         {
@@ -994,7 +994,7 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
 def _extract_experiments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract experiment configurations from the GNN specification."""
     params = gnn_spec.get("initialparameterization", {})
-    
+
     # Use experiment settings from GNN spec if available, otherwise use defaults
     experiments = {
         "seeds": params.get("experiment_seeds", [42, 123]),
@@ -1005,4 +1005,4 @@ def _extract_experiments(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         "path_uncertainty_filename": params.get("path_uncertainty_filename", "path_uncertainty.png"),
         "convergence_filename": params.get("convergence_filename", "convergence.png")
     }
-    return experiments 
+    return experiments

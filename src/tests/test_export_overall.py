@@ -7,9 +7,7 @@ This file contains comprehensive tests for the export module functionality.
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestExportModuleComprehensive:
     """Comprehensive tests for the export module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_export_module_imports(self):
@@ -32,7 +30,7 @@ class TestExportModuleComprehensive:
             assert hasattr(export, 'get_supported_formats')
         except ImportError:
             pytest.skip("Export module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_exporter_instantiation(self):
@@ -45,7 +43,7 @@ class TestExportModuleComprehensive:
             assert hasattr(exporter, 'validate_format')
         except ImportError:
             pytest.skip("Exporter not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_multi_format_exporter_instantiation(self):
@@ -58,7 +56,7 @@ class TestExportModuleComprehensive:
             assert hasattr(exporter, 'get_supported_formats')
         except ImportError:
             pytest.skip("MultiFormatExporter not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_export_module_info(self):
@@ -72,7 +70,7 @@ class TestExportModuleComprehensive:
             assert 'supported_formats' in info
         except ImportError:
             pytest.skip("Export module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_supported_formats(self):
@@ -92,7 +90,7 @@ class TestExportModuleComprehensive:
 
 class TestExportFunctionality:
     """Tests for export functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_export_gnn_model(self, comprehensive_test_data):
@@ -100,14 +98,14 @@ class TestExportFunctionality:
         try:
             from export import Exporter
             exporter = Exporter()
-            
+
             # Test export with sample data
             gnn_data = comprehensive_test_data.get('gnn_content', 'test content')
             result = exporter.export_gnn_model(gnn_data, 'json')
             assert result is not None
         except ImportError:
             pytest.skip("Exporter not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_export_format_validation(self):
@@ -117,13 +115,13 @@ class TestExportFunctionality:
             result = validate_export_format('json')
             assert isinstance(result, bool)
             assert result is True
-            
+
             result = validate_export_format('invalid_format')
             assert isinstance(result, bool)
             assert result is False
         except ImportError:
             pytest.skip("Export validation not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_multi_format_export(self, comprehensive_test_data):
@@ -131,7 +129,7 @@ class TestExportFunctionality:
         try:
             from export import MultiFormatExporter
             exporter = MultiFormatExporter()
-            
+
             gnn_data = comprehensive_test_data.get('gnn_content', 'test content')
             formats = ['json', 'xml']
             result = exporter.export_to_multiple_formats(gnn_data, formats)
@@ -143,7 +141,7 @@ class TestExportFunctionality:
 
 class TestExportIntegration:
     """Integration tests for export module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_export_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -151,18 +149,18 @@ class TestExportIntegration:
         try:
             from export import Exporter
             exporter = Exporter()
-            
+
             # Test end-to-end export
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
                 gnn_content = f.read()
-            
+
             result = exporter.export_gnn_model(gnn_content, 'json')
             assert result is not None
-            
+
         except ImportError:
             pytest.skip("Export module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_export_mcp_integration(self):
@@ -184,7 +182,7 @@ def test_export_module_completeness():
         'get_supported_formats',
         'validate_export_format'
     ]
-    
+
     try:
         import export
         for component in required_components:
@@ -199,16 +197,16 @@ def test_export_module_performance():
     try:
         from export import Exporter
         import time
-        
+
         exporter = Exporter()
         start_time = time.time()
-        
+
         # Test export performance
         result = exporter.export_gnn_model("test content", 'json')
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds
-        
+
     except ImportError:
         pytest.skip("Export module not available")
 

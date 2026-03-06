@@ -255,10 +255,10 @@ def main():
         print(f"✅ Julia found: {results['julia_path']}")
         print(f"📦 Version: {results['julia_version']}")
     else:
-        print(f"❌ Julia not found")
-        print(f"💡 Install Julia from: https://julialang.org/downloads/")
+        print("❌ Julia not found")
+        print("💡 Install Julia from: https://julialang.org/downloads/")
 
-    print(f"\nFramework Setup Results:")
+    print("\nFramework Setup Results:")
     for framework, result in results["frameworks_setup"].items():
         if result.get("skipped"):
             print(f"⏭️  {framework}: Skipped ({result['error']})")

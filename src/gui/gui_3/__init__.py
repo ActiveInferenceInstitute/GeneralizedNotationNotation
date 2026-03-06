@@ -29,23 +29,23 @@ def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
     """
     try:
         logger.info("🎨 Starting GUI 3: State Space Design Studio")
-        
+
         from .processor import run_gui as run_design_studio
-        
+
         result = run_design_studio(
             target_dir=target_dir,
             output_dir=output_dir,
             logger=logger,
             **kwargs
         )
-        
+
         return {
             "gui_type": "gui_3",
             "name": "State Space Design Studio",
             "success": result,
             "features": [
                 "Visual state space designer",
-                "Ontology term editor", 
+                "Ontology term editor",
                 "Connection graph interface",
                 "Parameter tuning controls",
                 "Low-dependency HTML/CSS design"
@@ -53,11 +53,11 @@ def gui_3(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) 
             "port": 7862,
             "url": "http://localhost:7862"
         }
-        
+
     except Exception as e:
         logger.error(f"❌ GUI 3 failed: {e}")
         return {
-            "gui_type": "gui_3", 
+            "gui_type": "gui_3",
             "name": "State Space Design Studio",
             "success": False,
             "error": str(e)
@@ -71,7 +71,7 @@ def get_gui_3_info() -> Dict[str, Any]:
         "description": "Low-dependency visual design experience for state spaces and ontology",
         "features": [
             "Visual state space architecture",
-            "Ontology term assertions", 
+            "Ontology term assertions",
             "Connection graph design",
             "Parameter tuning interface",
             "Export to GNN format"

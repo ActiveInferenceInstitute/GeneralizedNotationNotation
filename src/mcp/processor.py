@@ -6,7 +6,6 @@ This module provides MCP processing capabilities.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
 import logging
 
 from utils.pipeline_template import (
@@ -39,14 +38,14 @@ def register_module_tools(module_name: str) -> bool:
         # Try both import paths: with and without 'src' prefix
         module_paths = [f"{module_name}.mcp", f"src.{module_name}.mcp"]
         module = None
-        
+
         for module_path in module_paths:
             try:
                 module = importlib.import_module(module_path)
                 break
             except (ImportError, ModuleNotFoundError):
                 continue
-        
+
         if module is None:
             logger.warning(f"Module {module_name}.mcp not importable from paths: {module_paths}")
             return False
@@ -62,7 +61,7 @@ def register_module_tools(module_name: str) -> bool:
         else:
             logger.warning(f"Module src.{module_name}.mcp has no register_tools function")
             return False
-            
+
     except Exception as e:
         logger.error(f"Failed to register tools for {module_name}: {e}")
         return False
@@ -79,14 +78,14 @@ def handle_mcp_request(request: dict) -> dict:
     """
     try:
         logger.info(f"Handling MCP request: {request.get('method', 'unknown')}")
-        
+
         # Import MCP instance
         from .mcp import mcp_instance
-        
+
         # Process request
         method = request.get("method", "")
         params = request.get("params", {})
-        
+
         if method == "tools/list":
             tools = mcp_instance.list_available_tools()
             return {
@@ -97,7 +96,7 @@ def handle_mcp_request(request: dict) -> dict:
         elif method == "tools/call":
             tool_name = params.get("name", "")
             tool_params = params.get("arguments", {})
-            
+
             result = mcp_instance.execute_tool(tool_name, tool_params)
             return {
                 "jsonrpc": "2.0",
@@ -113,7 +112,7 @@ def handle_mcp_request(request: dict) -> dict:
                     "message": f"Method not found: {method}"
                 }
             }
-            
+
     except Exception as e:
         logger.error(f"Failed to handle MCP request: {e}")
         return {
@@ -136,10 +135,10 @@ def generate_mcp_report() -> dict:
         from .mcp import mcp_instance
         from datetime import datetime
         from . import __version__ as mcp_version
-        
+
         tools = mcp_instance.list_available_tools()
         resources = mcp_instance.list_available_resources()
-        
+
         report = {
             "timestamp": datetime.now().isoformat(),
             "mcp_version": mcp_version,
@@ -149,12 +148,11 @@ def generate_mcp_report() -> dict:
             "resources": resources,
             "status": "healthy"
         }
-        
+
         return report
-        
+
     except Exception as e:
         logger.error(f"Failed to generate MCP report: {e}")
-        import time
         from datetime import datetime
         return {
             "timestamp": datetime.now().isoformat(),
@@ -184,47 +182,47 @@ def process_mcp(
     """
     import json
     from datetime import datetime
-    
+
     # Use provided logger or create one
     if logger is None:
         logger = logging.getLogger("mcp")
-    
+
     if verbose:
         logger.setLevel(logging.DEBUG)
-    
+
     # Convert to Path objects
     target_dir = Path(target_dir) if not isinstance(target_dir, Path) else target_dir
     output_dir = Path(output_dir) if not isinstance(output_dir, Path) else output_dir
-    
+
     try:
         log_step_start(logger, "Processing MCP")
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create results subdirectory for detailed reports
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize MCP
         from .mcp import initialize, mcp_instance
         from . import __version__ as mcp_version
         # Proceed even if SDK is missing to allow degraded mode in pipeline
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
-        
+
         # Register tools for all modules that provide MCP adapters
         # Modules are already discovered and registered by initialize() -> discover_modules()
         # We don't need to manually register them again, which causes double-registration warnings.
         # But we can retrieve the list of registered modules for reporting.
         registered_modules = list(mcp_instance.modules.keys())
         registered_count = len(registered_modules)
-        
+
         logger.info(f"Auto-discovered {registered_count} modules via initialize()")
-        
+
         # Get available tools after registration
         available_tools = get_available_tools()
         tools_count = len(available_tools)
-        
+
         # Generate detailed report
         report = generate_mcp_report()
         report["registered_modules"] = registered_count
@@ -232,20 +230,20 @@ def process_mcp(
         report["timestamp"] = datetime.now().isoformat()
         report["target_dir"] = str(target_dir)
         report["output_dir"] = str(output_dir)
-        
+
         # Save detailed report to subdirectory
         results_file = results_dir / "mcp_results.json"
         with open(results_file, 'w') as f:
             json.dump(report, f, indent=2)
         logger.info(f"📋 Detailed MCP report saved to: {results_file}")
-        
+
         # Save registered tools list
         if available_tools:
             tools_file = output_dir / "registered_tools.json"
             with open(tools_file, 'w') as f:
                 json.dump(available_tools, f, indent=2)
             logger.info(f"🔧 Registered tools saved to: {tools_file}")
-        
+
         # Create processing summary in output_dir root (for pipeline consistency)
         summary = {
             "timestamp": datetime.now().isoformat(),
@@ -259,19 +257,19 @@ def process_mcp(
             "resources_count": report.get('resources_count', 0),
             "message": f"MCP processing completed - {tools_count} tools registered from {registered_count} modules"
         }
-        
+
         summary_file = output_dir / "mcp_processing_summary.json"
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
         logger.info(f"✅ MCP summary saved to: {summary_file}")
-        
+
         if registered_count > 0:
             log_step_success(logger, f"MCP processing completed successfully - {tools_count} tools from {registered_count} modules registered")
         else:
             log_step_warning(logger, "MCP processing completed with no modules registered")
-        
+
         return True
-        
+
     except Exception as e:
         log_step_error(logger, f"MCP processing failed: {e}")
         # Still create a summary file even on error
@@ -306,4 +304,4 @@ def get_available_tools() -> list:
         return mcp_instance.list_available_tools()
     except Exception as e:
         logger.error(f"Failed to get available tools: {e}")
-        return [] 
+        return []

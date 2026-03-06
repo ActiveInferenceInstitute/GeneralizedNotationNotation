@@ -7,7 +7,6 @@ Command-line interface for the GNN type checker.
 
 import sys
 import argparse
-import json
 from pathlib import Path
 import logging
 import os # Added for os.environ
@@ -49,9 +48,9 @@ def main(cmd_args=None):
     parser.add_argument("-o", "--output-dir", required=True,
                         help="Base directory to save all output files (type checker reports, resource reports, etc.).")
     parser.add_argument("--project-root", help="Absolute path to the project root, for relative path generation in reports")
-    
+
     parsed_args = parser.parse_args(cmd_args)
-    
+
     # The caller (5_type_checker.py or user via CLI) is responsible for configuring logging levels.
     # This script just uses the logger.
 
@@ -78,7 +77,7 @@ def main(cmd_args=None):
 
     markdown_report_name = Path(parsed_args.report_file).name # Use only the filename part
 
-    logger.info(f"Type Checker CLI starting...")
+    logger.info("Type Checker CLI starting...")
     logger.info(f"  Input path: {parsed_args.input_path}")
     logger.info(f"  Output directory: {actual_output_dir}")
     logger.info(f"  Main report filename: {markdown_report_name}")
@@ -142,7 +141,7 @@ def main(cmd_args=None):
     write_csv(artifacts_dir / "variables_table.csv", variables_table_csv(details_dict),
               header=["File", "Variable", "Type", "Dimensions"])
     write_csv(artifacts_dir / "section_presence_matrix.csv", section_presence_matrix_csv(details_dict, all_sections))
-    
+
     # Additional artifacts
     write_csv(artifacts_dir / "connections_table.csv", connections_table_csv(details_dict),
               header=["File", "Source", "Target", "Type", "Temporal"])
@@ -158,7 +157,7 @@ def main(cmd_args=None):
             logger.info(line)
         logger.info("--- End of Type Check Report Summary ---")
         logger.info(f"Main type check report saved in: {actual_output_dir / markdown_report_name}")
-        
+
         # Generate and save the detailed JSON data
         json_output_dir = actual_output_dir / "resources"
         json_output_dir.mkdir(parents=True, exist_ok=True)
@@ -183,7 +182,7 @@ def main(cmd_args=None):
 
         type_check_data_json_path = actual_output_dir / "resources" / "type_check_data.json"
         estimator = GNNResourceEstimator(type_check_data=str(type_check_data_json_path) if type_check_data_json_path.exists() else None)
-        
+
         try:
             if input_path_obj.is_file():
                 result = estimator.estimate_from_file(str(input_path_obj))
@@ -221,9 +220,9 @@ if __name__ == "__main__":
         # Determine verbosity from args (if any includes a verbose flag) or default.
         # For simplicity, as this cli.py doesn't have its own --verbose, default to INFO.
         # A more advanced direct run might parse a --verbose here too.
-        logging.basicConfig(level=logging.INFO, 
-                            format="%Y-%m-%d %H:%M:%S - %(name)s - %(levelname)s - %(message)s", 
+        logging.basicConfig(level=logging.INFO,
+                            format="%Y-%m-%d %H:%M:%S - %(name)s - %(levelname)s - %(message)s",
                             stream=sys.stdout)
         logger.info("CLI executed directly: Basic logging configured to INFO level.")
 
-    sys.exit(main()) # cmd_args will be None, so argparse uses sys.argv[1:] 
+    sys.exit(main()) # cmd_args will be None, so argparse uses sys.argv[1:]

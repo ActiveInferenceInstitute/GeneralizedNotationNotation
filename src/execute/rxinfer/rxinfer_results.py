@@ -9,7 +9,7 @@ convergence metrics, and formats results for downstream pipeline steps.
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional
 from datetime import datetime
 
 logger = logging.getLogger(__name__)
@@ -314,7 +314,7 @@ def format_rxinfer_report(results: List[Dict[str, Any]]) -> str:
     if not results:
         return "# RxInfer.jl Results\n\nNo results found.\n"
 
-    lines = [f"# RxInfer.jl Inference Results\n",
+    lines = ["# RxInfer.jl Inference Results\n",
              f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n",
              f"**Models analyzed**: {len(results)}\n\n"]
 
@@ -334,7 +334,7 @@ def format_rxinfer_report(results: List[Dict[str, Any]]) -> str:
         # Posterior summary
         post_summary = r.get("posterior_summary", {})
         if post_summary:
-            lines.append(f"\n### Posterior Estimates\n")
+            lines.append("\n### Posterior Estimates\n")
             lines.append("| Variable | Type | Mean/Value |")
             lines.append("|----------|------|------------|")
             for var, stats in list(post_summary.items())[:10]:  # Top 10

@@ -6,7 +6,6 @@ Focuses on ensuring robust conversion of various Python data structures (Lists, 
 into valid Julia matrix syntax.
 """
 
-import pytest
 import sys
 from pathlib import Path
 
@@ -26,7 +25,7 @@ class TestMatrixToJulia:
         data = [0.1, 0.9]
         result = _matrix_to_julia(data)
         assert result == "[0.1, 0.9]"
-        
+
         # Test tuple version
         data_tuple = (0.1, 0.9)
         result_tuple = _matrix_to_julia(data_tuple)
@@ -43,8 +42,8 @@ class TestMatrixToJulia:
 
     def test_2d_matrix_tuple_of_lists(self):
         """Test converting Tuple of Lists (The bug case)."""
-        # This was causing failures before: 
-        # ([0.9, 0.1], [0.1, 0.9]) was treated as a 1D vector of lists -> [[0.9,0.1], [0.1,0.9]] 
+        # This was causing failures before:
+        # ([0.9, 0.1], [0.1, 0.9]) was treated as a 1D vector of lists -> [[0.9,0.1], [0.1,0.9]]
         # instead of a proper 2D matrix.
         data = ([0.9, 0.1], [0.1, 0.9])
         result = _matrix_to_julia(data)
@@ -68,7 +67,7 @@ class TestMatrixToJulia:
         slice1 = [[1.0, 0.0], [0.0, 1.0]] # Identity
         slice2 = [[0.0, 1.0], [1.0, 0.0]] # Flip
         data = [slice1, slice2]
-        
+
         result = _matrix_to_julia(data)
         # format: cat([slice1], [slice2]; dims=3)
         assert result.startswith("cat(")
@@ -81,11 +80,11 @@ class TestMatrixToJulia:
         slice1 = ((1.0, 0.0), (0.0, 1.0))
         slice2 = ((0.0, 1.0), (1.0, 0.0))
         data = (slice1, slice2)
-        
+
         result = _matrix_to_julia(data)
         assert result.startswith("cat(")
         assert "[1.0 0.0; 0.0 1.0]" in result
-        
+
     def test_string_input(self):
         """Test string fallback behavior."""
         data = "[[0.9, 0.1], [0.1, 0.9]]"

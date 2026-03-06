@@ -7,7 +7,6 @@ including LLM-powered insights and executive report generation with per-step
 breakdowns, yellow/red flag detection, and actionable recommendations.
 """
 
-import sys
 import json
 import logging
 import asyncio
@@ -19,8 +18,7 @@ from dataclasses import dataclass, field
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_error
 )
 
 
@@ -607,7 +605,7 @@ def generate_executive_report(
     yellow_count = len(flags_by_type.get("yellow", []))
     green_count = len(flags_by_type.get("green", []))
 
-    report_parts.append(f"# Pipeline Intelligent Analysis Report\n")
+    report_parts.append("# Pipeline Intelligent Analysis Report\n")
     report_parts.append(f"**Generated**: {datetime.now().isoformat()}\n")
     report_parts.append(f"**Status**: {status_emoji} {status}\n")
     report_parts.append(f"**Health Score**: {analysis['health_score']:.1f}/100\n")

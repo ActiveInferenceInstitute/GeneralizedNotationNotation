@@ -6,14 +6,13 @@ This module provides report processing capabilities.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any
 import logging
 
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_error
 )
 
 logger = logging.getLogger(__name__)
@@ -37,39 +36,39 @@ def process_report(
         True if processing successful, False otherwise
     """
     logger = logging.getLogger("report")
-    
+
     try:
         log_step_start(logger, "Processing report")
-        
+
         # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Basic report processing
         results = {
             "processed_files": 0,
             "success": True,
             "errors": []
         }
-        
+
         # Find GNN files
         gnn_files = list(target_dir.glob("*.md"))
         if gnn_files:
             results["processed_files"] = len(gnn_files)
-        
+
         # Save results
         import json
         results_file = results_dir / "report_results.json"
         with open(results_file, 'w') as f:
             json.dump(results, f, indent=2)
-        
+
         if results["success"]:
             log_step_success(logger, "report processing completed successfully")
         else:
             log_step_error(logger, "report processing failed")
-        
+
         return results["success"]
-        
+
     except Exception as e:
         log_step_error(logger, "report processing failed", {"error": str(e)})
         return False
@@ -93,17 +92,17 @@ def generate_comprehensive_report(
         Dictionary with report results
     """
     logger = logging.getLogger("report")
-    
+
     try:
         log_step_start(logger, "Generating comprehensive report")
-        
+
         # Create report directory
         report_dir = output_dir
         report_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Analyze GNN files
         gnn_files = list(target_dir.glob("*.md"))
-        
+
         report_data = {
             "timestamp": str(Path(__file__).stat().st_mtime),
             "total_files": len(gnn_files),
@@ -113,7 +112,7 @@ def generate_comprehensive_report(
                 "errors": []
             }
         }
-        
+
         # Process each file
         for gnn_file in gnn_files:
             try:
@@ -128,7 +127,7 @@ def generate_comprehensive_report(
                     "error": str(e)
                 }
                 report_data["summary"]["errors"].append(error_info)
-        
+
         # Generate report in specified format
         if format == "json":
             report_file = report_dir / "comprehensive_report.json"
@@ -145,16 +144,16 @@ def generate_comprehensive_report(
             markdown_content = generate_markdown_report(report_data)
             with open(report_file, 'w') as f:
                 f.write(markdown_content)
-        
+
         log_step_success(logger, f"Comprehensive report generated in {format} format")
-        
+
         return {
             "success": True,
             "report_file": str(report_file),
             "format": format,
             "files_analyzed": len(report_data["files_analyzed"])
         }
-        
+
     except Exception as e:
         log_step_error(logger, f"Failed to generate comprehensive report: {e}")
         return {
@@ -175,7 +174,7 @@ def analyze_gnn_file(file_path: Path) -> Dict[str, Any]:
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         # Basic analysis
         analysis = {
             "file_size": len(content),
@@ -185,19 +184,19 @@ def analyze_gnn_file(file_path: Path) -> Dict[str, Any]:
             "has_state_space": "StateSpaceBlock:" in content,
             "has_gnn_version": "GNNVersionAndFlags:" in content
         }
-        
+
         # Extract sections
         lines = content.split('\n')
         current_section = None
-        
+
         for line in lines:
             line = line.strip()
             if line.startswith('#'):
                 current_section = line[1:].strip()
                 analysis["sections"].append(current_section)
-        
+
         return analysis
-        
+
     except Exception as e:
         return {
             "error": str(e)
@@ -243,17 +242,17 @@ def generate_html_report(report_data: Dict[str, Any]) -> str:
             <h2>Files Analyzed</h2>
             <ul>
     """
-    
+
     for file_info in report_data.get('files_analyzed', []):
         html += f"<li>{file_info['file']}</li>"
-    
+
     html += """
             </ul>
         </div>
     </body>
     </html>
     """
-    
+
     return html
 
 def generate_markdown_report(report_data: Dict[str, Any]) -> str:
@@ -279,8 +278,8 @@ Generated on: {report_data.get('timestamp', 'Unknown')}
 ## Files Analyzed
 
 """
-    
+
     for file_info in report_data.get('files_analyzed', []):
         markdown += f"- {file_info['file']}\n"
-    
+
     return markdown

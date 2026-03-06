@@ -20,7 +20,7 @@ class GNNSyntaxError(Exception):
         self.line = line
         self.column = column
         self.format_context = format_context
-    
+
     def format_message(self) -> str:
         msg = str(self)
         if self.line is not None:
@@ -45,20 +45,20 @@ class ValidationResult:
     cross_format_consistent: Optional[bool] = None
     semantic_checksum: Optional[str] = None
     performance_metrics: Dict[str, float] = field(default_factory=dict)
-    
+
     def add_round_trip_result(self, result):
         self.round_trip_results.append(result)
         if not result.success:
             self.errors.extend(result.errors)
             self.warnings.extend(result.warnings)
-    
+
     def get_round_trip_success_rate(self) -> float:
         if not self.round_trip_results:
             return 0.0
         successful = sum(1 for r in self.round_trip_results if r.success)
         return (successful / len(self.round_trip_results)) * 100
 
-@dataclass 
+@dataclass
 class GNNVariable:
     name: str
     dimensions: List[Union[int, str]]
@@ -134,11 +134,11 @@ class ParseResult:
     errors: List[str] = field(default_factory=list)
     warnings: List[str] = field(default_factory=list)
     metadata: Dict[str, Any] = field(default_factory=dict)
-    
+
     def add_error(self, error: str):
         self.errors.append(error)
         self.success = False
-    
+
     def add_warning(self, warning: str):
         self.warnings.append(warning)
 
@@ -151,7 +151,7 @@ class GNNInternalRepresentation:
     parameters: List[Any] = field(default_factory=list)
     equations: List[Any] = field(default_factory=list)
     time_specification: Any = None
-    ontology_mappings: List[Any] = field(default_factory=list) 
+    ontology_mappings: List[Any] = field(default_factory=list)
 
 @dataclass
 class RoundTripResult:
@@ -167,17 +167,17 @@ class RoundTripResult:
     test_time: float = 0.0
     checksum_original: Optional[str] = None
     checksum_converted: Optional[str] = None
-    
+
     def add_difference(self, diff: str):
         self.differences.append(diff)
         self.success = False
-    
+
     def add_warning(self, warning: str):
         self.warnings.append(warning)
-    
+
     def add_error(self, error: str):
         self.errors.append(error)
-        self.success = False 
+        self.success = False
 
 @dataclass
 class ComprehensiveTestReport:
@@ -191,7 +191,7 @@ class ComprehensiveTestReport:
     format_matrix: Dict[Tuple[GNNFormat, GNNFormat], bool] = field(default_factory=dict)
     semantic_differences: List[str] = field(default_factory=list)
     critical_errors: List[str] = field(default_factory=list)
-    
+
     def add_result(self, result: RoundTripResult):
         self.round_trip_results.append(result)
         self.total_tests += 1
@@ -202,10 +202,10 @@ class ComprehensiveTestReport:
             self.semantic_differences.extend(result.differences)
             self.critical_errors.extend(result.errors)
         self.format_matrix[(result.source_format, result.target_format)] = result.success
-    
+
     def get_success_rate(self) -> float:
         return (self.successful_tests / self.total_tests) * 100 if self.total_tests > 0 else 0.0
-    
+
     def get_format_summary(self) -> Dict[GNNFormat, Dict[str, int]]:
         format_summary = {}
         for result in self.round_trip_results:
@@ -217,4 +217,4 @@ class ComprehensiveTestReport:
                 format_summary[fmt]["success"] += 1
             else:
                 format_summary[fmt]["failure"] += 1
-        return format_summary 
+        return format_summary

@@ -65,7 +65,7 @@ def test_ollama_provider_initialize(monkeypatch):
 
     provider = OllamaProvider()
     ok = provider.initialize()
-    
+
     # The provider has a CLI fallback that can succeed even when the Python
     # ollama package fails to list models. Test that initialization succeeds
     # if either the Python client OR CLI fallback works.
@@ -131,7 +131,7 @@ async def test_ollama_streaming(monkeypatch):
         chunks.append(chunk)
         if len("".join(chunks)) > 20:
             break
-    
+
     text = "".join(chunks)
     assert isinstance(text, str)
     assert len(text) > 0
@@ -167,13 +167,13 @@ async def test_processor_uses_ollama_when_no_keys(monkeypatch):
 
     # If initialized, verify we can use the processor
     assert initialized is True
-    
+
     # Skip the actual LLM call if Ollama service is not running
     if not _ollama_available():
         # Initialized via CLI but service not running for queries
         pytest.skip("Ollama service not running for LLM queries")
         return
-    
+
     # Try a short analysis
     content = "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[2]\n"
 

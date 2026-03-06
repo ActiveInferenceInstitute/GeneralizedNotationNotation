@@ -2,7 +2,7 @@
 
 How to add real, tested MCP tools to any GNN pipeline module.
 
-**Last Updated**: March 3, 2026
+**Last Updated**: March 6, 2026
 
 ## Design Principles
 
@@ -57,7 +57,7 @@ def register_tools(server: Any) -> None:
         """Return <module> module version and capabilities."""
         return {
             "module": "<module>",
-            "version": "1.3.0",
+            "version": "2.0.0",
             "capabilities": ["feature_a", "feature_b"],
         }
 

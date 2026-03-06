@@ -2,7 +2,7 @@
 
 How `src/tests/test_mcp_audit.py` (462 lines) validates the MCP tool registry.
 
-**Last Updated**: March 3, 2026  
+**Last Updated**: March 6, 2026  
 **Source**: [`src/tests/test_mcp_audit.py`](../../../src/tests/test_mcp_audit.py)
 
 ## Fixture Design

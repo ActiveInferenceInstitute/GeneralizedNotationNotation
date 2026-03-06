@@ -195,8 +195,8 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Output Directory Structure**: Fully organized ✅
 - **Pipeline Continuation**: Guaranteed ✅
 - **Error Recovery**: Comprehensive ✅
-- **Last Updated**: 2026-03-03
-- **Version**: 1.3.0
+- **Last Updated**: 2026-03-06
+- **Version**: 2.0.0
 - **Test Suite**: ✅ 1,522+ tests passing
 
 **Complete Output Directory Organization (25 Steps):**
@@ -247,7 +247,7 @@ output/
 2. **Retry Mechanisms**: Exponential backoff retry with configurable attempt limits
 3. **Resource Monitoring**: Memory and CPU usage tracking with timeout protection
 4. **Error Recovery**: Detailed error classification with specific recovery suggestions
-5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, DisCoPy, PyTorch, and NumPyro
+5. **Framework Support**: Safe handling of PyMDP, RxInfer, ActiveInference.jl, JAX, Stan, DisCoPy, PyTorch, and NumPyro
 
 **Pipeline Continuation Guarantees:**
 

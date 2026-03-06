@@ -11,10 +11,8 @@ Extracted from post_simulation.py for maintainability.
 
 import json
 import logging
-import re
 from pathlib import Path
 from typing import Dict, List, Any, Optional
-from datetime import datetime
 import numpy as np
 import matplotlib
 matplotlib.use('Agg')
@@ -22,20 +20,6 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation, PillowWriter
 MATPLOTLIB_AVAILABLE = True
 
-from .trace_analysis import (
-    analyze_simulation_traces,
-    analyze_free_energy,
-    analyze_policy_convergence,
-    compare_framework_results,
-)
-from .framework_extractors import (
-    extract_pymdp_data,
-    extract_rxinfer_data,
-    extract_activeinference_jl_data,
-    extract_jax_data,
-    extract_discopy_data,
-)
-from .math_utils import compute_shannon_entropy
 
 logger = logging.getLogger(__name__)
 
@@ -290,7 +274,7 @@ def visualize_all_framework_outputs(
                         if sim_data_path.exists():
                             csv_candidates.append(sim_data_path / "simulation_results.csv")
                             csv_candidates.extend(sorted(sim_data_path.glob("*_simulation_results.csv")))
-                        
+
                         for csv_file in csv_candidates:
                             if csv_file.exists():
                                 try:
@@ -609,7 +593,7 @@ def generate_free_energy_plots(
             # Add a heatmap background if there are many policies
             im = ax1.imshow(fe_array.T, aspect='auto', cmap='viridis', interpolation='none', alpha=0.3)
             ax1.set_ylabel("Policy Index / EFE")
-            
+
         # Bold line for the selected/minimum EFE
         ax1.plot(range(n_steps), fe_summary, 'k-', linewidth=2, label='Min EFE (Selected)')
     else:

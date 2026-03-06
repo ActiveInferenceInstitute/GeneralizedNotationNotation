@@ -8,7 +8,6 @@ generative model diagrams, and cross-file combined visualizations.
 from pathlib import Path
 from typing import Dict, Any, List
 import logging
-import json
 import numpy as np
 
 # Import visualization libraries with error handling

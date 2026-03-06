@@ -40,7 +40,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # Import module function
 try:
     from audio import process_audio
-except ImportError as e:
+except ImportError:
     def process_audio(target_dir, output_dir, logger=None, **kwargs):
         """Fallback audio processing when module unavailable."""
         import logging
@@ -48,7 +48,7 @@ except ImportError as e:
             logger = logging.getLogger(__name__)
         logger.warning(f"Audio module not available - using fallback: {e}")
         logger.info("Install audio support with: uv pip install -e .[audio]")
-        
+
         # Create a fallback result file to let downstream steps know we skipped
         try:
             from pathlib import Path
@@ -59,7 +59,7 @@ except ImportError as e:
                 json.dump({"status": "skipped", "reason": str(e)}, f, indent=2)
         except Exception:
             pass
-            
+
         return True
 
 run_script = create_standardized_pipeline_script(

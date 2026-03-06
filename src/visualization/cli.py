@@ -4,7 +4,6 @@ GNN Visualization CLI
 Command-line interface for generating visualizations of GNN models.
 """
 
-import os
 import sys
 import argparse
 from pathlib import Path
@@ -19,20 +18,20 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         description='Generate visualizations for GNN models.',
         formatter_class=argparse.ArgumentDefaultsHelpFormatter
     )
-    
+
     # Input options
     parser.add_argument(
         'input',
         help='Path to a GNN file or directory containing GNN files (e.g., input/gnn_files)'
     )
-    
+
     # Output directory
     parser.add_argument(
         '-o', '--output-dir',
         help='Directory to save visualizations. If not provided, creates a timestamped directory in ../output.',
         default='../output'  # Defaults to output folder in the parent of current scripts (e.g. project_root/output)
     )
-    
+
     # Visualization options
     parser.add_argument(
         '--recursive',
@@ -43,20 +42,20 @@ def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
         '--project-root',
         help='Absolute path to the project root, for relative path generation in reports'
     )
-    
+
     return parser.parse_args(args)
 
 
 def main(args: Optional[List[str]] = None) -> int:
     """Main entry point for GNN visualization CLI."""
     parsed_args = parse_args(args)
-    
+
     # Create visualizer
     visualizer = GNNVisualizer(output_dir=parsed_args.output_dir, project_root=parsed_args.project_root)
-    
+
     # Get input path
     input_path = Path(parsed_args.input)
-    
+
     # Process input
     if input_path.is_file():
         # Single file
@@ -79,9 +78,9 @@ def main(args: Optional[List[str]] = None) -> int:
     else:
         print(f"Error: Input path '{input_path}' does not exist")
         return 1
-    
+
     return 0
 
 
 if __name__ == '__main__':
-    sys.exit(main()) 
+    sys.exit(main())

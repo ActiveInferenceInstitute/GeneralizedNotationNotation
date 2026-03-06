@@ -1,7 +1,7 @@
 
 # Processed by GNN Pipeline Template
 # Original file: input/gnn_files/basics/static_perception.md
-# Processed on: 2026-03-03T08:15:07.769427
+# Processed on: 2026-03-06T09:42:35.838771
 # Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Static Perception Model

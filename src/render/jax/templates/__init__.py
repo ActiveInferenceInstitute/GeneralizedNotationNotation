@@ -11,6 +11,6 @@ from .combined_template import COMBINED_TEMPLATE
 
 __all__ = [
     'POMDP_TEMPLATE',
-    'GENERAL_TEMPLATE', 
+    'GENERAL_TEMPLATE',
     'COMBINED_TEMPLATE'
-] 
+]

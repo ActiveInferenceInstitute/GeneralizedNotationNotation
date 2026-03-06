@@ -1,7 +1,7 @@
 # Tutorials Directory Manifest (`AGENTS.md`)
 
 **Role**: Maintains metadata and architectural manifest for the `tutorials` subdirectory.
-**Version**: v1.3.0
+**Version**: v2.0.0
 **Context**: Part of the GNN (Generalized Notation Notation) documentation ecosystem.
 
 ## Directory Identity

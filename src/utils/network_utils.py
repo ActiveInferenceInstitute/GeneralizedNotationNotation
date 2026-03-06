@@ -22,9 +22,7 @@ except Exception:
             raise RuntimeError('requests library not available in test environment')
 
     requests = _DummyRequests()
-from typing import Dict, Any, List, Optional, Union
-from pathlib import Path
-import json
+from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
 
@@ -41,11 +39,11 @@ def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
         Dictionary with response data and timing information
     """
     start_time = time.time()
-    
+
     try:
         response = requests.request(method, url, **kwargs)
         end_time = time.time()
-        
+
         return {
             "success": True,
             "status_code": response.status_code,
@@ -78,11 +76,11 @@ def batch_request(urls: List[str], method: str = "GET", **kwargs) -> List[Dict[s
         List of response dictionaries
     """
     results = []
-    
+
     for url in urls:
         result = timed_request(url, method, **kwargs)
         results.append(result)
-        
+
     return results
 
 def validate_api_endpoint(url: str, expected_status: int = 200) -> Dict[str, Any]:
@@ -97,7 +95,7 @@ def validate_api_endpoint(url: str, expected_status: int = 200) -> Dict[str, Any
         Dictionary with validation results
     """
     result = timed_request(url)
-    
+
     validation_result = {
         "url": url,
         "accessible": result["success"],
@@ -105,7 +103,7 @@ def validate_api_endpoint(url: str, expected_status: int = 200) -> Dict[str, Any
         "response_time": result.get("response_time", 0),
         "valid": result["success"] and result.get("status_code") == expected_status
     }
-    
+
     return validation_result
 
 def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
@@ -119,12 +117,12 @@ def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
         Dictionary with performance metrics
     """
     results = batch_request(urls)
-    
+
     successful_requests = [r for r in results if r["success"]]
     failed_requests = [r for r in results if not r["success"]]
-    
+
     response_times = [r["response_time"] for r in successful_requests]
-    
+
     metrics = {
         "total_requests": len(results),
         "successful_requests": len(successful_requests),
@@ -135,5 +133,5 @@ def get_network_performance_metrics(urls: List[str]) -> Dict[str, Any]:
         "max_response_time": max(response_times) if response_times else 0,
         "total_response_time": sum(response_times)
     }
-    
-    return metrics 
+
+    return metrics

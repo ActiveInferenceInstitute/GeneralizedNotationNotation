@@ -4,7 +4,7 @@
 > **GNN Integration Layer**: Julia
 > **Framework Base**: `RxInfer.jl` (Reactive Message Passing)
 > **Simulation Architecture**: Online True POMDP Generative Model
-> **Documentation Version**: 1.3.0
+> **Documentation Version**: 2.0.0
 
 ## Overview
 

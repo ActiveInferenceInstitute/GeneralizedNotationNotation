@@ -19,7 +19,7 @@ from .visualize_jax_output import plot_tensor_output
 
 __all__ = [
     'JAX_FULLY_OPERATIONAL',
-    'MATPLOTLIB_AVAILABLE', 
+    'MATPLOTLIB_AVAILABLE',
     'gnn_file_to_discopy_diagram',
     'gnn_file_to_discopy_matrix_diagram',
     'plot_tensor_output'

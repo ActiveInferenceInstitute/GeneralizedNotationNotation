@@ -1,5 +1,4 @@
 import pytest
-import os
 from type_checker.checker import GNNTypeChecker
 
 class TestTypeCheckerOverall:
@@ -54,7 +53,7 @@ x->s  # x is undefined
         """Test checking a valid file."""
         checker = GNNTypeChecker(strict_mode=False)
         is_valid, errors, warnings, details = checker.check_file(str(valid_gnn_file))
-        
+
         assert is_valid is True
         assert len(errors) == 0
 
@@ -62,7 +61,7 @@ x->s  # x is undefined
         """Test strict mode."""
         checker = GNNTypeChecker(strict_mode=True)
         is_valid, errors, warnings, details = checker.check_file(str(valid_gnn_file))
-        
+
         # Depending on strict rules, it might still pass or fail if something small is missing
         # Based on my read of checking logic, 'valid_model.md' should be mostly fine.
         assert is_valid is True
@@ -71,12 +70,12 @@ x->s  # x is undefined
         """Test detecting undefined variables."""
         checker = GNNTypeChecker(strict_mode=True)
         is_valid, errors, warnings, details = checker.check_file(str(type_error_gnn_file))
-        
+
         # Check source code logic:
         # _check_connections adds WARNING: "Connection references potentially undefined variable: x"
         # In check_file: if strict_mode and critical_warnings > 0, it promotes to ERROR and fails.
         # "Connection references potentially undefined variable" IS in critical_warning_patterns.
-        
+
         assert is_valid is False
         assert any("undefined variable" in e for e in errors)
 
@@ -84,6 +83,6 @@ x->s  # x is undefined
         """Test directory scanning."""
         checker = GNNTypeChecker()
         results = checker.check_directory(str(safe_filesystem.temp_dir))
-        
+
         assert str(valid_gnn_file) in results
         assert results[str(valid_gnn_file)]["is_valid"] is True

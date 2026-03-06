@@ -25,7 +25,7 @@ def get_system_info() -> Dict[str, Any]:
             "working_directory": str(Path.cwd()),
             "user": os.getenv('USER', 'unknown')
         }
-        
+
         # Add psutil-dependent info if available
         if PSUTIL_AVAILABLE:
             base_info.update({
@@ -37,8 +37,8 @@ def get_system_info() -> Dict[str, Any]:
                 "memory_total_gb": "unavailable (psutil not installed)",
                 "disk_free_gb": "unavailable (psutil not installed)"
             })
-        
+
         return base_info
     except Exception as e:
         logger.warning(f"Failed to gather complete system info: {e}")
-        return {"error": str(e)} 
+        return {"error": str(e)}

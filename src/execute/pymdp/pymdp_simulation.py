@@ -18,25 +18,17 @@ Date: 2024
 """
 
 import numpy as np
-import json
-import pickle
 import time
 import logging
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional, Any, Union
-from datetime import datetime
+from typing import Dict, List, Optional, Any, Union
 import warnings
 warnings.filterwarnings('ignore')
 
-from analysis.pymdp.visualizer import PyMDPVisualizer
 from .pymdp_utils import (
-    convert_numpy_for_json,
     safe_json_dump,
     safe_pickle_dump,
     clean_trace_for_serialization,
-    save_simulation_results,
-    generate_simulation_summary,
-    create_output_directory_with_timestamp,
     format_duration
 )
 
@@ -105,12 +97,12 @@ except ImportError:
                 if isinstance(arr, (list, tuple)) and len(arr) > 0:
                     return arr[0]
                 return arr
-            
+
             self.A = extract_first(A)
             self.B = extract_first(B)
             self.C = extract_first(C)
             self.D = extract_first(D)
-            
+
             # Ensure numpy arrays for B and D (needed for .shape access)
             if self.B is not None and not isinstance(self.B, np.ndarray):
                 try:
@@ -191,16 +183,16 @@ class PyMDPSimulation:
         """
         self.gnn_config = gnn_config or {}
         self.logger = logging.getLogger(__name__)
-        
+
         # Initialize core parameters from GNN or defaults
         self._initialize_parameters()
-        
+
         # Initialize PyMDP components
         self.agent = None
         self.model_matrices = {}
         self.simulation_trace = []
         self.results = {}
-        
+
         # NOTE: Visualization is handled by the analysis step (16_analysis.py)
         # The execute step only exports simulation data - no visualizer needed.
 
@@ -264,24 +256,24 @@ class PyMDPSimulation:
             else:
                 self.observations = list(observations)
             self.model_name = self.gnn_config.get('model_name', 'GNN_POMDP')
-            
+
             # Convert to numerical parameters
             self.num_states = len(self.states)
             self.num_actions = len(self.actions)
             self.num_observations = len(self.observations)
-            
+
             self.logger.info(f"Initialized from GNN config: {self.num_states} states, "
                            f"{self.num_actions} actions, {self.num_observations} observations")
         else:
             # Default gridworld configuration
             self.num_states = 4
-            self.num_actions = 5  
+            self.num_actions = 5
             self.num_observations = 4
             self.states = [f"location_{i}" for i in range(self.num_states)]
             self.actions = ["move_up", "move_down", "move_left", "move_right", "stay"]
             self.observations = [f"obs_location_{i}" for i in range(self.num_observations)]
             self.model_name = "Default_Gridworld"
-            
+
             self.logger.info("Initialized with default gridworld configuration")
 
         # Simulation parameters (can be overridden by GNN config)
@@ -320,9 +312,9 @@ class PyMDPSimulation:
             if not hasattr(self, 'gnn_matrices') or not self.gnn_matrices:
                 self.logger.warning("No GNN matrices available, using default creation method")
                 return self.create_pymdp_model()
-            
+
             self.logger.info(f"Creating PyMDP model from GNN matrices: {list(self.gnn_matrices.keys())}")
-            
+
             # A matrix: P(observation | hidden_state) [NUM_OBS, NUM_STATES]
             A = utils.obj_array(1)
             if 'A' in self.gnn_matrices:
@@ -331,8 +323,8 @@ class PyMDPSimulation:
             else:
                 A[0] = self._create_observation_model()
                 self.logger.info("Using default A matrix")
-            
-            # B matrix: P(next_state | current_state, action) [NUM_STATES, NUM_STATES, NUM_ACTIONS]  
+
+            # B matrix: P(next_state | current_state, action) [NUM_STATES, NUM_STATES, NUM_ACTIONS]
             B = utils.obj_array(1)
             if 'B' in self.gnn_matrices:
                 B[0] = self._process_gnn_B_matrix(self.gnn_matrices['B'])
@@ -340,7 +332,7 @@ class PyMDPSimulation:
             else:
                 B[0] = self._create_transition_model()
                 self.logger.info("Using default B matrix")
-            
+
             # C vector: log preferences over observations [NUM_OBS]
             C = utils.obj_array(1)
             if 'C' in self.gnn_matrices:
@@ -349,7 +341,7 @@ class PyMDPSimulation:
             else:
                 C[0] = self._create_preference_model()
                 self.logger.info("Using default C vector")
-            
+
             # D vector: prior beliefs over initial states [NUM_STATES]
             D = utils.obj_array(1)
             if 'D' in self.gnn_matrices:
@@ -362,7 +354,7 @@ class PyMDPSimulation:
             # Store matrices for analysis
             self.model_matrices = {
                 'A': A[0],
-                'B': B[0], 
+                'B': B[0],
                 'C': C[0],
                 'D': D[0]
             }
@@ -382,9 +374,9 @@ class PyMDPSimulation:
                 self.B_np = None
                 self.C_np = None
                 self.D_np = None
-            
+
             # Log matrix properties
-            self.logger.info(f"Final model matrices:")
+            self.logger.info("Final model matrices:")
             self.logger.info(f"  A (likelihood): {A[0].shape}, sum={A[0].sum():.3f}")
             self.logger.info(f"  B (transition): {B[0].shape}, sum={B[0].sum():.3f}")
             self.logger.info(f"  C (preferences): {C[0].shape}, min={C[0].min():.3f}, max={C[0].max():.3f}")
@@ -421,7 +413,7 @@ class PyMDPSimulation:
             else:
                 self.logger.warning(f"Unexpected A matrix type: {type(gnn_A)}")
                 return self._create_observation_model()
-            
+
             # Ensure correct shape [observations, states]
             if A_matrix.shape != (self.num_observations, self.num_states):
                 self.logger.warning(f"A matrix shape mismatch: got {A_matrix.shape}, expected ({self.num_observations}, {self.num_states})")
@@ -430,13 +422,13 @@ class PyMDPSimulation:
                     A_matrix = A_matrix.reshape(self.num_observations, self.num_states)
                 else:
                     return self._create_observation_model()
-            
+
             # Normalize probabilities
             A_matrix = utils.norm_dist(A_matrix)
-            
+
             self.logger.info(f"Processed GNN A matrix: shape={A_matrix.shape}, min={A_matrix.min():.3f}, max={A_matrix.max():.3f}")
             return A_matrix
-            
+
         except Exception as e:
             self.logger.error(f"Failed to process GNN A matrix: {e}")
             return self._create_observation_model()
@@ -452,7 +444,7 @@ class PyMDPSimulation:
             else:
                 self.logger.warning(f"Unexpected B matrix type: {type(gnn_B)}")
                 return self._create_transition_model()
-            
+
             # Ensure correct shape [next_states, current_states, actions]
             expected_shape = (self.num_states, self.num_states, self.num_actions)
             if B_matrix.shape != expected_shape:
@@ -466,14 +458,14 @@ class PyMDPSimulation:
                         return self._create_transition_model()
                 else:
                     return self._create_transition_model()
-            
+
             # Normalize transition probabilities for each action
             for action in range(self.num_actions):
                 B_matrix[:, :, action] = utils.norm_dist(B_matrix[:, :, action])
-            
+
             self.logger.info(f"Processed GNN B matrix: shape={B_matrix.shape}, min={B_matrix.min():.3f}, max={B_matrix.max():.3f}")
             return B_matrix
-            
+
         except Exception as e:
             self.logger.error(f"Failed to process GNN B matrix: {e}")
             return self._create_transition_model()
@@ -489,11 +481,11 @@ class PyMDPSimulation:
             else:
                 self.logger.warning(f"Unexpected C vector type: {type(gnn_C)}")
                 return self._create_preference_model()
-            
+
             # Handle different possible shapes
             if C_vector.ndim > 1:
                 C_vector = C_vector.flatten()
-            
+
             # Ensure correct length
             if len(C_vector) != self.num_observations:
                 self.logger.warning(f"C vector length mismatch: got {len(C_vector)}, expected {self.num_observations}")
@@ -504,10 +496,10 @@ class PyMDPSimulation:
                     padded_C = np.zeros(self.num_observations)
                     padded_C[:len(C_vector)] = C_vector
                     C_vector = padded_C
-            
+
             self.logger.info(f"Processed GNN C vector: shape={C_vector.shape}, min={C_vector.min():.3f}, max={C_vector.max():.3f}")
             return C_vector
-            
+
         except Exception as e:
             self.logger.error(f"Failed to process GNN C vector: {e}")
             return self._create_preference_model()
@@ -523,11 +515,11 @@ class PyMDPSimulation:
             else:
                 self.logger.warning(f"Unexpected D vector type: {type(gnn_D)}")
                 return self._create_prior_beliefs()
-            
+
             # Handle different possible shapes
             if D_vector.ndim > 1:
                 D_vector = D_vector.flatten()
-            
+
             # Ensure correct length
             if len(D_vector) != self.num_states:
                 self.logger.warning(f"D vector length mismatch: got {len(D_vector)}, expected {self.num_states}")
@@ -538,13 +530,13 @@ class PyMDPSimulation:
                     padded_D = np.ones(self.num_states) / self.num_states
                     padded_D[:len(D_vector)] = D_vector[:len(D_vector)]
                     D_vector = padded_D
-            
+
             # Normalize to ensure it's a proper probability distribution
             D_vector = utils.norm_dist(D_vector)
-            
+
             self.logger.info(f"Processed GNN D vector: shape={D_vector.shape}, sum={D_vector.sum():.3f}")
             return D_vector
-            
+
         except Exception as e:
             self.logger.error(f"Failed to process GNN D vector: {e}")
             return self._create_prior_beliefs()
@@ -579,23 +571,23 @@ class PyMDPSimulation:
             # A matrix: P(observation | hidden_state) [NUM_OBS, NUM_STATES]
             A = utils.obj_array(1)
             A[0] = self._create_observation_model()
-            
-            # B matrix: P(next_state | current_state, action) [NUM_STATES, NUM_STATES, NUM_ACTIONS]  
+
+            # B matrix: P(next_state | current_state, action) [NUM_STATES, NUM_STATES, NUM_ACTIONS]
             B = utils.obj_array(1)
             B[0] = self._create_transition_model()
-            
+
             # C vector: log preferences over observations [NUM_OBS]
             C = utils.obj_array(1)
             C[0] = self._create_preference_model()
-            
+
             # D vector: prior beliefs over initial states [NUM_STATES]
-            D = utils.obj_array(1) 
+            D = utils.obj_array(1)
             D[0] = self._create_prior_beliefs()
 
             # Store matrices for analysis
             self.model_matrices = {
                 'A': A[0],
-                'B': B[0], 
+                'B': B[0],
                 'C': C[0],
                 'D': D[0]
             }
@@ -620,21 +612,21 @@ class PyMDPSimulation:
         """Create observation likelihood matrix A."""
         # Create noisy identity mapping with configurable noise
         A_matrix = np.eye(self.num_observations, self.num_states) * 0.9
-        
+
         # Add observation noise
         noise_level = 0.1 / (self.num_observations - 1)
         for i in range(self.num_observations):
             for j in range(self.num_states):
                 if i != j:
                     A_matrix[i, j] = noise_level
-                    
+
         return utils.norm_dist(A_matrix)
 
     def _create_transition_model(self) -> np.ndarray:
         """Create transition dynamics matrix B."""
         # B matrix: [next_state, current_state, action]
         B_matrix = np.zeros((self.num_states, self.num_states, self.num_actions))
-        
+
         # Configure based on GNN state space or default gridworld
         if self.gnn_config and 'transition_structure' in self.gnn_config:
             # Use GNN-specified transitions
@@ -655,7 +647,7 @@ class PyMDPSimulation:
                     elif action_name == "move_up":
                         next_state = max(0, state - 2) if state >= 2 else state
                         B_matrix[next_state, state, action_idx] = 1.0
-                    elif action_name == "move_down": 
+                    elif action_name == "move_down":
                         next_state = min(3, state + 2) if state < 2 else state
                         B_matrix[next_state, state, action_idx] = 1.0
                     elif action_name == "move_left":
@@ -664,7 +656,7 @@ class PyMDPSimulation:
                     elif action_name == "move_right":
                         next_state = state + 1 if state % 2 == 0 else state
                         B_matrix[next_state, state, action_idx] = 1.0
-                        
+
         # Normalize transition probabilities: ensure columns (over next_state) sum to 1 for each current_state
         try:
             for action in range(self.num_actions):
@@ -681,7 +673,7 @@ class PyMDPSimulation:
             # Fallback to row-wise normalization used previously
             for action in range(self.num_actions):
                 B_matrix[:, :, action] = utils.norm_dist(B_matrix[:, :, action])
-            
+
         return B_matrix
 
     def _create_preference_model(self) -> np.ndarray:
@@ -694,7 +686,7 @@ class PyMDPSimulation:
             # Default: prefer last location (goal state)
             preferences = np.zeros(self.num_observations)
             preferences[-1] = 2.0  # Strong preference for goal
-            
+
         return preferences
 
     def _create_prior_beliefs(self) -> np.ndarray:
@@ -707,32 +699,32 @@ class PyMDPSimulation:
             # Uniform prior with slight preference for first location
             prior = np.ones(self.num_states) / self.num_states
             prior[0] = 0.4  # Slightly higher prior for starting location
-            
+
         return utils.norm_dist(prior)
 
     def _generate_policies(self) -> List[np.ndarray]:
         """Generate policy space for planning (List of NumPy arrays)."""
         # Simple policy generation - return list of numpy arrays for real PyMDP compatibility
         policies = []
-        
+
         # Policy shape: (policy_len, num_control_factors)
         # We assume 1 control factor (states) and policy_len=3 (as used in Agent creation)
-        policy_len = 3 
-        
+        policy_len = 3
+
         # 1. Ensure full action coverage for consistency checks
         for action_idx in range(self.num_actions):
             # Create a constant policy for this action
             policy = np.full((policy_len, 1), action_idx, dtype=int)
             policies.append(policy)
-            
-        # 2. Add some additional random/mixed policies 
+
+        # 2. Add some additional random/mixed policies
         # (up to a limit to avoid performance issues)
         num_additional = min(20, self.num_actions * 2)
         if self.num_actions > 0:
             for _ in range(num_additional):
                 policy = np.random.randint(0, self.num_actions, (policy_len, 1))
                 policies.append(policy)
-                
+
         return policies
 
     def run_simulation(self, output_dir: Optional[Path] = None, num_timesteps: Optional[int] = None, **kwargs) -> Dict[str, Any]:
@@ -757,21 +749,21 @@ class PyMDPSimulation:
 
         start_time = time.time()
         self.logger.info(f"Starting PyMDP simulation: {self.model_name}")
-        
+
         # Initialize simulation state
         current_state = 0  # Start at first location
         self.simulation_trace = []
-        
+
         try:
             for t in range(self.num_timesteps):
                 # Generate observation from current state
                 obs_probs = self.model_matrices['A'][:, current_state]
                 observation = utils.sample(obs_probs)
-                
+
                 # Agent inference - PyMDP expects list of observations
                 qs = self.agent.infer_states([observation])
                 q_pi, G = self.agent.infer_policies()
-                
+
                 # Sample action
                 action_raw = self.agent.sample_action()
                 # Handle both scalar (fallback) and array (real PyMDP) returns
@@ -779,11 +771,11 @@ class PyMDPSimulation:
                     action = int(action_raw[0])
                 else:
                     action = int(action_raw)
-                
+
                 # Update environment state
                 next_state_probs = self.model_matrices['B'][:, current_state, action]
                 next_state = utils.sample(next_state_probs)
-                
+
                 # Record step
                 step_data = {
                     'timestep': t,
@@ -796,10 +788,10 @@ class PyMDPSimulation:
                     'expected_free_energy': G.copy()
                 }
                 self.simulation_trace.append(step_data)
-                
+
                 # Update state
                 current_state = next_state
-                
+
                 if t % 5 == 0:
                     self.logger.info(f"Timestep {t}: state={current_state}, obs={observation}, action={action}")
 
@@ -842,17 +834,17 @@ class PyMDPSimulation:
         total_timesteps = len(self.simulation_trace)
         final_state = self.simulation_trace[-1]['next_state']
         states_visited = set(step['current_state'] for step in self.simulation_trace)
-        
+
         # Belief dynamics analysis
         belief_entropies = []
         action_counts = np.zeros(self.num_actions)
-        
+
         for step in self.simulation_trace:
             # Entropy of beliefs
             beliefs = step['beliefs']
             entropy = -np.sum(beliefs * np.log(beliefs + 1e-16))
             belief_entropies.append(entropy)
-            
+
             # Action statistics
             action_counts[step['action']] += 1
 
@@ -871,40 +863,40 @@ class PyMDPSimulation:
             'gnn_config_used': bool(self.gnn_config),
             'configuration': {
                 'num_states': self.num_states,
-                'num_actions': self.num_actions, 
+                'num_actions': self.num_actions,
                 'num_observations': self.num_observations,
                 'learning_rate': self.learning_rate,
                 'alpha': self.alpha,
                 'gamma': self.gamma
             }
         }
-        
+
         return results
 
     def _save_results(self, output_dir: Path):
         """Save comprehensive simulation results."""
         try:
             output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Save main results
             results_file = output_dir / f"pymdp_results_{self.model_name}.json"
             safe_json_dump(self.results, results_file)
-            
+
             # Save detailed trace
-            trace_file = output_dir / f"pymdp_trace_{self.model_name}.json" 
+            trace_file = output_dir / f"pymdp_trace_{self.model_name}.json"
             cleaned_trace = clean_trace_for_serialization(self.simulation_trace)
             safe_json_dump(cleaned_trace, trace_file)
-            
+
             # Save model matrices
             matrices_file = output_dir / f"pymdp_matrices_{self.model_name}.pkl"
             safe_pickle_dump(self.model_matrices, matrices_file)
-            
+
             # NOTE: Visualization is handled by the analysis step (16_analysis.py)
             # The execute step only exports simulation data for later visualization.
             # The saved trace, results, and matrices can be visualized by the analysis module.
-            
+
             self.logger.info(f"Results saved to {output_dir} (visualization by analysis step)")
-            
+
         except Exception as e:
             self.logger.error(f"Error saving results: {e}")
 
@@ -912,7 +904,7 @@ class PyMDPSimulation:
         """Get concise simulation summary."""
         if not self.results:
             return {"status": "no_results"}
-            
+
         return {
             "model_name": self.results.get('model_name', 'Unknown'),
             "timesteps": self.results.get('total_timesteps', 0),
@@ -937,7 +929,7 @@ def create_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any]) -> PyMDPSimulat
     return PyMDPSimulation(gnn_config=gnn_config)
 
 
-def run_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any], 
+def run_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any],
                                   output_dir: Path) -> Dict[str, Any]:
     """
     Complete function to run PyMDP simulation from GNN config.
@@ -951,4 +943,4 @@ def run_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any],
     """
     simulation = create_pymdp_simulation_from_gnn(gnn_config)
     simulation.create_pymdp_model()
-    return simulation.run_simulation(output_dir) 
+    return simulation.run_simulation(output_dir)

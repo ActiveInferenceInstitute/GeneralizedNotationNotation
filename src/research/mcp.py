@@ -7,7 +7,7 @@ metadata retrieval through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 import logging
 import json
 

@@ -12,8 +12,6 @@ from pathlib import Path
 from typing import List, Optional
 import json
 import logging
-import subprocess
-import os
 
 logger = logging.getLogger("analysis.activeinference_jl")
 
@@ -34,49 +32,49 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
     """
     generated_files = []
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Search locations for ActiveInference.jl outputs:
     # 1. The execution_results_dir (12_execute_output)
     # 2. The sibling render output (11_render_output) - where Julia actually writes visualizations
-    
+
     search_dirs = [execution_results_dir]
-    
+
     # Add sibling render output directory
     render_output = execution_results_dir.parent / "11_render_output"
     if render_output.exists():
         search_dirs.append(render_output)
         if verbose:
             logger.info(f"Also searching render output: {render_output}")
-    
+
     target_dirs = []
-    
+
     for search_dir in search_dirs:
         # Look for timestamped output directories
         target_dirs.extend(list(search_dir.glob("**/activeinference_outputs_*")))
-        
+
         # Also look for data_traces folders (alternative structure)
         data_trace_dirs = list(search_dir.glob("**/data_traces"))
         for dt in data_trace_dirs:
             if "activeinference" in str(dt.parent).lower() or "actinf" in str(dt.parent).lower():
                 target_dirs.append(dt.parent)
-    
+
     # Deduplicate and sort by modification time (newest first)
     target_dirs = list(set(target_dirs))
     target_dirs.sort(key=lambda p: p.stat().st_mtime if p.exists() else 0, reverse=True)
-    
+
     if not target_dirs:
-        logger.info(f"No ActiveInference.jl output directories found")
+        logger.info("No ActiveInference.jl output directories found")
         return generated_files
-    
+
     logger.info(f"Found {len(target_dirs)} ActiveInference.jl output directories")
-    
+
     # Collect existing visualizations from most recent directory first
     import shutil
-    
+
     for target_dir in target_dirs[:3]:  # Process up to 3 most recent
         if verbose:
             logger.info(f"Processing ActiveInference.jl output: {target_dir.name}")
-        
+
         # Check for visualizations folder
         viz_dir = target_dir / "visualizations"
         if viz_dir.exists():
@@ -89,18 +87,18 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                     logger.info(f"Collected visualization: {img_file.name}")
                 except Exception as e:
                     logger.warning(f"Failed to copy {img_file.name}: {e}")
-        
+
         # Also check for analysis folder
         analysis_dir = target_dir / "analysis"
         if analysis_dir.exists():
             for f in analysis_dir.glob("**/*"):
                 if f.is_file():
                     generated_files.append(str(f))
-        
+
         # If we found visualizations, stop (use most recent only)
         if generated_files:
             break
-    
+
     if generated_files:
         logger.info(f"Collected {len(generated_files)} ActiveInference.jl visualization files")
 

@@ -1,12 +1,10 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import json
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class JSONSerializer(BaseGNNSerializer):
     """Serializer for JSON data interchange format."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to JSON format."""
         # Manually construct the data dictionary to handle dynamic objects properly
@@ -58,5 +56,5 @@ class JSONSerializer(BaseGNNSerializer):
                 for mapping in (model.ontology_mappings if hasattr(model, 'ontology_mappings') else [])
             ]
         }
-        
-        return json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False) 
+
+        return json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False)

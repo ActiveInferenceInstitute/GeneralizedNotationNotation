@@ -10,7 +10,6 @@ Scans src/ and doc/ directories to check for:
 """
 
 import os
-import re
 from pathlib import Path
 
 # Get project root (go up from src/pipeline/ to project root)
@@ -26,12 +25,12 @@ def check_directory(dir_path, is_src=False):
 
     agents_md = os.path.join(dir_path, "AGENTS.md")
     readme_md = os.path.join(dir_path, "README.md")
-    
+
     has_agents = os.path.exists(agents_md)
     has_readme = os.path.exists(readme_md)
     has_mermaid = False
     has_signatures = False
-    
+
     if has_readme:
         with open(readme_md, 'r') as f:
             content = f.read()
@@ -44,11 +43,11 @@ def check_directory(dir_path, is_src=False):
             # Check for function signature markers
             if "def " in content or "->" in content or "### `" in content:
                 has_signatures = True
-            
+
             # Simple heuristic: Does it mention "Public Functions" or similar?
             if "Public Functions" not in content and "API Reference" not in content:
                 has_signatures = False
-    
+
     return {
         "path": dir_path,
         "is_src": is_src,
@@ -110,7 +109,7 @@ def main():
     print(f"\nMissing Function Signatures in AGENTS.md (src/): {len(missing_signatures)}")
     for p in missing_signatures:
         print(f"  - {os.path.basename(p)}")
-    
+
     return 0
 
 if __name__ == "__main__":

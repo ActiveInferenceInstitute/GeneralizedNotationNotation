@@ -26,8 +26,6 @@ from utils.pipeline_template import (
 from .matrix_editor import (
     get_pomdp_template,
     create_matrix_from_gnn,
-    update_gnn_from_matrix,
-    validate_matrix_dimensions,
 )
 
 
@@ -74,18 +72,18 @@ def run_gui(
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
             else:
                 logger.info("📦 Running GUI 2 in HEADLESS mode - generating artifacts only")
-            
+
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Create visual matrix representation
             visual_data = create_matrix_from_gnn(starter_md)
-            
+
             # Save visual data as JSON for potential future loading
             (gui_output_dir / "visual_matrices.json").write_text(
                 json.dumps(visual_data, indent=2)
             )
-            
+
             # Generate status artifact
             (gui_output_dir / "gui_status.json").write_text(json.dumps({
                 "backend": _GUI_BACKEND or "none",
@@ -96,7 +94,7 @@ def run_gui(
                 "visual_data_file": str(gui_output_dir / "visual_matrices.json"),
                 "features": [
                     "Visual matrix editing",
-                    "Drag-and-drop interface", 
+                    "Drag-and-drop interface",
                     "Real-time GNN generation",
                     "POMDP template-based"
                 ],
@@ -107,7 +105,7 @@ def run_gui(
                     "Run with --interactive for full GUI experience"
                 ]
             }, indent=2))
-            
+
             log_step_success(logger, f"GUI 2 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
@@ -119,10 +117,10 @@ def run_gui(
 
         # Launch GUI server with proper threading
         logger.info(f"🌐 Launching GUI 2 on http://localhost:7861 (open_browser={open_browser})")
-        
+
         import threading
         import time
-        
+
         def launch_gui():
             logger.info("🎯 Visual Matrix Editor starting...")
             demo.launch(
@@ -134,11 +132,11 @@ def run_gui(
                 show_error=True,
                 quiet=False,  # Show server startup messages
             )
-        
+
         # Launch in a separate thread to allow multiple GUIs
         gui_thread = threading.Thread(target=launch_gui, daemon=False)
         gui_thread.start()
-        
+
         # Give it a moment to start
         time.sleep(3)
         logger.info("🎯 GUI 2 is running on http://localhost:7861")
@@ -157,7 +155,7 @@ def run_gui(
             "features": [
                 "Visual matrix editing",
                 "Drag-and-drop interface",
-                "Real-time GNN generation", 
+                "Real-time GNN generation",
                 "POMDP template-based"
             ]
         }, indent=2))
@@ -179,15 +177,15 @@ def _load_template_markdown(target_dir: Path) -> Optional[str]:
         pomdp_files = list(target_dir.glob("*pomdp*.md")) + list(target_dir.glob("*POMDP*.md"))
         if pomdp_files:
             return pomdp_files[0].read_text()
-        
+
         # Fall back to any markdown file
         for p in sorted(target_dir.glob("*.md")):
             return p.read_text()
-        
+
         for p in sorted(target_dir.glob("**/*.md")):
             return p.read_text()
-            
+
     except Exception:
         return None
-        
+
     return None

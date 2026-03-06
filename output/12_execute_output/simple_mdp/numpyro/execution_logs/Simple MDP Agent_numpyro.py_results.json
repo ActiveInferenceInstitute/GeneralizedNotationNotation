@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.263538,
-  "timestamp": "2026-03-05T10:37:43.090360",
+  "execution_time": 1.087809,
+  "timestamp": "2026-03-06T09:48:44.274526",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,19 +14,19 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.818s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.649s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": ""
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/numpyro"
+    "output_directory": "output/12_execute_output/simple_mdp/numpyro"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/numpyro/simulation_data/numpyro_simulation_results.json"
+      "output/12_execute_output/simple_mdp/numpyro/simulation_data/numpyro_simulation_results.json"
     ],
     "traces": [],
     "other": []

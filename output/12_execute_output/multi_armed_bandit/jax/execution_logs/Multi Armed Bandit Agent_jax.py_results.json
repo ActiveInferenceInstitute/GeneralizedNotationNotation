@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/jax/Multi Armed Bandit Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.856775,
-  "timestamp": "2026-03-05T10:35:20.118397",
+  "execution_time": 0.994227,
+  "timestamp": "2026-03-06T09:49:02.324228",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -134,12 +134,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1316,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/jax"
+    "output_directory": "output/12_execute_output/multi_armed_bandit/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/multi_armed_bandit/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

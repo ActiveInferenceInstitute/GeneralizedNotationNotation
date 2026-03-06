@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.976122,
-  "timestamp": "2026-03-05T10:37:46.967175",
+  "execution_time": 1.008547,
+  "timestamp": "2026-03-06T09:48:48.081463",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -146,12 +146,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1291,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/jax"
+    "output_directory": "output/12_execute_output/simple_mdp/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/simple_mdp/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

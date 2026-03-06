@@ -86,10 +86,11 @@ python src/main.py --only-steps "3,7" --verbose
 2. Run the GNN importer:
 
 ```bash
-python src/gnn/catcolab_importer.py \
-    --input path/to/catcolab_export.json \
-    --output input/gnn_files/imported_model.md \
-    --logic stock-and-flow
+# Note: The catcolab importer is currently a planned feature stub
+# python src/gnn/catcolab_importer.py \
+#     --input path/to/catcolab_export.json \
+#     --output input/gnn_files/imported_model.md \
+#     --logic stock-and-flow
 ```
 
 1. Validate and run the pipeline normally.

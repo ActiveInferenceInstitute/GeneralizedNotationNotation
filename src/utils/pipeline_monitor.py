@@ -15,12 +15,12 @@ from typing import Dict, Any, List, Optional, Callable
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta
 from enum import Enum
-from collections import deque, defaultdict
+from collections import deque
 
 class HealthStatus(Enum):
     """Health status levels."""
     HEALTHY = "healthy"
-    DEGRADED = "degraded" 
+    DEGRADED = "degraded"
     FAILING = "failing"
     CRITICAL = "critical"
     UNKNOWN = "unknown"
@@ -50,7 +50,7 @@ class StepMetrics:
     recent_durations: deque = field(default_factory=lambda: deque(maxlen=10))
     error_types: Dict[str, int] = field(default_factory=dict)
     health_status: HealthStatus = HealthStatus.UNKNOWN
-    
+
     def update_duration(self, duration: float):
         """Update duration statistics."""
         self.total_duration += duration
@@ -59,13 +59,13 @@ class StepMetrics:
         self.recent_durations.append(duration)
         if self.executions > 0:
             self.avg_duration = self.total_duration / self.executions
-    
+
     def get_success_rate(self) -> float:
         """Get success rate as percentage."""
         if self.executions == 0:
             return 0.0
         return (self.successes / self.executions) * 100
-    
+
     def get_recent_avg_duration(self) -> float:
         """Get average duration of recent executions."""
         if not self.recent_durations:
@@ -95,7 +95,7 @@ class PipelineHealth:
     active_alerts: int = 0
     total_executions: int = 0
     total_failures: int = 0
-    
+
     def get_health_percentage(self) -> float:
         """Get percentage of healthy steps."""
         if self.total_steps == 0:
@@ -104,7 +104,7 @@ class PipelineHealth:
 
 class PipelineMonitor:
     """Comprehensive pipeline monitoring system."""
-    
+
     def __init__(self, alert_callbacks: Optional[List[Callable]] = None):
         self.logger = logging.getLogger(__name__)
         self.step_metrics: Dict[str, StepMetrics] = {}
@@ -114,7 +114,7 @@ class PipelineMonitor:
         self.health_thresholds = self._initialize_health_thresholds()
         self.performance_baselines = {}
         self._lock = threading.Lock()
-        
+
     def _initialize_health_thresholds(self) -> Dict[str, Dict[str, float]]:
         """Initialize health check thresholds."""
         return {
@@ -137,19 +137,19 @@ class PipelineMonitor:
                 # > 50% is critical
             }
         }
-    
+
     def start_monitoring(self):
         """Start pipeline monitoring."""
         with self._lock:
             self.monitoring_active = True
             self.logger.info("Pipeline monitoring started")
-    
+
     def stop_monitoring(self):
         """Stop pipeline monitoring."""
         with self._lock:
             self.monitoring_active = False
             self.logger.info("Pipeline monitoring stopped")
-    
+
     def record_step_start(self, step_name: str, context: Dict[str, Any] = None) -> str:
         """
         Record the start of a pipeline step.
@@ -162,38 +162,38 @@ class PipelineMonitor:
             Execution ID for tracking
         """
         execution_id = f"{step_name}_{int(time.time() * 1000)}"
-        
+
         with self._lock:
             if step_name not in self.step_metrics:
                 self.step_metrics[step_name] = StepMetrics(step_name=step_name)
-            
+
             metrics = self.step_metrics[step_name]
             metrics.executions += 1
             metrics.last_execution = datetime.now()
-        
+
         self.logger.debug(f"Step started: {step_name} (ID: {execution_id})")
         return execution_id
-    
-    def record_step_success(self, step_name: str, execution_id: str, 
+
+    def record_step_success(self, step_name: str, execution_id: str,
                            duration: float, context: Dict[str, Any] = None):
         """Record successful completion of a pipeline step."""
         with self._lock:
             if step_name not in self.step_metrics:
                 self.step_metrics[step_name] = StepMetrics(step_name=step_name)
-            
+
             metrics = self.step_metrics[step_name]
             metrics.successes += 1
             metrics.last_success = datetime.now()
             metrics.update_duration(duration)
-            
+
             # Update health status
             self._update_step_health(step_name)
-        
+
         self.logger.debug(f"Step succeeded: {step_name} in {duration:.2f}s")
-        
+
         # Check for performance alerts
         self._check_performance_alerts(step_name, duration)
-    
+
     def record_step_failure(self, step_name: str, execution_id: str,
                            duration: float, error_type: str = "unknown",
                            error_message: str = "", context: Dict[str, Any] = None):
@@ -201,20 +201,20 @@ class PipelineMonitor:
         with self._lock:
             if step_name not in self.step_metrics:
                 self.step_metrics[step_name] = StepMetrics(step_name=step_name)
-            
+
             metrics = self.step_metrics[step_name]
             metrics.failures += 1
             metrics.last_failure = datetime.now()
             metrics.update_duration(duration)
-            
+
             # Track error types
             metrics.error_types[error_type] = metrics.error_types.get(error_type, 0) + 1
-            
+
             # Update health status
             self._update_step_health(step_name)
-        
+
         self.logger.warning(f"Step failed: {step_name} after {duration:.2f}s - {error_type}")
-        
+
         # Generate failure alert
         self._generate_alert(
             level=AlertLevel.ERROR,
@@ -226,19 +226,19 @@ class PipelineMonitor:
                 "execution_id": execution_id
             }
         )
-    
+
     def record_step_warning(self, step_name: str, execution_id: str,
                            warning_message: str, context: Dict[str, Any] = None):
         """Record a warning for a pipeline step."""
         with self._lock:
             if step_name not in self.step_metrics:
                 self.step_metrics[step_name] = StepMetrics(step_name=step_name)
-            
+
             metrics = self.step_metrics[step_name]
             metrics.warnings += 1
-        
+
         self.logger.warning(f"Step warning: {step_name} - {warning_message}")
-        
+
         # Generate warning alert for critical warnings
         if any(keyword in warning_message.lower() for keyword in ['critical', 'severe', 'timeout']):
             self._generate_alert(
@@ -247,18 +247,18 @@ class PipelineMonitor:
                 step_name=step_name,
                 details={"execution_id": execution_id}
             )
-    
+
     def _update_step_health(self, step_name: str):
         """Update health status for a step based on metrics."""
         metrics = self.step_metrics[step_name]
-        
+
         if metrics.executions == 0:
             metrics.health_status = HealthStatus.UNKNOWN
             return
-        
+
         success_rate = metrics.get_success_rate()
         failure_rate = (metrics.failures / metrics.executions) * 100
-        
+
         # Determine health status based on thresholds
         if success_rate >= self.health_thresholds["success_rate"]["healthy"]:
             if failure_rate <= self.health_thresholds["failure_rate"]["healthy"]:
@@ -271,7 +271,7 @@ class PipelineMonitor:
             metrics.health_status = HealthStatus.FAILING
         else:
             metrics.health_status = HealthStatus.CRITICAL
-        
+
         # Check for recent performance degradation
         if len(metrics.recent_durations) >= 3:
             recent_avg = metrics.get_recent_avg_duration()
@@ -281,16 +281,16 @@ class PipelineMonitor:
                     # Performance is significantly worse than average
                     if metrics.health_status == HealthStatus.HEALTHY:
                         metrics.health_status = HealthStatus.DEGRADED
-    
+
     def _check_performance_alerts(self, step_name: str, duration: float):
         """Check for performance-related alerts."""
         metrics = self.step_metrics[step_name]
-        
+
         # Check against baseline if available
         if step_name in self.performance_baselines:
             baseline = self.performance_baselines[step_name]
             performance_ratio = duration / baseline
-            
+
             if performance_ratio > self.health_thresholds["duration_variance"]["critical"]:
                 self._generate_alert(
                     level=AlertLevel.CRITICAL,
@@ -305,7 +305,7 @@ class PipelineMonitor:
                     step_name=step_name,
                     details={"duration": duration, "baseline": baseline, "ratio": performance_ratio}
                 )
-    
+
     def _generate_alert(self, level: AlertLevel, message: str, step_name: Optional[str] = None,
                        details: Dict[str, Any] = None):
         """Generate and dispatch an alert."""
@@ -315,10 +315,10 @@ class PipelineMonitor:
             step_name=step_name,
             details=details or {}
         )
-        
+
         with self._lock:
             self.alerts.append(alert)
-        
+
         # Log the alert
         log_method = {
             AlertLevel.INFO: self.logger.info,
@@ -326,30 +326,30 @@ class PipelineMonitor:
             AlertLevel.ERROR: self.logger.error,
             AlertLevel.CRITICAL: self.logger.critical
         }[level]
-        
+
         log_method(f"[ALERT:{level.value.upper()}] {message}")
-        
+
         # Call alert callbacks
         for callback in self.alert_callbacks:
             try:
                 callback(alert)
             except Exception as e:
                 self.logger.error(f"Alert callback failed: {e}")
-    
+
     def get_pipeline_health(self) -> PipelineHealth:
         """Get overall pipeline health status."""
         with self._lock:
             health = PipelineHealth()
-            
+
             if not self.step_metrics:
                 return health
-            
+
             # Count steps by health status
             for metrics in self.step_metrics.values():
                 health.total_steps += 1
                 health.total_executions += metrics.executions
                 health.total_failures += metrics.failures
-                
+
                 if metrics.health_status == HealthStatus.HEALTHY:
                     health.healthy_steps += 1
                 elif metrics.health_status == HealthStatus.DEGRADED:
@@ -358,7 +358,7 @@ class PipelineMonitor:
                     health.failing_steps += 1
                 elif metrics.health_status == HealthStatus.CRITICAL:
                     health.critical_steps += 1
-            
+
             # Determine overall status
             if health.critical_steps > 0:
                 health.overall_status = HealthStatus.CRITICAL
@@ -370,47 +370,47 @@ class PipelineMonitor:
                 health.overall_status = HealthStatus.HEALTHY
             else:
                 health.overall_status = HealthStatus.UNKNOWN
-            
+
             # Count active alerts
             health.active_alerts = len([a for a in self.alerts if not a.resolved])
-            
+
             return health
-    
+
     def get_step_metrics(self, step_name: str) -> Optional[StepMetrics]:
         """Get metrics for a specific step."""
         with self._lock:
             return self.step_metrics.get(step_name)
-    
+
     def get_all_metrics(self) -> Dict[str, StepMetrics]:
         """Get metrics for all steps."""
         with self._lock:
             return dict(self.step_metrics)
-    
+
     def get_recent_alerts(self, count: int = 10) -> List[Alert]:
         """Get recent alerts."""
         with self._lock:
             return list(self.alerts)[-count:]
-    
+
     def get_active_alerts(self) -> List[Alert]:
         """Get unresolved alerts."""
         with self._lock:
             return [alert for alert in self.alerts if not alert.resolved]
-    
+
     def resolve_alert(self, alert_index: int):
         """Mark an alert as resolved."""
         with self._lock:
             if 0 <= alert_index < len(self.alerts):
                 self.alerts[alert_index].resolved = True
-    
+
     def set_performance_baseline(self, step_name: str, baseline_duration: float):
         """Set performance baseline for a step."""
         self.performance_baselines[step_name] = baseline_duration
         self.logger.info(f"Performance baseline set for {step_name}: {baseline_duration:.2f}s")
-    
+
     def generate_health_report(self) -> Dict[str, Any]:
         """Generate comprehensive health report."""
         health = self.get_pipeline_health()
-        
+
         report = {
             "timestamp": datetime.now().isoformat(),
             "overall_health": {
@@ -434,13 +434,13 @@ class PipelineMonitor:
                 "least_reliable_step": None
             }
         }
-        
+
         # Step details
         fastest_duration = float('inf')
         slowest_duration = 0
         highest_success_rate = 0
         lowest_success_rate = 100
-        
+
         for step_name, metrics in self.step_metrics.items():
             step_info = {
                 "health_status": metrics.health_status.value,
@@ -458,9 +458,9 @@ class PipelineMonitor:
                 "last_failure": metrics.last_failure.isoformat() if metrics.last_failure else None,
                 "error_types": dict(metrics.error_types)
             }
-            
+
             report["step_details"][step_name] = step_info
-            
+
             # Track performance extremes
             if metrics.avg_duration > 0:
                 if metrics.avg_duration < fastest_duration:
@@ -469,14 +469,14 @@ class PipelineMonitor:
                         "name": step_name,
                         "avg_duration": metrics.avg_duration
                     }
-                
+
                 if metrics.avg_duration > slowest_duration:
                     slowest_duration = metrics.avg_duration
                     report["performance_summary"]["slowest_step"] = {
                         "name": step_name,
                         "avg_duration": metrics.avg_duration
                     }
-            
+
             # Track reliability extremes
             success_rate = metrics.get_success_rate()
             if metrics.executions > 0:
@@ -486,14 +486,14 @@ class PipelineMonitor:
                         "name": step_name,
                         "success_rate": success_rate
                     }
-                
+
                 if success_rate < lowest_success_rate:
                     lowest_success_rate = success_rate
                     report["performance_summary"]["least_reliable_step"] = {
                         "name": step_name,
                         "success_rate": success_rate
                     }
-        
+
         # Recent alerts
         recent_alerts = self.get_recent_alerts(10)
         for alert in recent_alerts:
@@ -505,26 +505,26 @@ class PipelineMonitor:
                 "resolved": alert.resolved,
                 "details": alert.details
             })
-        
+
         return report
-    
+
     def save_health_report(self, output_dir: Path, filename: Optional[str] = None) -> Path:
         """Save health report to file."""
         if not filename:
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             filename = f"pipeline_health_report_{timestamp}.json"
-        
+
         output_dir.mkdir(parents=True, exist_ok=True)
         report_file = output_dir / filename
-        
+
         report = self.generate_health_report()
-        
+
         with open(report_file, 'w') as f:
             json.dump(report, f, indent=2, default=str)
-        
+
         self.logger.info(f"Health report saved to {report_file}")
         return report_file
-    
+
     def check_circuit_breaker(self, step_name: str, failure_threshold: int = 5,
                              time_window: int = 300) -> bool:
         """
@@ -540,12 +540,12 @@ class PipelineMonitor:
         """
         if step_name not in self.step_metrics:
             return False
-        
+
         metrics = self.step_metrics[step_name]
-        
+
         # Check recent failure rate
         recent_time = datetime.now() - timedelta(seconds=time_window)
-        
+
         # For simplicity, use recent metrics
         # In a full implementation, we'd track individual execution times
         if metrics.last_failure and metrics.last_failure > recent_time:
@@ -562,9 +562,9 @@ class PipelineMonitor:
                     }
                 )
                 return True
-        
+
         return False
-    
+
     def reset_metrics(self, step_name: Optional[str] = None):
         """Reset metrics for a step or all steps."""
         with self._lock:
@@ -606,15 +606,15 @@ def record_step_execution(step_name: str, success: bool, duration: float,
         Execution ID
     """
     execution_id = pipeline_monitor.record_step_start(step_name, context)
-    
+
     if success:
         pipeline_monitor.record_step_success(step_name, execution_id, duration, context)
     else:
         pipeline_monitor.record_step_failure(
-            step_name, execution_id, duration, 
+            step_name, execution_id, duration,
             error_type or "unknown", error_message or "", context
         )
-    
+
     return execution_id
 
 def get_pipeline_health_status() -> Dict[str, Any]:
@@ -639,25 +639,25 @@ def generate_pipeline_health_report(pipeline_summary: Dict[str, Any], logger) ->
         "warnings": [],
         "critical_issues": []
     }
-    
+
     # Analyze execution efficiency
     total_steps = len(pipeline_summary.get("steps", []))
     successful_steps = pipeline_summary.get("performance_summary", {}).get("successful_steps", 0)
-    
+
     if total_steps > 0:
         health_report["execution_efficiency"] = (successful_steps / total_steps) * 100
-        
+
     # Determine overall health
     critical_failures = pipeline_summary.get("performance_summary", {}).get("critical_failures", 0)
     warnings = pipeline_summary.get("performance_summary", {}).get("warnings", 0)
-    
+
     if critical_failures > 0:
         health_report["overall_health"] = "critical"
         health_report["critical_issues"].append(f"{critical_failures} critical step failures detected")
     elif warnings > 2:
         health_report["overall_health"] = "degraded"
         health_report["warnings"].append(f"{warnings} warnings detected across pipeline steps")
-        
+
     # Analyze memory usage patterns
     peak_memory = pipeline_summary.get("performance_summary", {}).get("peak_memory_mb", 0.0)
     if peak_memory > 1000:  # > 1GB
@@ -665,33 +665,33 @@ def generate_pipeline_health_report(pipeline_summary: Dict[str, Any], logger) ->
         health_report["recommendations"].append("Consider optimizing memory usage for large-scale processing")
     elif peak_memory > 500:  # > 500MB
         health_report["memory_efficiency"] = "moderate_usage"
-        
+
     # Analyze individual step performance
     for step in pipeline_summary.get("steps", []):
         step_name = step.get("script_name", "unknown")
         duration = step.get("duration_seconds", 0)
         memory_delta = step.get("memory_delta_mb", 0)
-        
+
         health_report["step_performance"][step_name] = {
             "duration_seconds": duration,
             "memory_delta_mb": memory_delta,
             "status": step.get("status", "unknown")
         }
-        
+
         # Flag slow steps
         if duration > 30:  # > 30 seconds
             health_report["warnings"].append(f"Step {step_name} took {duration:.1f}s - consider optimization")
-            
-        # Flag memory-intensive steps  
+
+        # Flag memory-intensive steps
         if memory_delta > 100:  # > 100MB increase
             health_report["warnings"].append(f"Step {step_name} used {memory_delta:.1f}MB additional memory")
-    
+
     # Generate specific recommendations
     if health_report["execution_efficiency"] < 80:
         health_report["recommendations"].append("Pipeline efficiency below 80% - review step dependencies and error handling")
-        
+
     if health_report["overall_health"] in ["degraded", "critical"]:
         health_report["recommendations"].append("Run pipeline with --verbose flag for detailed diagnostics")
         health_report["recommendations"].append("Check individual step logs for specific error resolution")
-    
-    return health_report 
+
+    return health_report

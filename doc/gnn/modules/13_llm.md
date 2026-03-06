@@ -18,8 +18,8 @@ python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
 | Module | `src/llm/` |
 | Processor | `src/llm/processor.py` |
 | Module function | `process_llm()` |
-| Provider protocol | `src/llm/client.py` |
-| Embeddings | `src/llm/embeddings.py` |
+| Provider dir | `src/llm/providers/` |
+| Operations | `src/llm/llm_operations.py` |
 
 ## Key Capabilities
 

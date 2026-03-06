@@ -4,8 +4,6 @@ Test suite for Template module.
 Tests the reference implementation for GNN pipeline's architectural pattern.
 """
 
-import pytest
-from pathlib import Path
 
 
 class TestTemplateModule:
@@ -18,7 +16,6 @@ class TestTemplateModule:
             process_single_file,
             validate_file,
             generate_correlation_id,
-            safe_template_execution,
             FEATURES,
             __version__
         )

@@ -39,7 +39,7 @@ When analyzing GNN files, provide accurate, detailed, and scientifically rigorou
 
 # Structured prompts for different analysis types
 GNN_ANALYSIS_PROMPTS: Dict[PromptType, Dict[str, Any]] = {
-    
+
     PromptType.EXPLAIN_MODEL: {
         "title": "Model Explanation and Overview",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -66,7 +66,7 @@ Please write in clear, accessible language while maintaining scientific accuracy
         "expected_output": "markdown",
         "max_tokens": 2000
     },
-    
+
     PromptType.ANALYZE_STRUCTURE: {
         "title": "Structural Analysis and Graph Properties",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -102,7 +102,7 @@ Provide a detailed structural analysis covering:
         "expected_output": "markdown",
         "max_tokens": 1800
     },
-    
+
     PromptType.SUMMARIZE_CONTENT: {
         "title": "Content Summary and Key Points",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -133,7 +133,7 @@ Keep the summary focused and informative, suitable for someone familiar with Act
         "expected_output": "markdown",
         "max_tokens": 1200
     },
-    
+
     PromptType.IDENTIFY_COMPONENTS: {
         "title": "Component Identification and Classification",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -175,7 +175,7 @@ Provide a systematic breakdown:
         "expected_output": "markdown",
         "max_tokens": 1600
     },
-    
+
     PromptType.MATHEMATICAL_ANALYSIS: {
         "title": "Mathematical Analysis and Formalism",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -214,10 +214,10 @@ Focus on the mathematical formalism and relationships:
    - Convergence guarantees
    - Stability analysis
    - Theoretical foundations""",
-        "expected_output": "markdown", 
+        "expected_output": "markdown",
         "max_tokens": 2000
     },
-    
+
     PromptType.PRACTICAL_APPLICATIONS: {
         "title": "Practical Applications and Use Cases",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -259,7 +259,7 @@ Discuss practical considerations:
         "expected_output": "markdown",
         "max_tokens": 1600
     },
-    
+
     PromptType.EXTRACT_PARAMETERS: {
         "title": "Parameter Extraction and Configuration",
         "system_message": GNN_SYSTEM_MESSAGE,
@@ -302,9 +302,9 @@ Provide a systematic parameter breakdown:
         "expected_output": "markdown",
         "max_tokens": 1400
     },
-    
+
     PromptType.SUGGEST_IMPROVEMENTS: {
-        "title": "Model Improvements and Recommendations", 
+        "title": "Model Improvements and Recommendations",
         "system_message": GNN_SYSTEM_MESSAGE,
         "user_prompt": """Analyze this GNN specification and suggest improvements:
 
@@ -360,15 +360,15 @@ def get_prompt(prompt_type: PromptType, gnn_content: str, **kwargs) -> Dict[str,
     """
     if prompt_type not in GNN_ANALYSIS_PROMPTS:
         raise ValueError(f"Unknown prompt type: {prompt_type}")
-    
+
     prompt_config = GNN_ANALYSIS_PROMPTS[prompt_type].copy()
-    
+
     # Format the user prompt with the GNN content
     prompt_config["user_prompt"] = prompt_config["user_prompt"].format(
         gnn_content=gnn_content,
         **kwargs
     )
-    
+
     return prompt_config
 
 def get_all_prompt_types() -> List[PromptType]:
@@ -393,4 +393,4 @@ def get_default_prompt_sequence() -> List[PromptType]:
         PromptType.ANALYZE_STRUCTURE,
         PromptType.EXTRACT_PARAMETERS,
         PromptType.PRACTICAL_APPLICATIONS
-    ] 
+    ]

@@ -61,4 +61,4 @@ __all__ = [
     'demonstrate_utility_patterns',
     'get_version_info',
     'VERSION_INFO'
-] 
+]

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/jax/Two State Bistable POMDP_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.920795,
-  "timestamp": "2026-03-05T10:37:51.877149",
+  "execution_time": 0.908504,
+  "timestamp": "2026-03-06T09:48:52.882447",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -116,12 +116,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1257,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/jax"
+    "output_directory": "output/12_execute_output/two_state_bistable/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/two_state_bistable/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

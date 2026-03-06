@@ -55,22 +55,14 @@ Dependencies:
 """
 
 import logging
-import subprocess
 import sys
 import time
 import json
-import gc
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
-from dataclasses import dataclass, asdict
-from concurrent.futures import ThreadPoolExecutor, as_completed
-import threading
-import signal
-import re
+from typing import Dict, Any, List
+from dataclasses import asdict
 
 # Import test categories from dedicated module
-from .categories import MODULAR_TEST_CATEGORIES
 
 # Import from infrastructure submodule (refactored components)
 from .infrastructure import (
@@ -78,26 +70,14 @@ from .infrastructure import (
     TestExecutionResult,
     ResourceMonitor,
     TestRunner,
-    PSUTIL_AVAILABLE,
-    # Report generators
-    _generate_markdown_report,
-    _generate_fallback_report,
-    _generate_timeout_report,
-    _generate_error_report,
-    # Utilities
     check_test_dependencies,
     build_pytest_command,
-    _extract_collection_errors,
-    _parse_test_statistics,
-    _parse_coverage_statistics,
 )
 
 # Import test utilities
-from utils.test_utils import TEST_DIR, PROJECT_ROOT
+from utils.test_utils import TEST_DIR
 from utils.pipeline_template import (
-    setup_step_logging,
     log_step_start,
-    log_step_success,
     log_step_error,
     log_step_warning
 )
@@ -113,7 +93,7 @@ except Exception:
 
 class TestRunner:
     """Test runner with comprehensive monitoring and reporting."""
-    
+
     def __init__(self, config: TestExecutionConfig):
         self.config = config
         self.logger = logging.getLogger("test_runner")
@@ -122,25 +102,25 @@ class TestRunner:
             cpu_limit_percent=config.cpu_limit_percent
         )
         self.execution_history: List[TestExecutionResult] = []
-        
+
     def run_tests(self, test_paths: List[Path], output_dir: Path) -> TestExecutionResult:
         """Execute tests with comprehensive monitoring."""
         start_time = time.time()
-        
+
         try:
             # Start resource monitoring
             self.resource_monitor.start_monitoring()
-            
+
             # Build pytest command
             cmd = self._build_pytest_command(test_paths, output_dir)
-            
+
             # Execute tests
             result = self._execute_pytest(cmd, output_dir)
-            
+
             # Stop monitoring and get stats
             self.resource_monitor.stop_monitoring()
             resource_stats = self.resource_monitor.get_stats()
-            
+
             # Create execution result
             execution_result = TestExecutionResult(
                 success=result["success"],
@@ -155,12 +135,12 @@ class TestRunner:
                 stdout=result.get("stdout", ""),
                 stderr=result.get("stderr", "")
             )
-            
+
             # Store in history
             self.execution_history.append(execution_result)
-            
+
             return execution_result
-            
+
         except Exception as e:
             self.resource_monitor.stop_monitoring()
             return TestExecutionResult(
@@ -173,7 +153,7 @@ class TestRunner:
                 memory_peak_mb=0.0,
                 error_message=str(e)
             )
-    
+
     def _build_pytest_command(self, test_paths: List[Path], output_dir: Path) -> List[str]:
         """Build pytest command with appropriate options."""
         cmd = [
@@ -184,12 +164,12 @@ class TestRunner:
             "--durations=10",
             "--disable-warnings"
         ]
-        
+
         # Add markers
         if self.config.markers:
             for marker in self.config.markers:
                 cmd.extend(["-m", marker])
-        
+
         # Add coverage if enabled
         if self.config.coverage:
             cov_json = output_dir / "coverage.json"
@@ -200,30 +180,30 @@ class TestRunner:
                 f"--cov-report=html:{cov_html}",
                 "--cov-report=term-missing"
             ])
-        
+
         # Add parallel execution if enabled (disabled for now to avoid hanging)
         # if self.config.parallel:
         #     cmd.extend(["-n", "auto"])
-        
+
         # Add test paths
         cmd.extend([str(path) for path in test_paths])
-        
+
         return cmd
-    
+
     def _execute_pytest(self, cmd: List[str], output_dir: Path) -> Dict[str, Any]:
         """Execute pytest command and capture results."""
         try:
             # Debug: Log what we're trying to do
             self.logger.debug(f"Creating output directory: {output_dir}")
             self.logger.debug(f"Output dir type: {type(output_dir)}")
-            
+
             # Create output files
             stdout_file = output_dir / "pytest_stdout.txt"
             stderr_file = output_dir / "pytest_stderr.txt"
-            
+
             # Execute command with streaming
             from utils.execution_utils import execute_command_streaming
-            
+
             result = execute_command_streaming(
                 cmd,
                 cwd=project_root,
@@ -232,16 +212,16 @@ class TestRunner:
                 print_stderr=True,
                 capture_output=True
             )
-            
+
             stdout = result.get("stdout", "")
             stderr = result.get("stderr", "")
-            
+
             # Save output to files
             with open(stdout_file, 'w') as f:
                 f.write(stdout)
             with open(stderr_file, 'w') as f:
                 f.write(stderr)
-                
+
             if result["status"] == "TIMEOUT":
                  return {
                     "success": False,
@@ -253,14 +233,14 @@ class TestRunner:
                     "stdout": stdout,
                     "stderr": stderr
                 }
-            
+
             # Parse results
             results = self._parse_pytest_output(stdout, stderr)
             results["stdout"] = stdout
             results["stderr"] = stderr
-            
+
             return results
-            
+
         except Exception as e:
             import traceback
             self.logger.error(f"Exception in _execute_pytest: {e}")
@@ -275,7 +255,7 @@ class TestRunner:
                 "stdout": "",
                 "stderr": ""
             }
-    
+
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, Any]:
         """Parse pytest output to extract test statistics."""
         try:
@@ -330,7 +310,7 @@ class TestRunner:
 
             # Determine success - fail if no tests collected or collection errors
             success = tests_failed == 0 and tests_run > 0 and not collection_errors
-            
+
             # Extract coverage if present
             coverage_percentage = None
             for line in lines:
@@ -339,7 +319,7 @@ class TestRunner:
                         coverage_percentage = float(line.split()[-1].replace('%', ''))
                     except (ValueError, IndexError):
                         pass
-            
+
             return {
                 "success": success,
                 "tests_run": tests_run,
@@ -349,7 +329,7 @@ class TestRunner:
                 "coverage_percentage": coverage_percentage,
                 "collection_errors": collection_errors
             }
-            
+
         except Exception as e:
             import traceback
             self.logger.error(f"Failed to parse pytest output: {e}")
@@ -362,14 +342,14 @@ class TestRunner:
                 "tests_skipped": 0,
                 "error_message": f"Failed to parse pytest output: {e}"
             }
-    
+
     def generate_report(self, output_dir: Path) -> Dict[str, Any]:
         """Generate comprehensive test execution report."""
         if not self.execution_history:
             return {"error": "No test execution history available"}
-        
+
         latest_result = self.execution_history[-1]
-        
+
         report = {
             "execution_summary": asdict(latest_result),
             "resource_usage": self.resource_monitor.get_stats(),
@@ -380,15 +360,15 @@ class TestRunner:
                 "success_rate": sum(1 for r in self.execution_history if r.success) / len(self.execution_history) * 100
             }
         }
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save report
         report_file = output_dir / "test_execution_report.json"
         with open(report_file, 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         return report
 
 def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
@@ -417,25 +397,25 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         "psutil": False,
         "coverage": False
     }
-    
+
     try:
         import pytest
         dependencies["pytest"] = True
     except ImportError:
         pass
-    
+
     try:
         import pytest_cov
         dependencies["pytest-cov"] = True
     except ImportError:
         pass
-    
+
     try:
         import xdist
         dependencies["pytest-xdist"] = True
     except ImportError:
         pass
-    
+
     try:
         import psutil
         dependencies["psutil"] = True
@@ -447,14 +427,14 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
         dependencies["coverage"] = True
     except ImportError:
         pass
-    
+
     # Log results
     missing_deps = [name for name, available in dependencies.items() if not available]
     if missing_deps:
         logger.warning(f"⚠️ Missing test dependencies: {missing_deps}")
     else:
         logger.info("✅ All test dependencies available")
-            
+
     return dependencies
 
 def build_pytest_command(
@@ -505,12 +485,12 @@ def build_pytest_command(
         "--durations=10",
         "--disable-warnings"
     ]
-    
+
     # Add markers
     if test_markers:
         for marker in test_markers:
             cmd.extend(["-m", marker])
-    
+
     # Add coverage if enabled
     if generate_coverage:
         cmd.extend([
@@ -519,14 +499,14 @@ def build_pytest_command(
             "--cov-report=html",
             "--cov-report=term-missing"
         ])
-    
+
     # Add parallel execution if enabled
     if parallel:
         cmd.extend(["-n", "auto"])
-    
+
     # Add test path
     cmd.append(str(TEST_DIR))
-    
+
     return cmd
 
 def run_tests(
@@ -610,8 +590,3 @@ from .test_runner_modes import (
 )
 
 # Re-export from test_runner_modular sub-module for backward compatibility
-from .test_runner_modular import (
-    ModularTestRunner,
-    create_test_runner,
-    monitor_memory,
-)

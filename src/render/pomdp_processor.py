@@ -9,7 +9,7 @@ into various rendering implementations (PyMDP, RxInfer, ActiveInference.jl, etc.
 import logging
 import json
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Union, Tuple, TYPE_CHECKING
+from typing import Dict, List, Optional, Any, Union, TYPE_CHECKING
 from datetime import datetime
 
 if TYPE_CHECKING:
@@ -31,19 +31,19 @@ def count_code_metrics(file_path: Path) -> Dict[str, int]:
     try:
         content = file_path.read_text(encoding='utf-8')
         lines = content.split('\n')
-        
+
         # Count non-empty, non-comment lines
         loc = sum(1 for line in lines if line.strip() and not line.strip().startswith('#'))
-        
+
         # Count functions (Python: def, Julia: function)
-        functions = sum(1 for line in lines if 
-                       line.strip().startswith('def ') or 
+        functions = sum(1 for line in lines if
+                       line.strip().startswith('def ') or
                        line.strip().startswith('function ') or
                        '@jit' in line)  # JAX decorated functions
-        
+
         # Count classes (Python: class)
         classes = sum(1 for line in lines if line.strip().startswith('class '))
-        
+
         return {
             'lines_of_code': loc,
             'total_lines': len(lines),
@@ -69,7 +69,7 @@ class POMDPRenderProcessor:
     - Structured approach to render coordination
     - Validation of POMDP-renderer compatibility
     """
-    
+
     def __init__(self, base_output_dir: Path):
         """
         Initialize POMDP render processor.
@@ -79,7 +79,7 @@ class POMDPRenderProcessor:
         """
         self.base_output_dir = Path(base_output_dir)
         self.logger = logging.getLogger(__name__)
-        
+
         # Framework-specific configurations
         self.framework_configs = {
             'pymdp': {
@@ -139,8 +139,8 @@ class POMDPRenderProcessor:
                 'supports_multi_factor': True
             }
         }
-    
-    def process_pomdp_for_all_frameworks(self, 
+
+    def process_pomdp_for_all_frameworks(self,
                                        pomdp_space: 'POMDPStateSpace',
                                        gnn_file_path: Optional[Path] = None,
                                        frameworks: Optional[List[str]] = None,
@@ -159,13 +159,13 @@ class POMDPRenderProcessor:
         """
         if frameworks is None:
             frameworks = list(self.framework_configs.keys())
-        
+
         results = {}
         overall_success = True
-        
+
         # Create base output directory
         self.base_output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Create processing summary
         processing_summary = {
             'timestamp': datetime.now().isoformat(),
@@ -180,25 +180,25 @@ class POMDPRenderProcessor:
             'frameworks_processed': [],
             'frameworks_failed': []
         }
-        
+
         self.logger.info(f"Processing POMDP '{pomdp_space.model_name}' for frameworks: {frameworks}")
-        
+
         for framework in frameworks:
             try:
                 self.logger.info(f"Processing framework: {framework}")
                 framework_result = self._process_single_framework(
                     pomdp_space, framework, gnn_file_path, **kwargs
                 )
-                
+
                 results[framework] = framework_result
-                
+
                 if framework_result['success']:
                     processing_summary['frameworks_processed'].append(framework)
                     self.logger.info(f"✅ {framework}: {framework_result['message']}")
                 else:
                     processing_summary['frameworks_failed'].append(framework)
                     self.logger.error(f"❌ {framework}: {framework_result['message']}")
-                    
+
             except Exception as e:
                 error_msg = f"Unexpected error processing {framework}: {e}"
                 self.logger.error(error_msg)
@@ -209,30 +209,30 @@ class POMDPRenderProcessor:
                     'warnings': []
                 }
                 processing_summary['frameworks_failed'].append(framework)
-        
+
         # Determine overall success:
         # Consider successful if at least 60% of frameworks succeeded OR at least one succeeded
         total_frameworks = len(frameworks)
         successful_frameworks = len(processing_summary['frameworks_processed'])
         success_rate = successful_frameworks / total_frameworks if total_frameworks > 0 else 0
         overall_success = success_rate >= 0.6 or successful_frameworks > 0
-        
+
         if not overall_success:
             self.logger.warning(f"⚠️ Low framework success rate: {successful_frameworks}/{total_frameworks} ({success_rate*100:.1f}%)")
-        
+
         # Save processing summary
         summary_file = self.base_output_dir / 'processing_summary.json'
         with open(summary_file, 'w') as f:
             json.dump(processing_summary, f, indent=2)
-        
+
         return {
             'overall_success': overall_success,
             'framework_results': results,
             'summary_file': str(summary_file),
             'output_directory': str(self.base_output_dir)
         }
-    
-    def _process_single_framework(self, 
+
+    def _process_single_framework(self,
                                  pomdp_space: 'POMDPStateSpace',
                                  framework: str,
                                  gnn_file_path: Optional[Path] = None,
@@ -256,9 +256,9 @@ class POMDPRenderProcessor:
                 'output_files': [],
                 'warnings': []
             }
-        
+
         config = self.framework_configs[framework]
-        
+
         # Validate POMDP compatibility with framework
         validation_result = self._validate_pomdp_framework_compatibility(pomdp_space, framework)
         if not validation_result['compatible']:
@@ -268,26 +268,26 @@ class POMDPRenderProcessor:
                 'output_files': [],
                 'warnings': validation_result.get('warnings', [])
             }
-        
+
         # Create framework-specific output directory
         framework_output_dir = self.base_output_dir / config['output_subdir']
         framework_output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Convert POMDP to GNN spec format expected by renderers
         gnn_spec = self._pomdp_to_gnn_spec(pomdp_space, **kwargs)
-        
+
         # Get framework-specific renderer
         try:
             renderer_result = self._call_framework_renderer(
                 framework, gnn_spec, framework_output_dir, **kwargs
             )
-            
+
             if renderer_result['success']:
                 # Create framework-specific documentation
                 self._create_framework_documentation(
                     framework, pomdp_space, framework_output_dir, renderer_result
                 )
-                
+
                 # Calculate code metrics for generated files
                 code_metrics = {}
                 for output_file in renderer_result.get('artifacts', []):
@@ -295,7 +295,7 @@ class POMDPRenderProcessor:
                     if file_path.exists():
                         code_metrics = count_code_metrics(file_path)
                         break  # Use first file's metrics
-                
+
                 return {
                     'success': True,
                     'message': renderer_result['message'],
@@ -311,7 +311,7 @@ class POMDPRenderProcessor:
                     'output_files': [],
                     'warnings': validation_result.get('warnings', [])
                 }
-                
+
         except Exception as e:
             return {
                 'success': False,
@@ -319,8 +319,8 @@ class POMDPRenderProcessor:
                 'output_files': [],
                 'warnings': validation_result.get('warnings', [])
             }
-    
-    def _validate_pomdp_framework_compatibility(self, 
+
+    def _validate_pomdp_framework_compatibility(self,
                                               pomdp_space: 'POMDPStateSpace',
                                               framework: str) -> Dict[str, Any]:
         """
@@ -335,39 +335,39 @@ class POMDPRenderProcessor:
         """
         config = self.framework_configs[framework]
         warnings = []
-        
+
         # Check required matrices are present
         missing_matrices = []
         for required_matrix in config['requires_matrices']:
             matrix_attr = f"{required_matrix}_matrix" if required_matrix in ['A', 'B'] else f"{required_matrix}_vector"
             if getattr(pomdp_space, matrix_attr, None) is None:
                 missing_matrices.append(required_matrix)
-        
+
         if missing_matrices:
             return {
                 'compatible': False,
                 'reason': f"Missing required matrices: {missing_matrices}",
                 'warnings': warnings
             }
-        
+
         # Framework-specific checks
         if framework == 'rxinfer' and not config['supports_multi_modality']:
             if pomdp_space.num_observations > 1:  # This is a simplistic check
                 warnings.append(f"{framework} has limited multi-modality support")
-        
+
         # Check dimension limits
         max_reasonable_dim = 100  # Reasonable limit for most frameworks
-        if (pomdp_space.num_states > max_reasonable_dim or 
+        if (pomdp_space.num_states > max_reasonable_dim or
             pomdp_space.num_observations > max_reasonable_dim or
             pomdp_space.num_actions > max_reasonable_dim):
             warnings.append("Large state spaces may cause performance issues")
-        
+
         return {
             'compatible': True,
             'reason': None,
             'warnings': warnings
         }
-    
+
     def _pomdp_to_gnn_spec(self, pomdp_space: 'POMDPStateSpace', **kwargs) -> Dict[str, Any]:
         """
         Convert POMDP state space to GNN spec format expected by renderers.
@@ -383,7 +383,7 @@ class POMDPRenderProcessor:
         timesteps = kwargs.get('timesteps')
         if timesteps is None and hasattr(pomdp_space, 'num_timesteps'):
             timesteps = pomdp_space.num_timesteps
-            
+
         sim_params = kwargs.get('simulation_params', "{}")
         try:
             parsed_sim_params = json.loads(sim_params) if isinstance(sim_params, str) else sim_params
@@ -406,7 +406,7 @@ class POMDPRenderProcessor:
             'variables': [],
             'connections': []
         }
-        
+
         # Add matrices to initial parameterization
         if pomdp_space.A_matrix:
             gnn_spec['initialparameterization']['A'] = pomdp_space.A_matrix
@@ -418,7 +418,7 @@ class POMDPRenderProcessor:
             gnn_spec['initialparameterization']['D'] = pomdp_space.D_vector
         if pomdp_space.E_vector:
             gnn_spec['initialparameterization']['E'] = pomdp_space.E_vector
-        
+
         # Add variable definitions
         if pomdp_space.state_variables:
             gnn_spec['variables'].extend(pomdp_space.state_variables)
@@ -426,21 +426,21 @@ class POMDPRenderProcessor:
             gnn_spec['variables'].extend(pomdp_space.observation_variables)
         if pomdp_space.action_variables:
             gnn_spec['variables'].extend(pomdp_space.action_variables)
-        
+
         # Add connections
         if pomdp_space.connections:
             gnn_spec['connections'] = [
                 {'source': conn[0], 'relation': conn[1], 'target': conn[2]}
                 for conn in pomdp_space.connections
             ]
-        
+
         # Add ontology mapping if available
         if pomdp_space.ontology_mapping:
             gnn_spec['ontology_mapping'] = pomdp_space.ontology_mapping
-        
+
         return gnn_spec
-    
-    def _call_framework_renderer(self, 
+
+    def _call_framework_renderer(self,
                                 framework: str,
                                 gnn_spec: Dict[str, Any],
                                 output_dir: Path,
@@ -459,7 +459,7 @@ class POMDPRenderProcessor:
         """
         config = self.framework_configs[framework]
         model_name = gnn_spec.get('name', 'pomdp_model')
-        
+
         if framework == 'pymdp':
             return self._call_pymdp_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == 'rxinfer':
@@ -480,15 +480,15 @@ class POMDPRenderProcessor:
                 'message': f"No renderer implemented for {framework}",
                 'artifacts': []
             }
-    
+
     def _call_pymdp_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call PyMDP renderer."""
         try:
             from .pymdp.pymdp_renderer import render_gnn_to_pymdp
-            
+
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_pymdp.py"
-            
+
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'pymdp')
             if not validation_result['valid']:
@@ -500,37 +500,37 @@ class POMDPRenderProcessor:
                         'artifacts': [],
                         'warnings': warnings
                     }
-            
+
             success, message, warnings = render_gnn_to_pymdp(gnn_spec, output_file, kwargs)
-            
+
             # Post-render validation: verify state spaces are in generated script
             if success and output_file.exists():
                 post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
                 if not post_validation['valid']:
                     warnings.extend(post_validation.get('warnings', []))
-            
+
             return {
                 'success': success,
                 'message': message,
                 'artifacts': [str(output_file)] if success else [],
                 'warnings': warnings
             }
-            
+
         except ImportError:
             return {
                 'success': False,
                 'message': "PyMDP renderer not available",
                 'artifacts': []
             }
-    
+
     def _call_rxinfer_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call RxInfer renderer."""
         try:
             from .rxinfer.rxinfer_renderer import render_gnn_to_rxinfer
-            
+
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_rxinfer.jl"
-            
+
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'rxinfer')
             if not validation_result['valid']:
@@ -542,37 +542,37 @@ class POMDPRenderProcessor:
                         'artifacts': [],
                         'warnings': warnings
                     }
-            
+
             success, message, warnings = render_gnn_to_rxinfer(gnn_spec, output_file, kwargs)
-            
+
             # Post-render validation
             if success and output_file.exists():
                 post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
                 if not post_validation['valid']:
                     warnings.extend(post_validation.get('warnings', []))
-            
+
             return {
                 'success': success,
                 'message': message,
                 'artifacts': [str(output_file)] if success else [],
                 'warnings': warnings
             }
-            
+
         except ImportError:
             return {
                 'success': False,
                 'message': "RxInfer renderer not available",
                 'artifacts': []
             }
-    
+
     def _call_activeinference_jl_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call ActiveInference.jl renderer."""
         try:
             from .activeinference_jl.activeinference_renderer import render_gnn_to_activeinference_jl
-            
+
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_activeinference.jl"
-            
+
             # Validate state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'activeinference_jl')
             warnings = []
@@ -585,37 +585,37 @@ class POMDPRenderProcessor:
                         'artifacts': [],
                         'warnings': warnings
                     }
-            
+
             success, message, artifacts = render_gnn_to_activeinference_jl(gnn_spec, output_file, kwargs)
-            
+
             # Post-render validation
             if success and output_file.exists():
                 post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
                 if not post_validation['valid']:
                     warnings.extend(post_validation.get('warnings', []))
-            
+
             return {
                 'success': success,
                 'message': message,
                 'artifacts': artifacts,
                 'warnings': warnings
             }
-            
+
         except ImportError:
             return {
                 'success': False,
                 'message': "ActiveInference.jl renderer not available",
                 'artifacts': []
             }
-    
+
     def _call_jax_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call JAX renderer."""
         try:
             from .jax.jax_renderer import render_gnn_to_jax
-            
+
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_jax.py"
-            
+
             # Pre-render validation: verify state spaces are present before rendering
             validation_result = self._validate_state_spaces_in_spec(gnn_spec, 'jax')
             warnings = []
@@ -628,46 +628,46 @@ class POMDPRenderProcessor:
                         'artifacts': [],
                         'warnings': warnings
                     }
-            
+
             success, message, artifacts = render_gnn_to_jax(gnn_spec, output_file, kwargs)
-            
+
             # Post-render validation: verify state spaces are in generated script
             if success and output_file.exists():
                 post_validation = self._validate_state_spaces_in_script(output_file, gnn_spec)
                 if not post_validation['valid']:
                     warnings.extend(post_validation.get('warnings', []))
-            
+
             return {
                 'success': success,
                 'message': message,
                 'artifacts': artifacts,
                 'warnings': warnings
             }
-            
+
         except ImportError:
             return {
                 'success': False,
                 'message': "JAX renderer not available",
                 'artifacts': []
             }
-    
+
     def _call_discopy_renderer(self, gnn_spec: Dict[str, Any], output_dir: Path, **kwargs) -> Dict[str, Any]:
         """Call DisCoPy renderer."""
         try:
             from .discopy.discopy_renderer import render_gnn_to_discopy
-            
+
             model_name = gnn_spec.get('name', 'pomdp_model')
             output_file = output_dir / f"{model_name}_discopy.py"
-            
+
             success, message, warnings = render_gnn_to_discopy(gnn_spec, output_file, kwargs)
-            
+
             return {
                 'success': success,
                 'message': message,
                 'artifacts': [str(output_file)] if success else [],
                 'warnings': warnings
             }
-            
+
         except ImportError:
             return {
                 'success': False,
@@ -749,13 +749,13 @@ class POMDPRenderProcessor:
         warnings = []
         initial_params = gnn_spec.get('initialparameterization', {})
         config = self.framework_configs[framework]
-        
+
         # Check required matrices
         missing_required = []
         for required_matrix in config['requires_matrices']:
             if required_matrix not in initial_params:
                 missing_required.append(required_matrix)
-        
+
         if missing_required:
             return {
                 'valid': False,
@@ -763,18 +763,18 @@ class POMDPRenderProcessor:
                 'reason': f"Missing required matrices: {missing_required}",
                 'warnings': warnings
             }
-        
+
         # Check optional matrices
         for optional_matrix in config.get('optional_matrices', []):
             if optional_matrix not in initial_params:
                 warnings.append(f"Optional matrix {optional_matrix} not found")
-        
+
         return {
             'valid': True,
             'critical': False,
             'warnings': warnings
         }
-    
+
     def _validate_state_spaces_in_script(self, script_path: Path, gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
         """
         Validate that state spaces are present in generated script.
@@ -787,20 +787,20 @@ class POMDPRenderProcessor:
             Validation result dictionary
         """
         warnings = []
-        
+
         try:
             with open(script_path, 'r', encoding='utf-8') as f:
                 script_content = f.read()
-            
+
             initial_params = gnn_spec.get('initialparameterization', {})
-            
+
             # Check if matrices are referenced in script
             for matrix_name in ['A', 'B', 'C', 'D', 'E']:
                 if matrix_name in initial_params:
                     # Check if matrix is present in script (as variable or in data structure)
                     if matrix_name not in script_content and f'"{matrix_name}"' not in script_content:
                         warnings.append(f"Matrix {matrix_name} may not be properly injected into script")
-            
+
             return {
                 'valid': len(warnings) == 0,
                 'warnings': warnings
@@ -810,8 +810,8 @@ class POMDPRenderProcessor:
                 'valid': False,
                 'warnings': [f"Failed to validate script: {e}"]
             }
-    
-    def _create_framework_documentation(self, 
+
+    def _create_framework_documentation(self,
                                       framework: str,
                                       pomdp_space: 'POMDPStateSpace',
                                       output_dir: Path,
@@ -827,10 +827,10 @@ class POMDPRenderProcessor:
         """
         try:
             doc_file = output_dir / 'README.md'
-            
+
             # Get model annotation safely
             model_annotation = getattr(pomdp_space, 'model_annotation', None) or 'N/A'
-            
+
             doc_content = f"""# {framework.upper()} Rendering Results
 
 Generated from GNN POMDP Model: **{pomdp_space.model_name}**
@@ -851,50 +851,50 @@ Generated from GNN POMDP Model: **{pomdp_space.model_name}**
 
 ### Available Matrices/Vectors:
 """
-            
+
             # Safely check for matrices/vectors
             A_matrix = getattr(pomdp_space, 'A_matrix', None)
             if A_matrix and len(A_matrix) > 0 and len(A_matrix[0]) > 0:
                 doc_content += f"- **A Matrix (Likelihood)**: {len(A_matrix)}×{len(A_matrix[0])} - Maps hidden states to observations\n"
-            
+
             B_matrix = getattr(pomdp_space, 'B_matrix', None)
             if B_matrix and len(B_matrix) > 0 and len(B_matrix[0]) > 0:
                 try:
                     doc_content += f"- **B Matrix (Transition)**: {len(B_matrix[0])}×{len(B_matrix[0][0])}×{len(B_matrix)} - State transitions given actions\n"
                 except (IndexError, TypeError):
-                    doc_content += f"- **B Matrix (Transition)**: Present - State transitions given actions\n"
-            
+                    doc_content += "- **B Matrix (Transition)**: Present - State transitions given actions\n"
+
             C_vector = getattr(pomdp_space, 'C_vector', None)
             if C_vector and len(C_vector) > 0:
                 doc_content += f"- **C Vector (Preferences)**: Length {len(C_vector)} - Preferences over observations\n"
-            
+
             D_vector = getattr(pomdp_space, 'D_vector', None)
             if D_vector and len(D_vector) > 0:
                 doc_content += f"- **D Vector (Prior)**: Length {len(D_vector)} - Prior beliefs over states\n"
-            
+
             E_vector = getattr(pomdp_space, 'E_vector', None)
             if E_vector and len(E_vector) > 0:
                 doc_content += f"- **E Vector (Habits)**: Length {len(E_vector)} - Policy priors\n"
-            
-            doc_content += f"""
+
+            doc_content += """
 
 ## Generated Files
 
 """
-            
+
             for artifact in render_result.get('artifacts', []):
                 artifact_path = Path(artifact)
                 doc_content += f"- `{artifact_path.name}` - {framework} simulation script\n"
-            
+
             if render_result.get('warnings'):
-                doc_content += f"""
+                doc_content += """
 
 ## Warnings
 
 """
                 for warning in render_result['warnings']:
                     doc_content += f"- ⚠️ {warning}\n"
-            
+
             doc_content += f"""
 
 ## Usage
@@ -908,12 +908,12 @@ Refer to the main {framework} documentation for information on how to run the ge
 - **Multi-Modality Support**: {'✅' if self.framework_configs[framework]['supports_multi_modality'] else '❌'}
 - **Multi-Factor Support**: {'✅' if self.framework_configs[framework]['supports_multi_factor'] else '❌'}
 """
-            
+
             with open(doc_file, 'w') as f:
                 f.write(doc_content)
-                
+
             self.logger.info(f"Created documentation: {doc_file}")
-            
+
         except Exception as e:
             self.logger.warning(f"Failed to create documentation for {framework}: {e}")
 

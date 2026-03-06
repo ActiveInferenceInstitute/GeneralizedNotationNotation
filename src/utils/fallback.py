@@ -13,7 +13,7 @@ class FallbackArgumentParser:
     Fallback argument parser for when argument_utils is not available.
     """
     @staticmethod
-    def parse_step_arguments(step_name): 
+    def parse_step_arguments(step_name):
         """
         Parse step arguments with fallback implementation.
         

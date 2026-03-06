@@ -28,10 +28,10 @@ class TestProcessIntegration:
     def test_process_empty_directory(self, tmp_path):
         """Should handle empty directories gracefully."""
         from integration.processor import process_integration
-        
+
         output_dir = tmp_path / "output"
         result = process_integration(tmp_path, output_dir)
-        
+
         assert result is True
         # Verify results directory was created
         assert (output_dir / "integration_results").exists()
@@ -49,18 +49,18 @@ components:
     type: Environment
 """
         (tmp_path / "test_model.md").write_text(gnn_content)
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         result = process_integration(tmp_path, output_dir, verbose=True)
-        
+
         assert result is True
-        
+
         # Verify results file was created
         results_file = output_dir / "integration_results" / "integration_results.json"
         assert results_file.exists()
-        
+
         # Check results content
         results = json.loads(results_file.read_text())
         assert results["processed_files"] == 1
@@ -83,14 +83,14 @@ components:
 """
         (tmp_path / "file_a.md").write_text(file_a_content)
         (tmp_path / "file_b.md").write_text(file_b_content)
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         result = process_integration(tmp_path, output_dir, verbose=True)
-        
+
         assert result is True
-        
+
         # Verify both files were processed
         results_file = output_dir / "integration_results" / "integration_results.json"
         results = json.loads(results_file.read_text())
@@ -99,7 +99,7 @@ components:
     def test_circular_dependency_detection(self, tmp_path):
         """Should detect circular dependencies when networkx available."""
         pytest.importorskip("networkx")
-        
+
         # Create files with circular references
         # A -> B -> C -> A
         file_a = """# File A
@@ -120,14 +120,14 @@ components:
         (tmp_path / "a.md").write_text(file_a)
         (tmp_path / "b.md").write_text(file_b)
         (tmp_path / "c.md").write_text(file_c)
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         result = process_integration(tmp_path, output_dir, verbose=True)
-        
+
         assert result is True
-        
+
         # Check that graph stats are populated
         results_file = output_dir / "integration_results" / "integration_results.json"
         results = json.loads(results_file.read_text())
@@ -142,36 +142,36 @@ components:
     $ref: UndefinedComponent
 """
         (tmp_path / "test.md").write_text(gnn_content)
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         result = process_integration(tmp_path, output_dir)
-        
+
         assert result is True
-        
+
         # Check for issues in results
         results_file = output_dir / "integration_results" / "integration_results.json"
         results = json.loads(results_file.read_text())
-        
+
         # Should have captured the undefined reference
         assert any("UndefinedComponent" in issue for issue in results.get("issues", []))
 
     def test_summary_generation(self, tmp_path):
         """Should generate integration summary markdown."""
         (tmp_path / "test.md").write_text("- name: TestComp")
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         result = process_integration(tmp_path, output_dir)
-        
+
         assert result is True
-        
+
         # Verify summary was created
         summary_file = output_dir / "integration_results" / "integration_summary.md"
         assert summary_file.exists()
-        
+
         summary_content = summary_file.read_text()
         assert "System Integration Report" in summary_content
 
@@ -183,26 +183,26 @@ class TestProcessIntegrationErrorHandling:
         """Should handle files that can't be parsed."""
         # Create a binary file that looks like .md
         (tmp_path / "binary.md").write_bytes(b"\x00\x01\x02\x03")
-        
+
         output_dir = tmp_path / "output"
         from integration.processor import process_integration
-        
+
         # Should not raise, should handle gracefully
         result = process_integration(tmp_path, output_dir)
-        
+
         # Processing should still succeed (graceful degradation)
         assert result is True
 
     def test_nonexistent_target_returns_gracefully(self, tmp_path):
         """Should handle non-existent target directory."""
         from integration.processor import process_integration
-        
+
         nonexistent = tmp_path / "does_not_exist"
         output_dir = tmp_path / "output"
-        
+
         # Should not raise, should return False
         result = process_integration(nonexistent, output_dir)
-        
+
         # Processing of non-existent dir should succeed with 0 files
         # (glob returns empty list for non-existent paths)
         assert result is True

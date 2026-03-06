@@ -16,13 +16,13 @@ failures pinpoint the exact problem.
 from __future__ import annotations
 
 import json
-import logging
 import time
-import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
 import pytest
+
+pytestmark = pytest.mark.mcp
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  Fixtures

@@ -6,8 +6,7 @@ from extracted GNN model data.
 """
 
 import json
-from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 from datetime import datetime
 
 
@@ -15,11 +14,11 @@ class HTMLVisualizationGenerator:
     """
     Generates rich HTML visualizations from GNN model data.
     """
-    
+
     def __init__(self):
         """Initialize the HTML generator."""
         pass
-    
+
     def generate_advanced_visualization(self, extracted_data: Dict[str, Any], model_name: str) -> str:
         """
         Generate a comprehensive HTML visualization for a GNN model.
@@ -33,14 +32,14 @@ class HTMLVisualizationGenerator:
         """
         if not extracted_data.get("success", False):
             return self._generate_error_page(model_name, extracted_data.get("errors", ["Unknown error"]))
-        
+
         blocks = extracted_data.get("blocks", [])
         connections = extracted_data.get("connections", [])
         parameters = extracted_data.get("parameters", [])
         equations = extracted_data.get("equations", [])
         model_info = extracted_data.get("model_info", {})
         statistics = extracted_data.get("statistics", {})
-        
+
         # Generate the HTML content
         html = f"""
 <!DOCTYPE html>
@@ -365,7 +364,7 @@ class HTMLVisualizationGenerator:
             <h3>🧩 Model Variables</h3>
             <div class="blocks-grid">
 """
-        
+
         # Add variable blocks
         for block in blocks:
             html += f"""
@@ -380,7 +379,7 @@ class HTMLVisualizationGenerator:
                     </div>
                 </div>
 """
-        
+
         html += """
             </div>
         </div>
@@ -389,7 +388,7 @@ class HTMLVisualizationGenerator:
             <h3>🔗 Model Connections</h3>
             <ul class="connections-list">
 """
-        
+
         # Add connections
         for i, conn in enumerate(connections, 1):
             html += f"""
@@ -403,12 +402,12 @@ class HTMLVisualizationGenerator:
                     </div>
                 </li>
 """
-        
+
         html += """
             </ul>
         </div>
 """
-        
+
         # Add parameters section if there are parameters
         if parameters:
             html += """
@@ -416,7 +415,7 @@ class HTMLVisualizationGenerator:
             <h3>⚙️ Model Parameters</h3>
             <div class="parameters-grid">
 """
-            
+
             for param in parameters:
                 html += f"""
                 <div class="parameter-card">
@@ -425,12 +424,12 @@ class HTMLVisualizationGenerator:
                     {f"<div style='margin-top: 5px; font-size: 0.8em; opacity: 0.8;'>{param.get('description', '')}</div>" if param.get('description') else ''}
                 </div>
 """
-            
+
             html += """
             </div>
         </div>
 """
-        
+
         # Add equations section if there are equations
         if equations:
             html += """
@@ -438,7 +437,7 @@ class HTMLVisualizationGenerator:
             <h3>📐 Model Equations</h3>
             <ul class="equations-list">
 """
-            
+
             for eq in equations:
                 html += f"""
                 <li class="equation-item">
@@ -447,12 +446,12 @@ class HTMLVisualizationGenerator:
                     {f"<div style='margin-top: 10px; font-size: 0.9em; opacity: 0.8;'>{eq.get('description', '')}</div>" if eq.get('description') else ''}
                 </li>
 """
-            
+
             html += """
             </ul>
         </div>
 """
-        
+
         # Add footer
         html += f"""
         <div class="footer">
@@ -462,9 +461,9 @@ class HTMLVisualizationGenerator:
 </body>
 </html>
 """
-        
+
         return html
-    
+
     def _generate_error_page(self, model_name: str, errors: List[str]) -> str:
         """
         Generate an error page when visualization data extraction fails.
@@ -543,4 +542,4 @@ class HTMLVisualizationGenerator:
     </div>
 </body>
 </html>
-""" 
+"""

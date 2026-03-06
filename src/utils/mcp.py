@@ -18,9 +18,8 @@ import os
 import sys
 import platform
 import psutil
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from pathlib import Path
-import json
 import time
 
 logger = logging.getLogger(__name__)
@@ -45,7 +44,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
             "python_executable": sys.executable,
             "python_path": sys.path
         }
-        
+
         # Memory information
         memory = psutil.virtual_memory()
         memory_info = {
@@ -56,7 +55,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
             "total_gb": round(memory.total / (1024**3), 2),
             "available_gb": round(memory.available / (1024**3), 2)
         }
-        
+
         # CPU information
         cpu_info = {
             "count": psutil.cpu_count(),
@@ -64,7 +63,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
             "usage_percent": psutil.cpu_percent(interval=1),
             "frequency": psutil.cpu_freq()._asdict() if psutil.cpu_freq() else None
         }
-        
+
         # Disk information
         disk = psutil.disk_usage('/')
         disk_info = {
@@ -75,7 +74,7 @@ def get_system_info(mcp_instance_ref) -> Dict[str, Any]:
             "total_gb": round(disk.total / (1024**3), 2),
             "free_gb": round(disk.free / (1024**3), 2)
         }
-        
+
         return {
             "success": True,
             "system": system_info,
@@ -104,7 +103,7 @@ def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
         for key, value in os.environ.items():
             if not any(sensitive in key.lower() for sensitive in ['password', 'secret', 'key', 'token']):
                 env_vars[key] = value
-        
+
         # Python packages
         try:
             import pkg_resources
@@ -117,11 +116,11 @@ def get_environment_info(mcp_instance_ref) -> Dict[str, Any]:
                 })
         except ImportError:
             installed_packages = []
-        
+
         # Working directory and paths
         current_dir = Path.cwd()
         home_dir = Path.home()
-        
+
         return {
             "success": True,
             "environment_variables": env_vars,
@@ -150,15 +149,15 @@ def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
     """
     try:
         path = Path(file_path)
-        
+
         if not path.exists():
             return {
                 "success": False,
                 "error": f"Path does not exist: {file_path}"
             }
-        
+
         stat = path.stat()
-        
+
         file_info = {
             "path": str(path),
             "name": path.name,
@@ -176,7 +175,7 @@ def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
             "owner": stat.st_uid,
             "group": stat.st_gid
         }
-        
+
         # Additional info for directories
         if path.is_dir():
             try:
@@ -187,7 +186,7 @@ def get_file_info(mcp_instance_ref, file_path: str) -> Dict[str, Any]:
                     file_info["contents"].append(f"... and {len(contents) - 10} more")
             except PermissionError:
                 file_info["contents_error"] = "Permission denied"
-        
+
         return {
             "success": True,
             "file_info": file_info
@@ -209,7 +208,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
     try:
         # Get root logger info
         root_logger = logging.getLogger()
-        
+
         # Get all loggers
         loggers = {}
         for name in logging.root.manager.loggerDict:
@@ -219,7 +218,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
                 "handlers": len(logger_obj.handlers),
                 "propagate": logger_obj.propagate
             }
-        
+
         # Get current logging configuration
         config = {
             "root_level": logging.getLevelName(root_logger.level),
@@ -227,7 +226,7 @@ def get_logging_info(mcp_instance_ref) -> Dict[str, Any]:
             "loggers_count": len(loggers),
             "loggers": loggers
         }
-        
+
         return {
             "success": True,
             "logging_config": config
@@ -248,16 +247,16 @@ def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         from .validate_pipeline_dependencies import validate_pipeline_dependencies
-        
+
         # Validate pipeline dependencies
         pipeline_validation = validate_pipeline_dependencies()
-        
+
         # Check for common Python packages
         required_packages = [
             "numpy", "matplotlib", "networkx", "pandas", "requests",
             "pathlib", "json", "logging", "typing", "psutil"
         ]
-        
+
         package_status = {}
         for package in required_packages:
             try:
@@ -265,7 +264,7 @@ def validate_dependencies(mcp_instance_ref) -> Dict[str, Any]:
                 package_status[package] = "available"
             except ImportError:
                 package_status[package] = "missing"
-        
+
         return {
             "success": True,
             "pipeline_validation": pipeline_validation,
@@ -287,23 +286,23 @@ def register_tools(mcp_instance):
         mcp_instance: The MCP instance to register tools with.
     """
     logger.info("Registering utils MCP tools")
-    
+
     # Create wrapper functions
     def get_system_info_wrapper():
         return get_system_info(mcp_instance)
-    
+
     def get_environment_info_wrapper():
         return get_environment_info(mcp_instance)
-    
+
     def get_file_info_wrapper(file_path: str):
         return get_file_info(mcp_instance, file_path)
-    
+
     def get_logging_info_wrapper():
         return get_logging_info(mcp_instance)
-    
+
     def validate_dependencies_wrapper():
         return validate_dependencies(mcp_instance)
-    
+
     # Register tools
     mcp_instance.register_tool(
         name="get_system_info",
@@ -311,14 +310,14 @@ def register_tools(mcp_instance):
         schema={},
         description="Get comprehensive system information including CPU, memory, disk, and platform details."
     )
-    
+
     mcp_instance.register_tool(
         name="get_environment_info",
         function=get_environment_info_wrapper,
         schema={},
         description="Get environment information including Python packages, environment variables, and paths."
     )
-    
+
     mcp_instance.register_tool(
         name="get_file_info",
         function=get_file_info_wrapper,
@@ -334,19 +333,19 @@ def register_tools(mcp_instance):
         },
         description="Get detailed information about a file or directory including size, permissions, and contents."
     )
-    
+
     mcp_instance.register_tool(
         name="get_logging_info",
         function=get_logging_info_wrapper,
         schema={},
         description="Get current logging configuration and status for all loggers."
     )
-    
+
     mcp_instance.register_tool(
         name="validate_dependencies",
         function=validate_dependencies_wrapper,
         schema={},
         description="Validate system dependencies and required packages for the GNN pipeline."
     )
-    
-    logger.info("Successfully registered utils MCP tools") 
+
+    logger.info("Successfully registered utils MCP tools")

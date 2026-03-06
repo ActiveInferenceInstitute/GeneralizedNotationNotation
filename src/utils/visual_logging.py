@@ -11,14 +11,11 @@ Provides comprehensive visual accessibility improvements including:
 - Comprehensive error reporting with recovery suggestions
 """
 
-import sys
 import time
 import logging
-from typing import Dict, List, Optional, Any, Union
-from pathlib import Path
+from typing import Dict, List, Optional, Any
 from datetime import datetime
 from dataclasses import dataclass
-import json
 
 # Try to import rich for enhanced terminal output
 try:

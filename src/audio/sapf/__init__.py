@@ -66,27 +66,27 @@ FEATURES = {
 __all__ = [
     # Core SAPF processing
     "SAPFGNNProcessor",
-    "convert_gnn_to_sapf", 
+    "convert_gnn_to_sapf",
     "generate_audio_from_sapf",
     "validate_sapf_code",
-    
+
     # Processor functions
     "process_gnn_to_audio",
     "generate_sapf_audio",
     "create_sapf_visualization",
     "generate_sapf_report",
-    
+
     # Audio generation
     "SyntheticAudioGenerator",
     "generate_oscillator_audio",
     "apply_envelope",
     "mix_audio_channels",
-    
+
     # Utility functions
     "get_module_info",
     "get_audio_generation_options",
     "register_tools",
-    
+
     # MCP integration (if available)
     "register_sapf_tools",
     "handle_convert_gnn_to_sapf_audio",
@@ -94,7 +94,7 @@ __all__ = [
     "handle_validate_sapf_syntax",
     "handle_generate_audio_from_sapf",
     "handle_analyze_gnn_for_audio",
-    
+
     # Metadata
     "FEATURES",
     "__version__"
@@ -107,4 +107,4 @@ if not MCP_AVAILABLE:
     __all__.remove("handle_generate_sapf_code")
     __all__.remove("handle_validate_sapf_syntax")
     __all__.remove("handle_generate_audio_from_sapf")
-    __all__.remove("handle_analyze_gnn_for_audio") 
+    __all__.remove("handle_analyze_gnn_for_audio")

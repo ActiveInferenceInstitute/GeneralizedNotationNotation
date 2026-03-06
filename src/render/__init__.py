@@ -120,7 +120,7 @@ __all__ = [
     'render_gnn_spec',
     'get_module_info',
     'get_available_renderers',
-    
+
     # Generator functions
     'generate_pymdp_code',
     'generate_rxinfer_code',
@@ -130,7 +130,7 @@ __all__ = [
     'generate_discopy_code',
     'generate_discopy_fallback_code',
     'create_active_inference_diagram',
-    
+
     # Specific renderer functions (may be None if submodule unavailable)
     'render_gnn_to_pymdp',
     'render_gnn_to_rxinfer',
@@ -153,11 +153,11 @@ __all__ = [
 
 __version__ = "1.1.3"
 FEATURES = {
-    "pymdp_rendering": True, 
-    "rxinfer_rendering": True, 
-    "activeinference_jl_rendering": True, 
-    "discopy_rendering": True, 
-    "jax_rendering": True, 
+    "pymdp_rendering": True,
+    "rxinfer_rendering": True,
+    "activeinference_jl_rendering": True,
+    "discopy_rendering": True,
+    "jax_rendering": True,
     "pytorch_rendering": True,
     "numpyro_rendering": True,
     "mcp_integration": True,

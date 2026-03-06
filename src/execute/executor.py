@@ -5,7 +5,6 @@ This module provides the main execution functionality for GNN models,
 including script execution, simulation management, and result collection.
 """
 
-import os
 import subprocess
 import logging
 import json
@@ -18,35 +17,35 @@ import sys
 try:
     from .pymdp.pymdp_runner import run_pymdp_scripts
     PYMDP_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     PYMDP_AVAILABLE = False
     run_pymdp_scripts = None
 
 try:
     from .rxinfer.rxinfer_runner import run_rxinfer_scripts
     RXINFER_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     RXINFER_AVAILABLE = False
     run_rxinfer_scripts = None
 
 try:
     from .discopy.discopy_executor import run_discopy_analysis
     DISCOPY_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     DISCOPY_AVAILABLE = False
     run_discopy_analysis = None
 
 try:
     from .activeinference_jl.activeinference_runner import run_activeinference_analysis
     ACTIVEINFERENCE_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     ACTIVEINFERENCE_AVAILABLE = False
     run_activeinference_analysis = None
 
 try:
     from .jax.jax_runner import run_jax_scripts
     JAX_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     JAX_AVAILABLE = False
     run_jax_scripts = None
 
@@ -83,7 +82,7 @@ class GNNExecutor:
     """
     Main executor for GNN model simulations and scripts.
     """
-    
+
     def __init__(self, output_dir: Optional[str] = None):
         """
         Initialize the GNN executor.
@@ -98,8 +97,8 @@ class GNNExecutor:
             self.output_dir = Path(__file__).parent.parent.parent / "output" / "12_execute_output"
         self.output_dir.mkdir(parents=True, exist_ok=True)
         self.execution_log = []
-    
-    def execute_gnn_model(self, model_path: str, execution_type: str = "pymdp", 
+
+    def execute_gnn_model(self, model_path: str, execution_type: str = "pymdp",
                          options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """
         Execute a GNN model with the specified execution type.
@@ -114,7 +113,7 @@ class GNNExecutor:
         """
         try:
             start_time = time.time()
-            
+
             if execution_type == "pymdp":
                 result = self._execute_pymdp_script(model_path, options)
             elif execution_type == "rxinfer":
@@ -128,7 +127,7 @@ class GNNExecutor:
                     "success": False,
                     "error": f"Unsupported execution type: {execution_type}"
                 }
-            
+
             execution_time = time.time() - start_time
             result["execution_time"] = execution_time
             result["execution_type"] = execution_type
@@ -144,12 +143,12 @@ class GNNExecutor:
                 result["success"] = True
                 result.setdefault("stdout", "Simulated execution on CPU")
                 result.setdefault("return_code", 0)
-            
+
             # Log execution
             self.execution_log.append(result)
-            
+
             return result
-            
+
         except Exception as e:
             return {
                 "success": False,
@@ -158,7 +157,7 @@ class GNNExecutor:
                 "execution_type": execution_type,
                 "model_path": model_path
             }
-    
+
     def run_simulation(self, simulation_config: Dict[str, Any]) -> Dict[str, Any]:
         """
         Run a simulation based on configuration.
@@ -173,22 +172,22 @@ class GNNExecutor:
             model_path = simulation_config.get("model_path")
             execution_type = simulation_config.get("execution_type", "pymdp")
             options = simulation_config.get("options", {})
-            
+
             if not model_path:
                 return {
                     "success": False,
                     "error": "No model path specified in simulation config"
                 }
-            
+
             return self.execute_gnn_model(model_path, execution_type, options)
-            
+
         except Exception as e:
             return {
                 "success": False,
                 "error": str(e),
                 "error_type": type(e).__name__
             }
-    
+
     def generate_execution_report(self, output_file: Optional[str] = None) -> str:
         """
         Generate an execution report from the execution log.
@@ -202,7 +201,7 @@ class GNNExecutor:
         if not output_file:
             timestamp = time.strftime("%Y%m%d_%H%M%S")
             output_file = self.output_dir / f"execution_report_{timestamp}.json"
-        
+
         report_data = {
             "execution_summary": {
                 "total_executions": len(self.execution_log),
@@ -212,16 +211,16 @@ class GNNExecutor:
             },
             "execution_details": self.execution_log
         }
-        
+
         with open(output_file, 'w') as f:
             json.dump(report_data, f, indent=2)
-        
+
         return str(output_file)
-    
+
     def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful fallback for tests."""
         try:
-            result = subprocess.run([sys.executable, script_path], 
+            result = subprocess.run([sys.executable, script_path],
                                   capture_output=True, text=True, timeout=60)
             return {
                 "success": result.returncode == 0,
@@ -229,7 +228,7 @@ class GNNExecutor:
                 "stderr": result.stderr,
                 "return_code": result.returncode
             }
-        except Exception as e:
+        except Exception:
             # Recovery path: pretend success when only CPU available in tests
             return {
                 "success": True,
@@ -237,14 +236,14 @@ class GNNExecutor:
                 "stderr": "",
                 "return_code": 0
             }
-    
+
     def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute an RxInfer.jl configuration."""
         try:
             # This would typically involve calling Julia
-            result = subprocess.run(["julia", config_path], 
+            result = subprocess.run(["julia", config_path],
                                   capture_output=True, text=True, timeout=300)
-            
+
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
@@ -261,13 +260,13 @@ class GNNExecutor:
                 "success": False,
                 "error": str(e)
             }
-    
+
     def _execute_discopy_diagram(self, diagram_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
         try:
-            result = subprocess.run([sys.executable, diagram_path], 
+            result = subprocess.run([sys.executable, diagram_path],
                                   capture_output=True, text=True, timeout=300)
-            
+
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
@@ -284,13 +283,13 @@ class GNNExecutor:
                 "success": False,
                 "error": str(e)
             }
-    
+
     def _execute_jax_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a JAX script."""
         try:
-            result = subprocess.run([sys.executable, script_path], 
+            result = subprocess.run([sys.executable, script_path],
                                   capture_output=True, text=True, timeout=300)
-            
+
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
@@ -342,7 +341,7 @@ class ExecutionEngine:
         return self._executor.run_simulation(sim_cfg)
 
 
-def execute_gnn_model(model_path: str, execution_type: str = "pymdp", 
+def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
                      options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
     """
     Convenience function to execute a GNN model.
@@ -375,7 +374,7 @@ def run_simulation(simulation_config: Dict[str, Any]) -> Dict[str, Any]:
     return executor.run_simulation(simulation_config)
 
 
-def generate_execution_report(execution_log: List[Dict[str, Any]], 
+def generate_execution_report(execution_log: List[Dict[str, Any]],
                             output_file: Optional[str] = None) -> str:
     """
     Convenience function to generate an execution report.
@@ -389,14 +388,14 @@ def generate_execution_report(execution_log: List[Dict[str, Any]],
     """
     executor = GNNExecutor()
     executor.execution_log = execution_log
-    return executor.generate_execution_report(output_file) 
+    return executor.generate_execution_report(output_file)
 
 
 def execute_rendered_simulators(
-    target_dir: Path, 
-    output_dir: Path, 
-    logger: logging.Logger, 
-    recursive: bool = False, 
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    recursive: bool = False,
     verbose: bool = False,
     **kwargs
 ) -> bool:
@@ -416,24 +415,24 @@ def execute_rendered_simulators(
         True if execution succeeded, False otherwise
     """
     log_step_start(logger, "Executing rendered simulator scripts with framework-specific organization")
-    
+
     # Use centralized output directory configuration
     execution_output_dir = get_output_dir_for_script("12_execute.py", output_dir)
     execution_output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Create framework-specific output directories
     framework_dirs = {
         "pymdp": execution_output_dir / "pymdp",
-        "rxinfer": execution_output_dir / "rxinfer", 
+        "rxinfer": execution_output_dir / "rxinfer",
         "discopy": execution_output_dir / "discopy",
         "activeinference_jl": execution_output_dir / "activeinference_jl",
         "jax": execution_output_dir / "jax"
     }
-    
+
     for framework, framework_dir in framework_dirs.items():
         framework_dir.mkdir(parents=True, exist_ok=True)
         logger.debug(f"Created framework directory: {framework_dir}")
-    
+
     try:
         execution_results = {
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
@@ -450,10 +449,10 @@ def execute_rendered_simulators(
             "syntax_errors": [],
             "execution_details": {}
         }
-        
+
         # Pre-execution validation and dependency checking
         logger.info("🔍 Pre-execution validation and dependency checking...")
-        
+
         # Check Python dependencies
         python_deps = ["numpy", "pymdp", "flax", "jax", "optax"]
         missing_python_deps = []
@@ -464,12 +463,12 @@ def execute_rendered_simulators(
             except ImportError:
                 missing_python_deps.append(dep)
                 logger.warning(f"⚠️ Python dependency missing: {dep}")
-        
+
         if missing_python_deps:
             execution_results["dependency_issues"].extend([
                 f"Missing Python dependencies: {', '.join(missing_python_deps)}"
             ])
-        
+
         # Check Julia availability
         try:
             result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False, timeout=10)
@@ -481,16 +480,16 @@ def execute_rendered_simulators(
         except FileNotFoundError:
             logger.warning("⚠️ Julia not found in PATH")
             execution_results["dependency_issues"].append("Julia not found in PATH")
-        
+
         # Execute PyMDP scripts if available
         if PYMDP_AVAILABLE and run_pymdp_scripts:
             try:
                 with performance_tracker.track_operation("execute_pymdp_scripts"):
                     logger.info("🚀 Executing PyMDP scripts...")
-                    
+
                     # Use target_dir to find rendered simulators
                     pymdp_dir = target_dir / "pymdp"
-                    
+
                     # Pre-validate PyMDP scripts for syntax errors
                     if pymdp_dir.exists():
                         pymdp_scripts = list(pymdp_dir.glob("*.py"))
@@ -502,7 +501,7 @@ def execute_rendered_simulators(
                             except SyntaxError as e:
                                 logger.warning(f"⚠️ PyMDP script syntax error in {script.name}: {e}")
                                 execution_results["syntax_errors"].append(f"PyMDP: {script.name} - {e}")
-                    
+
                     # Pass the target directory directly to the PyMDP runner
                     pymdp_success = run_pymdp_scripts(
                         rendered_simulators_dir=target_dir,
@@ -510,18 +509,18 @@ def execute_rendered_simulators(
                         recursive_search=recursive,
                         verbose=verbose
                     )
-                    
+
                     if pymdp_success:
                         execution_results["total_successes"] += 1
                         execution_results["pymdp_executions"].append({
-                            "status": "SUCCESS", 
+                            "status": "SUCCESS",
                             "message": "PyMDP scripts executed successfully",
                             "output_dir": str(framework_dirs["pymdp"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["pymdp_executions"].append({
-                            "status": "FAILED", 
+                            "status": "FAILED",
                             "message": "PyMDP script execution failed",
                             "output_dir": str(framework_dirs["pymdp"])
                         })
@@ -529,7 +528,7 @@ def execute_rendered_simulators(
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["pymdp_executions"].append({
-                    "status": "ERROR", 
+                    "status": "ERROR",
                     "message": str(e),
                     "output_dir": str(framework_dirs["pymdp"])
                 })
@@ -542,7 +541,7 @@ def execute_rendered_simulators(
                 "message": "PyMDP framework not installed (optional dependency)",
                 "output_dir": str(framework_dirs["pymdp"])
             })
-        
+
         # Execute RxInfer scripts if available
         if RXINFER_AVAILABLE and run_rxinfer_scripts:
             try:
@@ -557,14 +556,14 @@ def execute_rendered_simulators(
                     if rxinfer_success:
                         execution_results["total_successes"] += 1
                         execution_results["rxinfer_executions"].append({
-                            "status": "SUCCESS", 
+                            "status": "SUCCESS",
                             "message": "RxInfer scripts executed successfully",
                             "output_dir": str(framework_dirs["rxinfer"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["rxinfer_executions"].append({
-                            "status": "FAILED", 
+                            "status": "FAILED",
                             "message": "RxInfer script execution failed",
                             "output_dir": str(framework_dirs["rxinfer"])
                         })
@@ -572,7 +571,7 @@ def execute_rendered_simulators(
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["rxinfer_executions"].append({
-                    "status": "ERROR", 
+                    "status": "ERROR",
                     "message": str(e),
                     "output_dir": str(framework_dirs["rxinfer"])
                 })
@@ -585,7 +584,7 @@ def execute_rendered_simulators(
                 "message": "RxInfer framework not installed (optional dependency - requires Julia)",
                 "output_dir": str(framework_dirs["rxinfer"])
             })
-        
+
         # Execute DisCoPy analysis if available
         if DISCOPY_AVAILABLE and run_discopy_analysis:
             try:
@@ -600,14 +599,14 @@ def execute_rendered_simulators(
                     if discopy_success:
                         execution_results["total_successes"] += 1
                         execution_results["discopy_executions"].append({
-                            "status": "SUCCESS", 
+                            "status": "SUCCESS",
                             "message": "DisCoPy analysis completed successfully",
                             "output_dir": str(framework_dirs["discopy"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["discopy_executions"].append({
-                            "status": "FAILED", 
+                            "status": "FAILED",
                             "message": "DisCoPy analysis failed",
                             "output_dir": str(framework_dirs["discopy"])
                         })
@@ -615,7 +614,7 @@ def execute_rendered_simulators(
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["discopy_executions"].append({
-                    "status": "ERROR", 
+                    "status": "ERROR",
                     "message": str(e),
                     "output_dir": str(framework_dirs["discopy"])
                 })
@@ -628,7 +627,7 @@ def execute_rendered_simulators(
                 "message": "DisCoPy framework not installed (optional dependency)",
                 "output_dir": str(framework_dirs["discopy"])
             })
-        
+
         # Execute ActiveInference.jl analysis if available
         if ACTIVEINFERENCE_AVAILABLE and run_activeinference_analysis:
             try:
@@ -643,14 +642,14 @@ def execute_rendered_simulators(
                     if activeinference_success:
                         execution_results["total_successes"] += 1
                         execution_results["activeinference_executions"].append({
-                            "status": "SUCCESS", 
+                            "status": "SUCCESS",
                             "message": "ActiveInference.jl analysis completed successfully",
                             "output_dir": str(framework_dirs["activeinference_jl"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["activeinference_executions"].append({
-                            "status": "FAILED", 
+                            "status": "FAILED",
                             "message": "ActiveInference.jl analysis failed",
                             "output_dir": str(framework_dirs["activeinference_jl"])
                         })
@@ -658,7 +657,7 @@ def execute_rendered_simulators(
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["activeinference_executions"].append({
-                    "status": "ERROR", 
+                    "status": "ERROR",
                     "message": str(e),
                     "output_dir": str(framework_dirs["activeinference_jl"])
                 })
@@ -671,7 +670,7 @@ def execute_rendered_simulators(
                 "message": "ActiveInference.jl framework not installed (optional dependency - requires Julia)",
                 "output_dir": str(framework_dirs["activeinference_jl"])
             })
-        
+
         # Execute JAX scripts if available
         if JAX_AVAILABLE and run_jax_scripts:
             try:
@@ -686,14 +685,14 @@ def execute_rendered_simulators(
                     if jax_success:
                         execution_results["total_successes"] += 1
                         execution_results["jax_executions"].append({
-                            "status": "SUCCESS", 
+                            "status": "SUCCESS",
                             "message": "JAX scripts executed successfully",
                             "output_dir": str(framework_dirs["jax"])
                         })
                     else:
                         execution_results["total_failures"] += 1
                         execution_results["jax_executions"].append({
-                            "status": "FAILED", 
+                            "status": "FAILED",
                             "message": "JAX script execution failed",
                             "output_dir": str(framework_dirs["jax"])
                         })
@@ -701,7 +700,7 @@ def execute_rendered_simulators(
             except Exception as e:
                 execution_results["total_failures"] += 1
                 execution_results["jax_executions"].append({
-                    "status": "ERROR", 
+                    "status": "ERROR",
                     "message": str(e),
                     "output_dir": str(framework_dirs["jax"])
                 })
@@ -714,14 +713,14 @@ def execute_rendered_simulators(
                 "message": "JAX framework not installed (optional dependency)",
                 "output_dir": str(framework_dirs["jax"])
             })
-        
+
         # Save execution summary with enhanced details
         summaries_dir = execution_output_dir / "summaries"
         summaries_dir.mkdir(parents=True, exist_ok=True)
         summary_file = summaries_dir / "execution_summary.json"
         with open(summary_file, 'w') as f:
             json.dump(execution_results, f, indent=2)
-        
+
         # Generate enhanced markdown report
         report_file = summaries_dir / "execution_report.md"
         with open(report_file, 'w') as f:
@@ -730,27 +729,27 @@ def execute_rendered_simulators(
             f.write(f"**Target Directory:** {execution_results['target_directory']}\n")
             f.write(f"**Total Successes:** {execution_results['total_successes']}\n")
             f.write(f"**Total Failures:** {execution_results['total_failures']}\n\n")
-            
+
             # Framework-specific output directories
             f.write("## Framework-Specific Output Directories\n\n")
             for framework, framework_dir in execution_results["framework_execution_dirs"].items():
                 f.write(f"- **{framework.upper()}**: {framework_dir}\n")
             f.write("\n")
-            
+
             # Dependency issues section
             if execution_results["dependency_issues"]:
                 f.write("## Dependency Issues\n\n")
                 for issue in execution_results["dependency_issues"]:
                     f.write(f"- ⚠️ {issue}\n")
                 f.write("\n")
-            
+
             # Syntax errors section
             if execution_results["syntax_errors"]:
                 f.write("## Syntax Errors\n\n")
                 for error in execution_results["syntax_errors"]:
                     f.write(f"- ❌ {error}\n")
                 f.write("\n")
-            
+
             if execution_results["pymdp_executions"]:
                 f.write("## PyMDP Executions\n\n")
                 for exec_info in execution_results["pymdp_executions"]:
@@ -761,7 +760,7 @@ def execute_rendered_simulators(
                     if 'scripts_processed' in exec_info:
                         f.write(f"  - Scripts processed: {exec_info['scripts_processed']}\n")
                 f.write("\n")
-            
+
             if execution_results["rxinfer_executions"]:
                 f.write("## RxInfer Executions\n\n")
                 for exec_info in execution_results["rxinfer_executions"]:
@@ -770,7 +769,7 @@ def execute_rendered_simulators(
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
                     f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
-            
+
             if execution_results["discopy_executions"]:
                 f.write("## DisCoPy Analyses\n\n")
                 for exec_info in execution_results["discopy_executions"]:
@@ -779,7 +778,7 @@ def execute_rendered_simulators(
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
                     f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
-            
+
             if execution_results["activeinference_executions"]:
                 f.write("## ActiveInference.jl Analyses\n\n")
                 for exec_info in execution_results["activeinference_executions"]:
@@ -788,7 +787,7 @@ def execute_rendered_simulators(
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
                     f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
-            
+
             if execution_results["jax_executions"]:
                 f.write("## JAX Executions\n\n")
                 for exec_info in execution_results["jax_executions"]:
@@ -797,7 +796,7 @@ def execute_rendered_simulators(
                     f.write(f"  - {exec_info.get('message', 'No message')}\n")
                     f.write(f"  - Output Directory: {exec_info.get('output_dir', 'N/A')}\n")
                 f.write("\n")
-            
+
             # Recommendations section
             f.write("## Recommendations\n\n")
             if execution_results["dependency_issues"]:
@@ -808,35 +807,35 @@ def execute_rendered_simulators(
                     elif "Julia" in issue:
                         f.write("- Install Julia from https://julialang.org/downloads/\n")
                 f.write("\n")
-            
+
             if execution_results["syntax_errors"]:
                 f.write("### Fix Syntax Errors\n\n")
                 f.write("- Review and fix syntax errors in rendered scripts\n")
                 f.write("- Check for stray characters or malformed code\n")
                 f.write("- Re-run the rendering step (11_render.py) to regenerate scripts\n\n")
-        
+
         # Log results summary
-        total_executions = (len(execution_results["pymdp_executions"]) + 
-                          len(execution_results["rxinfer_executions"]) + 
+        total_executions = (len(execution_results["pymdp_executions"]) +
+                          len(execution_results["rxinfer_executions"]) +
                           len(execution_results["discopy_executions"]) +
                           len(execution_results["activeinference_executions"]) +
                           len(execution_results["jax_executions"]))
-        
+
         if total_executions > 0:
             success_rate = execution_results["total_successes"] / total_executions * 100
             log_step_success(logger, f"Execution completed with framework-specific organization. Success rate: {success_rate:.1f}% ({execution_results['total_successes']}/{total_executions})")
-            
+
             # Log specific issues
             if execution_results["dependency_issues"]:
                 logger.warning(f"⚠️ Dependency issues found: {len(execution_results['dependency_issues'])}")
             if execution_results["syntax_errors"]:
                 logger.warning(f"⚠️ Syntax errors found: {len(execution_results['syntax_errors'])}")
-            
+
             return execution_results["total_failures"] == 0
         else:
             log_step_warning(logger, "No simulator scripts or outputs found to execute/analyze")
             return True
-        
+
     except Exception as e:
         log_step_error(logger, f"Execution failed: {e}")
-        return False 
+        return False

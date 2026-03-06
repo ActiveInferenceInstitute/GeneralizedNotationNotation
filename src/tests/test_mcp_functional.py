@@ -7,9 +7,9 @@ tool execution, resource management, and server status.
 """
 
 import pytest
+
+pytestmark = pytest.mark.mcp
 import sys
-import json
-import time
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,17 +17,11 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from mcp.mcp import (
     MCP,
     MCPTool,
-    MCPResource,
     MCPServer,
-    MCPPerformanceMetrics,
-    MCPModuleInfo,
-    create_mcp_server,
 )
 from mcp.exceptions import (
     MCPToolNotFoundError,
     MCPInvalidParamsError,
-    MCPToolExecutionError,
-    MCPValidationError,
 )
 
 

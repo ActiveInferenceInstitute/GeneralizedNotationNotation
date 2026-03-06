@@ -7,9 +7,7 @@ This file contains comprehensive tests for the report module functionality.
 
 import pytest
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +17,7 @@ from tests.conftest import *
 
 class TestReportModuleComprehensive:
     """Comprehensive tests for the report module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_module_imports(self):
@@ -32,7 +30,7 @@ class TestReportModuleComprehensive:
             assert hasattr(report, 'get_module_info')
         except ImportError:
             pytest.skip("Report module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_generator_instantiation(self):
@@ -45,7 +43,7 @@ class TestReportModuleComprehensive:
             assert hasattr(generator, 'format_report')
         except ImportError:
             pytest.skip("ReportGenerator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_formatter_instantiation(self):
@@ -58,7 +56,7 @@ class TestReportModuleComprehensive:
             assert hasattr(formatter, 'format_html')
         except ImportError:
             pytest.skip("ReportFormatter not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_module_info(self):
@@ -72,7 +70,7 @@ class TestReportModuleComprehensive:
             assert 'report_formats' in info
         except ImportError:
             pytest.skip("Report module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_formats(self):
@@ -92,7 +90,7 @@ class TestReportModuleComprehensive:
 
 class TestReportFunctionality:
     """Tests for report functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_generation(self, comprehensive_test_data):
@@ -100,14 +98,14 @@ class TestReportFunctionality:
         try:
             from report import ReportGenerator
             generator = ReportGenerator()
-            
+
             # Test report generation with sample data
             report_data = comprehensive_test_data.get('report_data', {})
             result = generator.generate_report(report_data)
             assert result is not None
         except ImportError:
             pytest.skip("ReportGenerator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_formatting(self):
@@ -115,7 +113,7 @@ class TestReportFunctionality:
         try:
             from report import ReportFormatter
             formatter = ReportFormatter()
-            
+
             # Test markdown formatting
             content = "Test report content"
             result = formatter.format_markdown(content)
@@ -123,7 +121,7 @@ class TestReportFunctionality:
             assert isinstance(result, str)
         except ImportError:
             pytest.skip("ReportFormatter not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_report_validation(self):
@@ -138,7 +136,7 @@ class TestReportFunctionality:
 
 class TestReportIntegration:
     """Integration tests for report module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_report_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -146,18 +144,18 @@ class TestReportIntegration:
         try:
             from report import ReportGenerator
             generator = ReportGenerator()
-            
+
             # Test end-to-end report generation
             gnn_file = list(sample_gnn_files.values())[0]
             with open(gnn_file, 'r') as f:
                 gnn_content = f.read()
-            
+
             result = generator.generate_report({'gnn_content': gnn_content})
             assert result is not None
-            
+
         except ImportError:
             pytest.skip("Report module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_report_mcp_integration(self):
@@ -179,7 +177,7 @@ def test_report_module_completeness():
         'get_supported_formats',
         'validate_report'
     ]
-    
+
     try:
         import report
         for component in required_components:
@@ -194,16 +192,16 @@ def test_report_module_performance():
     try:
         from report import ReportGenerator
         import time
-        
+
         generator = ReportGenerator()
         start_time = time.time()
-        
+
         # Test report generation performance
         result = generator.generate_report({'test': 'data'})
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds
-        
+
     except ImportError:
         pytest.skip("Report module not available")
 

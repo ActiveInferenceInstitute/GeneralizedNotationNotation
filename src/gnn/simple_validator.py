@@ -9,7 +9,7 @@ when the full validation system encounters issues.
 
 import logging
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
@@ -19,10 +19,10 @@ class SimpleValidator:
     
     This validator performs basic checks without complex dependencies.
     """
-    
+
     def __init__(self):
         self.valid_extensions = ['.md', '.json', '.xml', '.yaml', '.pkl']
-    
+
     def validate_file(self, file_path: Path) -> Dict[str, Any]:
         """
         Validate a GNN file with basic checks.
@@ -40,13 +40,13 @@ class SimpleValidator:
             'suggestions': [],
             'format': self._detect_format(file_path)
         }
-        
+
         # Check if file exists
         if not file_path.exists():
             result['is_valid'] = False
             result['errors'].append(f"File does not exist: {file_path}")
             return result
-        
+
         # Check if file is readable
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
@@ -55,28 +55,28 @@ class SimpleValidator:
             result['is_valid'] = False
             result['errors'].append(f"Could not read file: {e}")
             return result
-        
+
         # Check for basic GNN markers
         gnn_markers = ['model', 'gnn', 'variable', 'connection', 'ModelName', 'StateSpaceBlock']
         found_markers = [marker for marker in gnn_markers if marker in content]
-        
+
         if not found_markers:
             result['warnings'].append("No GNN markers found in file")
-        
+
         # Check for section structure in markdown files
         if file_path.suffix.lower() == '.md':
             sections = ['ModelName', 'StateSpaceBlock', 'Connections']
             missing_sections = [section for section in sections if section not in content]
-            
+
             if missing_sections:
                 result['warnings'].append(f"Missing sections: {', '.join(missing_sections)}")
-        
+
         return result
-    
+
     def _detect_format(self, file_path: Path) -> str:
         """Detect file format from extension."""
         ext = file_path.suffix.lower()
-        
+
         format_map = {
             '.md': 'markdown',
             '.json': 'json',
@@ -86,9 +86,9 @@ class SimpleValidator:
             '.pkl': 'pickle',
             '.pickle': 'pickle'
         }
-        
+
         return format_map.get(ext, 'unknown')
-    
+
     def validate_directory(self, directory: Path, recursive: bool = False) -> Dict[str, Any]:
         """
         Validate all GNN files in a directory.
@@ -107,7 +107,7 @@ class SimpleValidator:
             'invalid_files': 0,
             'file_results': {}
         }
-        
+
         # Find files to validate
         if recursive:
             files = []
@@ -117,19 +117,19 @@ class SimpleValidator:
             files = []
             for ext in self.valid_extensions:
                 files.extend(directory.glob(f"*{ext}"))
-        
+
         # Validate each file
         for file_path in files:
             file_result = self.validate_file(file_path)
             results['files_validated'] += 1
-            
+
             if file_result['is_valid']:
                 results['valid_files'] += 1
             else:
                 results['invalid_files'] += 1
-                
+
             results['file_results'][str(file_path)] = file_result
-        
+
         return results
 
 
@@ -159,4 +159,4 @@ def validate_gnn_directory(directory: Path, recursive: bool = False) -> Dict[str
         Dictionary with validation results
     """
     validator = SimpleValidator()
-    return validator.validate_directory(directory, recursive) 
+    return validator.validate_directory(directory, recursive)

@@ -9,7 +9,6 @@ No database dependency — jobs are stored in memory (lost on restart).
 
 import asyncio
 import logging
-import subprocess
 import sys
 import uuid
 from datetime import datetime

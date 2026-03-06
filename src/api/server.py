@@ -11,12 +11,9 @@ Run with:
     uvicorn api.server:app --host 0.0.0.0 --port 8000 --reload
 """
 
-import asyncio
 import logging
-import sys
 from datetime import datetime
 from pathlib import Path
-from typing import Optional
 
 logger = logging.getLogger(__name__)
 

@@ -13,7 +13,7 @@ Key Features:
 """
 
 import logging
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 from pathlib import Path
 import json
 import time
@@ -29,7 +29,7 @@ def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         from .pipeline_config import STEP_METADATA, get_pipeline_config
-        
+
         steps_info = {}
         for step_name, metadata in STEP_METADATA.items():
             steps_info[step_name] = {
@@ -43,7 +43,7 @@ def get_pipeline_steps(mcp_instance_ref) -> Dict[str, Any]:
                 "output_dir": metadata.get("output_dir", ""),
                 "version": metadata.get("version", "1.0.0")
             }
-        
+
         return {
             "success": True,
             "total_steps": len(steps_info),
@@ -66,10 +66,10 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         from .pipeline_config import get_pipeline_config
-        
+
         config = get_pipeline_config()
         output_dir = Path(config.get("output_dir", "output"))
-        
+
         # Check for pipeline execution summary
         summary_file = output_dir / "pipeline_execution_summary.json"
         if summary_file.exists():
@@ -82,7 +82,7 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
                 "successful_executions": 0,
                 "failed_executions": 0
             }
-        
+
         # Check for recent logs
         logs_dir = output_dir / "logs"
         recent_logs = []
@@ -95,7 +95,7 @@ def get_pipeline_status(mcp_instance_ref) -> Dict[str, Any]:
                     "size": log_file.stat().st_size,
                     "modified": time.ctime(log_file.stat().st_mtime)
                 })
-        
+
         return {
             "success": True,
             "pipeline_config": config,
@@ -121,18 +121,18 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
     try:
         from .pipeline_config import STEP_METADATA
         from utils.validate_pipeline_dependencies import validate_pipeline_dependencies as validate_deps
-        
+
         validation_result = validate_deps()
-        
+
         # Additional analysis
         dependency_graph = {}
         missing_deps = []
         circular_deps = []
-        
+
         for step_name, metadata in STEP_METADATA.items():
             deps = metadata.get("dependencies", [])
             dependency_graph[step_name] = deps
-            
+
             # Check for missing dependencies
             for dep in deps:
                 if dep not in STEP_METADATA:
@@ -140,7 +140,7 @@ def validate_pipeline_dependencies(mcp_instance_ref) -> Dict[str, Any]:
                         "step": step_name,
                         "missing_dependency": dep
                     })
-        
+
         return {
             "success": True,
             "validation_result": validation_result,
@@ -166,9 +166,9 @@ def get_pipeline_config_info(mcp_instance_ref) -> Dict[str, Any]:
     """
     try:
         from .pipeline_config import get_pipeline_config
-        
+
         config = get_pipeline_config()
-        
+
         return {
             "success": True,
             "configuration": config,
@@ -193,20 +193,20 @@ def register_tools(mcp_instance):
         mcp_instance: The MCP instance to register tools with.
     """
     logger.info("Registering pipeline MCP tools")
-    
+
     # Create wrapper functions
     def get_steps_wrapper():
         return get_pipeline_steps(mcp_instance)
-    
+
     def get_status_wrapper():
         return get_pipeline_status(mcp_instance)
-    
+
     def validate_deps_wrapper():
         return validate_pipeline_dependencies(mcp_instance)
-    
+
     def get_config_wrapper():
         return get_pipeline_config_info(mcp_instance)
-    
+
     # Register tools
     mcp_instance.register_tool(
         name="get_pipeline_steps",
@@ -214,26 +214,26 @@ def register_tools(mcp_instance):
         schema={},
         description="Get information about all available pipeline steps, their metadata, and dependencies."
     )
-    
+
     mcp_instance.register_tool(
         name="get_pipeline_status",
         function=get_status_wrapper,
         schema={},
         description="Get current pipeline execution status, recent logs, and execution statistics."
     )
-    
+
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
         function=validate_deps_wrapper,
         schema={},
         description="Validate pipeline step dependencies and identify missing or circular dependencies."
     )
-    
+
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
         function=get_config_wrapper,
         schema={},
         description="Get detailed pipeline configuration information and settings."
     )
-    
-    logger.info("Successfully registered pipeline MCP tools") 
+
+    logger.info("Successfully registered pipeline MCP tools")

@@ -44,23 +44,23 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         # Extract structural elements
         variables = extract_variables_for_analysis(content)
         connections = extract_connections_for_analysis(content)
         sections = extract_sections_for_analysis(content)
-        
+
         # Calculate statistics
         var_stats = calculate_variable_statistics(variables)
         conn_stats = calculate_connection_statistics(connections)
         section_stats = calculate_section_statistics(sections)
-        
+
         # Analyze distributions
         distributions = analyze_distributions(variables, connections)
-        
+
         # Calculate correlations
         correlations = calculate_correlations(variables, connections)
-        
+
         return {
             "file_path": str(file_path),
             "file_name": file_path.name,
@@ -76,21 +76,21 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
             "correlations": correlations,
             "analysis_timestamp": datetime.now().isoformat()
         }
-        
+
     except Exception as e:
         raise Exception(f"Failed to analyze {file_path}: {e}")
 
 def extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]:
     """Extract variables for statistical analysis."""
     variables = []
-    
+
     # Look for variable definitions
     var_patterns = [
         r'(\w+)\s*:\s*(\w+)',  # name: type
         r'(\w+)\s*=\s*([^;\n]+)',  # name = value
         r'(\w+)\s*\[([^\]]+)\]',  # name[dimensions]
     ]
-    
+
     for pattern in var_patterns:
         matches = re.finditer(pattern, content)
         for match in matches:
@@ -100,14 +100,14 @@ def extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]:
                 "line": content[:match.start()].count('\n') + 1,
                 "type": match.group(2) if ":" in match.group(0) else "unknown"
             })
-    
+
     return variables
 
 def extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]:
     """Extract connections for statistical analysis."""
     connections = []
     seen = set()  # Deduplicate connections
-    
+
     # 1. Parse GNN ## Connections section directly (highest priority)
     connections_section = re.search(
         r'##\s*Connections\s*\n(.*?)(?=\n##\s|\Z)', content, re.DOTALL
@@ -134,14 +134,14 @@ def extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]:
                         "connection_type": conn_type,
                         "line": section_start_line + i
                     })
-    
+
     # 2. Also look for generic connection patterns outside the section
     conn_patterns = [
         (r'(\w+)\s*->\s*(\w+)', "directional"),   # source -> target
         (r'(\w+)\s*→\s*(\w+)', "directional"),     # source → target
         (r'(\w+)\s*connects\s*(\w+)', "association"),  # source connects target
     ]
-    
+
     for pattern, conn_type in conn_patterns:
         matches = re.finditer(pattern, content)
         for match in matches:
@@ -155,19 +155,19 @@ def extract_connections_for_analysis(content: str) -> List[Dict[str, Any]]:
                     "connection_type": conn_type,
                     "line": content[:match.start()].count('\n') + 1
                 })
-    
+
     return connections
 
 def extract_sections_for_analysis(content: str) -> List[Dict[str, Any]]:
     """Extract sections for statistical analysis."""
     sections = []
-    
+
     # Look for section headers
     section_patterns = [
         r'^#+\s+(.+)$',  # Markdown headers
         r'^(\w+):\s*$',  # Section labels
     ]
-    
+
     for pattern in section_patterns:
         matches = re.finditer(pattern, content, re.MULTILINE)
         for match in matches:
@@ -175,52 +175,52 @@ def extract_sections_for_analysis(content: str) -> List[Dict[str, Any]]:
                 "name": match.group(1),
                 "line": content[:match.start()].count('\n') + 1
             })
-    
+
     return sections
 
 def calculate_variable_statistics(variables: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate statistics for variables."""
     if not variables:
         return {"count": 0, "types": {}, "average_line": 0}
-    
+
     stats = {
         "count": len(variables),
         "types": {},
         "average_line": np.mean([var.get("line", 0) for var in variables]),
         "line_std": np.std([var.get("line", 0) for var in variables])
     }
-    
+
     # Count types
     for var in variables:
         var_type = var.get("type", "unknown")
         stats["types"][var_type] = stats["types"].get(var_type, 0) + 1
-    
+
     return stats
 
 def calculate_connection_statistics(connections: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate statistics for connections."""
     if not connections:
         return {"count": 0, "average_line": 0}
-    
+
     stats = {
         "count": len(connections),
         "average_line": np.mean([conn.get("line", 0) for conn in connections]),
         "line_std": np.std([conn.get("line", 0) for conn in connections])
     }
-    
+
     return stats
 
 def calculate_section_statistics(sections: List[Dict[str, Any]]) -> Dict[str, Any]:
     """Calculate statistics for sections."""
     if not sections:
         return {"count": 0, "average_line": 0}
-    
+
     stats = {
         "count": len(sections),
         "average_line": np.mean([section.get("line", 0) for section in sections]),
         "line_std": np.std([section.get("line", 0) for section in sections])
     }
-    
+
     return stats
 
 def count_type_distribution(variables: List[Dict[str, Any]]) -> Dict[str, int]:
@@ -249,7 +249,7 @@ def analyze_distributions(variables: List[Dict[str, Any]], connections: List[Dic
         "connection_distribution": {},
         "complexity_metrics": {}
     }
-    
+
     # Analyze variable distribution
     if variables:
         var_lines = [var.get("line", 0) for var in variables]
@@ -265,7 +265,7 @@ def analyze_distributions(variables: List[Dict[str, Any]], connections: List[Dic
             analysis["variable_distribution"]["kurtosis"] = float(stats.kurtosis(var_lines))
             counts = np.unique(var_lines, return_counts=True)[1]
             analysis["variable_distribution"]["entropy"] = float(stats.entropy(counts))
-    
+
     # Analyze connection distribution
     if connections:
         conn_lines = [conn.get("line", 0) for conn in connections]
@@ -281,7 +281,7 @@ def analyze_distributions(variables: List[Dict[str, Any]], connections: List[Dic
             analysis["connection_distribution"]["kurtosis"] = float(stats.kurtosis(conn_lines))
             counts = np.unique(conn_lines, return_counts=True)[1]
             analysis["connection_distribution"]["entropy"] = float(stats.entropy(counts))
-    
+
     # Calculate complexity metrics
     analysis["complexity_metrics"] = {
         "total_elements": len(variables) + len(connections),
@@ -290,7 +290,7 @@ def analyze_distributions(variables: List[Dict[str, Any]], connections: List[Dic
         "density": len(connections) / max(len(variables), 1),
         "cyclomatic_complexity": len(connections) - len(variables) + 2
     }
-    
+
     return analysis
 
 def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> Dict[str, Any]:
@@ -299,17 +299,17 @@ def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Di
         "variable_connection_correlation": 0.0,
         "line_position_correlation": 0.0
     }
-    
+
     if variables and connections:
         # Calculate correlation between number of variables and connections
         var_count = len(variables)
         conn_count = len(connections)
         correlations["variable_connection_correlation"] = conn_count / max(var_count, 1)
-        
+
         # Calculate line position correlation
         var_lines = [var.get("line", 0) for var in variables]
         conn_lines = [conn.get("line", 0) for conn in connections]
-        
+
         if len(var_lines) > 1 and len(conn_lines) > 1:
             try:
                 with np.errstate(divide='ignore', invalid='ignore'):
@@ -318,7 +318,7 @@ def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Di
                 correlations["line_position_correlation"] = 0.0 if np.isnan(val) else float(val)
             except Exception:
                 correlations["line_position_correlation"] = 0.0
-    
+
     return correlations
 
 def calculate_cyclomatic_complexity(variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float:
@@ -329,34 +329,34 @@ def calculate_cognitive_complexity(variables: List[Dict[str, Any]], connections:
     """Calculate cognitive complexity of the model."""
     # Cognitive complexity considers nesting, branching, and logical operators
     complexity = 0
-    
+
     # Base complexity from number of elements
     complexity += len(variables) * 0.5
     complexity += len(connections) * 1.0
-    
+
     # Additional complexity for high connectivity
     if variables and connections:
         density = len(connections) / len(variables)
         if density > 2.0:
             complexity += density * 0.5
-    
+
     return complexity
 
 def calculate_structural_complexity(variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float:
     """Calculate structural complexity of the model."""
     # Structural complexity considers the graph structure
     complexity = 0
-    
+
     # Base complexity
     complexity += len(variables) * 0.3
     complexity += len(connections) * 0.7
-    
+
     # Graph density penalty
     if variables and connections:
         density = len(connections) / len(variables)
         if density > 1.5:
             complexity += density * 0.2
-    
+
     return complexity
 
 def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
@@ -364,10 +364,10 @@ def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         variables = extract_variables_for_analysis(content)
         connections = extract_connections_for_analysis(content)
-        
+
         metrics = {
             "file_path": str(file_path),
             "file_name": file_path.name,
@@ -378,9 +378,9 @@ def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict
             "technical_debt": calculate_technical_debt(content, variables, connections),
             "analysis_timestamp": datetime.now().isoformat()
         }
-        
+
         return metrics
-        
+
     except Exception as e:
         raise Exception(f"Failed to calculate complexity metrics for {file_path}: {e}")
 
@@ -389,10 +389,10 @@ def calculate_maintainability_index(content: str, variables: List[Dict[str, Any]
     # Simplified maintainability index calculation
     lines = len(content.splitlines())
     complexity = len(variables) + len(connections)
-    
+
     if lines == 0:
         return 100.0
-    
+
     # Higher index = more maintainable
     maintainability = 171 - 5.2 * np.log(complexity) - 0.23 * np.log(lines)
     return max(0.0, min(100.0, maintainability))
@@ -400,18 +400,18 @@ def calculate_maintainability_index(content: str, variables: List[Dict[str, Any]
 def calculate_technical_debt(content: str, variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float:
     """Calculate technical debt score."""
     debt = 0.0
-    
+
     # Complexity debt
     if len(variables) > 20:
         debt += (len(variables) - 20) * 0.1
-    
+
     if len(connections) > 50:
         debt += (len(connections) - 50) * 0.05
-    
+
     # Documentation debt (simplified)
     if len(content) < 1000:  # Assuming short content means poor documentation
         debt += 0.5
-    
+
     return debt
 
 def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[str, Any]:
@@ -419,23 +419,23 @@ def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[s
     try:
         with open(file_path, 'r') as f:
             content = f.read()
-        
+
         start_time = time.perf_counter()
         variables = extract_variables_for_analysis(content)
         connections = extract_connections_for_analysis(content)
         end_time = time.perf_counter()
-        
+
         real_parse_time = end_time - start_time
-        
+
         # Calculate real memory usage footprint
         memory_usage = sys.getsizeof(content) + sys.getsizeof(variables) + sys.getsizeof(connections)
         for var in variables:
             memory_usage += sys.getsizeof(var)
         for conn in connections:
             memory_usage += sys.getsizeof(conn)
-            
+
         complexity = len(variables) + len(connections)
-        
+
         # Actual performance metrics replacing simulated data
         benchmarks = {
             "file_path": str(file_path),
@@ -446,9 +446,9 @@ def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[s
             "estimated_runtime": complexity * 0.01,
             "benchmark_timestamp": datetime.now().isoformat()
         }
-        
+
         return benchmarks
-        
+
     except Exception as e:
         raise Exception(f"Failed to run benchmarks for {file_path}: {e}")
 
@@ -456,7 +456,7 @@ def perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbos
     """Perform comparisons between multiple models."""
     if len(statistical_analyses) < 2:
         return {"error": "Need at least 2 models for comparison"}
-    
+
     comparisons = {
         "model_count": len(statistical_analyses),
         "complexity_comparison": {},
@@ -464,34 +464,34 @@ def perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbos
         "structure_comparison": {},
         "comparison_timestamp": datetime.now().isoformat()
     }
-    
+
     # Compare complexity metrics
     complexity_scores = []
     file_sizes = []
     variable_counts = []
     connection_counts = []
-    
+
     for analysis in statistical_analyses:
         complexity_metrics = analysis.get("distributions", {}).get("complexity_metrics", {})
         complexity_scores.append(complexity_metrics.get("total_elements", 0))
         file_sizes.append(analysis.get("file_size", 0))
         variable_counts.append(len(analysis.get("variables", [])))
         connection_counts.append(len(analysis.get("connections", [])))
-    
+
     comparisons["complexity_comparison"] = {
         "mean": np.mean(complexity_scores),
         "std": np.std(complexity_scores),
         "min": np.min(complexity_scores),
         "max": np.max(complexity_scores)
     }
-    
+
     comparisons["size_comparison"] = {
         "mean": np.mean(file_sizes),
         "std": np.std(file_sizes),
         "min": np.min(file_sizes),
         "max": np.max(file_sizes)
     }
-    
+
     comparisons["structure_comparison"] = {
         "variable_counts": {
             "mean": np.mean(variable_counts),
@@ -502,7 +502,7 @@ def perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbos
             "std": np.std(connection_counts)
         }
     }
-    
+
     return comparisons
 
 def generate_analysis_summary(results: Dict[str, Any]) -> str:
@@ -525,7 +525,7 @@ def generate_analysis_summary(results: Dict[str, Any]) -> str:
 
 ## Error Summary
 """
-    
+
     errors = results.get('errors', [])
     if errors:
         for error in errors:
@@ -535,20 +535,20 @@ def generate_analysis_summary(results: Dict[str, Any]) -> str:
                 summary += f"- {error}\n"
     else:
         summary += "- No errors encountered\n"
-    
+
     summary += "\n## Model Statistics\n"
-    
+
     # Add statistics from analyses
     analyses = results.get('statistical_analysis', [])
     if analyses:
         total_variables = sum(len(analysis.get('variables', [])) for analysis in analyses)
         total_connections = sum(len(analysis.get('connections', [])) for analysis in analyses)
-        
+
         summary += f"- Total variables across all models: {total_variables}\n"
         summary += f"- Total connections across all models: {total_connections}\n"
         summary += f"- Average variables per model: {total_variables / len(analyses):.1f}\n"
         summary += f"- Average connections per model: {total_connections / len(analyses):.1f}\n"
-    
+
     return summary
 
 def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:
@@ -564,7 +564,7 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
         if matrix_data is not None and isinstance(matrix_data, np.ndarray):
             matrix_name = matrix_info.get("name", f"matrix_{i}")
             plt.figure(figsize=(10, 8))
-            
+
             if SEABORN_AVAILABLE and sns is not None:
                 sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap='viridis')
             else:
@@ -575,9 +575,9 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
                 if matrix_data.size < 100:
                     for r in range(matrix_data.shape[0]):
                         for c in range(matrix_data.shape[1]):
-                            plt.text(c, r, f"{matrix_data[r, c]:.2g}", 
+                            plt.text(c, r, f"{matrix_data[r, c]:.2g}",
                                    ha="center", va="center", color="w")
-            
+
             plt.title(f"{model_name} - {matrix_name}")
             plot_file = output_dir / f"{model_name}_{matrix_name}_heatmap.png"
             plt.savefig(plot_file, bbox_inches='tight')
@@ -597,15 +597,15 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
         model_name = detail.get("model_name", "unknown")
         framework = detail.get("framework", "unknown")
         impl_dir = Path(detail.get("implementation_directory", ""))
-        
+
         # Look for simulation data (e.g., traces.json or simulation_dump.json)
         trace_files = list(impl_dir.glob("**/traces.json")) + list(impl_dir.glob("**/simulation_data/*.json"))
-        
+
         for trace_file in trace_files:
             try:
                 with open(trace_file, 'r') as f:
                     data = json.load(f)
-                
+
                 # Plot traces (e.g., belief over time)
                 if 'beliefs' in data or 'states' in data:
                     plt.figure(figsize=(10, 6))
@@ -622,7 +622,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
-                        
+
                         # Plot JSD / distance tracking (Belief Convergence)
                         distances = []
                         try:
@@ -642,7 +642,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                                     with warnings.catch_warnings():
                                         warnings.simplefilter("ignore", RuntimeWarning)
                                         val = jensenshannon(p, q)
-                                        
+
                                 if np.isnan(val) or val < 0:
                                     val = 0.0
                                 distances.append(val)
@@ -653,7 +653,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                                 q = np.array(beliefs[t]).flatten()
                                 distances.append(np.linalg.norm(q - p))
                             ylabel = "Euclidean Distance"
-                            
+
                         if distances:
                             plt.figure(figsize=(10, 6))
                             plt.plot(range(1, len(beliefs)), distances, label="Belief Update Magnitude", color="teal")
@@ -667,7 +667,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                             plt.savefig(plot_file)
                             plt.close()
                             visualizations.append(str(plot_file))
-                        
+
                 # Plot Free Energy trajectories
                 if 'free_energy' in data or 'efe' in data or 'F' in data:
                     plt.figure(figsize=(10, 6))
@@ -682,7 +682,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
-                        
+
                 # Plot Precision Dynamics
                 if 'precision' in data or 'gamma' in data or 'w' in data:
                     plt.figure(figsize=(10, 6))
@@ -697,7 +697,7 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
-                        
+
                 # Plot Action History Frequency Maps
                 if 'actions' in data or 'u' in data:
                     plt.figure(figsize=(8, 6))
@@ -719,11 +719,11 @@ def visualize_simulation_results(execution_results: Dict[str, Any], output_dir: 
                         plt.savefig(plot_file)
                         plt.close()
                         visualizations.append(str(plot_file))
-                        
+
             except Exception as e:
                 logging.getLogger(__name__).debug(f"Failed to visualize trace file {trace_file}: {e}")
                 continue
-                
+
     return visualizations
 
 def parse_matrix_data(matrix_str: str) -> Optional[np.ndarray]:
@@ -751,17 +751,17 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
     """
     import json
     import logging
-    
+
     if logger is None:
         logger = logging.getLogger(__name__)
-    
+
     results = {
         "timestamp": datetime.now().isoformat(),
         "frameworks": {},
         "comparisons": {},
         "metrics": {}
     }
-    
+
     # Read execution summary - check summaries/ subfolder first, fallback to root
     execution_summary_file = execution_output_dir / "summaries" / "execution_summary.json"
     if not execution_summary_file.exists():
@@ -769,13 +769,13 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
     if not execution_summary_file.exists():
         logger.warning(f"Execution summary not found at {execution_summary_file}")
         return results
-    
+
     try:
         with open(execution_summary_file, 'r') as f:
             execution_summary = json.load(f)
-        
+
         execution_details = execution_summary.get("execution_details", [])
-        
+
         # Group by framework
         framework_data = {}
         for detail in execution_details:
@@ -783,7 +783,7 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
             if framework not in framework_data:
                 framework_data[framework] = []
             framework_data[framework].append(detail)
-        
+
         # Extract metrics from each framework
         for framework, details in framework_data.items():
             framework_results = {
@@ -793,24 +793,24 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
                 "output_files": [d.get("output_file", "") for d in details],
                 "implementation_dirs": [d.get("implementation_directory", "") for d in details]
             }
-            
+
             # Try to extract simulation data
             simulation_metrics = _extract_simulation_metrics(framework, details, execution_output_dir, logger)
             framework_results.update(simulation_metrics)
-            
+
             results["frameworks"][framework] = framework_results
-        
+
         # Perform cross-framework comparisons
         results["comparisons"] = _compare_framework_results(results["frameworks"], logger)
-        
+
         # Generate aggregate metrics
         results["metrics"] = _calculate_aggregate_metrics(results["frameworks"], logger)
-        
+
     except Exception as e:
         logger.error(f"Error analyzing framework outputs: {e}")
         import traceback
         logger.debug(traceback.format_exc())
-    
+
     return results
 
 def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], execution_output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
@@ -830,13 +830,13 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
         "model_parameters": {},
         "data_source": None
     }
-    
+
     for detail in details:
         # Collect execution time from the detail record
         exec_time = detail.get("execution_time", 0)
         if exec_time:
             metrics["execution_times"].append(exec_time)
-        
+
         impl_dir = Path(detail.get("implementation_directory", ""))
         if not impl_dir.exists():
             # Try resolving relative to execution_output_dir parent
@@ -844,7 +844,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
             if not impl_dir.exists():
                 logger.debug(f"  [{framework}] impl_dir not found: {impl_dir}")
                 continue
-        
+
         # Search for simulation data files in multiple locations
         candidate_files = [
             # Primary: simulation_data subdirectory
@@ -855,7 +855,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
             impl_dir / "output.json",
             impl_dir / "traces.json",
         ]
-        
+
         # Also recursively search for any simulation_results.json
         try:
             for found_file in impl_dir.rglob("simulation_results.json"):
@@ -863,37 +863,37 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     candidate_files.append(found_file)
         except Exception:
             pass
-        
+
         for output_file in candidate_files:
             if output_file.exists():
                 try:
                     with open(output_file, 'r') as f:
                         data = json.load(f)
-                    
+
                     metrics["data_source"] = str(output_file)
                     logger.info(f"  [{framework}] Loaded simulation data from: {output_file}")
-                    
+
                     # Extract beliefs - check both top-level and simulation_trace
                     beliefs = data.get("beliefs", [])
                     if not beliefs:
                         beliefs = data.get("simulation_trace", {}).get("beliefs", [])
                     if beliefs:
                         metrics["beliefs"] = beliefs
-                    
+
                     # Extract actions
                     actions = data.get("actions", [])
                     if not actions:
                         actions = data.get("simulation_trace", {}).get("actions", [])
                     if actions:
                         metrics["actions"] = actions
-                    
+
                     # Extract observations
                     observations = data.get("observations", [])
                     if not observations:
                         observations = data.get("simulation_trace", {}).get("observations", [])
                     if observations:
                         metrics["observations"] = observations
-                    
+
                     # Extract free energy - multiple possible key locations
                     free_energy = data.get("free_energy", [])
                     if not free_energy:
@@ -904,24 +904,24 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         free_energy = data.get("simulation_trace", {}).get("efe_history", [])
                     if free_energy:
                         metrics["free_energy"] = free_energy
-                    
+
                     # Extract additional metadata
                     metrics["num_timesteps"] = data.get("num_timesteps", data.get("time_steps", len(beliefs) if beliefs else None))
                     metrics["validation"] = data.get("validation", {})
                     metrics["model_parameters"] = data.get("model_parameters", {})
-                    
+
                     # Extract belief confidence if available
                     confidence = data.get("metrics", {}).get("belief_confidence", [])
                     if not confidence:
                         confidence = data.get("simulation_trace", {}).get("belief_confidence", [])
                     if confidence:
                         metrics["belief_confidence"] = confidence
-                    
+
                     break  # Found data, stop searching
                 except Exception as e:
                     logger.debug(f"  [{framework}] Error reading {output_file}: {e}")
                     continue
-        
+
         # Fallback: CSV simulation data (ActiveInference.jl outputs CSV, not JSON)
         if not metrics["data_source"]:
             csv_candidates = [
@@ -936,7 +936,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                             csv_candidates.append(csv_file)
                 except Exception:
                     pass
-            
+
             for csv_file in csv_candidates:
                 if csv_file.exists():
                     try:
@@ -944,11 +944,11 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         beliefs = []
                         actions = []
                         observations = []
-                        
+
                         with open(csv_file, 'r') as f:
                             # Skip comment lines (lines starting with #)
                             lines = [line for line in f if not line.startswith('#')]
-                        
+
                         if lines:
                             reader = csv_module.reader(lines)
                             for row in reader:
@@ -962,7 +962,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                                             beliefs.append(belief)
                                     except ValueError:
                                         continue
-                        
+
                         if beliefs or actions or observations:
                             metrics["data_source"] = str(csv_file)
                             logger.info(f"  [{framework}] Loaded CSV simulation data from: {csv_file}")
@@ -973,7 +973,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                             if observations:
                                 metrics["observations"] = observations
                             metrics["num_timesteps"] = len(beliefs) if beliefs else len(actions)
-                            
+
                             # Infer validation from data
                             if beliefs:
                                 sums_valid = all(abs(sum(b) - 1.0) < 0.01 for b in beliefs)
@@ -986,7 +986,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     except Exception as e:
                         logger.debug(f"  [{framework}] Error reading CSV {csv_file}: {e}")
                         continue
-        
+
         # Supplement: model_parameters.json (separate from simulation data)
         if metrics["data_source"] and not metrics["model_parameters"]:
             params_candidates = [
@@ -1001,7 +1001,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                             params_candidates.append(pf)
                 except Exception:
                     pass
-            
+
             for params_file in params_candidates:
                 if params_file.exists():
                     try:
@@ -1016,7 +1016,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         break
                     except Exception as e:
                         logger.debug(f"  [{framework}] Error reading params {params_file}: {e}")
-        
+
         # Supplement: circuit_info.json for categorical frameworks (DisCoPy)
         if not metrics["data_source"]:
             circuit_candidates = [
@@ -1030,7 +1030,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                             circuit_candidates.append(cf)
                 except Exception:
                     pass
-            
+
             for circuit_file in circuit_candidates:
                 if circuit_file.exists():
                     try:
@@ -1055,7 +1055,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                         break
                     except Exception as e:
                         logger.debug(f"  [{framework}] Error reading circuit {circuit_file}: {e}")
-    
+
     # Log summary of what was extracted
     data_found = []
     if metrics["beliefs"]: data_found.append(f"beliefs({len(metrics['beliefs'])} steps)")
@@ -1064,12 +1064,12 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
     if metrics["free_energy"]: data_found.append(f"free_energy({len(metrics['free_energy'])})")
     if metrics.get("circuit_info"): data_found.append(f"circuit({metrics['circuit_info'].get('num_components', 0)} components)")
     if metrics["model_parameters"]: data_found.append("model_parameters")
-    
+
     if data_found:
         logger.info(f"  [{framework}] Extracted: {', '.join(data_found)}")
     else:
         logger.warning(f"  [{framework}] No simulation data found")
-    
+
     return metrics
 
 def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
@@ -1081,14 +1081,14 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
         "data_coverage": {},
         "simulation_statistics": {}
     }
-    
+
     # Compare success rates
     for framework, data in framework_data.items():
         success_count = data.get("success_count", 0)
         total_count = data.get("total_count", 0)
         if total_count > 0:
             comparisons["success_rates"][framework] = success_count / total_count
-    
+
     # Compare execution times
     for framework, data in framework_data.items():
         times = data.get("execution_times", [])
@@ -1100,7 +1100,7 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                 "min": float(np.min(valid_times)),
                 "max": float(np.max(valid_times))
             }
-    
+
     # Compare data coverage — which frameworks produced which data
     for framework, data in framework_data.items():
         coverage = {
@@ -1114,11 +1114,11 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
             "data_source": data.get("data_source")
         }
         comparisons["data_coverage"][framework] = coverage
-    
+
     # Compare simulation statistics across frameworks with data
     frameworks_with_beliefs = {fw: data for fw, data in framework_data.items() if data.get("beliefs")}
     frameworks_with_efe = {fw: data for fw, data in framework_data.items() if data.get("free_energy")}
-    
+
     for framework, data in frameworks_with_beliefs.items():
         beliefs = data["beliefs"]
         try:
@@ -1131,7 +1131,7 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                 }
         except Exception:
             pass
-    
+
     for framework, data in frameworks_with_efe.items():
         efe = data["free_energy"]
         try:
@@ -1144,7 +1144,7 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
             comparisons["simulation_statistics"][framework] = stats
         except Exception:
             pass
-    
+
     # Metric agreement — if multiple frameworks have beliefs, compare final convergence
     if len(frameworks_with_beliefs) >= 2:
         agreement = {}
@@ -1178,7 +1178,7 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                 except Exception:
                     pass
         comparisons["metric_agreement"] = agreement
-    
+
     return comparisons
 
 def _calculate_aggregate_metrics(framework_data: Dict[str, Dict[str, Any]], logger: logging.Logger) -> Dict[str, Any]:
@@ -1189,10 +1189,10 @@ def _calculate_aggregate_metrics(framework_data: Dict[str, Dict[str, Any]], logg
         "total_executions": sum(data.get("total_count", 0) for data in framework_data.values()),
         "overall_success_rate": 0.0
     }
-    
+
     if metrics["total_executions"] > 0:
         metrics["overall_success_rate"] = metrics["total_successful"] / metrics["total_executions"]
-    
+
     return metrics
 
 def generate_framework_comparison_report(comparison_data: Dict[str, Any], output_dir: Path, logger: Optional[logging.Logger] = None) -> str:
@@ -1210,12 +1210,12 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
     """
     import logging
     import json
-    
+
     if logger is None:
         logger = logging.getLogger(__name__)
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Generate Markdown report
     report_lines = [
         "# Framework Execution Comparison Report",
@@ -1225,7 +1225,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
         "## Summary",
         ""
     ]
-    
+
     metrics = comparison_data.get("metrics", {})
     report_lines.extend([
         f"- Total Frameworks: {metrics.get('total_frameworks', 0)}",
@@ -1234,54 +1234,54 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
         f"- Overall Success Rate: {metrics.get('overall_success_rate', 0.0):.2%}",
         ""
     ])
-    
+
     # Framework details with simulation data
     report_lines.extend([
         "## Framework Details",
         ""
     ])
-    
+
     for framework, data in comparison_data.get("frameworks", {}).items():
         success_count = data.get("success_count", 0)
         total_count = data.get("total_count", 0)
         success_rate = (success_count / total_count * 100) if total_count > 0 else 0
-        
+
         report_lines.extend([
             f"### {framework.upper()}",
             "",
             f"- Success Rate: {success_rate:.1f}% ({success_count}/{total_count})",
         ])
-        
+
         # Add execution time if available
         times = [t for t in data.get('execution_times', []) if t > 0]
         if times:
             report_lines.append(f"- Execution Time: {times[0]:.2f}s")
-        
+
         # Add simulation data coverage
         n_beliefs = len(data.get('beliefs', []))
         n_actions = len(data.get('actions', []))
         n_obs = len(data.get('observations', []))
         n_efe = len(data.get('free_energy', []))
         timesteps = data.get('num_timesteps')
-        
+
         if any([n_beliefs, n_actions, n_obs, n_efe]):
             report_lines.append(f"- Timesteps: {timesteps}")
             report_lines.append(f"- Data: beliefs={n_beliefs}, actions={n_actions}, observations={n_obs}, free_energy={n_efe}")
-        
+
         # Add validation status
         validation = data.get('validation', {})
         if validation:
             passed = all(validation.values())
             checks = ', '.join(f"{k}={'✅' if v else '❌'}" for k, v in validation.items())
             report_lines.append(f"- Validation: {'✅ ALL PASSED' if passed else '⚠️ ISSUES'} ({checks})")
-        
+
         # Add data source
         source = data.get('data_source')
         if source:
             report_lines.append(f"- Data Source: `{source}`")
-        
+
         report_lines.append("")
-    
+
     # Simulation Statistics Comparison
     comparisons = comparison_data.get("comparisons", {})
     sim_stats = comparisons.get("simulation_statistics", {})
@@ -1292,7 +1292,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             "| Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |",
             "|-----------|-----------|-----------------|----------|---------|"
         ])
-        
+
         for framework, stats in sim_stats.items():
             dims = stats.get('belief_dims', [])
             timesteps = dims[0] if dims else 'N/A'
@@ -1301,7 +1301,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             efe_std = f"{stats.get('efe_std', 0):.4f}" if 'efe_std' in stats else 'N/A'
             report_lines.append(f"| {framework} | {timesteps} | {conf} | {efe_mean} | {efe_std} |")
         report_lines.append("")
-    
+
     # Data Coverage
     data_coverage = comparisons.get("data_coverage", {})
     if data_coverage:
@@ -1309,7 +1309,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             "## Data Coverage",
             "",
             "| Framework | Beliefs | Actions | Observations | Free Energy | Validation |",
-            "|-----------|---------|---------|--------------|-------------|------------|" 
+            "|-----------|---------|---------|--------------|-------------|------------|"
         ])
         for framework, cov in data_coverage.items():
             report_lines.append(
@@ -1321,7 +1321,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
                 f"| {'✅' if cov.get('validation_passed') else ('❌' if cov.get('validation_passed') is False else '—')} |"
             )
         report_lines.append("")
-    
+
     # Metric Agreement
     metric_agreement = comparisons.get("metric_agreement", {})
     if metric_agreement:
@@ -1336,7 +1336,7 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             else:
                 report_lines.append(f"- **{pair}**: different dimensions ({agreement.get('dims_a')} vs {agreement.get('dims_b')})")
         report_lines.append("")
-    
+
     # Performance comparison
     if comparisons.get("performance_comparison"):
         report_lines.extend([
@@ -1345,27 +1345,27 @@ def generate_framework_comparison_report(comparison_data: Dict[str, Any], output
             "| Framework | Mean Time (s) | Std Dev | Min | Max |",
             "|-----------|---------------|---------|-----|-----|"
         ])
-        
+
         for framework, perf in comparisons["performance_comparison"].items():
             report_lines.append(
                 f"| {framework} | {perf['mean']:.3f} | {perf['std']:.3f} | {perf['min']:.3f} | {perf['max']:.3f} |"
             )
         report_lines.append("")
-    
+
     # Save report to cross_framework subfolder
     cross_fw_dir = output_dir / "cross_framework"
     cross_fw_dir.mkdir(parents=True, exist_ok=True)
     report_file = cross_fw_dir / "framework_comparison_report.md"
     with open(report_file, 'w') as f:
         f.write('\n'.join(report_lines))
-    
+
     # Also save JSON version
     json_file = cross_fw_dir / "framework_comparison_data.json"
     with open(json_file, 'w') as f:
         json.dump(comparison_data, f, indent=2, default=str)
-    
+
     logger.info(f"Generated framework comparison report: {report_file}")
-    
+
     return str(report_file)
 
 def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_dir: Path, logger: Optional[logging.Logger] = None) -> List[str]:
@@ -1381,18 +1381,18 @@ def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_di
         List of generated visualization file paths
     """
     import logging
-    
+
     if logger is None:
         logger = logging.getLogger(__name__)
-    
+
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping visualizations")
         return []
-    
+
     cross_fw_dir = output_dir / "cross_framework"
     cross_fw_dir.mkdir(parents=True, exist_ok=True)
     visualizations = []
-    
+
     try:
         # Success rate comparison
         frameworks = list(comparison_data.get("frameworks", {}).keys())
@@ -1403,7 +1403,7 @@ def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_di
             total_count = data.get("total_count", 0)
             rate = (success_count / total_count * 100) if total_count > 0 else 0
             success_rates.append(rate)
-        
+
         if frameworks and success_rates:
             fig, ax = plt.subplots(figsize=(10, 6))
             bars = ax.bar(frameworks, success_rates, color=['#2ecc71' if r > 50 else '#e74c3c' for r in success_rates])
@@ -1412,20 +1412,20 @@ def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_di
             ax.set_title('Framework Execution Success Rates', fontweight='bold', fontsize=14)
             ax.set_ylim([0, 100])
             ax.grid(True, alpha=0.3, axis='y')
-            
+
             # Add value labels on bars
             for bar, rate in zip(bars, success_rates):
                 height = bar.get_height()
                 ax.text(bar.get_x() + bar.get_width()/2., height,
                        f'{rate:.1f}%',
                        ha='center', va='bottom', fontweight='bold')
-            
+
             plt.tight_layout()
             viz_file = cross_fw_dir / "framework_success_rates.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
             visualizations.append(str(viz_file))
-        
+
         # Performance comparison
         perf_comparison = comparison_data.get("comparisons", {}).get("performance_comparison", {})
         if perf_comparison:
@@ -1433,7 +1433,7 @@ def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_di
             frameworks = list(perf_comparison.keys())
             means = [perf_comparison[f]["mean"] for f in frameworks]
             stds = [perf_comparison[f]["std"] for f in frameworks]
-            
+
             x_pos = np.arange(len(frameworks))
             bars = ax.bar(x_pos, means, yerr=stds, capsize=5, alpha=0.7, color='steelblue')
             ax.set_ylabel('Execution Time (seconds)', fontweight='bold')
@@ -1442,16 +1442,16 @@ def visualize_cross_framework_metrics(comparison_data: Dict[str, Any], output_di
             ax.set_xticks(x_pos)
             ax.set_xticklabels(frameworks)
             ax.grid(True, alpha=0.3, axis='y')
-            
+
             plt.tight_layout()
             viz_file = cross_fw_dir / "framework_performance_comparison.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
             visualizations.append(str(viz_file))
-        
+
     except Exception as e:
         logger.error(f"Error generating cross-framework visualizations: {e}")
         import traceback
         logger.debug(traceback.format_exc())
-    
+
     return visualizations

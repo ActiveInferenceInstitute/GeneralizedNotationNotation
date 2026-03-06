@@ -44,11 +44,11 @@ class ProcessingResult:
     execution_time: float = 0.0
     metadata: Dict[str, Any] = field(default_factory=dict)
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
-    
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert result to dictionary."""
         return asdict(self)
-    
+
     def save_to_json(self, output_path: Path) -> None:
         """Save result to a JSON file."""
         with open(output_path, 'w') as f:
@@ -67,7 +67,7 @@ class BaseProcessor(ABC):
     - Result aggregation
     - Report generation
     """
-    
+
     def __init__(self, step_name: str, logger: Optional[logging.Logger] = None, verbose: bool = False):
         """
         Initialize the processor.
@@ -80,7 +80,7 @@ class BaseProcessor(ABC):
         self.step_name = step_name
         self.logger = logger or setup_step_logging(step_name, verbose)
         self.verbose = verbose
-    
+
     @abstractmethod
     def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
         """
@@ -95,8 +95,8 @@ class BaseProcessor(ABC):
             True if processing succeeded, False otherwise
         """
         pass
-    
-    def find_files(self, target_dir: Path, recursive: bool = False, 
+
+    def find_files(self, target_dir: Path, recursive: bool = False,
                    extensions: List[str] = None, pattern: str = None) -> List[Path]:
         """
         Find files to process in the target directory.
@@ -112,9 +112,9 @@ class BaseProcessor(ABC):
         """
         if extensions is None:
             extensions = ['.md', '.gnn', '.json', '.yaml', '.yml']
-        
+
         files = []
-        
+
         if pattern:
             if recursive:
                 files = list(target_dir.rglob(pattern))
@@ -126,13 +126,13 @@ class BaseProcessor(ABC):
                     files.extend(target_dir.rglob(f"*{ext}"))
                 else:
                     files.extend(target_dir.glob(f"*{ext}"))
-        
+
         # Filter out hidden files and directories
         files = [f for f in files if not any(part.startswith('.') for part in f.parts)]
-        
+
         return sorted(set(files))
-    
-    def process(self, target_dir: Path, output_dir: Path, 
+
+    def process(self, target_dir: Path, output_dir: Path,
                 recursive: bool = False, **kwargs) -> ProcessingResult:
         """
         Main processing method. Finds files and processes each one.
@@ -148,77 +148,77 @@ class BaseProcessor(ABC):
         """
         import time
         start_time = time.time()
-        
+
         result = ProcessingResult(success=True)
-        
+
         try:
             log_step_start(self.logger, f"Starting {self.step_name} processing")
-            
+
             # Validate directories
             if not target_dir.exists():
                 log_step_error(self.logger, f"Target directory does not exist: {target_dir}")
                 result.success = False
                 result.errors.append(f"Target directory not found: {target_dir}")
                 return result
-            
+
             # Ensure output directory exists
             output_dir.mkdir(parents=True, exist_ok=True)
-            
+
             # Find files to process
             files = self.find_files(target_dir, recursive=recursive, **kwargs)
-            
+
             if not files:
                 log_step_warning(self.logger, f"No files found in {target_dir}")
                 result.warnings.append("No files found to process")
                 return result
-            
+
             self.logger.info(f"Found {len(files)} files to process")
-            
+
             # Process each file
             for file_path in files:
                 try:
                     if self.verbose:
                         self.logger.debug(f"Processing: {file_path}")
-                    
+
                     success = self.process_single_file(file_path, output_dir, **kwargs)
-                    
+
                     if success:
                         result.files_processed += 1
                     else:
                         result.files_failed += 1
                         result.errors.append(f"Failed to process: {file_path}")
-                        
+
                 except Exception as e:
                     result.files_failed += 1
                     result.errors.append(f"Error processing {file_path}: {str(e)}")
                     self.logger.error(f"Error processing {file_path}: {e}")
-            
+
             # Determine overall success
             result.success = result.files_failed == 0
             result.execution_time = time.time() - start_time
-            
+
             # Log summary
             self._log_summary(result)
-            
+
             # Save report
             self._save_report(result, output_dir)
-            
+
             return result
-            
+
         except Exception as e:
             result.success = False
             result.errors.append(f"Processing failed: {str(e)}")
             result.execution_time = time.time() - start_time
             log_step_error(self.logger, f"{self.step_name} processing failed: {e}")
             return result
-    
+
     def _log_summary(self, result: ProcessingResult) -> None:
         """Log processing summary."""
         total = result.files_processed + result.files_failed + result.files_skipped
-        
+
         if result.success:
             log_step_success(
-                self.logger, 
+                self.logger,
                 f"{self.step_name} completed: {result.files_processed}/{total} files processed"
             )
         elif result.files_processed > 0:
@@ -231,7 +231,7 @@ class BaseProcessor(ABC):
                 self.logger,
                 f"{self.step_name} failed: {result.files_failed}/{total} files failed"
             )
-    
+
     def _save_report(self, result: ProcessingResult, output_dir: Path) -> None:
         """Save processing report to JSON."""
         report_path = output_dir / f"{self.step_name}_processing_report.json"
@@ -239,7 +239,7 @@ class BaseProcessor(ABC):
         self.logger.debug(f"Saved processing report to {report_path}")
 
 
-def create_processor(step_name: str, process_func: Callable[[Path, Path], bool], 
+def create_processor(step_name: str, process_func: Callable[[Path, Path], bool],
                      logger: Optional[logging.Logger] = None, verbose: bool = False) -> BaseProcessor:
     """
     Factory function to create a processor from a simple processing function.
@@ -257,15 +257,15 @@ def create_processor(step_name: str, process_func: Callable[[Path, Path], bool],
         def __init__(self):
             super().__init__(step_name, logger, verbose)
             self._process_func = process_func
-            
+
         def process_single_file(self, file_path: Path, output_dir: Path, **kwargs) -> bool:
             return self._process_func(file_path, output_dir)
-    
+
     return FunctionProcessor()
 
 
 __all__ = [
     "BaseProcessor",
-    "ProcessingResult", 
+    "ProcessingResult",
     "create_processor",
 ]

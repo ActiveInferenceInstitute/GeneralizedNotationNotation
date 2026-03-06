@@ -101,7 +101,7 @@ __all__ = [
     'validate_annotations',
     'generate_ontology_report_for_file',
     'parse_annotation',
-    
+
     # Utility functions
     'get_module_info',
     'get_ontology_processing_options',

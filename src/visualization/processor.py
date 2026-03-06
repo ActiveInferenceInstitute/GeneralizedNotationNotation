@@ -10,9 +10,8 @@ Functions are organized into sub-modules:
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List
 import logging
-import re
 import json
 import warnings
 import numpy as np
@@ -51,7 +50,7 @@ try:
         os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
     import networkx as nx
     NETWORKX_AVAILABLE = True
-except (ImportError, RecursionError, AttributeError, ValueError) as e:
+except (ImportError, RecursionError, AttributeError, ValueError):
     nx = None
     NETWORKX_AVAILABLE = False
 
@@ -176,8 +175,7 @@ def process_visualization(
     Returns:
         True if processing successful, False otherwise
     """
-    from .network_visualizations import generate_network_visualizations
-    from .combined_analysis import generate_combined_analysis, generate_combined_visualizations
+    from .combined_analysis import generate_combined_visualizations
 
     logger = logging.getLogger("visualization")
 
@@ -664,17 +662,4 @@ def _parse_parameter_value(value_str: str) -> Any:
 # Matrix parsing and visualization logic moved to analyzer.py
 
 # --- Re-export everything from sub-modules for backward compatibility ---
-from .network_visualizations import (
-    generate_network_visualizations,
-    _normalize_connection_format,
-    _determine_connection_type,
-    _get_edge_style,
-    _generate_network_statistics,
-    _generate_interactive_network,
-    _generate_3d_surface_plot,
-)
 
-from .combined_analysis import (
-    generate_combined_analysis,
-    generate_combined_visualizations,
-)

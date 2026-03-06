@@ -7,10 +7,11 @@ These tests require the MCP SDK to be available and will be skipped if it's not 
 """
 
 import pytest
+
+pytestmark = pytest.mark.mcp
 import sys
 import time
 from pathlib import Path
-from typing import Dict, Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))

@@ -4,13 +4,10 @@ Test configuration and fixtures for GNN Processing Pipeline.
 This module provides pytest fixtures and configuration for testing the GNN pipeline.
 """
 
-import logging
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Generator
+from typing import Dict, Any, Generator
 import tempfile
-import json
 # Mocks removed - using real implementations per testing policy
 
 # Import pytest
@@ -29,7 +26,7 @@ except Exception:
 # Test configuration and markers
 PYTEST_MARKERS = {
     "unit": "Unit tests for individual components",
-    "integration": "Integration tests for component interactions", 
+    "integration": "Integration tests for component interactions",
     "performance": "Performance and resource usage tests",
     "slow": "Tests that take significant time to complete",
     "fast": "Quick tests for rapid feedback",
@@ -146,7 +143,8 @@ def pytest_sessionstart(session):
 
         if not all(p.exists() for p in expected_paths):
             # Run a minimal set of pipeline steps to generate artifacts
-            import subprocess, sys as _sys
+            import subprocess
+            import sys as _sys
             main_py = project_root / "src" / "main.py"
             cmd = [
                 _sys.executable,
@@ -204,7 +202,7 @@ def pytest_collection_modifyitems(config, items):
         # Add safe_to_fail marker to all tests by default
         if not any(marker.name == "destructive" for marker in item.iter_markers()):
             item.add_marker(pytest.mark.safe_to_fail)
-        
+
         # Add performance tracking to slow tests
         if any(marker.name == "slow" for marker in item.iter_markers()):
             item.add_marker(pytest.mark.performance)
@@ -249,26 +247,26 @@ def test_dir() -> Path:
 def safe_filesystem():
     """Provide a safe filesystem for testing."""
     temp_dir = Path(tempfile.mkdtemp())
-    
+
     class SafeFileSystem:
         def __init__(self, temp_dir: Path):
             self.temp_dir = temp_dir
             self.created_files = []
             self.created_dirs = []
-        
+
         def create_file(self, path: Path, content: str = "") -> Path:
             full_path = self.temp_dir / path
             full_path.parent.mkdir(parents=True, exist_ok=True)
             full_path.write_text(content)
             self.created_files.append(full_path)
             return full_path
-        
+
         def create_dir(self, path: Path) -> Path:
             full_path = self.temp_dir / path
             full_path.mkdir(parents=True, exist_ok=True)
             self.created_dirs.append(full_path)
             return full_path
-        
+
         def cleanup(self):
             for file_path in self.created_files:
                 if file_path.exists():
@@ -285,7 +283,7 @@ def safe_filesystem():
                     shutil.rmtree(self.temp_dir)
                 except OSError:
                     pass
-    
+
     fs = SafeFileSystem(temp_dir)
     yield fs
     fs.cleanup()
@@ -329,12 +327,12 @@ def temp_directories(tmp_path) -> Dict[str, Path]:
     input_dir = tmp_path / "input"
     output_dir = tmp_path / "output"
     temp_dir = tmp_path / "temp"
-    
+
     # Create directories
     input_dir.mkdir(parents=True, exist_ok=True)
     output_dir.mkdir(parents=True, exist_ok=True)
     temp_dir.mkdir(parents=True, exist_ok=True)
-    
+
     return {
         "input_dir": input_dir,
         "output_dir": output_dir,
@@ -364,7 +362,7 @@ def mock_logger():
 def sample_gnn_files(safe_filesystem) -> Dict[str, Path]:
     """Provide sample GNN files for testing."""
     files = {}
-    
+
     # Create a simple test GNN file
     content = """
 # Test GNN Model
@@ -381,7 +379,7 @@ s -> o
 ## InitialParameterization
 A = [[0.5, 0.3, 0.2]]
 """
-    
+
     files["simple"] = safe_filesystem.create_file("simple.gnn", content)
     return files
 
@@ -390,7 +388,7 @@ def isolated_temp_dir() -> Generator[Path, None, None]:
     """Provide an isolated temporary directory for testing."""
     temp_dir = Path(tempfile.mkdtemp())
     yield temp_dir
-    
+
     # Cleanup
     try:
         import shutil

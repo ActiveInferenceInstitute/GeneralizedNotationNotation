@@ -6,7 +6,7 @@ format listing, validation, and report inspection through MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -14,7 +14,6 @@ logger = logging.getLogger(__name__)
 from .generator import generate_comprehensive_report
 from . import process_report, get_supported_formats, get_module_info as _get_mod_info
 
-import inspect, importlib
 
 
 

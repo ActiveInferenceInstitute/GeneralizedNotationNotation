@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/discopy/Deep Planning Horizon POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.410309,
-  "timestamp": "2026-03-05T10:35:35.806576",
+  "execution_time": 0.370343,
+  "timestamp": "2026-03-06T09:49:18.616069",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1569,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/discopy"
+    "output_directory": "output/12_execute_output/deep_planning_horizon/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/deep_planning_horizon/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

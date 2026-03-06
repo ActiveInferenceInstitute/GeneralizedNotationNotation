@@ -254,7 +254,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
                         else:
                             file_export_result["exports"][format_name] = {
                                 "success": False,
-                                "error": f"Export function returned False"
+                                "error": "Export function returned False"
                             }
                             file_export_result["success"] = False
                     else:
@@ -286,7 +286,7 @@ def process_export(target_dir, output_dir, verbose: bool = False, **kwargs) -> b
         with open(export_summary_file, 'w') as f:
             json.dump(export_results["summary"], f, indent=2)
 
-        logger.info(f"Export processing completed:")
+        logger.info("Export processing completed:")
         logger.info(f"  Total files: {export_results['summary']['total_files']}")
         logger.info(f"  Successful exports: {export_results['summary']['successful_exports']}")
         logger.info(f"  Failed exports: {export_results['summary']['failed_exports']}")

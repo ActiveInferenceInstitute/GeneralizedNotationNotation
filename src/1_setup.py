@@ -48,17 +48,17 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from setup import setup_uv_environment, setup_complete_environment, install_optional_package_group
 except ImportError:
-    def setup_uv_environment(verbose=False, recreate=False, dev=True, extras=[], skip_jax_test=True):
+    def setup_uv_environment(verbose=False, recreate=False, dev=True, extras=None, skip_jax_test=True):
         """Fallback setup function when module unavailable."""
         import logging
         logger = logging.getLogger(__name__)
         logger.warning("Setup module not available - using fallback")
         return True
-    
+
     def setup_complete_environment(verbose=False, recreate=False, install_optional=False, optional_groups=None, output_dir=None):
         """Fallback full setup function."""
         return setup_uv_environment(verbose=verbose, recreate=recreate, output_dir=output_dir)
-    
+
     def install_optional_package_group(group_name, verbose=False):
         """Fallback optional package installation."""
         import logging
@@ -72,17 +72,17 @@ def setup_orchestrator(target_dir, output_dir, logger, **kwargs):
     recreate = kwargs.get('recreate_venv', False)
     install_optional = kwargs.get('install_optional', False)
     optional_groups_str = kwargs.get('optional_groups', None)
-    
+
     # Parse optional groups if provided
     optional_groups = None
     if optional_groups_str:
         optional_groups = [g.strip() for g in optional_groups_str.split(',')]
-    
+
     # Handle dev argument default (ArgumentParser may return None for defaults not in argv)
     dev = kwargs.get('dev')
     if dev is None:
         dev = True
-    
+
     # Use full setup if optional packages requested
     if install_optional or optional_groups:
         return setup_complete_environment(
@@ -120,4 +120,4 @@ def main() -> int:
     return run_script()
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

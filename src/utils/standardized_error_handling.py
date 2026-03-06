@@ -13,7 +13,7 @@ from contextlib import contextmanager
 from pathlib import Path
 
 from .error_handling import PipelineErrorHandler, ErrorCategory, ErrorSeverity
-from .logging_utils import setup_step_logging, log_step_error, log_step_warning, log_step_success
+from .logging_utils import setup_step_logging, log_step_error, log_step_warning
 
 
 class StandardizedErrorHandler:
@@ -21,7 +21,7 @@ class StandardizedErrorHandler:
     Standardized error handler that provides consistent error handling
     patterns across all pipeline modules.
     """
-    
+
     def __init__(self, step_name: str, logger: Optional[logging.Logger] = None):
         """
         Initialize standardized error handler.
@@ -34,7 +34,7 @@ class StandardizedErrorHandler:
         self.logger = logger or setup_step_logging(step_name)
         self.correlation_id = str(uuid.uuid4())[:8]
         self.pipeline_error_handler = PipelineErrorHandler(self.logger, self.correlation_id)
-        
+
     @contextmanager
     def error_context(self, operation: str, **context):
         """
@@ -56,17 +56,17 @@ class StandardizedErrorHandler:
                 category=self._categorize_error(e),
                 context=error_context
             )
-            
+
             # Handle the error according to its recovery strategy
             exit_code = self.pipeline_error_handler.handle_error(pipeline_error)
-            
+
             # Re-raise if critical, otherwise log and continue
             if exit_code == 1:  # Critical error
                 raise
             else:
                 self.logger.warning(f"[{self.correlation_id}] Continuing after recoverable error in {operation}")
-    
-    def handle_dependency_error(self, dependency_name: str, error: Exception, 
+
+    def handle_dependency_error(self, dependency_name: str, error: Exception,
                               install_hint: Optional[str] = None) -> bool:
         """
         Handle dependency-related errors with consistent messaging.
@@ -83,18 +83,18 @@ class StandardizedErrorHandler:
             "dependency": dependency_name,
             "install_hint": install_hint or f"uv pip install {dependency_name}"
         }
-        
+
         pipeline_error = self.pipeline_error_handler.create_error(
             step_name=self.step_name,
             error=error,
             category=ErrorCategory.DEPENDENCY,
             context=context
         )
-        
+
         # Log dependency error with helpful information
         if install_hint:
             log_step_warning(
-                self.logger, 
+                self.logger,
                 f"{dependency_name} not available - {install_hint}"
             )
         else:
@@ -102,11 +102,11 @@ class StandardizedErrorHandler:
                 self.logger,
                 f"{dependency_name} not available - install with: uv pip install {dependency_name}"
             )
-        
+
         # Dependency errors are usually recoverable with graceful degradation
         return True
-    
-    def handle_file_operation_error(self, operation: str, file_path: Path, 
+
+    def handle_file_operation_error(self, operation: str, file_path: Path,
                                   error: Exception, critical: bool = False) -> bool:
         """
         Handle file operation errors consistently.
@@ -125,7 +125,7 @@ class StandardizedErrorHandler:
             "file_path": str(file_path),
             "file_exists": file_path.exists() if isinstance(file_path, Path) else False
         }
-        
+
         category = ErrorCategory.FILE_ERROR
         if not critical:
             log_step_warning(
@@ -137,18 +137,18 @@ class StandardizedErrorHandler:
                 self.logger,
                 f"Critical file {operation} failed for {file_path}: {error}"
             )
-        
+
         pipeline_error = self.pipeline_error_handler.create_error(
             step_name=self.step_name,
             error=error,
             category=category,
             context=context
         )
-        
+
         exit_code = self.pipeline_error_handler.handle_error(pipeline_error)
         return exit_code != 1  # Continue unless critical
-    
-    def handle_validation_error(self, validation_type: str, details: str, 
+
+    def handle_validation_error(self, validation_type: str, details: str,
                               error: Optional[Exception] = None) -> bool:
         """
         Handle validation errors consistently.
@@ -165,7 +165,7 @@ class StandardizedErrorHandler:
             "validation_type": validation_type,
             "validation_details": details
         }
-        
+
         if error:
             pipeline_error = self.pipeline_error_handler.create_error(
                 step_name=self.step_name,
@@ -182,11 +182,11 @@ class StandardizedErrorHandler:
                 category=ErrorCategory.VALIDATION,
                 context=context
             )
-        
+
         log_step_warning(self.logger, f"Validation warning: {validation_type} - {details}")
         exit_code = self.pipeline_error_handler.handle_error(pipeline_error)
         return exit_code != 1
-    
+
     def get_error_summary(self) -> Dict[str, Any]:
         """
         Get a summary of all errors handled by this instance.
@@ -195,7 +195,7 @@ class StandardizedErrorHandler:
             Dict containing error statistics and details
         """
         errors = self.pipeline_error_handler.errors
-        
+
         return {
             "step_name": self.step_name,
             "correlation_id": self.correlation_id,
@@ -217,16 +217,16 @@ class StandardizedErrorHandler:
                 for error in errors
             ]
         }
-    
+
     def _categorize_error(self, error: Exception) -> ErrorCategory:
         """Automatically categorize an error based on its type and message."""
         error_type = type(error).__name__
         error_message = str(error).lower()
-        
+
         if error_type in ('ImportError', 'ModuleNotFoundError'):
             return ErrorCategory.DEPENDENCY
         elif error_type in ('FileNotFoundError', 'PermissionError', 'OSError'):
-            return ErrorCategory.FILE_ERROR  
+            return ErrorCategory.FILE_ERROR
         elif error_type in ('ValueError', 'TypeError') and 'validation' in error_message:
             return ErrorCategory.VALIDATION
         elif 'timeout' in error_message or error_type == 'TimeoutError':
@@ -262,13 +262,13 @@ def with_error_handling(step_name: str, logger: Optional[logging.Logger] = None)
     def decorator(func: Callable):
         def wrapper(*args, **kwargs):
             error_handler = create_error_handler(step_name, logger)
-            
+
             try:
                 return func(*args, **kwargs)
-            except Exception as e:
+            except Exception:
                 with error_handler.error_context(f"executing {func.__name__}"):
                     raise
-                    
+
         return wrapper
     return decorator
 

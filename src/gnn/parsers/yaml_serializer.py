@@ -1,16 +1,15 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
+from typing import Dict, Any
 try:
     import yaml
     HAS_YAML = True
 except ImportError:
     HAS_YAML = False
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class YAMLSerializer(BaseGNNSerializer):
     """Serializer for YAML configuration format."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to YAML format."""
         # Create a cleaner structure for YAML with consistent ordering
@@ -37,7 +36,7 @@ class YAMLSerializer(BaseGNNSerializer):
                     'description': conn.description
                 }
                 for conn in sorted(model.connections, key=lambda c: (
-                    ",".join(sorted(c.source_variables)), 
+                    ",".join(sorted(c.source_variables)),
                     ",".join(sorted(c.target_variables))
                 ))
             ],
@@ -76,17 +75,17 @@ class YAMLSerializer(BaseGNNSerializer):
             'created_at': model.created_at.isoformat(),
             'modified_at': model.modified_at.isoformat()
         }
-        
+
         if not HAS_YAML:
             return self._dict_to_yaml_like(data)
-        
+
         return yaml.dump(data, default_flow_style=False, allow_unicode=True, sort_keys=True)
-    
+
     def _dict_to_yaml_like(self, data: Dict[str, Any], indent: int = 0) -> str:
         """Convert dict to YAML-like format when PyYAML is not available."""
         lines = []
         spaces = "  " * indent
-        
+
         for key, value in sorted(data.items()) if isinstance(data, dict) else data.items():
             if isinstance(value, dict):
                 lines.append(f"{spaces}{key}:")
@@ -101,5 +100,5 @@ class YAMLSerializer(BaseGNNSerializer):
                         lines.append(f"{spaces}- {item}")
             else:
                 lines.append(f"{spaces}{key}: {value}")
-        
-        return '\n'.join(lines) 
+
+        return '\n'.join(lines)

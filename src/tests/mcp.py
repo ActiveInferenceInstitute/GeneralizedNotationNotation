@@ -4,9 +4,8 @@ MCP (Model Context Protocol) integration for tests utilities.
 This module exposes utility functions from the tests module through MCP.
 """
 
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any
 import logging
 
 logger = logging.getLogger(__name__)
@@ -15,10 +14,6 @@ logger = logging.getLogger(__name__)
 from utils.test_utils import (
     run_all_tests,
     run_test_category,
-    get_test_summary,
-    get_test_statistics,
-    get_test_performance,
-    TEST_CATEGORIES,
 )
 
 # MCP Tools for Tests Utilities Module
@@ -110,7 +105,7 @@ def run_integration_tests_mcp(target_directory: str, output_directory: str, verb
 # MCP Registration Function
 def register_tools(mcp_instance):
     """Register tests utility tools with the MCP."""
-    
+
     mcp_instance.register_tool(
         "run_all_tests",
         run_all_tests_mcp,
@@ -121,7 +116,7 @@ def register_tools(mcp_instance):
         },
         "Run comprehensive test suite for the GNN pipeline."
     )
-    
+
     mcp_instance.register_tool(
         "run_unit_tests",
         run_unit_tests_mcp,
@@ -131,7 +126,7 @@ def register_tools(mcp_instance):
         },
         "Run unit test suite for the GNN pipeline."
     )
-    
+
     mcp_instance.register_tool(
         "run_integration_tests",
         run_integration_tests_mcp,
@@ -142,5 +137,5 @@ def register_tools(mcp_instance):
         },
         "Run integration test suite for the GNN pipeline."
     )
-    
+
     logger.info("Tests module MCP tools registered.")

@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/jax/T-Maze Epistemic Foraging Agent_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.861073,
-  "timestamp": "2026-03-05T10:35:15.958647",
+  "execution_time": 0.950569,
+  "timestamp": "2026-03-06T09:48:57.555919",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -149,12 +149,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1269,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic/jax"
+    "output_directory": "output/12_execute_output/tmaze_epistemic/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/tmaze_epistemic/jax/simulation_data/jax_outputs_simulation_results.json"
     ],
     "traces": [],
     "other": []

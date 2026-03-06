@@ -20,28 +20,27 @@ from pathlib import Path
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
 
-from pipeline.config import get_output_dir_for_script
 from utils.pipeline_template import create_standardized_pipeline_script
 
 def _test_runner_wrapper(target_dir, output_dir, logger, **kwargs):
     """Wrapper to map standard pipeline args to run_tests."""
     import os
-    
+
     # Log environment overrides
     if os.getenv("SKIP_TESTS_IN_PIPELINE"):
         logger.info("⏭️ SKIP_TESTS_IN_PIPELINE set - tests will be skipped")
         return True
     if os.getenv("FAST_TESTS_TIMEOUT"):
         logger.info(f"⏱️ Custom timeout: {os.getenv('FAST_TESTS_TIMEOUT')} seconds")
-        
+
     comprehensive = kwargs.get('comprehensive', False)
     fast_only = not comprehensive and kwargs.get('fast_only', True)
     test_mode = "comprehensive" if comprehensive else "fast"
     verbose = kwargs.get('verbose', False)
-    
+
     logger.info(f"🧪 Running {test_mode} test suite")
     logger.info(f"📍 Output directory: {output_dir}")
-    
+
     try:
         from tests import run_tests
         success = run_tests(
@@ -53,11 +52,11 @@ def _test_runner_wrapper(target_dir, output_dir, logger, **kwargs):
             generate_coverage=False,
             auto_fallback=True
         )
-        
+
         if not success:
             logger.error("❌ Test execution failed")
             logger.error("💡 Check that test files exist and follow pytest naming conventions (test_*.py)")
-            
+
         return success
     except Exception as e:
         logger.error(f"Test execution failed: {e}")

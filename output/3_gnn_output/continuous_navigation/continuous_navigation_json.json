@@ -201,7 +201,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-05T10:37:36.368103",
+  "created_at": "2026-03-06T09:42:44.788232",
   "equations": [],
   "extensions": {
     "footer": "Continuous State Navigation Agent v1 - GNN Representation.\nUses Laplace approximation for Gaussian belief updating.\nGeneralized coordinates enable smooth predictive control.",
@@ -209,7 +209,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Continuous State Navigation Agent",
-  "modified_at": "2026-03-05T10:37:36.368103",
+  "modified_at": "2026-03-06T09:42:44.788233",
   "ontology_mappings": [
     {
       "description": null,

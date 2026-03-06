@@ -39,7 +39,7 @@ class StdioServer:
     This server reads JSON-RPC 2.0 requests from stdin and writes responses to stdout,
     supporting both standard MCP methods and direct tool invocation.
     """
-    
+
     def __init__(self, max_queue_size: int = 1000, request_timeout: float = 30.0):
         """Initialize the stdio server with enhanced queue and thread management.
 
@@ -63,28 +63,28 @@ class StdioServer:
         self._requests_processed = 0
         self._responses_sent = 0
         self._errors_encountered = 0
-        
+
     def start(self):
         """Start the server with reader, processor, and writer threads."""
         self.running = True
-        
+
         # Initialize MCP
         initialize()
         logger.info("MCP stdio server initialized and ready")
-        
+
         # Start reader and writer threads
         reader_thread = threading.Thread(target=self._reader_thread)
         writer_thread = threading.Thread(target=self._writer_thread)
         processor_thread = threading.Thread(target=self._processor_thread)
-        
+
         reader_thread.daemon = True
         writer_thread.daemon = True
         processor_thread.daemon = True
-        
+
         reader_thread.start()
         writer_thread.start()
         processor_thread.start()
-        
+
         # Wait for threads to exit
         try:
             while self.running:
@@ -94,7 +94,7 @@ class StdioServer:
         except KeyboardInterrupt:
             logger.info("Keyboard interrupt received, stopping server")
             self.running = False
-        
+
         writer_thread.join()
         processor_thread.join()
         logger.info("MCP stdio server stopped")
@@ -114,7 +114,7 @@ class StdioServer:
                 "responses": self.response_queue.qsize()
             }
         }
-    
+
     def _reader_thread(self):
         """Enhanced thread that reads JSON-RPC messages from stdin with connection monitoring."""
         try:
@@ -175,7 +175,7 @@ class StdioServer:
         except Exception as e:
             logger.error(f"Unexpected error in reader thread: {str(e)}")
             self.running = False
-    
+
     def _processor_thread(self):
         """Enhanced thread that processes messages from the request queue with better error handling."""
         try:
@@ -197,7 +197,7 @@ class StdioServer:
         except Exception as e:
             logger.error(f"Fatal error in processor thread: {str(e)}")
             self.running = False
-    
+
     def _writer_thread(self):
         """Enhanced thread that writes JSON-RPC responses to stdout with error recovery."""
         try:
@@ -233,7 +233,7 @@ class StdioServer:
         except Exception as e:
             logger.error(f"Fatal error in writer thread: {str(e)}")
             self.running = False
-    
+
     def _process_message(self, message: Dict[str, Any]):
         """Process an incoming JSON-RPC message with enhanced validation."""
         try:
@@ -267,7 +267,7 @@ class StdioServer:
                 self._send_error(None, -32603, f"Internal error processing message: {str(e)}")
             except Exception:
                 logger.error("Failed to send error response")
-    
+
     def _process_jsonrpc(self, message: Dict[str, Any]):
         """
         Process a JSON-RPC message, supporting both standard MCP methods and direct tool invocation.
@@ -275,11 +275,11 @@ class StdioServer:
         request_id = message.get("id")
         method = message.get("method")
         params = message.get("params", {})
-        
+
         if not method:
             self._send_error(request_id, -32600, "Invalid Request: missing method")
             return
-        
+
         try:
             # Standard MCP methods
             if method in ("mcp.capabilities", "get_mcp_server_capabilities"):
@@ -316,7 +316,7 @@ class StdioServer:
             logger.error(f"Unhandled error in method {method}: {e}")
             traceback.print_exc()
             self._send_error(request_id, -32603, f"Internal error: {str(e)}")
-    
+
     def _send_result(self, request_id: str, result: Any):
         """Send a successful JSON-RPC result response."""
         response = {
@@ -325,7 +325,7 @@ class StdioServer:
             "result": result
         }
         self.response_queue.put(response)
-    
+
     def _send_error(self, request_id: Optional[str], code: int, message: str, data: Any = None):
         """Send a JSON-RPC error response, including optional data."""
         error_obj = {"code": code, "message": message}
@@ -344,4 +344,4 @@ def start_stdio_server():
     server.start()
 
 if __name__ == "__main__":
-    start_stdio_server() 
+    start_stdio_server()

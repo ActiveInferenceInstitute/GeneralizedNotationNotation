@@ -47,23 +47,23 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
         - **Right Panel**: Live-updating GNN markdown editor
         - **Real-time Sync**: Changes are immediately reflected in both panels
         """)
-        
+
         # Status indicator
         status_display = gr.Markdown("🟢 **Status**: Ready for component editing")
-        
+
         with gr.Row():
             with gr.Column(scale=1):
                 gr.Markdown("### 🛠️ Construction Controls")
                 with gr.Tab("📋 Components"):
                     gr.Markdown("**Add or modify GNN model components**")
                     component_name = gr.Textbox(
-                        label="Component name", 
+                        label="Component name",
                         value="example_component",
                         placeholder="Enter unique component name..."
                     )
                     component_type = gr.Dropdown(
-                        ["observation", "hidden", "action", "policy"], 
-                        value="observation", 
+                        ["observation", "hidden", "action", "policy"],
+                        value="observation",
                         label="Component Type (Select Active Inference component type)"
                     )
                     state_list = gr.Textbox(
@@ -77,28 +77,28 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
                 with gr.Tab("🏗️ State Space"):
                     gr.Markdown("**Manage state space entries and dimensions**")
                     state_entries = gr.Dropdown(
-                        choices=initial_names, 
-                        value=initial_selected, 
-                        label="Select State Entry (Choose entry to edit)", 
+                        choices=initial_names,
+                        value=initial_selected,
+                        label="Select State Entry (Choose entry to edit)",
                         interactive=True
                     )
                     st_name = gr.Textbox(
-                        label="Name", 
+                        label="Name",
                         value=init_name_val,
                         placeholder="Enter state name..."
                     )
                     st_dims = gr.Textbox(
-                        label="Dimensions (comma-separated)", 
+                        label="Dimensions (comma-separated)",
                         value=init_dims_val,
                         placeholder="e.g., 3, 4, 2"
                     )
                     st_type = gr.Textbox(
-                        label="Type (optional)", 
+                        label="Type (optional)",
                         value=init_type_val,
                         placeholder="e.g., continuous, discrete"
                     )
                     st_comment = gr.Textbox(
-                        label="Comment (optional)", 
+                        label="Comment (optional)",
                         value=init_comment_val,
                         placeholder="Description or notes..."
                     )
@@ -108,7 +108,7 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
                     with gr.Row():
                         st_update = gr.Button("✏️ Update Selected")
                         st_remove = gr.Button("🗑️ Remove Selected", variant="stop")
-                
+
                 # Action buttons
                 with gr.Row():
                     save_button = gr.Button("💾 Save Markdown", variant="primary", scale=2)
@@ -116,12 +116,12 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
             with gr.Column(scale=2):
                 gr.Markdown("### 📝 Live GNN Markdown Editor")
                 markdown_editor = gr.Code(
-                    value=markdown_text, 
-                    language="markdown", 
+                    value=markdown_text,
+                    language="markdown",
                     label="GNN Markdown - Real-time synchronized model specification",
                     lines=25
                 )
-                
+
                 # Model statistics and validation
                 model_stats = gr.JSON(
                     label="📊 Model Statistics",
@@ -148,7 +148,7 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
             if logger:
                 logger.info(f"📄 Model saved to {export_path}")
             save_message = f"✅ **Saved Successfully**\n\nFile: `{export_path}`\nSize: {len(md)} characters"
-            
+
             # Calculate updated statistics
             items = parse_state_space_from_markdown(md)
             stats = {
@@ -158,53 +158,53 @@ def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = No
                 "file_size_chars": len(md),
                 "last_saved": datetime.now().strftime("%H:%M:%S")
             }
-            
+
             return save_message, "🟢 **Status**: Model saved successfully", stats
 
         # Status messages and save functionality
         save_status = gr.Markdown("💾 **Ready to save**: Use the save button to export your model")
-        
+
         # Component management event handlers
         add_button.click(
-            add_component, 
-            inputs=[markdown_editor, component_name, component_type, state_list], 
+            add_component,
+            inputs=[markdown_editor, component_name, component_type, state_list],
             outputs=[markdown_editor]
         ).then(
             lambda: "🟡 **Status**: Component added - remember to save your changes",
             outputs=[status_display]
         )
-        
+
         replace_states_button.click(
-            replace_states, 
-            inputs=[markdown_editor, component_name, state_list], 
+            replace_states,
+            inputs=[markdown_editor, component_name, state_list],
             outputs=[markdown_editor]
         ).then(
             lambda: "🟡 **Status**: States replaced - remember to save your changes",
             outputs=[status_display]
         )
-        
+
         append_states_button.click(
-            append_states, 
-            inputs=[markdown_editor, component_name, state_list], 
+            append_states,
+            inputs=[markdown_editor, component_name, state_list],
             outputs=[markdown_editor]
         ).then(
-            lambda: "🟡 **Status**: States appended - remember to save your changes", 
+            lambda: "🟡 **Status**: States appended - remember to save your changes",
             outputs=[status_display]
         )
-        
+
         remove_button.click(
-            remove_component, 
-            inputs=[markdown_editor, component_name], 
+            remove_component,
+            inputs=[markdown_editor, component_name],
             outputs=[markdown_editor]
         ).then(
             lambda: "🟡 **Status**: Component removed - remember to save your changes",
             outputs=[status_display]
         )
-        
+
         # Save functionality with enhanced feedback
         save_button.click(
-            save_md, 
-            inputs=[markdown_editor], 
+            save_md,
+            inputs=[markdown_editor],
             outputs=[save_status, status_display, model_stats]
         )
 

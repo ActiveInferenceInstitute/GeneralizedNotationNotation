@@ -7,7 +7,7 @@ It registers tools that can be used by MCP-enabled applications to interact with
 
 import logging
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Union
+from typing import Dict, Any, List
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -51,7 +51,7 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         # Register get_model tool
         registry.register_tool(
             name="model_registry.get_model",
@@ -83,7 +83,7 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         # Register search_models tool
         registry.register_tool(
             name="model_registry.search_models",
@@ -115,7 +115,7 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         # Register list_models tool
         registry.register_tool(
             name="model_registry.list_models",
@@ -141,10 +141,10 @@ def register_tools(registry):
                 }
             ]
         )
-        
+
         logger.info("Successfully registered model registry MCP tools")
         return True
-        
+
     except Exception as e:
         logger.error(f"Failed to register model registry MCP tools: {e}")
         return False
@@ -162,30 +162,30 @@ def register_model(model_path: str, registry_path: str = "output/model_registry/
     """
     try:
         from .registry import ModelRegistry
-        
+
         # Convert string paths to Path objects
         model_path = Path(model_path)
         registry_path = Path(registry_path)
-        
+
         # Ensure registry directory exists
         registry_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         # Initialize registry
         registry = ModelRegistry(registry_path)
-        
+
         # Register model
         success = registry.register_model(model_path)
-        
+
         if success:
             # Save registry
             registry.save()
-            
+
             # Get model ID
             model_id = model_path.stem
-            
+
             # Get model entry
             model = registry.get_model(model_id)
-            
+
             if model:
                 return {
                     "status": "success",
@@ -194,13 +194,13 @@ def register_model(model_path: str, registry_path: str = "output/model_registry/
                     "current_version": model.current_version,
                     "registry_path": str(registry_path)
                 }
-        
+
         return {
             "status": "error",
             "model_path": str(model_path),
             "error": "Failed to register model"
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to register model {model_path}: {e}")
         return {
@@ -222,16 +222,16 @@ def get_model(model_id: str, registry_path: str = "output/model_registry/model_r
     """
     try:
         from .registry import ModelRegistry
-        
+
         # Convert string path to Path object
         registry_path = Path(registry_path)
-        
+
         # Initialize registry
         registry = ModelRegistry(registry_path)
-        
+
         # Get model
         model = registry.get_model(model_id)
-        
+
         if model:
             return {
                 "status": "success",
@@ -245,13 +245,13 @@ def get_model(model_id: str, registry_path: str = "output/model_registry/model_r
                 "tags": model.tags,
                 "metadata": model.metadata
             }
-        
+
         return {
             "status": "error",
             "model_id": model_id,
             "error": "Model not found"
         }
-        
+
     except Exception as e:
         logger.error(f"Failed to get model {model_id}: {e}")
         return {
@@ -273,16 +273,16 @@ def search_models(query: str, registry_path: str = "output/model_registry/model_
     """
     try:
         from .registry import ModelRegistry
-        
+
         # Convert string path to Path object
         registry_path = Path(registry_path)
-        
+
         # Initialize registry
         registry = ModelRegistry(registry_path)
-        
+
         # Search models
         models = registry.search_models(query)
-        
+
         # Convert to dictionaries
         return [
             {
@@ -294,7 +294,7 @@ def search_models(query: str, registry_path: str = "output/model_registry/model_
             }
             for model in models
         ]
-        
+
     except Exception as e:
         logger.error(f"Failed to search models: {e}")
         return [
@@ -316,16 +316,16 @@ def list_models(registry_path: str = "output/model_registry/model_registry.json"
     """
     try:
         from .registry import ModelRegistry
-        
+
         # Convert string path to Path object
         registry_path = Path(registry_path)
-        
+
         # Initialize registry
         registry = ModelRegistry(registry_path)
-        
+
         # List models
         models = registry.list_models()
-        
+
         # Convert to dictionaries
         return [
             {
@@ -337,7 +337,7 @@ def list_models(registry_path: str = "output/model_registry/model_registry.json"
             }
             for model in models
         ]
-        
+
     except Exception as e:
         logger.error(f"Failed to list models: {e}")
         return [
@@ -345,4 +345,4 @@ def list_models(registry_path: str = "output/model_registry/model_registry.json"
                 "status": "error",
                 "error": str(e)
             }
-        ] 
+        ]

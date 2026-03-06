@@ -60,7 +60,7 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List
 
 # Detect project root and ensure we're working from there
 SCRIPT_DIR = Path(__file__).parent  # src/
@@ -77,12 +77,9 @@ sys.path.insert(0, str(SCRIPT_DIR))
 from utils.pipeline_template import (
     setup_step_logging as _basic_setup_step_logging,
     log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
+    log_step_error
 )
 from utils.argument_utils import ArgumentParser, PipelineArguments
-from pipeline.config import get_output_dir_for_script, get_pipeline_config
 from utils.resource_manager import get_current_memory_usage
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
 
@@ -110,7 +107,7 @@ try:
         create_visual_logger
     )
     STRUCTURED_LOGGING_AVAILABLE = True
-except ImportError as e:
+except ImportError:
     # Fall back to the basic version imported above under its alias.
     setup_step_logging = _basic_setup_step_logging
     STRUCTURED_LOGGING_AVAILABLE = False
@@ -136,10 +133,10 @@ except ImportError as e:
             self.config = config
             self._correlation_id = None
             self.logger = logging.getLogger(name)
-            
+
         def set_correlation_id(self, correlation_id):
             self._correlation_id = correlation_id
-            
+
         def print_progress(self, current, total, message): self.logger.info(f"[{current}/{total}] {message}")
         def print_step_header(self, step_num, description, total): self.logger.info(f"\n=== Step {step_num}/{total}: {description} ===")
 
@@ -149,10 +146,10 @@ except ImportError as e:
 
     def print_pipeline_banner(title, subtitle):
         logging.getLogger("pipeline").info(f"\n{'='*60}\n{title}\n{subtitle}\n{'='*60}")
-        
+
     def print_step_summary(step, desc, status, duration, stats):
         logging.getLogger("pipeline").info(f"Step {step}: {desc} - {status} ({duration:.2f}s)")
-        
+
     def print_completion_summary(success, duration, stats):
         status_msg = 'COMPLETED' if success else 'FAILED'
         logging.getLogger("pipeline").info(f"\n{'='*60}\nPipeline {status_msg} in {duration:.2f}s\n{stats}\n{'='*60}")
@@ -300,12 +297,12 @@ def main():
             )
         else:
             log_step_start(logger, "Starting GNN Processing Pipeline")
-        
+
         # Handle step filtering with automatic dependency resolution
         # (pipeline_steps already defined above, steps_to_execute initialized)
         if args.only_steps:
             requested_step_numbers = parse_step_list(args.only_steps)
-            
+
             # Automatic dependency resolution
             step_dependencies = {
                 11: [3],     # 11_render.py needs 3_gnn.py
@@ -323,7 +320,7 @@ def main():
                 16: [3, 7],  # 16_analysis.py needs 3_gnn.py and 7_export.py
                 24: [23],    # 24_intelligent_analysis.py needs 23_report.py (and implicitly the summary it generates/pipeline completion)
             }
-            
+
             # Include dependencies automatically
             resolved_step_numbers = set(requested_step_numbers)
             added_dependencies = []
@@ -333,13 +330,13 @@ def main():
                         if dep not in resolved_step_numbers:
                             resolved_step_numbers.add(dep)
                             added_dependencies.append(dep)
-            
+
             if added_dependencies:
                 logger.info(f"Auto-including dependency steps: {sorted(added_dependencies)}")
-            
+
             steps_to_execute = [pipeline_steps[i] for i in sorted(resolved_step_numbers) if 0 <= i < len(pipeline_steps)]
             logger.info(f"Executing steps: {[step[0] for step in steps_to_execute]}")
-        
+
         if args.skip_steps:
             skip_numbers = parse_step_list(args.skip_steps)
             steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
@@ -355,7 +352,7 @@ def main():
             # Set global progress tracker so structured logging functions can use it
             import utils.logging.logging_utils as logging_utils_module
             logging_utils_module._global_progress_tracker = progress_tracker
-        
+
         # Validate step sequence before execution
         sequence_validation = validate_pipeline_step_sequence(steps_to_execute, logger)
         if sequence_validation["warnings"]:
@@ -364,14 +361,14 @@ def main():
         if sequence_validation["recommendations"]:
             for rec in sequence_validation["recommendations"]:
                 logger.info(f"Recommendation: {rec}")
-        
+
         # Execute each step
         for step_index, (script_name, description) in enumerate(steps_to_execute, 0):
             # Use the actual script name as step identifier for clarity
             actual_step_number = step_index + 1
             step_start_time = time.time()
             step_start_datetime = datetime.now()
-            
+
             # Step start with visual indicators
             visual_logger.print_step_header(actual_step_number, description, len(steps_to_execute))
 
@@ -386,7 +383,7 @@ def main():
                                       script_name=script_name)
             else:
                 logger.info(f"🔄 Executing step {actual_step_number}: {description}")
-            
+
             # Write a preliminary pipeline summary before the intelligent analysis step
             # so it analyzes the current run's data instead of stale previous run data
             if script_name == "24_intelligent_analysis.py":
@@ -400,7 +397,7 @@ def main():
                     # The 'preliminary' flag distinguishes this from the final summary
                     prelim_summary["overall_status"] = "SUCCESS"
                     prelim_summary["preliminary"] = True
-                    
+
                     prelim_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
                     prelim_path.parent.mkdir(parents=True, exist_ok=True)
                     with open(prelim_path, 'w') as f:
@@ -408,15 +405,15 @@ def main():
                     logger.info(f"📝 Preliminary pipeline summary written for intelligent analysis ({len(prelim_summary.get('steps', []))} steps)")
                 except Exception as prelim_err:
                     logger.warning(f"Could not write preliminary summary: {prelim_err}")
-            
+
             # Execute the step
             step_result = execute_pipeline_step(script_name, args, logger)
-            
+
             # Calculate step duration
             step_end_time = time.time()
             step_duration = step_end_time - step_start_time
             step_end_datetime = datetime.now()
-            
+
             # Update step result with timing information and enhanced metadata
             step_result.update({
                 "step_number": actual_step_number,
@@ -434,12 +431,12 @@ def main():
                 "peak_memory_mb": step_result.get("peak_memory_mb", 0.0),
                 "memory_delta_mb": step_result.get("memory_delta_mb", 0.0)
             })
-            
+
             # Check for warnings in both stdout and stderr (precise regex matching)
             combined_output = f"{step_result.get('stdout', '')}\n{step_result.get('stderr', '')}"
             # More precise warning detection - look for actual log levels or warning symbols
 
-            
+
             # Known safe warnings that should not trigger SUCCESS_WITH_WARNINGS
             safe_warning_patterns = [
                 r"matplotlib.*?backend",  # Matplotlib backend selection messages
@@ -459,15 +456,15 @@ def main():
                 r"numeric.*?limited",  # Numeric visualization limitations
                 r"warnings: 0",  # Zero warnings count in validation logs
             ]
-            
+
             # Combine safe patterns into single regex
             safe_patterns = "|".join(f"({p})" for p in safe_warning_patterns)
             safe_warning_pattern = re.compile(safe_patterns, re.IGNORECASE)
-            
+
             # Check for warnings but exclude safe patterns
             warning_pattern = re.compile(r"(WARNING|⚠️|warn)", re.IGNORECASE)
             has_warning = bool(warning_pattern.search(combined_output))
-            
+
             # If warning found, check if it's a "safe" warning
             if has_warning:
                 has_warning = not bool(safe_warning_pattern.search(combined_output))
@@ -497,7 +494,7 @@ def main():
             # Count warnings
             if has_warning:
                 pipeline_summary["performance_summary"]["warnings"] += 1
-            
+
             # Update peak memory usage with better tracking
             step_memory = step_result.get("memory_usage_mb", 0.0)
             step_peak_memory = step_result.get("peak_memory_mb", 0.0)
@@ -506,10 +503,10 @@ def main():
             # Use the higher of step memory or peak memory
             new_peak = max(step_memory, step_peak_memory, current_peak)
             pipeline_summary["performance_summary"]["peak_memory_mb"] = new_peak
-            
+
             # Update total steps count
             pipeline_summary["performance_summary"]["total_steps"] = len(steps_to_execute)
-            
+
             # Step completion with visual indicators
             status_for_logging = step_result["status"]
 
@@ -552,13 +549,13 @@ def main():
                     logger.warning(f"⚠️ Step {actual_step_number} completed with warnings in {step_duration:.2f}s")
                 else:
                     logger.error(f"❌ Step {actual_step_number} failed with status: {status_for_logging}")
-        
+
         # Complete pipeline summary
         end_time_dt = datetime.now()
         pipeline_summary["end_time"] = end_time_dt.isoformat()
         start_time_dt = datetime.fromisoformat(pipeline_summary["start_time"])
         pipeline_summary["total_duration_seconds"] = (end_time_dt - start_time_dt).total_seconds()
-        
+
         # Determine overall status with enhanced logic
         perf_summary = pipeline_summary["performance_summary"]
         if perf_summary["critical_failures"] > 0:
@@ -576,7 +573,7 @@ def main():
                 pipeline_summary["overall_status"] = "SUCCESS_WITH_WARNINGS"
         else:
             pipeline_summary["overall_status"] = "SUCCESS"
-        
+
         # Save pipeline summary with validation and error handling
         summary_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         summary_path.parent.mkdir(parents=True, exist_ok=True)
@@ -588,7 +585,7 @@ def main():
 
             with open(summary_path, 'w') as f:
                 json.dump(pipeline_summary, f, indent=4, default=str)
-            logger.info(f"Pipeline summary saved successfully")
+            logger.info("Pipeline summary saved successfully")
 
             # Log summary statistics
             steps = pipeline_summary["steps"]
@@ -615,7 +612,7 @@ def main():
                 logger.info("Minimal summary saved as fallback")
             except Exception as fallback_error:
                 logger.error(f"Failed to save even minimal summary: {fallback_error}")
-        
+
         # Final completion summary with visual indicators
         total_duration = pipeline_summary['total_duration_seconds']
         perf_summary = pipeline_summary['performance_summary']
@@ -647,9 +644,9 @@ def main():
                 logger.info(f"🎯 Pipeline completed successfully in {total_duration:.2f}s")
             else:
                 logger.info(f"⚠️ Pipeline completed with issues in {total_duration:.2f}s")
-        
+
         return 0 if pipeline_summary["overall_status"] == "SUCCESS" else 1
-        
+
     except Exception as e:
         # Update pipeline summary with error
         end_time_dt = datetime.now()
@@ -657,27 +654,24 @@ def main():
         pipeline_summary["overall_status"] = "FAILED"
         start_time_dt = datetime.fromisoformat(pipeline_summary["start_time"])
         pipeline_summary["total_duration_seconds"] = (end_time_dt - start_time_dt).total_seconds()
-        
+
         # Save pipeline summary even on error
         summary_path = args.output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"
         summary_path.parent.mkdir(parents=True, exist_ok=True)
         with open(summary_path, 'w') as f:
             json.dump(pipeline_summary, f, indent=4)
-        
+
         log_step_error(logger, f"Pipeline failed: {str(e)}")
         return 1
 
 def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> Dict[str, Any]:
     """Execute a single pipeline step with comprehensive monitoring."""
-    import subprocess
     import os
-    import shutil
-    import time
-    
+
     # Initialize performance tracking
     start_memory = get_current_memory_usage()
     peak_memory = start_memory
-    
+
     step_result = {
         "status": "UNKNOWN",
         "stdout": "",
@@ -690,28 +684,28 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
         "prerequisite_check": True,
         "dependency_warnings": []
     }
-    
+
     try:
         # Validate step prerequisites
         prereq_result = validate_step_prerequisites(script_name, args, logger)
         step_result["prerequisite_check"] = prereq_result["passed"]
         step_result["dependency_warnings"] = prereq_result.get("warnings", [])
-        
+
         # Log prerequisite warnings if any
         if prereq_result.get("warnings"):
             for warning in prereq_result["warnings"]:
                 logger.warning(f"Prerequisite warning for {script_name}: {warning}")
-        
+
         # Get script path
         script_path = Path(__file__).parent / script_name
-        
+
         # Get virtual environment Python path
         project_root = Path(__file__).parent.parent
         venv_python = project_root / ".venv" / "bin" / "python"
-        
+
         # Use virtual environment Python if available, otherwise fall back to system Python
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
-        
+
         # Retrieve testing matrix configuration from input/config.yaml
         testing_matrix = {}
         input_config_path = Path("input/config.yaml")
@@ -723,14 +717,14 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                     testing_matrix = full_config.get("testing_matrix", {})
             except Exception as e:
                 logger.warning(f"Could not load testing_matrix from input/config.yaml: {e}")
-        
+
         # Extract step number
         step_num_match = re.match(r"^(\d+)_", script_name)
         step_num = int(step_num_match.group(1)) if step_num_match else -1
-        
+
         matrix_enabled = testing_matrix.get("enabled", False)
         target_folders = []
-        
+
         # Check global_steps: if a global step (0, 1, 2) is disabled, skip it entirely
         if matrix_enabled:
             global_steps = testing_matrix.get("global_steps", {})
@@ -741,14 +735,14 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                 step_result["exit_code"] = 0
                 step_result["stdout"] = f"Skipped by global_steps config (testing_matrix.global_steps.{script_stem}: false)\n"
                 return step_result
-        
+
         # Only apply folder-matrix logic if enabled and the step is a processing step (>= 3)
         if matrix_enabled and step_num >= 3:
             base_target_dir = args.target_dir
             if base_target_dir.exists() and base_target_dir.is_dir():
                 folders_config = testing_matrix.get("folders", {})
                 default_steps = testing_matrix.get("default_steps", [])
-                
+
                 # Check all subdirectories in the base target directory
                 for item in base_target_dir.iterdir():
                     if item.is_dir() and item.name != "archived_gnn_files":
@@ -756,11 +750,11 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                         allowed_steps = folders_config.get(item.name, default_steps)
                         if step_num in allowed_steps:
                             target_folders.append(item)
-        
+
         from utils.argument_utils import build_step_command_args
         from pipeline.step_timeouts import get_step_timeout
         from utils.execution_utils import execute_command_streaming
-        
+
         # Prepare environment
         _env = os.environ.copy()
         _env.setdefault("PYTHONUNBUFFERED", "1")
@@ -771,61 +765,61 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
             # MATRIX MODE: We found specific folders to run for this step
             if args.verbose:
                 logger.info(f"Testing matrix enabled. Running step {step_num} on {len(target_folders)} specific folders: {[f.name for f in target_folders]}")
-            
+
             combined_stdout = ""
             combined_stderr = ""
             worst_exit_code = 0
-            
+
             for folder in target_folders:
                 if args.verbose:
                     logger.info(f"  -> Executing for folder: {folder.name}")
-                    
+
                 # Creating a modified args copy to point to the specific subfolder
                 import copy
                 folder_args = copy.copy(args)
                 folder_args.target_dir = folder
-                
+
                 cmd = build_step_command_args(
                     script_name.replace('.py', ''),
                     folder_args,
                     python_executable,
                     script_path
                 )
-                
-                # We do not use print_stdout=True for every subfolder iteration to avoid extreme terminal spam, 
+
+                # We do not use print_stdout=True for every subfolder iteration to avoid extreme terminal spam,
                 # but we will print if requested verbose globally
                 if args.verbose:
                     logger.info(f"  -> CMD ACTUALLY IS: {' '.join(cmd)}")
-                    
+
                 result = execute_command_streaming(
                     cmd,
                     cwd=project_root,
                     env=_env,
                     timeout=step_timeout_seconds,
-                    print_stdout=args.verbose,  
+                    print_stdout=args.verbose,
                     print_stderr=True,
                     capture_output=True
                 )
-                
+
                 combined_stdout += f"\n--- Output for {folder.name} ---\n{result.get('stdout', '')}\n"
                 if result.get('stderr'):
                     combined_stderr += f"\n--- Stderr for {folder.name} ---\n{result.get('stderr', '')}\n"
-                
+
                 exit_code = result.get('exit_code', -1)
                 if exit_code != 0:
                     worst_exit_code = exit_code
                     logger.warning(f"  -> Folder {folder.name} execution returned code {exit_code}")
-                    
+
             end_memory = get_current_memory_usage()
             peak_memory = max(peak_memory, end_memory)
-            
+
             step_result["stdout"] = combined_stdout
             step_result["stderr"] = combined_stderr
             step_result["exit_code"] = worst_exit_code
             step_result["memory_usage_mb"] = end_memory
             step_result["peak_memory_mb"] = peak_memory
             step_result["memory_delta_mb"] = end_memory - start_memory
-            
+
         else:
             # STANDARD MODE
             cmd = build_step_command_args(
@@ -834,23 +828,23 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                 python_executable,
                 script_path
             )
-            
+
             if args.verbose:
                 logger.info(f"Executing command: {' '.join(cmd)}")
-                
+
             result = execute_command_streaming(
                 cmd,
                 cwd=project_root,
                 env=_env,
                 timeout=step_timeout_seconds,
-                print_stdout=True,  
+                print_stdout=True,
                 print_stderr=True,
-                capture_output=True 
+                capture_output=True
             )
-            
+
             end_memory = get_current_memory_usage()
             peak_memory = max(peak_memory, end_memory)
-            
+
             step_result["stdout"] = result.get("stdout", "")
             step_result["stderr"] = result.get("stderr", "")
             step_result["exit_code"] = result.get("exit_code", -1)
@@ -876,13 +870,13 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                 logger.error(f"Error output: {step_result['stderr'][:500]}...")  # Limit to first 500 chars
 
         # Steps determine their own output directories via get_output_dir_for_script
-        
+
         # Add recovery status to result
         if not step_result.get("recoverable"):
             step_result["recoverable"] = False
-            
+
         return step_result
-        
+
     except Exception as e:
         logger.error(f"Exception in execute_pipeline_step for {script_name}: {e}")
         step_result["status"] = "FAILED"
@@ -899,9 +893,8 @@ def parse_step_list(step_str: str) -> List[int]:
 
 def get_environment_info() -> Dict[str, Any]:
     """Get environment information."""
-    import platform
     import os
-    
+
     info = {
         "python_version": sys.version,
         "platform": sys.platform,
@@ -909,19 +902,19 @@ def get_environment_info() -> Dict[str, Any]:
         "working_directory": str(Path.cwd()),
         "user": os.getenv("USER", "unknown")
     }
-    
+
     try:
         import psutil
         info["memory_total_gb"] = f"{psutil.virtual_memory().total / 1024**3:.1f}"
     except ImportError:
         info["memory_total_gb"] = "unavailable (psutil not installed)"
-    
+
     try:
         import psutil
         info["disk_free_gb"] = f"{psutil.disk_usage('/').free / 1024**3:.1f}"
     except ImportError:
         info["disk_free_gb"] = "unavailable (psutil not installed)"
-    
+
     return info
 
 
@@ -1010,7 +1003,7 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
 
 
 # All pipeline utility functions have been moved to appropriate utils modules:
-# - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py  
+# - validate_step_prerequisites, validate_pipeline_step_sequence → utils/pipeline_validator.py
 # - get_current_memory_usage → utils/resource_manager.py
 # - attempt_step_recovery and recovery functions → utils/error_recovery.py
 # - generate_pipeline_health_report → utils/pipeline_monitor.py
@@ -1018,4 +1011,4 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(main()) 
+    sys.exit(main())

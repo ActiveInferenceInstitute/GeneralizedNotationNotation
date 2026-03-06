@@ -21,20 +21,14 @@ import threading
 import signal
 from pathlib import Path
 from typing import Dict, Any, List
-from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from .categories import MODULAR_TEST_CATEGORIES
 
-from .infrastructure import (
-    _extract_collection_errors,
-    _parse_test_statistics,
-    _parse_coverage_statistics,
-)
 
 
 class ModularTestRunner:
     """Test runner with comprehensive error handling and reporting."""
-    
+
     def __init__(self, args, logger: logging.Logger):
         self.args = args
         self.logger = logger
@@ -42,7 +36,7 @@ class ModularTestRunner:
         self.test_dir = self.project_root / "src" / "tests"
         self.results = {}
         self.start_time = time.time()
-        
+
         # Error tracking
         self.total_tests_run = 0
         self.total_tests_passed = 0
@@ -51,20 +45,20 @@ class ModularTestRunner:
         self.categories_run = 0
         self.categories_successful = 0
         self.categories_failed = 0
-        
+
         # Performance tracking
         self.category_times = {}
         self.slowest_tests = []
-        
+
         # Resource monitoring
         self.resource_usage = {}
-        
+
         # Error categorization
         self.import_errors = []
         self.runtime_errors = []
         self.pathlib_errors = []
         self.sapf_errors = []
-        
+
         self.logger.info(f"Initialized ModularTestRunner with {len(MODULAR_TEST_CATEGORIES)} categories")
 
     def _monitor_resources_during_test(self):
@@ -79,31 +73,31 @@ class ModularTestRunner:
             }
         except ImportError:
             return {"memory_mb": 0, "cpu_percent": 0, "threads": 0}
-            
+
     def should_run_category(self, category: str) -> bool:
         """Determine if a test category should be run based on arguments."""
         if hasattr(self.args, 'comprehensive') and self.args.comprehensive:
             return True
-            
+
         if hasattr(self.args, 'fast_only') and self.args.fast_only:
             return category in ["core", "pipeline", "validation", "utilities", "fast_suite"]
-        
+
         if category == "performance" and hasattr(self.args, 'include_performance') and not self.args.include_performance:
             return False
-            
+
         if category in ["specialized", "integration"] and hasattr(self.args, 'include_slow') and not self.args.include_slow:
             return False
-        
+
         return category not in ["performance", "specialized", "integration"]
 
     def _run_fallback_tests(self, category: str, test_files: List[str], python_executable: str, start_time: float) -> Dict[str, Any]:
         """Fallback test execution when pytest fails with internal errors."""
         self.logger.info(f"Running fallback test execution for category '{category}'")
-        
+
         total_tests = 0
         passed_tests = 0
         failed_tests = 0
-        
+
         for test_file in test_files:
             try:
                 syntax_result = subprocess.run(
@@ -112,7 +106,7 @@ class ModularTestRunner:
                     text=True,
                     timeout=30
                 )
-                
+
                 if syntax_result.returncode == 0:
                     total_tests += 1
                     passed_tests += 1
@@ -121,19 +115,19 @@ class ModularTestRunner:
                     total_tests += 1
                     failed_tests += 1
                     self.logger.warning(f"  {Path(test_file).name}: Syntax error")
-                    
+
             except Exception as e:
                 total_tests += 1
                 failed_tests += 1
                 self.logger.warning(f"  {Path(test_file).name}: Error {e}")
-        
+
         duration = time.time() - start_time
         self.category_times[category] = duration
-        
+
         self.total_tests_run += total_tests
         self.total_tests_passed += passed_tests
         self.total_tests_failed += failed_tests
-        
+
         return {
             "success": failed_tests == 0,
             "tests_run": total_tests,
@@ -150,21 +144,21 @@ class ModularTestRunner:
     def discover_test_files(self, category: str, config: Dict[str, Any]) -> List[str]:
         """Discover test files for a category with enhanced error handling."""
         test_files = []
-        
+
         for file_pattern in config.get("files", []):
             exact_file = self.test_dir / file_pattern
             if exact_file.exists():
                 test_files.append(str(exact_file))
                 continue
-            
+
             pattern_files = list(self.test_dir.glob(file_pattern))
             test_files.extend([str(f) for f in pattern_files])
-        
+
         test_files = sorted(list(set(test_files)))
-        
+
         self.logger.info(f"Discovered {len(test_files)} test files for category '{category}': {test_files}")
         return test_files
-        
+
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, int]:
         """Parse pytest output to extract test counts."""
         tests_run = 0
@@ -225,11 +219,11 @@ class ModularTestRunner:
             "failed": tests_failed,
             "skipped": tests_skipped
         }
-                        
+
     def run_test_category(self, category: str, config: Dict[str, Any]) -> Dict[str, Any]:
         """Run tests for a specific category with comprehensive error handling."""
         category_start_time = time.time()
-        
+
         self.logger.info(f"\n{'='*60}")
         self.logger.info(f"Running category: {config['name']}")
         self.logger.info(f"Description: {config['description']}")
@@ -237,9 +231,9 @@ class ModularTestRunner:
         self.logger.info(f"Category timeout budget: {effective_timeout_seconds} seconds")
         self.logger.info(f"Parallel: {config.get('parallel', True)}")
         self.logger.info(f"{'='*60}")
-        
+
         test_files = self.discover_test_files(category, config)
-        
+
         if not test_files:
             self.logger.info(f"No test files found for category '{category}', marking as skipped/success")
             return {
@@ -253,37 +247,33 @@ class ModularTestRunner:
                 "stderr": "",
                 "return_code": 0
             }
-        
+
         self.logger.info(f"Found {len(test_files)} test files:")
         for test_file in test_files:
             self.logger.info(f"  {test_file}")
-        
+
         venv_python = self.project_root / ".venv" / "bin" / "python"
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
-        
+
         self.logger.info(f"Using Python: {python_executable}")
-        
+
         has_xdist = False
         has_pytest_cov = False
         has_jsonreport = False
         has_pytest_timeout = False
         try:
-            import xdist  # type: ignore
             has_xdist = True
         except Exception:
             pass
         try:
-            import pytest_cov  # type: ignore
             has_pytest_cov = True
         except Exception:
             pass
         try:
-            import pytest_jsonreport  # type: ignore
             has_jsonreport = True
         except Exception:
             pass
         try:
-            import pytest_timeout  # type: ignore
             has_pytest_timeout = True
         except Exception:
             pass
@@ -301,30 +291,30 @@ class ModularTestRunner:
             "-p", "no:sugar",
             "-p", "no:cacheprovider",
         ]
-        
+
         if has_pytest_timeout:
-            cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])  
+            cmd.extend(["-p", "pytest_timeout", "--timeout=10", "--timeout-method=thread"])
             self.logger.info("Per-test timeout enforced (10s)")
         else:
             self.logger.info("pytest-timeout not available - no per-test timeout enforcement")
 
-        cmd.extend(["-p", "pytest_asyncio"])  
+        cmd.extend(["-p", "pytest_asyncio"])
         if has_jsonreport:
             cmd.extend(["-p", "pytest_jsonreport", "--json-report", "--json-report-file=none"])
 
         if has_pytest_cov:
             cmd.extend(["-p", "pytest_cov", "--cov=src",
-                        f"--cov-report=term-missing",
+                        "--cov-report=term-missing",
                         f"--cov-report=json:{category_output_dir}/coverage.json",
-                        f"--cov-report=html:{category_output_dir}/htmlcov"])        
-        
+                        f"--cov-report=html:{category_output_dir}/htmlcov"])
+
         if config.get("markers"):
             for marker in config["markers"]:
                 cmd.extend(["-m", marker])
             self.logger.info(f"Using markers: {config['markers']}")
-        
+
         cmd.extend(test_files)
-        
+
         if (config.get("parallel", True)
             and not (hasattr(self.args, 'fast_only') and self.args.fast_only)
             and category != "pipeline"
@@ -333,15 +323,15 @@ class ModularTestRunner:
             self.logger.info("Parallel execution enabled (xdist)")
         else:
             self.logger.info("Sequential execution")
-        
+
         self.logger.info(f"Executing command: {' '.join(cmd[:5])}...")
-        
+
         try:
             initial_resources = self._monitor_resources_during_test()
             self.logger.info(f"Initial resource usage: {initial_resources}")
-            
+
             old_handler = None
-            
+
             try:
                 env = os.environ.copy()
                 env["PYTHONPATH"] = str(self.project_root / "src")
@@ -537,7 +527,7 @@ class ModularTestRunner:
                     "tests_skipped": 0,
                     "duration": time.time() - category_start_time
                 }
-                
+
         except Exception as e:
             self.logger.error(f"Unexpected error in category '{category}': {e}")
             return {
@@ -549,40 +539,40 @@ class ModularTestRunner:
                 "tests_skipped": 0,
                 "duration": time.time() - category_start_time
             }
-            
+
     def run_all_categories(self) -> Dict[str, Any]:
         """Run all test categories and generate comprehensive report."""
         self.logger.info(f"\n{'='*80}")
         self.logger.info("STARTING COMPREHENSIVE TEST SUITE EXECUTION")
         self.logger.info(f"{'='*80}")
-        
+
         total_categories = len([cat for cat in MODULAR_TEST_CATEGORIES.keys() if self.should_run_category(cat)])
         self.logger.info(f"Total categories to run: {total_categories}")
-        
+
         overall_success = True
         start_time = time.time()
-        
+
         for i, (category, config) in enumerate(MODULAR_TEST_CATEGORIES.items(), 1):
             if not self.should_run_category(category):
                 self.logger.info(f"Skipping category '{category}' based on arguments")
                 continue
-            
+
             self.logger.info(f"\n{'='*60}")
             self.logger.info(f"Category {i}/{total_categories}: {category}")
             self.logger.info(f"{config['name']}")
             self.logger.info(f"{'='*60}")
-            
+
             self.categories_run += 1
-            
+
             try:
                 result = self.run_test_category(category, config)
                 self.results[category] = result
-                
+
                 self.total_tests_run += result.get("tests_run", 0)
                 self.total_tests_passed += result.get("tests_passed", 0)
                 self.total_tests_failed += result.get("tests_failed", 0)
                 self.total_tests_skipped += result.get("tests_skipped", 0)
-                
+
                 if result.get("success", False):
                     self.categories_successful += 1
                     self.logger.info(f"Category '{category}' completed successfully")
@@ -590,26 +580,26 @@ class ModularTestRunner:
                     self.categories_failed += 1
                     overall_success = False
                     self.logger.warning(f"Category '{category}' completed with issues")
-                
+
                 duration = result.get("duration", 0)
                 tests_run = result.get("tests_run", 0)
                 tests_passed = result.get("tests_passed", 0)
                 tests_failed = result.get("tests_failed", 0)
-                
+
                 self.logger.info(f"Category '{category}' Summary:")
                 self.logger.info(f"  Duration: {duration:.2f}s")
                 self.logger.info(f"  Tests: {tests_run} total, {tests_passed} passed, {tests_failed} failed")
-                
+
                 if tests_run > 0:
                     success_rate = (tests_passed / tests_run) * 100
                     self.logger.info(f"  Success Rate: {success_rate:.1f}%")
-                
+
                 resource_usage = result.get("resource_usage", {})
                 if resource_usage:
                     memory_mb = resource_usage.get("memory_mb", 0)
                     cpu_percent = resource_usage.get("cpu_percent", 0)
                     self.logger.info(f"  Memory: {memory_mb:.1f}MB, CPU: {cpu_percent:.1f}%")
-                    
+
             except Exception as e:
                 self.logger.error(f"Unexpected error in category '{category}': {e}")
                 self.results[category] = {
@@ -623,25 +613,25 @@ class ModularTestRunner:
                 }
                 self.categories_failed += 1
                 overall_success = False
-        
+
         total_duration = time.time() - start_time
-        
+
         self.logger.info(f"\n{'='*80}")
         self.logger.info("COMPREHENSIVE TEST SUITE SUMMARY")
         self.logger.info(f"{'='*80}")
         self.logger.info(f"Total Duration: {total_duration:.2f}s")
         self.logger.info(f"Categories: {self.categories_run} run, {self.categories_successful} successful, {self.categories_failed} failed")
         self.logger.info(f"Tests: {self.total_tests_run} total, {self.total_tests_passed} passed, {self.total_tests_failed} failed, {self.total_tests_skipped} skipped")
-        
+
         if self.total_tests_run > 0:
             overall_success_rate = (self.total_tests_passed / self.total_tests_run) * 100
             self.logger.info(f"Overall Success Rate: {overall_success_rate:.1f}%")
-        
-        self.logger.info(f"\nGenerating comprehensive test reports...")
+
+        self.logger.info("\nGenerating comprehensive test reports...")
         self._save_intermediate_results()
         self._generate_final_report()
         self._log_final_summary(overall_success)
-        
+
         return {
             "overall_success": overall_success,
             "total_tests_run": self.total_tests_run,
@@ -654,42 +644,42 @@ class ModularTestRunner:
             "total_duration": total_duration,
             "success_rate": (self.total_tests_passed / self.total_tests_run * 100) if self.total_tests_run > 0 else 0
         }
-    
+
     def _save_intermediate_results(self):
         """Save intermediate results to JSON files."""
         output_dir = Path(self.args.output_dir) / "test_reports"
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         for category, result in self.results.items():
             category_dir = output_dir / f"category_{category}"
             category_dir.mkdir(exist_ok=True)
-            
+
             if "stdout" in result:
                 with open(category_dir / "pytest_stdout.txt", "w") as f:
                     f.write(result["stdout"])
-            
+
             if "stderr" in result:
                 with open(category_dir / "pytest_stderr.txt", "w") as f:
                     f.write(result["stderr"])
-            
+
             with open(category_dir / "pytest_command.txt", "w") as f:
                 f.write(f"Category: {category}\n")
                 f.write(f"Success: {result.get('success', False)}\n")
                 f.write(f"Duration: {result.get('duration', 0):.2f}s\n")
                 if "error" in result:
                     f.write(f"Error: {result['error']}\n")
-                
+
                 if "resource_usage" in result:
                     resource_data = result["resource_usage"]
                     f.write(f"Peak Memory: {resource_data.get('memory_mb', 0):.2f} MB\n")
                     f.write(f"CPU Usage: {resource_data.get('cpu_percent', 0):.1f}%\n")
-    
+
     def _generate_final_report(self):
         """Generate comprehensive final test report."""
         output_dir = Path(self.args.output_dir) / "test_reports"
-        
+
         success_rate = (self.total_tests_passed / max(self.total_tests_run, 1)) * 100
-        
+
         summary = {
             "total_categories": self.categories_run,
             "successful_categories": self.categories_successful,
@@ -709,51 +699,51 @@ class ModularTestRunner:
                 "runtime_errors": self.runtime_errors
             }
         }
-        
+
         with open(output_dir / "modular_test_summary.json", "w") as f:
             json.dump(summary, f, indent=2)
-        
+
         with open(output_dir / "modular_test_results.json", "w") as f:
             json.dump(self.results, f, indent=2)
-    
+
     def _log_final_summary(self, success: bool):
         """Log comprehensive final summary."""
         self.logger.info(f"\n{'='*80}")
         self.logger.info("COMPREHENSIVE TEST SUITE EXECUTION COMPLETE")
         self.logger.info(f"{'='*80}")
-        
+
         self.logger.info(f"Overall Result: {'SUCCESS' if success else 'FAILURE'}")
         self.logger.info(f"Total Duration: {time.time() - self.start_time:.2f}s")
         self.logger.info(f"Categories Run: {self.categories_run}")
         self.logger.info(f"Categories Successful: {self.categories_successful}")
         self.logger.info(f"Categories Failed: {self.categories_failed}")
-        
+
         self.logger.info(f"Total Tests Run: {self.total_tests_run}")
         self.logger.info(f"Total Tests Passed: {self.total_tests_passed}")
         self.logger.info(f"Total Tests Failed: {self.total_tests_failed}")
         self.logger.info(f"Total Tests Skipped: {self.total_tests_skipped}")
-        
+
         if self.total_tests_run > 0:
             success_rate = (self.total_tests_passed / self.total_tests_run) * 100
             self.logger.info(f"Success Rate: {success_rate:.1f}%")
-        
+
         if self.pathlib_errors:
             self.logger.warning(f"Pathlib errors detected in categories: {self.pathlib_errors}")
-        
+
         if self.sapf_errors:
             self.logger.warning(f"SAPF errors detected in categories: {self.sapf_errors}")
-        
+
         if self.import_errors:
             self.logger.warning(f"Import errors detected in categories: {self.import_errors}")
-        
+
         if self.category_times:
             slowest_category = max(self.category_times.items(), key=lambda x: x[1])
             self.logger.info(f"Slowest category: {slowest_category[0]} ({slowest_category[1]:.2f}s)")
-        
+
         if self.resource_usage:
             peak_memory = max([usage.get("memory_mb", 0) for usage in self.resource_usage.values()])
             self.logger.info(f"Peak Memory Usage: {peak_memory:.2f} MB")
-        
+
         self.logger.info(f"{'='*80}")
 
 
@@ -769,22 +759,22 @@ def monitor_memory(logger: logging.Logger, threshold_mb: int = 2000):
         process = _ps.Process()
         memory_info = process.memory_info()
         memory_mb = memory_info.rss / 1024 / 1024
-        
+
         if memory_mb > threshold_mb:
             logger.warning(f"High memory usage: {memory_mb:.1f}MB (threshold: {threshold_mb}MB)")
-            
+
             gc.collect()
-            
+
             memory_info = process.memory_info()
             memory_mb_after = memory_info.rss / 1024 / 1024
-            
+
             if memory_mb_after < memory_mb:
                 logger.info(f"Memory usage reduced to {memory_mb_after:.1f}MB after garbage collection")
             else:
                 logger.warning(f"Memory usage still high: {memory_mb_after:.1f}MB")
-        
+
         return memory_mb
-        
+
     except Exception as e:
         logger.warning(f"Failed to monitor memory: {e}")
         return 0.0

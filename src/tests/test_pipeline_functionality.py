@@ -7,10 +7,9 @@ without assuming prior pipeline steps have produced global artifacts.
 """
 
 import pytest
+
+pytestmark = pytest.mark.pipeline
 import json
-import os
-from pathlib import Path
-from typing import Dict, Any
 
 
 class TestPipelineFunctionality:
@@ -131,4 +130,4 @@ x -> y
 
 
 if __name__ == "__main__":
-    pytest.main([__file__, "-v"]) 
+    pytest.main([__file__, "-v"])

@@ -27,12 +27,12 @@ def gnn_submit_job_mcp(target_dir: str, steps: list = None, skip_steps: list = N
     """Submit a GNN pipeline processing job via MCP."""
     try:
         job_id = create_job(target_dir=target_dir, steps=steps, skip_steps=skip_steps, verbose=verbose, strict=strict)
-        
+
         # We need to trigger async execution somehow, but we are in a sync wrapper.
         # Since we use an external process invocation in create_job_async,
         # we can use subprocess directly here to initiate it optionally, or
         # rely on the API server running. We will return the job_id and instructions.
-        
+
         # Alternatively, we just return the job_id. The user can start the server.
         return {"status": "success", "job_id": job_id, "message": "Job created. Note: async execution requires the API server to be running."}
     except Exception as e:
@@ -86,7 +86,7 @@ def gnn_get_pipeline_tools_mcp() -> Dict[str, Any]:
 
 def register_tools(mcp_instance) -> None:
     """Register API domain tools with the MCP server."""
-    
+
     mcp_instance.register_tool(
         "gnn_submit_job",
         gnn_submit_job_mcp,
@@ -156,7 +156,7 @@ def register_tools(mcp_instance) -> None:
         "List available pipeline steps.",
         module=__package__, category="api",
     )
-    
+
     logger.info("api module MCP tools registered.")
 
 

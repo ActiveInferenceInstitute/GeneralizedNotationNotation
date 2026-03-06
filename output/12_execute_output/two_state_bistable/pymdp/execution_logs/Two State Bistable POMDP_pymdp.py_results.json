@@ -3,127 +3,24 @@
   "model_name": "two_state_bistable",
   "script_name": "Two State Bistable POMDP_pymdp.py",
   "script_path": "output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.807983,
-  "timestamp": "2026-03-05T10:37:49.325404",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.776363,
+  "timestamp": "2026-03-06T09:48:50.410806",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      1,
-      1,
-      1,
-      0,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
-      0,
-      0,
-      0,
-      1
-    ],
-    "actions": [
-      0,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      1,
-      1,
-      1,
-      1,
-      0
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-05 10:37:50,912 - INFO - A matrix shape: (2, 2)\n2026-03-05 10:37:50,913 - INFO - B matrix shape: (2, 2, 2)\n2026-03-05 10:37:50,913 - INFO - C vector shape: (2,)\n2026-03-05 10:37:50,913 - INFO - D vector shape: (2,)\n2026-03-05 10:37:50,913 - INFO - E vector shape: (2,)\n2026-03-05 10:37:50,913 - INFO - Starting PyMDP simulation for Two State Bistable POMDP\n2026-03-05 10:37:50,913 - INFO - Output directory: output/pymdp_simulations/Two State Bistable POMDP\n2026-03-05 10:37:50,913 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-03-05 10:37:50,913 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-05 10:37:50,913 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-05 10:37:50,913 - INFO - Starting simple PyMDP simulation\n2026-03-05 10:37:50,913 - INFO - Transposed B from (2, 2, 2) to (2, 2, 2)\n2026-03-05 10:37:50,913 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-05 10:37:50,913 - INFO - Created matrices: A=(2, 2), B=(2, 2, 2), C=(2,), D=(2,)\n2026-03-05 10:37:50,913 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-05 10:37:50,913 - INFO - Successfully created PyMDP agent\n2026-03-05 10:37:50,913 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-05 10:37:50,914 - INFO - Step 0: true_s=0, obs=0, belief=[0.8 0.2], action=1.0\n2026-03-05 10:37:50,914 - INFO - Step 1: true_s=1, obs=1, belief=[0.13 0.87], action=0.0\n2026-03-05 10:37:50,914 - INFO - Step 2: true_s=1, obs=1, belief=[0.09 0.91], action=0.0\n2026-03-05 10:37:50,914 - INFO - Step 3: true_s=1, obs=1, belief=[0.08 0.92], action=0.0\n2026-03-05 10:37:50,914 - INFO - Step 4: true_s=1, obs=1, belief=[0.08 0.92], action=0.0\n2026-03-05 10:37:50,915 - INFO - Step 5: true_s=0, obs=0, belief=[0.59 0.41], action=1.0\n2026-03-05 10:37:50,915 - INFO - Step 6: true_s=1, obs=0, belief=[0.79 0.21], action=1.0\n2026-03-05 10:37:50,915 - INFO - Step 7: true_s=0, obs=0, belief=[0.71 0.29], action=1.0\n2026-03-05 10:37:50,915 - INFO - Step 8: true_s=1, obs=0, belief=[0.74 0.26], action=1.0\n2026-03-05 10:37:50,915 - INFO - Step 9: true_s=0, obs=0, belief=[0.73 0.27], action=1.0\n2026-03-05 10:37:50,916 - INFO - Step 10: true_s=1, obs=1, belief=[0.15 0.85], action=0.0\n2026-03-05 10:37:50,916 - INFO - Step 11: true_s=1, obs=0, belief=[0.63 0.37], action=1.0\n2026-03-05 10:37:50,916 - INFO - Step 12: true_s=0, obs=0, belief=[0.77 0.23], action=1.0\n2026-03-05 10:37:50,916 - INFO - Step 13: true_s=0, obs=0, belief=[0.72 0.28], action=1.0\n2026-03-05 10:37:50,916 - INFO - Step 14: true_s=1, obs=0, belief=[0.74 0.26], action=1.0\n2026-03-05 10:37:50,916 - INFO - Saving raw simulation data for analysis step...\n2026-03-05 10:37:50,917 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Two State Bistable POMDP/simulation_results.json\n2026-03-05 10:37:50,917 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-05 10:37:50,917 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-05 10:37:50,917 - INFO - PyMDP simulation completed successfully\n2026-03-05 10:37:50,917 - INFO - \u2713 Simulation completed successfully!\n2026-03-05 10:37:50,917 - INFO - Results summary:\n2026-03-05 10:37:50,917 - INFO -   Correlation ID: render_generated_script\n2026-03-05 10:37:50,917 - INFO -   Success: True\n2026-03-05 10:37:50,917 - INFO -   Output: output/pymdp_simulations/Two State Bistable POMDP\n",
-    "beliefs": [
-      [
-        0.20000000000000004,
-        0.8
-      ],
-      [
-        0.10666666666666677,
-        0.8933333333333332
-      ],
-      [
-        0.08704883227176227,
-        0.9129511677282378
-      ],
-      [
-        0.5919990460859715,
-        0.40800095391402846
-      ],
-      [
-        0.18676152253296646,
-        0.8132384774670335
-      ],
-      [
-        0.10377335315677225,
-        0.8962266468432278
-      ],
-      [
-        0.08646860045336821,
-        0.9135313995466319
-      ],
-      [
-        0.08303142954114616,
-        0.9169685704588539
-      ],
-      [
-        0.08235540776557669,
-        0.9176445922344233
-      ],
-      [
-        0.0822227062528335,
-        0.9177772937471664
-      ],
-      [
-        0.5889727358370773,
-        0.4110272641629226
-      ],
-      [
-        0.7870980090930317,
-        0.21290199090696832
-      ],
-      [
-        0.710501738740483,
-        0.28949826125951705
-      ],
-      [
-        0.7425303610251457,
-        0.2574696389748543
-      ],
-      [
-        0.14427073692491,
-        0.8557292630750899
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_error": "Execute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nExecute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/two_state_bistable/pymdp/Two State Bistable POMDP_pymdp.py\", line 65, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 27, in <module>\n    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/__init__.py\", line 45, in <module>\n    from .post_simulation import (\nImportError: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py)\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 227,
-    "stderr_length": 3410,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/pymdp"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/pymdp/simulation_data/Two State Bistable POMDP_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
+    "stderr_length": 1244,
+    "output_directory": "output/12_execute_output/two_state_bistable/pymdp"
   }
 }

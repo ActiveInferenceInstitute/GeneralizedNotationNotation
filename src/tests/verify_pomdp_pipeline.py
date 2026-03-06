@@ -309,7 +309,7 @@ def test_analyze_metrics():
 def test_normalize_matrices():
     from render.processor import normalize_matrices
     from gnn.pomdp_extractor import POMDPStateSpace
-    
+
     A = np.array([[3.0, 1.0], [1.0, 3.0]])
     B = np.ones((3, 3, 2))
     pomdp = POMDPStateSpace(num_states=3, num_observations=2, num_actions=2, A_matrix=A, B_matrix=B)

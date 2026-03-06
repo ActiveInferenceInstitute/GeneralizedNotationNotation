@@ -8,8 +8,7 @@ It distinguishes between the correct package (inferactively-pymdp) and wrong var
 
 import logging
 import subprocess
-import sys
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -39,20 +38,20 @@ def detect_pymdp_installation() -> Dict[str, Any]:
         "version": None,
         "error": None
     }
-    
+
     try:
         import pymdp
         result["installed"] = True
         result["package_name"] = getattr(pymdp, "__name__", "pymdp")
         result["version"] = getattr(pymdp, "__version__", None)
-        
+
         # Check what's available in the package
         available_attrs = dir(pymdp)
-        
+
         # Check for correct package indicators - PRIORITIZE THIS
         # Modern inferactively-pymdp has Agent in pymdp.agent submodule
         agent_found = False
-        
+
         if "Agent" in available_attrs or hasattr(pymdp, "Agent"):
             result["has_agent"] = True
             result["correct_package"] = True
@@ -68,12 +67,12 @@ def detect_pymdp_installation() -> Dict[str, Any]:
                 logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule")
             except ImportError:
                 pass
-        
+
         # Check for legacy/wrong package indicators ONLY if Agent was not found
         # Or just note it as a warning but don't fail if Agent is present
         if "MDP" in available_attrs or "MDPSolver" in available_attrs:
             result["has_mdp_solver"] = True
-            
+
             if not agent_found:
                 # Only mark as wrong if we DIDN'T find the agent
                 result["wrong_package"] = True
@@ -81,11 +80,11 @@ def detect_pymdp_installation() -> Dict[str, Any]:
             else:
                 # If we found Agent but also MDP, it's weird but usable
                 logger.warning("Detected mixed PyMDP package indicators (found Agent AND MDP/MDPSolver). Proceeding as correct package.")
-                
+
         # If neither Agent nor MDP found, it's unclear
         if not result["has_agent"] and not result["has_mdp_solver"]:
             logger.warning("PyMDP package found but cannot determine variant")
-            
+
     except ImportError:
         result["installed"] = False
         result["error"] = "PyMDP package not installed"
@@ -93,7 +92,7 @@ def detect_pymdp_installation() -> Dict[str, Any]:
     except Exception as e:
         result["error"] = str(e)
         logger.error(f"Error detecting PyMDP package: {e}")
-    
+
     return result
 
 
@@ -116,10 +115,10 @@ def get_pymdp_installation_instructions() -> str:
         String with installation instructions
     """
     detection = detect_pymdp_installation()
-    
+
     if detection.get("correct_package"):
         return "PyMDP (inferactively-pymdp) is correctly installed."
-    
+
     if detection.get("wrong_package"):
         return (
             "Wrong PyMDP package detected. The installed 'pymdp' package contains "
@@ -129,7 +128,7 @@ def get_pymdp_installation_instructions() -> str:
             "Or using the setup module:\n"
             "  python src/1_setup.py --install_optional --optional_groups pymdp"
         )
-    
+
     if not detection.get("installed"):
         return (
             "PyMDP is not installed.\n"
@@ -138,7 +137,7 @@ def get_pymdp_installation_instructions() -> str:
             "Or using the setup module:\n"
             "  python src/1_setup.py --install_optional --optional_groups pymdp"
         )
-    
+
     return (
         "PyMDP package status unclear.\n"
         "Try installing the correct package:\n"
@@ -161,10 +160,10 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
         Tuple of (success: bool, message: str)
     """
     package_name = "inferactively-pymdp"
-    
+
     try:
         logger.info(f"Attempting to install {package_name} using UV sync...")
-        
+
         # Preferred method: use uv sync with the pymdp extra
         # This ensures proper lockfile integration
         result = subprocess.run(
@@ -173,20 +172,20 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
             text=True,
             timeout=120
         )
-        
+
         if result.returncode == 0:
             logger.info(f"Successfully installed {package_name} using UV sync")
             return True, f"Successfully installed {package_name} via uv sync"
-        
+
         # Fallback: try uv pip install directly
-        logger.info(f"UV sync failed, trying uv pip install...")
+        logger.info("UV sync failed, trying uv pip install...")
         result = subprocess.run(
             ["uv", "pip", "install", package_name],
             capture_output=True,
             text=True,
             timeout=120
         )
-        
+
         if result.returncode == 0:
             logger.info(f"Successfully installed {package_name} using uv pip install")
             return True, f"Successfully installed {package_name} via uv pip"
@@ -194,7 +193,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
             error_msg = result.stderr or result.stdout or "Unknown error"
             logger.error(f"Failed to install {package_name}: {error_msg}")
             return False, f"Installation failed: {error_msg}"
-                
+
     except subprocess.TimeoutExpired:
         logger.error(f"Installation of {package_name} timed out")
         return False, "Installation timed out after 120 seconds"
@@ -218,14 +217,14 @@ def validate_pymdp_for_execution() -> Dict[str, Any]:
         - can_auto_install: bool - Whether auto-installation is possible
     """
     detection = detect_pymdp_installation()
-    
+
     result = {
         "ready": False,
         "detection": detection,
         "instructions": "",
         "can_auto_install": True
     }
-    
+
     if detection.get("correct_package"):
         result["ready"] = True
         result["instructions"] = "PyMDP is ready for execution"
@@ -238,7 +237,7 @@ def validate_pymdp_for_execution() -> Dict[str, Any]:
     else:
         result["instructions"] = get_pymdp_installation_instructions()
         result["can_auto_install"] = False
-    
+
     return result
 
 

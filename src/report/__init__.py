@@ -113,23 +113,22 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
     Returns:
         True if processing succeeded, False otherwise
     """
-    import logging
     import json
     from pathlib import Path
     from datetime import datetime
-    
+
     if logger is None:
         logger = logging.getLogger(__name__)
         if verbose:
             logger.setLevel(logging.DEBUG)
-    
+
     try:
         # Ensure output directory exists
         output_dir = Path(output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         logger.info(f"Processing report for files in {target_dir}")
-        
+
         # Determine pipeline output directory (parent of output_dir)
         # output_dir is typically something like "output/23_report_output"
         # pipeline_output_dir should be "output"
@@ -137,16 +136,16 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
         if not pipeline_output_dir.exists():
             logger.warning(f"Pipeline output directory not found: {pipeline_output_dir}, using output_dir")
             pipeline_output_dir = output_dir
-        
+
         logger.info(f"Pipeline output directory: {pipeline_output_dir}")
         logger.info(f"Report output directory: {output_dir}")
-        
+
         # Generate comprehensive report
         report_formats = kwargs.get('report_formats', ['html', 'markdown', 'json'])
         include_performance = kwargs.get('include_performance', True)
         include_errors = kwargs.get('include_errors', True)
         include_dependencies = kwargs.get('include_dependencies', True)
-        
+
         logger.info("Generating comprehensive analysis report from pipeline outputs")
         success = generate_comprehensive_report(
             pipeline_output_dir=pipeline_output_dir,
@@ -157,7 +156,7 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
             include_errors=include_errors,
             include_dependencies=include_dependencies
         )
-        
+
         # Collect generated report files
         generated_files = []
         for fmt in report_formats:
@@ -173,19 +172,19 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
                 json_file = output_dir / "report_summary.json"
                 if json_file.exists():
                     generated_files.append(str(json_file.name))
-        
+
         # Check for report generation summary to get visualization count
         summary_file_path = output_dir / "report_generation_summary.json"
         visualization_count = 0
         html_validation_status = "not_validated"
-        
+
         if summary_file_path.exists():
             try:
                 with open(summary_file_path, 'r') as f:
                     summary_data = json.load(f)
             except Exception as e:
                 logger.debug(f"Could not read report generation summary: {e}")
-        
+
         # Validate HTML reports
         html_reports = [f for f in generated_files if f.endswith('.html')]
         html_validation_errors = []
@@ -207,14 +206,26 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
                             pass
                 except Exception as e:
                     html_validation_errors.append(f"{html_file_name}: Validation error - {e}")
-        
+
         if html_validation_errors:
             html_validation_status = f"errors: {len(html_validation_errors)}"
         elif html_reports:
             html_validation_status = "valid"
         else:
             html_validation_status = "no_html_reports"
-        
+
+        # ── v1.5.0a: Generate PIPELINE_REPORT.md ──
+        try:
+            from .pipeline_report import generate_pipeline_report
+            pipeline_report_md = generate_pipeline_report(pipeline_output_dir)
+            report_path = pipeline_output_dir / "PIPELINE_REPORT.md"
+            with open(report_path, 'w') as f:
+                f.write(pipeline_report_md)
+            generated_files.append("PIPELINE_REPORT.md")
+            logger.info(f"📄 Pipeline report written to: {report_path}")
+        except Exception as e:
+            logger.warning(f"⚠️ Pipeline report generation failed: {e}")
+
         # Try to get visualization count from pipeline data if available
         # This requires reading the report summary JSON which contains pipeline data
         try:
@@ -226,7 +237,7 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
                     visualization_count = visualizations.get('total_count', 0)
         except Exception as e:
             logger.debug(f"Could not extract visualization count: {e}")
-        
+
         # Create processing summary
         summary = {
             "timestamp": datetime.now().isoformat(),
@@ -243,18 +254,18 @@ def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs)
             "html_validation_errors": html_validation_errors if html_validation_errors else [],
             "formats_generated": report_formats
         }
-        
+
         # Save summary
         summary_file = output_dir / "report_processing_summary.json"
         with open(summary_file, 'w') as f:
             json.dump(summary, f, indent=2)
         logger.info(f"📊 Report summary saved to: {summary_file}")
-        
+
         if success:
             logger.info(f"✅ Report processing completed - Generated {len(generated_files)} report files")
         else:
             logger.warning(f"⚠️ Report processing completed with warnings - Generated {len(generated_files)} report files")
-        
+
         return success
     except Exception as e:
         logger.error(f"❌ Report processing failed: {e}")

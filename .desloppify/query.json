@@ -1,0 +1,583 @@
+{
+  "command": "show",
+  "query": "smells",
+  "status_filter": "open",
+  "total": 10,
+  "summary": {
+    "by_tier": {
+      "T2": 10
+    },
+    "by_detector": {
+      "smells": 10
+    },
+    "files": 5
+  },
+  "by_file": {
+    "src/0_template.py": [
+      {
+        "id": "smells::src/0_template.py::import_path_mutation",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.path mutation at import time (boundary purity leak)",
+        "detail": {
+          "smell_id": "import_path_mutation",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            37
+          ]
+        }
+      },
+      {
+        "id": "smells::src/0_template.py::sys_exit_in_library",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.exit() outside CLI entry point \u2014 use exceptions",
+        "detail": {
+          "smell_id": "sys_exit_in_library",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            64
+          ]
+        }
+      }
+    ],
+    "src/10_ontology.py": [
+      {
+        "id": "smells::src/10_ontology.py::import_path_mutation",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.path mutation at import time (boundary purity leak)",
+        "detail": {
+          "smell_id": "import_path_mutation",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            30
+          ]
+        }
+      },
+      {
+        "id": "smells::src/10_ontology.py::sys_exit_in_library",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.exit() outside CLI entry point \u2014 use exceptions",
+        "detail": {
+          "smell_id": "sys_exit_in_library",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            51
+          ]
+        }
+      }
+    ],
+    "src/11_render.py": [
+      {
+        "id": "smells::src/11_render.py::import_path_mutation",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.path mutation at import time (boundary purity leak)",
+        "detail": {
+          "smell_id": "import_path_mutation",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            36
+          ]
+        }
+      },
+      {
+        "id": "smells::src/11_render.py::sys_exit_in_library",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.exit() outside CLI entry point \u2014 use exceptions",
+        "detail": {
+          "smell_id": "sys_exit_in_library",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            67
+          ]
+        }
+      }
+    ],
+    "src/12_execute.py": [
+      {
+        "id": "smells::src/12_execute.py::import_path_mutation",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.path mutation at import time (boundary purity leak)",
+        "detail": {
+          "smell_id": "import_path_mutation",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            36
+          ]
+        }
+      },
+      {
+        "id": "smells::src/12_execute.py::sys_exit_in_library",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.exit() outside CLI entry point \u2014 use exceptions",
+        "detail": {
+          "smell_id": "sys_exit_in_library",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            67
+          ]
+        }
+      }
+    ],
+    "src/13_llm.py": [
+      {
+        "id": "smells::src/13_llm.py::import_path_mutation",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.path mutation at import time (boundary purity leak)",
+        "detail": {
+          "smell_id": "import_path_mutation",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            36
+          ]
+        }
+      },
+      {
+        "id": "smells::src/13_llm.py::sys_exit_in_library",
+        "tier": 2,
+        "confidence": "medium",
+        "summary": "1x sys.exit() outside CLI entry point \u2014 use exceptions",
+        "detail": {
+          "smell_id": "sys_exit_in_library",
+          "severity": "high",
+          "count": 1,
+          "lines": [
+            63
+          ]
+        }
+      }
+    ]
+  },
+  "total_matching": 897,
+  "hidden": {
+    "by_detector": {
+      "smells": 887
+    },
+    "total": 887
+  },
+  "noise_budget": 10,
+  "noise_global_budget": 0,
+  "narrative": {
+    "phase": "regression",
+    "headline": "\u26a0 294 security findings \u2014 review before other cleanup. Score shifted 23.7 pts \u2014 this is normal after structural changes. Rescan after your next fix to see the real trend. (42 review findings \u2014 run `desloppify issues`)",
+    "dimensions": {
+      "lowest_dimensions": [
+        {
+          "name": "Error consistency",
+          "strict": 0.0,
+          "issues": 3,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "Abstraction fit",
+          "strict": 0.0,
+          "issues": 3,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        },
+        {
+          "name": "AI generated debt",
+          "strict": 0.0,
+          "issues": 4,
+          "impact": 0.0,
+          "subjective": true,
+          "impact_description": "re-review to improve"
+        }
+      ],
+      "biggest_gap_dimensions": [],
+      "stagnant_dimensions": [
+        {
+          "name": "File health",
+          "strict": 69.3,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Duplication",
+          "strict": 98.7,
+          "stuck_scans": 3
+        },
+        {
+          "name": "Security",
+          "strict": 90.2,
+          "stuck_scans": 3
+        }
+      ]
+    },
+    "actions": [
+      {
+        "type": "issue_queue",
+        "detector": "review",
+        "count": 42,
+        "description": "42 review findings need investigation \u2014 run `desloppify issues` to see the work queue",
+        "command": "desloppify issues",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 1,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "reorganize",
+        "detector": "orphaned",
+        "count": 98,
+        "description": "98 orphaned findings \u2014 delete dead files or relocate with `desloppify move`",
+        "command": "desloppify show orphaned --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 2,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "flat_dirs",
+        "count": 6,
+        "description": "6 flat_dirs findings \u2014 create subdirectories and use `desloppify move`",
+        "command": "desloppify show flat_dirs --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 3,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "single_use",
+        "count": 1,
+        "description": "1 single_use findings \u2014 inline or relocate with `desloppify move`",
+        "command": "desloppify show single_use --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 4,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "facade",
+        "count": 24,
+        "description": "24 facade findings \u2014 flatten re-export facades or consolidate barrel files",
+        "command": "desloppify show facade --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 5,
+        "lane": "restructure"
+      },
+      {
+        "type": "refactor",
+        "detector": "uncalled_functions",
+        "count": 10,
+        "description": "10 uncalled_functions findings \u2014 remove dead functions or document why they're retained",
+        "command": "desloppify show uncalled_functions --status open",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 6,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "refactor",
+        "detector": "structural",
+        "count": 234,
+        "description": "234 structural findings \u2014 decompose large files \u2014 extract logic into focused modules",
+        "command": "desloppify show structural --status open",
+        "impact": 0.0,
+        "dimension": "File health",
+        "priority": 7,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "refactor",
+        "detector": "props",
+        "count": 1,
+        "description": "1 props findings \u2014 split bloated components, extract sub-components",
+        "command": "desloppify show props --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 8,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "refactor",
+        "detector": "dupes",
+        "count": 48,
+        "description": "48 dupes findings \u2014 extract shared utility or consolidate duplicates",
+        "command": "desloppify show dupes --status open",
+        "impact": 0.0,
+        "dimension": "Duplication",
+        "priority": 9,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "refactor",
+        "detector": "dict_keys",
+        "count": 556,
+        "description": "556 dict_keys findings \u2014 fix dict key mismatches \u2014 dead writes are likely dead code, schema drift suggests a typo or missed rename",
+        "command": "desloppify show dict_keys --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 10,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "refactor",
+        "detector": "test_coverage",
+        "count": 229,
+        "description": "229 test_coverage findings \u2014 add tests for untested production modules \u2014 prioritize by import count",
+        "command": "desloppify show test_coverage --status open",
+        "impact": 0.0,
+        "dimension": "Test health",
+        "priority": 11,
+        "lane": "test_coverage"
+      },
+      {
+        "type": "refactor",
+        "detector": "responsibility_cohesion",
+        "count": 48,
+        "description": "48 responsibility_cohesion findings \u2014 split modules with too many responsibilities \u2014 extract focused sub-modules",
+        "command": "desloppify show responsibility_cohesion --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 12,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "unused",
+        "count": 289,
+        "description": "289 unused findings \u2014 inspect with `desloppify next` and fix manually",
+        "command": "desloppify show unused --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 13,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "smells",
+        "count": 897,
+        "description": "897 smells findings \u2014 inspect with `desloppify next` and fix manually",
+        "command": "desloppify show smells --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 14,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "global_mutable_config",
+        "count": 9,
+        "description": "9 global_mutable_config findings \u2014 refactor module-level mutable state \u2014 use explicit init functions or dependency injection",
+        "command": "desloppify show global_mutable_config --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 15,
+        "lane": "refactor_1"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "security",
+        "count": 294,
+        "description": "294 security findings \u2014 review and fix security findings \u2014 prioritize by severity",
+        "command": "desloppify show security --status open",
+        "impact": 0.0,
+        "dimension": "Security",
+        "priority": 16,
+        "lane": "refactor_1"
+      }
+    ],
+    "strategy": {
+      "fixer_leverage": {
+        "auto_fixable_count": 0,
+        "total_count": 2870,
+        "coverage": 0.0,
+        "impact_ratio": 0.0,
+        "recommendation": "none"
+      },
+      "lanes": {
+        "restructure": {
+          "actions": [
+            2,
+            3,
+            4,
+            5
+          ],
+          "file_count": 128,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_0": {
+          "actions": [
+            1
+          ],
+          "file_count": 1,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "refactor_1": {
+          "actions": [
+            6,
+            7,
+            8,
+            9,
+            10,
+            12,
+            13,
+            14,
+            15,
+            16
+          ],
+          "file_count": 451,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        },
+        "test_coverage": {
+          "actions": [
+            11
+          ],
+          "file_count": 229,
+          "total_impact": 0.0,
+          "automation": "manual",
+          "run_first": false
+        }
+      },
+      "can_parallelize": true,
+      "hint": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 42 finding(s) \u2014 `desloppify issues`."
+    },
+    "tools": {
+      "fixers": [],
+      "move": {
+        "available": true,
+        "relevant": true,
+        "reason": "98 orphaned files + 1 single-use files + 6 flat directories",
+        "usage": "desloppify move <source> <dest> [--dry-run]"
+      },
+      "plan": {
+        "command": "desloppify plan",
+        "description": "Generate prioritized markdown cleanup plan"
+      },
+      "badge": {
+        "generated": true,
+        "in_readme": false,
+        "path": "scorecard.png",
+        "recommendation": "Add to README: <img src=\"scorecard.png\" width=\"100%\">"
+      }
+    },
+    "debt": {
+      "overall_gap": 0.0,
+      "wontfix_count": 2,
+      "worst_dimension": "Security",
+      "worst_gap": 0.2,
+      "trend": "stable"
+    },
+    "milestone": null,
+    "primary_action": {
+      "command": "desloppify issues",
+      "description": "42 review findings need investigation \u2014 run `desloppify issues` to see the work queue"
+    },
+    "why_now": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 42 finding(s) \u2014 `desloppify issues`.",
+    "verification_step": {
+      "command": "desloppify scan",
+      "reason": "revalidate after changes"
+    },
+    "risk_flags": [
+      {
+        "type": "wontfix_gap",
+        "severity": "medium",
+        "message": "Strict/lenient gap is 0.0 pts with 2 wontfix findings"
+      }
+    ],
+    "strict_target": {
+      "target": 95.0,
+      "current": 30.1,
+      "gap": 64.9,
+      "state": "below",
+      "warning": null
+    },
+    "reminders": [
+      {
+        "type": "review_findings_pending",
+        "message": "42 review finding(s) need investigation. Run `desloppify issues` to see the work queue.",
+        "command": "desloppify issues",
+        "priority": 1,
+        "severity": "high"
+      },
+      {
+        "type": "zone_classification",
+        "message": "154 of 573 files classified as non-production (2 config, 28 script, 124 test). Override with `desloppify zone set <file> production` if any are misclassified.",
+        "command": "desloppify zone show",
+        "priority": 2,
+        "severity": "medium"
+      }
+    ],
+    "reminder_history": {
+      "zone_classification": 3,
+      "report_scores": 2,
+      "review_findings_pending": 2,
+      "stagnant_nudge": 3,
+      "feedback_nudge": 1
+    }
+  },
+  "config": {
+    "target_strict_score": 95,
+    "review_max_age_days": 30,
+    "review_batch_max_files": 80,
+    "holistic_max_age_days": 30,
+    "generate_scorecard": true,
+    "badge_path": "scorecard.png",
+    "exclude": [],
+    "ignore": [],
+    "ignore_metadata": {},
+    "zone_overrides": {
+      "src/0_template.py": "script",
+      "src/1_setup.py": "script",
+      "src/2_tests.py": "script",
+      "src/3_gnn.py": "script",
+      "src/4_model_registry.py": "script",
+      "src/5_type_checker.py": "script",
+      "src/6_validation.py": "script",
+      "src/7_export.py": "script",
+      "src/8_visualization.py": "script",
+      "src/9_advanced_viz.py": "script",
+      "src/10_ontology.py": "script",
+      "src/11_render.py": "script",
+      "src/12_execute.py": "script",
+      "src/13_llm.py": "script",
+      "src/14_ml_integration.py": "script",
+      "src/15_audio.py": "script",
+      "src/16_analysis.py": "script",
+      "src/17_integration.py": "script",
+      "src/18_security.py": "script",
+      "src/19_research.py": "script",
+      "src/20_website.py": "script",
+      "src/21_mcp.py": "script",
+      "src/22_gui.py": "script",
+      "src/23_report.py": "script",
+      "src/24_intelligent_analysis.py": "script",
+      "src/main.py": "script"
+    },
+    "review_dimensions": [],
+    "large_files_threshold": 0,
+    "props_threshold": 0,
+    "finding_noise_budget": 10,
+    "finding_noise_global_budget": 0,
+    "languages": {}
+  }
+}

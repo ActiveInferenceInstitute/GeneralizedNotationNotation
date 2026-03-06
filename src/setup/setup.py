@@ -13,50 +13,19 @@ import sys
 import logging
 import argparse
 import time
-from pathlib import Path
 
 # --- Re-export everything from sub-modules for backward compatibility ---
 from .uv_management import (
     # Constants
     VENV_DIR,
-    PYPROJECT_FILE,
-    LOCK_FILE,
     PROJECT_ROOT,
-    VENV_PATH,
-    PYPROJECT_PATH,
-    LOCK_PATH,
-    VENV_PYTHON,
-    MIN_PYTHON_VERSION,
-    OPTIONAL_GROUPS,
-    # Functions
-    run_command,
     check_system_requirements,
-    check_uv_availability,
     create_uv_environment,
     install_uv_dependencies,
-    get_installed_package_versions,
-    add_uv_dependency,
-    remove_uv_dependency,
-    update_uv_dependencies,
-    lock_uv_dependencies,
-    setup_uv_environment,
-    validate_uv_setup,
-    get_uv_setup_info,
-    check_environment_health,
-    cleanup_uv_setup,
-    save_setup_results,
-    log_system_info,
 )
 
 from .dependency_setup import (
     install_jax_and_test,
-    setup_julia_environment,
-    install_optional_package_group,
-    install_all_optional_packages,
-    install_optional_dependencies,
-    create_project_structure,
-    setup_gnn_project,
-    setup_complete_environment,
 )
 
 # --- Logger Setup ---

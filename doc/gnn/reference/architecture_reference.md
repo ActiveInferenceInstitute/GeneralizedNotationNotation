@@ -1,15 +1,15 @@
 # GNN Architecture Reference
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 **GNN Architecture Team**  
-**Version**: 1.3.0  
+**Version**: 2.0.0  
 **Status**: Production Ready  
-**Last Updated**: March 3, 2026  
-**Test Count**: 1,522+ tests Passing  
+**Last Updated**: March 6, 2026  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 Implementation details of the thin orchestrator pattern and cross-module integration.
 

@@ -5,8 +5,6 @@ Tests D2 diagram generation, dashboards, and interactive visualizations.
 """
 
 import pytest
-import json
-from pathlib import Path
 
 
 class TestAdvancedVisualizationModule:
@@ -161,7 +159,7 @@ class TestD2Visualization:
     )
     def test_d2_visualizer_import(self):
         """Test D2Visualizer can be imported when available."""
-        from advanced_visualization import D2Visualizer, D2DiagramSpec, D2GenerationResult
+        from advanced_visualization import D2Visualizer
 
         if D2Visualizer is not None:
             assert callable(D2Visualizer)
@@ -259,7 +257,7 @@ s[3]
                 assert result is not None or result is True or result is False
             except ImportError:
                 pytest.skip(f"Visualization type {viz_type} requires additional dependencies")
-            except Exception as e:
+            except Exception:
                 # Some viz types may fail without proper data, that's OK
                 pass
 

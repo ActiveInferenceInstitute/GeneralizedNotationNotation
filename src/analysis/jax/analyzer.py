@@ -41,10 +41,10 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
         "model_shapes": {},
         "num_simulation_steps": 0,
     }
-    
+
     if not raw_output:
         return extracted
-    
+
     try:
         # Extract actions array: "Actions taken: [0 0 0 0 ... 0]"
         actions_match = re.search(r'Actions taken:\s*\[([^\]]+)\]', raw_output)
@@ -52,25 +52,25 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
             actions_str = actions_match.group(1)
             extracted["actions_from_output"] = [int(x) for x in actions_str.split()]
             extracted["num_simulation_steps"] = len(extracted["actions_from_output"])
-        
+
         # Extract final belief: "Final belief: [0. 0. 0.]"
         belief_match = re.search(r'Final belief:\s*\[([^\]]+)\]', raw_output)
         if belief_match:
             belief_str = belief_match.group(1)
-            extracted["final_belief"] = [float(x.replace('.', '0.') if x == '.' else x) 
+            extracted["final_belief"] = [float(x.replace('.', '0.') if x == '.' else x)
                                          for x in belief_str.split()]
-        
+
         # Extract average EFE: "Average EFE: 0.0003"
         avg_efe_match = re.search(r'Average EFE:\s*([\d.eE+-]+)', raw_output)
         if avg_efe_match:
             extracted["average_efe"] = float(avg_efe_match.group(1))
-        
+
         # Extract EFE for all actions: "EFE for all actions: [0.00986223 0.00986223 0.00986223]"
         efe_all_match = re.search(r'EFE for all actions:\s*\[([^\]]+)\]', raw_output)
         if efe_all_match:
             efe_str = efe_all_match.group(1)
             extracted["efe_all_actions"] = [float(x) for x in efe_str.split()]
-        
+
         # Extract model shapes
         shape_patterns = [
             (r'A matrix shape:\s*\((\d+),\s*(\d+)\)', 'A_shape'),
@@ -82,7 +82,7 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
             match = re.search(pattern, raw_output)
             if match:
                 extracted["model_shapes"][key] = tuple(int(x) for x in match.groups())
-        
+
         # Extract number of states/actions/observations
         for key, pattern in [
             ('num_states', r'Number of states:\s*(\d+)'),
@@ -92,10 +92,10 @@ def parse_raw_output(raw_output: str) -> Dict[str, Any]:
             match = re.search(pattern, raw_output)
             if match:
                 extracted["model_shapes"][key] = int(match.group(1))
-                
+
     except Exception as e:
         logger.warning(f"Failed to parse JAX raw_output: {e}")
-    
+
     return extracted
 
 
@@ -260,14 +260,14 @@ def create_visualizations_from_structured_data(
     if efe_history:
         try:
             fig, ax = plt.subplots(figsize=(14, 6))
-            
+
             # Collapse multi-dimensional EFE arrays (e.g. actions per timestep) into a 1D mean sequence
             efe_arr = np.array(efe_history)
             if efe_arr.ndim == 2:
                 efe_1d = np.mean(efe_arr, axis=1)
             else:
                 efe_1d = efe_arr
-                
+
             x = range(len(efe_1d))
             ax.plot(x, efe_history, 'o-', color='coral', linewidth=2, markersize=8)
             ax.fill_between(x, efe_1d, alpha=0.3, color='coral')
@@ -455,27 +455,27 @@ def create_jax_visualizations(
         List of generated file paths
     """
     visualizations = []
-    
+
     if not MATPLOTLIB_AVAILABLE:
         logger.warning("Matplotlib not available, skipping JAX visualizations")
         return visualizations
-    
+
     output_dir.mkdir(parents=True, exist_ok=True)
-    
+
     # Extract simulation data from execution metadata
     sim_data = data.get("simulation_data", {})
     actions = sim_data.get("actions", [])
     free_energy = sim_data.get("free_energy", [])
     beliefs = sim_data.get("beliefs", [])
-    
+
     # Parse raw_output for additional data
     raw_output = sim_data.get("raw_output", "")
     parsed = parse_raw_output(raw_output)
-    
+
     # Use parsed actions if we have more data there
     if len(parsed["actions_from_output"]) > len(actions):
         actions = parsed["actions_from_output"]
-    
+
     # 1. Free Energy Plot
     if free_energy:
         try:
@@ -486,13 +486,13 @@ def create_jax_visualizations(
             ax.set_title(f"JAX Free Energy - {model_name}", fontweight='bold')
             ax.grid(True, alpha=0.3)
             ax.fill_between(range(len(free_energy)), free_energy, alpha=0.3)
-            
+
             # Add average EFE annotation if available
             if parsed["average_efe"] is not None:
-                ax.axhline(y=parsed["average_efe"], color='r', linestyle='--', 
+                ax.axhline(y=parsed["average_efe"], color='r', linestyle='--',
                           label=f'Avg EFE: {parsed["average_efe"]:.4f}')
                 ax.legend()
-            
+
             viz_file = output_dir / f"{model_name}_jax_free_energy.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -500,7 +500,7 @@ def create_jax_visualizations(
             logger.info(f"Generated free energy plot: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create free energy plot: {e}")
-    
+
     # 2. Action Distribution (bar chart)
     if actions:
         try:
@@ -508,19 +508,19 @@ def create_jax_visualizations(
             action_counts = {}
             for a in actions:
                 action_counts[a] = action_counts.get(a, 0) + 1
-            
-            bars = ax.bar(list(action_counts.keys()), list(action_counts.values()), 
+
+            bars = ax.bar(list(action_counts.keys()), list(action_counts.values()),
                          color='steelblue', alpha=0.7, edgecolor='navy')
             ax.set_xlabel("Action", fontweight='bold')
             ax.set_ylabel("Count", fontweight='bold')
             ax.set_title(f"JAX Action Distribution ({len(actions)} steps) - {model_name}", fontweight='bold')
             ax.grid(True, alpha=0.3, axis='y')
-            
+
             # Add count labels on bars
             for bar, count in zip(bars, action_counts.values()):
                 ax.text(bar.get_x() + bar.get_width()/2, bar.get_height() + 0.5,
                        str(count), ha='center', va='bottom', fontweight='bold')
-            
+
             viz_file = output_dir / f"{model_name}_jax_action_dist.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -528,7 +528,7 @@ def create_jax_visualizations(
             logger.info(f"Generated action distribution: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create action plot: {e}")
-    
+
     # 3. Action Timeline (if we have step-by-step actions)
     if len(actions) > 1:
         try:
@@ -541,11 +541,11 @@ def create_jax_visualizations(
             ax.set_title(f"JAX Action Timeline - {model_name}", fontweight='bold')
             ax.grid(True, alpha=0.3)
             ax.set_xlim(-0.5, len(actions) - 0.5)
-            
+
             # Set y-ticks to integer actions
             unique_actions = sorted(set(actions))
             ax.set_yticks(unique_actions)
-            
+
             viz_file = output_dir / f"{model_name}_jax_action_timeline.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -553,7 +553,7 @@ def create_jax_visualizations(
             logger.info(f"Generated action timeline: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create action timeline: {e}")
-    
+
     # 4. EFE Comparison (if we have EFE for all actions)
     if parsed["efe_all_actions"]:
         try:
@@ -566,12 +566,12 @@ def create_jax_visualizations(
             ax.set_title(f"JAX EFE by Action - {model_name}", fontweight='bold')
             ax.grid(True, alpha=0.3, axis='y')
             ax.set_xticks(x)
-            
+
             # Highlight minimum EFE action
             min_idx = np.argmin(efe_values)
             bars[min_idx].set_color('green')
             bars[min_idx].set_alpha(0.9)
-            
+
             viz_file = output_dir / f"{model_name}_jax_efe_comparison.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -579,49 +579,49 @@ def create_jax_visualizations(
             logger.info(f"Generated EFE comparison: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create EFE comparison: {e}")
-    
+
     # 5. Model Summary Dashboard
     if parsed["model_shapes"]:
         try:
             fig, ax = plt.subplots(figsize=(10, 6))
             ax.axis('off')
-            
+
             # Build summary text
             shapes = parsed["model_shapes"]
             summary_lines = [
-                f"JAX Active Inference Model Summary",
-                f"─" * 40,
-                f"",
+                "JAX Active Inference Model Summary",
+                "─" * 40,
+                "",
                 f"Model: {model_name}",
-                f"Framework: JAX (Pure Functional)",
-                f"",
+                "Framework: JAX (Pure Functional)",
+                "",
             ]
-            
+
             if 'num_states' in shapes:
                 summary_lines.append(f"States: {shapes.get('num_states', 'N/A')}")
             if 'num_observations' in shapes:
                 summary_lines.append(f"Observations: {shapes.get('num_observations', 'N/A')}")
             if 'num_actions' in shapes:
                 summary_lines.append(f"Actions: {shapes.get('num_actions', 'N/A')}")
-            
-            summary_lines.append(f"")
-            summary_lines.append(f"Matrix Shapes:")
+
+            summary_lines.append("")
+            summary_lines.append("Matrix Shapes:")
             for key in ['A_shape', 'B_shape', 'C_shape', 'D_shape']:
                 if key in shapes:
                     summary_lines.append(f"  {key.replace('_shape', '')}: {shapes[key]}")
-            
+
             if parsed["num_simulation_steps"] > 0:
-                summary_lines.append(f"")
+                summary_lines.append("")
                 summary_lines.append(f"Simulation: {parsed['num_simulation_steps']} steps")
-            
+
             if parsed["average_efe"] is not None:
                 summary_lines.append(f"Avg EFE: {parsed['average_efe']:.6f}")
-            
+
             summary_text = "\n".join(summary_lines)
             ax.text(0.5, 0.5, summary_text, ha='center', va='center', fontsize=12,
                    fontfamily='monospace', transform=ax.transAxes,
                    bbox=dict(boxstyle='round', facecolor='lightblue', alpha=0.3))
-            
+
             viz_file = output_dir / f"{model_name}_jax_model_summary.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -629,25 +629,25 @@ def create_jax_visualizations(
             logger.info(f"Generated model summary: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create model summary: {e}")
-    
+
     # 6. Belief Trajectory (if available)
     if beliefs:
         try:
             fig, ax = plt.subplots(figsize=(12, 6))
             beliefs_arr = np.array(beliefs)
-            
+
             if beliefs_arr.ndim == 2:
                 for i in range(beliefs_arr.shape[1]):
                     ax.plot(beliefs_arr[:, i], label=f"State {i}", linewidth=2)
                 ax.legend()
             else:
                 ax.plot(beliefs_arr, linewidth=2)
-            
+
             ax.set_xlabel("Time Step", fontweight='bold')
             ax.set_ylabel("Belief", fontweight='bold')
             ax.set_title(f"JAX Belief Trajectory - {model_name}", fontweight='bold')
             ax.grid(True, alpha=0.3)
-            
+
             viz_file = output_dir / f"{model_name}_jax_beliefs.png"
             plt.savefig(viz_file, dpi=300, bbox_inches='tight')
             plt.close()
@@ -655,7 +655,7 @@ def create_jax_visualizations(
             logger.info(f"Generated belief trajectory: {viz_file.name}")
         except Exception as e:
             logger.warning(f"Failed to create belief plot: {e}")
-    
+
     return visualizations
 
 
@@ -674,7 +674,7 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
     """
     if logger is None:
         logger = logging.getLogger(__name__)
-    
+
     data = {
         "actions": [],
         "beliefs": [],
@@ -682,7 +682,7 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
         "model_name": "",
         "framework": "jax"
     }
-    
+
     try:
         exec_logs_dir = execution_dir / "execution_logs"
         if exec_logs_dir.exists():
@@ -692,10 +692,10 @@ def extract_simulation_data(execution_dir: Path, logger: Optional[logging.Logger
                     results = json.load(f)
                 sim_data = results.get("simulation_data", {})
                 data.update(sim_data)
-                
+
     except Exception as e:
         logger.warning(f"Failed to extract JAX data: {e}")
-    
+
     return data
 
 

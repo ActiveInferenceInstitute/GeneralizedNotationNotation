@@ -6,9 +6,10 @@ Tests the PipelineOrchestrator and step orchestration functionality.
 """
 
 import pytest
+
+pytestmark = pytest.mark.pipeline
 import sys
 from pathlib import Path
-from typing import Dict, Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -30,7 +31,7 @@ class TestPipelineRunnerOrchestration:
             orchestrator = PipelineOrchestrator()
 
             assert orchestrator is not None
-        except (ImportError, TypeError) as e:
+        except (ImportError, TypeError):
             # Fall back to checking if module loads
             from pipeline import get_pipeline_info
             info = get_pipeline_info()
@@ -39,7 +40,7 @@ class TestPipelineRunnerOrchestration:
     @pytest.mark.fast
     def test_pipeline_runner_configuration(self, tmp_path):
         """Test PipelineConfig can be created."""
-        from pipeline import PipelineConfig, create_pipeline_config
+        from pipeline import create_pipeline_config
 
         # create_pipeline_config takes no args, returns dict
         config = create_pipeline_config()
@@ -121,7 +122,7 @@ class TestPipelineExecution:
     @pytest.mark.integration
     def test_step_skip_functionality(self, tmp_path):
         """Test skipping specific steps via config."""
-        from pipeline import PipelineConfig, create_pipeline_config
+        from pipeline import create_pipeline_config
 
         # create_pipeline_config returns a dict
         config = create_pipeline_config()
@@ -136,7 +137,7 @@ class TestPipelineExecution:
     @pytest.mark.integration
     def test_only_steps_functionality(self, tmp_path):
         """Test running only specific steps via config."""
-        from pipeline import PipelineConfig, create_pipeline_config
+        from pipeline import create_pipeline_config
 
         config = create_pipeline_config()
         config['only_steps'] = "1,3,5"

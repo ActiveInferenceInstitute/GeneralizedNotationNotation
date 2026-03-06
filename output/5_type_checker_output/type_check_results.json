@@ -1,15 +1,15 @@
 {
-  "timestamp": "2026-03-05T10:37:38.708964",
+  "timestamp": "2026-03-06T09:48:36.659484",
   "processed_files": 2,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: belief, F, Pi_s, mu, dt, type, level, e_d, precision, f_params, F_d, o, error, t, mu_dot, Pi_d, Sigma, e_s, parameters, u, mu_star, F_s, g_params"
+        "Duplicate variable names: belief, parameters, F, o, e_d, g_params, Pi_s, mu, type, u, Pi_d, F_d, f_params, F_s, precision, level, dt, e_s, mu_star, error, Sigma, mu_dot, t"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -645,7 +645,7 @@
           "type": "minimizing expected sensory prediction errors."
         }
       ],
-      "validation_timestamp": "2026-03-05T10:37:38.709072",
+      "validation_timestamp": "2026-03-06T09:48:36.660304",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -731,11 +731,11 @@
       }
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
       "file_name": "continuous_navigation.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: F, A_\u03bc, dt, type, \u03a0_x, o, error, C_\u03a3, t, A_\u03a3, \u03b5_o, \u03a0_o, \u03b5_x, B_f, \u03bc, u, B_u, G, C_\u03bc, \u03a3"
+        "Duplicate variable names: \u03b5_x, F, B_u, G, o, A_\u03a3, \u03bc, type, C_\u03a3, u, \u03a0_o, A_\u03bc, \u03b5_o, \u03a3, dt, error, B_f, C_\u03bc, \u03a0_x, t"
       ],
       "warnings": [
         "Type issue: Unknown type 'Continuous' for variable 'Example'",
@@ -1399,7 +1399,7 @@
           "type": "ContinuousTime"
         }
       ],
-      "validation_timestamp": "2026-03-05T10:37:38.711244",
+      "validation_timestamp": "2026-03-06T09:48:36.662586",
       "dimension_compatibility": {
         "compatible": true,
         "issues": [],
@@ -1445,7 +1445,7 @@
   ],
   "type_analysis": [
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
       "file_name": "predictive_coding_agent.md",
       "types_found": [
         {
@@ -1701,10 +1701,10 @@
         "1,type=float": 4
       },
       "total_variables": 44,
-      "analysis_timestamp": "2026-03-05T10:37:38.711221"
+      "analysis_timestamp": "2026-03-06T09:48:36.662491"
     },
     {
-      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/continuous_navigation.md",
+      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
       "file_name": "continuous_navigation.md",
       "types_found": [
         {
@@ -1929,7 +1929,7 @@
         "1,type=float": 3
       },
       "total_variables": 40,
-      "analysis_timestamp": "2026-03-05T10:37:38.712898"
+      "analysis_timestamp": "2026-03-06T09:48:36.664356"
     }
   ]
 }

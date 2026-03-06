@@ -6,10 +6,10 @@ This file contains comprehensive tests for the pipeline module functionality.
 """
 
 import pytest
+
+pytestmark = pytest.mark.pipeline
 import sys
-import os
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -19,7 +19,7 @@ from tests.conftest import *
 
 class TestPipelineModuleComprehensive:
     """Comprehensive tests for the pipeline module."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_module_imports(self):
@@ -32,7 +32,7 @@ class TestPipelineModuleComprehensive:
             assert hasattr(pipeline, 'get_pipeline_config')
         except ImportError:
             pytest.skip("Pipeline module not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_orchestrator_instantiation(self):
@@ -45,7 +45,7 @@ class TestPipelineModuleComprehensive:
             assert hasattr(orchestrator, 'get_pipeline_steps')
         except ImportError:
             pytest.skip("PipelineOrchestrator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_step_instantiation(self):
@@ -58,7 +58,7 @@ class TestPipelineModuleComprehensive:
             assert hasattr(step, 'validate')
         except ImportError:
             pytest.skip("PipelineStep not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_module_info(self):
@@ -72,7 +72,7 @@ class TestPipelineModuleComprehensive:
             assert 'pipeline_steps' in info
         except ImportError:
             pytest.skip("Pipeline module info not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_config(self):
@@ -90,7 +90,7 @@ class TestPipelineModuleComprehensive:
 
 class TestPipelineFunctionality:
     """Tests for pipeline functionality."""
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_execution(self, comprehensive_test_data):
@@ -98,14 +98,14 @@ class TestPipelineFunctionality:
         try:
             from pipeline import PipelineOrchestrator
             orchestrator = PipelineOrchestrator()
-            
+
             # Test pipeline execution with sample data
             pipeline_data = comprehensive_test_data.get('pipeline_data', {})
             result = orchestrator.execute_pipeline(pipeline_data)
             assert result is not None
         except ImportError:
             pytest.skip("PipelineOrchestrator not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_step_validation(self):
@@ -116,7 +116,7 @@ class TestPipelineFunctionality:
             assert isinstance(result, bool)
         except ImportError:
             pytest.skip("Pipeline validation not available")
-    
+
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     def test_pipeline_discovery(self):
@@ -132,7 +132,7 @@ class TestPipelineFunctionality:
 
 class TestPipelineIntegration:
     """Integration tests for pipeline module."""
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_pipeline_module_integration(self, sample_gnn_files, isolated_temp_dir):
@@ -140,15 +140,15 @@ class TestPipelineIntegration:
         try:
             from pipeline import PipelineOrchestrator
             orchestrator = PipelineOrchestrator()
-            
+
             # Test pipeline integration
             result = orchestrator.get_pipeline_steps()
             assert result is not None
             assert isinstance(result, list)
-            
+
         except ImportError:
             pytest.skip("Pipeline module not available")
-    
+
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
     def test_pipeline_mcp_integration(self):
@@ -171,7 +171,7 @@ def test_pipeline_module_completeness():
         'validate_pipeline_step',
         'discover_pipeline_steps'
     ]
-    
+
     try:
         import pipeline
         for component in required_components:
@@ -186,16 +186,16 @@ def test_pipeline_module_performance():
     try:
         from pipeline import PipelineOrchestrator
         import time
-        
+
         orchestrator = PipelineOrchestrator()
         start_time = time.time()
-        
+
         # Test pipeline performance
         result = orchestrator.get_pipeline_steps()
-        
+
         processing_time = time.time() - start_time
         assert processing_time < 5.0  # Should complete within 5 seconds
-        
+
     except ImportError:
         pytest.skip("Pipeline module not available")
 

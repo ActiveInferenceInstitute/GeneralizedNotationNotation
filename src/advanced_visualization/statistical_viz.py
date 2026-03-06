@@ -10,7 +10,7 @@ Extracted from processor.py for maintainability.
 import logging
 import time
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List
 
 # Import matplotlib for plotting (with fallback for headless environments)
 try:

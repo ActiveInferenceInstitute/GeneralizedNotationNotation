@@ -21,7 +21,7 @@ project_root = Path(__file__).parent.parent.parent.parent
 
 class TestRunner:
     """Test runner with comprehensive monitoring and reporting."""
-    
+
     def __init__(self, config: TestExecutionConfig):
         self.config = config
         self.logger = logging.getLogger("test_runner")
@@ -30,25 +30,25 @@ class TestRunner:
             cpu_limit_percent=config.cpu_limit_percent
         )
         self.execution_history: List[TestExecutionResult] = []
-        
+
     def run_tests(self, test_paths: List[Path], output_dir: Path) -> TestExecutionResult:
         """Execute tests with comprehensive monitoring."""
         start_time = time.time()
-        
+
         try:
             # Start resource monitoring
             self.resource_monitor.start_monitoring()
-            
+
             # Build pytest command
             cmd = self._build_pytest_command(test_paths, output_dir)
-            
+
             # Execute tests
             result = self._execute_pytest(cmd, output_dir)
-            
+
             # Stop monitoring and get stats
             self.resource_monitor.stop_monitoring()
             resource_stats = self.resource_monitor.get_stats()
-            
+
             # Create execution result
             execution_result = TestExecutionResult(
                 success=result["success"],
@@ -63,12 +63,12 @@ class TestRunner:
                 stdout=result.get("stdout", ""),
                 stderr=result.get("stderr", "")
             )
-            
+
             # Store in history
             self.execution_history.append(execution_result)
-            
+
             return execution_result
-            
+
         except Exception as e:
             self.resource_monitor.stop_monitoring()
             return TestExecutionResult(
@@ -81,7 +81,7 @@ class TestRunner:
                 memory_peak_mb=0.0,
                 error_message=str(e)
             )
-    
+
     def _build_pytest_command(self, test_paths: List[Path], output_dir: Path) -> List[str]:
         """Build pytest command with appropriate options."""
         cmd = [
@@ -92,12 +92,12 @@ class TestRunner:
             "--durations=10",
             "--disable-warnings"
         ]
-        
+
         # Add markers
         if self.config.markers:
             for marker in self.config.markers:
                 cmd.extend(["-m", marker])
-        
+
         # Add coverage if enabled
         if self.config.coverage:
             cov_json = output_dir / "coverage.json"
@@ -108,26 +108,26 @@ class TestRunner:
                 f"--cov-report=html:{cov_html}",
                 "--cov-report=term-missing"
             ])
-        
+
         # Add test paths
         cmd.extend([str(path) for path in test_paths])
-        
+
         return cmd
-    
+
     def _execute_pytest(self, cmd: List[str], output_dir: Path) -> Dict[str, Any]:
         """Execute pytest command and capture results."""
         try:
             # Debug: Log what we're trying to do
             self.logger.debug(f"Creating output directory: {output_dir}")
             self.logger.debug(f"Output dir type: {type(output_dir)}")
-            
+
             # Create output files
             stdout_file = output_dir / "pytest_stdout.txt"
             stderr_file = output_dir / "pytest_stderr.txt"
-            
+
             # Execute command with streaming
             from utils.execution_utils import execute_command_streaming
-            
+
             result = execute_command_streaming(
                 cmd,
                 cwd=project_root,
@@ -136,16 +136,16 @@ class TestRunner:
                 print_stderr=True,
                 capture_output=True
             )
-            
+
             stdout = result.get("stdout", "")
             stderr = result.get("stderr", "")
-            
+
             # Save output to files
             with open(stdout_file, 'w') as f:
                 f.write(stdout)
             with open(stderr_file, 'w') as f:
                 f.write(stderr)
-                
+
             if result["status"] == "TIMEOUT":
                  return {
                     "success": False,
@@ -157,14 +157,14 @@ class TestRunner:
                     "stdout": stdout,
                     "stderr": stderr
                 }
-            
+
             # Parse results
             results = self._parse_pytest_output(stdout, stderr)
             results["stdout"] = stdout
             results["stderr"] = stderr
-            
+
             return results
-            
+
         except Exception as e:
             import traceback
             self.logger.error(f"Exception in _execute_pytest: {e}")
@@ -179,7 +179,7 @@ class TestRunner:
                 "stdout": "",
                 "stderr": ""
             }
-    
+
     def _parse_pytest_output(self, stdout: str, stderr: str) -> Dict[str, Any]:
         """Parse pytest output to extract test statistics."""
         try:
@@ -234,7 +234,7 @@ class TestRunner:
 
             # Determine success - fail if no tests collected or collection errors
             success = tests_failed == 0 and tests_run > 0 and not collection_errors
-            
+
             # Extract coverage if present
             coverage_percentage = None
             for line in lines:
@@ -243,7 +243,7 @@ class TestRunner:
                         coverage_percentage = float(line.split()[-1].replace('%', ''))
                     except (ValueError, IndexError):
                         pass
-            
+
             return {
                 "success": success,
                 "tests_run": tests_run,
@@ -253,7 +253,7 @@ class TestRunner:
                 "coverage_percentage": coverage_percentage,
                 "collection_errors": collection_errors
             }
-            
+
         except Exception as e:
             import traceback
             self.logger.error(f"Failed to parse pytest output: {e}")
@@ -266,14 +266,14 @@ class TestRunner:
                 "tests_skipped": 0,
                 "error_message": f"Failed to parse pytest output: {e}"
             }
-    
+
     def generate_report(self, output_dir: Path) -> Dict[str, Any]:
         """Generate comprehensive test execution report."""
         if not self.execution_history:
             return {"error": "No test execution history available"}
-        
+
         latest_result = self.execution_history[-1]
-        
+
         report = {
             "execution_summary": asdict(latest_result),
             "resource_usage": self.resource_monitor.get_stats(),
@@ -284,13 +284,13 @@ class TestRunner:
                 "success_rate": sum(1 for r in self.execution_history if r.success) / len(self.execution_history) * 100
             }
         }
-        
+
         # Ensure output directory exists
         output_dir.mkdir(parents=True, exist_ok=True)
-        
+
         # Save report
         report_file = output_dir / "test_execution_report.json"
         with open(report_file, 'w') as f:
             json.dump(report, f, indent=2)
-        
+
         return report

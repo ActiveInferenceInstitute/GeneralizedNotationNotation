@@ -75,7 +75,7 @@ class TestNumpySerialization:
     def test_convert_numpy_for_json(self, test_trace):
         """Test convert_numpy_for_json function."""
         converted = convert_numpy_for_json(test_trace)
-        
+
         # Should be JSON serializable
         json_str = json.dumps(converted)
         assert json_str is not None
@@ -84,7 +84,7 @@ class TestNumpySerialization:
     def test_clean_trace_for_serialization(self, test_trace):
         """Test clean_trace_for_serialization function."""
         cleaned = clean_trace_for_serialization(test_trace)
-        
+
         # Should be JSON serializable
         json_str = json.dumps(cleaned)
         assert json_str is not None
@@ -95,11 +95,11 @@ class TestNumpySerialization:
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
             test_file = temp_path / "test_trace.json"
-            
+
             success = safe_json_dump(test_trace, test_file)
             assert success, "safe_json_dump should return True on success"
             assert test_file.exists(), "JSON file should be created"
-            
+
             # Should be loadable
             with open(test_file, 'r') as f:
                 loaded_data = json.load(f)
@@ -112,25 +112,25 @@ class TestGNNParsing:
     def test_parse_gnn_matrix_string(self):
         """Test GNN matrix string parsing."""
         matrix_str = "{(0.9, 0.05, 0.05), (0.05, 0.9, 0.05), (0.05, 0.05, 0.9)}"
-        
+
         matrix = parse_gnn_matrix_string(matrix_str)
-        
+
         assert matrix is not None
         assert matrix.shape == (3, 3), f"Expected shape (3,3), got {matrix.shape}"
 
     def test_parse_gnn_vector_string(self):
         """Test GNN vector string parsing."""
         vector_str = "{(0.33333, 0.33333, 0.33333)}"
-        
+
         vector = parse_gnn_vector_string(vector_str)
-        
+
         assert vector is not None
         assert len(vector) == 3, f"Expected length 3, got {len(vector)}"
 
     def test_extract_gnn_dimensions(self, test_gnn_spec):
         """Test GNN dimension extraction."""
         dimensions = extract_gnn_dimensions(test_gnn_spec)
-        
+
         assert dimensions['num_states'] == 3, "States dimension mismatch"
         assert dimensions['num_observations'] == 3, "Observations dimension mismatch"
         assert dimensions['num_actions'] == 3, "Actions dimension mismatch"
@@ -138,7 +138,7 @@ class TestGNNParsing:
     def test_validate_gnn_pomdp_structure(self, test_gnn_spec):
         """Test POMDP structure validation."""
         validation = validate_gnn_pomdp_structure(test_gnn_spec)
-        
+
         assert validation['valid'], "POMDP structure should be valid"
 
 
@@ -157,24 +157,24 @@ class TestIntegration:
                 'beliefs': [np.array([0.8, 0.2, 0.0]), np.array([0.1, 0.1, 0.8])]
             }
         ]
-        
+
         test_metrics = {
             'episode_rewards': [0.9],
             'episode_lengths': [3],
             'belief_entropies': [1.5],
             'success_rates': [1.0]
         }
-        
+
         test_config = {
             'num_states': 3,
             'num_observations': 3,
             'num_actions': 3,
             'model_name': 'TestModel'
         }
-        
+
         with tempfile.TemporaryDirectory() as temp_dir:
             temp_path = Path(temp_dir)
-            
+
             save_results = save_simulation_results(
                 traces=test_traces,
                 metrics=test_metrics,
@@ -182,9 +182,9 @@ class TestIntegration:
                 model_matrices=None,
                 output_dir=temp_path
             )
-            
+
             assert save_results is not None
-            
+
             # Check files were created
             expected_files = [
                 'simulation_config.json',
@@ -192,7 +192,7 @@ class TestIntegration:
                 'simulation_traces.pkl',
                 'simulation_traces.json'
             ]
-            
+
             for filename in expected_files:
                 filepath = temp_path / filename
 

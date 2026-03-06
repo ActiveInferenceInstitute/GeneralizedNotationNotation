@@ -1,9 +1,9 @@
 # GNN Repo Coherence Check
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 ## Pipeline Architecture References
 
@@ -19,7 +19,7 @@ This document validates the complete GNN pipeline architecture. For current impl
 - ✅ Execution time: ~2 minutes for full pipeline
 - ✅ Memory usage: < 25MB peak
 - ✅ All modules use thin orchestrator pattern
-- ✅ 30/30 modules have AGENTS.md documentation
+- ✅ 38+/38+ modules have AGENTS.md documentation
 
 ---
 
@@ -1461,7 +1461,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 ---
 
 **Status**: Production Ready
-**Version**: v1.3.0
+**Version**: v2.0.0
 **Coverage**: 25 pipeline steps, 28 modules, 41 AGENTS.md files
 
 ---

@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 import json
 import logging
 
-from pipeline.config import get_output_dir_for_script, get_pipeline_config
+from pipeline.config import get_output_dir_for_script
 from utils.pipeline_template import log_step_start, log_step_success, log_step_error
 
 

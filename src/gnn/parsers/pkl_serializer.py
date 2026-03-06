@@ -1,17 +1,15 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 from datetime import datetime
 import json
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class PKLSerializer(BaseGNNSerializer):
     """Enhanced serializer for Apple PKL configuration format with complete model preservation."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to PKL format with embedded model data."""
         lines = []
-        
+
         # Module header with comprehensive documentation
         lines.append("///")
         lines.append(f"/// GNN Model: {model.model_name}")
@@ -23,13 +21,13 @@ class PKLSerializer(BaseGNNSerializer):
         lines.append("")
         lines.append('@ModuleInfo { minPklVersion = "0.25.0" }')
         lines.append("")
-        
+
         # Model class with complete structure
         lines.append("class GNNModel {{")
         lines.append(f'  name: String = "{model.model_name}"')
         lines.append(f'  annotation: String = "{model.annotation}"')
         lines.append("")
-        
+
         # Variables with complete type information
         if model.variables:
             lines.append("  variables: Mapping<String, Variable> = new Mapping {{")
@@ -45,7 +43,7 @@ class PKLSerializer(BaseGNNSerializer):
                 lines.append("    }}")
             lines.append("  }}")
             lines.append("")
-        
+
         # Connections with complete relationship data
         if model.connections:
             lines.append("  connections: Mapping<String, Connection> = new Mapping {{")
@@ -53,12 +51,12 @@ class PKLSerializer(BaseGNNSerializer):
                 sources = conn.source_variables if hasattr(conn, 'source_variables') else []
                 targets = conn.target_variables if hasattr(conn, 'target_variables') else []
                 conn_type = conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
-                
+
                 quoted_sources = [f'"{s}"' for s in sources]
                 quoted_targets = [f'"{t}"' for t in targets]
                 sources_str = f"List({', '.join(quoted_sources)})" if sources else "List()"
                 targets_str = f"List({', '.join(quoted_targets)})" if targets else "List()"
-                
+
                 lines.append(f'    ["connection_{i}"] = new Connection {{')
                 lines.append(f'      sourceVariables = {sources_str}')
                 lines.append(f'      targetVariables = {targets_str}')
@@ -66,7 +64,7 @@ class PKLSerializer(BaseGNNSerializer):
                 lines.append("    }}")
             lines.append("  }}")
             lines.append("")
-        
+
         # Parameters with values and types
         if model.parameters:
             lines.append("  parameters: Mapping<String, Parameter> = new Mapping {{")
@@ -80,7 +78,7 @@ class PKLSerializer(BaseGNNSerializer):
                 lines.append("    }}")
             lines.append("  }}")
             lines.append("")
-        
+
         # Equations if present
         if hasattr(model, 'equations') and model.equations:
             lines.append("  equations: List<String> = new List {{")
@@ -91,7 +89,7 @@ class PKLSerializer(BaseGNNSerializer):
                     lines.append(f'    "{str(eq)}"')
             lines.append("  }}")
             lines.append("")
-        
+
         # Time specification if present
         if hasattr(model, 'time_specification') and model.time_specification:
             time_spec = model.time_specification
@@ -103,7 +101,7 @@ class PKLSerializer(BaseGNNSerializer):
                     lines.append(f'    description = "{time_spec["description"]}"')
                 lines.append("  }}")
                 lines.append("")
-        
+
         # Ontology mappings if present
         if hasattr(model, 'ontology_mappings') and model.ontology_mappings:
             lines.append("  ontologyMappings: List<OntologyMapping> = new List {{")
@@ -117,10 +115,10 @@ class PKLSerializer(BaseGNNSerializer):
                     lines.append("    }}")
             lines.append("  }}")
             lines.append("")
-        
+
         lines.append("}}")
         lines.append("")
-        
+
         # Class definitions
         if model.variables:
             lines.append("class Variable {{")
@@ -130,7 +128,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("  dimensions: List<Int>")
             lines.append("}}")
             lines.append("")
-        
+
         if model.connections:
             lines.append("class Connection {{")
             lines.append("  sourceVariables: List<String>")
@@ -138,7 +136,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("  connectionType: String")
             lines.append("}}")
             lines.append("")
-        
+
         if model.parameters:
             lines.append("class Parameter {{")
             lines.append("  name: String")
@@ -146,7 +144,7 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("  paramType: String")
             lines.append("}}")
             lines.append("")
-        
+
         if hasattr(model, 'time_specification') and model.time_specification:
             lines.append("class TimeSpec {{")
             lines.append("  timeType: String")
@@ -154,14 +152,14 @@ class PKLSerializer(BaseGNNSerializer):
             lines.append("  description: String?")
             lines.append("}}")
             lines.append("")
-        
+
         if hasattr(model, 'ontology_mappings') and model.ontology_mappings:
             lines.append("class OntologyMapping {{")
             lines.append("  variableName: String")
             lines.append("  ontologyTerm: String")
             lines.append("}}")
             lines.append("")
-        
+
         # Embed complete model data as JSON comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -195,29 +193,29 @@ class PKLSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as block comment
         lines.append("/* MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')) + " */")
         lines.append("")
-        
+
         # Add parsing hints as comments
         lines.append("// Variables:")
         for var in model.variables:
             lines.append(f"// Variable: {var.name} ({var.var_type.value if hasattr(var, 'var_type') else 'unknown'})")
-        
+
         lines.append("// Connections:")
         for conn in model.connections:
             sources = ','.join(conn.source_variables) if hasattr(conn, 'source_variables') else 'unknown'
             targets = ','.join(conn.target_variables) if hasattr(conn, 'target_variables') else 'unknown'
             conn_type = conn.connection_type.value if hasattr(conn, 'connection_type') else 'directed'
             lines.append(f"// Connection: {sources} --{conn_type}--> {targets}")
-        
+
         lines.append("// Parameters:")
         for param in model.parameters:
             lines.append(f"// Parameter: {param.name} = {param.value}")
-        
+
         return '\n'.join(lines)
-    
+
     def _format_pkl_value(self, value) -> str:
         """Format a value for PKL syntax."""
         if isinstance(value, str):
@@ -235,4 +233,4 @@ class PKLSerializer(BaseGNNSerializer):
                     formatted_items.append(str(item))
             return f"List({', '.join(formatted_items)})"
         else:
-            return f'"{str(value)}"' 
+            return f'"{str(value)}"'

@@ -1,9 +1,9 @@
 # GNN DSL Manual
 
-**Version**: v1.3.0  
-**Last Updated**: March 3, 2026  
+**Version**: v2.0.0  
+**Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Test Count**: 1,522+ tests Passing  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 This document provides a comprehensive guide to the GNN Domain Specific Language, which is a Markdown-based format for representing computational models, particularly those used in fields like Active Inference.
 

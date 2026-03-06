@@ -2,7 +2,7 @@
 
 Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and test files.
 
-**Last Updated**: March 3, 2026
+**Last Updated**: March 6, 2026
 
 ## No-Mock Policy
 

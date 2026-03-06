@@ -6,7 +6,7 @@ Two Active Inference agents cooperating on a joint task:
 - Joint task state includes both agents' positions (4x4 = 16 joint states)
 - Cooperative preferences: both agents prefer the same goal configuration
 - Models social cognition and coordination without explicit communication
-Generated: 2026-03-05T10:37:34.841021
+Generated: 2026-03-06T09:42:43.394318
 """
 
 import numpy as np

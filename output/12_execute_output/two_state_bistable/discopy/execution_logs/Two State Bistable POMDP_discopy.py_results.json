@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/discopy/Two State Bistable POMDP_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.408026,
-  "timestamp": "2026-03-05T10:37:52.799632",
+  "execution_time": 0.358386,
+  "timestamp": "2026-03-06T09:48:53.792882",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1566,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/discopy"
+    "output_directory": "output/12_execute_output/two_state_bistable/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

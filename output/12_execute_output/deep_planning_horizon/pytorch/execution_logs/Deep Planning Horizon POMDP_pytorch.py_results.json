@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/pytorch/Deep Planning Horizon POMDP_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.668232,
-  "timestamp": "2026-03-05T10:35:34.117710",
+  "execution_time": 0.699306,
+  "timestamp": "2026-03-06T09:49:16.911935",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/pytorch"
+    "output_directory": "output/12_execute_output/deep_planning_horizon/pytorch"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/pytorch/simulation_data/pytorch_simulation_results.json"
+      "output/12_execute_output/deep_planning_horizon/pytorch/simulation_data/pytorch_simulation_results.json"
     ],
     "traces": [],
     "other": []

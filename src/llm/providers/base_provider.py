@@ -8,7 +8,7 @@ This ensures consistent behavior across different provider implementations.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional, AsyncGenerator, Union
+from typing import List, Dict, Any, Optional, AsyncGenerator
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -59,7 +59,7 @@ class BaseLLMProvider(ABC):
     All provider implementations must inherit from this class and implement
     the required abstract methods to ensure consistent behavior.
     """
-    
+
     def __init__(self, api_key: Optional[str] = None, **kwargs):
         """
         Initialize the provider.
@@ -71,25 +71,25 @@ class BaseLLMProvider(ABC):
         self.api_key = api_key
         self.client = None
         self._is_initialized = False
-        
+
     @property
     @abstractmethod
     def provider_type(self) -> ProviderType:
         """Return the provider type enum."""
         pass
-    
+
     @property
     @abstractmethod
     def default_model(self) -> str:
         """Return the default model for this provider."""
         pass
-    
+
     @property
     @abstractmethod
     def available_models(self) -> List[str]:
         """Return list of available models for this provider."""
         pass
-    
+
     @abstractmethod
     def initialize(self) -> bool:
         """
@@ -99,7 +99,7 @@ class BaseLLMProvider(ABC):
             True if initialization successful, False otherwise
         """
         pass
-    
+
     @abstractmethod
     def validate_config(self, config: LLMConfig) -> bool:
         """
@@ -112,7 +112,7 @@ class BaseLLMProvider(ABC):
             True if configuration is valid, False otherwise
         """
         pass
-    
+
     @abstractmethod
     async def generate_response(
         self,
@@ -130,7 +130,7 @@ class BaseLLMProvider(ABC):
             Standardized LLM response
         """
         pass
-    
+
     @abstractmethod
     async def generate_stream(
         self,
@@ -148,7 +148,7 @@ class BaseLLMProvider(ABC):
             Chunks of the response content
         """
         pass
-    
+
     def construct_system_prompt(self, domain_context: str = "") -> str:
         """
         Construct a system prompt with domain-specific context.
@@ -164,15 +164,15 @@ class BaseLLMProvider(ABC):
             "You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference "
             "concepts, model structure, and practical implications."
         )
-        
+
         if domain_context:
             return f"{base_prompt}\n\nAdditional Context: {domain_context}"
-        
+
         return base_prompt
-    
+
     def format_gnn_analysis_prompt(
-        self, 
-        gnn_content: str, 
+        self,
+        gnn_content: str,
         analysis_type: str = "general"
     ) -> List[LLMMessage]:
         """
@@ -189,7 +189,7 @@ class BaseLLMProvider(ABC):
             "Focus on GNN model specifications, Active Inference frameworks, "
             "and scientific accuracy in your analysis."
         )
-        
+
         task_prompts = {
             "summary": (
                 "Provide a concise summary of this GNN model, highlighting:\n"
@@ -222,20 +222,20 @@ class BaseLLMProvider(ABC):
                 "its structure, purpose, and Active Inference implementation."
             )
         }
-        
+
         task_prompt = task_prompts.get(analysis_type, task_prompts["general"])
-        
+
         user_content = f"{task_prompt}\n\nGNN Model Content:\n{gnn_content}"
-        
+
         return [
             LLMMessage(role="system", content=system_prompt),
             LLMMessage(role="user", content=user_content)
         ]
-    
+
     def is_initialized(self) -> bool:
         """Check if the provider is properly initialized."""
         return self._is_initialized
-    
+
     def get_provider_info(self) -> Dict[str, Any]:
         """
         Get information about this provider.
@@ -248,4 +248,4 @@ class BaseLLMProvider(ABC):
             "default_model": self.default_model,
             "available_models": self.available_models,
             "is_initialized": self.is_initialized()
-        } 
+        }

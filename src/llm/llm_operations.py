@@ -11,20 +11,17 @@ backward compatibility with existing code.
 
 import os
 import asyncio
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 import logging
 
 # Import the LLM system directly to avoid circular imports
 from .llm_processor import (
-    LLMProcessor, 
-    AnalysisType, 
-    ProviderType,
+    LLMProcessor,
+    AnalysisType,
     load_api_keys_from_env,
     get_default_provider_configs,
-    initialize_global_processor,
     get_processor as get_global_processor
 )
-from .providers.base_provider import LLMResponse
 
 logger = logging.getLogger(__name__)
 
@@ -39,7 +36,7 @@ class LLMOperations:
     This class now uses the multi-provider LLM system internally but maintains
     the same interface for backward compatibility.
     """
-    
+
     def __init__(self, api_key: Optional[str] = None):
         """
         Initialize LLM operations.
@@ -59,7 +56,7 @@ class LLMOperations:
                 api_keys = load_api_keys_from_env()
                 if api_key:
                     api_keys['openai'] = api_key
-                
+
                 self.processor = LLMProcessor(
                     api_keys=api_keys,
                     provider_configs=get_default_provider_configs()
@@ -74,9 +71,9 @@ class LLMOperations:
         """Ensure the processor is initialized."""
         if not self._initialized and self.processor:
             self._initialized = await self.processor.initialize()
-        
+
         return self._initialized
-    
+
     def construct_prompt(self, content_parts: List[str], task_description: str) -> str:
         """
         Construct a well-formatted prompt for LLM processing.
@@ -95,21 +92,21 @@ class LLMOperations:
             "",
             "Content to analyze:"
         ]
-        
+
         for i, content in enumerate(content_parts, 1):
             prompt_parts.extend([
                 f"--- Content Part {i} ---",
                 content,
                 ""
             ])
-        
+
         prompt_parts.extend([
             "Please provide a comprehensive and accurate response based on the content above.",
             "Focus on Active Inference concepts, model structure, and practical implications."
         ])
-        
+
         return "\n".join(prompt_parts)
-    
+
     def get_llm_response(self, prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = DEFAULT_MAX_TOKENS) -> str:
         """
         Get response from LLM for given prompt.
@@ -137,12 +134,12 @@ class LLMOperations:
             except Exception as e:
                 logger.error(f"Async LLM call failed: {e}")
                 return f"Error: LLM call failed - {str(e)}"
-    
+
     async def _get_async_response(self, prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = DEFAULT_MAX_TOKENS) -> str:
         """Async version of get_llm_response."""
         if not await self._ensure_initialized():
             return "Error: LLM processor not initialized"
-        
+
         try:
             # Use the new processor system
             response = await self.processor.get_response(
@@ -151,15 +148,15 @@ class LLMOperations:
                 max_tokens=max_tokens,
                 temperature=0.3
             )
-            
+
             return response.content
-            
+
         except Exception as e:
             logger.error(f"Multi-provider LLM call failed: {e}")
             return f"Error: LLM call failed - {str(e)}"
-    
 
-    
+
+
     def summarize_gnn(self, gnn_content: str, max_length: int = 500) -> str:
         """
         Generate a summary of GNN content.
@@ -187,19 +184,19 @@ class LLMOperations:
         except Exception as e:
             logger.error(f"Async summarization failed: {e}")
             return f"Error: Summarization failed - {str(e)}"
-    
+
     async def _async_summarize_gnn(self, gnn_content: str, max_length: int = 500) -> str:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
-        
+
         response = await self.processor.analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.SUMMARY
         )
-        
+
         return response.content
-    
+
     def analyze_gnn_structure(self, gnn_content: str) -> str:
         """
         Analyze the structure and components of a GNN model.
@@ -225,19 +222,19 @@ class LLMOperations:
         except Exception as e:
             logger.error(f"Async structure analysis failed: {e}")
             return f"Error: Structure analysis failed - {str(e)}"
-    
+
     async def _async_analyze_structure(self, gnn_content: str) -> str:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
-        
+
         response = await self.processor.analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.STRUCTURE
         )
-        
+
         return response.content
-    
+
     def generate_questions(self, gnn_content: str, num_questions: int = 5) -> List[str]:
         """
         Generate relevant questions about a GNN model.
@@ -255,25 +252,25 @@ class LLMOperations:
         except Exception as e:
             logger.error(f"Async question generation failed: {e}")
             return []
-    
+
     async def _async_generate_questions(self, gnn_content: str, num_questions: int = 5) -> List[str]:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
-        
+
         response = await self.processor.analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.QUESTIONS,
             additional_context={"num_questions": num_questions}
         )
-        
+
         return self._extract_questions_from_response(response.content, num_questions)
-    
+
     def _extract_questions_from_response(self, response: str, num_questions: int) -> List[str]:
         """Extract questions from LLM response."""
         lines = response.split('\n')
         questions = []
-        
+
         for line in lines:
             line = line.strip()
             if line and (line[0].isdigit() or line.startswith('-') or line.startswith('•')):
@@ -281,9 +278,9 @@ class LLMOperations:
                 question = line.split('.', 1)[-1].strip()
                 if question:
                     questions.append(question)
-        
+
         return questions[:num_questions]
-    
+
     # New methods leveraging the multi-provider system
     def enhance_gnn(self, gnn_content: str) -> str:
         """
@@ -300,19 +297,19 @@ class LLMOperations:
         except Exception as e:
             logger.error(f"Async enhancement failed: {e}")
             return f"Error: Enhancement failed - {str(e)}"
-    
+
     async def _async_enhance_gnn(self, gnn_content: str) -> str:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
-        
+
         response = await self.processor.analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.ENHANCEMENT
         )
-        
+
         return response.content
-    
+
     def validate_gnn(self, gnn_content: str) -> str:
         """
         Validate a GNN model for correctness and completeness.
@@ -328,26 +325,26 @@ class LLMOperations:
         except Exception as e:
             logger.error(f"Async validation failed: {e}")
             return f"Error: Validation failed - {str(e)}"
-    
+
     async def _async_validate_gnn(self, gnn_content: str) -> str:
         """Async version using new analysis system."""
         if not await self._ensure_initialized():
             raise Exception("Processor not initialized")
-        
+
         response = await self.processor.analyze_gnn(
             gnn_content=gnn_content,
             analysis_type=AnalysisType.VALIDATION
         )
-        
+
         return response.content
-    
+
     def get_available_providers(self) -> List[str]:
         """Get list of available LLM providers."""
         if self.processor:
             return [p.value for p in self.processor.get_available_providers()]
-        
+
         return []
-    
+
     def get_processor_info(self) -> Dict[str, Any]:
         """Get information about the LLM processor."""
         if self.processor:
@@ -357,7 +354,7 @@ class LLMOperations:
                 "initialized": self._initialized,
                 "provider_info": self.processor.get_provider_info()
             }
-        
+
         return {"mode": "uninitialized"}
 
 # Global instance for easy access - now using multi-provider by default
@@ -412,7 +409,7 @@ if __name__ == '__main__':
     logger.info("Testing llm_operations.py...")
     try:
         load_api_key()
-        
+
         example_gnn_content = """
 ## ModelName
 MyExampleGNN
@@ -425,16 +422,16 @@ O1: [Observation] dimension(2) # {Obs_Hot, Obs_Cold}
 ## Connections
 S1 -> O1
         """
-        
+
         contexts = [
             "Context: This is a GNN file describing a simple model.",
             f"GNN File Content:\n{example_gnn_content}"
         ]
-        
+
         task_summary = "Provide a concise summary of this GNN model, highlighting its key components."
         prompt_summary = construct_prompt(contexts, task_summary)
         print(f"\n--- Prompt for Summary ---\n{prompt_summary}")
-        
+
         summary = get_llm_response(prompt_summary)
         print(f"\n--- LLM Summary ---\n{summary}")
 
@@ -447,4 +444,4 @@ S1 -> O1
     except ValueError as ve:
         print(f"Setup Error: {ve}")
     except Exception as ex:
-        print(f"An error occurred during testing: {ex}") 
+        print(f"An error occurred during testing: {ex}")

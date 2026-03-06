@@ -11,8 +11,7 @@ import subprocess
 import sys
 import os
 import threading
-import time
-from typing import List, Dict, Any, Optional, Union, Tuple
+from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
 
 def execute_command_streaming(
@@ -45,19 +44,19 @@ def execute_command_streaming(
     """
     if cwd:
         cwd = str(cwd)
-        
+
     # Ensure environment is properly set up
     process_env = os.environ.copy()
     if env:
         process_env.update(env)
-        
+
     # Force unbuffered output
     process_env["PYTHONUNBUFFERED"] = "1"
-    
+
     # buffers for captured output
     stdout_captured = []
     stderr_captured = []
-    
+
     # detailed result structure
     result = {
         "exit_code": -1,
@@ -65,7 +64,7 @@ def execute_command_streaming(
         "stderr": "",
         "status": "UNKNOWN"
     }
-    
+
     try:
         # Start process with pipes
         process = subprocess.Popen(
@@ -78,14 +77,14 @@ def execute_command_streaming(
             bufsize=1,  # Line buffered
             universal_newlines=True
         )
-        
+
         # Reader threads
         def read_stream(stream, is_stderr):
             try:
                 for line in iter(stream.readline, ''):
                     if not line:
                         break
-                        
+
                     # Print immediately if requested
                     if is_stderr:
                         if print_stderr:
@@ -108,24 +107,24 @@ def execute_command_streaming(
         # Start threads
         stdout_thread = threading.Thread(target=read_stream, args=(process.stdout, False))
         stderr_thread = threading.Thread(target=read_stream, args=(process.stderr, True))
-        
+
         stdout_thread.daemon = True
         stderr_thread.daemon = True
-        
+
         stdout_thread.start()
         stderr_thread.start()
-        
+
         # Wait for process with timeout
         try:
             exit_code = process.wait(timeout=timeout)
-            
+
             # Wait for threads to finish reading
             stdout_thread.join(timeout=1.0)
             stderr_thread.join(timeout=1.0)
-            
+
             result["exit_code"] = exit_code
             result["status"] = "SUCCESS" if exit_code == 0 else "FAILED"
-            
+
         except subprocess.TimeoutExpired:
             process.kill()
             result["status"] = "TIMEOUT"
@@ -133,16 +132,16 @@ def execute_command_streaming(
             # Try to join threads briefly
             stdout_thread.join(timeout=0.1)
             stderr_thread.join(timeout=0.1)
-            
+
     except Exception as e:
         result["status"] = "FAILED"
         result["stderr"] = str(e)
         if print_stderr:
             sys.stderr.write(f"Execution error: {e}\n")
-            
+
     # Combine captured output
     if capture_output:
         result["stdout"] = "".join(stdout_captured)
         result["stderr"] = "".join(stderr_captured)
-        
+
     return result

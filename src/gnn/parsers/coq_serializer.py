@@ -1,17 +1,14 @@
-from typing import Dict, Any, List, Optional, Union, Protocol
-from abc import ABC, abstractmethod
 import json
-from datetime import datetime
-from .common import GNNInternalRepresentation, GNNFormat
+from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer
 
 class CoqSerializer(BaseGNNSerializer):
     """Serializer for Coq format."""
-    
+
     def serialize(self, model: GNNInternalRepresentation) -> str:
         """Convert GNN model to Coq format."""
         lines = []
-        
+
         # Header
         lines.append(f"(* GNN Model: {model.model_name} *)")
         lines.append(f"(* {model.annotation} *)")
@@ -19,12 +16,12 @@ class CoqSerializer(BaseGNNSerializer):
         lines.append("Require Import Reals.")
         lines.append("Require Import List.")
         lines.append("")
-        
+
         # Module
         model_name_clean = model.model_name.replace(" ", "").replace("-", "")
         lines.append(f"Module {model_name_clean}.")
         lines.append("")
-        
+
         # Variable declarations
         if model.variables:
             lines.append("(* Variables *)")
@@ -32,9 +29,9 @@ class CoqSerializer(BaseGNNSerializer):
                 coq_type = self._map_to_coq_type(var.data_type.value)
                 lines.append(f"Parameter {var.name} : {coq_type}.")
             lines.append("")
-        
+
         lines.append(f"End {model_name_clean}.")
-        
+
         # Embed complete model data as Coq comment for round-trip fidelity
         model_data = {
             'model_name': model.model_name,
@@ -68,13 +65,13 @@ class CoqSerializer(BaseGNNSerializer):
             'time_specification': self._serialize_time_spec(model.time_specification) if hasattr(model, 'time_specification') and model.time_specification else None,
             'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings) if hasattr(model, 'ontology_mappings') else []
         }
-        
+
         # Add embedded JSON data as Coq comment
         lines.append("(* MODEL_DATA: " + json.dumps(model_data, separators=(',', ':')) + " *)")
         lines.append("")
-        
+
         return '\n'.join(lines)
-    
+
     def _serialize_time_spec(self, time_spec):
         """Serialize time specification object."""
         if not time_spec:
@@ -85,7 +82,7 @@ class CoqSerializer(BaseGNNSerializer):
             'horizon': getattr(time_spec, 'horizon', None),
             'step_size': getattr(time_spec, 'step_size', None)
         }
-    
+
     def _serialize_ontology_mappings(self, mappings):
         """Serialize ontology mappings."""
         if not mappings:
@@ -98,7 +95,7 @@ class CoqSerializer(BaseGNNSerializer):
             }
             for mapping in mappings
         ]
-    
+
     def _map_to_coq_type(self, data_type: str) -> str:
         """Map GNN data types to Coq types."""
         mapping = {
@@ -109,4 +106,4 @@ class CoqSerializer(BaseGNNSerializer):
             "float": "R",
             "complex": "string"
         }
-        return mapping.get(data_type, "string") 
+        return mapping.get(data_type, "string")

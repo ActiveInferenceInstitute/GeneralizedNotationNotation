@@ -4,10 +4,8 @@ Matrix Editor for GUI 2: Visual matrix editing and GNN template management
 
 from __future__ import annotations
 
-import json
 import re
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Tuple
+from typing import Dict, List, Any
 
 
 def get_pomdp_template() -> str:
@@ -102,18 +100,18 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     """
     matrices = {
         "A": {"shape": [3, 3], "values": None, "description": "Likelihood matrix"},
-        "B": {"shape": [3, 3, 3], "values": None, "description": "Transition matrices"}, 
+        "B": {"shape": [3, 3, 3], "values": None, "description": "Transition matrices"},
         "C": {"shape": [3], "values": None, "description": "Preference vector"},
         "D": {"shape": [3], "values": None, "description": "Prior vector"}
     }
-    
+
     # Parse state space block
     state_space_pattern = r"## StateSpaceBlock\s*\n(.*?)(?=##|$)"
     match = re.search(state_space_pattern, gnn_text, re.DOTALL)
-    
+
     if match:
         state_block = match.group(1)
-        
+
         # Parse matrix dimensions
         for line in state_block.split('\n'):
             if '[' in line and ']' in line:
@@ -131,24 +129,24 @@ def parse_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
                                 dims.append(int(d))
                         if dims:
                             matrices[name]["shape"] = dims
-    
+
     # Parse initial parameterization
     param_pattern = r"## InitialParameterization\s*\n(.*?)(?=##|$)"
     match = re.search(param_pattern, gnn_text, re.DOTALL)
-    
+
     if match:
         param_block = match.group(1)
-        
+
         # Parse matrix values (simplified parsing)
         for matrix_name in matrices.keys():
             pattern = rf"{matrix_name}=\{{([^}}]+)\}}"
             matrix_match = re.search(pattern, param_block, re.DOTALL)
             if matrix_match:
                 values_str = matrix_match.group(1)
-                # This is a simplified parser - in a real implementation, 
+                # This is a simplified parser - in a real implementation,
                 # you'd want more robust parsing
                 matrices[matrix_name]["values"] = values_str.strip()
-    
+
     return {
         "matrices": matrices,
         "connections": _parse_connections(gnn_text),
@@ -162,14 +160,14 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
     This prepares data for the visual drag-and-drop interface.
     """
     parsed = parse_matrix_from_gnn(gnn_text)
-    
+
     # Convert to visual representation format
     visual_matrices = {}
-    
+
     for name, info in parsed["matrices"].items():
         shape = info["shape"]
         description = info["description"]
-        
+
         # Create visual matrix structure
         if len(shape) == 1:  # Vector
             visual_matrices[name] = {
@@ -182,7 +180,7 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
         elif len(shape) == 2:  # Matrix
             rows, cols = shape
             visual_matrices[name] = {
-                "type": "matrix", 
+                "type": "matrix",
                 "rows": rows,
                 "cols": cols,
                 "values": [[0.0 for _ in range(cols)] for _ in range(rows)],
@@ -194,14 +192,14 @@ def create_matrix_from_gnn(gnn_text: str) -> Dict[str, Any]:
             visual_matrices[name] = {
                 "type": "tensor",
                 "depth": depth,
-                "rows": rows, 
+                "rows": rows,
                 "cols": cols,
                 "values": [[[0.0 for _ in range(cols)] for _ in range(rows)] for _ in range(depth)],
                 "description": description,
                 "editable": True,
                 "current_slice": 0
             }
-    
+
     return {
         "visual_matrices": visual_matrices,
         "connections": parsed["connections"],
@@ -221,7 +219,7 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
         Updated GNN markdown text
     """
     updated_gnn = template
-    
+
     # Update state space dimensions
     state_space_updates = []
     for name, matrix in visual_data.get("visual_matrices", {}).items():
@@ -231,7 +229,7 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
             state_space_updates.append(f"{name}[{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}")
         elif matrix["type"] == "tensor":
             state_space_updates.append(f"{name}[{matrix['depth']},{matrix['rows']},{matrix['cols']},type=float]   # {matrix['description']}")
-    
+
     # Update InitialParameterization with actual values
     param_updates = []
     for name, matrix in visual_data.get("visual_matrices", {}).items():
@@ -256,51 +254,51 @@ def update_gnn_from_matrix(visual_data: Dict[str, Any], template: str) -> str:
                 slices_str.append(slice_str)
             values_str = "(\n  " + ",\n  ".join(slices_str) + "\n)"
             param_updates.append(f"{name}={{{values_str}}}")
-    
+
     # Replace parameterization section
     if param_updates:
         param_text = "## InitialParameterization\n# Updated via Visual Matrix Editor\n" + "\n".join(param_updates)
-        
+
         # Replace existing parameterization section
         param_pattern = r"## InitialParameterization.*?(?=##|\Z)"
         updated_gnn = re.sub(param_pattern, param_text + "\n\n", updated_gnn, flags=re.DOTALL)
-    
+
     return updated_gnn
 
 
 def _parse_connections(gnn_text: str) -> List[str]:
     """Parse connection information from GNN text"""
     connections = []
-    
+
     conn_pattern = r"## Connections\s*\n(.*?)(?=##|$)"
     match = re.search(conn_pattern, gnn_text, re.DOTALL)
-    
+
     if match:
         conn_block = match.group(1)
         for line in conn_block.split('\n'):
             line = line.strip()
             if line and not line.startswith('#'):
                 connections.append(line)
-    
+
     return connections
 
 
 def _parse_metadata(gnn_text: str) -> Dict[str, str]:
     """Parse metadata from GNN text"""
     metadata = {}
-    
+
     # Extract model name
     name_pattern = r"## ModelName\s*\n(.*?)(?=##|$)"
     match = re.search(name_pattern, gnn_text, re.DOTALL)
     if match:
         metadata["model_name"] = match.group(1).strip()
-    
+
     # Extract annotation
     annot_pattern = r"## ModelAnnotation\s*\n(.*?)(?=##|$)"
     match = re.search(annot_pattern, gnn_text, re.DOTALL)
     if match:
         metadata["annotation"] = match.group(1).strip()
-    
+
     return metadata
 
 
@@ -313,7 +311,7 @@ def validate_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
     """
     errors = []
     matrices = visual_data.get("visual_matrices", {})
-    
+
     # Check A matrix dimensions
     if "A" in matrices and "s" in matrices:
         A = matrices["A"]
@@ -321,14 +319,14 @@ def validate_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
             # A should be [n_obs, n_states]
             # This is a simplified check
             pass
-    
-    # Check B matrix dimensions  
+
+    # Check B matrix dimensions
     if "B" in matrices:
         B = matrices["B"]
         if B["type"] == "tensor":
             # B should be [n_states, n_states, n_actions]
             pass
-    
+
     # Add more validation as needed
-    
+
     return errors

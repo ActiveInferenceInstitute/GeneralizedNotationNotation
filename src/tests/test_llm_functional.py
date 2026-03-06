@@ -9,10 +9,9 @@ and graceful degradation without live LLM providers.
 import pytest
 import sys
 import os
-import json
 import logging
 from pathlib import Path
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -25,7 +24,7 @@ from llm.llm_processor import (
     get_preferred_providers_from_env,
     create_gnn_llm_processor,
 )
-from llm.providers.base_provider import ProviderType, LLMMessage, LLMConfig, LLMResponse
+from llm.providers.base_provider import ProviderType
 from llm.prompts import (
     PromptType,
     get_prompt,

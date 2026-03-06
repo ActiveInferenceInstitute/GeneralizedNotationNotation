@@ -3,142 +3,24 @@
   "model_name": "multi_armed_bandit",
   "script_name": "Multi Armed Bandit Agent_pymdp.py",
   "script_path": "output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.45911,
-  "timestamp": "2026-03-05T10:35:18.066093",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.712272,
+  "timestamp": "2026-03-06T09:48:59.889288",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      0,
-      1,
-      0,
-      0,
-      1,
-      0,
-      0,
-      1,
-      2,
-      0,
-      1,
-      2,
-      0,
-      0,
-      0
-    ],
-    "actions": [
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-05 10:35:19,370 - INFO - A matrix shape: (3, 3)\n2026-03-05 10:35:19,370 - INFO - B matrix shape: (3, 3, 3)\n2026-03-05 10:35:19,370 - INFO - C vector shape: (3,)\n2026-03-05 10:35:19,370 - INFO - D vector shape: (3,)\n2026-03-05 10:35:19,371 - INFO - Starting PyMDP simulation for Multi Armed Bandit Agent\n2026-03-05 10:35:19,371 - INFO - Output directory: output/pymdp_simulations/Multi Armed Bandit Agent\n2026-03-05 10:35:19,371 - INFO - State space matrices: A=True, B=True, C=True, D=True, E=False\n2026-03-05 10:35:19,371 - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-05 10:35:19,371 - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-05 10:35:19,371 - INFO - Starting simple PyMDP simulation\n2026-03-05 10:35:19,371 - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-03-05 10:35:19,371 - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-05 10:35:19,371 - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-03-05 10:35:19,371 - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-05 10:35:19,371 - INFO - Successfully created PyMDP agent\n2026-03-05 10:35:19,371 - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-05 10:35:19,371 - INFO - Step 0: true_s=2, obs=0, belief=[0.09 0.45 0.45], action=0.0\n2026-03-05 10:35:19,372 - INFO - Step 1: true_s=2, obs=1, belief=[0.11 0.51 0.38], action=0.0\n2026-03-05 10:35:19,372 - INFO - Step 2: true_s=2, obs=0, belief=[0.03 0.54 0.42], action=0.0\n2026-03-05 10:35:19,372 - INFO - Step 3: true_s=2, obs=0, belief=[0.02 0.55 0.44], action=0.0\n2026-03-05 10:35:19,372 - INFO - Step 4: true_s=2, obs=1, belief=[0.05 0.59 0.36], action=0.0\n2026-03-05 10:35:19,373 - INFO - Step 5: true_s=2, obs=0, belief=[0.02 0.59 0.39], action=0.0\n2026-03-05 10:35:19,373 - INFO - Step 6: true_s=2, obs=0, belief=[0.01 0.59 0.4 ], action=0.0\n2026-03-05 10:35:19,373 - INFO - Step 7: true_s=1, obs=1, belief=[0.05 0.62 0.33], action=0.0\n2026-03-05 10:35:19,373 - INFO - Step 8: true_s=2, obs=2, belief=[0.32 0.32 0.37], action=0.0\n2026-03-05 10:35:19,374 - INFO - Step 9: true_s=2, obs=0, belief=[0.09 0.43 0.48], action=0.0\n2026-03-05 10:35:19,374 - INFO - Step 10: true_s=2, obs=1, belief=[0.11 0.49 0.41], action=0.0\n2026-03-05 10:35:19,374 - INFO - Step 11: true_s=2, obs=2, belief=[0.4  0.22 0.38], action=0.0\n2026-03-05 10:35:19,374 - INFO - Step 12: true_s=2, obs=0, belief=[0.11 0.35 0.54], action=0.0\n2026-03-05 10:35:19,374 - INFO - Step 13: true_s=2, obs=0, belief=[0.03 0.39 0.58], action=0.0\n2026-03-05 10:35:19,375 - INFO - Step 14: true_s=2, obs=0, belief=[0.02 0.41 0.58], action=0.0\n2026-03-05 10:35:19,375 - INFO - Saving raw simulation data for analysis step...\n2026-03-05 10:35:19,375 - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Multi Armed Bandit Agent/simulation_results.json\n2026-03-05 10:35:19,375 - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-05 10:35:19,375 - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-05 10:35:19,375 - INFO - PyMDP simulation completed successfully\n2026-03-05 10:35:19,375 - INFO - \u2713 Simulation completed successfully!\n2026-03-05 10:35:19,375 - INFO - Results summary:\n2026-03-05 10:35:19,375 - INFO -   Correlation ID: render_generated_script\n2026-03-05 10:35:19,375 - INFO -   Success: True\n2026-03-05 10:35:19,375 - INFO -   Output: output/pymdp_simulations/Multi Armed Bandit Agent\n",
-    "beliefs": [
-      [
-        0.09090909090909097,
-        0.45454545454545453,
-        0.45454545454545453
-      ],
-      [
-        0.11111111111111126,
-        0.5079365079365079,
-        0.3809523809523809
-      ],
-      [
-        0.032663316582914645,
-        0.5446877243359655,
-        0.4226489590811199
-      ],
-      [
-        0.016584503268674358,
-        0.547014942511138,
-        0.43640055422018775
-      ],
-      [
-        0.05470626566622098,
-        0.5860235170839919,
-        0.35927021724978714
-      ],
-      [
-        0.020914684237899255,
-        0.5939750155426753,
-        0.38511030021942544
-      ],
-      [
-        0.014332640545129859,
-        0.5866902746482077,
-        0.3989770848066626
-      ],
-      [
-        0.05256824493174397,
-        0.6184673651566841,
-        0.3289643899115719
-      ],
-      [
-        0.31507880926806014,
-        0.3192934874027677,
-        0.36562770332917216
-      ],
-      [
-        0.08523460086295963,
-        0.43097688451846333,
-        0.4837885146185769
-      ],
-      [
-        0.10752714005032413,
-        0.4874591259787017,
-        0.4050137339709741
-      ],
-      [
-        0.40375376515968303,
-        0.22098265836915956,
-        0.3752635764711574
-      ],
-      [
-        0.11472526633486096,
-        0.34697811362583497,
-        0.5382966200393041
-      ],
-      [
-        0.0334509480697004,
-        0.3910845255206492,
-        0.5754645264096505
-      ],
-      [
-        0.016736841839970897,
-        0.4080239825495231,
-        0.575239175610506
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_error": "Execute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nExecute module import failed: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py) - using fallback\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/Multi Armed Bandit Agent_pymdp.py\", line 65, in <module>\n    from src.execute.pymdp import execute_pymdp_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 27, in <module>\n    from analysis.pymdp.visualizer import PyMDPVisualizer, create_visualizer, save_all_visualizations\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/__init__.py\", line 45, in <module>\n    from .post_simulation import (\nImportError: cannot import name 'analyze_state_distributions' from 'analysis.post_simulation' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/analysis/post_simulation.py)\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 227,
-    "stderr_length": 3434,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/pymdp"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/pymdp/simulation_data/Multi Armed Bandit Agent_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
+    "stderr_length": 1244,
+    "output_directory": "output/12_execute_output/multi_armed_bandit/pymdp"
   }
 }

@@ -50,12 +50,12 @@ def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:
     """Scan directory tree for all visualization files."""
     viz_extensions = {'.png', '.jpg', '.jpeg', '.svg', '.pdf', '.html'}
     visualizations = []
-    
+
     for viz_file in root_dir.rglob('*'):
         if viz_file.is_file() and viz_file.suffix.lower() in viz_extensions:
             # Determine category based on path
             path_str = str(viz_file.relative_to(root_dir))
-            
+
             if 'pymdp' in path_str.lower():
                 framework = 'PyMDP'
                 category = 'execution'
@@ -80,7 +80,7 @@ def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:
             else:
                 framework = 'Other'
                 category = 'other'
-            
+
             # Determine visualization type from filename
             filename_lower = viz_file.stem.lower()
             if 'belief' in filename_lower and 'evolution' in filename_lower:
@@ -101,7 +101,7 @@ def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:
                 viz_type = 'categorical_diagram'
             else:
                 viz_type = 'other'
-            
+
             viz_info = {
                 "file_path": str(viz_file.relative_to(root_dir)),
                 "filename": viz_file.name,
@@ -112,42 +112,42 @@ def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:
                 "created": datetime.fromtimestamp(viz_file.stat().st_mtime).isoformat(),
                 "hash": get_file_hash(viz_file)
             }
-            
+
             # Add image-specific metadata
             if viz_file.suffix.lower() in {'.png', '.jpg', '.jpeg'}:
                 viz_info["metadata"] = get_image_metadata(viz_file)
-            
+
             visualizations.append(viz_info)
-    
+
     return visualizations
 
 def generate_report(visualizations: List[Dict[str, Any]], output_file: Path):
     """Generate comprehensive report."""
-    
+
     # Calculate statistics
     total_count = len(visualizations)
     by_framework = {}
     by_category = {}
     by_type = {}
     total_size_bytes = 0
-    
+
     for viz in visualizations:
         # Count by framework
         fw = viz['framework']
         by_framework[fw] = by_framework.get(fw, 0) + 1
-        
+
         # Count by category
         cat = viz['category']
         by_category[cat] = by_category.get(cat, 0) + 1
-        
+
         # Count by type
         vtype = viz['type']
         by_type[vtype] = by_type.get(vtype, 0) + 1
-        
+
         # Sum file sizes
         if 'metadata' in viz and 'file_size_bytes' in viz['metadata']:
             total_size_bytes += viz['metadata']['file_size_bytes']
-    
+
     report = {
         "report_generated": datetime.now().isoformat(),
         "summary": {
@@ -159,44 +159,44 @@ def generate_report(visualizations: List[Dict[str, Any]], output_file: Path):
         },
         "visualizations": visualizations
     }
-    
+
     # Write JSON report
     with open(output_file, 'w') as f:
         json.dump(report, f, indent=2)
-    
+
     print(f"✅ Generated visualization inventory: {output_file}")
     print(f"📊 Total visualizations found: {total_count}")
     print(f"💾 Total size: {report['summary']['total_size_mb']} MB")
-    print(f"\n🔍 By Framework:")
+    print("\n🔍 By Framework:")
     for fw, count in sorted(by_framework.items(), key=lambda x: x[1], reverse=True):
         print(f"  {fw}: {count}")
-    print(f"\n📁 By Category:")
+    print("\n📁 By Category:")
     for cat, count in sorted(by_category.items(), key=lambda x: x[1], reverse=True):
         print(f"  {cat}: {count}")
-    
+
     # Generate markdown report
     md_file = output_file.with_suffix('.md')
     with open(md_file, 'w') as f:
-        f.write(f"# Visualization Inventory Report\n\n")
+        f.write("# Visualization Inventory Report\n\n")
         f.write(f"**Generated**: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n\n")
-        f.write(f"## Summary\n\n")
+        f.write("## Summary\n\n")
         f.write(f"- **Total Visualizations**: {total_count}\n")
         f.write(f"- **Total Size**: {report['summary']['total_size_mb']} MB\n\n")
-        
-        f.write(f"### By Framework\n\n")
-        f.write(f"| Framework | Count | Percentage |\n")
-        f.write(f"|-----------|-------|------------|\n")
+
+        f.write("### By Framework\n\n")
+        f.write("| Framework | Count | Percentage |\n")
+        f.write("|-----------|-------|------------|\n")
         for fw, count in sorted(by_framework.items(), key=lambda x: x[1], reverse=True):
             pct = round(100 * count / total_count, 1) if total_count > 0 else 0
             f.write(f"| {fw} | {count} | {pct}% |\n")
-        
-        f.write(f"\n### By Type\n\n")
-        f.write(f"| Type | Count |\n")
-        f.write(f"|------|-------|\n")
+
+        f.write("\n### By Type\n\n")
+        f.write("| Type | Count |\n")
+        f.write("|------|-------|\n")
         for vtype, count in sorted(by_type.items(), key=lambda x: x[1], reverse=True):
             f.write(f"| {vtype} | {count} |\n")
-        
-        f.write(f"\n## Detailed Inventory\n\n")
+
+        f.write("\n## Detailed Inventory\n\n")
         for viz in sorted(visualizations, key=lambda x: (x['framework'], x['type'])):
             f.write(f"### {viz['filename']}\n\n")
             f.write(f"- **Path**: `{viz['file_path']}`\n")
@@ -210,26 +210,26 @@ def generate_report(visualizations: List[Dict[str, Any]], output_file: Path):
                     f.write(f"- **Dimensions**: {meta['width']}x{meta['height']} px\n")
                 if 'file_size_kb' in meta:
                     f.write(f"- **Size**: {meta['file_size_kb']} KB\n")
-            f.write(f"\n")
-    
+            f.write("\n")
+
     print(f"📄 Generated markdown report: {md_file}")
 
 def main():
     """Main execution"""
     root = PROJECT_ROOT / "output"
     output_file = root / "VISUALIZATION_INVENTORY.json"
-    
+
     if not root.exists():
         print(f"Error: Output directory does not exist: {root}")
         return 1
-    
+
     print("🔍 Scanning for visualizations...")
     visualizations = scan_visualizations(root)
-    
+
     print(f"📊 Found {len(visualizations)} visualization files")
-    
+
     generate_report(visualizations, output_file)
-    
+
     print("\n✅ Visualization inventory complete!")
     return 0
 

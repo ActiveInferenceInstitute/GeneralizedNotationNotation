@@ -11,19 +11,17 @@ License: MIT
 
 import re
 import logging
-from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, List, Any, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Parameter, VariableType, DataType
 )
 
 logger = logging.getLogger(__name__)
 
 class CoqGNNParser(BaseGNNParser):
     """Parser for Coq formal verification specifications."""
-    
+
     def __init__(self):
         """Initialize the Coq parser."""
         super().__init__()
@@ -33,15 +31,15 @@ class CoqGNNParser(BaseGNNParser):
         self.definition_pattern = re.compile(r'Definition\s+(\w+)[^:]*:\s*([^:=]+)(?::=)?')
         self.variable_pattern = re.compile(r'Variable\s+(\w+)\s*:\s*([^.]+)\.')
         self.theorem_pattern = re.compile(r'Theorem\s+(\w+)[^:]*:\s*([^.]+)\.')
-        
+
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a Coq file containing GNN formal specifications."""
         try:
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
-            
+
             return self.parse_string(content)
-            
+
         except Exception as e:
             logger.error(f"Error parsing Coq file {file_path}: {e}")
             result = ParseResult(
@@ -50,7 +48,7 @@ class CoqGNNParser(BaseGNNParser):
             )
             result.add_error(f"Failed to parse Coq file: {e}")
             return result
-    
+
     def parse_string(self, content: str) -> ParseResult:
         """Parse Coq content from string."""
         # First try to extract embedded JSON model data
@@ -58,11 +56,11 @@ class CoqGNNParser(BaseGNNParser):
         if embedded_data:
             result = ParseResult(model=self.create_empty_model())
             return self._parse_from_embedded_data(embedded_data, result)
-        
+
         try:
             model = self._parse_coq_content(content)
             return ParseResult(model=model, success=True)
-            
+
         except Exception as e:
             logger.error(f"Error parsing Coq content: {e}")
             result = ParseResult(
@@ -71,7 +69,7 @@ class CoqGNNParser(BaseGNNParser):
             )
             result.add_error(f"Failed to parse Coq content: {e}")
             return result
-    
+
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Coq comments."""
         import json
@@ -79,7 +77,7 @@ class CoqGNNParser(BaseGNNParser):
         patterns = [
             r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
         ]
-        
+
         for pattern in patterns:
             match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
             if match:
@@ -88,18 +86,18 @@ class CoqGNNParser(BaseGNNParser):
                 except json.JSONDecodeError:
                     continue
         return None
-    
+
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
         try:
             from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
-            
+
             # Create model from embedded data
             model = GNNInternalRepresentation(
                 model_name=embedded_data.get('model_name', 'Unknown Model'),
                 annotation=embedded_data.get('annotation', ''),
             )
-            
+
             # Parse variables
             for var_data in embedded_data.get('variables', []):
                 var = Variable(
@@ -109,7 +107,7 @@ class CoqGNNParser(BaseGNNParser):
                     dimensions=var_data.get('dimensions', [])
                 )
                 model.variables.append(var)
-            
+
             # Parse connections
             for conn_data in embedded_data.get('connections', []):
                 conn = Connection(
@@ -118,7 +116,7 @@ class CoqGNNParser(BaseGNNParser):
                     connection_type=ConnectionType(conn_data['connection_type'])
                 )
                 model.connections.append(conn)
-            
+
             # Parse parameters
             for param_data in embedded_data.get('parameters', []):
                 param = Parameter(
@@ -127,7 +125,7 @@ class CoqGNNParser(BaseGNNParser):
                     type_hint=param_data.get('param_type', 'constant')
                 )
                 model.parameters.append(param)
-            
+
             # Set time specification if present
             if embedded_data.get('time_specification'):
                 time_data = embedded_data['time_specification']
@@ -138,7 +136,7 @@ class CoqGNNParser(BaseGNNParser):
                     horizon=time_data.get('horizon'),
                     step_size=time_data.get('step_size')
                 )
-            
+
             # Set ontology mappings if present
             if embedded_data.get('ontology_mappings'):
                 from .common import OntologyMapping
@@ -149,68 +147,68 @@ class CoqGNNParser(BaseGNNParser):
                         description=mapping_data.get('description')
                     )
                     model.ontology_mappings.append(mapping)
-            
+
             result.model = model
             result.success = True
             return result
-            
+
         except Exception as e:
             result.add_error(f"Failed to parse embedded data: {e}")
             return result
-    
+
     def _parse_coq_content(self, content: str) -> GNNInternalRepresentation:
         """Parse the main Coq content."""
         # Extract model name from module
         model_name = self._extract_model_name(content)
-        
+
         # Create base model
         model = GNNInternalRepresentation(
             model_name=model_name,
             annotation="Parsed from Coq formal verification specification"
         )
-        
+
         # Parse requires
         self._parse_requires(content, model)
-        
+
         # Parse parameters and variables
         self._parse_parameters(content, model)
         self._parse_variables(content, model)
         self._parse_definitions(content, model)
-        
+
         # Parse theorems as constraints
         self._parse_theorems(content, model)
-        
+
         return model
-    
+
     def _extract_model_name(self, content: str) -> str:
         """Extract model name from Coq content."""
         module_match = self.module_pattern.search(content)
         if module_match:
             return module_match.group(1)
-        
+
         return "CoqGNNModel"
-    
+
     def _parse_requires(self, content: str, model: GNNInternalRepresentation):
         """Parse Require Import statements."""
         requires = self.require_pattern.findall(content)
         model.extensions['coq_requires'] = requires
-        
+
         # Check for relevant libraries
         has_reals = any('Reals' in req for req in requires)
         has_lists = any('Lists' in req for req in requires)
-        
+
         model.extensions['uses_reals'] = has_reals
         model.extensions['uses_lists'] = has_lists
-    
+
     def _parse_parameters(self, content: str, model: GNNInternalRepresentation):
         """Parse Parameter declarations."""
         parameter_matches = self.parameter_pattern.findall(content)
-        
+
         for param_name, param_type in parameter_matches:
             # Infer variable type
             var_type = self._infer_variable_type(param_name, param_type)
             data_type = self._infer_data_type(param_type)
-            
+
             variable = Variable(
                 name=param_name,
                 var_type=var_type,
@@ -218,21 +216,21 @@ class CoqGNNParser(BaseGNNParser):
                 data_type=data_type,
                 description=f"Parameter: {param_type.strip()}"
             )
-            
+
             model.variables.append(variable)
-    
+
     def _parse_variables(self, content: str, model: GNNInternalRepresentation):
         """Parse Variable declarations."""
         variable_matches = self.variable_pattern.findall(content)
-        
+
         for var_name, var_type in variable_matches:
             # Skip if already parsed as parameter
             if any(var.name == var_name for var in model.variables):
                 continue
-            
+
             var_type_enum = self._infer_variable_type(var_name, var_type)
             data_type = self._infer_data_type(var_type)
-            
+
             variable = Variable(
                 name=var_name,
                 var_type=var_type_enum,
@@ -240,21 +238,21 @@ class CoqGNNParser(BaseGNNParser):
                 data_type=data_type,
                 description=f"Variable: {var_type.strip()}"
             )
-            
+
             model.variables.append(variable)
-    
+
     def _parse_definitions(self, content: str, model: GNNInternalRepresentation):
         """Parse Definition statements."""
         def_matches = self.definition_pattern.findall(content)
-        
+
         for def_name, def_type in def_matches:
             # Skip if already parsed
             if any(var.name == def_name for var in model.variables):
                 continue
-            
+
             var_type = self._infer_variable_type(def_name, def_type)
             data_type = self._infer_data_type(def_type)
-            
+
             variable = Variable(
                 name=def_name,
                 var_type=var_type,
@@ -262,13 +260,13 @@ class CoqGNNParser(BaseGNNParser):
                 data_type=data_type,
                 description=f"Definition: {def_type.strip()}"
             )
-            
+
             model.variables.append(variable)
-    
+
     def _parse_theorems(self, content: str, model: GNNInternalRepresentation):
         """Parse Theorem statements as model constraints."""
         theorem_matches = self.theorem_pattern.findall(content)
-        
+
         for theorem_name, theorem_statement in theorem_matches:
             # Store theorem as parameter/constraint
             parameter = Parameter(
@@ -277,14 +275,14 @@ class CoqGNNParser(BaseGNNParser):
                 type_hint="theorem",
                 description=f"Theorem: {theorem_name}"
             )
-            
+
             model.parameters.append(parameter)
-    
+
     def _infer_variable_type(self, name: str, type_def: str) -> VariableType:
         """Infer GNN variable type from Coq name and type."""
         name_lower = name.lower()
         type_lower = type_def.lower()
-        
+
         if any(keyword in name_lower for keyword in ['state', 'hidden', 's_']):
             return VariableType.HIDDEN_STATE
         elif any(keyword in name_lower for keyword in ['obs', 'observation', 'o_']):
@@ -301,13 +299,13 @@ class CoqGNNParser(BaseGNNParser):
             return VariableType.PREFERENCE_VECTOR
         elif 'list' in type_lower and name_lower in ['d', 'd_vector']:
             return VariableType.PRIOR_VECTOR
-        
+
         return VariableType.HIDDEN_STATE
-    
+
     def _infer_data_type(self, type_def: str) -> DataType:
         """Infer data type from Coq type definition."""
         type_lower = type_def.lower()
-        
+
         if any(keyword in type_lower for keyword in ['r', 'real']):
             return DataType.CONTINUOUS
         elif any(keyword in type_lower for keyword in ['nat', 'z']):
@@ -316,9 +314,9 @@ class CoqGNNParser(BaseGNNParser):
             return DataType.BINARY
         elif 'list' in type_lower:
             return DataType.CATEGORICAL
-        
+
         return DataType.CONTINUOUS
-    
+
     def _infer_dimensions(self, type_def: str) -> List[int]:
         """Infer dimensions from Coq type definition."""
         # Simple heuristic for matrix/vector types
@@ -326,9 +324,9 @@ class CoqGNNParser(BaseGNNParser):
             return [3, 3]  # Default matrix size
         elif 'list' in type_def.lower():
             return [5]  # Default vector size
-        
+
         return []
-    
+
     def get_supported_extensions(self) -> List[str]:
         """Get supported file extensions."""
-        return ['.v'] 
+        return ['.v']

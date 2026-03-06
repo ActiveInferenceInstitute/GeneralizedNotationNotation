@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/markov_chain/pytorch/Simple Markov Chain_pytorch.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.724657,
-  "timestamp": "2026-03-05T10:35:38.903407",
+  "execution_time": 0.707352,
+  "timestamp": "2026-03-06T09:49:21.775633",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/pytorch"
+    "output_directory": "output/12_execute_output/markov_chain/pytorch"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/pytorch/simulation_data/pytorch_simulation_results.json"
+      "output/12_execute_output/markov_chain/pytorch/simulation_data/pytorch_simulation_results.json"
     ],
     "traces": [],
     "other": []

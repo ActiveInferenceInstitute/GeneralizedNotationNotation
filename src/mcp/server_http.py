@@ -195,4 +195,4 @@ def start_http_server(host: str = "127.0.0.1", port: int = 8080):
     server.start()
 
 if __name__ == "__main__":
-    start_http_server() 
+    start_http_server()
