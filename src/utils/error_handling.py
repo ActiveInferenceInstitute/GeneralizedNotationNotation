@@ -22,7 +22,7 @@ import hashlib
 T = TypeVar('T')
 
 
-class ErrorSeverity(Enum):
+class PipelineErrorSeverity(Enum):
     """Error severity levels for classification and handling."""
     LOW = "low"
     MEDIUM = "medium"
@@ -60,7 +60,7 @@ class PipelineError:
     step_name: str
     error_type: str
     message: str
-    severity: ErrorSeverity
+    severity: PipelineErrorSeverity
     category: ErrorCategory
     recoverable: bool
     recovery_strategy: RecoveryStrategy
@@ -141,7 +141,7 @@ class PipelineErrorHandler:
         self.errors.append(pipeline_error)
         return pipeline_error
 
-    def _classify_error(self, error: Exception, category: ErrorCategory) -> tuple[ErrorSeverity, RecoveryStrategy]:
+    def _classify_error(self, error: Exception, category: ErrorCategory) -> tuple[PipelineErrorSeverity, RecoveryStrategy]:
         """Classify error severity and determine recovery strategy."""
 
         error_type = type(error).__name__
@@ -149,30 +149,30 @@ class PipelineErrorHandler:
 
         # Critical errors - always fail fast
         if category in [ErrorCategory.SECURITY, ErrorCategory.CONFIGURATION]:
-            return ErrorSeverity.CRITICAL, RecoveryStrategy.FAIL_FAST
+            return PipelineErrorSeverity.CRITICAL, RecoveryStrategy.FAIL_FAST
 
         # Network and timeout errors - retry
         if category in [ErrorCategory.NETWORK, ErrorCategory.TIMEOUT]:
-            return ErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
+            return PipelineErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
 
         # File system errors - may be recoverable
         if category == ErrorCategory.FILE_SYSTEM:
             if "permission" in error_message:
-                return ErrorSeverity.HIGH, RecoveryStrategy.MANUAL
-            return ErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
+                return PipelineErrorSeverity.HIGH, RecoveryStrategy.MANUAL
+            return PipelineErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
 
         # Resource errors - retry with backoff
         if category == ErrorCategory.RESOURCE:
-            return ErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
+            return PipelineErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
 
         # Execution errors - depends on type
         if category == ErrorCategory.EXECUTION:
             if "timeout" in error_message:
-                return ErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
-            return ErrorSeverity.HIGH, RecoveryStrategy.FAIL_FAST
+                return PipelineErrorSeverity.MEDIUM, RecoveryStrategy.RETRY
+            return PipelineErrorSeverity.HIGH, RecoveryStrategy.FAIL_FAST
 
         # Default classification
-        return ErrorSeverity.MEDIUM, RecoveryStrategy.CONTINUE
+        return PipelineErrorSeverity.MEDIUM, RecoveryStrategy.CONTINUE
 
     def _is_recoverable(self, error: Exception, category: ErrorCategory) -> bool:
         """Determine if an error is recoverable."""
@@ -184,10 +184,10 @@ class PipelineErrorHandler:
 
         # Log the error with appropriate level
         log_method = {
-            ErrorSeverity.LOW: self.logger.debug,
-            ErrorSeverity.MEDIUM: self.logger.warning,
-            ErrorSeverity.HIGH: self.logger.error,
-            ErrorSeverity.CRITICAL: self.logger.critical
+            PipelineErrorSeverity.LOW: self.logger.debug,
+            PipelineErrorSeverity.MEDIUM: self.logger.warning,
+            PipelineErrorSeverity.HIGH: self.logger.error,
+            PipelineErrorSeverity.CRITICAL: self.logger.critical
         }[error.severity]
 
         log_method(f"[{error.correlation_id}] {error.category.value}: {error.message}")
@@ -300,13 +300,13 @@ class ExitCode:
     SUCCESS_WITH_WARNINGS = 2
 
     @staticmethod
-    def from_error_severity(severity: ErrorSeverity) -> int:
+    def from_error_severity(severity: PipelineErrorSeverity) -> int:
         """Convert error severity to exit code."""
         return {
-            ErrorSeverity.LOW: ExitCode.SUCCESS_WITH_WARNINGS,
-            ErrorSeverity.MEDIUM: ExitCode.SUCCESS_WITH_WARNINGS,
-            ErrorSeverity.HIGH: ExitCode.CRITICAL_ERROR,
-            ErrorSeverity.CRITICAL: ExitCode.CRITICAL_ERROR
+            PipelineErrorSeverity.LOW: ExitCode.SUCCESS_WITH_WARNINGS,
+            PipelineErrorSeverity.MEDIUM: ExitCode.SUCCESS_WITH_WARNINGS,
+            PipelineErrorSeverity.HIGH: ExitCode.CRITICAL_ERROR,
+            PipelineErrorSeverity.CRITICAL: ExitCode.CRITICAL_ERROR
         }.get(severity, ExitCode.CRITICAL_ERROR)
 
 

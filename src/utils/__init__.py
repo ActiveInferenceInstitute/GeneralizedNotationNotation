@@ -185,7 +185,7 @@ try:
     # Import error handling framework
     from .error_handling import (
         PipelineErrorHandler,
-        ErrorSeverity,
+        PipelineErrorSeverity,
         ErrorCategory,
         RecoveryStrategy,
         ExitCode,
@@ -339,7 +339,7 @@ __all__ = [
 
     # Error handling utilities
     'PipelineErrorHandler',
-    'ErrorSeverity',
+    'PipelineErrorSeverity',
     'ErrorCategory',
     'RecoveryStrategy',
     'ExitCode',
