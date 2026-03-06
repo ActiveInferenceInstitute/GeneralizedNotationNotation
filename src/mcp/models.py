@@ -66,9 +66,9 @@ class MCPTool:
 
     def get_signature(self) -> str:
         """Get a unique signature for this tool."""
-        return hashlib.md5(
+        return hashlib.sha256(
             f"{self.name}:{self.module}:{self.version}:{self.schema}".encode()
-        ).hexdigest()
+        ).hexdigest()[:32]
 
     def mark_used(self) -> None:
         """Mark the tool as used and update statistics."""

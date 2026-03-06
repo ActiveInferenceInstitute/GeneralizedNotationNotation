@@ -6,6 +6,7 @@ This module provides the main visualization functionality for GNN models.
 It generates comprehensive state-space visualizations of GNN files and models.
 """
 
+import ast
 import os
 import json
 import datetime
@@ -652,7 +653,7 @@ class GNNVisualizer:
         matrix_str = matrix_str.replace('[', '[').replace(']', ']')
 
         # Evaluate as Python expression
-        matrix_data = eval(matrix_str)
+        matrix_data = ast.literal_eval(matrix_str)
 
         return matrix_data
 

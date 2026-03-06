@@ -35,6 +35,7 @@ except (ImportError, RecursionError):
     sns = None
     SEABORN_AVAILABLE = False
 
+import ast
 import warnings
 from pathlib import Path
 from typing import Dict, List, Any, Optional
@@ -1357,7 +1358,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         matrix_str = matrix_str.replace('[', '[').replace(']', ']')
 
         # Evaluate as Python expression
-        matrix_data = eval(matrix_str)
+        matrix_data = ast.literal_eval(matrix_str)
 
         return matrix_data
 

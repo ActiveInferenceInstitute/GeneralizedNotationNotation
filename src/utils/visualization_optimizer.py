@@ -50,9 +50,9 @@ class VisualizationCache:
 
     def get_cache_key(self, content: str, params: Dict[str, Any]) -> str:
         """Generate cache key from content and parameters."""
-        content_hash = hashlib.md5(content.encode()).hexdigest()
+        content_hash = hashlib.sha256(content.encode()).hexdigest()
         params_str = json.dumps(sorted(params.items()), sort_keys=True)
-        params_hash = hashlib.md5(params_str.encode()).hexdigest()
+        params_hash = hashlib.sha256(params_str.encode()).hexdigest()
         return f"{content_hash}_{params_hash}"
 
     def is_cached(self, cache_key: str) -> bool:
