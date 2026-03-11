@@ -354,3 +354,6 @@ yarn-error.log*
 #
 # Last updated: February 21, 2026
 # ============================================================================
+/.desloppify
+/.claude
+/.desloppify

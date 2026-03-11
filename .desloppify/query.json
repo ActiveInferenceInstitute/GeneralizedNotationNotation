@@ -2,495 +2,399 @@
   "command": "next",
   "items": [
     {
-      "id": "review::.::holistic::abstraction_fitness::standardized_error_handler_pure_passthrough::d41b1860",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
+      "id": "review::.::holistic::abstraction_fitness::AF-001::1bc06ffe",
+      "kind": "issue",
       "confidence": "high",
       "detector": "review",
       "file": ".",
-      "summary": "StandardizedErrorHandler forwards all calls to PipelineErrorHandler with no additional policy",
+      "summary": "src/setup/utils.py is a pure forwarding facade with five arg-forwarding stubs",
       "detail": {
         "holistic": true,
         "dimension": "abstraction_fitness",
         "related_files": [
-          "src/utils/standardized_error_handling.py",
-          "src/utils/error_handling.py"
+          "src/setup/utils.py",
+          "src/setup/setup.py"
         ],
         "evidence": [
-          "Every method in StandardizedErrorHandler calls self.pipeline_error_handler.create_error() then self.pipeline_error_handler.handle_error(). The only added behavior is _categorize_error which maps Python exception types to ErrorCategory \u2014 logic equally appropriate inside PipelineErrorHandler._classify_error. ErrorRecoveryManager in error_recovery.py provides a third parallel error-handling class with yet another interface."
+          "setup_environment(*args, **kwargs): imports setup_uv_environment from .setup and returns result directly",
+          "install_dependencies(*args, **kwargs): identical pattern",
+          "check_uv_project_status(), get_uv_environment_info(), setup_uv_project_structure() all follow the same pattern"
         ],
-        "suggestion": "Merge _categorize_error into PipelineErrorHandler._classify_error and delete StandardizedErrorHandler. Reduce to one error handler class.",
+        "suggestion": "Eliminate setup/utils.py and have callers import directly from setup/setup.py, or give utils.py genuine policy (argument defaulting, error normalization) that justifies its existence.",
         "reasoning": ""
       },
       "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::ai_generated_debt::pipeline_template_unreachable_example_code::47ea0dd1",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "pipeline_template.py mixes live production code with unreachable example template functions",
-      "detail": {
-        "holistic": true,
-        "dimension": "ai_generated_debt",
-        "related_files": [
-          "src/utils/pipeline_template.py"
-        ],
-        "evidence": [
-          "standard_module_function, process_single_file, and create_standard_module_function (approx lines 194-374) import from '.shared_functions' which does not exist and are never called by any pipeline step. The file has a second module-level docstring at line 178 indicating two modules were concatenated. Zero callers confirmed by grep."
-        ],
-        "suggestion": "Delete the three unused template functions (lines ~194-374). The file already has create_standardized_pipeline_script which is the real production function.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::convention_outlier::log_step_functions_defined_in_nine_places::fe22ed49",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "log_step_start/success/warning/error defined in at least 9 distinct files creating convention drift",
-      "detail": {
-        "holistic": true,
-        "dimension": "convention_outlier",
-        "related_files": [
-          "src/utils/step_logging.py",
-          "src/utils/logging_utils.py",
-          "src/utils/structured_logging.py",
-          "src/utils/diagnostic_logging.py",
-          "src/utils/logging/logging_utils.py"
-        ],
-        "evidence": [
-          "grep for 'def log_step_start' returns definitions in step_logging.py, logging_utils.py, structured_logging.py, diagnostic_logging.py, utils/logging/logging_utils.py, and pipeline/health_check.py (fallback). Each has slightly different signatures. utils/step_logging.py is designated the canonical source but not enforced."
-        ],
-        "suggestion": "Designate utils/step_logging.py as the single source. Delete the duplicate definitions in logging_utils.py, structured_logging.py, and diagnostic_logging.py. Update all callers to import from step_logging.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::cross_module_architecture::execute_pymdp_imports_analysis_internals::d88173ea",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "execute/pymdp/__init__.py imports from analysis/ creating unexpected lateral coupling",
-      "detail": {
-        "holistic": true,
-        "dimension": "cross_module_architecture",
-        "related_files": [
-          "src/execute/pymdp/__init__.py",
-          "src/analysis/"
-        ],
-        "evidence": [
-          "execute/ is a simulation execution module; importing from analysis/ creates a dependency on the analysis layer that is not documented as intentional. This mirrors the recently-fixed visualization\u2192analysis coupling pattern."
-        ],
-        "suggestion": "Move the shared analysis helper into a common module or into execute/ itself, rather than crossing to analysis/.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::dependency_health::heavy_optional_deps_in_mandatory_core::958eb0ad",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "gradio, discopy, altair, and plotly listed as mandatory core dependencies rather than optional extras",
-      "detail": {
-        "holistic": true,
-        "dimension": "dependency_health",
-        "related_files": [
-          "pyproject.toml"
-        ],
-        "evidence": [
-          "pyproject.toml core dependencies include UI/visualization libraries (gradio, altair, plotly) and the discopy categorical-computation library. These are needed only by specific pipeline steps and should be optional extras. JAX ecosystem (jax[cpu], jaxlib, flax, optax) similarly appear as mandatory despite being needed only by step 12."
-        ],
-        "suggestion": "Move heavy optional dependencies to [project.optional-dependencies] groups: visualization, audio, jax, discopy. Keep core dependencies to: numpy, scipy, matplotlib, networkx, pyyaml.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::error_consistency::execute_pipeline_step_try_except_unreachable::6e9004f6",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "execute_pipeline_step wraps a hardcoded dataclass instantiation in a try/except that can never trigger",
-      "detail": {
-        "holistic": true,
-        "dimension": "error_consistency",
-        "related_files": [
-          "src/pipeline/execution.py"
-        ],
-        "evidence": [
-          "Lines 113-130: the try block contains only StepExecutionResult(...) with hardcoded values \u2014 dataclass instantiation cannot raise. The except block is unreachable dead code wrapping a stub."
-        ],
-        "suggestion": "Remove the try/except wrapper from execute_pipeline_step. Return the stub directly and document it as a stub.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::package_organization::utils_fifty_file_god_package::0b93d0fe",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "utils/ contains 50 files mixing logging, config, pipeline orchestration, error handling, and test utilities",
-      "detail": {
-        "holistic": true,
-        "dimension": "package_organization",
-        "related_files": [
-          "src/utils/"
-        ],
-        "evidence": [
-          "utils/__init__.py exports 184 names from 20 source modules. Every other module in the codebase imports from utils/. The package has no internal structure \u2014 logging helpers sit next to pipeline validators, test utilities, and error recovery managers. This creates an implicit dependency on all of utils/ for modules that need only one function."
-        ],
-        "suggestion": "Split by concern into sub-packages: utils/logging/, utils/errors/, utils/config/, utils/testing/. Migrate imports one subdirectory at a time. utils/__init__.py can continue re-exporting during migration.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::test_strategy::pervasive_skip_and_safe_to_fail::4934a7d0",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "high",
-      "detector": "review",
-      "file": ".",
-      "summary": "576 occurrences of safe_to_fail or pytest.skip across tests make coverage metrics unreliable",
-      "detail": {
-        "holistic": true,
-        "dimension": "test_strategy",
-        "related_files": [
-          "src/tests/"
-        ],
-        "evidence": [
-          "grep for 'safe_to_fail\\|pytest.skip' returns 576 matches. This means a large fraction of tests are soft-assertions that pass even when the feature under test is broken. test_pipeline_scripts.py hangs on --help invocations due to subprocess timeouts, indicating tests are written against untestable behavior."
-        ],
-        "suggestion": "Convert safe_to_fail assertions to hard assertions for stable interfaces. Replace subprocess --help tests with direct function-level tests. Reserve pytest.skip for genuinely optional features with clear skip conditions.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::design_coherence::process_analysis_handles_multiple_incompatible_types::cc39bdef",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "medium",
-      "detector": "review",
-      "file": ".",
-      "summary": "process_analysis() in analysis/processor.py handles parsed model dicts, file paths, and raw strings through branched isinstance checks",
-      "detail": {
-        "holistic": true,
-        "dimension": "design_coherence",
-        "related_files": [
-          "src/analysis/processor.py"
-        ],
-        "evidence": [
-          "The function dispatches on type of its first argument using isinstance chains rather than offering separate entry points for each input type. This conflates discovery, parsing, and analysis into one function, making the contract unpredictable."
-        ],
-        "suggestion": "Split into process_analysis_from_file(path), process_analysis_from_dict(model), and a thin dispatcher that callers use only when type is genuinely unknown.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
-    },
-    {
-      "id": "review::.::holistic::high_level_elegance::pipeline_validation_split_across_three_modules::b523fa70",
-      "kind": "finding",
-      "tier": 3,
-      "effective_tier": 1,
-      "confidence": "medium",
-      "detector": "review",
-      "file": ".",
-      "summary": "Pipeline validation logic is split across pipeline_validation.py, utils/pipeline_validator.py, and pipeline/pipeline_validator.py with no clear ownership",
-      "detail": {
-        "holistic": true,
-        "dimension": "high_level_elegance",
-        "related_files": [
-          "src/pipeline/pipeline_validation.py",
-          "src/utils/pipeline_validator.py",
-          "src/pipeline/pipeline_validator.py"
-        ],
-        "evidence": [
-          "Three distinct modules named pipeline_validator* or pipeline_validation perform related but differently-scoped validation. Callers cannot determine which to use without reading all three. The confusingly similar names create ongoing discovery friction for new contributors."
-        ],
-        "suggestion": "Rename files to reflect their role: static_analysis.py, prerequisite_checker.py, integration_tester.py. Add cross-references in each module docstring.",
-        "reasoning": ""
-      },
-      "status": "open",
-      "primary_command": "desloppify issues"
+      "primary_command": "desloppify plan resolve \"review::.::holistic::abstraction_fitness::AF-001::1bc06ffe\" --note \"<what you did>\" --confirm",
+      "queue_position": 1
     }
   ],
   "queue": {
-    "tier_counts": {
-      "1": 323,
-      "2": 910,
-      "3": 2168,
-      "4": 26
-    },
-    "requested_tier": null,
-    "selected_tier": null,
-    "fallback_reason": null,
-    "available_tiers": [
-      1,
-      2,
-      3,
-      4
-    ],
-    "total": 3427
+    "total": 1
   },
   "narrative": {
     "phase": "middle_grind",
-    "headline": "\u26a0 5 security findings \u2014 review before other cleanup. 3417 findings open. Test health (24.8%) needs attention \u2014 run `desloppify next` to start. (12 review findings \u2014 run `desloppify issues`)",
+    "headline": "\u26a0 285 security issues \u2014 review before other cleanup. 2600 issues open. AI generated debt (45.0%) needs attention \u2014 run `desloppify next` to start. (90 review issues \u2014 run `desloppify show review --status open`)",
     "dimensions": {
       "lowest_dimensions": [
         {
-          "name": "Test health",
-          "strict": 24.8,
-          "issues": 399,
-          "impact": 0.0
-        },
-        {
-          "name": "Abstraction fit",
-          "strict": 35.0,
-          "issues": 1,
+          "name": "AI generated debt",
+          "strict": 45.0,
+          "failing": 5,
           "impact": 0.0,
           "subjective": true,
           "impact_description": "re-review to improve"
         },
         {
-          "name": "Test strategy",
-          "strict": 35.0,
-          "issues": 1,
+          "name": "Test health",
+          "strict": 48.4,
+          "failing": 232,
+          "impact": 0.0
+        },
+        {
+          "name": "Stale migration",
+          "strict": 50.0,
+          "failing": 4,
           "impact": 0.0,
           "subjective": true,
           "impact_description": "re-review to improve"
         }
       ],
-      "biggest_gap_dimensions": [],
+      "biggest_gap_dimensions": [
+        {
+          "name": "File health",
+          "lenient": 92.2,
+          "strict": 69.1,
+          "gap": 23.1,
+          "wontfix_count": 182
+        }
+      ],
       "stagnant_dimensions": [
         {
-          "name": "High elegance",
-          "strict": 48.0,
+          "name": "Security",
+          "strict": 91.8,
           "stuck_scans": 5
         },
         {
-          "name": "Convention drift",
-          "strict": 38.0,
+          "name": "File health",
+          "strict": 69.1,
           "stuck_scans": 5
         },
         {
-          "name": "Dep health",
-          "strict": 38.0,
+          "name": "Duplication",
+          "strict": 98.5,
           "stuck_scans": 5
         },
         {
-          "name": "Test strategy",
-          "strict": 35.0,
+          "name": "Design coherence",
+          "strict": 58.0,
           "stuck_scans": 5
         }
       ]
     },
     "actions": [
       {
-        "type": "issue_queue",
-        "detector": "review",
-        "count": 12,
-        "description": "12 review findings need investigation \u2014 run `desloppify issues` to see the work queue",
-        "command": "desloppify issues",
-        "impact": 0.0,
-        "dimension": "Unknown",
-        "priority": 1,
-        "lane": "refactor_0"
-      },
-      {
         "type": "reorganize",
-        "detector": "flat_dirs",
-        "count": 6,
-        "description": "6 flat_dirs findings \u2014 create subdirectories and use `desloppify move`",
-        "command": "desloppify show flat_dirs --status open",
+        "detector": "orphaned",
+        "count": 99,
+        "description": "99 orphaned issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Code quality",
-        "priority": 2,
+        "priority": 1,
+        "clusters": [
+          "auto/orphaned"
+        ],
+        "cluster_count": 1,
         "lane": "restructure"
       },
       {
         "type": "reorganize",
-        "detector": "facade",
-        "count": 32,
-        "description": "32 facade findings \u2014 flatten re-export facades or consolidate barrel files",
-        "command": "desloppify show facade --status open",
+        "detector": "flat_dirs",
+        "count": 9,
+        "description": "9 flat_dirs issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 2,
+        "clusters": [
+          "auto/flat_dirs-overload"
+        ],
+        "cluster_count": 1,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "single_use",
+        "count": 1,
+        "description": "1 single_use issues \u2014 inline or relocate with `desloppify move`",
+        "command": "desloppify show single_use --status open",
         "impact": 0.0,
         "dimension": "Code quality",
         "priority": 3,
         "lane": "restructure"
       },
       {
+        "type": "reorganize",
+        "detector": "coupling",
+        "count": 1,
+        "description": "1 coupling issues \u2014 fix boundary violations with `desloppify move`",
+        "command": "desloppify show coupling --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 4,
+        "lane": "restructure"
+      },
+      {
+        "type": "reorganize",
+        "detector": "facade",
+        "count": 25,
+        "description": "25 facade issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 5,
+        "clusters": [
+          "auto/facade-file"
+        ],
+        "cluster_count": 1,
+        "lane": "restructure"
+      },
+      {
         "type": "refactor",
         "detector": "uncalled_functions",
         "count": 10,
-        "description": "10 uncalled_functions findings \u2014 remove dead functions or document why they're retained",
+        "description": "10 uncalled_functions issues \u2014 remove dead functions or document why they're retained",
         "command": "desloppify show uncalled_functions --status open",
         "impact": 0.0,
         "dimension": "Unknown",
-        "priority": 4,
-        "lane": "refactor_1"
+        "priority": 6,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
         "detector": "structural",
-        "count": 297,
-        "description": "297 structural findings \u2014 decompose large files \u2014 extract logic into focused modules",
-        "command": "desloppify show structural --status open",
+        "count": 54,
+        "description": "54 structural issues in 10 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "File health",
-        "priority": 5,
-        "lane": "refactor_1"
+        "priority": 7,
+        "clusters": [
+          "auto/structural-processor.py",
+          "auto/structural-generator.py",
+          "auto/structural-ui.py",
+          "auto/structural-analyzer.py",
+          "auto/structural-formatters.py",
+          "auto/structural-cli.py",
+          "auto/structural-pymdp_utils.py",
+          "auto/structural-validator.py",
+          "auto/structural-__init__.py",
+          "auto/structural-visualize_jax_output.py"
+        ],
+        "cluster_count": 10,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
         "detector": "props",
         "count": 1,
-        "description": "1 props findings \u2014 split bloated components, extract sub-components",
+        "description": "1 props issues \u2014 split bloated components, extract sub-components",
         "command": "desloppify show props --status open",
         "impact": 0.0,
         "dimension": "Code quality",
-        "priority": 6,
-        "lane": "refactor_1"
+        "priority": 8,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
         "detector": "dupes",
-        "count": 71,
-        "description": "71 dupes findings \u2014 extract shared utility or consolidate duplicates",
-        "command": "desloppify show dupes --status open",
+        "count": 58,
+        "description": "58 dupes issues in 2 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Duplication",
-        "priority": 7,
-        "lane": "refactor_1"
+        "priority": 9,
+        "clusters": [
+          "auto/dupes-exact",
+          "auto/dupes-near-duplicate"
+        ],
+        "cluster_count": 2,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
         "detector": "dict_keys",
-        "count": 621,
-        "description": "621 dict_keys findings \u2014 fix dict key mismatches \u2014 dead writes are likely dead code, schema drift suggests a typo or missed rename",
-        "command": "desloppify show dict_keys --status open",
+        "count": 420,
+        "description": "420 dict_keys issues in 4 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Code quality",
-        "priority": 8,
-        "lane": "refactor_1"
+        "priority": 10,
+        "clusters": [
+          "auto/dict_keys-overwritten_key",
+          "auto/dict_keys-dead_write",
+          "auto/dict_keys-phantom_read",
+          "auto/dict_keys-schema_drift"
+        ],
+        "cluster_count": 4,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
         "detector": "test_coverage",
-        "count": 399,
-        "description": "399 test_coverage findings \u2014 add tests for untested production modules \u2014 prioritize by import count",
-        "command": "desloppify show test_coverage --status open",
+        "count": 232,
+        "description": "232 test_coverage issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Test health",
-        "priority": 9,
+        "priority": 11,
+        "clusters": [
+          "auto/test_coverage"
+        ],
+        "cluster_count": 1,
         "lane": "test_coverage"
       },
       {
         "type": "refactor",
-        "detector": "responsibility_cohesion",
-        "count": 61,
-        "description": "61 responsibility_cohesion findings \u2014 split modules with too many responsibilities \u2014 extract focused sub-modules",
-        "command": "desloppify show responsibility_cohesion --status open",
+        "detector": "signature",
+        "count": 46,
+        "description": "46 signature issues \u2014 consolidate inconsistent function signatures",
+        "command": "desloppify show signature --status open",
         "impact": 0.0,
-        "dimension": "Code quality",
-        "priority": 10,
-        "lane": "refactor_1"
+        "dimension": "Unknown",
+        "priority": 12,
+        "lane": "refactor_0"
       },
       {
         "type": "refactor",
-        "detector": "boilerplate_duplication",
-        "count": 164,
-        "description": "164 boilerplate_duplication findings \u2014 extract shared boilerplate into reusable helpers or base classes",
-        "command": "desloppify show boilerplate_duplication --status open",
-        "impact": 0.0,
-        "dimension": "Duplication",
-        "priority": 11,
-        "lane": "refactor_1"
-      },
-      {
-        "type": "manual_fix",
-        "detector": "unused",
-        "count": 692,
-        "description": "692 unused findings \u2014 inspect with `desloppify next` and fix manually",
-        "command": "desloppify show unused --status open",
-        "impact": 0.0,
-        "dimension": "Code quality",
-        "priority": 12,
-        "lane": "refactor_1"
-      },
-      {
-        "type": "manual_fix",
-        "detector": "smells",
-        "count": 1037,
-        "description": "1037 smells findings \u2014 inspect with `desloppify next` and fix manually",
-        "command": "desloppify show smells --status open",
+        "detector": "responsibility_cohesion",
+        "count": 20,
+        "description": "20 responsibility_cohesion issues in 4 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Code quality",
         "priority": 13,
-        "lane": "refactor_1"
+        "clusters": [
+          "auto/responsibility_cohesion-mcp.py",
+          "auto/responsibility_cohesion-__init__.py",
+          "auto/responsibility_cohesion-utils.py",
+          "auto/responsibility_cohesion-processor.py"
+        ],
+        "cluster_count": 4,
+        "lane": "refactor_0"
       },
       {
-        "type": "manual_fix",
-        "detector": "global_mutable_config",
-        "count": 9,
-        "description": "9 global_mutable_config findings \u2014 refactor module-level mutable state \u2014 use explicit init functions or dependency injection",
-        "command": "desloppify show global_mutable_config --status open",
+        "type": "refactor",
+        "detector": "review",
+        "count": 90,
+        "description": "90 review issues need investigation \u2014 run `desloppify show review --status open` to see them",
+        "command": "desloppify show review --status open",
         "impact": 0.0,
-        "dimension": "Code quality",
+        "dimension": "Unknown",
         "priority": 14,
         "lane": "refactor_1"
       },
       {
         "type": "manual_fix",
+        "detector": "unused",
+        "count": 384,
+        "description": "384 unused issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 15,
+        "clusters": [
+          "auto/unused"
+        ],
+        "cluster_count": 1,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "smells",
+        "count": 833,
+        "description": "833 smells issues in 26 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 16,
+        "clusters": [
+          "auto/smells-swallowed_error",
+          "auto/smells-silent_except",
+          "auto/smells-monster_function",
+          "auto/smells-empty_except",
+          "auto/smells-import_path_mutation",
+          "auto/smells-subprocess_no_timeout",
+          "auto/smells-stderr_traceback",
+          "auto/smells-unsafe_file_write",
+          "auto/smells-optional_param_sprawl",
+          "auto/smells-dead_function",
+          "auto/smells-hardcoded_url",
+          "auto/smells-import_runtime_init",
+          "auto/smells-inline_class",
+          "auto/smells-deferred_import",
+          "auto/smells-magic_number",
+          "auto/smells-broad_except",
+          "auto/smells-raise_without_from",
+          "auto/smells-unused_loop_var",
+          "auto/smells-type_ignore",
+          "auto/smells-global_keyword",
+          "auto/smells-mutable_class_var",
+          "auto/smells-bool_comparison",
+          "auto/smells-star_import",
+          "auto/smells-annotation_quality",
+          "auto/smells-high_cyclomatic_complexity",
+          "auto/smells-nested_closure"
+        ],
+        "cluster_count": 26,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "global_mutable_config",
+        "count": 11,
+        "description": "11 global_mutable_config issues \u2014 refactor module-level mutable state \u2014 use explicit init functions or dependency injection",
+        "command": "desloppify show global_mutable_config --status open",
+        "impact": 0.0,
+        "dimension": "Code quality",
+        "priority": 17,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
+        "detector": "stale_wontfix",
+        "count": 21,
+        "description": "21 stale_wontfix issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
+        "impact": 0.0,
+        "dimension": "Unknown",
+        "priority": 18,
+        "clusters": [
+          "auto/stale_wontfix"
+        ],
+        "cluster_count": 1,
+        "lane": "refactor_0"
+      },
+      {
+        "type": "manual_fix",
         "detector": "security",
-        "count": 5,
-        "description": "5 security findings \u2014 review and fix security findings \u2014 prioritize by severity",
-        "command": "desloppify show security --status open",
+        "count": 285,
+        "description": "285 security issues in 1 cluster(s) \u2014 run `desloppify next`",
+        "command": "desloppify next",
         "impact": 0.0,
         "dimension": "Security",
-        "priority": 15,
-        "lane": "refactor_1"
+        "priority": 19,
+        "clusters": [
+          "auto/security"
+        ],
+        "cluster_count": 1,
+        "lane": "refactor_0"
       }
     ],
     "strategy": {
       "fixer_leverage": {
         "auto_fixable_count": 0,
-        "total_count": 3441,
+        "total_count": 2780,
         "coverage": 0.0,
         "impact_ratio": 0.0,
         "recommendation": "none"
@@ -498,61 +402,65 @@
       "lanes": {
         "restructure": {
           "actions": [
+            1,
             2,
-            3
+            3,
+            4,
+            5
           ],
-          "file_count": 38,
+          "file_count": 133,
           "total_impact": 0.0,
           "automation": "manual",
           "run_first": false
         },
         "refactor_0": {
           "actions": [
-            1
+            6,
+            7,
+            8,
+            9,
+            10,
+            12,
+            13,
+            15,
+            16,
+            17,
+            18,
+            19
           ],
-          "file_count": 1,
+          "file_count": 437,
           "total_impact": 0.0,
           "automation": "manual",
           "run_first": false
         },
         "refactor_1": {
           "actions": [
-            4,
-            5,
-            6,
-            7,
-            8,
-            10,
-            11,
-            12,
-            13,
-            14,
-            15
+            14
           ],
-          "file_count": 552,
+          "file_count": 1,
           "total_impact": 0.0,
           "automation": "manual",
           "run_first": false
         },
         "test_coverage": {
           "actions": [
-            9
+            11
           ],
-          "file_count": 399,
+          "file_count": 232,
           "total_impact": 0.0,
           "automation": "manual",
           "run_first": false
         }
       },
       "can_parallelize": true,
-      "hint": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 12 finding(s) \u2014 `desloppify issues`."
+      "hint": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 90 issue(s) \u2014 `desloppify show review --status open`."
     },
     "tools": {
       "fixers": [],
       "move": {
         "available": true,
         "relevant": true,
-        "reason": "6 flat directories",
+        "reason": "99 orphaned files + 1 coupling violations + 1 single-use files + 9 flat directories",
         "usage": "desloppify move <source> <dest> [--dry-run]"
       },
       "plan": {
@@ -567,58 +475,425 @@
       }
     },
     "debt": {
-      "overall_gap": 0.0,
-      "wontfix_count": 0,
-      "worst_dimension": null,
-      "worst_gap": 0.0,
+      "overall_gap": 0.7,
+      "wontfix_count": 298,
+      "worst_dimension": "File health",
+      "worst_gap": 23.1,
       "trend": "stable"
     },
     "milestone": null,
     "primary_action": {
-      "command": "desloppify issues",
-      "description": "12 review findings need investigation \u2014 run `desloppify issues` to see the work queue"
+      "command": "desloppify next",
+      "description": "99 orphaned issues in 1 cluster(s) \u2014 run `desloppify next`"
     },
-    "why_now": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 12 finding(s) \u2014 `desloppify issues`.",
+    "why_now": "4 independent workstreams, safe to parallelize. Rescan after each phase to verify. Review: 90 issue(s) \u2014 `desloppify show review --status open`.",
     "verification_step": {
       "command": "desloppify scan",
       "reason": "revalidate after changes"
     },
-    "risk_flags": [],
+    "risk_flags": [
+      {
+        "type": "wontfix_gap",
+        "severity": "high",
+        "message": "Strict/lenient gap is 0.7 pts with 298 wontfix issues"
+      }
+    ],
     "strict_target": {
       "target": 95.0,
-      "current": 55.4,
-      "gap": 39.6,
+      "current": 67.9,
+      "gap": 27.1,
       "state": "below",
       "warning": null
     },
     "reminders": [],
     "reminder_history": {
       "zone_classification": 3,
-      "report_scores": 6,
+      "report_scores": 12,
       "review_findings_pending": 3,
       "stagnant_nudge": 3,
-      "feedback_nudge": 3
+      "feedback_nudge": 3,
+      "review_issues_pending": 3,
+      "wontfix_growing": 1
     }
   },
-  "overall_score": 55.4,
-  "objective_score": 70.7,
-  "strict_score": 55.4,
+  "agent_notes": [
+    "Do NOT use `desloppify plan skip` unless the user explicitly asks you to skip an item.",
+    "If you cannot fix an item, report it and move to the next one.",
+    "For cluster items: if the autofix_hint finds 0 results, drill into individual issues with the primary_command."
+  ],
+  "plan": {
+    "active": true,
+    "focus": null,
+    "clusters": [
+      {
+        "name": "auto/unused",
+        "description": "Remove 384 unused issues",
+        "item_count": 384
+      },
+      {
+        "name": "auto/structural-processor.py",
+        "description": "Review file size: processor.py",
+        "item_count": 20
+      },
+      {
+        "name": "auto/structural-generator.py",
+        "description": "Review file size: generator.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-ui.py",
+        "description": "Review file size: ui.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-analyzer.py",
+        "description": "Review file size: analyzer.py",
+        "item_count": 7
+      },
+      {
+        "name": "auto/structural-formatters.py",
+        "description": "Review file size: formatters.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-cli.py",
+        "description": "Review file size: cli.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-pymdp_utils.py",
+        "description": "Review file size: pymdp_utils.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-validator.py",
+        "description": "Review file size: validator.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/structural-__init__.py",
+        "description": "Review file size: __init__.py",
+        "item_count": 5
+      },
+      {
+        "name": "auto/structural-visualize_jax_output.py",
+        "description": "Review file size: visualize_jax_output.py",
+        "item_count": 2
+      },
+      {
+        "name": "auto/flat_dirs-overload",
+        "description": "Fix 9 overload issues",
+        "item_count": 9
+      },
+      {
+        "name": "auto/responsibility_cohesion-mcp.py",
+        "description": "Fix 3 mcp.py issues",
+        "item_count": 3
+      },
+      {
+        "name": "auto/responsibility_cohesion-__init__.py",
+        "description": "Fix 2   init  .py issues",
+        "item_count": 2
+      },
+      {
+        "name": "auto/responsibility_cohesion-utils.py",
+        "description": "Fix 2 utils.py issues",
+        "item_count": 2
+      },
+      {
+        "name": "auto/responsibility_cohesion-processor.py",
+        "description": "Fix 4 processor.py issues",
+        "item_count": 4
+      },
+      {
+        "name": "auto/facade-file",
+        "description": "Fix 25 file issues",
+        "item_count": 25
+      },
+      {
+        "name": "auto/test_coverage",
+        "description": "Fix 232 test coverage issues",
+        "item_count": 232
+      },
+      {
+        "name": "auto/smells-swallowed_error",
+        "description": "Fix 10 swallowed error issues",
+        "item_count": 10
+      },
+      {
+        "name": "auto/smells-silent_except",
+        "description": "Fix 33 silent except issues",
+        "item_count": 32
+      },
+      {
+        "name": "auto/smells-monster_function",
+        "description": "Fix 38 monster function issues",
+        "item_count": 38
+      },
+      {
+        "name": "auto/smells-empty_except",
+        "description": "Fix 32 empty except issues",
+        "item_count": 31
+      },
+      {
+        "name": "auto/smells-import_path_mutation",
+        "description": "Fix 45 import path mutation issues",
+        "item_count": 45
+      },
+      {
+        "name": "auto/smells-subprocess_no_timeout",
+        "description": "Fix 11 subprocess no timeout issues",
+        "item_count": 11
+      },
+      {
+        "name": "auto/smells-stderr_traceback",
+        "description": "Fix 9 stderr traceback issues",
+        "item_count": 9
+      },
+      {
+        "name": "auto/smells-unsafe_file_write",
+        "description": "Fix 25 unsafe file write issues",
+        "item_count": 25
+      },
+      {
+        "name": "auto/smells-optional_param_sprawl",
+        "description": "Fix 29 optional param sprawl issues",
+        "item_count": 29
+      },
+      {
+        "name": "auto/smells-dead_function",
+        "description": "Fix 17 dead function issues",
+        "item_count": 17
+      },
+      {
+        "name": "auto/smells-hardcoded_url",
+        "description": "Fix 14 hardcoded url issues",
+        "item_count": 14
+      },
+      {
+        "name": "auto/smells-import_runtime_init",
+        "description": "Fix 9 import runtime init issues",
+        "item_count": 9
+      },
+      {
+        "name": "auto/smells-inline_class",
+        "description": "Fix 9 inline class issues",
+        "item_count": 9
+      },
+      {
+        "name": "auto/smells-deferred_import",
+        "description": "Fix 28 deferred import issues",
+        "item_count": 28
+      },
+      {
+        "name": "auto/smells-magic_number",
+        "description": "Fix 15 magic number issues",
+        "item_count": 15
+      },
+      {
+        "name": "auto/smells-broad_except",
+        "description": "Fix 308 broad except issues",
+        "item_count": 308
+      },
+      {
+        "name": "auto/smells-raise_without_from",
+        "description": "Fix 21 raise without from issues",
+        "item_count": 20
+      },
+      {
+        "name": "auto/smells-unused_loop_var",
+        "description": "Fix 43 unused loop var issues",
+        "item_count": 42
+      },
+      {
+        "name": "auto/smells-type_ignore",
+        "description": "Fix 20 type ignore issues",
+        "item_count": 20
+      },
+      {
+        "name": "auto/smells-global_keyword",
+        "description": "Fix 8 global keyword issues",
+        "item_count": 8
+      },
+      {
+        "name": "auto/smells-mutable_class_var",
+        "description": "Fix 13 mutable class var issues",
+        "item_count": 13
+      },
+      {
+        "name": "auto/smells-bool_comparison",
+        "description": "Fix 6 bool comparison issues",
+        "item_count": 6
+      },
+      {
+        "name": "auto/smells-star_import",
+        "description": "Fix 23 star import issues",
+        "item_count": 23
+      },
+      {
+        "name": "auto/security",
+        "description": "Fix 285 security issues",
+        "item_count": 285
+      },
+      {
+        "name": "auto/dict_keys-overwritten_key",
+        "description": "Fix 313 overwritten key issues",
+        "item_count": 313
+      },
+      {
+        "name": "auto/dict_keys-dead_write",
+        "description": "Fix 27 dead write issues",
+        "item_count": 27
+      },
+      {
+        "name": "auto/dict_keys-phantom_read",
+        "description": "Fix 50 phantom read issues",
+        "item_count": 50
+      },
+      {
+        "name": "auto/dict_keys-schema_drift",
+        "description": "Fix 30 schema drift issues",
+        "item_count": 30
+      },
+      {
+        "name": "auto/dupes-exact",
+        "description": "Fix 42 exact issues",
+        "item_count": 42
+      },
+      {
+        "name": "auto/dupes-near-duplicate",
+        "description": "Fix 16 near-duplicate issues",
+        "item_count": 16
+      },
+      {
+        "name": "auto/smells-annotation_quality",
+        "description": "Fix 27 annotation quality issues",
+        "item_count": 26
+      },
+      {
+        "name": "auto/smells-high_cyclomatic_complexity",
+        "description": "Fix 26 high cyclomatic complexity issues",
+        "item_count": 26
+      },
+      {
+        "name": "auto/smells-nested_closure",
+        "description": "Fix 17 nested closure issues",
+        "item_count": 17
+      },
+      {
+        "name": "deprecated-ghosts",
+        "description": "Remove deprecated code still exported from utils/__init__.py",
+        "item_count": 0
+      },
+      {
+        "name": "ai-debt",
+        "description": "Remove AI-generated boilerplate and consolidate duplicate code",
+        "item_count": 0
+      },
+      {
+        "name": "critical-bugs",
+        "description": "Fix silent correctness bugs in active code paths",
+        "item_count": 0
+      },
+      {
+        "name": "type-contracts",
+        "description": "Fix type annotation lies and missing Optional declarations",
+        "item_count": 0
+      },
+      {
+        "name": "error-handling",
+        "description": "Silent exceptions and inconsistent error propagation patterns",
+        "item_count": 0
+      },
+      {
+        "name": "deferred-arch",
+        "description": "Architectural debt deferred - too large for this pass",
+        "item_count": 0
+      },
+      {
+        "name": "passthrough-wrappers",
+        "description": "Passthrough/identity wrapper functions that add no value and obscure the real interface",
+        "item_count": 0
+      },
+      {
+        "name": "api-contracts",
+        "description": "Type annotation lies, sync/async mismatches, and API contract violations",
+        "item_count": 0
+      },
+      {
+        "name": "large-files",
+        "description": "Large source files in src/ that need review or splitting",
+        "item_count": 0
+      },
+      {
+        "name": "api-contract-bugs",
+        "description": "Fix API contract violations: LLMResponse field mismatches (model_used vs model, provider str vs ProviderType), MatrixVisualizer parameter ordering, LLM naming conflicts",
+        "item_count": 0
+      },
+      {
+        "name": "stale-mappings",
+        "description": "Update stale STEP_OUTPUT_MAPPING in argument_utils.py to match current 25-step pipeline",
+        "item_count": 0
+      },
+      {
+        "name": "low-level-bugs",
+        "description": "Fix low-level code quality issues in type_checker: dead code, double iteration, duplicated logic",
+        "item_count": 0
+      },
+      {
+        "name": "type-annotation-fixes",
+        "description": "Fix missing/incorrect type annotations across public APIs",
+        "item_count": 0
+      },
+      {
+        "name": "fixable-smells",
+        "description": "Fix fixable code smells: duplicate methods, nested try blocks, legacy aliases",
+        "item_count": 0
+      },
+      {
+        "name": "auto/orphaned",
+        "description": "Fix 99 orphaned issues",
+        "item_count": 99
+      },
+      {
+        "name": "low-level-code-bugs",
+        "description": "Refactor parallel _process_gnn_X methods and redundant ABCD setup in PyMDPSimulation",
+        "item_count": 0
+      },
+      {
+        "name": "review-architectural-defer",
+        "description": "Architectural issues requiring multi-file refactoring: passthrough methods, delegation shells, import cycles, hub modules",
+        "item_count": 32
+      },
+      {
+        "name": "auto/stale_wontfix",
+        "description": "Fix 21 stale wontfix issues",
+        "item_count": 21
+      }
+    ],
+    "total_ordered": 92,
+    "total_skipped": 2195,
+    "plan_overrides_narrative": true
+  },
+  "overall_score": 71.0,
+  "objective_score": 82.9,
+  "strict_score": 67.9,
   "scorecard_dimensions": [
     {
       "name": "File health",
-      "score": 67.2,
-      "strict": 67.2,
-      "checks": 546,
-      "issues": 251,
+      "score": 92.2,
+      "strict": 69.1,
+      "checks": 450,
+      "failing": 50,
       "tier": 3,
       "subjective": false
     },
     {
       "name": "AI generated debt",
-      "score": 55.0,
-      "strict": 55.0,
+      "score": 45.0,
+      "strict": 45.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -627,11 +902,24 @@
       ]
     },
     {
-      "name": "Abstraction fit",
-      "score": 35.0,
-      "strict": 35.0,
+      "name": "API coherence",
+      "score": 56.5,
+      "strict": 56.5,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "api_surface_coherence"
+      ]
+    },
+    {
+      "name": "Abstraction fit",
+      "score": 58.5,
+      "strict": 58.5,
+      "checks": 10,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -641,19 +929,19 @@
     },
     {
       "name": "Code quality",
-      "score": 70.1,
-      "strict": 70.1,
-      "checks": 3916,
-      "issues": 2104,
+      "score": 74.0,
+      "strict": 73.4,
+      "checks": 3223,
+      "failing": 1532,
       "tier": 3,
       "subjective": false
     },
     {
       "name": "Convention drift",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 60.0,
+      "strict": 60.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -663,10 +951,10 @@
     },
     {
       "name": "Cross-module arch",
-      "score": 47.0,
-      "strict": 47.0,
+      "score": 55.0,
+      "strict": 55.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 6,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -676,10 +964,10 @@
     },
     {
       "name": "Dep health",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 72.0,
+      "strict": 72.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 3,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -689,10 +977,10 @@
     },
     {
       "name": "Design coherence",
-      "score": 45.0,
-      "strict": 45.0,
+      "score": 58.0,
+      "strict": 58.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -702,19 +990,19 @@
     },
     {
       "name": "Duplication",
-      "score": 95.4,
-      "strict": 95.4,
-      "checks": 3735,
-      "issues": 235,
+      "score": 98.5,
+      "strict": 98.5,
+      "checks": 3023,
+      "failing": 58,
       "tier": 3,
       "subjective": false
     },
     {
       "name": "Elegance",
-      "score": 48.7,
-      "strict": 48.7,
+      "score": 65.2,
+      "strict": 65.2,
       "checks": 30,
-      "issues": 3,
+      "failing": 13,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -726,10 +1014,10 @@
     },
     {
       "name": "Error consistency",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 52.0,
+      "strict": 52.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -738,20 +1026,59 @@
       ]
     },
     {
+      "name": "Init coupling",
+      "score": 62.0,
+      "strict": 62.0,
+      "checks": 10,
+      "failing": 5,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "initialization_coupling"
+      ]
+    },
+    {
+      "name": "Naming quality",
+      "score": 62.0,
+      "strict": 62.0,
+      "checks": 10,
+      "failing": 4,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "naming_quality"
+      ]
+    },
+    {
       "name": "Security",
-      "score": 99.7,
-      "strict": 99.7,
-      "checks": 1073,
-      "issues": 5,
+      "score": 91.8,
+      "strict": 91.8,
+      "checks": 1026,
+      "failing": 285,
       "tier": 4,
       "subjective": false
     },
     {
-      "name": "Structure nav",
-      "score": 38.0,
-      "strict": 38.0,
+      "name": "Stale migration",
+      "score": 50.0,
+      "strict": 50.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 4,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "incomplete_migration"
+      ]
+    },
+    {
+      "name": "Structure nav",
+      "score": 62.0,
+      "strict": 62.0,
+      "checks": 10,
+      "failing": 3,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -761,34 +1088,47 @@
     },
     {
       "name": "Test health",
-      "score": 24.8,
-      "strict": 24.8,
-      "checks": 8803,
-      "issues": 399,
+      "score": 48.4,
+      "strict": 48.4,
+      "checks": 7223,
+      "failing": 232,
       "tier": 4,
       "subjective": false
     },
     {
       "name": "Test strategy",
-      "score": 35.0,
-      "strict": 35.0,
+      "score": 66.0,
+      "strict": 66.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 4,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
       "cli_keys": [
         "test_strategy"
       ]
+    },
+    {
+      "name": "Type safety",
+      "score": 59.0,
+      "strict": 59.0,
+      "checks": 10,
+      "failing": 6,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "type_safety"
+      ]
     }
   ],
   "subjective_measures": [
     {
       "name": "AI generated debt",
-      "score": 55.0,
-      "strict": 55.0,
+      "score": 45.0,
+      "strict": 45.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -797,11 +1137,24 @@
       ]
     },
     {
-      "name": "Abstraction fit",
-      "score": 35.0,
-      "strict": 35.0,
+      "name": "API coherence",
+      "score": 56.5,
+      "strict": 56.5,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "api_surface_coherence"
+      ]
+    },
+    {
+      "name": "Abstraction fit",
+      "score": 58.5,
+      "strict": 58.5,
+      "checks": 10,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -811,10 +1164,10 @@
     },
     {
       "name": "Convention drift",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 60.0,
+      "strict": 60.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -824,10 +1177,10 @@
     },
     {
       "name": "Cross-module arch",
-      "score": 47.0,
-      "strict": 47.0,
+      "score": 55.0,
+      "strict": 55.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 6,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -837,10 +1190,10 @@
     },
     {
       "name": "Dep health",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 72.0,
+      "strict": 72.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 3,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -850,10 +1203,10 @@
     },
     {
       "name": "Design coherence",
-      "score": 45.0,
-      "strict": 45.0,
+      "score": 58.0,
+      "strict": 58.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -863,10 +1216,10 @@
     },
     {
       "name": "Elegance",
-      "score": 48.7,
-      "strict": 48.7,
+      "score": 65.2,
+      "strict": 65.2,
       "checks": 30,
-      "issues": 3,
+      "failing": 13,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -878,10 +1231,10 @@
     },
     {
       "name": "Error consistency",
-      "score": 38.0,
-      "strict": 38.0,
+      "score": 52.0,
+      "strict": 52.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -890,11 +1243,50 @@
       ]
     },
     {
-      "name": "Structure nav",
-      "score": 38.0,
-      "strict": 38.0,
+      "name": "Init coupling",
+      "score": 62.0,
+      "strict": 62.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 5,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "initialization_coupling"
+      ]
+    },
+    {
+      "name": "Naming quality",
+      "score": 62.0,
+      "strict": 62.0,
+      "checks": 10,
+      "failing": 4,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "naming_quality"
+      ]
+    },
+    {
+      "name": "Stale migration",
+      "score": 50.0,
+      "strict": 50.0,
+      "checks": 10,
+      "failing": 4,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "incomplete_migration"
+      ]
+    },
+    {
+      "name": "Structure nav",
+      "score": 62.0,
+      "strict": 62.0,
+      "checks": 10,
+      "failing": 3,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
@@ -904,17 +1296,34 @@
     },
     {
       "name": "Test strategy",
-      "score": 35.0,
-      "strict": 35.0,
+      "score": 66.0,
+      "strict": 66.0,
       "checks": 10,
-      "issues": 1,
+      "failing": 4,
       "tier": 4,
       "subjective": true,
       "placeholder": false,
       "cli_keys": [
         "test_strategy"
       ]
+    },
+    {
+      "name": "Type safety",
+      "score": 59.0,
+      "strict": 59.0,
+      "checks": 10,
+      "failing": 6,
+      "tier": 4,
+      "subjective": true,
+      "placeholder": false,
+      "cli_keys": [
+        "type_safety"
+      ]
     }
+  ],
+  "warnings": [
+    "90 new review issue(s) not yet triaged. Run `desloppify plan triage` to incorporate.",
+    "TRIAGE RECOMMENDED \u2014 review issues changed since last triage. Run: desloppify plan triage"
   ],
   "config": {
     "target_strict_score": 95,
@@ -957,8 +1366,14 @@
     "review_dimensions": [],
     "large_files_threshold": 0,
     "props_threshold": 0,
-    "finding_noise_budget": 10,
-    "finding_noise_global_budget": 0,
-    "languages": {}
+    "issue_noise_budget": 10,
+    "issue_noise_global_budget": 0,
+    "execution_log_max_entries": 10000,
+    "needs_rescan": false,
+    "languages": {},
+    "commit_tracking_enabled": true,
+    "commit_pr": 0,
+    "commit_default_branch": "",
+    "commit_message_template": "desloppify: {status} {count} issue(s) \u2014 {summary}"
   }
 }
