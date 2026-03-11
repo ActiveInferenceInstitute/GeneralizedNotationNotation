@@ -16,7 +16,7 @@ class AudioGenerator:
         self.supported_formats = ['wav', 'mp3', 'flac', 'ogg']
         self.generation_types = ['tonal', 'rhythmic', 'ambient', 'sonification']
 
-    def generate_audio(self, model_data: dict) -> dict:
+    def generate_audio(self, model_data: Dict[str, Any]) -> Dict[str, Any]:
         """Generate audio from model data."""
         try:
             results = {
@@ -73,7 +73,7 @@ class AudioGenerator:
                 "errors": [str(e)]
             }
 
-    def analyze_audio(self, audio_file: str) -> dict:
+    def analyze_audio(self, audio_file: str) -> Dict[str, Any]:
         """Analyze audio characteristics."""
         try:
             # Real audio analysis

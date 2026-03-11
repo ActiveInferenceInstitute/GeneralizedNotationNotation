@@ -6,6 +6,7 @@ This module provides SAPF audio processing capabilities.
 """
 
 from pathlib import Path
+from typing import Any, Dict, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -68,7 +69,7 @@ def process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str,
             "model_name": model_name
         }
 
-def generate_sapf_audio(sapf_code, output_path, **kwargs):
+def generate_sapf_audio(sapf_code: str, output_path: str, **kwargs: Any) -> Dict[str, Any]:
     """
     Generate audio from SAPF code.
     
@@ -95,7 +96,7 @@ def generate_sapf_audio(sapf_code, output_path, **kwargs):
             "error": str(e)
         }
 
-def create_sapf_visualization(sapf_code, output_path=None):
+def create_sapf_visualization(sapf_code: str, output_path: Optional[str] = None) -> Dict[str, Any]:
     """
     Create visualization from SAPF code.
     
@@ -157,7 +158,7 @@ def create_sapf_visualization(sapf_code, output_path=None):
             "error": str(e)
         }
 
-def generate_sapf_report(sapf_results, output_path=None):
+def generate_sapf_report(sapf_results: Dict[str, Any], output_path: Optional[str] = None) -> Dict[str, Any]:
     """
     Generate report from SAPF results.
     

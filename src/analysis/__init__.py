@@ -4,6 +4,8 @@ Analysis module for GNN Processing Pipeline.
 This module provides comprehensive analysis and statistical processing for GNN models.
 """
 
+from typing import Any, Dict
+
 __version__ = "1.1.3"
 FEATURES = {
     "statistical_analysis": True,
@@ -87,7 +89,7 @@ except ImportError:
 # Note: process_analysis is imported from processor.py at the top of this file.
 # Do NOT redefine it here - that would shadow the comprehensive implementation.
 
-def check_analysis_tools():
+def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools."""
     tools = {}
 

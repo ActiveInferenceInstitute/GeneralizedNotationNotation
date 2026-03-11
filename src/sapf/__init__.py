@@ -3,6 +3,8 @@ Top-level sapf package shim that re-exports real SAPF functionality from
 `audio.sapf`. This keeps tests and external callers working with
 `import sapf` without duplicating code.
 """
+import logging
+_logger = logging.getLogger(__name__)
 try:
     # Prefer explicit absolute import of the package to support both `import sapf`
     # and `import src.sapf` invocation contexts during tests.
@@ -55,8 +57,8 @@ def get_module_info() -> dict:
     if _audio_sapf and hasattr(_audio_sapf, 'get_module_info'):
         try:
             return _audio_sapf.get_module_info()
-        except Exception:
-            pass
+        except Exception as e:
+            _logger.debug(f"get_module_info delegation failed, using fallback: {e}")
 
     return {
         'version': __version__,

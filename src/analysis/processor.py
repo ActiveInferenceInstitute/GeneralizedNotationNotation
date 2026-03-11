@@ -194,7 +194,7 @@ def process_analysis(
                         empirical_viz = visualize_simulation_results(execution_results_data, results_dir)
                         results["visualization_files"] = results.get("visualization_files", []) + empirical_viz
                         logger.info(f"Generated {len(empirical_viz)} empirical visualizations from execution summary")
-                    except Exception as e:
+                    except (json.JSONDecodeError, OSError, ValueError, KeyError) as e:
                         logger.warning(f"Failed to load execution summary: {e}")
                 else:
                     logger.warning(f"Execution summary not found at {execution_summary_file}")
@@ -256,7 +256,7 @@ def process_analysis(
                         logger.info(f"Generated {len(generated_viz)} PyMDP visualizations")
                 except ImportError:
                     logger.debug("analysis.pymdp.analyzer not available, skipping PyMDP visualization")
-                except Exception as e:
+                except Exception as e:  # Optional analysis — broad catch intentional for third-party failures
                     logger.warning(f"PyMDP visualization generation failed: {e}")
             else:
                 logger.warning(f"Execution directory not found at {execution_dir}. Skipping post-simulation analysis.")
@@ -275,7 +275,7 @@ def process_analysis(
                     logger.info(f"Generated {len(actinf_viz)} ActiveInference.jl visualization files")
             except ImportError as e:
                 logger.debug(f"analysis.activeinference_jl.analyzer not available: {e}")
-            except Exception as e:
+            except Exception as e:  # Optional analysis — broad catch intentional for third-party failures
                 logger.warning(f"ActiveInference.jl analysis failed: {e}")
 
             # 2.7: Generate DisCoPy Visualizations
@@ -484,7 +484,7 @@ def process_analysis(
         log_step_error(logger, f"Analysis processing failed: {e}")
         return False
 
-def convert_numpy_types(obj):
+def convert_numpy_types(obj: Any) -> Any:
     """
     Convert numpy types and other non-JSON-serializable types to native Python types.
     

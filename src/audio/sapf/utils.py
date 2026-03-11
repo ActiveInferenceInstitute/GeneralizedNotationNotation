@@ -9,7 +9,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def get_module_info():
+def get_module_info() -> dict:
     """
     Get comprehensive information about the SAPF module and its capabilities.
     

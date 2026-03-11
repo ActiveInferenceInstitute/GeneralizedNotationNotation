@@ -389,7 +389,7 @@ def run_pymdp_scripts(
     return failure_count == 0 or success_count > 0
 
 def create_execution_report(output_dir: Path, execution_results: List[Dict],
-                          success_count: int, failure_count: int, total_count: int):
+                          success_count: int, failure_count: int, total_count: int) -> None:
     """Create a comprehensive PyMDP execution report."""
 
     report = {
@@ -441,7 +441,7 @@ def create_execution_report(output_dir: Path, execution_results: List[Dict],
 
     logger.info(f"Created comprehensive execution report: {report_file.name}")
 
-def create_empty_execution_report(output_dir: Path):
+def create_empty_execution_report(output_dir: Path) -> None:
     """Create an empty execution report when no scripts are found."""
 
     report = {

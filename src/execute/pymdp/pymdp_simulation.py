@@ -21,7 +21,7 @@ import numpy as np
 import time
 import logging
 from pathlib import Path
-from typing import Dict, List, Optional, Any, Union
+from typing import Dict, List, Optional, Any, Tuple, Union
 import warnings
 warnings.filterwarnings('ignore')
 
@@ -233,7 +233,7 @@ class PyMDPSimulation:
                 # leave as-is if any creation fails
                 pass
 
-    def _initialize_parameters(self):
+    def _initialize_parameters(self) -> None:
         """Initialize simulation parameters from GNN config or defaults."""
         if self.gnn_config:
             # Extract from GNN configuration
@@ -293,7 +293,7 @@ class PyMDPSimulation:
         self.num_actions = len(self.action_names)
         self.num_observations = len(self.observation_names)
 
-    def create_pymdp_model_from_gnn(self):
+    def create_pymdp_model_from_gnn(self) -> Tuple[Any, Dict[str, Any]]:
         """
         Create PyMDP model matrices using extracted GNN matrices from InitialParameterization.
         
@@ -402,6 +402,18 @@ class PyMDPSimulation:
             self.logger.info("Falling back to default model creation")
             return self.create_pymdp_model()
 
+<<<<<<< Updated upstream
+=======
+    def _coerce_to_numpy(self, gnn_data: Any, name: str) -> Optional[np.ndarray]:
+        """Convert list or ndarray to numpy array, or return None if type is unexpected."""
+        if isinstance(gnn_data, list):
+            return np.array(gnn_data)
+        if isinstance(gnn_data, np.ndarray):
+            return gnn_data
+        self.logger.warning(f"Unexpected {name} type: {type(gnn_data)}")
+        return None
+
+>>>>>>> Stashed changes
     def _process_gnn_A_matrix(self, gnn_A) -> np.ndarray:
         """Process GNN A matrix into PyMDP format."""
         try:
@@ -541,7 +553,7 @@ class PyMDPSimulation:
             self.logger.error(f"Failed to process GNN D vector: {e}")
             return self._create_prior_beliefs()
 
-    def create_model(self, config: Optional[Dict[str, Any]] = None):
+    def create_model(self, config: Optional[Dict[str, Any]] = None) -> Tuple[Any, Dict[str, Any]]:
         """
         Create PyMDP model matrices (backward compatibility method).
 
@@ -553,7 +565,7 @@ class PyMDPSimulation:
         """
         return self.create_pymdp_model()
 
-    def create_pymdp_model(self):
+    def create_pymdp_model(self) -> Tuple[Any, Dict[str, Any]]:
         """
         Create PyMDP model matrices using authentic PyMDP methods.
 
@@ -873,7 +885,7 @@ class PyMDPSimulation:
 
         return results
 
-    def _save_results(self, output_dir: Path):
+    def _save_results(self, output_dir: Path) -> None:
         """Save comprehensive simulation results."""
         try:
             output_dir.mkdir(parents=True, exist_ok=True)

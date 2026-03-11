@@ -662,7 +662,7 @@ from .data_extractors import (
 )
 
 
-def generate_execution_report(execution_results: Dict[str, Any], results_dir: Path, logger):
+def generate_execution_report(execution_results: Dict[str, Any], results_dir: Path, logger: logging.Logger) -> None:
     """
     Generate a comprehensive execution report.
     

@@ -74,13 +74,16 @@ def find_jax_scripts(base_dir: Union[str, Path], recursive: bool = True) -> List
 
 def execute_jax_script(script_path: Path, verbose: bool = False, device: Optional[str] = None, output_dir: Optional[Path] = None, timeout: int = 300) -> bool:
     """Execute a single JAX script with enhanced dependency checking, error handling, and log persistence.
-    
+
     Args:
         script_path: Path to the JAX script to execute
         verbose: Enable verbose output logging
         device: JAX device to use ('cpu', 'gpu', 'tpu')
         output_dir: Directory for execution logs (stdout.txt, stderr.txt, execution_log.json)
         timeout: Execution timeout in seconds (default: 300)
+
+    Returns:
+        True if script executed successfully, False otherwise
     """
     import json as json_mod
     import time as time_mod

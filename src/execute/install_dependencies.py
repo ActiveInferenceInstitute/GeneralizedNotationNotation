@@ -10,7 +10,7 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-def install_python_dependencies():
+def install_python_dependencies() -> None:
     """Install missing Python dependencies."""
     logger.info("Installing Python dependencies...")
 
@@ -43,7 +43,7 @@ def install_python_dependencies():
         except Exception as e:
             logger.error(f"    ❌ Error installing {dep}: {e}")
 
-def install_julia_dependencies():
+def install_julia_dependencies() -> None:
     """Install Julia dependencies for ActiveInference.jl."""
     logger.info("Installing Julia dependencies...")
 
@@ -78,7 +78,7 @@ def install_julia_dependencies():
         except Exception as e:
             logger.error(f"    ❌ Error installing {pkg}: {e}")
 
-def verify_installations():
+def verify_installations() -> None:
     """Verify that all dependencies are properly installed."""
     logger.info("Verifying installations...")
 
@@ -106,7 +106,7 @@ def verify_installations():
     except FileNotFoundError:
         logger.warning("  ❌ Julia - not found in PATH")
 
-def main():
+def main() -> None:
     """Main installation function."""
     logger.info("GNN Execution System Dependency Installer")
     logger.info("=" * 50)

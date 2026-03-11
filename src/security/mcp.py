@@ -121,8 +121,8 @@ def get_security_report_mcp(output_directory: str) -> Dict[str, Any]:
         for jf in sorted(out_dir.rglob("*security*.json"))[:5]:
             try:
                 reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug(f"Could not parse security report {jf.name}: {e}")
 
         return {
             "success":          True,

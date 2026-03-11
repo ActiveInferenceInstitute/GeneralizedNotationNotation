@@ -218,7 +218,7 @@ def setup_julia_environment(
     }
 
 
-def main():
+def main() -> int:
     """Main entry point for Julia setup."""
     import argparse
 

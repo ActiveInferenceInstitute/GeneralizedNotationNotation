@@ -266,7 +266,7 @@ class VisualizationDataExtractor:
         }
 
 
-def extract_visualization_data(target_dir, output_dir, **kwargs):
+def extract_visualization_data(target_dir: "Path | str", output_dir: "Path | str", **kwargs: Any) -> Dict[str, Any]:
     """
     Extract visualization data from GNN files in the target directory.
     

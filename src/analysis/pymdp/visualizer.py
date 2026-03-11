@@ -342,7 +342,7 @@ class PyMDPVisualizer:
 
         return saved_files
 
-    def close_all_plots(self):
+    def close_all_plots(self) -> None:
         """Close all matplotlib figures to free memory."""
         if MATPLOTLIB_AVAILABLE and plt is not None:
             for fig in self.figures.values():

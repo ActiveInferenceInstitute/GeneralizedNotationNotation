@@ -241,7 +241,7 @@ def analyze_execution_results(
                         framework_analysis["analyses"].append({"error": str(e)})
 
                 # Validate serializability
-                def safe_json_default(obj):
+                def safe_json_default(obj: Any) -> Any:
                     if isinstance(obj, Path):
                         return str(obj)
                     if isinstance(obj, (np.integer, int)):

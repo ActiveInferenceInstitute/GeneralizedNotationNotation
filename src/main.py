@@ -403,9 +403,9 @@ def main():
             else:
                 logger.info(f"🔄 Executing step {actual_step_number}: {description}")
 
-            # Write a preliminary pipeline summary before the intelligent analysis step
-            # so it analyzes the current run's data instead of stale previous run data
-            if script_name == "24_intelligent_analysis.py":
+            # Write a preliminary pipeline summary before report generation and
+            # intelligent analysis so both steps can read current-run data
+            if script_name in ("23_report.py", "24_intelligent_analysis.py"):
                 try:
                     prelim_summary = dict(pipeline_summary)
                     prelim_end = datetime.now()
@@ -705,8 +705,22 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
     }
 
     try:
+        # Load skip_steps from config so the validator knows which steps are
+        # intentionally skipped and can suppress false prerequisite warnings.
+        config_skip_steps = []
+        input_config_path = Path("input/config.yaml")
+        if input_config_path.exists():
+            try:
+                import yaml
+                with open(input_config_path, "r") as f:
+                    _cfg = yaml.safe_load(f) or {}
+                    config_skip_steps = _cfg.get("pipeline", {}).get("skip_steps", [])
+            except Exception:
+                pass
+
         # Validate step prerequisites
-        prereq_result = validate_step_prerequisites(script_name, args, logger)
+        prereq_result = validate_step_prerequisites(script_name, args, logger,
+                                                     skip_steps=config_skip_steps)
         step_result["prerequisite_check"] = prereq_result["passed"]
         step_result["dependency_warnings"] = prereq_result.get("warnings", [])
 

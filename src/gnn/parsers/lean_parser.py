@@ -83,7 +83,8 @@ class LeanGNNParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.debug(f"Pattern did not yield valid JSON, trying next: {e}")
                     continue
         return None
 

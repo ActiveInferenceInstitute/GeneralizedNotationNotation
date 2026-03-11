@@ -5,7 +5,6 @@ This module provides comprehensive visualization capabilities for GNN files,
 including matrix visualizations, network graphs, and combined analysis plots.
 """
 
-__version__ = "1.1.3"
 FEATURES = {
     "matrix_visualization": True,
     "network_graphs": True,

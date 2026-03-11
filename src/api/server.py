@@ -14,6 +14,7 @@ Run with:
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +58,7 @@ app.add_middleware(
 
 
 @app.get("/api/v1/health", response_model=HealthResponse, tags=["Meta"])
-async def health_check():
+async def health_check() -> HealthResponse:
     """Check API health and get basic system info."""
     jobs = job_mgr.list_jobs()
     active = sum(1 for j in jobs if j.get("status") in ("pending", "running"))
@@ -71,7 +72,7 @@ async def health_check():
 
 
 @app.post("/api/v1/process", response_model=JobResponse, tags=["Jobs"])
-async def submit_process_job(request: ProcessRequest, background_tasks: BackgroundTasks):
+async def submit_process_job(request: ProcessRequest, background_tasks: BackgroundTasks) -> JobResponse:
     """
     Submit a GNN pipeline processing job.
 
@@ -113,7 +114,7 @@ async def submit_process_job(request: ProcessRequest, background_tasks: Backgrou
 
 
 @app.get("/api/v1/jobs/{job_id}", response_model=JobStatusResponse, tags=["Jobs"])
-async def get_job_status(job_id: str):
+async def get_job_status(job_id: str) -> JobStatusResponse:
     """Poll the status of a submitted pipeline job."""
     job = job_mgr.get_job(job_id)
     if job is None:
@@ -138,7 +139,7 @@ async def get_job_status(job_id: str):
 
 
 @app.delete("/api/v1/jobs/{job_id}", tags=["Jobs"])
-async def cancel_job(job_id: str):
+async def cancel_job(job_id: str) -> Dict[str, Any]:
     """Cancel a pending or running job."""
     success = job_mgr.cancel_job(job_id)
     if not success:
@@ -153,21 +154,21 @@ async def cancel_job(job_id: str):
 
 
 @app.get("/api/v1/jobs", tags=["Jobs"])
-async def list_jobs(limit: int = 20):
+async def list_jobs(limit: int = 20) -> Dict[str, Any]:
     """List recent pipeline jobs."""
     jobs = job_mgr.list_jobs(limit=limit)
     return {"jobs": jobs, "total": len(jobs)}
 
 
 @app.get("/api/v1/tools", response_model=ToolsResponse, tags=["Tools"])
-async def list_tools():
+async def list_tools() -> ToolsResponse:
     """List all available pipeline steps/tools."""
     tools = [ToolInfo(**t) for t in job_mgr.get_pipeline_tools()]
     return ToolsResponse(tools=tools, total=len(tools))
 
 
 @app.post("/api/v1/tools/{step}", response_model=JobResponse, tags=["Tools"])
-async def invoke_tool(step: int, request: ToolRequest, background_tasks: BackgroundTasks):
+async def invoke_tool(step: int, request: ToolRequest, background_tasks: BackgroundTasks) -> JobResponse:
     """
     Invoke a single pipeline step as a job.
 

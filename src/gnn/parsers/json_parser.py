@@ -147,14 +147,14 @@ class JSONGNNParser(BaseGNNParser):
         if 'created_at' in data:
             try:
                 model.created_at = datetime.fromisoformat(data['created_at'])
-            except Exception:
-                pass
+            except (ValueError, TypeError) as e:
+                logger.debug(f"Skipping malformed created_at metadata: {e}")
 
         if 'modified_at' in data:
             try:
                 model.modified_at = datetime.fromisoformat(data['modified_at'])
-            except Exception:
-                pass
+            except (ValueError, TypeError) as e:
+                logger.debug(f"Skipping malformed modified_at metadata: {e}")
 
         model.checksum = data.get('checksum')
 

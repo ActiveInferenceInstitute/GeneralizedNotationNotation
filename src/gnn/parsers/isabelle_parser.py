@@ -9,8 +9,11 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import re
 from typing import List, Dict, Any, Optional
+
+logger = logging.getLogger(__name__)
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
@@ -137,7 +140,8 @@ class IsabelleParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.debug(f"Pattern did not yield valid JSON, trying next: {e}")
                     continue
         return None
 
@@ -263,8 +267,8 @@ class IsabelleParser(BaseGNNParser):
                 return float(body_clean) if '.' in body_clean else int(body_clean)
             else:
                 return body_clean
-        except Exception:
-            return body_clean
+        except (ValueError, ArithmeticError):
+            return body_clean  # Fallback: return raw string when numeric parsing fails
 
     def _extract_connections(self, content: str) -> List[Connection]:
         """Extract connections from function applications."""

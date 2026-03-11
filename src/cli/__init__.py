@@ -20,11 +20,12 @@ import json
 import logging
 import sys
 from pathlib import Path
+from typing import List, Optional
 
 logger = logging.getLogger(__name__)
 
 
-def main(argv=None):
+def main(argv: Optional[List[str]] = None) -> int:
     """CLI entrypoint."""
     parser = argparse.ArgumentParser(
         prog="gnn",

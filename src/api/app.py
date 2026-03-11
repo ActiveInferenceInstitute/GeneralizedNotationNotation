@@ -93,7 +93,7 @@ if FASTAPI_AVAILABLE:
     # ── Endpoints ────────────────────────────────────────────────────────────
 
     @app.get("/api/v1/health", response_model=HealthResponse)
-    async def health():
+    async def health() -> HealthResponse:
         """Health check with renderer availability."""
         renderers = _check_renderers()
         return HealthResponse(
@@ -105,7 +105,7 @@ if FASTAPI_AVAILABLE:
         )
 
     @app.post("/api/v1/run", response_model=RunStatus)
-    async def submit_run(request: RunRequest, background_tasks: BackgroundTasks):
+    async def submit_run(request: RunRequest, background_tasks: BackgroundTasks) -> RunStatus:
         """Submit a pipeline run for background execution."""
         from pipeline.hasher import compute_run_hash
 
@@ -144,7 +144,7 @@ if FASTAPI_AVAILABLE:
         )
 
     @app.get("/api/v1/runs/{run_hash}", response_model=RunStatus)
-    async def get_run(run_hash: str):
+    async def get_run(run_hash: str) -> RunStatus:
         """Get status of a pipeline run."""
         entry = _find_run(run_hash)
         return RunStatus(
@@ -159,7 +159,7 @@ if FASTAPI_AVAILABLE:
         )
 
     @app.get("/api/v1/runs/{run_hash}/report")
-    async def get_report(run_hash: str):
+    async def get_report(run_hash: str) -> "PlainTextResponse":
         """Download PIPELINE_REPORT.md for a completed run."""
         entry = _find_run(run_hash)
         output_dir = Path(entry.get("request", {}).get("output_dir", "output"))
@@ -172,7 +172,7 @@ if FASTAPI_AVAILABLE:
         return PlainTextResponse(content, media_type="text/markdown")
 
     @app.get("/api/v1/runs/{run_hash}/stream")
-    async def stream_events(run_hash: str):
+    async def stream_events(run_hash: str) -> "StreamingResponse":
         """Server-Sent Events stream for real-time pipeline progress."""
         entry = _find_run(run_hash)
 
@@ -197,7 +197,7 @@ if FASTAPI_AVAILABLE:
         )
 
     @app.get("/api/v1/runs")
-    async def list_runs():
+    async def list_runs() -> Dict[str, Dict[str, Any]]:
         """List all known runs."""
         return {
             hash_: {"status": entry["status"], "started_at": entry.get("started_at")}

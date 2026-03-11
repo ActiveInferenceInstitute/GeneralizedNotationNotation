@@ -17,13 +17,37 @@ from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
 
-def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any]:
-    """Validate prerequisites for a pipeline step before execution."""
+def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list = None) -> Dict[str, Any]:
+    """Validate prerequisites for a pipeline step before execution.
+
+    Args:
+        script_name: Name of the script being validated (e.g. "23_report.py").
+        args: Parsed arguments with output_dir attribute.
+        logger: Logger instance.
+        skip_steps: Optional list of step numbers (ints) or script names that
+                    are intentionally skipped.  Prerequisites fulfilled by
+                    skipped steps are silently ignored rather than warned about.
+    """
     result = {
         "passed": True,
         "warnings": [],
         "errors": []
     }
+
+    # Normalise skip_steps to a set of script names (e.g. {"13_llm.py"})
+    _skipped: set = set()
+    for s in (skip_steps or []):
+        if isinstance(s, int):
+            # Map step number -> script name pattern used in step_dependencies
+            _skipped.add(f"{s}_")  # prefix match
+        else:
+            _skipped.add(str(s))
+
+    def _is_skipped(step_script: str) -> bool:
+        """Return True if *step_script* was intentionally skipped."""
+        if step_script in _skipped:
+            return True
+        return any(step_script.startswith(prefix) for prefix in _skipped if prefix.endswith("_"))
 
     # Import get_output_dir_for_script to use consistent output directory mapping
     from pipeline.config import get_output_dir_for_script
@@ -46,6 +70,8 @@ def validate_step_prerequisites(script_name: str, args, logger) -> Dict[str, Any
     }
 
     required_steps = step_dependencies.get(script_name, [])
+    # Filter out intentionally skipped prerequisites
+    required_steps = [s for s in required_steps if not _is_skipped(s)]
 
     if required_steps:
         # Check if prerequisite step outputs exist

@@ -240,7 +240,7 @@ def extract_connections_for_audio(content: str) -> List[Dict[str, Any]]:
 
     return connections
 
-def save_audio_file(audio: np.ndarray, file_path: Path, sample_rate: int = 44100):
+def save_audio_file(audio: np.ndarray, file_path: Path, sample_rate: int = 44100) -> None:
     """Save audio data to file."""
     try:
         import soundfile as sf

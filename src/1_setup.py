@@ -36,8 +36,10 @@ If you encounter errors:
   - Verify system requirements and permissions
 """
 
+import logging
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -66,7 +68,7 @@ except ImportError:
         logger.warning(f"Cannot install {group_name} - setup module not available")
         return False
 
-def setup_orchestrator(target_dir, output_dir, logger, **kwargs):
+def setup_orchestrator(target_dir: str, output_dir: str, logger: "logging.Logger", **kwargs: Any) -> Any:
     """Orchestrate setup based on provided arguments."""
     verbose = kwargs.get('verbose', False)
     recreate = kwargs.get('recreate_venv', False)
