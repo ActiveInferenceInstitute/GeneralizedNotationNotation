@@ -672,7 +672,7 @@ class TestPipelineScriptIntegration:
 
             # Check if script uses standardized pipeline template (more flexible approach)
             uses_template = "create_standardized_pipeline_script" in content
-            has_argument_parser = "ArgumentParser" in content
+            _has_argument_parser = "ArgumentParser" in content
             has_argparse = "argparse" in content
 
             if uses_template:

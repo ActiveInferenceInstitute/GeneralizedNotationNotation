@@ -13,6 +13,8 @@ import logging
 import time
 import sys
 
+logger = logging.getLogger(__name__)
+
 # Import visualization libraries with error handling
 try:
     import scipy.stats as stats
@@ -78,7 +80,7 @@ def perform_statistical_analysis(file_path: Path, verbose: bool = False) -> Dict
         }
 
     except Exception as e:
-        raise Exception(f"Failed to analyze {file_path}: {e}")
+        raise Exception(f"Failed to analyze {file_path}: {e}") from e
 
 def extract_variables_for_analysis(content: str) -> List[Dict[str, Any]]:
     """Extract variables for statistical analysis."""
@@ -316,7 +318,8 @@ def calculate_correlations(variables: List[Dict[str, Any]], connections: List[Di
                     correlation_matrix = np.corrcoef(var_lines, conn_lines)
                 val = correlation_matrix[0, 1]
                 correlations["line_position_correlation"] = 0.0 if np.isnan(val) else float(val)
-            except Exception:
+            except Exception as e:
+                logger.debug(f"Correlation computation failed, defaulting to 0.0: {e}")
                 correlations["line_position_correlation"] = 0.0
 
     return correlations
@@ -382,7 +385,7 @@ def calculate_complexity_metrics(file_path: Path, verbose: bool = False) -> Dict
         return metrics
 
     except Exception as e:
-        raise Exception(f"Failed to calculate complexity metrics for {file_path}: {e}")
+        raise Exception(f"Failed to calculate complexity metrics for {file_path}: {e}") from e
 
 def calculate_maintainability_index(content: str, variables: List[Dict[str, Any]], connections: List[Dict[str, Any]]) -> float:
     """Calculate maintainability index."""
@@ -450,7 +453,7 @@ def run_performance_benchmarks(file_path: Path, verbose: bool = False) -> Dict[s
         return benchmarks
 
     except Exception as e:
-        raise Exception(f"Failed to run benchmarks for {file_path}: {e}")
+        raise Exception(f"Failed to run benchmarks for {file_path}: {e}") from e
 
 def perform_model_comparisons(statistical_analyses: List[Dict[str, Any]], verbose: bool = False) -> Dict[str, Any]:
     """Perform comparisons between multiple models."""
@@ -735,7 +738,8 @@ def parse_matrix_data(matrix_str: str) -> Optional[np.ndarray]:
         if len(numbers) >= 1:
             return np.array([float(n) for n in numbers])
         return None
-    except Exception:
+    except Exception as e:
+        logger.debug(f"Failed to extract numeric array from value: {e}")
         return None
 
 def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
@@ -861,8 +865,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
             for found_file in impl_dir.rglob("simulation_results.json"):
                 if found_file not in candidate_files:
                     candidate_files.append(found_file)
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Error during recursive search in {impl_dir}: {e}")
 
         for output_file in candidate_files:
             if output_file.exists():
@@ -934,8 +938,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     for csv_file in sorted(sim_data_dir.glob("*_simulation_results.csv")):
                         if csv_file not in csv_candidates:
                             csv_candidates.append(csv_file)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Error searching for timestamped CSV files in {sim_data_dir}: {e}")
 
             for csv_file in csv_candidates:
                 if csv_file.exists():
@@ -999,8 +1003,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     for pf in sorted(params_dir.glob("*_model_parameters.json")):
                         if pf not in params_candidates:
                             params_candidates.append(pf)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Error searching for model parameter files in {params_dir}: {e}")
 
             for params_file in params_candidates:
                 if params_file.exists():
@@ -1028,8 +1032,8 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     for cf in sorted(sim_data_dir.glob("*_circuit_info.json")):
                         if cf not in circuit_candidates:
                             circuit_candidates.append(cf)
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Error searching for circuit info files in {sim_data_dir}: {e}")
 
             for circuit_file in circuit_candidates:
                 if circuit_file.exists():
@@ -1129,8 +1133,8 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                     "mean_confidence": float(np.mean(np.max(beliefs_arr, axis=1))),
                     "final_belief": [float(v) for v in beliefs_arr[-1]] if len(beliefs_arr) > 0 else [],
                 }
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Error computing belief statistics for {framework}: {e}")
 
     for framework, data in frameworks_with_efe.items():
         efe = data["free_energy"]
@@ -1142,8 +1146,8 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
             stats["efe_min"] = float(np.min(efe_arr))
             stats["efe_max"] = float(np.max(efe_arr))
             comparisons["simulation_statistics"][framework] = stats
-        except Exception:
-            pass
+        except Exception as e:
+            logger.debug(f"Error computing EFE statistics for {framework}: {e}")
 
     # Metric agreement — if multiple frameworks have beliefs, compare final convergence
     if len(frameworks_with_beliefs) >= 2:
@@ -1175,8 +1179,8 @@ def _compare_framework_results(framework_data: Dict[str, Dict[str, Any]], logger
                             "dims_a": list(beliefs_a.shape),
                             "dims_b": list(beliefs_b.shape)
                         }
-                except Exception:
-                    pass
+                except Exception as e:
+                    logger.debug(f"Error computing metric agreement for {fw_a} vs {fw_b}: {e}")
         comparisons["metric_agreement"] = agreement
 
     return comparisons

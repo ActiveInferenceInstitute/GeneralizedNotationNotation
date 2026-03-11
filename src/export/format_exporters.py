@@ -101,7 +101,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 def _parse_free_text_section(section_content: str) -> str:
     return section_content.strip()
 
-def _parse_key_value_section(section_content: str) -> dict:
+def _parse_key_value_section(section_content: str) -> Dict[str, Any]:
     data = {}
     for line in section_content.strip().split('\n'):
         if not line or line.startswith('#'): continue
@@ -111,7 +111,7 @@ def _parse_key_value_section(section_content: str) -> dict:
         data[key.strip()] = value.strip()
     return data
 
-def _parse_state_line(line: str) -> Optional[dict]:
+def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
     match = re.match(r"^\s*([a-zA-Z0-9_']+)\s*(?:\[(.*?)\])?\s*(.*)$", line.split('#')[0].strip())
     if not match: return None
     state_id_default, dimensions, attributes_str = match.groups()
@@ -123,7 +123,7 @@ def _parse_state_line(line: str) -> Optional[dict]:
     attributes['original_id'] = state_id_default
     return {"id": state_id, **attributes}
 
-def _parse_transition_line(line: str) -> Optional[dict]:
+def _parse_transition_line(line: str) -> Optional[Dict[str, Any]]:
     pattern = r"^\s*(.*?)\s*([-><]+|-)\s*(.*?)\s*(?::\s*(.*))?$"
     match = re.match(pattern, line.split('#')[0].strip())
     if not match: return None
@@ -140,7 +140,7 @@ def _parse_transition_line(line: str) -> Optional[dict]:
             except Exception: attributes[key_attr] = value_attr
     return {"sources": sources, "operator": operator, "targets": targets, "attributes": attributes}
 
-def _parse_list_items_section(content: str, parser: Callable) -> list:
+def _parse_list_items_section(content: str, parser: Callable) -> List[Any]:
     items = []
     for line in content.strip().split('\n'):
         if not line or line.startswith('#'): continue
@@ -148,7 +148,7 @@ def _parse_list_items_section(content: str, parser: Callable) -> list:
         if parsed: items.append(parsed)
     return items
 
-def _parse_initial_parameterization_section(section_content: str) -> dict:
+def _parse_initial_parameterization_section(section_content: str) -> Dict[str, Any]:
     data = {}
     current_key: Optional[str] = None
     current_value_lines: List[str] = []
@@ -170,7 +170,7 @@ SECTION_PARSERS = {
     # Add other simple parsers here if needed
 }
 
-def _gnn_model_to_dict(gnn_file_path_str: str) -> dict:
+def _gnn_model_to_dict(gnn_file_path_str: str) -> Dict[str, Any]:
     gnn_file_path = Path(gnn_file_path_str)
     if not gnn_file_path.is_file(): raise FileNotFoundError(f"GNN file not found: {gnn_file_path_str}")
     content = gnn_file_path.read_text(encoding='utf-8')
@@ -206,7 +206,7 @@ def _dict_to_xml(tag: str, d: Union[Dict, List, Any]) -> ET.Element:
 
 # --- Consolidated Export Functions ---
 
-def export_to_json_gnn(gnn_model: dict, output_file_path: str):
+def export_to_json_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model dictionary to a JSON file."""
     logger.info(f"Exporting GNN model to JSON: {output_file_path}")
     try:
@@ -218,7 +218,7 @@ def export_to_json_gnn(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to JSON: {e}", exc_info=True)
         return False, f"Failed to export to JSON: {e}"
 
-def export_to_xml_gnn(gnn_model: dict, output_file_path: str):
+def export_to_xml_gnn(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model dictionary to an XML file."""
     logger.info(f"Exporting GNN model to XML: {output_file_path}")
     try:
@@ -236,7 +236,7 @@ def export_to_xml_gnn(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to XML: {e}", exc_info=True)
         return False, f"Failed to export to XML: {e}"
 
-def export_to_python_pickle(gnn_model: dict, output_file_path: str):
+def export_to_python_pickle(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Serializes the GNN model dictionary to a Python pickle file."""
     logger.info(f"Exporting GNN model to Pickle: {output_file_path}")
     try:
@@ -248,7 +248,7 @@ def export_to_python_pickle(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to Pickle: {e}", exc_info=True)
         return False, f"Failed to export to Pickle: {e}"
 
-def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
+def _build_networkx_graph(gnn_model: Dict[str, Any]) -> 'Optional[nx.DiGraph]':
     if not HAS_NETWORKX: return None
     graph = nx.DiGraph(name=gnn_model.get('name', 'GNN_Model'))
 
@@ -286,7 +286,7 @@ def _build_networkx_graph(gnn_model: dict) -> 'Optional[nx.DiGraph]':
 
     return graph
 
-def export_to_gexf(gnn_model: dict, output_file_path: str):
+def export_to_gexf(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model graph to a GEXF file."""
     logger.info(f"Exporting GNN model to GEXF: {output_file_path}")
     if not HAS_NETWORKX:
@@ -302,7 +302,7 @@ def export_to_gexf(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to GEXF: {e}", exc_info=True)
         return False, f"Failed to export to GEXF: {e}"
 
-def export_to_graphml(gnn_model: dict, output_file_path: str):
+def export_to_graphml(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model graph to a GraphML file."""
     logger.info(f"Exporting GNN model to GraphML: {output_file_path}")
     if not HAS_NETWORKX:
@@ -318,7 +318,7 @@ def export_to_graphml(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to GraphML: {e}", exc_info=True)
         return False, f"Failed to export to GraphML: {e}"
 
-def export_to_json_adjacency_list(gnn_model: dict, output_file_path: str):
+def export_to_json_adjacency_list(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model graph to a JSON adjacency list format."""
     logger.info(f"Exporting GNN model to JSON Adjacency List: {output_file_path}")
     if not HAS_NETWORKX:
@@ -336,7 +336,7 @@ def export_to_json_adjacency_list(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to JSON Adjacency List: {e}", exc_info=True)
         return False, f"Failed to export to JSON Adjacency List: {e}"
 
-def export_to_plaintext_summary(gnn_model: dict, output_file_path: str):
+def export_to_plaintext_summary(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports a human-readable plain text summary of the GNN model."""
     logger.info(f"Exporting GNN model to Plaintext Summary: {output_file_path}")
     try:
@@ -358,7 +358,7 @@ def export_to_plaintext_summary(gnn_model: dict, output_file_path: str):
         logger.error(f"Failed to export to Plaintext Summary: {e}", exc_info=True)
         return False, f"Failed to export to Plaintext Summary: {e}"
 
-def export_to_plaintext_dsl(gnn_model: dict, output_file_path: str):
+def export_to_plaintext_dsl(gnn_model: Dict[str, Any], output_file_path: str) -> None:
     """Exports the GNN model back to a DSL-like format using the raw sections."""
     logger.info(f"Exporting GNN model to Plaintext DSL: {output_file_path}")
     try:

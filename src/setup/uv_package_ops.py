@@ -6,18 +6,11 @@ Add/remove/update/lock dependency operations extracted from uv_management.py.
 
 import subprocess
 import sys
-import platform
-import shutil
-from pathlib import Path
 import logging
-import time
-import json
 from typing import Dict, Any
 
 from .constants import (
-    VENV_DIR, PYPROJECT_FILE, LOCK_FILE, PROJECT_ROOT,
-    VENV_PATH, PYPROJECT_PATH, LOCK_PATH, VENV_PYTHON,
-    MIN_PYTHON_VERSION, OPTIONAL_GROUPS,
+    PROJECT_ROOT,
 )
 
 logger = logging.getLogger(__name__)

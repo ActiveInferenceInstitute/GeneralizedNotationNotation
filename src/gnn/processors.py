@@ -573,7 +573,7 @@ def run_gnn_round_trip_tests(
         logger.info(f"Testing with reference: {tester.reference_file}")
 
         # Configure test subset if specified
-        original_formats = tester.supported_formats.copy()
+        _original_formats = tester.supported_formats.copy()
         if test_subset:
             # Filter to requested formats
             subset_formats = []
@@ -605,7 +605,7 @@ def run_gnn_round_trip_tests(
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         report_file = round_trip_output_dir / f"enhanced_round_trip_report_{timestamp}.md"
 
-        enhanced_report_content = tester.generate_report(report, report_file)
+        _enhanced_report_content = tester.generate_report(report, report_file)
 
         # Add performance analysis
         performance_analysis = _generate_performance_analysis(report, test_time)

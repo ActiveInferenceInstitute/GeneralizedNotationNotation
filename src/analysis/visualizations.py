@@ -42,7 +42,7 @@ def plot_belief_evolution(
 
     if true_states:
         # Normalize true states if they are 1-indexed
-        min_state = min(true_states)
+        _min_state = min(true_states)
         for t, s in enumerate(true_states):
             plt.scatter(t, 1.05, marker='*', color='black', alpha=0.5 if t > 0 else 0)
             plt.text(t, 1.1, f"S{s}", ha='center', fontsize=8)
@@ -238,7 +238,7 @@ def visualize_all_framework_outputs(
     log.info(f"Found {len(framework_data)} framework/model combinations for visualization")
 
     # Generate visualizations for each framework/model
-    for key, data in framework_data.items():
+    for _key, data in framework_data.items():
         framework = data["framework"]
         model_name = data["model_name"]
 
@@ -527,8 +527,8 @@ def generate_action_analysis(
         # Add text annotations
         for i in range(n_actions):
             for j in range(n_actions):
-                text = ax3.text(j, i, f"{transition_matrix[i, j]:.2f}",
-                               ha="center", va="center", color="black" if transition_matrix[i, j] < 0.5 else "white")
+                _text = ax3.text(j, i, f"{transition_matrix[i, j]:.2f}",
+                                ha="center", va="center", color="black" if transition_matrix[i, j] < 0.5 else "white")
 
         plt.colorbar(im, ax=ax3, label="Probability")
     else:
@@ -591,7 +591,7 @@ def generate_free_energy_plots(
                 ax1.plot(range(n_steps), fe_array[:, p], linewidth=1.0, alpha=0.6, label=lbl)
         else:
             # Add a heatmap background if there are many policies
-            im = ax1.imshow(fe_array.T, aspect='auto', cmap='viridis', interpolation='none', alpha=0.3)
+            _im = ax1.imshow(fe_array.T, aspect='auto', cmap='viridis', interpolation='none', alpha=0.3)
             ax1.set_ylabel("Policy Index / EFE")
 
         # Bold line for the selected/minimum EFE
@@ -759,7 +759,7 @@ def generate_unified_framework_dashboard(
     framework_efe = {}
     framework_metrics = {}
 
-    for key, data in framework_data.items():
+    for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
         sim_data = data.get("simulation_data", {})
 
@@ -794,7 +794,7 @@ def generate_unified_framework_dashboard(
         axes = axes.flatten()
 
         colors = plt.cm.tab10(np.linspace(0, 1, 10))
-        frameworks = list(framework_beliefs.keys())
+        _frameworks = list(framework_beliefs.keys())
 
         # Individual framework belief plots
         for idx, (fw, beliefs) in enumerate(framework_beliefs.items()):
@@ -990,7 +990,7 @@ def generate_cross_framework_comparison(
     # Aggregate by UNIQUE framework name to avoid duplicates
     aggregated: Dict[str, Dict[str, Any]] = {}
 
-    for key, data in framework_data.items():
+    for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
 
         if framework not in aggregated:
@@ -1059,7 +1059,7 @@ def generate_cross_framework_comparison(
 
     # Execution time comparison
     ax1 = axes[0]
-    bars = ax1.bar(range(len(frameworks)), metrics["execution_time"], color=colors)
+    _bars = ax1.bar(range(len(frameworks)), metrics["execution_time"], color=colors)
     ax1.set_xlabel("Framework")
     ax1.set_ylabel("Execution Time (s)")
     ax1.set_title("Execution Time Comparison")
@@ -1118,7 +1118,7 @@ def generate_efe_convergence_comparison(
     colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
               'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
 
-    for key, data in framework_data.items():
+    for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
         sim_data = data.get("simulation_data", {})
 
@@ -1203,7 +1203,7 @@ def generate_confidence_comparison(
     colors = {'jax': '#E74C3C', 'pymdp': '#3498DB', 'rxinfer': '#2ECC71',
               'activeinference_jl': '#9B59B6', 'discopy': '#F39C12'}
 
-    for key, data in framework_data.items():
+    for _key, data in framework_data.items():
         framework = data.get("framework", "unknown")
         sim_data = data.get("simulation_data", {})
 
@@ -1306,7 +1306,7 @@ def generate_framework_radar(
         data_richness = 0
         belief_quality = 0
         timesteps = 0
-        for key, data in framework_data.items():
+        for _key, data in framework_data.items():
             if data.get("framework") == fw_norm:
                 sim = data.get("simulation_data", {})
                 # Count non-empty data fields
