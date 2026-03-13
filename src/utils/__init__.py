@@ -226,24 +226,6 @@ try:
         log_step_warning
     )
 
-    # Import configuration management
-    from .configuration import (
-        ConfigurationManager,
-        ConfigSchema,
-        ConfigFormat,
-        ConfigSource,
-        ConfigurationError,
-        get_config_manager,
-        init_config,
-        get_config,
-        set_config,
-        validate_config,
-        get_pipeline_config,
-        get_step_config,
-        get_logging_config,
-        get_test_config
-    )
-
     # Import dependency audit system
     from .dependency_audit import (
         DependencyAuditor,
@@ -376,22 +358,6 @@ __all__ = [
     'log_step_success',
     'log_step_error',
     'log_step_warning',
-
-    # Configuration utilities
-    'ConfigurationManager',
-    'ConfigSchema',
-    'ConfigFormat',
-    'ConfigSource',
-    'ConfigurationError',
-    'get_config_manager',
-    'init_config',
-    'get_config',
-    'set_config',
-    'validate_config',
-    'get_pipeline_config',
-    'get_step_config',
-    'get_logging_config',
-    'get_test_config',
 
     # Dependency audit utilities
     'DependencyAuditor',

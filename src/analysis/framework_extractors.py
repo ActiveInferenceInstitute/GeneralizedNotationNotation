@@ -318,18 +318,8 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
     return extracted
 
 
-def extract_jax_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Extract JAX-specific data from execution result.
-
-    Args:
-        execution_result: Execution result dictionary
-
-    Returns:
-        Extracted simulation data
-    """
-    # Similar to PyMDP
-    return extract_pymdp_data(execution_result)
+# JAX uses the same result schema as PyMDP.
+extract_jax_data = extract_pymdp_data
 
 
 def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
@@ -397,33 +387,6 @@ def extract_discopy_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def extract_pytorch_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Extract PyTorch-specific data from execution result.
-
-    PyTorch simulation results use the same JSON schema as PyMDP/JAX
-    (beliefs, actions, observations, efe_history, validation).
-
-    Args:
-        execution_result: Execution result dictionary
-
-    Returns:
-        Extracted simulation data
-    """
-    return extract_pymdp_data(execution_result)
-
-
-def extract_numpyro_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
-    """
-    Extract NumPyro-specific data from execution result.
-
-    NumPyro simulation results use the same JSON schema as PyMDP/JAX
-    (beliefs, actions, observations, efe_history, validation).
-
-    Args:
-        execution_result: Execution result dictionary
-
-    Returns:
-        Extracted simulation data
-    """
-    return extract_pymdp_data(execution_result)
+# PyTorch and NumPyro use the same result schema as PyMDP.
+extract_pytorch_data = extract_pymdp_data
+extract_numpyro_data = extract_pymdp_data

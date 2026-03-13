@@ -1340,17 +1340,10 @@ end
         print(f"Error generating RxInfer code: {e}")
         return ""
 
-def generate_rxinfer_fallback_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate fallback RxInfer.jl code for basic compatibility."""
-    return generate_rxinfer_code(model_data, output_path)
-
-def generate_activeinference_jl_fallback_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate fallback ActiveInference.jl code for basic compatibility."""
-    return generate_activeinference_jl_code(model_data, output_path)
-
-def generate_discopy_fallback_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str:
-    """Generate fallback DisCoPy code for basic compatibility."""
-    return generate_discopy_code(model_data, output_path)
+# Fallback aliases: identical to the primary generators — use those directly.
+generate_rxinfer_fallback_code = generate_rxinfer_code
+generate_activeinference_jl_fallback_code = generate_activeinference_jl_code
+generate_discopy_fallback_code = generate_discopy_code
 
 def create_active_inference_diagram(model_data: Dict) -> str:
     """Create Active Inference diagram for visualization."""

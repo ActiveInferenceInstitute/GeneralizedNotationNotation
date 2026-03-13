@@ -187,24 +187,24 @@ class GNNResourceEstimator:
             model_type = time_spec
 
         # Basic estimates
-        memory_estimate = self._estimate_memory(variables)
-        inference_estimate = self._estimate_inference(variables, model_type, edges, equations)
-        storage_estimate = self._estimate_storage(variables, edges, equations)
+        memory_estimate = _est_memory(variables, self.MEMORY_FACTORS)
+        inference_estimate = _est_inference(variables, model_type, edges, equations, self.INFERENCE_FACTORS)
+        storage_estimate = _est_storage(variables, edges, equations, self.MEMORY_FACTORS)
 
         # Advanced estimates
-        flops_estimate = self._estimate_flops(variables, edges, equations, model_type)
-        inference_time_estimate = self._estimate_inference_time(flops_estimate)
-        batched_inference_estimate = self._estimate_batched_inference(variables, model_type, flops_estimate)
-        model_overhead = self._estimate_model_overhead(variables, edges, equations)
+        flops_estimate = _est_flops(variables, edges, equations, model_type, self.OPERATION_COSTS)
+        inference_time_estimate = _est_inference_time(flops_estimate, self.HARDWARE_SPECS)
+        batched_inference_estimate = _est_batched_inference(variables, model_type, flops_estimate, self.HARDWARE_SPECS)
+        model_overhead = _est_model_overhead(variables, edges, equations)
 
         # More detailed matrix operation estimates
-        matrix_operation_costs = self._estimate_matrix_operation_costs(variables, edges, equations)
+        matrix_operation_costs = _est_matrix_ops(variables, edges, equations, self.OPERATION_COSTS)
 
         # Detailed memory breakdowns
-        memory_breakdown = self._detailed_memory_breakdown(variables)
+        memory_breakdown = _est_memory_breakdown(variables, self.MEMORY_FACTORS)
 
         # Calculate complexity metrics
-        complexity = self._calculate_complexity(variables, edges, equations)
+        complexity = _calc_complexity(variables, edges, equations)
 
         # Store detailed metrics for HTML report
         self.detailed_metrics[file_path] = {
@@ -236,50 +236,6 @@ class GNNResourceEstimator:
             }
         }
 
-    def _estimate_memory(self, variables: Dict[str, Any]) -> float:
-        """Estimate memory requirements based on variables (KB)."""
-        return _est_memory(variables, self.MEMORY_FACTORS)
-
-    def _detailed_memory_breakdown(self, variables: Dict[str, Any]) -> Dict[str, Any]:
-        """Create detailed memory breakdown by variable and type."""
-        return _est_memory_breakdown(variables, self.MEMORY_FACTORS)
-
-    def _estimate_flops(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
-                       equations: str, model_type: str) -> Dict[str, Any]:
-        """Estimate floating-point operations (FLOPS) required for inference."""
-        return _est_flops(variables, edges, equations, model_type, self.OPERATION_COSTS)
-
-    def _estimate_inference_time(self, flops_estimate: Dict[str, Any]) -> Dict[str, float]:
-        """Estimate inference time based on FLOPS and hardware specs."""
-        return _est_inference_time(flops_estimate, self.HARDWARE_SPECS)
-
-    def _estimate_batched_inference(self, variables: Dict[str, Any], model_type: str,
-                                   flops_estimate: Dict[str, Any]) -> Dict[str, Any]:
-        """Estimate batched inference performance."""
-        return _est_batched_inference(variables, model_type, flops_estimate, self.HARDWARE_SPECS)
-
-    def _estimate_matrix_operation_costs(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
-                                      equations: str) -> Dict[str, Any]:
-        """Provide detailed estimates of matrix operation costs."""
-        return _est_matrix_ops(variables, edges, equations, self.OPERATION_COSTS)
-
-    def _estimate_model_overhead(self, variables: Dict[str, Any], edges: List[Dict[str, Any]],
-                               equations: str) -> Dict[str, Any]:
-        """Estimate model overhead including compile-time and optimization costs."""
-        return _est_model_overhead(variables, edges, equations)
-
-    def _estimate_inference(self, variables: Dict[str, Any], model_type: str,
-                            edges: List[Dict[str, Any]], equations: str) -> float:
-        """Estimate inference time requirements (arbitrary units)."""
-        return _est_inference(variables, model_type, edges, equations, self.INFERENCE_FACTORS)
-
-    def _estimate_storage(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> float:
-        """Estimate storage requirements in KB."""
-        return _est_storage(variables, edges, equations, self.MEMORY_FACTORS)
-
-    def _calculate_complexity(self, variables: Dict[str, Any], edges: List[Dict[str, Any]], equations: str) -> Dict[str, float]:
-        """Calculate detailed complexity metrics for the model."""
-        return _calc_complexity(variables, edges, equations)
 
     def generate_html_report(self, output_dir: Optional[str] = None) -> str:
         """

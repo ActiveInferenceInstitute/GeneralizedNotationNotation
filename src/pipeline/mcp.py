@@ -12,6 +12,7 @@ Key Features:
 - Step dependency analysis and validation
 """
 
+import functools
 import logging
 from typing import Dict, Any
 from pathlib import Path
@@ -194,44 +195,31 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering pipeline MCP tools")
 
-    # Create wrapper functions
-    def get_steps_wrapper():
-        return get_pipeline_steps(mcp_instance)
-
-    def get_status_wrapper():
-        return get_pipeline_status(mcp_instance)
-
-    def validate_deps_wrapper():
-        return validate_pipeline_dependencies(mcp_instance)
-
-    def get_config_wrapper():
-        return get_pipeline_config_info(mcp_instance)
-
     # Register tools
     mcp_instance.register_tool(
         name="get_pipeline_steps",
-        function=get_steps_wrapper,
+        function=functools.partial(get_pipeline_steps, mcp_instance),
         schema={},
         description="Get information about all available pipeline steps, their metadata, and dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_status",
-        function=get_status_wrapper,
+        function=functools.partial(get_pipeline_status, mcp_instance),
         schema={},
         description="Get current pipeline execution status, recent logs, and execution statistics."
     )
 
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
-        function=validate_deps_wrapper,
+        function=functools.partial(validate_pipeline_dependencies, mcp_instance),
         schema={},
         description="Validate pipeline step dependencies and identify missing or circular dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
-        function=get_config_wrapper,
+        function=functools.partial(get_pipeline_config_info, mcp_instance),
         schema={},
         description="Get detailed pipeline configuration information and settings."
     )

@@ -39,6 +39,23 @@ from setup.setup import (
 )
 
 
+def _print_summary(results: dict, all_success_msg: str, partial_fail_msg: str) -> int:
+    """Print installation summary and return exit code."""
+    successful = sum(1 for v in results.values() if v)
+    total = len(results)
+    print(f"\n{'='*70}")
+    print(f"Installation Summary: {successful}/{total} groups installed successfully")
+    print(f"{'='*70}")
+    for group, success in results.items():
+        status = "[OK]" if success else "[FAIL]"
+        print(f"  {status} {group}")
+    if successful < total:
+        print(f"\n{partial_fail_msg}")
+        return 2
+    print(f"\n{all_success_msg}")
+    return 0
+
+
 def main():
     """Main entry point for optional package installation."""
     parser = argparse.ArgumentParser(
@@ -102,53 +119,22 @@ Available groups: jax, pymdp, visualization, audio, llm, ml
         if args.all:
             logger.info("📦 Installing ALL optional package groups...")
             results = install_all_optional_packages(verbose=args.verbose)
-
-            # Print summary
-            successful = sum(1 for v in results.values() if v)
-            total = len(results)
-
-            print(f"\n{'='*70}")
-            print(f"📊 Installation Summary: {successful}/{total} groups installed successfully")
-            print(f"{'='*70}")
-
-            for group, success in results.items():
-                status = "✅" if success else "❌"
-                print(f"  {status} {group}")
-
-            if successful < total:
-                print("\n⚠️  Some packages failed to install (non-critical)")
-                return 2  # Success with warnings
-            else:
-                print("\n✅ All optional packages installed successfully!")
-                return 0
+            return _print_summary(
+                results,
+                "All optional packages installed successfully!",
+                "Some packages failed to install (non-critical)",
+            )
 
         else:
             # Install specific groups
             groups = [g.strip() for g in args.groups.split(',')]
-            logger.info(f"📦 Installing package groups: {', '.join(groups)}")
-
-            results = {}
-            for group in groups:
-                results[group] = install_optional_package_group(group, verbose=args.verbose)
-
-            # Print summary
-            successful = sum(1 for v in results.values() if v)
-            total = len(results)
-
-            print(f"\n{'='*70}")
-            print(f"📊 Installation Summary: {successful}/{total} groups installed successfully")
-            print(f"{'='*70}")
-
-            for group, success in results.items():
-                status = "✅" if success else "❌"
-                print(f"  {status} {group}")
-
-            if successful < total:
-                print("\n⚠️  Some packages failed to install")
-                return 2  # Success with warnings
-            else:
-                print("\n✅ Selected packages installed successfully!")
-                return 0
+            logger.info(f"Installing package groups: {', '.join(groups)}")
+            results = {g: install_optional_package_group(g, verbose=args.verbose) for g in groups}
+            return _print_summary(
+                results,
+                "Selected packages installed successfully!",
+                "Some packages failed to install",
+            )
 
     except KeyboardInterrupt:
         print("\n\n⚠️  Installation cancelled by user")

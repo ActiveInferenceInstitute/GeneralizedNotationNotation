@@ -9,6 +9,7 @@ mechanisms for all pipeline operations.
 
 from typing import Optional, Dict, Any, Callable, List
 from enum import Enum
+import functools
 import logging
 import traceback
 from dataclasses import dataclass
@@ -60,50 +61,43 @@ class ErrorRecoveryManager:
     def _setup_default_handlers(self):
         """Setup default error handlers and recovery strategies."""
 
-        # Import error handlers
-        self.error_handlers['import'] = self._handle_import_error
-        self.recovery_strategies['import'] = [
-            'Install missing package: uv pip install <package>',
-            'Check Python version compatibility',
-            'Verify package is in pyproject.toml',
-            'Try running with --verbose for more details',
-        ]
-
-        # File operation error handlers
-        self.error_handlers['file'] = self._handle_file_error
-        self.recovery_strategies['file'] = [
-            'Verify file path exists and is accessible',
-            'Check file permissions (read/write access)',
-            'Ensure sufficient disk space is available',
-            'Try with a different file path',
-        ]
-
-        # Resource error handlers
-        self.error_handlers['resource'] = self._handle_resource_error
-        self.recovery_strategies['resource'] = [
-            'Check system memory and disk space',
-            'Reduce model size or complexity',
-            'Close other applications to free resources',
-            'Try with --lightweight-mode for reduced memory usage',
-        ]
-
-        # Type validation error handlers
-        self.error_handlers['validation'] = self._handle_validation_error
-        self.recovery_strategies['validation'] = [
-            'Review error details for specific field',
-            'Check type annotation requirements',
-            'Validate input data format',
-            'Refer to GNN schema documentation',
-        ]
-
-        # Execution error handlers
-        self.error_handlers['execution'] = self._handle_execution_error
-        self.recovery_strategies['execution'] = [
-            'Check simulation parameters',
-            'Verify model structure is valid',
-            'Review execution log for details',
-            'Try with smaller time horizon or state space',
-        ]
+        handler_config = {
+            'import': ("Module Import", ErrorSeverity.WARNING, [
+                'Install missing package: uv pip install <package>',
+                'Check Python version compatibility',
+                'Verify package is in pyproject.toml',
+                'Try running with --verbose for more details',
+            ]),
+            'file': ("File Operation", ErrorSeverity.ERROR, [
+                'Verify file path exists and is accessible',
+                'Check file permissions (read/write access)',
+                'Ensure sufficient disk space is available',
+                'Try with a different file path',
+            ]),
+            'resource': ("Resource Management", ErrorSeverity.ERROR, [
+                'Check system memory and disk space',
+                'Reduce model size or complexity',
+                'Close other applications to free resources',
+                'Try with --lightweight-mode for reduced memory usage',
+            ]),
+            'validation': ("Validation", ErrorSeverity.ERROR, [
+                'Review error details for specific field',
+                'Check type annotation requirements',
+                'Validate input data format',
+                'Refer to GNN schema documentation',
+            ]),
+            'execution': ("Execution", ErrorSeverity.ERROR, [
+                'Check simulation parameters',
+                'Verify model structure is valid',
+                'Review execution log for details',
+                'Try with smaller time horizon or state space',
+            ]),
+        }
+        for error_type, (operation, severity, suggestions) in handler_config.items():
+            self.recovery_strategies[error_type] = suggestions
+            self.error_handlers[error_type] = functools.partial(
+                self._make_error_context, operation, severity, error_type
+            )
 
     def handle_error(self, context: ErrorContext) -> bool:
         """Handle error with appropriate recovery strategy."""
@@ -128,54 +122,15 @@ class ErrorRecoveryManager:
 
         return context.severity != ErrorSeverity.CRITICAL
 
-    def _handle_import_error(self, error_code: str, message: str) -> ErrorContext:
-        """Handle import errors with recovery suggestions."""
+    def _make_error_context(self, operation: str, severity: ErrorSeverity,
+                            error_type: str, error_code: str, message: str) -> ErrorContext:
+        """Create an ErrorContext for the given operation type."""
         return ErrorContext(
-            operation="Module Import",
-            severity=ErrorSeverity.WARNING,
+            operation=operation,
+            severity=severity,
             message=message,
             error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get('import', [])
-        )
-
-    def _handle_file_error(self, error_code: str, message: str) -> ErrorContext:
-        """Handle file operation errors with recovery suggestions."""
-        return ErrorContext(
-            operation="File Operation",
-            severity=ErrorSeverity.ERROR,
-            message=message,
-            error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get('file', [])
-        )
-
-    def _handle_resource_error(self, error_code: str, message: str) -> ErrorContext:
-        """Handle resource errors with recovery suggestions."""
-        return ErrorContext(
-            operation="Resource Management",
-            severity=ErrorSeverity.ERROR,
-            message=message,
-            error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get('resource', [])
-        )
-
-    def _handle_validation_error(self, error_code: str, message: str) -> ErrorContext:
-        """Handle validation errors with recovery suggestions."""
-        return ErrorContext(
-            operation="Validation",
-            severity=ErrorSeverity.ERROR,
-            message=message,
-            error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get('validation', [])
-        )
-
-    def _handle_execution_error(self, error_code: str, message: str) -> ErrorContext:
-        """Handle execution errors with recovery suggestions."""
-        return ErrorContext(
-            operation="Execution",
-            severity=ErrorSeverity.ERROR,
-            message=message,
-            error_code=error_code,
-            recovery_suggestions=self.recovery_strategies.get('execution', [])
+            recovery_suggestions=self.recovery_strategies.get(error_type, [])
         )
 
 

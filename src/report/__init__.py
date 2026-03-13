@@ -28,11 +28,11 @@ from utils.pipeline_template import (
 # Import processor functions
 # Import processor functions
 from .processor import (
-    process_report as _process_report_legacy,
+    process_report as process_report_impl,
     analyze_gnn_file,
     generate_html_report,
     generate_markdown_report,
-    generate_comprehensive_report as generate_comprehensive_report_legacy
+    generate_comprehensive_report as generate_comprehensive_report_impl
 )
 
 # Import generator functions
@@ -95,8 +95,7 @@ def get_supported_formats() -> list[str]:
 def validate_report(data: Dict[str, Any]) -> bool:
     return isinstance(data, dict)
 
-def generate_report(target_dir: Path, output_dir: Path, format: str = "json") -> Dict[str, Any]:
-    return generate_comprehensive_report_legacy(target_dir, output_dir, format=format)
+generate_report = generate_comprehensive_report_impl
 
 
 def process_report(target_dir, output_dir, verbose=False, logger=None, **kwargs):

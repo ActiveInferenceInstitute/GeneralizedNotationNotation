@@ -13,6 +13,7 @@ Key Features:
 - Utility function access
 """
 
+import functools
 import logging
 import os
 import sys
@@ -287,40 +288,24 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering utils MCP tools")
 
-    # Create wrapper functions
-    def get_system_info_wrapper():
-        return get_system_info(mcp_instance)
-
-    def get_environment_info_wrapper():
-        return get_environment_info(mcp_instance)
-
-    def get_file_info_wrapper(file_path: str):
-        return get_file_info(mcp_instance, file_path)
-
-    def get_logging_info_wrapper():
-        return get_logging_info(mcp_instance)
-
-    def validate_dependencies_wrapper():
-        return validate_dependencies(mcp_instance)
-
     # Register tools
     mcp_instance.register_tool(
         name="get_system_info",
-        function=get_system_info_wrapper,
+        function=functools.partial(get_system_info, mcp_instance),
         schema={},
         description="Get comprehensive system information including CPU, memory, disk, and platform details."
     )
 
     mcp_instance.register_tool(
         name="get_environment_info",
-        function=get_environment_info_wrapper,
+        function=functools.partial(get_environment_info, mcp_instance),
         schema={},
         description="Get environment information including Python packages, environment variables, and paths."
     )
 
     mcp_instance.register_tool(
         name="get_file_info",
-        function=get_file_info_wrapper,
+        function=functools.partial(get_file_info, mcp_instance),
         schema={
             "type": "object",
             "properties": {
@@ -336,14 +321,14 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_logging_info",
-        function=get_logging_info_wrapper,
+        function=functools.partial(get_logging_info, mcp_instance),
         schema={},
         description="Get current logging configuration and status for all loggers."
     )
 
     mcp_instance.register_tool(
         name="validate_dependencies",
-        function=validate_dependencies_wrapper,
+        function=functools.partial(validate_dependencies, mcp_instance),
         schema={},
         description="Validate system dependencies and required packages for the GNN pipeline."
     )

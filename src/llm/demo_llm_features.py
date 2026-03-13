@@ -9,6 +9,7 @@ the new multi-provider system with the existing LLM operations interface.
 import sys
 from pathlib import Path
 import logging
+from contextlib import contextmanager
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
@@ -30,6 +31,17 @@ logging.basicConfig(
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 )
 logger = logging.getLogger(__name__)
+
+
+@contextmanager
+def _demo_section(title: str):
+    """Context manager for demo sections with consistent error handling."""
+    print(f"\n--- {title} ---")
+    try:
+        yield
+    except Exception as e:
+        print(f"Error in {title}: {e}")
+
 
 # Sample GNN content for demonstration
 SAMPLE_GNN_CONTENT = """
@@ -127,87 +139,51 @@ ModelTimeHorizon: 50
 
 def demo_backward_compatibility():
     """Demonstrate that existing code still works with enhanced system."""
-    print("🔄 Testing Backward Compatibility...")
+    print("Testing Backward Compatibility...")
 
-    # Test convenience functions (should work exactly as before)
-    print("\n--- Testing convenience functions ---")
-
-    try:
+    with _demo_section("Testing convenience functions"):
         summary = summarize_gnn(SAMPLE_GNN_CONTENT, max_length=200)
-        print(f"✅ Summary generated ({len(summary)} chars)")
-        print(f"   First 100 chars: {summary[:100]}...")
+        print(f"Summary generated ({len(summary)} chars): {summary[:100]}...")
 
         structure = analyze_gnn_structure(SAMPLE_GNN_CONTENT)
-        print(f"✅ Structure analysis completed ({len(structure)} chars)")
+        print(f"Structure analysis completed ({len(structure)} chars)")
 
         questions = generate_questions(SAMPLE_GNN_CONTENT, num_questions=3)
-        print(f"✅ Generated {len(questions)} questions")
+        print(f"Generated {len(questions)} questions")
         for i, q in enumerate(questions, 1):
             print(f"   {i}. {q[:80]}...")
 
-    except Exception as e:
-        print(f"❌ Backward compatibility test failed: {e}")
-
 def demo_enhanced_capabilities():
     """Demonstrate new capabilities enabled by multi-provider system."""
-    print("\n🚀 Testing Enhanced Capabilities...")
+    print("\nTesting Enhanced Capabilities...")
 
-    # Test new analysis methods
-    print("\n--- Testing enhancement suggestions ---")
-    try:
+    with _demo_section("Enhancement suggestions"):
         enhancements = enhance_gnn(SAMPLE_GNN_CONTENT)
-        print(f"✅ Enhancement suggestions generated ({len(enhancements)} chars)")
-        print(f"   First 150 chars: {enhancements[:150]}...")
-    except Exception as e:
-        print(f"❌ Enhancement test failed: {e}")
+        print(f"Enhancement suggestions generated ({len(enhancements)} chars): {enhancements[:150]}...")
 
-    print("\n--- Testing validation ---")
-    try:
+    with _demo_section("Validation"):
         validation = validate_gnn(SAMPLE_GNN_CONTENT)
-        print(f"✅ Validation completed ({len(validation)} chars)")
-        print(f"   First 150 chars: {validation[:150]}...")
-    except Exception as e:
-        print(f"❌ Validation test failed: {e}")
+        print(f"Validation completed ({len(validation)} chars): {validation[:150]}...")
 
 def demo_processor_modes():
     """Demonstrate different processor modes and configurations."""
-    print("\n⚙️ Testing Different Processor Modes...")
+    print("\nTesting Different Processor Modes...")
 
-    # Test legacy mode
-    print("\n--- Testing Legacy Mode ---")
-    try:
+    with _demo_section("Legacy Mode"):
         legacy_ops = LLMOperations(use_legacy=True)
-        info = legacy_ops.get_processor_info()
-        print(f"✅ Legacy processor: {info}")
+        print(f"Legacy processor: {legacy_ops.get_processor_info()}")
+        print(f"Legacy providers: {legacy_ops.get_available_providers()}")
 
-        providers = legacy_ops.get_available_providers()
-        print(f"✅ Legacy providers: {providers}")
-
-    except Exception as e:
-        print(f"❌ Legacy mode test failed: {e}")
-
-    # Test multi-provider mode
-    print("\n--- Testing Multi-Provider Mode ---")
-    print("1. Initializing LLM Operations (Multi-provider)...")
-    try:
+    with _demo_section("Multi-Provider Mode"):
         ops = LLMOperations()
-        print("   ✅ Initialization successful")
-        info = ops.get_processor_info()
-        print(f"✅ Multi-provider processor: {info}")
-
-        providers = ops.get_available_providers()
-        print(f"✅ Available providers: {providers}")
-
-    except Exception as e:
-        print(f"❌ Multi-provider mode test failed: {e}")
+        print(f"Multi-provider processor: {ops.get_processor_info()}")
+        print(f"Available providers: {ops.get_available_providers()}")
 
 def demo_real_world_usage():
     """Demonstrate real-world usage scenarios."""
     print("\n🌍 Real-World Usage Scenarios...")
 
-    # Scenario 1: Quick model analysis
-    print("\n--- Scenario 1: Quick Model Analysis ---")
-    try:
+    with _demo_section("Scenario 1: Quick Model Analysis"):
         # This is how someone would use it in practice
         ops = LLMOperations()
 
@@ -223,12 +199,7 @@ def demo_real_world_usage():
         proc_info = ops.get_processor_info()
         print(f"Processor mode: {proc_info.get('mode', 'unknown')}")
 
-    except Exception as e:
-        print(f"❌ Real-world scenario failed: {e}")
-
-    # Scenario 2: Comprehensive analysis
-    print("\n--- Scenario 2: Comprehensive Analysis ---")
-    try:
+    with _demo_section("Scenario 2: Comprehensive Analysis"):
         ops = LLMOperations()
 
         print("Running comprehensive analysis...")
@@ -251,16 +222,12 @@ def demo_real_world_usage():
 
         print("Comprehensive analysis complete!")
 
-    except Exception as e:
-        print(f"❌ Comprehensive analysis failed: {e}")
 
 def demo_error_handling():
     """Demonstrate error handling and fallback mechanisms."""
     print("\n🛡️ Testing Error Handling and Fallbacks...")
 
-    # Test with invalid API key
-    print("\n--- Testing with no API keys ---")
-    try:
+    with _demo_section("Testing with no API keys"):
         ops = LLMOperations()
         providers = ops.get_available_providers()
         print(f"Available providers with no keys: {providers}")
@@ -269,18 +236,10 @@ def demo_error_handling():
         result = ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result with no keys: {result[:100]}...")
 
-    except Exception as e:
-        print(f"Expected error with no keys: {e}")
-
-    # Test legacy fallback
-    print("\n--- Testing legacy fallback ---")
-    try:
+    with _demo_section("Testing legacy fallback"):
         legacy_ops = LLMOperations(use_legacy=True)
         result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Legacy result: {result[:100]}...")
-
-    except Exception as e:
-        print(f"Legacy fallback error: {e}")
 
 def main():
     """Run all demonstration scenarios."""
