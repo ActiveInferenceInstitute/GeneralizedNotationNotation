@@ -17,7 +17,7 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
 logger = logging.getLogger(__name__)
 
@@ -69,9 +69,9 @@ class PipelineContext:
         self._artifacts: Dict[str, Path] = {}
 
         # Event callbacks (optional, for SSE / observability)
-        self.on_step_start: Optional[Any] = None   # Callable[[str, int], None]
-        self.on_step_complete: Optional[Any] = None  # Callable[[str, int, str, float], None]
-        self.on_error: Optional[Any] = None          # Callable[[str, str], None]
+        self.on_step_start: Optional[Callable[[str, int], None]] = None
+        self.on_step_complete: Optional[Callable[[str, int, str, float], None]] = None
+        self.on_error: Optional[Callable[[str, str], None]] = None
 
         logger.debug("PipelineContext initialized")
 
