@@ -198,7 +198,7 @@ class TestExportModule:
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
     def test_get_supported_formats(self):
         """Test the get_supported_formats function."""
-        formats = src.export.get_supported_formats()
+        formats = src.export.get_supported_formats_dict()
         assert isinstance(formats, dict)
         assert 'data_formats' in formats
         assert 'text_formats' in formats

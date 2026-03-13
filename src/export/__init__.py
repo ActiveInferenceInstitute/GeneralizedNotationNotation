@@ -37,40 +37,34 @@ HAS_NETWORKX = True
 
 # --- Public API expected by tests ---
 
-def get_supported_formats():
-    """Return a flat list of supported formats (as some tests expect a list).
+def get_supported_formats() -> list:
+    """Return a flat list of supported format names.
 
     Combines data, graph, and text formats into a single list and prefers
-    'pickle' over the abbreviated 'pkl' spelling expected by some tests.
+    'pickle' over the abbreviated 'pkl' spelling.
     """
     info = _get_supported_formats_dict()
-    # Normalize to canonical names used in tests
     all_formats = set()
     for key in ("data_formats", "graph_formats", "text_formats", "all_formats"):
         for fmt in info.get(key, []):
             all_formats.add("pickle" if fmt in {"pkl", "pickle"} else fmt)
-    # Ensure predictable ordering
     ordered = ["json", "xml", "graphml", "gexf", "pickle", "txt", "dsl"]
-    # Append any extras deterministically
     extras = sorted(f for f in all_formats if f not in ordered)
-    flat = [f for f in ordered if f in all_formats] + extras
-    # Some tests in different files expect a dict grouping as well; return a dual-style adapter
-    try:
-        import inspect
-        import sys as _sys
-        # If caller file name indicates comprehensive_api (expects dict), return dict
-        stack = inspect.stack()
-        for frame in stack:
-            filename = frame.filename
-            if isinstance(filename, str) and filename.endswith("test_comprehensive_api.py"):
-                return {
-                    "data_formats": [fmt for fmt in flat if fmt in {"json", "xml", "pickle"}],
-                    "graph_formats": [fmt for fmt in flat if fmt in {"graphml", "gexf"}],
-                    "text_formats": [fmt for fmt in flat if fmt in {"txt", "dsl"}],
-                }
-    except Exception:
-        pass
-    return flat
+    return [f for f in ordered if f in all_formats] + extras
+
+
+def get_supported_formats_dict() -> dict:
+    """Return supported formats grouped by category (data, graph, text).
+
+    Returns a dict with keys: data_formats, graph_formats, text_formats.
+    Use this when you need the categorical grouping rather than a flat list.
+    """
+    flat = get_supported_formats()
+    return {
+        "data_formats": [f for f in flat if f in {"json", "xml", "pickle"}],
+        "graph_formats": [f for f in flat if f in {"graphml", "gexf"}],
+        "text_formats": [f for f in flat if f in {"txt", "dsl"}],
+    }
 
 
 def validate_export_format(format_name: str) -> bool:
@@ -321,6 +315,7 @@ __all__ = [
     'export_to_plaintext_dsl',
     'get_module_info',
     'get_supported_formats',
+    'get_supported_formats_dict',
     '__version__',
     'FEATURES',
     'HAS_NETWORKX',
