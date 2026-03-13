@@ -557,26 +557,40 @@ def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
     # Combine stdout and stderr for parsing
     combined_output = stdout + "\n" + stderr
 
-    # Try to find observations from log lines like "Step 0: obs=2, belief=[...], action=0.0"
-    obs_pattern = r'Step\s+\d+:\s+obs=(\d+)'
-    obs_matches = re.findall(obs_pattern, combined_output, re.IGNORECASE)
+    def _first_matches(text: str, *patterns: str) -> list:
+        """Return matches from the first pattern that produces any results."""
+        for pattern in patterns:
+            matches = re.findall(pattern, text, re.IGNORECASE)
+            if matches:
+                return matches
+        return []
+
+    # Observations: structured log line first, then bare keyword
+    obs_matches = _first_matches(
+        combined_output,
+        r'Step\s+\d+:\s+obs=(\d+)',
+        r'observation[:\s]+(\d+)',
+        r'obs[:\s]+(\d+)',
+    )
     if obs_matches:
-        data["observations"] = [int(obs) for obs in obs_matches]
+        data["observations"] = [int(m if isinstance(m, str) else (m[0] or m[1])) for m in obs_matches]
 
-    # Try to find actions from log lines
-    action_pattern = r'Step\s+\d+:\s+obs=\d+,\s+belief=[^\]]+,\s+action=([\d.]+)'
-    action_matches = re.findall(action_pattern, combined_output, re.IGNORECASE)
+    # Actions: structured log line first, then bare keyword
+    action_matches = _first_matches(
+        combined_output,
+        r'Step\s+\d+:\s+obs=\d+,\s+belief=[^\]]+,\s+action=([\d.]+)',
+        r'action[:\s]+(\d+)',
+        r'action_taken[:\s]+(\d+)',
+    )
     if action_matches:
-        data["actions"] = [int(float(act)) for act in action_matches]
+        data["actions"] = [int(float(m if isinstance(m, str) else (m[0] or m[1]))) for m in action_matches]
 
-    # Try to find beliefs from log lines
-    belief_pattern = r'belief=\[([^\]]+)\]'
-    belief_matches = re.findall(belief_pattern, combined_output, re.IGNORECASE)
+    # Beliefs
+    belief_matches = re.findall(r'belief=\[([^\]]+)\]', combined_output, re.IGNORECASE)
     if belief_matches:
         try:
             beliefs = []
             for match in belief_matches:
-                # Parse array string like "0.05 0.05 0.9" or "0.05, 0.05, 0.9"
                 values = re.findall(r'[\d.]+', match)
                 if values:
                     beliefs.append([float(v) for v in values])
@@ -585,29 +599,15 @@ def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
         except Exception as e:
             logging.getLogger(__name__).debug(f"Error parsing belief data: {e}")
 
-    # Try to find state trajectories (v1 pattern)
-    state_pattern = r'state[:\s]+\[([^\]]+)\]|states[:\s]+\[([^\]]+)\]'
-    state_matches = re.findall(state_pattern, combined_output, re.IGNORECASE)
+    # States
+    state_matches = re.findall(
+        r'state[:\s]+\[([^\]]+)\]|states[:\s]+\[([^\]]+)\]', combined_output, re.IGNORECASE
+    )
     if state_matches and "states" not in data:
         data["states"] = [match[0] or match[1] for match in state_matches]
 
-    # Try to find observations (v1 pattern)
-    if "observations" not in data:
-        obs_pattern_v1 = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
-        obs_matches_v1 = re.findall(obs_pattern_v1, combined_output, re.IGNORECASE)
-        if obs_matches_v1:
-            data["observations"] = [int(match[0] or match[1]) for match in obs_matches_v1]
-
-    # Try to find actions (v1 pattern)
-    if "actions" not in data:
-        action_pattern_v1 = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
-        action_matches_v1 = re.findall(action_pattern_v1, combined_output, re.IGNORECASE)
-        if action_matches_v1:
-            data["actions"] = [int(match[0] or match[1]) for match in action_matches_v1]
-
-    # Try to find free energy
-    fe_pattern = r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)'
-    fe_matches = re.findall(fe_pattern, combined_output, re.IGNORECASE)
+    # Free energy
+    fe_matches = re.findall(r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)', combined_output, re.IGNORECASE)
     if fe_matches:
         data["free_energy"] = [float(match[0] or match[1]) for match in fe_matches]
 
