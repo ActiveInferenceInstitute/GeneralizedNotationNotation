@@ -205,6 +205,12 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
 
 def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False):
     """Start the API server."""
+    if host not in ("127.0.0.1", "localhost"):
+        logger.warning(
+            "Binding to non-loopback address %s with no authentication — "
+            "ensure network-level access control is in place",
+            host,
+        )
     uvicorn.run(
         "api.server:app",
         host=host,
