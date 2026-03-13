@@ -11,6 +11,7 @@ from typing import Optional, Dict, Any, Callable, List
 from enum import Enum
 import functools
 import logging
+import time
 import traceback
 from dataclasses import dataclass
 
@@ -258,15 +259,7 @@ class ErrorReporter:
             "message": message,
             "details": details or {},
             "severity": severity,
-            "timestamp": str(logging.LogRecord(
-                name="error_reporter",
-                level=logging.ERROR,
-                pathname="",
-                lineno=0,
-                msg="",
-                args=(),
-                exc_info=None
-            ).created)
+            "timestamp": str(time.time())
         }
         self.errors.append(error_record)
         self.logger.debug(f"Error collected: {error_type} - {message}")

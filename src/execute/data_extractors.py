@@ -53,19 +53,16 @@ def normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Pat
         is_nested_duplicate = False
         for seen_path in deduplicated:
             seen_parent = seen_path.parent
+            if file_name != seen_path.name:
+                continue
             try:
-                if file_parent.is_relative_to(seen_parent) and file_name == seen_path.name:
-                    is_nested_duplicate = True
-                    logger.debug(f"Skipping nested duplicate: {file_path} (already have {seen_path})")
-                    break
+                is_nested = file_parent.is_relative_to(seen_parent)
             except (ValueError, AttributeError):
-                try:
-                    if str(file_parent).startswith(str(seen_parent)) and file_name == seen_path.name:
-                        is_nested_duplicate = True
-                        logger.debug(f"Skipping nested duplicate: {file_path} (already have {seen_path})")
-                        break
-                except Exception as e:
-                    logger.debug(f"Error comparing paths {file_path} and {seen_path}: {e}")
+                is_nested = str(file_parent).startswith(str(seen_parent))
+            if is_nested:
+                is_nested_duplicate = True
+                logger.debug(f"Skipping nested duplicate: {file_path} (already have {seen_path})")
+                break
 
         if not is_nested_duplicate:
             deduplicated.append(file_path)
@@ -590,25 +587,25 @@ def extract_pymdp_data(stdout: str, stderr: str) -> Dict[str, Any]:
         except Exception as e:
             logging.getLogger(__name__).debug(f"Error parsing belief data: {e}")
 
-    # Try to find state trajectories (legacy pattern)
+    # Try to find state trajectories (v1 pattern)
     state_pattern = r'state[:\s]+\[([^\]]+)\]|states[:\s]+\[([^\]]+)\]'
     state_matches = re.findall(state_pattern, combined_output, re.IGNORECASE)
     if state_matches and "states" not in data:
         data["states"] = [match[0] or match[1] for match in state_matches]
 
-    # Try to find observations (legacy pattern)
+    # Try to find observations (v1 pattern)
     if "observations" not in data:
-        obs_pattern_legacy = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
-        obs_matches_legacy = re.findall(obs_pattern_legacy, combined_output, re.IGNORECASE)
-        if obs_matches_legacy:
-            data["observations"] = [int(match[0] or match[1]) for match in obs_matches_legacy]
+        obs_pattern_v1 = r'observation[:\s]+(\d+)|obs[:\s]+(\d+)'
+        obs_matches_v1 = re.findall(obs_pattern_v1, combined_output, re.IGNORECASE)
+        if obs_matches_v1:
+            data["observations"] = [int(match[0] or match[1]) for match in obs_matches_v1]
 
-    # Try to find actions (legacy pattern)
+    # Try to find actions (v1 pattern)
     if "actions" not in data:
-        action_pattern_legacy = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
-        action_matches_legacy = re.findall(action_pattern_legacy, combined_output, re.IGNORECASE)
-        if action_matches_legacy:
-            data["actions"] = [int(match[0] or match[1]) for match in action_matches_legacy]
+        action_pattern_v1 = r'action[:\s]+(\d+)|action_taken[:\s]+(\d+)'
+        action_matches_v1 = re.findall(action_pattern_v1, combined_output, re.IGNORECASE)
+        if action_matches_v1:
+            data["actions"] = [int(match[0] or match[1]) for match in action_matches_v1]
 
     # Try to find free energy
     fe_pattern = r'free[_\s]?energy[:\s]+([\d.]+)|FE[:\s]+([\d.]+)'
