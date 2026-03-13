@@ -6,7 +6,7 @@ This module provides execute processing capabilities for rendered implementation
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import logging
 import subprocess
 import json
@@ -86,7 +86,7 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
                 if framework_name.lower() in part.lower():
                     return framework_name
 
-        # Default fallback
+        # Default recovery
         return "unknown"
 
     except Exception as e:
@@ -123,6 +123,40 @@ def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
         logger.warning(f"Invalid frameworks specified: {invalid}. Valid options: {valid_frameworks}")
 
     return valid_list if valid_list else ["pymdp"]  # Default to pymdp if nothing valid
+
+
+def _resolve_render_output_dir(target_dir: Path, kwargs: dict) -> Optional[Path]:
+    """Resolve the render output directory from kwargs and filesystem heuristics.
+
+    Resolution priority:
+    1. Explicit ``--render-output-dir`` kwarg.
+    2. target_dir itself if it looks like a render output directory.
+    3. Common pipeline and test output locations (searched in order).
+
+    Returns the first existing, non-empty directory found, or None.
+    """
+    # Priority 1: explicit kwarg
+    if kwargs.get('render_output_dir'):
+        return Path(kwargs['render_output_dir'])
+
+    # Priority 2: target_dir is already the render output
+    if "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
+        return target_dir
+
+    # Priority 3: search common locations
+    candidates: List[Path] = [
+        target_dir.parent / "output" / "11_render_output",
+        target_dir / "11_render_output",
+        Path("output/test_render/11_render_output/11_render_output"),
+        Path("output/test_render_improved/11_render_output/11_render_output"),
+        *list(Path("output").glob("*/11_render_output/11_render_output")),
+        *list(Path("output").glob("**/11_render_output")),
+    ]
+    for candidate in candidates:
+        if candidate.exists() and any(candidate.rglob("*")):
+            return candidate
+    return None
+
 
 def process_execute(
     target_dir: Path,
@@ -174,37 +208,9 @@ def process_execute(
         }
 
         # Look for rendered implementations from render output
-        render_output_dir = None
-
-        # Priority 1: Check if --render-output-dir was specified
-        if kwargs.get('render_output_dir'):
-            render_output_dir = Path(kwargs['render_output_dir'])
-
-        # Priority 2: Check if target_dir is already a render output directory
-        elif "11_render_output" in str(target_dir) or target_dir.name == "11_render_output":
-            render_output_dir = target_dir
-
-        # Priority 3: Search for render output directories in common locations
-        else:
-            potential_dirs = [
-                # Standard pipeline location
-                target_dir.parent / "output" / "11_render_output",
-                target_dir / "11_render_output",
-
-                # Recent test locations
-                Path("output/test_render/11_render_output/11_render_output"),
-                Path("output/test_render_improved/11_render_output/11_render_output"),
-
-                # Search in all output directories
-                *list(Path("output").glob("*/11_render_output/11_render_output")),
-                *list(Path("output").glob("**/11_render_output")),
-            ]
-
-            for potential_dir in potential_dirs:
-                if potential_dir.exists() and any(potential_dir.rglob("*")):
-                    render_output_dir = potential_dir
-                    logger.info(f"Found render output directory: {render_output_dir}")
-                    break
+        render_output_dir = _resolve_render_output_dir(target_dir, kwargs)
+        if render_output_dir is not None and render_output_dir != target_dir:
+            logger.info(f"Found render output directory: {render_output_dir}")
 
         if verbose:
             logger.info(f"Searching for executable scripts in: {render_output_dir}")
@@ -226,12 +232,37 @@ def process_execute(
             else:
                 logger.info(f"Found {len(executable_scripts)} executable scripts to run")
 
-                # Extract timeout from kwargs
+                # Extract args
                 timeout = kwargs.get('timeout', 300)
+                is_distributed = kwargs.get('distributed', False)
+                details = []
 
-                # Execute each script
-                for script_info in executable_scripts:
-                    exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
+                if is_distributed:
+                    from .distributed import RayDispatcher
+                    dispatcher = RayDispatcher()
+                    
+                    def ray_script_runner(info, **kws):
+                        # Re-instantiate logger to avoid pickle issues
+                        import logging
+                        local_logger = logging.getLogger("execute.worker")
+                        local_logger.setLevel(logging.INFO)
+                        return execute_single_script(info, kws["results_dir"], kws["verbose"], local_logger, kws["timeout"])
+                        
+                    details = dispatcher.run_scripts_parallel(
+                        executable_scripts, 
+                        ray_script_runner, 
+                        results_dir=results_dir, 
+                        verbose=verbose, 
+                        timeout=timeout
+                    )
+                else:
+                    # Execute each script sequentially
+                    for script_info in executable_scripts:
+                        exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
+                        details.append(exec_result)
+                
+                # Update aggregated results
+                for exec_result in details:
                     execution_results["execution_details"].append(exec_result)
 
                     # Update framework status
