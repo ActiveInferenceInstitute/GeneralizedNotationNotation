@@ -323,7 +323,9 @@ class GNNInternalRepresentation:
         """Convert to dictionary representation."""
         def serialize_obj(obj):
             """Helper to serialize objects with enums to dict."""
-            if hasattr(obj, '__dict__'):
+            if isinstance(obj, Enum):
+                return obj.value
+            elif hasattr(obj, '__dict__'):
                 result = {}
                 for key, value in obj.__dict__.items():
                     if isinstance(value, Enum):
@@ -339,8 +341,6 @@ class GNNInternalRepresentation:
                     else:
                         result[key] = value
                 return result
-            elif isinstance(obj, Enum):
-                return obj.value
             else:
                 return obj
 
