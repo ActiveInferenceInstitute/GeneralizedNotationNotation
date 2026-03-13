@@ -431,7 +431,7 @@ if __name__ == "__main__":
 
 def render_gnn_to_discopy(
     gnn_spec: Dict[str, Any],
-    output_script_path: Path,
+    output_path: Path,
     options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
@@ -439,7 +439,7 @@ def render_gnn_to_discopy(
     
     Args:
         gnn_spec: Parsed GNN specification dictionary
-        output_script_path: Path for output DisCoPy script
+        output_path: Path for output DisCoPy script
         options: Optional rendering options
         
     Returns:
@@ -453,11 +453,11 @@ def render_gnn_to_discopy(
         discopy_code = renderer._generate_discopy_diagram_code(gnn_spec, model_name)
 
         # Write output file
-        output_script_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_script_path, 'w', encoding='utf-8') as f:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write(discopy_code)
 
-        message = f"Generated DisCoPy categorical diagram script: {output_script_path}"
+        message = f"Generated DisCoPy categorical diagram script: {output_path}"
         warnings = []
 
         # Check for potential issues

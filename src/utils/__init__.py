@@ -29,7 +29,6 @@ Source modules:
 - pipeline: Legacy utilities re-exported for backwards compatibility
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
-- configuration: DEPRECATED — not wired into pipeline; see config_loader instead
 - dependency_audit: Dependency auditing and optimization utilities
 """
 

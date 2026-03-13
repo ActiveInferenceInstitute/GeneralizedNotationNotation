@@ -38,7 +38,6 @@ dependencies = [
     # System monitoring and utilities
     "psutil>=5.8.0",
     "toml>=0.10.0",
-    "defusedxml>=0.7.0",
     # Security tools
     "bandit>=1.7.0",
     "safety>=2.3.0",
@@ -276,7 +275,7 @@ Repository = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNot
 Issues = "https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/issues"
 
 [project.scripts]
-gnn = "src.main:main"
+gnn = "src.cli:main"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src"]

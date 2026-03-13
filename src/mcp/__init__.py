@@ -9,7 +9,7 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 
-from utils.pipeline_template import (
+from utils.logging.logging_utils import (
     log_step_start,
     log_step_success,
     log_step_error,
@@ -50,11 +50,7 @@ from .exceptions import (
     MCPPerformanceError,
 )
 
-# Stubs for legacy API surface (not yet implemented)
-MCPServer = None
-create_mcp_server = lambda *a, **kw: None
-start_mcp_server = lambda *a, **kw: None
-register_tools = lambda *a, **kw: None
+
 
 # Import processor functions
 from .processor import (
@@ -101,10 +97,6 @@ __all__ = [
     'MCPTool',
     'MCPResource',
     'MCPError',
-    'MCPServer',
-    'create_mcp_server',
-    'start_mcp_server',
-    'register_tools',
     'get_mcp_instance',
 
     # Processor functions

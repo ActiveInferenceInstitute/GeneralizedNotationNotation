@@ -3,7 +3,7 @@
 Incremental Parse Cache — Hash-based section re-parsing avoidance.
 
 Hashes each `## Section` independently and only re-parses changed sections.
-Stores cached parse results in output/3_gnn_output/.parse_cache/.
+Stores cached parse results in a caller-supplied directory.
 """
 
 import hashlib
@@ -24,7 +24,7 @@ class ParseCache:
     """
 
     def __init__(self, cache_dir: Optional[Path] = None):
-        self.cache_dir = cache_dir or Path("output/3_gnn_output/.parse_cache")
+        self.cache_dir = cache_dir or Path(".parse_cache")
         self.cache_dir.mkdir(parents=True, exist_ok=True)
         self._stats = {"hits": 0, "misses": 0}
 

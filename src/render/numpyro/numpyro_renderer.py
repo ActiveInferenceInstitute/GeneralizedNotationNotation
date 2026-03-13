@@ -12,7 +12,7 @@ within the standard Active Inference generative loop.
 import logging
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Dict, Any, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def render_gnn_to_numpyro(
     gnn_spec: Dict[str, Any],
     output_path: Path,
     options: Optional[Dict[str, Any]] = None,
-) -> tuple:
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a NumPyro POMDP simulation script.
 
     Args:
@@ -58,7 +58,7 @@ def render_gnn_to_numpyro(
         return False, f"NumPyro rendering failed: {e}", ""
 
 
-def _extract_matrices(gnn_spec: Dict[str, Any]) -> tuple:
+def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[bool, str, List[str]]:
     """Extract A, B, C, D matrices from GNN spec."""
     params = gnn_spec.get("stateSpace", {}).get("parameters", {})
     if not params:

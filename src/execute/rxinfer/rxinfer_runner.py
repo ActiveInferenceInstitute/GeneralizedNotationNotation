@@ -14,40 +14,13 @@ from typing import List, Optional, Union
 
 logger = logging.getLogger(__name__)
 
-def is_julia_available() -> bool:
-    """
-    Check if Julia is available in the system path.
-    
-    Delegates to the shared julia_setup module for consistency across runners.
-    
-    Returns:
-        bool: True if Julia is available, False otherwise
-    """
-    try:
-        from execute.julia_setup import check_julia_availability
-        available, julia_path = check_julia_availability()
-        return available
-    except ImportError:
-        logger.debug("julia_setup module not available, falling back to local check")
-        try:
-            result = subprocess.run(
-                ["julia", "--version"],
-                capture_output=True,
-                text=True,
-                check=False
-            )
-            if result.returncode == 0:
-                logger.info(f"Julia is available: {result.stdout.strip()}")
-                return True
-            else:
-                logger.warning("Julia command returned non-zero exit code")
-                return False
-        except FileNotFoundError:
-            logger.warning("Julia executable not found in PATH")
-            return False
-        except Exception as e:
-            logger.warning(f"Error checking Julia availability: {e}")
-            return False
+try:
+    from execute.julia_setup import is_julia_available
+except ImportError:
+    def is_julia_available() -> bool:  # type: ignore[misc]
+        """Fallback when julia_setup is unavailable: check PATH directly."""
+        import shutil
+        return shutil.which("julia") is not None
 
 def find_rxinfer_scripts(
     base_dir: Union[str, Path],

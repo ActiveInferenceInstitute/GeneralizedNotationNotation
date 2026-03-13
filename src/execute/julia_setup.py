@@ -61,6 +61,32 @@ def check_julia_version(julia_path: str) -> Optional[str]:
         return None
 
 
+def is_julia_available(min_version: tuple = (1, 6, 0)) -> bool:
+    """
+    Return True if Julia is installed and meets the minimum version requirement.
+
+    Args:
+        min_version: Minimum (major, minor, patch) tuple. Defaults to (1, 6, 0).
+    """
+    import re
+    available, julia_path = check_julia_availability()
+    if not available or julia_path is None:
+        return False
+
+    version_str = check_julia_version(julia_path)
+    if version_str:
+        match = re.search(r'(\d+)\.(\d+)\.(\d+)', version_str)
+        if match:
+            version = tuple(int(match.group(i)) for i in (1, 2, 3))
+            if version < min_version:
+                logger.warning(
+                    "Julia %d.%d.%d is below minimum %d.%d.%d",
+                    *version, *min_version
+                )
+                return False
+    return True
+
+
 def run_julia_setup_script(
     julia_path: str,
     setup_script: Path,
