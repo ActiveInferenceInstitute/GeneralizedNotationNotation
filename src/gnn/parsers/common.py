@@ -537,7 +537,6 @@ def normalize_variable_name(name: str) -> str:
     if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:
         return name
 
-    # For other variables, use lowercase for normalization
     return name
 
 def parse_dimensions(dim_str: str) -> List[int]:

@@ -14,14 +14,6 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Union, Tuple
 from datetime import datetime
 
-# Configure logging to avoid format string issues
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    datefmt='%Y-%m-%d %H:%M:%S'
-)
-
-# Create a logger for this module
 logger = logging.getLogger(__name__)
 
 class SimpleGNNParser:

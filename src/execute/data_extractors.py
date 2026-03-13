@@ -44,7 +44,6 @@ def normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Pat
 
     sorted_paths = sorted(normalized.values(), key=lambda p: len(p.parts))
     deduplicated = []
-    seen_names = set()
 
     for file_path in sorted_paths:
         file_name = file_path.name
@@ -66,7 +65,6 @@ def normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Pat
 
         if not is_nested_duplicate:
             deduplicated.append(file_path)
-            seen_names.add(file_name)
 
     if len(found_files) != len(deduplicated):
         logger.info(f"Deduplicated paths: {len(found_files)} -> {len(deduplicated)} files")
@@ -496,14 +494,10 @@ def extract_discopy_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
     return data
 
 
-def extract_jax_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
-    """Extract JAX simulation data from saved files.
-
-    JAX scripts write to the same shared contract as PyMDP:
-    simulation_data/simulation_results.json with keys beliefs, actions,
-    observations, num_timesteps; and visualizations/*.{png,svg}.
-    """
-    return extract_pymdp_data_from_files(output_dir, logger)
+# JAX scripts write to the same shared contract as PyMDP:
+# simulation_data/simulation_results.json with keys beliefs, actions,
+# observations, num_timesteps; and visualizations/*.{png,svg}.
+extract_jax_data_from_files = extract_pymdp_data_from_files
 
 
 # ---------------------------------------------------------------------------
@@ -652,14 +646,9 @@ def extract_activeinference_jl_data(stdout: str, stderr: str) -> Dict[str, Any]:
     return data
 
 
-def extract_jax_data(stdout: str, stderr: str) -> Dict[str, Any]:
-    """Extract JAX simulation data from stdout/stderr.
-
-    JAX scripts emit the same structured output as PyMDP (JSON lines with
-    beliefs/actions/observations), so this is an intentional alias for
-    extract_pymdp_data rather than a JAX-specific implementation.
-    """
-    return extract_pymdp_data(stdout, stderr)
+# JAX scripts emit the same structured output as PyMDP (JSON lines with
+# beliefs/actions/observations) — intentional alias, not a stub.
+extract_jax_data = extract_pymdp_data
 
 
 def extract_discopy_data(stdout: str, stderr: str) -> Dict[str, Any]:

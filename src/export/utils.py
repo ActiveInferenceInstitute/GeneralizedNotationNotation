@@ -9,7 +9,7 @@ from typing import Dict, Any, List
 
 def get_module_info() -> Dict[str, Any]:
     """Get comprehensive information about the export module and its capabilities."""
-    info = {
+    return {
         'version': "1.0.0",
         'description': "Multi-format export capabilities for GNN Processing Pipeline",
         'features': {
@@ -21,38 +21,27 @@ def get_module_info() -> Dict[str, Any]:
             'plaintext_export': True,
             'dsl_export': True
         },
-        'export_capabilities': [],
-        'supported_formats': [],
-        'export_methods': [],
-        'available_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl']
+        'export_capabilities': [
+            'JSON export',
+            'XML export',
+            'GraphML export',
+            'GEXF export',
+            'Pickle export',
+            'Plaintext summary',
+            'DSL export',
+        ],
+        'supported_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl'],
+        'export_methods': [
+            'Single file export',
+            'Batch export',
+            'Format-specific export',
+            'Model data export',
+        ],
+        'available_formats': ['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl'],
+        'graph_formats': ['graphml', 'gexf'],
+        'text_formats': ['txt', 'dsl'],
+        'data_formats': ['json', 'xml', 'pickle'],
     }
-
-    # Export capabilities
-    info['export_capabilities'].extend([
-        'JSON export',
-        'XML export',
-        'GraphML export',
-        'GEXF export',
-        'Pickle export',
-        'Plaintext summary',
-        'DSL export'
-    ])
-
-    # Export methods
-    info['export_methods'].extend([
-        'Single file export',
-        'Batch export',
-        'Format-specific export',
-        'Model data export'
-    ])
-
-    # Supported formats
-    info['supported_formats'].extend(['json', 'xml', 'graphml', 'gexf', 'pickle', 'txt', 'dsl'])
-    info['graph_formats'] = ['graphml', 'gexf']
-    info['text_formats'] = ['txt', 'dsl']
-    info['data_formats'] = ['json', 'xml', 'pickle']
-
-    return info
 
 def get_supported_formats() -> Dict[str, List[str]]:
     """Get information about supported export formats."""
