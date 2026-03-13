@@ -79,140 +79,133 @@ if FASTAPI_AVAILABLE:
         renderers: Dict[str, bool] = Field(default_factory=dict)
         uptime_seconds: float = 0.0
 
-    # ── App creation ─────────────────────────────────────────────────────────
+    # ── App factory ──────────────────────────────────────────────────────────
 
-    _start_time = time.time()
+    def create_app() -> "FastAPI":
+        """Create and configure the FastAPI application instance.
 
-    app = FastAPI(
-        title="GNN Pipeline API",
-        description="Pipeline-as-a-Service for Generalized Notation Notation",
-        version="2.0.0",
-        docs_url="/docs",
-        redoc_url="/redoc",
-    )
+        Called at module scope below for ASGI deployment.  Tests can call this
+        directly to get fresh, isolated app instances.
+        """
+        _start_time = time.time()
 
-    # CORS for local browser access
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=["http://localhost:*", "http://127.0.0.1:*"],
-        allow_credentials=False,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
-
-    # ── Endpoints ────────────────────────────────────────────────────────────
-
-    @app.get("/api/v1/health", response_model=HealthResponse)
-    async def health() -> HealthResponse:
-        """Health check with renderer availability."""
-        renderers = _check_renderers()
-        return HealthResponse(
-            status="healthy",
+        _app = FastAPI(
+            title="GNN Pipeline API",
+            description="Pipeline-as-a-Service for Generalized Notation Notation",
             version="2.0.0",
-            pipeline_steps=25,
-            renderers=renderers,
-            uptime_seconds=round(time.time() - _start_time, 1),
+            docs_url="/docs",
+            redoc_url="/redoc",
         )
 
-    @app.post("/api/v1/run", response_model=RunStatus)
-    async def submit_run(request: RunRequest, background_tasks: BackgroundTasks) -> RunStatus:
-        """Submit a pipeline run for background execution."""
-        from pipeline.hasher import compute_run_hash
-
-        run_hash = compute_run_hash(
-            Path(request.target_dir),
-            config={"skip_steps": request.skip_steps, "skip_llm": request.skip_llm},
+        # CORS for local browser access
+        _app.add_middleware(
+            CORSMiddleware,
+            allow_origins=["http://localhost:*", "http://127.0.0.1:*"],
+            allow_credentials=False,
+            allow_methods=["*"],
+            allow_headers=["*"],
         )
 
-        # Check if already running
-        if run_hash in _runs and _runs[run_hash]["status"] == "running":
-            return RunStatus(
-                run_hash=run_hash,
-                status="running",
-                started_at=_runs[run_hash].get("started_at"),
-                current_step=_runs[run_hash].get("current_step"),
+        # ── Endpoints ────────────────────────────────────────────────────────
+
+        @_app.get("/api/v1/health", response_model=HealthResponse)
+        async def health() -> HealthResponse:
+            """Health check with renderer availability."""
+            renderers = _check_renderers()
+            return HealthResponse(
+                status="healthy",
+                version="2.0.0",
+                pipeline_steps=25,
+                renderers=renderers,
+                uptime_seconds=round(time.time() - _start_time, 1),
             )
 
-        # Queue the run
-        run_entry = {
-            "status": "queued",
-            "started_at": datetime.now().isoformat(),
-            "request": request.model_dump(),
-            "steps_completed": 0,
-            "errors": [],
-            "events": [],  # For SSE
-        }
-        _runs[run_hash] = run_entry
+        @_app.post("/api/v1/run", response_model=RunStatus)
+        async def submit_run(request: RunRequest, background_tasks: BackgroundTasks) -> RunStatus:
+            """Submit a pipeline run for background execution."""
+            from pipeline.hasher import compute_run_hash
 
-        # Execute in background
-        background_tasks.add_task(_execute_pipeline, run_hash, request)
+            run_hash = compute_run_hash(
+                Path(request.target_dir),
+                config={"skip_steps": request.skip_steps, "skip_llm": request.skip_llm},
+            )
 
-        return RunStatus(
-            run_hash=run_hash,
-            status="queued",
-            started_at=run_entry["started_at"],
-        )
+            if run_hash in _runs and _runs[run_hash]["status"] == "running":
+                return RunStatus(
+                    run_hash=run_hash,
+                    status="running",
+                    started_at=_runs[run_hash].get("started_at"),
+                    current_step=_runs[run_hash].get("current_step"),
+                )
 
-    @app.get("/api/v1/runs/{run_hash}", response_model=RunStatus)
-    async def get_run(run_hash: str) -> RunStatus:
-        """Get status of a pipeline run."""
-        entry = _find_run(run_hash)
-        return RunStatus(
-            run_hash=run_hash,
-            status=entry["status"],
-            started_at=entry.get("started_at"),
-            completed_at=entry.get("completed_at"),
-            duration_seconds=entry.get("duration_seconds"),
-            current_step=entry.get("current_step"),
-            steps_completed=entry.get("steps_completed", 0),
-            errors=entry.get("errors", []),
-        )
+            run_entry = {
+                "status": "queued",
+                "started_at": datetime.now().isoformat(),
+                "request": request.model_dump(),
+                "steps_completed": 0,
+                "errors": [],
+                "events": [],
+            }
+            _runs[run_hash] = run_entry
+            background_tasks.add_task(_execute_pipeline, run_hash, request)
+            return RunStatus(run_hash=run_hash, status="queued", started_at=run_entry["started_at"])
 
-    @app.get("/api/v1/runs/{run_hash}/report")
-    async def get_report(run_hash: str) -> "PlainTextResponse":
-        """Download PIPELINE_REPORT.md for a completed run."""
-        entry = _find_run(run_hash)
-        output_dir = Path(entry.get("request", {}).get("output_dir", "output"))
-        report_path = output_dir / "PIPELINE_REPORT.md"
+        @_app.get("/api/v1/runs/{run_hash}", response_model=RunStatus)
+        async def get_run(run_hash: str) -> RunStatus:
+            """Get status of a pipeline run."""
+            entry = _find_run(run_hash)
+            return RunStatus(
+                run_hash=run_hash,
+                status=entry["status"],
+                started_at=entry.get("started_at"),
+                completed_at=entry.get("completed_at"),
+                duration_seconds=entry.get("duration_seconds"),
+                current_step=entry.get("current_step"),
+                steps_completed=entry.get("steps_completed", 0),
+                errors=entry.get("errors", []),
+            )
 
-        if not report_path.exists():
-            raise HTTPException(status_code=404, detail="Report not yet generated")
+        @_app.get("/api/v1/runs/{run_hash}/report")
+        async def get_report(run_hash: str) -> "PlainTextResponse":
+            """Download PIPELINE_REPORT.md for a completed run."""
+            entry = _find_run(run_hash)
+            output_dir = Path(entry.get("request", {}).get("output_dir", "output"))
+            report_path = output_dir / "PIPELINE_REPORT.md"
+            if not report_path.exists():
+                raise HTTPException(status_code=404, detail="Report not yet generated")
+            return PlainTextResponse(report_path.read_text(encoding="utf-8"), media_type="text/markdown")
 
-        content = report_path.read_text(encoding="utf-8")
-        return PlainTextResponse(content, media_type="text/markdown")
+        @_app.get("/api/v1/runs/{run_hash}/stream")
+        async def stream_events(run_hash: str) -> "StreamingResponse":
+            """Server-Sent Events stream for real-time pipeline progress."""
+            entry = _find_run(run_hash)
 
-    @app.get("/api/v1/runs/{run_hash}/stream")
-    async def stream_events(run_hash: str) -> "StreamingResponse":
-        """Server-Sent Events stream for real-time pipeline progress."""
-        entry = _find_run(run_hash)
+            async def event_generator():
+                last_index = 0
+                while True:
+                    for event in entry.get("events", [])[last_index:]:
+                        yield f"data: {json.dumps(event)}\n\n"
+                        last_index += 1
+                    if entry["status"] in ("completed", "failed"):
+                        yield f"data: {json.dumps({'type': 'pipeline_complete', 'status': entry['status']})}\n\n"
+                        break
+                    await asyncio.sleep(0.5)
 
-        async def event_generator():
-            last_index = 0
-            while True:
-                events = entry.get("events", [])
-                for event in events[last_index:]:
-                    yield f"data: {json.dumps(event)}\n\n"
-                    last_index += 1
+            return StreamingResponse(
+                event_generator(),
+                media_type="text/event-stream",
+                headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
+            )
 
-                if entry["status"] in ("completed", "failed"):
-                    yield f"data: {json.dumps({'type': 'pipeline_complete', 'status': entry['status']})}\n\n"
-                    break
+        @_app.get("/api/v1/runs")
+        async def list_runs() -> Dict[str, Dict[str, Any]]:
+            """List all known runs."""
+            return {
+                hash_: {"status": entry["status"], "started_at": entry.get("started_at")}
+                for hash_, entry in _runs.items()
+            }
 
-                await asyncio.sleep(0.5)
-
-        return StreamingResponse(
-            event_generator(),
-            media_type="text/event-stream",
-            headers={"Cache-Control": "no-cache", "Connection": "keep-alive"},
-        )
-
-    @app.get("/api/v1/runs")
-    async def list_runs() -> Dict[str, Dict[str, Any]]:
-        """List all known runs."""
-        return {
-            hash_: {"status": entry["status"], "started_at": entry.get("started_at")}
-            for hash_, entry in _runs.items()
-        }
+        return _app
 
     # ── Run state / event tracking ────────────────────────────────────────────
 
@@ -345,6 +338,10 @@ if FASTAPI_AVAILABLE:
             except ImportError:
                 renderers[name] = False
         return renderers
+
+    # Module-scope instance for ASGI deployment (e.g. uvicorn src.api.app:app).
+    # Tests should call create_app() directly to get a fresh isolated instance.
+    app = create_app()
 
 else:
     # Placeholder when FastAPI is not installed
