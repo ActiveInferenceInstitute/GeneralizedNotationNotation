@@ -16,9 +16,9 @@ from .utils import (
     ensure_directory,
     find_gnn_files,
     get_output_paths,
-    get_uv_environment_info,
-    setup_uv_project_structure
 )
+from .uv_management import validate_uv_setup, get_uv_setup_info
+from .dependency_setup import create_project_structure
 
 
 
@@ -110,7 +110,7 @@ def check_uv_project_status_mcp(project_directory: str) -> Dict[str, Any]:
     """
     try:
         project_root = Path(project_directory)
-        status = check_uv_project_status(project_root)
+        status = validate_uv_setup(project_root=project_root)
         return {
             "success": True,
             "status": status
@@ -130,7 +130,7 @@ def get_uv_environment_info_mcp() -> Dict[str, Any]:
         Dictionary with UV environment information.
     """
     try:
-        env_info = get_uv_environment_info()
+        env_info = get_uv_setup_info()
         return {
             "success": True,
             "environment_info": env_info
@@ -154,7 +154,7 @@ def setup_uv_project_structure_mcp(project_directory: str) -> Dict[str, Any]:
     """
     try:
         project_root = Path(project_directory)
-        success = setup_uv_project_structure(project_root, logger)
+        success = create_project_structure(project_root, logger)
         return {
             "success": success,
             "project_directory": str(project_root),

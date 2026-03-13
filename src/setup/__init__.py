@@ -46,7 +46,7 @@ from .utils import (
     get_module_info,
     get_setup_options,
     setup_environment,
-    install_dependencies
+    install_dependencies,
 )
 
 # Module metadata and lightweight API expected by tests
