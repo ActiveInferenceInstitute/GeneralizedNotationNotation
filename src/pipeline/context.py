@@ -65,7 +65,7 @@ class PipelineContext:
         self._steps: Dict[str, StepRecord] = {}
         self._step_order: List[str] = []
         self._timings: Dict[str, float] = {}
-        self._models: list = []
+        self._models: List[Any] = []
         self._artifacts: Dict[str, Path] = {}
 
         # Event callbacks (optional, for SSE / observability)
@@ -93,12 +93,12 @@ class PipelineContext:
     # ── Model Store ──────────────────────────────────────────────────────────
 
     @property
-    def models(self) -> list:
+    def models(self) -> List[Any]:
         """Parsed GNN models (populated by Step 3)."""
         return self._models
 
     @models.setter
-    def models(self, value: list) -> None:
+    def models(self, value: List[Any]) -> None:
         self._models = value
         logger.debug(f"Context: stored {len(value)} models")
 
@@ -114,6 +114,14 @@ class PipelineContext:
         self._artifacts[name] = Path(path)
 
     # ── Step Recording ───────────────────────────────────────────────────────
+
+    def trigger_step_start(self, name: str, step_num: int = -1) -> None:
+        """Trigger the on_step_start callback if configured."""
+        if self.on_step_start:
+            try:
+                self.on_step_start(name, step_num)
+            except Exception as e:
+                logger.error(f"Error in on_step_start callback: {e}")
 
     def record_step(
         self,
@@ -141,6 +149,19 @@ class PipelineContext:
             self._step_order.append(name)
         self._timings[name] = duration
         logger.debug(f"Context: recorded step '{name}' → {status} ({duration:.1f}s)")
+
+        if self.on_step_complete:
+            try:
+                self.on_step_complete(name, step_num, status, duration)
+            except Exception as e:
+                logger.error(f"Error in on_step_complete callback: {e}")
+
+        if status == "FAILED" and self.on_error:
+            try:
+                error_msg = " | ".join(errors) if errors else f"Step {name} failed"
+                self.on_error(name, error_msg)
+            except Exception as e:
+                logger.error(f"Error in on_error callback: {e}")
 
     # ── Timing──────────────────────────────────────────────────────────────
 
