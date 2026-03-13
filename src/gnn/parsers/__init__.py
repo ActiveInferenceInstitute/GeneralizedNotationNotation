@@ -38,55 +38,33 @@ Date: 2025-01-11
 License: MIT
 """
 
-# Import all parser modules
-from .unified_parser import UnifiedGNNParser, GNNFormat, ParseResult
-from .markdown_parser import MarkdownGNNParser
-from .scala_parser import ScalaGNNParser
-from .lean_parser import LeanGNNParser
-from .coq_parser import CoqGNNParser
-from .python_parser import PythonGNNParser
-from .grammar_parser import BNFParser, EBNFParser
-from .isabelle_parser import IsabelleParser
-from .maxima_parser import MaximaParser
-from .xml_parser import XMLGNNParser, PNMLParser
-from .json_parser import JSONGNNParser
-from .protobuf_parser import ProtobufGNNParser
-from .yaml_parser import YAMLGNNParser
-from .schema_parser import XSDParser, ASN1Parser, PKLParser, AlloyParser, ZNotationParser
-from .temporal_parser import TLAParser, AgdaParser
-from .functional_parser import HaskellGNNParser
-from .binary_parser import PickleGNNParser
-
-# Import serializers from individual files
-from .markdown_serializer import MarkdownSerializer
-from .json_serializer import JSONSerializer
-from .xml_serializer import XMLSerializer
-from .yaml_serializer import YAMLSerializer
-from .scala_serializer import ScalaSerializer
-from .protobuf_serializer import ProtobufSerializer
-from .pkl_serializer import PKLSerializer
-from .xsd_serializer import XSDSerializer
-from .asn1_serializer import ASN1Serializer
-from .lean_serializer import LeanSerializer
-from .coq_serializer import CoqSerializer
-from .python_serializer import PythonSerializer
-from .grammar_serializer import GrammarSerializer
-from .isabelle_serializer import IsabelleSerializer
-from .maxima_serializer import MaximaSerializer
-from .alloy_serializer import AlloySerializer
-from .znotation_serializer import ZNotationSerializer
+# system.py is the single source of truth for parser/serializer registration.
+# Re-export everything from there to avoid double-importing all 46 concrete classes.
+from .system import (
+    GNNParsingSystem, PARSER_REGISTRY, SERIALIZER_REGISTRY,
+    # Parsers
+    GNNFormat, ParseResult,
+    MarkdownGNNParser, ScalaGNNParser, LeanGNNParser, CoqGNNParser,
+    PythonGNNParser, BNFParser, EBNFParser, IsabelleParser, MaximaParser,
+    XMLGNNParser, PNMLParser, JSONGNNParser, ProtobufGNNParser, YAMLGNNParser,
+    XSDParser, ASN1Parser, PKLParser, AlloyParser, ZNotationParser,
+    TLAParser, AgdaParser, HaskellGNNParser, PickleGNNParser,
+    # Serializers
+    MarkdownSerializer, JSONSerializer, XMLSerializer, YAMLSerializer,
+    ScalaSerializer, ProtobufSerializer, PKLSerializer, XSDSerializer,
+    ASN1Serializer, LeanSerializer, CoqSerializer, PythonSerializer,
+    GrammarSerializer, IsabelleSerializer, MaximaSerializer, AlloySerializer,
+    ZNotationSerializer, TLASerializer, AgdaSerializer,
+    FunctionalSerializer, BinarySerializer,
+    # Common
+    GNNInternalRepresentation, ParseError, GNNParser,
+)
+from .unified_parser import UnifiedGNNParser
 from .schema_serializer import SchemaSerializer
-from .temporal_serializer import TemporalSerializer, TLASerializer, AgdaSerializer
-from .functional_serializer import FunctionalSerializer
-from .binary_serializer import BinarySerializer
-
-# Import converters and validators
+from .temporal_serializer import TemporalSerializer
 from .converters import FormatConverter, ConversionError
 from .validators import GNNValidator
-from .common import GNNInternalRepresentation, ASTNode, ParseError, ValidationError, ValidationWarning, GNNParser
-
-# Import system and utilities
-from .system import GNNParsingSystem, PARSER_REGISTRY, SERIALIZER_REGISTRY
+from .common import ASTNode, ValidationError, ValidationWarning
 from typing import Union, Optional as _Optional
 from pathlib import Path as _Path
 
