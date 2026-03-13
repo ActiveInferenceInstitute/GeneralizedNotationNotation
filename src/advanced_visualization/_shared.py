@@ -16,8 +16,24 @@ try:
     import numpy as np
     NUMPY_AVAILABLE = True
 except ImportError:
-    np = None
+    np = None  # type: ignore[assignment]
     NUMPY_AVAILABLE = False
+
+try:
+    import matplotlib
+    matplotlib.use('Agg')
+    import matplotlib.pyplot as plt
+    MATPLOTLIB_AVAILABLE = True
+except ImportError:
+    MATPLOTLIB_AVAILABLE = False
+    plt = None  # type: ignore[assignment]
+
+try:
+    import seaborn as sns
+    SEABORN_AVAILABLE = True
+except ImportError:
+    sns = None  # type: ignore[assignment]
+    SEABORN_AVAILABLE = False
 
 
 @dataclass

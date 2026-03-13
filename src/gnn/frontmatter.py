@@ -78,8 +78,8 @@ def _parse_yaml_simple(yaml_text: str) -> Dict[str, Any]:
             return parsed
     except ImportError:
         pass
-    except Exception:
-        pass
+    except Exception as e:
+        logger.debug(f"yaml.safe_load failed, falling back to manual parser: {e}")
 
     # Fallback: manual parsing
     current_key: Optional[str] = None

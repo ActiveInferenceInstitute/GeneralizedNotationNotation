@@ -170,8 +170,8 @@ def analyze_execution_results(
                                                             extracted["actions"] = file_data["actions"]
                                                         if "observations" in file_data and not extracted.get("observations"):
                                                             extracted["observations"] = file_data["observations"]
-                                            except Exception:
-                                                pass
+                                            except Exception as e:
+                                                logger.debug(f"Failed to parse JSON file: {e}")
                                 except Exception as e:
                                     logger.debug(f"Error reading files for {framework}: {e}")
 

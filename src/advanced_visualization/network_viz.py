@@ -12,28 +12,13 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any
 
-# Import matplotlib for plotting (with fallback for headless environments)
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import numpy as np
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = None
-    np = None
-
-# Seaborn availability
-SEABORN_AVAILABLE = False
-try:
-    import seaborn as sns
-    SEABORN_AVAILABLE = True
-except ImportError:
-    sns = None
-
 from ._shared import (
     AdvancedVisualizationAttempt,
+    MATPLOTLIB_AVAILABLE,
+    SEABORN_AVAILABLE,
+    np,
+    plt,
+    sns,
     validate_visualization_data,
     _normalize_connection_format,
     _calculate_semantic_positions,

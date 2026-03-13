@@ -12,27 +12,14 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
-# Import matplotlib for plotting (with fallback for headless environments)
-try:
-    import matplotlib
-    matplotlib.use('Agg')
-    import matplotlib.pyplot as plt
-    import numpy as np
-    MATPLOTLIB_AVAILABLE = True
-except ImportError:
-    MATPLOTLIB_AVAILABLE = False
-    plt = None
-    np = None
-
-# Seaborn availability
-SEABORN_AVAILABLE = False
-try:
-    import seaborn as sns
-    SEABORN_AVAILABLE = True
-except ImportError:
-    sns = None
-
-from ._shared import AdvancedVisualizationAttempt
+from ._shared import (
+    AdvancedVisualizationAttempt,
+    MATPLOTLIB_AVAILABLE,
+    SEABORN_AVAILABLE,
+    np,
+    plt,
+    sns,
+)
 
 
 def _generate_statistical_plots(

@@ -93,7 +93,7 @@ def extract_pymdp_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                     simulation_data["visualization_files"] = [str(f.name) for f in viz_files]
 
         except Exception as e:
-            logger.debug(f"Error reading PyMDP files: {e}")
+            logger.warning(f"Error reading PyMDP files: {e}")
 
     return {
         "traces": simulation_data.get("traces", []),
@@ -154,7 +154,7 @@ def extract_rxinfer_data(execution_result: Dict[str, Any]) -> Dict[str, Any]:
                     if "action_probabilities" in file_data:
                         simulation_data["action_probabilities"] = file_data["action_probabilities"]
         except Exception as e:
-            logger.debug(f"Error reading RxInfer files: {e}")
+            logger.warning(f"Error reading RxInfer files: {e}")
 
     return {
         "beliefs": simulation_data.get("beliefs", []),
@@ -263,8 +263,8 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                                 logger.debug(f"Extracted ActiveInference.jl efe_history with {len(file_data['efe_history'])} entries")
                             logger.info(f"Read ActiveInference.jl JSON results from {rf.name}")
                             break
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            logger.debug(f"Failed to parse {rf.name}: {e}")
                 if not simulation_data.get("beliefs"):
                     logger.debug("No simulation_results.csv or JSON found for ActiveInference.jl")
 

@@ -423,8 +423,8 @@ def process_analysis(
                                         "framework": framework,
                                         "simulation_data": sim_data
                                     }
-                        except Exception:
-                            pass
+                        except Exception as e:
+                            logger.debug(f"Skipping {sim_file.name}: {e}")
 
                     if len(framework_data_for_dashboard) >= 2:
                         model_name = gnn_files[0].stem if gnn_files else "Active Inference Model"
