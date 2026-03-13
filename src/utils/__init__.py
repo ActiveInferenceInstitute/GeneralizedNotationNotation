@@ -45,16 +45,13 @@ try:
         PipelineLogger,
         setup_step_logging,
         setup_main_logging,
-        log_step_start,
-        log_step_success,
-        log_step_warning,
-        log_step_error,
         log_section_header,
         get_performance_summary,
         PerformanceTracker,
         performance_tracker,
         setup_correlation_context
     )
+    # log_step_{start,success,warning,error} come from structured_logging below
 
     from .argument_utils import (
         ArgumentParser,
