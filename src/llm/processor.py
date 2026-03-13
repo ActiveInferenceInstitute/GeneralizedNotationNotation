@@ -11,6 +11,8 @@ import os
 import subprocess
 import shutil
 
+_logger = logging.getLogger(__name__)
+
 try:
     from pipeline.config import get_pipeline_config
 except ImportError:
@@ -18,7 +20,7 @@ except ImportError:
         return {}
 
 def _get_llm_config() -> dict:
-    """Read LLM configuration from input/config.yaml, with pipeline config fallback."""
+    """Read LLM configuration from input/config.yaml, with pipeline config recovery."""
     import yaml
     try:
         # Resolve input/config.yaml relative to project root (src/../input/config.yaml)
@@ -27,13 +29,14 @@ def _get_llm_config() -> dict:
             with open(config_path, 'r') as f:
                 full_config = yaml.safe_load(f) or {}
             return full_config.get("llm", {})
-    except Exception:
-        pass
-    # Fallback to pipeline config system
+    except Exception as e:
+        _logger.debug("LLM config YAML load failed: %s", e)
+    # Recovery to pipeline config system
     try:
         config = get_pipeline_config()
         return config.get("llm", {})
-    except Exception:
+    except Exception as e:
+        _logger.debug("LLM pipeline config recovery failed: %s", e)
         return {}
 
 def _model_is_cached(model_name: str, logger) -> bool:
@@ -67,7 +70,7 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
         # Check if ollama command exists
         ollama_path = shutil.which("ollama")
         if not ollama_path:
-            logger.info("ℹ️ Ollama not found in PATH - LLM analysis will use fallback")
+            logger.info("ℹ️ Ollama not found in PATH - LLM analysis will use recovery")
             return False, []
 
         logger.info(f"🔍 Found Ollama at: {ollama_path}")
@@ -202,7 +205,7 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
         logger.info("📝 To install a lightweight model for testing:")
         logger.info("   $ ollama pull gemma3:4b")
         logger.info("   $ ollama pull tinyllama")
-        logger.info("ℹ️ LLM analysis will use fallback mode without live model interaction")
+        logger.info("ℹ️ LLM analysis will use recovery mode without live model interaction")
         return False, []
 
     except Exception as e:
@@ -247,13 +250,13 @@ def _select_best_ollama_model(available_models: list[str], logger) -> str:
                 logger.info(f"🎯 Selected model: {available}")
                 return available
 
-    # 4. Fallback to first available model
+    # 4. Recovery to first available model
     if available_models:
         model = available_models[0]
         logger.info(f"🎯 Using first available model: {model}")
         return model
 
-    # 5. Ultimate fallback
+    # 5. Ultimate recovery
     default_model = llm_config.get("model", "gemma3:4b")
     logger.warning(f"⚠️ No models found, defaulting to: {default_model}")
     logger.info(f"   Note: You may need to run: ollama pull {default_model}")
@@ -315,7 +318,7 @@ async def _process_llm_async(
     # Initialize LLM response cache
     cache = LLMCache(cache_dir=output_dir / ".cache")
 
-    # Total budget: read from config, fallback to kwargs, fallback to 600s
+    # Total budget: read from config, recovery to kwargs, recovery to 600s
     llm_config = _get_llm_config()
     TOTAL_BUDGET_SECONDS = kwargs.get('total_budget', llm_config.get('timeout_seconds', 600))
     budget_start = _time.monotonic()
@@ -337,7 +340,7 @@ async def _process_llm_async(
             # Ollama running but no models listed - use default
             selected_model = _select_best_ollama_model([], logger)
         else:
-            logger.info("ℹ️ Proceeding with fallback LLM analysis (no live model interaction)")
+            logger.info("ℹ️ Proceeding with recovery LLM analysis (no live model interaction)")
 
         # Create results directory
         results_dir = output_dir
@@ -393,11 +396,11 @@ async def _process_llm_async(
                 processor_initialized = await processor.initialize()
 
                 if not processor_initialized:
-                    logger.warning("LLM processor initialization failed - using fallback analysis")
+                    logger.warning("LLM processor initialization failed - using recovery analysis")
                 else:
                     logger.info(f"LLM processor initialized with providers: {[p.value for p in processor.get_available_providers()]}")
             except Exception as e:
-                logger.warning(f"LLM processor initialization failed: {e} - using fallback analysis")
+                logger.warning(f"LLM processor initialization failed: {e} - using recovery analysis")
                 processor_initialized = False
                 processor = None
 
@@ -451,7 +454,7 @@ async def _process_llm_async(
                         per_file_dir.mkdir(parents=True, exist_ok=True)
 
                         prompt_outputs = {}
-                        # Use selected model or fallback
+                        # Use selected model or recovery
                         ollama_model = selected_model if selected_model else 'gemma3:4b'
                         logger.info(f"🤖 Using model '{ollama_model}' for LLM prompts")
 
@@ -473,7 +476,7 @@ async def _process_llm_async(
                                     else:
                                         logger.warning(f"⚠️ Failed to pull model '{ollama_model}': {install_result.stderr}")
                                 except subprocess.TimeoutExpired:
-                                    logger.warning("⚠️ Model pull timed out after 120s — continuing with fallback")
+                                    logger.warning("⚠️ Model pull timed out after 120s — continuing with recovery")
                                 except Exception as e:
                                     logger.warning(f"⚠️ Could not pull model '{ollama_model}': {e}")
 
@@ -491,7 +494,7 @@ async def _process_llm_async(
                             # Log progress
                             logger.info(f"  📝 Running prompt {idx}/{len(prompt_sequence)}: {ptype.value}")
 
-                            # Per-prompt timeout: config-driven, fallback to kwargs
+                            # Per-prompt timeout: config-driven, recovery to kwargs
                             max_prompt_timeout = kwargs.get('max_prompt_timeout', llm_config.get('prompt_timeout', 45))
 
                             # Execute prompt — check cache first
@@ -541,7 +544,7 @@ async def _process_llm_async(
                                     else:
                                         error_msg = f"Prompt execution failed: {e}"
                                     logger.error(f"  ❌ {error_msg}")
-                                    # Provide a meaningful fallback response
+                                    # Provide a meaningful recovery response
                                     fallback_content = f"LLM analysis for {ptype.value} was not available. Please ensure that Ollama is running and the required model is installed."
                                     prompt_outputs[ptype.value] = fallback_content
 
@@ -610,7 +613,7 @@ async def _process_llm_async(
                                     else:
                                         error_msg = f"Custom prompt execution failed: {e}"
                                     logger.error(f"  ❌ {error_msg}")
-                                    # Provide a meaningful fallback response
+                                    # Provide a meaningful recovery response
                                     fallback_content = f"LLM analysis for custom prompt {key} was not available. Please ensure that Ollama is running and the required model is installed."
                                     prompt_outputs[key] = fallback_content
 
