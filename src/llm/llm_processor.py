@@ -8,7 +8,7 @@ selection, recovery mechanisms, and provides high-level methods for GNN analysis
 """
 
 import os
-from typing import List, Dict, Any, Optional, AsyncGenerator
+from typing import List, Dict, Any, Optional, AsyncGenerator, Union
 from enum import Enum
 import logging
 
@@ -632,13 +632,14 @@ class GNNLLMProcessor:
             logger.error(f"Failed to initialize GNN LLM processor: {e}")
             return False
 
-    async def analyze_gnn_model(self, gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+    async def analyze_gnn_model(self, gnn_content: str, analysis_type: Union[AnalysisType, str] = AnalysisType.SUMMARY) -> Dict[str, Any]:
         """
         Analyze a GNN model using LLM capabilities.
 
         Args:
             gnn_content: GNN model content as string
-            analysis_type: Type of analysis to perform
+            analysis_type: Type of analysis to perform (AnalysisType enum or
+                equivalent string value, e.g. "summary", "structure")
 
         Returns:
             Dictionary with analysis results; always includes "success" key.
@@ -654,16 +655,13 @@ class GNNLLMProcessor:
             }
 
         try:
-            # Map analysis type to AnalysisType enum
-            analysis_enum = AnalysisType.SUMMARY
-            if analysis_type == "structure":
-                analysis_enum = AnalysisType.STRUCTURE
-            elif analysis_type == "enhancement":
-                analysis_enum = AnalysisType.ENHANCEMENT
-            elif analysis_type == "validation":
-                analysis_enum = AnalysisType.VALIDATION
-            elif analysis_type == "comparison":
-                analysis_enum = AnalysisType.COMPARISON
+            if isinstance(analysis_type, AnalysisType):
+                analysis_enum = analysis_type
+            else:
+                try:
+                    analysis_enum = AnalysisType(analysis_type)
+                except ValueError:
+                    analysis_enum = AnalysisType.SUMMARY
 
             response = await self.base_processor.analyze_gnn(gnn_content, analysis_enum)
 
@@ -811,7 +809,7 @@ async def explain_gnn_model(gnn_content: str) -> Dict[str, Any]:
     """
     return await analyze_gnn_with_llm(gnn_content, "summary")
 
-def analyze_gnn_model(gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
+def analyze_gnn_model(gnn_content: str, analysis_type: Union[AnalysisType, str] = "summary") -> Dict[str, Any]:
     """
     Analyze a GNN model using LLM capabilities.
     
