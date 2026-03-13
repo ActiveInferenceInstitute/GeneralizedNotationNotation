@@ -17,8 +17,16 @@ from typing import Callable, Dict, List, Optional
 logger = logging.getLogger(__name__)
 
 # ── Global Registry ──────────────────────────────────────────────────────────────
+# The registry is process-scoped: @pipeline_step decorators accumulate entries at
+# import time and the dict persists for the lifetime of the process.
+# For test isolation, call clear_registry() at test setUp / tearDown.
 
 _STEP_REGISTRY: Dict[int, "StepInfo"] = {}
+
+
+def clear_registry() -> None:
+    """Reset the step registry to an empty state (intended for test isolation)."""
+    _STEP_REGISTRY.clear()
 
 
 @dataclass

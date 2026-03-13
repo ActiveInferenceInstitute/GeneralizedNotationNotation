@@ -48,13 +48,12 @@ class TestingModules:
 
 
 # Import enhanced GNN testing capabilities with lazy loading to avoid circular imports
-ENHANCED_TESTING_AVAILABLE = False
 _testing_modules_cache: Optional[TestingModules] = None
 
 
 def _get_testing_modules() -> TestingModules:
     """Lazy import of testing modules to avoid circular dependencies."""
-    global _testing_modules_cache, ENHANCED_TESTING_AVAILABLE
+    global _testing_modules_cache
 
     if _testing_modules_cache is not None:
         return _testing_modules_cache
@@ -79,12 +78,15 @@ def _get_testing_modules() -> TestingModules:
             CrossFormatValidator=getattr(cross_format_validator, 'CrossFormatValidator', None),
             CrossFormatValidationResult=getattr(cross_format_validator, 'CrossFormatValidationResult', None),
         )
-        ENHANCED_TESTING_AVAILABLE = True
         return _testing_modules_cache
     except (ImportError, AttributeError, RecursionError):
-        ENHANCED_TESTING_AVAILABLE = False
         _testing_modules_cache = TestingModules()
         return _testing_modules_cache
+
+
+def is_enhanced_testing_available() -> bool:
+    """Return True if enhanced testing modules are importable (dynamic check)."""
+    return not _get_testing_modules().is_empty()
 
 
 def enhanced_validation_with_gnn_processing(
@@ -187,7 +189,7 @@ def process_gnn_folder(
     """
     log_step_start(logger, f"Enhanced GNN processing: '{target_dir}' (validation: {validation_level})")
 
-    if not ENHANCED_TESTING_AVAILABLE:
+    if not is_enhanced_testing_available():
         log_step_warning(logger, "Enhanced testing not available - using basic processing")
         return _basic_gnn_processing(target_dir, output_dir, logger, recursive, verbose, **kwargs)
 
@@ -559,7 +561,7 @@ def run_gnn_round_trip_tests(
     Returns:
         True if all tests passed, False otherwise
     """
-    if not ENHANCED_TESTING_AVAILABLE:
+    if not is_enhanced_testing_available():
         log_step_warning(logger, "Enhanced round-trip testing not available")
         return False
 
@@ -719,7 +721,7 @@ def validate_gnn_cross_format_consistency(
     Returns:
         True if all validations passed, False otherwise
     """
-    if not ENHANCED_TESTING_AVAILABLE:
+    if not is_enhanced_testing_available():
         log_step_warning(logger, "Enhanced cross-format validation not available")
         return False
 
