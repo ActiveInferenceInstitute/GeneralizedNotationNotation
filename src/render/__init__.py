@@ -26,11 +26,8 @@ except ImportError:
 from .generators import (
     generate_pymdp_code,
     generate_rxinfer_code,
-    generate_rxinfer_fallback_code,
     generate_activeinference_jl_code,
-    generate_activeinference_jl_fallback_code,
     generate_discopy_code,
-    generate_discopy_fallback_code,
     create_active_inference_diagram
 )
 
@@ -124,11 +121,8 @@ __all__ = [
     # Generator functions
     'generate_pymdp_code',
     'generate_rxinfer_code',
-    'generate_rxinfer_fallback_code',
     'generate_activeinference_jl_code',
-    'generate_activeinference_jl_fallback_code',
     'generate_discopy_code',
-    'generate_discopy_fallback_code',
     'create_active_inference_diagram',
 
     # Specific renderer functions (may be None if submodule unavailable)

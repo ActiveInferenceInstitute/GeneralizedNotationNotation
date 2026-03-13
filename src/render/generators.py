@@ -1340,11 +1340,6 @@ end
         print(f"Error generating RxInfer code: {e}")
         return ""
 
-# Fallback aliases: identical to the primary generators — use those directly.
-generate_rxinfer_fallback_code = generate_rxinfer_code
-generate_activeinference_jl_fallback_code = generate_activeinference_jl_code
-generate_discopy_fallback_code = generate_discopy_code
-
 def create_active_inference_diagram(model_data: Dict) -> str:
     """Create Active Inference diagram for visualization."""
     model_name = model_data.get('model_name', 'GNN Model')
