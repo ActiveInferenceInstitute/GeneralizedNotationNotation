@@ -9,7 +9,7 @@ Date: 2025-01-11
 License: MIT
 """
 
-from typing import Dict, Any, List, Optional, Union, TypeVar, Protocol
+from typing import Dict, Any, List, Optional, Type, Union, TypeVar, Protocol
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from enum import Enum
@@ -563,7 +563,7 @@ def parse_dimensions(dim_str: str) -> List[int]:
     except Exception:
         return [1]  # Default dimension
 
-def safe_enum_convert(enum_class, value, default=None):
+def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = None) -> T:
     """Safely convert string to enum, handling case insensitivity."""
     if isinstance(value, enum_class):
         return value
