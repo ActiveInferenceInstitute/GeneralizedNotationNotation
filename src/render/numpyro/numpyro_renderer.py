@@ -58,7 +58,7 @@ def render_gnn_to_numpyro(
         return False, f"NumPyro rendering failed: {e}", ""
 
 
-def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[bool, str, List[str]]:
+def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """Extract A, B, C, D matrices from GNN spec."""
     params = gnn_spec.get("stateSpace", {}).get("parameters", {})
     if not params:
