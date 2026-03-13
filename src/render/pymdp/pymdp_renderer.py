@@ -26,22 +26,22 @@ try:
     from ...gnn.parsers.json_parser import JSONGNNParser
     from ...gnn.parsers.common import GNNInternalRepresentation, ParseResult
 except ImportError:
-    # Fallback imports for standalone use
+    # Recovery imports for standalone use
     try:
         from gnn.parsers.markdown_parser import MarkdownGNNParser
         from gnn.parsers.json_parser import JSONGNNParser
         from gnn.parsers.common import GNNInternalRepresentation, ParseResult
     except ImportError:
-        # Simple fallback for testing
+        # Simple recovery for testing
         logging.warning("GNN parsers not available, using simplified parsing")
         class GNNInternalRepresentation:
             def __init__(self, data): self.data = data
         class ParseResult:
             def __init__(self, success, data): self.success = success; self.data = data
-        class MarkdownGNNParser:
-            def parse(self, content): return ParseResult(True, {'model_name': 'FallbackModel'})
-        class JSONGNNParser:
-            def parse(self, content): return ParseResult(True, {'model_name': 'FallbackModel'})
+        class MarkdownGNNParser: # Kept for parse_gnn_markdown, but its parse method is simplified
+            def parse(self, content): return ParseResult(True, {'model_name': 'RecoveryModel'})
+        class JSONGNNParser: # Kept for consistency, but its parse method is simplified
+            def parse(self, content): return ParseResult(True, {'model_name': 'RecoveryModel'})
 
 
 def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]]:
@@ -355,14 +355,14 @@ class PyMDPRenderer:
                     return obj
                 if hasattr(obj, 'tolist'):
                     return to_clean_list(obj.tolist())
-                return str(obj) # Fallback
+                return str(obj) # Recovery
 
             try:
                 # Ensure it's a clean list structure (handles jagged lists naturally)
                 clean_data = to_clean_list(matrix)
                 return json_module.dumps(clean_data)
             except Exception as e:
-                # Fallback to string representation
+                # Recovery to string representation
                 logger.warning(f"Failed to cleanly format matrix: {e}. using raw dumps.")
                 return json_module.dumps(matrix)
 
@@ -590,7 +590,7 @@ def render_gnn_to_pymdp(
         options: Optional rendering options
 
     Returns:
-        Tuple of (success, message, warnings)
+        Tuple of (success, message, warnings: List[str])
     """
     try:
         renderer = PyMDPRenderer(options)

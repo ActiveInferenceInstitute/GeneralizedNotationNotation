@@ -541,7 +541,7 @@ def render_gnn_spec(
         options: Additional options
         
     Returns:
-        Tuple of (success, message, warnings)
+        Tuple of (success, message, output_files: List[str])
     """
     try:
         output_dir = Path(output_directory)

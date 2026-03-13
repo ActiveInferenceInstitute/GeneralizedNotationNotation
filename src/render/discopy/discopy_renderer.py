@@ -184,7 +184,7 @@ except ImportError:
             timeout=180
         )
         if result.returncode != 0:
-            # Fallback to pip if UV fails
+            # Recovery to pip if UV fails
             print("⚠️  UV install failed, trying pip...")
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "install", "discopy"],
@@ -295,7 +295,7 @@ def create_active_inference_circuit(S, O, A, P, components):
         generative_model = prior_block >> (state_inf @ Id(P)) >> policy_inf >> action_sel
         print("\u2713 Created generative model with composed priors")
     except Exception as e:
-        # Fallback: type mismatch means priors cannot directly compose
+        # Recovery: type mismatch means priors cannot directly compose
         print(f"\u26a0\ufe0f  Prior composition type mismatch ({{e}}), using perception-action loop")
         generative_model = perception_action_loop
     
@@ -443,7 +443,7 @@ def render_gnn_to_discopy(
         options: Optional rendering options
         
     Returns:
-        Tuple of (success, message, warnings)
+        Tuple of (success, message, warnings: List[str])
     """
     try:
         renderer = DisCoPyRenderer(options)

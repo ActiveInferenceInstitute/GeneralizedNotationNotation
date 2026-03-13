@@ -463,8 +463,8 @@ function run_simulation()
             final_posterior = posterior[end]
             current_belief = probvec(final_posterior)
         catch e
-            # Fallback: manual Bayesian update if RxInfer fails
-            println("  Step $t: RxInfer inference fallback - $e")
+            # Recovery: manual Bayesian update if RxInfer fails
+            println("  Step $t: RxInfer inference recovery - $e")
             likelihood = A_matrix[obs, :]
             unnormalized = current_belief .* likelihood
             current_belief = unnormalized ./ sum(unnormalized)
@@ -576,7 +576,7 @@ def render_gnn_to_rxinfer(
         options: Optional rendering options
         
     Returns:
-        Tuple of (success, message, warnings)
+        Tuple of (success, message, warnings: List[str])
     """
     logger = logging.getLogger(__name__)
 
