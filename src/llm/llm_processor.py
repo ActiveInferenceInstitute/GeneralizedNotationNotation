@@ -666,7 +666,7 @@ class GNNLLMProcessor:
                 "success": True,
                 "analysis_type": analysis_type,
                 "response": response.content,
-                "provider": response.provider.value if response.provider else "unknown",
+                "provider": response.provider if response.provider else "unknown",
                 "model": response.model,
                 "usage": response.usage
             }
@@ -744,7 +744,7 @@ class GNNLLMProcessor:
                 "success": True,
                 "analysis_type": "comparison",
                 "response": response.content,
-                "provider": response.provider.value if response.provider else "unknown",
+                "provider": response.provider if response.provider else "unknown",
                 "model": response.model,
                 "usage": response.usage
             }
