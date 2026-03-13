@@ -205,12 +205,10 @@ print('--- End PyMDP Runtime Debug ---')
 
 
 def generate_file_header(model_name: str) -> str:
-    """Generate the file header with imports and module docstring."""
     return IMPORTS_TEMPLATE.format(model_name=model_name)
 
 
 def generate_conversion_summary(log_entries: List[str]) -> str:
-    """Generate the conversion summary section from log entries."""
     summary_lines = "\n".join([f"# {entry}" for entry in log_entries])
     return CONVERSION_SUMMARY_TEMPLATE.format(summary_lines=summary_lines)
 
@@ -220,7 +218,6 @@ def generate_debug_block(
     qs_initial_str: str,
     agent_hyperparams_dict_str: str
 ) -> str:
-    """Generate the debug block for the PyMDP script."""
     return DEBUG_BLOCK_TEMPLATE.format(
         action_names_dict_str=action_names_dict_str,
         qs_initial_str=qs_initial_str,
