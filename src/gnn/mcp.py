@@ -17,7 +17,7 @@ import yaml
 import tempfile
 import time
 from pathlib import Path
-from typing import Dict, Any, Literal, List, Optional
+from typing import Dict, Any, Literal, List, Optional, Union
 import logging
 
 logger = logging.getLogger(__name__)
@@ -101,18 +101,19 @@ def get_gnn_documentation(doc_name: Literal["file_structure", "punctuation", "sc
 
 
 def validate_gnn_content(content: str,
-                        validation_level: Literal["basic", "standard", "strict", "research", "round_trip"] = "standard",
+                        validation_level: Union[ValidationLevel, str] = ValidationLevel.STANDARD,
                         enable_round_trip: bool = False,
                         format_hint: Optional[str] = None) -> Dict[str, Any]:
     """
     Enhanced validation of GNN content with comprehensive testing capabilities.
-    
+
     Args:
         content: GNN file content as string
-        validation_level: Validation strictness level
+        validation_level: Validation strictness level (ValidationLevel enum or
+            equivalent string value, e.g. "basic", "standard", "strict")
         enable_round_trip: Whether to enable round-trip testing
         format_hint: Optional format hint for content detection
-        
+
     Returns:
         Dictionary containing enhanced validation results
     """
@@ -123,16 +124,13 @@ def validate_gnn_content(content: str,
         }
 
     try:
-        # Map validation levels
-        level_map = {
-            "basic": ValidationLevel.BASIC,
-            "standard": ValidationLevel.STANDARD,
-            "strict": ValidationLevel.STRICT,
-            "research": ValidationLevel.RESEARCH,
-            "round_trip": ValidationLevel.ROUND_TRIP
-        }
-
-        val_level = level_map.get(validation_level, ValidationLevel.STANDARD)
+        if isinstance(validation_level, ValidationLevel):
+            val_level = validation_level
+        else:
+            try:
+                val_level = ValidationLevel(validation_level)
+            except ValueError:
+                val_level = ValidationLevel.STANDARD
 
         # Create temporary file for validation
         with tempfile.NamedTemporaryFile(mode='w', suffix='.md', delete=False) as f:
