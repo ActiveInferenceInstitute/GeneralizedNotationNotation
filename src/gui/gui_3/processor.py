@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from __future__ import annotations
 """
 GUI 3: State Space Design Studio Processor
 Low-dependency visual design interface for Active Inference models
@@ -7,25 +8,36 @@ Low-dependency visual design interface for Active Inference models
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
-# Check for Gradio availability
 try:
     import gradio as gr
-    GRADIO_AVAILABLE = True
+    _GUI_BACKEND = "gradio"
 except ImportError:
-    GRADIO_AVAILABLE = False
+    gr = None  # type: ignore
+    _GUI_BACKEND = None
 
-def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs) -> bool:
+def run_gui(
+    target_dir: Path,
+    output_dir: Path,
+    logger: logging.Logger,
+    verbose: bool = False,
+    headless: bool = False,
+    export_filename: str = "designed_model_gui_3.md",
+    open_browser: bool = False,
+) -> bool:
     """
-    Launch the State Space Design Studio GUI
-    
+    Launch the State Space Design Studio GUI.
+
     Args:
         target_dir: Directory containing GNN files
-        output_dir: Output directory for GUI results  
+        output_dir: Output directory for GUI results
         logger: Logger instance
-        **kwargs: Additional arguments
-        
+        verbose: Enable verbose logging
+        headless: Run without launching the browser GUI
+        export_filename: Filename for the exported model
+        open_browser: Open browser automatically on launch
+
     Returns:
         True if GUI launched successfully, False otherwise
     """
@@ -34,21 +46,15 @@ def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
         output_root = output_dir.parent if output_dir.name.endswith('_output') else output_dir
         output_root.mkdir(parents=True, exist_ok=True)
 
-        # Setup export path
-        export_filename = kwargs.get('export_filename', 'designed_model_gui_3.md')
         starter_path = output_root / export_filename
 
         # Load starter GNN content
         starter_md = _load_starter_content(target_dir, logger)
 
-        # Check if running in headless mode
-        headless = kwargs.get('headless', False)
-        open_browser = kwargs.get('open_browser', False)
-
-        if headless or not GRADIO_AVAILABLE:
+        if headless or _GUI_BACKEND is None:
             # Generate design artifacts without launching GUI
-            if not GRADIO_AVAILABLE:
-                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+            if _GUI_BACKEND is None:
+                logger.warning("⚠️ Gradio not available - generating recovery artifacts only")
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
             else:
                 logger.info("📦 Running GUI 3 in HEADLESS mode - generating artifacts only")
@@ -62,14 +68,14 @@ def run_gui(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs
             analysis_file = output_root / "design_analysis.json"
             analysis_file.write_text(json.dumps({
                 "gui_type": "design_studio",
-                "backend": "gradio" if GRADIO_AVAILABLE else "none",
-                "status": "headless_mode" if GRADIO_AVAILABLE else "fallback_mode",
+                "backend": _GUI_BACKEND or "none",
+                "status": "headless_mode" if _GUI_BACKEND else "fallback_mode",
                 "analysis": design_analysis,
                 "export_path": str(starter_path),
                 "headless_mode": True,
                 "recommendations": [
                     "Run with --interactive to launch GUI server on port 7862"
-                ] if GRADIO_AVAILABLE else [
+                ] if _GUI_BACKEND else [
                     "Install gradio with: uv pip install gradio>=4.0.0",
                     "Run with --interactive for full GUI experience"
                 ]
@@ -145,7 +151,7 @@ def _load_starter_content(target_dir: Path, logger: logging.Logger) -> str:
         logger.info(f"📖 Loading POMDP agent model: {pomdp_file}")
         return pomdp_file.read_text()
 
-    # Fallback to any GNN file
+    # Recovery to any GNN file
     gnn_files = list(target_dir.glob("*.md"))
     if gnn_files:
         logger.info(f"📖 Loading GNN file: {gnn_files[0]}")
