@@ -166,17 +166,16 @@ def demo_enhanced_capabilities():
         print(f"Validation completed ({len(validation)} chars): {validation[:150]}...")
 
 def demo_processor_modes():
-    """Demonstrate different processor modes and configurations."""
-    print("\nTesting Different Processor Modes...")
+    """Demonstrate processor configuration.
 
-    with _demo_section("Default Mode"):
-        legacy_ops = LLMOperations()
-        print(f"Processor: {legacy_ops.get_processor_info()}")
-        print(f"Providers: {legacy_ops.get_available_providers()}")
+    LLMOperations uses a unified constructor — provider selection happens
+    at call time based on available API keys, not at construction time.
+    """
+    print("\nTesting Processor Configuration...")
 
-    with _demo_section("Multi-Provider Mode"):
+    with _demo_section("Processor Info"):
         ops = LLMOperations()
-        print(f"Multi-provider processor: {ops.get_processor_info()}")
+        print(f"Processor: {ops.get_processor_info()}")
         print(f"Available providers: {ops.get_available_providers()}")
 
 def demo_real_world_usage():
@@ -224,8 +223,8 @@ def demo_real_world_usage():
 
 
 def demo_error_handling():
-    """Demonstrate error handling and fallback mechanisms."""
-    print("\n🛡️ Testing Error Handling and Fallbacks...")
+    """Demonstrate error handling and recovery mechanisms."""
+    print("\n🛡️ Testing Error Handling and Recoveries...")
 
     with _demo_section("Testing with no API keys"):
         ops = LLMOperations()
@@ -236,7 +235,7 @@ def demo_error_handling():
         result = ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result with no keys: {result[:100]}...")
 
-    with _demo_section("Testing fallback"):
+    with _demo_section("Testing recovery"):
         legacy_ops = LLMOperations()
         result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result: {result[:100]}...")
@@ -259,7 +258,7 @@ def main():
     print("• Multi-provider support (OpenAI, OpenRouter, Perplexity)")
     print("• Backward compatibility with existing code")
     print("• Enhanced analysis capabilities (enhancement, validation)")
-    print("• Robust error handling and fallback mechanisms")
+    print("• Robust error handling and recovery mechanisms")
     print("• Async support with sync wrappers")
     print("• Provider selection based on task requirements")
 
