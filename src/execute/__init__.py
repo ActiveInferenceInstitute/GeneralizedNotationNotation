@@ -20,8 +20,20 @@ FEATURES = {
 }
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Literal
 import logging
+
+# Constrained type for supported execution framework names.
+# Use this annotation on any parameter that accepts a framework identifier.
+FrameworkName = Literal[
+    'pymdp',
+    'rxinfer',
+    'jax',
+    'discopy',
+    'activeinference_jl',
+    'pytorch',
+    'numpyro',
+]
 
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
@@ -115,6 +127,7 @@ __all__ = [
     'FEATURES',
     'VALIDATION_AVAILABLE',
     'ERROR_RECOVERY_AVAILABLE',
+    'FrameworkName',
 
     # Core classes
     'ExecutionEngine',

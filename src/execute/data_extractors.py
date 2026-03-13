@@ -10,8 +10,11 @@ import json
 import logging
 import re
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, TYPE_CHECKING
 from shutil import copy2
+
+if TYPE_CHECKING:
+    from execute import FrameworkName
 
 
 # ---------------------------------------------------------------------------
@@ -75,7 +78,7 @@ def normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Pat
 def collect_execution_outputs(
     script_path: Path,
     output_dir: Path,
-    framework: str,
+    framework: "FrameworkName",
     logger
 ) -> Dict[str, List[str]]:
     """
@@ -233,7 +236,7 @@ def collect_execution_outputs(
 
 def extract_simulation_data_from_files(
     output_dir: Path,
-    framework: str,
+    framework: "FrameworkName",
     logger
 ) -> Dict[str, Any]:
     """
@@ -504,7 +507,7 @@ extract_jax_data_from_files = extract_pymdp_data_from_files
 # Stdout/stderr-based extraction (parses execution output text)
 # ---------------------------------------------------------------------------
 
-def extract_simulation_data(stdout: str, stderr: str, framework: str, logger) -> Dict[str, Any]:
+def extract_simulation_data(stdout: str, stderr: str, framework: "FrameworkName", logger) -> Dict[str, Any]:
     """
     Extract simulation data from execution output.
 
