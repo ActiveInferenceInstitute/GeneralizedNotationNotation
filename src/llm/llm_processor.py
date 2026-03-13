@@ -4,7 +4,7 @@ LLM Processor - Unified Multi-Provider Interface
 
 This module provides a unified interface for working with multiple LLM providers
 (OpenAI, OpenRouter, Perplexity) within the GNN pipeline. It handles provider
-selection, fallback mechanisms, and provides high-level methods for GNN analysis.
+selection, recovery mechanisms, and provides high-level methods for GNN analysis.
 """
 
 import os
@@ -157,7 +157,7 @@ class LLMProcessor:
     Main LLM processor that coordinates multiple providers for GNN analysis.
     
     Provides a unified interface for accessing different LLM providers with
-    automatic fallback, load balancing, and provider-specific optimizations.
+    automatic recovery, load balancing, and provider-specific optimizations.
     """
 
     def __init__(
@@ -212,7 +212,7 @@ class LLMProcessor:
         if self._initialized:
             logger.info(f"LLM Processor initialized with {initialized_count}/{len(ProviderType)} providers")
         else:
-            logger.debug("No LLM providers initialized - using fallback analysis")
+            logger.debug("No LLM providers initialized - using recovery analysis")
 
         return self._initialized
 
@@ -292,7 +292,7 @@ class LLMProcessor:
             if provider_type in self.providers:
                 return self.providers[provider_type]
 
-        # Fallback to any available provider
+        # Recovery to any available provider
         return next(iter(self.providers.values()))
 
     async def analyze_gnn(
@@ -339,7 +339,7 @@ class LLMProcessor:
             return await provider.generate_response(messages, config)
         except Exception as e:
             logger.error(f"Analysis failed with {provider.provider_type.value}: {e}")
-            # Try fallback provider
+            # Try recovery provider
             return await self._try_fallback_analysis(gnn_content, analysis_type, provider_type, config)
 
     async def _try_fallback_analysis(
@@ -349,7 +349,7 @@ class LLMProcessor:
         excluded_provider: Optional[ProviderType],
         config: Optional[LLMConfig]
     ) -> LLMResponse:
-        """Try analysis with fallback providers."""
+        """Try analysis with recovery providers."""
         available_providers = [
             p for p_type, p in self.providers.items()
             if p_type != excluded_provider
@@ -360,7 +360,7 @@ class LLMProcessor:
                 messages = provider.format_gnn_analysis_prompt(gnn_content, analysis_type.value)
                 return await provider.generate_response(messages, config)
             except Exception as e:
-                logger.warning(f"Fallback failed with {provider.provider_type.value}: {e}")
+                logger.warning(f"Recovery failed with {provider.provider_type.value}: {e}")
                 continue
 
         raise RuntimeError("All providers failed for analysis")
@@ -520,14 +520,14 @@ class LLMProcessor:
             return await provider.generate_response(messages, config)
         except Exception as e:
             logger.error(f"Response generation failed with {provider.provider_type.value}: {e}")
-            # Try fallback providers
+            # Try recovery providers
             for fallback_provider in self.providers.values():
                 if fallback_provider != provider:
                     try:
-                        logger.info(f"Trying fallback provider: {fallback_provider.provider_type.value}")
+                        logger.info(f"Trying recovery provider: {fallback_provider.provider_type.value}")
                         return await fallback_provider.generate_response(messages, config)
                     except Exception as fallback_e:
-                        logger.warning(f"Fallback provider {fallback_provider.provider_type.value} also failed: {fallback_e}")
+                        logger.warning(f"Recovery provider {fallback_provider.provider_type.value} also failed: {fallback_e}")
                         continue
 
             # If all providers fail, raise the original exception
@@ -630,13 +630,17 @@ class GNNLLMProcessor:
     async def analyze_gnn_model(self, gnn_content: str, analysis_type: str = "summary") -> Dict[str, Any]:
         """
         Analyze a GNN model using LLM capabilities.
-        
+
         Args:
             gnn_content: GNN model content as string
             analysis_type: Type of analysis to perform
-        
+
         Returns:
-            Dictionary with analysis results
+            Dictionary with analysis results; always includes "success" key.
+
+        Raises:
+            Never raises; all exceptions are caught and returned as
+            {"success": False, "error": ..., "error_type": ...}.
         """
         if not self.initialized:
             return {
@@ -713,13 +717,17 @@ class GNNLLMProcessor:
     async def compare_models(self, gnn_content_1: str, gnn_content_2: str) -> Dict[str, Any]:
         """
         Compare two GNN models.
-        
+
         Args:
             gnn_content_1: First GNN model content
             gnn_content_2: Second GNN model content
-        
+
         Returns:
-            Dictionary with comparison results
+            Dictionary with comparison results; always includes "success" key.
+
+        Raises:
+            Never raises; all exceptions are caught and returned as
+            {"success": False, "error": ..., "error_type": ...}.
         """
         if not self.initialized:
             return {
