@@ -295,6 +295,30 @@ class LLMProcessor:
         # Recovery to any available provider
         return next(iter(self.providers.values()))
 
+    def _select_provider(
+        self,
+        provider_type: Optional[ProviderType],
+        analysis_type: Optional[AnalysisType] = None,
+    ) -> BaseLLMProvider:
+        """Select a provider by explicit type, task preference, or first available.
+
+        Resolution order:
+        1. ``provider_type`` if specified and registered.
+        2. ``get_best_provider_for_task(analysis_type)`` when ``analysis_type`` given.
+        3. First registered provider.
+
+        Raises RuntimeError when no providers are available.
+        """
+        if not self.providers:
+            raise RuntimeError("No providers available")
+        if provider_type and provider_type in self.providers:
+            return self.providers[provider_type]
+        if analysis_type is not None:
+            best = self.get_best_provider_for_task(analysis_type)
+            if best:
+                return best
+        return next(iter(self.providers.values()))
+
     async def analyze_gnn(
         self,
         gnn_content: str,
@@ -304,27 +328,20 @@ class LLMProcessor:
     ) -> LLMResponse:
         """
         Analyze GNN content using the appropriate provider.
-        
+
         Args:
             gnn_content: The GNN file content to analyze
             analysis_type: Type of analysis to perform
             provider_type: Specific provider to use (optional)
             config: LLM configuration (optional)
-            
+
         Returns:
             Analysis results
         """
         if not self._initialized:
             raise RuntimeError("LLM Processor not initialized")
 
-        # Select provider
-        if provider_type and provider_type in self.providers:
-            provider = self.providers[provider_type]
-        else:
-            provider = self.get_best_provider_for_task(analysis_type)
-
-        if not provider:
-            raise RuntimeError("No suitable provider available")
+        provider = self._select_provider(provider_type, analysis_type)
 
         # Handle search-enhanced analysis for Perplexity
         if (analysis_type == AnalysisType.SEARCH_ENHANCED and
@@ -385,13 +402,7 @@ class LLMProcessor:
         if not self._initialized:
             raise RuntimeError("LLM Processor not initialized")
 
-        # Select provider
-        if not self.providers:
-            raise RuntimeError("No providers available")
-        if provider_type and provider_type in self.providers:
-            provider = self.providers[provider_type]
-        else:
-            provider = next(iter(self.providers.values()))
+        provider = self._select_provider(provider_type)
 
         async for chunk in provider.generate_stream(messages, config):
             yield chunk
@@ -497,13 +508,7 @@ class LLMProcessor:
         if not self._initialized:
             raise RuntimeError("LLM Processor not initialized")
 
-        # Select provider
-        if not self.providers:
-            raise RuntimeError("No providers available")
-        if provider_type and provider_type in self.providers:
-            provider = self.providers[provider_type]
-        else:
-            provider = next(iter(self.providers.values()))
+        provider = self._select_provider(provider_type)
 
         # Create or update config
         if config is None:
