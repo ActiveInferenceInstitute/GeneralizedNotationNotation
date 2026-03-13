@@ -189,6 +189,7 @@ scaling = [
     "lru-dict>=1.2.0",
     "fsspec>=2023.0.0",
     "s3fs>=2024.10.0",
+    "ray>=2.0.0",  # distributed execution in execute/distributed.py
 ]
 
 database = [
