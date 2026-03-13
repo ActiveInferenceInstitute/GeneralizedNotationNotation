@@ -138,6 +138,7 @@ ml-ai = [
 llm = [
     "openai>=1.0.0",
     "ollama>=0.1.0",
+    "python-dotenv>=1.0.0",  # load_dotenv used by llm_processor.py for API key loading
 ]
 
 # Enhanced visualization: interactive plots beyond matplotlib (steps 8, 9, 16)
