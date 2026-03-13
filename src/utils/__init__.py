@@ -125,15 +125,6 @@ try:
         track_operation_standalone
     )
 
-    # Step logging - minimal, always-importable logging functions
-    from .logging.logging_utils import (
-        log_step_start as step_log_start,
-        log_step_success as step_log_success,
-        log_step_warning as step_log_warning,
-        log_step_error as step_log_error,
-        setup_step_logging as step_setup_logging
-    )
-
     # Base processor - abstract base class for standardized processing
     from .base_processor import (
         BaseProcessor,
@@ -403,13 +394,6 @@ __all__ = [
     'get_test_duration',
     'get_test_status',
     'get_test_progress',
-
-    # Step logging utilities (minimal, always-importable)
-    'step_log_start',
-    'step_log_success',
-    'step_log_warning',
-    'step_log_error',
-    'step_setup_logging',
 
     # Base processor utilities
     'BaseProcessor',
