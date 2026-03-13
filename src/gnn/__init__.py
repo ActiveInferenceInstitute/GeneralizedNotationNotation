@@ -20,7 +20,6 @@ from .multi_format_processor import (
 
 from .parser import (
     ValidationLevel,
-    ParsedGNN,
     GNNParsingSystem,
     GNNFormalParser,
     ParsedGNNFormal,
@@ -30,6 +29,9 @@ from .parser import (
     validate_gnn,
 )
 from .parsers.common import GNNFormat
+# Canonical ParsedGNN dataclass lives in types.py; parser.py has a
+# differently-shaped plain class used only internally during parsing.
+from .types import ParsedGNN
 
 __version__ = "1.1.3"
 # Ensure tests see MCP feature presence consistently
