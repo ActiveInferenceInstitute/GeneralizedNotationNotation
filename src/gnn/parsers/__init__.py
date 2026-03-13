@@ -87,7 +87,30 @@ from .common import GNNInternalRepresentation, ASTNode, ParseError, ValidationEr
 
 # Import system and utilities
 from .system import GNNParsingSystem, PARSER_REGISTRY, SERIALIZER_REGISTRY
-from .utils import parse_gnn_file, convert_gnn_format
+from typing import Union, Optional as _Optional
+from pathlib import Path as _Path
+
+
+def parse_gnn_file(file_path: Union[str, _Path],
+                   format_hint: _Optional[GNNFormat] = None,
+                   strict_validation: bool = True) -> ParseResult:
+    """Parse a GNN file using the unified parsing system."""
+    system = GNNParsingSystem(strict_validation=strict_validation)
+    return system.parse_file(file_path, format_hint)
+
+
+def convert_gnn_format(input_file: Union[str, _Path],
+                       output_file: Union[str, _Path],
+                       target_format: _Optional[GNNFormat] = None) -> None:
+    """Convert a GNN file from one format to another."""
+    system = GNNParsingSystem()
+    result = system.parse_file(input_file)
+
+    if target_format is None:
+        output_path = _Path(output_file)
+        target_format = system._detect_format(output_path)
+
+    system.serialize_to_file(result.model, output_file, target_format)
 
 __all__ = [
     # Core classes
