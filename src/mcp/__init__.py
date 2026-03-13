@@ -5,17 +5,6 @@ This module provides the Model Context Protocol implementation for the GNN proje
 enabling standardized tool discovery, registration, and execution across all modules.
 """
 
-from pathlib import Path
-from typing import Dict, Any, List
-import logging
-
-from utils.logging.logging_utils import (
-    log_step_start,
-    log_step_success,
-    log_step_error,
-    log_step_warning
-)
-
 from .mcp import (
     mcp_instance,
     initialize,
