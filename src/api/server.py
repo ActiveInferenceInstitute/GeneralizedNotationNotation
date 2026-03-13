@@ -203,7 +203,7 @@ async def invoke_tool(step: int, request: ToolRequest, background_tasks: Backgro
     )
 
 
-def run_server(host: str = "0.0.0.0", port: int = 8000, reload: bool = False):
+def run_server(host: str = "127.0.0.1", port: int = 8000, reload: bool = False):
     """Start the API server."""
     uvicorn.run(
         "api.server:app",
@@ -217,7 +217,7 @@ def run_server(host: str = "0.0.0.0", port: int = 8000, reload: bool = False):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser(description="GNN Pipeline API Server")
-    parser.add_argument("--host", default="0.0.0.0")
+    parser.add_argument("--host", default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--reload", action="store_true", help="Auto-reload on code changes")
     args = parser.parse_args()

@@ -678,5 +678,6 @@ __all__ = [
     'GNNInternalRepresentation', 'ParseResult',
     'ASTVisitor', 'PrintVisitor',
     'GNNParser', 'GNNSerializer', 'BaseGNNParser',
-    'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator'
+    'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator',
+    'safe_enum_convert'
 ]

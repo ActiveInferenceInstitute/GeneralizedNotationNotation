@@ -78,7 +78,7 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # ── gnn serve ────────────────────────────────────────────────────────────
     serve_p = subparsers.add_parser("serve", help="Start Pipeline-as-a-Service API")
-    serve_p.add_argument("--host", default="0.0.0.0", help="Bind host")
+    serve_p.add_argument("--host", default="127.0.0.1", help="Bind host")
     serve_p.add_argument("--port", type=int, default=8000, help="Bind port")
 
     # ── gnn watch ────────────────────────────────────────────────────────────
@@ -256,7 +256,7 @@ def _cmd_render(args):
     """Render a GNN file to framework code."""
     print(f"Rendering {args.file} → {args.framework}")
     print("(Render via CLI delegates to src/render/processor.py)")
-    # Stub — full implementation would import render.processor
+    # Placeholder — full implementation would import render.processor
     return 0
 
 

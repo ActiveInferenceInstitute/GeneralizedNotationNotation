@@ -334,16 +334,16 @@ if FASTAPI_AVAILABLE:
         return renderers
 
 else:
-    # Stub when FastAPI is not installed
+    # Placeholder when FastAPI is not installed
     app = None
 
     def create_stub_app():
-        """Create a minimal stub when FastAPI is unavailable."""
+        """Create a minimal placeholder when FastAPI is unavailable."""
         logger.warning("FastAPI not installed — API unavailable")
         return None
 
 
-def start_server(host: str = "0.0.0.0", port: int = 8000):
+def start_server(host: str = "127.0.0.1", port: int = 8000):
     """Start the API server."""
     if not FASTAPI_AVAILABLE:
         logger.error("Cannot start server: pip install fastapi uvicorn")

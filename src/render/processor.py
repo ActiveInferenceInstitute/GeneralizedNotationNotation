@@ -78,7 +78,8 @@ def normalize_matrices(pomdp_space: Any, logger) -> Any:
         logger: Logger instance
 
     Returns:
-        POMDP space with normalized matrices
+        POMDP space with normalized matrices, or the original object unchanged
+        if normalization fails (normalization error logged as warning)
     """
 
     def _normalize_columns(matrix: np.ndarray) -> np.ndarray:
@@ -194,7 +195,7 @@ def process_render(
                 from gnn.pomdp_extractor import extract_pomdp_from_file
                 from render.pomdp_processor import POMDPRenderProcessor
             except ImportError:
-                # Fallback to src-prefixed imports
+                # Recovery to src-prefixed imports
                 from src.gnn.pomdp_extractor import extract_pomdp_from_file
                 from src.render.pomdp_processor import POMDPRenderProcessor
 
@@ -582,7 +583,7 @@ def render_gnn_spec(
                     files.append(str(output_file))
 
             elif target.lower() == "rxinfer_toml":
-                # Try to use specific renderer for TOML if avail, else fallback
+                # Try to use specific renderer for TOML if avail, else recovery
                 try:
                     from .rxinfer import render_gnn_to_rxinfer_toml
                     success, msg, art = render_gnn_to_rxinfer_toml(gnn_spec, output_dir)
