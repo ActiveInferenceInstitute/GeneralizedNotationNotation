@@ -767,11 +767,9 @@ def execute_simulation_from_gnn(gnn_file: Path, output_dir: Path) -> Dict[str, A
     try:
         logger.info(f"Executing simulation for {gnn_file}")
 
-        # Import execution engine
-        from .executor import ExecutionEngine
+        from .executor import GNNExecutor
 
-        # Create execution engine
-        engine = ExecutionEngine()
+        engine = GNNExecutor()
 
         # Execute simulation
         result = engine.execute_simulation_from_gnn(gnn_file, output_dir)

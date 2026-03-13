@@ -376,16 +376,6 @@ def _get_llm_ops() -> "LLMOperations":
     return _llm_ops
 
 
-# Backward-compat alias; callers that imported llm_ops directly get the lazy getter.
-# New callers should use _get_llm_ops() or instantiate LLMOperations directly.
-class _LazyOps:
-    """Proxy that defers LLMOperations construction to first attribute access."""
-    def __getattr__(self, name: str):
-        return getattr(_get_llm_ops(), name)
-
-
-llm_ops = _LazyOps()
-
 # Convenience functions for backward compatibility
 def construct_prompt(content_parts: List[str], task_description: str) -> str:
     """Convenience function for prompt construction."""
@@ -411,23 +401,23 @@ def load_api_key() -> Optional[str]:
 # Additional convenience functions for new capabilities
 def summarize_gnn(gnn_content: str, max_length: int = 500) -> str:
     """Convenience function for GNN summarization."""
-    return llm_ops.summarize_gnn(gnn_content, max_length)
+    return _get_llm_ops().summarize_gnn(gnn_content, max_length)
 
 def analyze_gnn_structure(gnn_content: str) -> str:
     """Convenience function for GNN structure analysis."""
-    return llm_ops.analyze_gnn_structure(gnn_content)
+    return _get_llm_ops().analyze_gnn_structure(gnn_content)
 
 def generate_questions(gnn_content: str, num_questions: int = 5) -> List[str]:
     """Convenience function for question generation."""
-    return llm_ops.generate_questions(gnn_content, num_questions)
+    return _get_llm_ops().generate_questions(gnn_content, num_questions)
 
 def enhance_gnn(gnn_content: str) -> str:
     """Convenience function for GNN enhancement."""
-    return llm_ops.enhance_gnn(gnn_content)
+    return _get_llm_ops().enhance_gnn(gnn_content)
 
 def validate_gnn(gnn_content: str) -> str:
     """Convenience function for GNN validation."""
-    return llm_ops.validate_gnn(gnn_content)
+    return _get_llm_ops().validate_gnn(gnn_content)
 
 if __name__ == '__main__':
     # Example Usage (requires .env file with OPENAI_API_KEY)
