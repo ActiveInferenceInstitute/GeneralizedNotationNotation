@@ -115,7 +115,12 @@ class IntelligentAnalyzer:
     def analyze_failures(self) -> Dict[str, Any]:
         """Analyze pipeline failures in detail."""
         if not self.context:
-            return {"error": "No context available"}
+            return {
+                "failure_count": 0,
+                "failures": [],
+                "common_patterns": [],
+                "severity_distribution": {"critical": 0, "major": 0, "minor": 0},
+            }
 
         failed_steps = self.context.get_failed_steps()
 
@@ -158,7 +163,14 @@ class IntelligentAnalyzer:
     def analyze_performance(self) -> Dict[str, Any]:
         """Analyze pipeline performance characteristics."""
         if not self.context:
-            return {"error": "No context available"}
+            return {
+                "total_duration": 0,
+                "step_count": 0,
+                "peak_memory_mb": 0,
+                "duration_stats": {},
+                "memory_stats": {},
+                "bottlenecks": [],
+            }
 
         steps = self.context.steps
         perf_summary = self.context.performance_summary

@@ -41,6 +41,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     run_p.add_argument("--skip-steps", nargs="*", type=int, help="Step numbers to skip")
     run_p.add_argument("--skip-llm", action="store_true", help="Skip LLM step (alias for --skip-steps 13)")
     run_p.add_argument("--linear", action="store_true", help="Force linear execution (no DAG)")
+    run_p.add_argument("--log-format", choices=["human", "json"], default="human", help="Output format for pipeline logs")
 
     # ── gnn validate ─────────────────────────────────────────────────────────
     validate_p = subparsers.add_parser("validate", help="Validate a GNN file")
@@ -80,6 +81,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     serve_p.add_argument("--host", default="0.0.0.0", help="Bind host")
     serve_p.add_argument("--port", type=int, default=8000, help="Bind port")
 
+    # ── gnn watch ────────────────────────────────────────────────────────────
+    watch_p = subparsers.add_parser("watch", help="Monitor directory and live-reparse on change")
+    watch_p.add_argument("dir", type=Path, help="Directory to monitor (e.g. input/gnn_files/)")
+
+    # ── gnn graph ────────────────────────────────────────────────────────────
+    graph_p = subparsers.add_parser("graph", help="Generate dependency graph from multi-model files")
+    graph_p.add_argument("file", type=Path, help="GNN file to render")
+    graph_p.add_argument("--format", choices=["mermaid", "text"], default="mermaid", help="Output format")
+
     # ── gnn lsp ──────────────────────────────────────────────────────────────
     subparsers.add_parser("lsp", help="Launch GNN Language Server")
 
@@ -88,6 +98,11 @@ def main(argv: Optional[List[str]] = None) -> int:
     # Setup logging
     level = logging.DEBUG if args.verbose else logging.INFO
     logging.basicConfig(level=level, format="%(levelname)s: %(message)s")
+
+    # Ensure src/ is on sys.path for all subcommands
+    src_dir = Path(__file__).parent.parent
+    if str(src_dir) not in sys.path:
+        sys.path.insert(0, str(src_dir))
 
     if not args.command:
         parser.print_help()
@@ -105,6 +120,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         "health": _cmd_health,
         "serve": _cmd_serve,
         "lsp": _cmd_lsp,
+        "watch": _cmd_watch,
+        "graph": _cmd_graph,
     }
     handler = handlers.get(args.command)
     if handler:
@@ -118,17 +135,14 @@ def main(argv: Optional[List[str]] = None) -> int:
 
 def _cmd_run(args):
     """Execute full pipeline."""
-    # Add src to path
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     try:
         from main import main as pipeline_main
         sys.argv = ["gnn"]
         extra_args = ["--target-dir", str(args.target_dir), "--output-dir", str(args.output_dir)]
         if args.verbose:
             extra_args.append("--verbose")
+        if args.log_format == "json":
+            extra_args.extend(["--log-format", "json"])
         if args.skip_llm:
             extra_args.extend(["--skip-steps", "13"])
         elif args.skip_steps:
@@ -142,10 +156,6 @@ def _cmd_run(args):
 
 def _cmd_validate(args):
     """Validate a GNN file."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
         return 1
@@ -195,10 +205,6 @@ def _cmd_validate(args):
 
 def _cmd_parse(args):
     """Parse a GNN file and output JSON."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     if not args.file.exists():
         logger.error(f"File not found: {args.file}")
         return 1
@@ -256,10 +262,6 @@ def _cmd_render(args):
 
 def _cmd_report(args):
     """Generate pipeline report from existing outputs."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     output_dir = Path(args.output_dir)
     if not output_dir.exists():
         logger.error(f"Output directory not found: {output_dir}")
@@ -275,17 +277,52 @@ def _cmd_report(args):
 
 def _cmd_reproduce(args):
     """Re-run from a previous run hash."""
-    print(f"Looking up run hash: {args.run_hash}")
-    print("(Reproduce delegates to pipeline/hasher.py)")
-    return 0
+    import logging
+    logger = logging.getLogger(__name__)
+    
+    from pipeline.hasher import lookup_run
+    history_dir = Path("output/00_pipeline_summary/.history")
+    
+    run_entry = lookup_run(args.run_hash, history_dir)
+    if not run_entry:
+        print(f"❌ Run hash not found: {args.run_hash}")
+        return 1
+        
+    print(f"🔄 Reproducing run: {args.run_hash}")
+    config = run_entry.get("config", {})
+    run_args = config.get("args", {})
+    
+    try:
+        from main import main as pipeline_main
+        sys.argv = ["gnn"]
+        
+        target_dir = run_args.get("target_dir", "input/gnn_files")
+        output_dir = run_args.get("output_dir", "output")
+        
+        extra_args = ["--target-dir", target_dir, "--output-dir", output_dir]
+        
+        if run_args.get("verbose"):
+            extra_args.append("--verbose")
+            
+        # Add skip steps if they were in the original args
+        skip_steps = run_args.get("skip_steps")
+        if skip_steps:
+            extra_args.extend(["--skip-steps", skip_steps])
+            
+        only_steps = run_args.get("only_steps")
+        if only_steps:
+            extra_args.extend(["--only-steps", only_steps])
+            
+        sys.argv.extend(extra_args)
+        print(f"Reconstructed args: {' '.join(sys.argv)}")
+        return pipeline_main()
+    except ImportError as e:
+        logger.error(f"Could not import pipeline for reproduction: {e}")
+        return 1
 
 
 def _cmd_preflight(args):
     """Run environment & config checks."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     from pipeline.preflight import run_preflight
     report = run_preflight(config_path=args.config)
     print(report.to_markdown())
@@ -294,10 +331,6 @@ def _cmd_preflight(args):
 
 def _cmd_health(args):
     """Show renderer & dependency status."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     from render.health import check_renderers
     from pipeline.preflight import check_environment
 
@@ -321,10 +354,6 @@ def _cmd_health(args):
 
 def _cmd_serve(args):
     """Start Pipeline-as-a-Service API."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
-
     try:
         from api.app import start_server
         start_server(host=args.host, port=args.port)
@@ -336,15 +365,39 @@ def _cmd_serve(args):
 
 def _cmd_lsp(args):
     """Launch GNN Language Server."""
-    src_dir = Path(__file__).parent.parent
-    if str(src_dir) not in sys.path:
-        sys.path.insert(0, str(src_dir))
+    try:
+        from cli.lsp import start_lsp
+        start_lsp()
+    except ImportError as e:
+        print(f"❌ Could not start LSP server: {e}")
+        return 1
+    return 0
+
+
+def _cmd_watch(args):
+    """Monitor directory and live-reparse on change."""
+    try:
+        from gnn.watcher import GNNWatcher
+        watcher = GNNWatcher(watch_dir=args.dir)
+        watcher.start()
+    except ImportError as e:
+        logger.error(f"Could not import watcher: {e}")
+        return 1
+    return 0
+
+
+def _cmd_graph(args):
+    """Generate dependency graph from multi-model files."""
+    if not args.file.exists():
+        logger.error(f"File not found: {args.file}")
+        return 1
 
     try:
-        from lsp import start_server
-        start_server()
-    except ImportError:
-        print("❌ pygls not installed. Run: pip install pygls")
+        from gnn.dep_graph import render_graph_from_file
+        output = render_graph_from_file(str(args.file), output_format=args.format)
+        print(output)
+    except ImportError as e:
+        logger.error(f"Could not import graph generator: {e}")
         return 1
     return 0
 

@@ -28,6 +28,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from fastapi import FastAPI, BackgroundTasks, HTTPException, UploadFile, File
+    from fastapi.middleware.cors import CORSMiddleware
     from fastapi.responses import PlainTextResponse, StreamingResponse, JSONResponse
     from pydantic import BaseModel, Field
     FASTAPI_AVAILABLE = True
@@ -88,6 +89,15 @@ if FASTAPI_AVAILABLE:
         version="2.0.0",
         docs_url="/docs",
         redoc_url="/redoc",
+    )
+
+    # CORS for local browser access
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["http://localhost:*", "http://127.0.0.1:*"],
+        allow_credentials=False,
+        allow_methods=["*"],
+        allow_headers=["*"],
     )
 
     # ── Endpoints ────────────────────────────────────────────────────────────
@@ -220,6 +230,39 @@ if FASTAPI_AVAILABLE:
                 target_dir=Path(request.target_dir),
             )
 
+            # Setup event callbacks
+            def handle_step_start(name, step_num):
+                entry["current_step"] = name
+                entry["events"].append({
+                    "type": "step_start",
+                    "step_num": step_num,
+                    "step_name": name,
+                    "timestamp": datetime.now().isoformat(),
+                })
+
+            def handle_step_complete(name, step_num, status, duration):
+                entry["steps_completed"] = entry.get("steps_completed", 0) + 1
+                entry["events"].append({
+                    "type": "step_complete",
+                    "step_num": step_num,
+                    "step_name": name,
+                    "status": status,
+                    "duration": duration,
+                    "timestamp": datetime.now().isoformat(),
+                })
+
+            def handle_error(name, error_msg):
+                entry["events"].append({
+                    "type": "error",
+                    "step_name": name,
+                    "error": error_msg,
+                    "timestamp": datetime.now().isoformat(),
+                })
+
+            ctx.on_step_start = handle_step_start
+            ctx.on_step_complete = handle_step_complete
+            ctx.on_error = handle_error
+
             # Emit start event
             entry["events"].append({
                 "type": "pipeline_start",
@@ -240,16 +283,11 @@ if FASTAPI_AVAILABLE:
                     continue
 
                 step = steps[step_num]
-                entry["current_step"] = step.name
-
-                entry["events"].append({
-                    "type": "step_start",
-                    "step_num": step_num,
-                    "step_name": step.name,
-                    "timestamp": datetime.now().isoformat(),
-                })
+                ctx.trigger_step_start(step.name, step_num)
 
                 step_start = time.time()
+                # Simulate execution time
+                await asyncio.sleep(0.1)
 
                 # Record step (actual execution would call step.func)
                 ctx.record_step(
@@ -258,16 +296,6 @@ if FASTAPI_AVAILABLE:
                     status="SUCCESS",
                     duration=time.time() - step_start,
                 )
-                entry["steps_completed"] = entry.get("steps_completed", 0) + 1
-
-                entry["events"].append({
-                    "type": "step_complete",
-                    "step_num": step_num,
-                    "step_name": step.name,
-                    "status": "SUCCESS",
-                    "duration": round(time.time() - step_start, 3),
-                    "timestamp": datetime.now().isoformat(),
-                })
 
             # Save summary
             ctx.save_summary()

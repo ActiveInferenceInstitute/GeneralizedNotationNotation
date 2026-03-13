@@ -119,17 +119,21 @@ class EnhancedHealthChecker:
         """Check system resource availability."""
         self.logger.info("📊 Checking system resources...")
 
+        _platform = {
+            "system": platform.system(),
+            "release": platform.release(),
+            "python_version": sys.version,
+        }
+        _empty_resources = {"cpu": {}, "memory": {}, "disk": {}, "network": {}}
+
         # Check if psutil is available
         if not PSUTIL_AVAILABLE:
             self.logger.warning("⚠️ psutil not available - limited system resource checks")
             return {
                 "status": "limited",
                 "error": "psutil not installed - install with: uv pip install psutil",
-                "platform": {
-                    "system": platform.system(),
-                    "release": platform.release(),
-                    "python_version": sys.version
-                }
+                "platform": _platform,
+                **_empty_resources,
             }
 
         try:
@@ -177,11 +181,7 @@ class EnhancedHealthChecker:
                     "available": network_available,
                     "status": "connected" if network_available else "offline"
                 },
-                "platform": {
-                    "system": platform.system(),
-                    "release": platform.release(),
-                    "python_version": sys.version
-                }
+                "platform": _platform,
             }
 
         except Exception as e:
@@ -189,7 +189,8 @@ class EnhancedHealthChecker:
             return {
                 "status": "unknown",
                 "error": str(e),
-                "platform": {"python_version": sys.version}
+                "platform": _platform,
+                **_empty_resources,
             }
 
     def check_core_dependencies(self) -> Dict[str, Any]:

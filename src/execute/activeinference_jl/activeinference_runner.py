@@ -594,7 +594,7 @@ if __name__ == "__main__":
 
     # Run the analysis
     success = run_activeinference_analysis(
-        pipeline_output_dir=args.output_dir,
+        rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose,
         analysis_type=args.analysis_type,
