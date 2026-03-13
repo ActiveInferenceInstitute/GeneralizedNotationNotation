@@ -148,7 +148,7 @@ def analyze_individual_steps(summary_data: Dict[str, Any]) -> Tuple[List[StepAna
             flags.append(f"Slow: {duration:.1f}s (>{SLOW_THRESHOLD}s threshold)")
             if flag_type != "red":
                 flag_type = "yellow"
-        elif duration > avg_duration * 3:
+        elif avg_duration > 0 and duration > avg_duration * 3:
             flags.append(f"Significantly above average: {duration:.1f}s ({duration/avg_duration:.1f}x avg)")
             if flag_type != "red":
                 flag_type = "yellow"

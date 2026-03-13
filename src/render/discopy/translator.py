@@ -985,7 +985,7 @@ def gnn_connections_to_discopy_matrix_diagram(
                                 logger.debug(f"Initializer for '{box_name_short}' contains complex numbers. Overriding dtype to jnp.complex64 from {current_jax_dtype}.")
                                 current_jax_dtype = jnp.complex64 if hasattr(jnp, 'complex64') else 'complex64'
                             elif not hasattr(current_jax_dtype, 'is_complex'): # if it's already a jax dtype, check if complex
-                                if jnp.issubdtype(current_jax_dtype, jnp.complexfloating) == False:
+                                if not jnp.issubdtype(current_jax_dtype, jnp.complexfloating):
                                      logger.debug(f"Initializer for '{box_name_short}' contains complex numbers. Overriding dtype to jnp.complex64 from {current_jax_dtype}.")
                                      current_jax_dtype = jnp.complex64 if hasattr(jnp, 'complex64') else 'complex64'
 
