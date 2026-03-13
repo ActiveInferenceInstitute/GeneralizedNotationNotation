@@ -68,6 +68,9 @@ class PipelineArguments:
     recursive: bool = True
     verbose: bool = False
 
+    # Logging options
+    log_format: str = "human"
+
     # Validation options (enabled by default for comprehensive testing)
     enable_round_trip: bool = True      # Enable round-trip testing across all 21 formats
     enable_cross_format: bool = True    # Enable cross-format consistency validation
@@ -228,6 +231,13 @@ class ArgumentParser:
             action=argparse.BooleanOptionalAction,
             default=False,
             help_text='Enable verbose output'
+        ),
+        'log_format': ArgumentDefinition(
+            flag='--log-format',
+            arg_type=str,
+            choices=['human', 'json'],
+            default='human',
+            help_text='Output format for pipeline logs'
         ),
         'enable_round_trip': ArgumentDefinition(
             flag='--enable-round-trip',
@@ -985,7 +995,7 @@ def build_step_command_args(step_name: str, pipeline_args: PipelineArguments,
     # First try from StepConfiguration
     all_supported_args = config.get("required_args", []) + config.get("optional_args", [])
 
-    # If no arguments found, try from STEP_ARGUMENTS as fallback
+    # If no arguments found, try from STEP_ARGUMENTS as recovery
     if not all_supported_args and step_key in ArgumentParser.STEP_ARGUMENTS:
         all_supported_args = ArgumentParser.STEP_ARGUMENTS.get(step_key, [])
 

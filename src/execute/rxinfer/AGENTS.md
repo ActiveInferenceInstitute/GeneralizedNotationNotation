@@ -115,9 +115,9 @@ print(f"Inference completed in {results['execution_time']:.2f}s")
 - `GraphPPL.jl` - Probabilistic programming DSL
 
 ### Optional Dependencies
-- `Plots.jl` - Visualization support (fallback: data export)
-- `DataFrames.jl` - Data manipulation (fallback: basic arrays)
-- `TOML.jl` - Configuration file support (fallback: JSON)
+- `Plots.jl` - Visualization support (recovery: data export)
+- `DataFrames.jl` - Data manipulation (recovery: basic arrays)
+- `TOML.jl` - Configuration file support (recovery: JSON)
 
 ### Internal Dependencies
 - `execute.executor` - Base execution functionality

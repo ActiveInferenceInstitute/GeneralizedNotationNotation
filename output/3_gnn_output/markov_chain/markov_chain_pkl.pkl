@@ -7,7 +7,7 @@
 - Observations = states directly (identity mapping for monitoring).
 - Stationary transition matrix with realistic weather dynamics.
 - Tests the simplest model structure: passive state evolution with no control.
-/// Generated: 2026-03-06T15:00:16.279478
+/// Generated: 2026-03-13T14:15:03.926228
 /// Enhanced by GNN PKL Serializer
 ///
 

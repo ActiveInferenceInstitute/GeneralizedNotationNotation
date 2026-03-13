@@ -444,7 +444,7 @@ try:
     results = validate_ontology_terms(content)
 except ValidationError as e:
     logger.error(f"Ontology validation failed: {e}")
-    # Provide fallback validation or error reporting
+    # Provide recovery validation or error reporting
 ```
 
 ### Mapping Failures
@@ -454,7 +454,7 @@ try:
     mapping = map_ontology_terms(content)
 except MappingError as e:
     logger.warning(f"Term mapping failed: {e}")
-    # Provide fallback mapping or error reporting
+    # Provide recovery mapping or error reporting
 ```
 
 ### Enhancement Failures
@@ -464,7 +464,7 @@ try:
     enhanced = enhance_with_ontology(content)
 except EnhancementError as e:
     logger.error(f"Enhancement failed: {e}")
-    # Provide fallback enhancement or error reporting
+    # Provide recovery enhancement or error reporting
 ```
 
 ## Performance Optimization

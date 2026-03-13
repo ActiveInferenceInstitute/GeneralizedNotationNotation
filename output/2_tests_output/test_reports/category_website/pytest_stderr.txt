@@ -1,0 +1,3 @@
+DEBUG:2026-03-13 14:24:41,211:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:24:41,211 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:24:41,551 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)

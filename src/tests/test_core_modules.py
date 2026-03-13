@@ -324,8 +324,8 @@ class TestLLMModuleComprehensive:
 		try:
 			from src.llm import generate_documentation
 
-			# Create a mock file analysis result
-			mock_analysis = {
+			# Create a sample file analysis result
+			sample_analysis = {
 				"file_path": "test.md",
 				"file_name": "test.md",
 				"semantic_analysis": {"model_type": "POMDP", "complexity_level": "simple"},
@@ -334,7 +334,7 @@ class TestLLMModuleComprehensive:
 			}
 
 			# Test documentation generation
-			docs = generate_documentation(mock_analysis)
+			docs = generate_documentation(sample_analysis)
 			assert isinstance(docs, dict), "Documentation should return a dict"
 			assert "file_path" in docs, "Documentation should contain file_path"
 

@@ -20,7 +20,7 @@
 
 ### Primary Responsibilities
 1. Coordinate cross-module interactions and data flow
-2. Provide fallback implementations for missing dependencies
+2. Provide recovery implementations for missing dependencies
 3. Manage system-wide configuration and state
 4. Enable seamless integration between pipeline steps
 5. Handle inter-module communication and data exchange
@@ -45,7 +45,7 @@
 - `output_dir` (Path): Output directory for integration results
 - `verbose` (bool): Enable verbose logging (default: False)
 - `logger` (Optional[logging.Logger]): Logger instance for progress reporting (default: None)
-- `integration_mode` (str, optional): Integration mode ("coordinated", "standalone", "fallback") (default: "coordinated")
+- `integration_mode` (str, optional): Integration mode ("coordinated", "standalone", "recovery") (default: "coordinated")
 - `system_coordination` (bool, optional): Enable system-wide coordination (default: True)
 - `validate_dependencies` (bool, optional): Validate module dependencies (default: True)
 - `detect_cycles` (bool, optional): Detect circular dependencies (default: True)
@@ -90,8 +90,8 @@ success = process_integration(
 - `logging` - Logging and progress reporting
 
 ### Optional Dependencies
-- `psutil` - System resource monitoring (fallback: basic monitoring)
-- `requests` - HTTP communication (fallback: local only)
+- `psutil` - System resource monitoring (recovery: basic monitoring)
+- `requests` - HTTP communication (recovery: local only)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing patterns
@@ -169,7 +169,7 @@ output/17_integration_output/
 ### Graceful Degradation
 - **No external dependencies**: Local-only integration mode
 - **Module unavailable**: Skip integration for that module
-- **Network issues**: Fallback to local coordination only
+- **Network issues**: Recovery to local coordination only
 
 ### Error Categories
 1. **Coordination Errors**: Unable to coordinate between modules
@@ -211,7 +211,7 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 
 ### Key Test Scenarios
 1. Cross-module coordination with various step combinations
-2. Fallback mode operation when dependencies unavailable
+2. Recovery mode operation when dependencies unavailable
 3. System state synchronization accuracy
 4. Error handling with partial module failures
 

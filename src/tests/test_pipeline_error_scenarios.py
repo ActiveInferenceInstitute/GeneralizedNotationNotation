@@ -108,7 +108,7 @@ class TestDependencyErrorScenarios:
                 plt.plot([1, 2, 3], [1, 4, 9])
 
                 # Test with extreme DPI values
-                assert _save_plot_safely(test_plot_path, dpi=999999)  # Should fallback
+                assert _save_plot_safely(test_plot_path, dpi=999999)  # Should recovery
                 assert test_plot_path.exists()
 
                 plt.close()

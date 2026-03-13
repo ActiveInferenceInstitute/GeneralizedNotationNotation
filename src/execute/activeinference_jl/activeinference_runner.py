@@ -9,7 +9,7 @@ Features:
 - Robust Julia environment setup and validation
 - Comprehensive package installation and dependency management
 - Environment health checks and reporting
-- Fallback mechanisms for failed setups
+- Recovery mechanisms for failed setups
 - Detailed logging and error reporting
 """
 
@@ -28,7 +28,7 @@ try:
     from execute.julia_setup import is_julia_available
 except ImportError:
     def is_julia_available() -> bool:  # type: ignore[misc]
-        """Fallback when julia_setup is unavailable: check PATH directly."""
+        """Recovery when julia_setup is unavailable: check PATH directly."""
         import shutil
         return shutil.which("julia") is not None
 
@@ -93,31 +93,31 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
             if result.stdout.strip():
                 logger.debug(f"Setup output:\n{result.stdout}")
 
-            # Try fallback setup
-            logger.info("Attempting fallback environment setup...")
+            # Try recovery setup
+            logger.info("Attempting recovery environment setup...")
             return _fallback_environment_setup(project_dir)
 
     except subprocess.TimeoutExpired:
         logger.error("❌ Environment setup timed out after 30 minutes")
-        logger.info("Attempting fallback environment setup...")
+        logger.info("Attempting recovery environment setup...")
         return _fallback_environment_setup(project_dir)
 
     except Exception as e:
         logger.error(f"❌ Error during environment setup: {e}")
-        logger.info("Attempting fallback environment setup...")
+        logger.info("Attempting recovery environment setup...")
         return _fallback_environment_setup(project_dir)
 
 def _fallback_environment_setup(project_dir: Path) -> bool:
     """
-    Fallback environment setup using basic Pkg.instantiate().
+    Recovery environment setup using basic Pkg.instantiate().
     
     Args:
         project_dir: Path to the ActiveInference.jl project directory
         
     Returns:
-        bool: True if fallback setup was successful, False otherwise
+        bool: True if recovery setup was successful, False otherwise
     """
-    logger.info("Running fallback environment setup...")
+    logger.info("Running recovery environment setup...")
 
     try:
         # Basic package instantiation
@@ -134,7 +134,7 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
         )
 
         if result.returncode == 0:
-            logger.info("✅ Fallback environment setup completed")
+            logger.info("✅ Recovery environment setup completed")
 
             # Try to validate core packages
             core_packages = ["ActiveInference", "Distributions", "LinearAlgebra"]
@@ -152,14 +152,14 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
 
             return True
         else:
-            logger.error(f"❌ Fallback setup failed: {result.stderr}")
+            logger.error(f"❌ Recovery setup failed: {result.stderr}")
             return False
 
     except subprocess.TimeoutExpired:
-        logger.error("❌ Fallback setup timed out")
+        logger.error("❌ Recovery setup timed out")
         return False
     except Exception as e:
-        logger.error(f"❌ Error in fallback setup: {e}")
+        logger.error(f"❌ Error in recovery setup: {e}")
         return False
 
 def _validate_package(project_dir: Path, package_name: str) -> bool:
@@ -272,7 +272,7 @@ def execute_activeinference_script(
             logger.info("Environment needs setup, running comprehensive setup...")
             if not setup_julia_environment(project_dir, verbose=verbose):
                 logger.error("Environment setup failed, cannot execute script reliably")
-                # Continue anyway for fallback execution
+                # Continue anyway for recovery execution
         else:
             logger.debug("Environment appears ready")
 

@@ -129,7 +129,7 @@ def check_system_resources() -> List[ValidationResult]:
                 suggestion="Install psutil for detailed resource checks (uv pip install psutil)"
             ))
 
-        # Disk space check (fallback to shutil if psutil unavailable)
+        # Disk space check (recovery to shutil if psutil unavailable)
         try:
             if _PSUTIL_AVAILABLE:
                 disk = psutil.disk_usage('/')

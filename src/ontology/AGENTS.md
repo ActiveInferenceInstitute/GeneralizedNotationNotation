@@ -224,10 +224,10 @@ output/10_ontology_output/
 - **Term Validation Failure**: Log warning, continue processing
 
 ### Error Categories
-1. **File I/O Errors**: Cannot read ontology file (fallback: use default ontology)
-2. **Validation Errors**: Invalid ontology structure (fallback: skip validation)
-3. **Term Extraction Errors**: Cannot extract terms from model (fallback: skip model)
-4. **Mapping Errors**: Cannot generate term mappings (fallback: partial mapping)
+1. **File I/O Errors**: Cannot read ontology file (recovery: use default ontology)
+2. **Validation Errors**: Invalid ontology structure (recovery: skip validation)
+3. **Term Extraction Errors**: Cannot extract terms from model (recovery: skip model)
+4. **Mapping Errors**: Cannot generate term mappings (recovery: partial mapping)
 
 ### Error Recovery
 - **Default Ontology**: Use built-in ontology if file unavailable

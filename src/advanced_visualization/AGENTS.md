@@ -190,10 +190,10 @@ See [D2_README.md](D2_README.md) for comprehensive D2 integration documentation.
 
 ### Optional Dependencies
 
-- `plotly` - Interactive visualizations (fallback: static plots)
-- `seaborn` - Enhanced statistical plots (fallback: matplotlib)
-- `bokeh` - Interactive dashboards (fallback: HTML report)
-- **`d2` CLI** - D2 diagram compilation (fallback: skip D2 diagrams, log warning)
+- `plotly` - Interactive visualizations (recovery: static plots)
+- `seaborn` - Enhanced statistical plots (recovery: matplotlib)
+- `bokeh` - Interactive dashboards (recovery: HTML report)
+- **`d2` CLI** - D2 diagram compilation (recovery: skip D2 diagrams, log warning)
 
 ---
 
@@ -337,7 +337,7 @@ output/9_advanced_viz_output/
 
 ### Robust Error Recovery
 
-- **Data Loading**: Multiple fallback paths for finding GNN models
+- **Data Loading**: Multiple recovery paths for finding GNN models
 - **Visualization Generation**: Individual method error isolation
 - **File I/O**: Safe file operations with proper cleanup
 - **Memory Management**: Proper resource cleanup and monitoring
@@ -353,7 +353,7 @@ output/9_advanced_viz_output/
 1. **Data Loading**: Fixed GNN model discovery and loading from processing results
 2. **Visualization Implementation**: Replaced stubs with real matplotlib-based visualizations
 3. **Import Structure**: Corrected module imports and dependencies
-4. **Error Handling**: Added comprehensive error handling and fallback mechanisms
+4. **Error Handling**: Added comprehensive error handling and recovery mechanisms
 5. **Test Coverage**: Created 17 comprehensive tests covering all functionality
 
 **Key Improvements**:
@@ -498,7 +498,7 @@ def generate_3d_visualization_tool(model_data: Dict[str, Any]) -> Dict[str, Any]
 
 - Install required dependencies: `uv pip install plotly numpy`
 - Reduce model complexity for 3D rendering
-- Use 2D fallback visualizations
+- Use 2D recovery visualizations
 
 ### Performance Issues
 

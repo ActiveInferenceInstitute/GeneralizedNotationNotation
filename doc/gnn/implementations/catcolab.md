@@ -86,7 +86,7 @@ python src/main.py --only-steps "3,7" --verbose
 2. Run the GNN importer:
 
 ```bash
-# Note: The catcolab importer is currently a planned feature stub
+# Note: The catcolab importer is currently a planned feature design
 # python src/gnn/catcolab_importer.py \
 #     --input path/to/catcolab_export.json \
 #     --output input/gnn_files/imported_model.md \
@@ -148,7 +148,7 @@ Full categorical bridge documentation: **[doc/catcolab/catcolab_gnn.md](../../..
  | ID | Area | Description | Impact |
 |---|---|---|---|
  | C-1 | Export | CatColab JSON schema not yet formally validated | Medium |
- | C-2 | Import | CatColab→GNN importer stubs partial logic types | Medium |
+ | C-2 | Import | CatColab→GNN importer provides partial logic types | Medium |
  | C-3 | Analysis | DisCoPy analyzer only outputs 2 structural diagrams | Low |
 
 ## See Also / Next Steps

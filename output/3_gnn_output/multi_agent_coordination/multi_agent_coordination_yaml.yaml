@@ -158,10 +158,10 @@ connections:
   target_variables:
   - u2
   weight: null
-created_at: '2026-03-06T15:00:15.823132'
+created_at: '2026-03-13T14:15:03.471842'
 equations: []
 model_name: Multi-Agent Cooperative Active Inference
-modified_at: '2026-03-06T15:00:15.823133'
+modified_at: '2026-03-13T14:15:03.471843'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

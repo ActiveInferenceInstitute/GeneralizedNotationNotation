@@ -239,7 +239,7 @@ output/0_template_output/
 ### Recovery Strategies
 - **Template Regeneration**: Recreate templates from defaults
 - **Pattern Simplification**: Use simpler patterns
-- **Documentation Fallback**: Generate basic documentation
+- **Documentation Recovery**: Generate basic documentation
 - **Error Logging**: Comprehensive error reporting
 
 ---

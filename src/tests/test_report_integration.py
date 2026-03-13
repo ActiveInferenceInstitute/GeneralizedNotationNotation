@@ -36,11 +36,11 @@ class TestReportPipelineIntegration:
 
         logger = logging.getLogger("test_report")
 
-        # Create mock pipeline output structure
+        # Create sample pipeline output structure
         output_dir = tmp_path / "output"
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create some mock step outputs
+        # Create some sample step outputs
         for step in ["3_gnn_output", "8_visualization_output", "11_render_output"]:
             step_dir = output_dir / step
             step_dir.mkdir(parents=True, exist_ok=True)
@@ -182,7 +182,7 @@ class TestReportExportIntegration:
 
         logger = logging.getLogger("test_report")
 
-        # Create a mock pipeline output directory with step data
+        # Create a sample pipeline output directory with step data
         pipeline_output_dir = tmp_path / "pipeline_output"
         pipeline_output_dir.mkdir(parents=True, exist_ok=True)
         for step in ["3_gnn_output", "8_visualization_output"]:

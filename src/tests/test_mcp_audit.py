@@ -31,7 +31,7 @@ pytestmark = pytest.mark.mcp
 
 @pytest.fixture(scope="module")
 def mcp_initialized():
-    """Return a fully initialized MCP instance with all fallback registrations done.
+    """Return a fully initialized MCP instance with all recovery registrations done.
 
     After ``initialize()`` returns, MCP continues registering timed-out modules
     via background threads.  We wait up to 5 seconds for the tool count to
@@ -40,7 +40,7 @@ def mcp_initialized():
     from mcp import initialize, mcp_instance
     initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
 
-    # Wait for fallback registration threads to complete.
+    # Wait for recovery registration threads to complete.
     # Poll until tool count stops growing (max 5 s).
     prev_count = -1
     for _ in range(25):          # 25 × 0.2 s = 5 s max
@@ -56,7 +56,7 @@ def mcp_initialized():
 @pytest.fixture(scope="module")
 def all_tools(mcp_initialized) -> Dict[str, Any]:
     """Return the full tools dictionary from the initialized MCP instance."""
-    return dict(mcp_initialized.tools)   # copy snapshot after fallback wait
+    return dict(mcp_initialized.tools)   # copy snapshot after recovery wait
 
 
 @pytest.fixture(scope="module")
@@ -85,7 +85,7 @@ class TestMCPModuleDiscovery:
     def test_expected_module_loaded(self, mod_name, all_modules, all_tools):
         """Each expected pipeline module must be discovered OR contribute tools.
 
-        The fixture now waits for fallback registration to stabilise, so both
+        The fixture now waits for recovery registration to stabilise, so both
         sources should be populated. A module that neither appears in
         all_modules nor contributes any tool is a genuine registration failure.
         """
@@ -279,7 +279,7 @@ class TestMCPDomainTools:
     def test_domain_tool_registered(self, tool_name, all_tools):
         """Each expected domain-specific tool must be registered.
 
-        The fixture now waits for all fallback registrations to stabilise.
+        The fixture now waits for all recovery registrations to stabilise.
         A missing tool indicates a genuine registration failure.
         """
         assert tool_name in all_tools, (
@@ -451,7 +451,7 @@ class TestMCPAuditReport:
         assert report["tools_total"] >= 50, (
             f"Expected ≥50 tools total, got {report['tools_total']}"
         )
-        # Module-discovery count is advisory (async fallback timing).
+        # Module-discovery count is advisory (async recovery timing).
         # The authoritative check is domain-tool presence (TestMCPDomainTools).
         assert report["tools_real"] == report["tools_total"], (
             f"{report['tools_total'] - report['tools_real']} tools are not real"

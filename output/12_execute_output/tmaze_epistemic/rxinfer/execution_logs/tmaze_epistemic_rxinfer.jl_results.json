@@ -1,0 +1,26 @@
+{
+  "framework": "rxinfer",
+  "model_name": "tmaze_epistemic",
+  "script_name": "tmaze_epistemic_rxinfer.jl",
+  "script_path": "output/11_render_output/tmaze_epistemic/rxinfer/tmaze_epistemic_rxinfer.jl",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 1.074177,
+  "timestamp": "2026-03-13T13:58:20.587515",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/tmaze_epistemic/rxinfer')"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 97,
+    "output_directory": "output/12_execute_output/tmaze_epistemic/rxinfer"
+  }
+}

@@ -1,0 +1,223 @@
+{
+  "model_name": "Static Perception Model",
+  "version": "1.0",
+  "annotation": "The simplest Active Inference model demonstrating pure perception:\n\n- 2 hidden states mapped to 2 observations via a recognition matrix A\n- Prior D encodes initial beliefs over hidden states\n- No temporal dynamics — single-shot inference\n- Demonstrates the core observation model: P(o|s) = A\n- Suitable as a minimal baseline and for testing perception-only inference",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8f1f9f8a-d512-4b74-8d2d-f73c3a23ac7c",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Recognition/likelihood matrix: P(observation | hidden state)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b97e362-54ce-42a7-a9ed-85f5a70f0bb4",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Prior belief over hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1e264b3-0d69-483b-8f0a-9020de50d088",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state (posterior belief)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "15821356-43ea-4a8b-ad9e-fb24639b45f2",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Observation (one-hot encoded)",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "64d368e5-55cd-4116-bb9f-996a0ac71481",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fda6f128-5ad9-42ce-8b6f-b684b66e500a",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "05e1129e-141a-412e-a0e5-32673606de66",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b328da61-1c35-45ed-97e4-2381accb9dec",
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.2,
+          0.8
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "db330908-07cc-4363-a494-84a228c95b6d",
+      "name": "D",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "f8057969-3095-451c-a42a-4b757ae1ea87",
+    "time_type": "Static",
+    "discretization": null,
+    "horizon": null,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f5c15316-5166-47db-a9ff-6e80953d82e6",
+      "variable_name": "A",
+      "ontology_term": "RecognitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "258cb4e3-b650-416e-9499-93e44b4a1ec0",
+      "variable_name": "D",
+      "ontology_term": "Prior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9245244f-8481-46fc-bbc5-33393b82ad24",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9d4d20d2-ef9b-4365-af92-c431d814e963",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T11:28:21.540127",
+  "modified_at": "2026-03-13T11:28:21.540128",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActiveInferencePerception",
+    "footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nNo temporal dynamics, no action — perception only.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActiveInferencePerception",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Static Perception Model",
+    "ModelAnnotation": "The simplest Active Inference model demonstrating pure perception:\n\n- 2 hidden states mapped to 2 observations via a recognition matrix A\n- Prior D encodes initial beliefs over hidden states\n- No temporal dynamics — single-shot inference\n- Demonstrates the core observation model: P(o|s) = A\n- Suitable as a minimal baseline and for testing perception-only inference",
+    "StateSpaceBlock": "# Generative model parameters\n\nA[2,2,type=float]    # Recognition/likelihood matrix: P(observation | hidden state)\nD[2,1,type=float]    # Prior belief over hidden states\n\n# Hidden state\n\ns[2,1,type=float]    # Hidden state (posterior belief)\n\n# Observation\n\no[2,1,type=int]      # Observation (one-hot encoded)",
+    "Connections": "D>s\ns-A\nA-o",
+    "InitialParameterization": "# Near-identity observation mapping with mild noise\n\nA={\n  (0.9, 0.1),\n  (0.2, 0.8)\n}\n\n# Uniform prior over hidden states\n\nD={(0.5, 0.5)}",
+    "Equations": "# Bayesian perception via softmax\n\n# Q(s) = softmax(ln(D) + ln(A^T * o))\n\n# No temporal or action components — pure state estimation",
+    "Time": "Static",
+    "ActInfOntologyAnnotation": "A=RecognitionMatrix\nD=Prior\ns=HiddenState\no=Observation",
+    "ModelParameters": "num_hidden_states: 2\nnum_obs: 2",
+    "Footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nNo temporal dynamics, no action — perception only.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

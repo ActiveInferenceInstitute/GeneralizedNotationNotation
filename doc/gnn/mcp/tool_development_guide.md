@@ -11,7 +11,7 @@ All GNN MCP tools follow four non-negotiable constraints enforced by `test_mcp_a
 1. **Real named functions** — no lambdas, no `None`, no generic wrappers like `list_functions`
 2. **Non-empty descriptions** — every tool must have a docstring or explicit description
 3. **Logger call** — `register_tools()` must call `logger.info(f"Registered N tools")` with the real count
-4. **Zero stubs** — the function must do real work, not just return a placeholder
+4. **Zero placeholders** — the function must do real work, not just return a placeholder
 
 ## Module File Structure
 
@@ -96,7 +96,7 @@ def register_tools(server: Any) -> None:
 - [ ] All functions are **named** (`def my_tool():`, not `lambda:`)
 - [ ] All functions have a **docstring** (the description passed to `register_tool`)
 - [ ] The `logger.info` count matches the actual number of `server.register_tool` calls
-- [ ] Functions call **real module code** (not `return {}` stubs)
+- [ ] Functions call **real module code** (not `return {}` placeholders)
 - [ ] `AGENTS.md` for the module lists the new tools
 - [ ] The module's `doc/gnn/modules/NN_<module>.md` has an MCP Tools section
 
@@ -120,7 +120,7 @@ PYTHONPATH=src python src/mcp/validate_tools.py
 |------------|---------------|
 | `TestMCPModuleDiscovery` | 22 modules × 2: module registered + `register_tools` is callable |
 | `TestMCPDomainTools` | 131 tools × 2: tool callable + description not empty |
-| `TestMCPToolRealness` | No generic stubs (`list_functions`, `call_function`) |
+| `TestMCPToolRealness` | No generic placeholders (`list_functions`, `call_function`) |
 | `TestMCPLoggingCoverage` | Every `mcp.py` calls `logger.info` in `register_tools` |
 | `TestMCPAuditReport` | JSON report generated with correct schema |
 

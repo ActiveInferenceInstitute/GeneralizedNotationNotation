@@ -318,7 +318,7 @@ The slightly lower confidence correlation (compared to the 1.0000 achieved by Py
 |---|---|---|---|
 | AIF-1 | Telemetry | ~~No `validation` dict in `simulation_results.json`~~ — now includes `beliefs_in_range`, `beliefs_sum_to_one`, `actions_in_range`, `all_valid` | ✅ FIXED |
 | AIF-2 | Rendering | ~~4 renderer variants existed~~ — deleted `activeinference_jl_renderer.py`, `_fixed.py`, `_simple.py`; only canonical `activeinference_renderer.py` remains | ✅ FIXED |
-| AIF-3 | Execution | Runner is 604 lines with Julia environment setup; `setup_julia_environment()` and `_fallback_environment_setup()` could be shared with `rxinfer_runner.py` — `is_julia_available()` now delegates to shared `julia_setup` module | Medium |
+| AIF-3 | Execution | Runner is 604 lines with Julia environment setup; `setup_julia_environment()` and `_alternative_environment_setup()` could be shared with `rxinfer_runner.py` — `is_julia_available()` now delegates to shared `julia_setup` module | Medium |
 | AIF-4 | Rendering | ~~`POLICY_LENGTH` was referenced but defined as `POLICY_LEN`~~ — removed orphaned `POLICY_LENGTH`; only `POLICY_LEN` is used | ✅ FIXED |
 | AIF-5 | Analysis | `parse_julia_matrix()` and `parse_julia_vector()` nested helpers could be extracted to shared Julia parsing utility | Low |
 

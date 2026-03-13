@@ -1,0 +1,312 @@
+DEBUG:2026-03-13 14:18:02,210:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:18:02,210 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:18:03,392 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:18:03,395 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x143818530>
+2026-03-13 14:18:03,395 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-03-13 14:18:03,395 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:18:03,395 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-03-13 14:18:03,396 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:18:03,396 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-03-13 14:18:03,403 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:18:03 GMT'), (b'Content-Length', b'1414')])
+2026-03-13 14:18:03,404 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:18:03,405 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-03-13 14:18:03,405 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:18:03,405 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:18:03,405 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:18:03,405 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:18:03,415 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:18:03,573 - test_ollama - INFO - ✅ Ollama is running and ready
+2026-03-13 14:18:03,573 - test_ollama - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:18:03,575 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:18:03,627 - test_ollama - INFO - ✅ Ollama is running and ready
+2026-03-13 14:18:03,627 - test_ollama - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:18:03,629 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:18:03,678 - test_ollama - INFO - ✅ Ollama is running and ready
+2026-03-13 14:18:03,678 - test_ollama - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:18:03,681 - test_ollama - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:18:03,730 - test_ollama - INFO - ✅ Ollama is running and ready
+2026-03-13 14:18:03,731 - test_ollama - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:18:03,731 - test_ollama - INFO - ✅ Ollama detected with port open, models: ['nomic-embed-text:latest', 'smollm2:135m-instruct-q4_K_S', 'embeddinggemma:latest', 'gemma3:4b']
+2026-03-13 14:18:03,731 - test_ollama - INFO - ✅ Detection completed with consistent results
+2026-03-13 14:18:03,742 - test_model_selection - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:03,751 - test_model_selection - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:03,760 - test_model_selection - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:03,896 - test_model_selection - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:03,964 - test_model_selection - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:03,976 - llm - INFO - Processing LLM with enhanced Ollama integration
+2026-03-13 14:18:03,976 - llm - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:18:04,024 - llm - INFO - ✅ Ollama is running and ready
+2026-03-13 14:18:04,025 - llm - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:18:04,033 - llm - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:18:04,037 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:18:04,038 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:18:04,038 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:18:04,350 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:18:04,351 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:18:04,352 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:18:04,352 - llm - INFO - LLM processor initialized with providers: ['ollama', 'openai']
+2026-03-13 14:18:04,352 - llm - INFO - 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+2026-03-13 14:18:04,366 - llm.llm_processor - INFO - Initialized providers: ['openai']
+2026-03-13 14:18:04,366 - llm.llm_operations - INFO - Created new LLM processor
+2026-03-13 14:18:04,370 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:18:04,370 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:18:04,371 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:18:04,379 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:18:04,379 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:18:04,380 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:18:17,042 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 14:18:17,056 - llm - INFO - 🤖 Using model 'gemma3:4b' for LLM prompts
+2026-03-13 14:18:17,056 - llm - INFO -   📝 Running prompt 1/6: summarize_content
+2026-03-13 14:18:30,702 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:18:30,707 - llm - INFO -   📝 Running prompt 2/6: explain_model
+2026-03-13 14:18:39,350 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:18:39,359 - llm - INFO -   📝 Running prompt 3/6: identify_components
+2026-03-13 14:18:56,696 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:18:56,708 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
+2026-03-13 14:19:14,266 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:19:14,276 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
+2026-03-13 14:19:31,462 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:19:31,470 - llm - INFO -   📝 Running prompt 6/6: practical_applications
+2026-03-13 14:19:48,770 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:19:48,774 - llm - INFO -   📝 Running custom prompt 1/3: technical_description
+2026-03-13 14:20:06,130 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:20:06,137 - llm - INFO -   📝 Running custom prompt 2/3: nontechnical_description
+2026-03-13 14:20:23,003 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:20:23,013 - llm - INFO -   📝 Running custom prompt 3/3: runtime_behavior
+2026-03-13 14:20:39,342 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:20:39,356 - llm - INFO - 📦 Cache: 0 hits, 9 misses, 9 new entries (0.0% hit ratio)
+2026-03-13 14:20:39,356 - llm - INFO - ✅ LLM processing completed successfully
+2026-03-13 14:20:39,356 - llm.providers.ollama_provider - INFO - Ollama provider closed
+2026-03-13 14:20:39,357 - llm.providers.openai_provider - INFO - OpenAI provider connection closed
+2026-03-13 14:20:39,357 - llm.llm_processor - INFO - LLM Processor closed
+2026-03-13 14:20:39,388 - llm - INFO - Processing LLM with enhanced Ollama integration
+2026-03-13 14:20:39,388 - llm - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:20:39,541 - llm - INFO - ✅ Ollama is running and ready
+2026-03-13 14:20:39,541 - llm - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:20:39,550 - llm - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:20:39,553 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:20:39,553 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:20:39,553 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:20:39,560 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:20:39,560 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:20:39,560 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:20:39,560 - llm - INFO - LLM processor initialized with providers: ['ollama', 'openai']
+2026-03-13 14:20:39,560 - llm - INFO - 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+2026-03-13 14:20:39,561 - llm.llm_processor - INFO - Initialized providers: ['openai']
+2026-03-13 14:20:39,561 - llm.llm_operations - INFO - Created new LLM processor
+2026-03-13 14:20:39,562 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:20:39,562 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:20:39,562 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:20:39,567 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:20:39,567 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:20:39,567 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:20:55,073 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 14:20:55,089 - llm - INFO - 🤖 Using model 'gemma3:4b' for LLM prompts
+2026-03-13 14:20:55,090 - llm - INFO -   📝 Running prompt 1/6: summarize_content
+2026-03-13 14:21:05,094 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:05,096 - llm - INFO -   📝 Running prompt 2/6: explain_model
+2026-03-13 14:21:09,089 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:21:15,100 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:15,102 - llm - INFO -   📝 Running prompt 3/6: identify_components
+2026-03-13 14:21:17,301 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:21:25,106 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:25,110 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
+2026-03-13 14:21:34,166 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:21:35,114 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:35,115 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
+2026-03-13 14:21:45,118 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:45,120 - llm - INFO -   📝 Running prompt 6/6: practical_applications
+2026-03-13 14:21:50,932 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:21:55,124 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:21:55,132 - llm - INFO - 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
+2026-03-13 14:21:55,132 - llm - INFO - ✅ LLM processing completed successfully
+2026-03-13 14:21:55,132 - llm.providers.ollama_provider - INFO - Ollama provider closed
+2026-03-13 14:21:55,133 - llm.providers.openai_provider - INFO - OpenAI provider connection closed
+2026-03-13 14:21:55,133 - llm.llm_processor - INFO - LLM Processor closed
+2026-03-13 14:22:07,811 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:22:24,609 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:22:24,623 - asyncio - DEBUG - Using selector: KqueueSelector
+2026-03-13 14:22:24,633 - llm - INFO - Processing LLM with enhanced Ollama integration
+2026-03-13 14:22:24,634 - llm - INFO - 🔍 Found Ollama at: /opt/homebrew/bin/ollama
+2026-03-13 14:22:24,763 - llm - INFO - ✅ Ollama is running and ready
+2026-03-13 14:22:24,764 - llm - INFO - 📦 Available Ollama models (4): nomic-embed-text:latest, smollm2:135m-instruct-q4_K_S, embeddinggemma:latest, gemma3:4b
+2026-03-13 14:22:24,772 - llm - INFO - 🎯 Using model from config.yaml: gemma3:4b
+2026-03-13 14:22:24,774 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-03-13 14:22:24,774 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:24,774 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-03-13 14:22:24,774 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:24,774 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-03-13 14:22:24,775 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:22:24 GMT'), (b'Content-Length', b'1414')])
+2026-03-13 14:22:24,775 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:22:24,775 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-03-13 14:22:24,775 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:22:24,775 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:22:24,775 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:22:24,776 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:22:24,776 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:22:24,782 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:22:24,782 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:22:24,782 - llm.providers.openrouter_provider - DEBUG - OpenRouter API key not provided - OpenRouter provider will not be available
+2026-03-13 14:22:24,782 - llm.llm_processor - DEBUG - Could not initialize openrouter provider (may not be configured)
+2026-03-13 14:22:24,782 - llm.providers.perplexity_provider - DEBUG - Perplexity API key not provided - Perplexity provider will not be available
+2026-03-13 14:22:24,782 - llm.llm_processor - DEBUG - Could not initialize perplexity provider (may not be configured)
+2026-03-13 14:22:24,782 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:22:24,782 - llm - INFO - LLM processor initialized with providers: ['ollama', 'openai']
+2026-03-13 14:22:24,782 - llm - INFO - 📄 File 1/1: test_active_inference.md (budget: 600s remaining)
+2026-03-13 14:22:24,783 - llm.llm_processor - DEBUG - No .env file found in llm directory
+2026-03-13 14:22:24,783 - llm.llm_processor - INFO - Initialized providers: ['openai']
+2026-03-13 14:22:24,783 - llm.llm_operations - INFO - Created new LLM processor
+2026-03-13 14:22:24,783 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'GET']>
+2026-03-13 14:22:24,784 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:24,784 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'GET']>
+2026-03-13 14:22:24,784 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:24,784 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'GET']>
+2026-03-13 14:22:24,785 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:22:24 GMT'), (b'Content-Length', b'1414')])
+2026-03-13 14:22:24,785 - httpx - INFO - HTTP Request: GET http://127.0.0.1:11434/api/tags "HTTP/1.1 200 OK"
+2026-03-13 14:22:24,785 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'GET']>
+2026-03-13 14:22:24,785 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:22:24,785 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:22:24,785 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:22:24,785 - llm.providers.ollama_provider - INFO - Ollama provider initialized (python client)
+2026-03-13 14:22:24,785 - llm.llm_processor - INFO - Initialized ollama provider
+2026-03-13 14:22:24,790 - llm.providers.openai_provider - INFO - OpenAI provider initialized successfully
+2026-03-13 14:22:24,790 - llm.llm_processor - INFO - Initialized openai provider
+2026-03-13 14:22:24,790 - llm.providers.openrouter_provider - DEBUG - OpenRouter API key not provided - OpenRouter provider will not be available
+2026-03-13 14:22:24,790 - llm.llm_processor - DEBUG - Could not initialize openrouter provider (may not be configured)
+2026-03-13 14:22:24,790 - llm.providers.perplexity_provider - DEBUG - Perplexity API key not provided - Perplexity provider will not be available
+2026-03-13 14:22:24,790 - llm.llm_processor - DEBUG - Could not initialize perplexity provider (may not be configured)
+2026-03-13 14:22:24,790 - llm.llm_processor - INFO - LLM Processor initialized with 2/4 providers
+2026-03-13 14:22:24,793 - openai._base_client - DEBUG - Request options: {'method': 'post', 'url': '/chat/completions', 'files': None, 'idempotency_key': 'stainless-python-retry-02f30bd9-585e-4b6c-98b9-04f6fe17311b', 'json_data': {'messages': [{'role': 'system', 'content': 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.'}, {'role': 'user', 'content': 'Provide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test Active Inference Model\n\n## Description\nA simple active inference model for testing LLM analysis.\n\n## State Blocks\n[A]: Observation space (3)\n[B]: State transition matrix (3x3x2)\n[C]: Preference distribution (3)\n[D]: Observation likelihood (3x3)\n\n## Connections\nA -> D: "observations"\nB -> A: "state to observation"\nC -> B: "preferences influence transitions"\n\n## Parameters\n- learning_rate: 0.01\n- precision: 1.0\n- temperature: 0.5\n\n## Inference Goals\nMinimize free energy while maintaining preferred states.\n'}], 'model': 'gpt-4o-mini', 'stream': False}}
+2026-03-13 14:22:24,793 - openai._base_client - DEBUG - Sending HTTP Request: POST https://api.openai.com/v1/chat/completions
+2026-03-13 14:22:24,794 - httpcore.connection - DEBUG - connect_tcp.started host='api.openai.com' port=443 local_address=None timeout=5.0 socket_options=None
+2026-03-13 14:22:24,876 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x146d82b70>
+2026-03-13 14:22:24,876 - httpcore.connection - DEBUG - start_tls.started ssl_context=<ssl.SSLContext object at 0x1413de250> server_hostname='api.openai.com' timeout=5.0
+2026-03-13 14:22:24,921 - httpcore.connection - DEBUG - start_tls.complete return_value=<httpcore._backends.anyio.AnyIOStream object at 0x146caf7a0>
+2026-03-13 14:22:24,921 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:24,922 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:24,922 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:22:24,922 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:24,922 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:36,812 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Fri, 13 Mar 2026 21:22:36 GMT'), (b'Content-Type', b'application/json'), (b'Transfer-Encoding', b'chunked'), (b'Connection', b'keep-alive'), (b'CF-Ray', b'9dbe180a0dcdf56e-SJC'), (b'CF-Cache-Status', b'DYNAMIC'), (b'Server', b'cloudflare'), (b'Strict-Transport-Security', b'max-age=31536000; includeSubDomains; preload'), (b'X-Content-Type-Options', b'nosniff'), (b'access-control-expose-headers', b'X-Request-ID'), (b'openai-organization', b'user-etx5q1mevfmlhuspvw99mfar'), (b'openai-processing-ms', b'11101'), (b'openai-project', b'proj_n0WXpGNAztsJgWaurhyqBbUz'), (b'openai-version', b'2020-10-01'), (b'x-openai-proxy-wasm', b'v0.1'), (b'x-ratelimit-limit-requests', b'5000'), (b'x-ratelimit-limit-tokens', b'4000000'), (b'x-ratelimit-remaining-requests', b'4999'), (b'x-ratelimit-remaining-tokens', b'3999723'), (b'x-ratelimit-reset-requests', b'12ms'), (b'x-ratelimit-reset-tokens', b'4ms'), (b'x-request-id', b'req_2f41f609cdc647bc8116ab49cb38a9b5'), (b'set-cookie', b'__cf_bm=Qt65bo3WYzfwWe5KZHkhOSv7897maK5K8b21eeWAMU0-1773436944.970569-1.0.1.1-Ykj9XpjJKClgizYuzFn3ZnjdBWNApmRt4lx3sCTKSVTsBDRWNUjfZaPvvZLgX8vPHFXPnfsMUWIQeKoqrDLsL01RBay4jMGyRbi7Br.yXSjuRT717HY9eVdYwfXMNads; HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 13 Mar 2026 21:52:36 GMT'), (b'Content-Encoding', b'br'), (b'alt-svc', b'h3=":443"; ma=86400')])
+2026-03-13 14:22:36,818 - httpx - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2026-03-13 14:22:36,819 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:22:36,821 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:22:36,821 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:22:36,822 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:22:36,822 - openai._base_client - DEBUG - HTTP Response: POST https://api.openai.com/v1/chat/completions "200 OK" Headers({'date': 'Fri, 13 Mar 2026 21:22:36 GMT', 'content-type': 'application/json', 'transfer-encoding': 'chunked', 'connection': 'keep-alive', 'cf-ray': '9dbe180a0dcdf56e-SJC', 'cf-cache-status': 'DYNAMIC', 'server': 'cloudflare', 'strict-transport-security': 'max-age=31536000; includeSubDomains; preload', 'x-content-type-options': 'nosniff', 'access-control-expose-headers': 'X-Request-ID', 'openai-organization': 'user-etx5q1mevfmlhuspvw99mfar', 'openai-processing-ms': '11101', 'openai-project': 'proj_n0WXpGNAztsJgWaurhyqBbUz', 'openai-version': '2020-10-01', 'x-openai-proxy-wasm': 'v0.1', 'x-ratelimit-limit-requests': '5000', 'x-ratelimit-limit-tokens': '4000000', 'x-ratelimit-remaining-requests': '4999', 'x-ratelimit-remaining-tokens': '3999723', 'x-ratelimit-reset-requests': '12ms', 'x-ratelimit-reset-tokens': '4ms', 'x-request-id': 'req_2f41f609cdc647bc8116ab49cb38a9b5', 'set-cookie': '__cf_bm=Qt65bo3WYzfwWe5KZHkhOSv7897maK5K8b21eeWAMU0-1773436944.970569-1.0.1.1-Ykj9XpjJKClgizYuzFn3ZnjdBWNApmRt4lx3sCTKSVTsBDRWNUjfZaPvvZLgX8vPHFXPnfsMUWIQeKoqrDLsL01RBay4jMGyRbi7Br.yXSjuRT717HY9eVdYwfXMNads; HttpOnly; Secure; Path=/; Domain=api.openai.com; Expires=Fri, 13 Mar 2026 21:52:36 GMT', 'content-encoding': 'br', 'alt-svc': 'h3=":443"; ma=86400'})
+2026-03-13 14:22:36,824 - openai._base_client - DEBUG - request_id: req_2f41f609cdc647bc8116ab49cb38a9b5
+2026-03-13 14:22:36,829 - llm - INFO - 🤖 Using model 'gemma3:4b' for LLM prompts
+2026-03-13 14:22:36,830 - llm - INFO -   📝 Running prompt 1/6: summarize_content
+2026-03-13 14:22:36,830 - llm.cache - DEBUG - Cache MISS: 69c577ccdecc…
+2026-03-13 14:22:36,833 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:22:36,833 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:22:36,833 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:22:36,834 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x146e18c20>
+2026-03-13 14:22:36,834 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:36,836 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:36,836 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:22:36,836 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:36,836 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:46,834 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:22:46,836 - llm - INFO -   📝 Running prompt 2/6: explain_model
+2026-03-13 14:22:46,837 - llm.cache - DEBUG - Cache MISS: 4f3142b6d991…
+2026-03-13 14:22:46,840 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:22:46,841 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:22:46,841 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:22:46,843 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x146caf7a0>
+2026-03-13 14:22:46,843 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:46,843 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:46,843 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:22:46,843 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:46,843 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:49,652 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:22:49 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:22:49,652 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:22:49,652 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:22:49,653 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:22:49,653 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:22:49,653 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:22:56,839 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:22:56,841 - llm - INFO -   📝 Running prompt 3/6: identify_components
+2026-03-13 14:22:56,841 - llm.cache - DEBUG - Cache MISS: b10d04275f4c…
+2026-03-13 14:22:56,843 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:22:56,844 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:22:56,844 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:22:56,844 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x146e18ec0>
+2026-03-13 14:22:56,844 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:56,845 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:22:56,845 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:22:56,845 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:22:56,845 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:22:57,983 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:22:57 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:22:57,983 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:22:57,983 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:22:57,983 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:22:57,983 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:22:57,983 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:23:06,852 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:23:06,855 - llm - INFO -   📝 Running prompt 4/6: analyze_structure
+2026-03-13 14:23:06,856 - llm.cache - DEBUG - Cache MISS: 9d7886f5276d…
+2026-03-13 14:23:06,859 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:23:06,859 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:23:06,859 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:23:06,859 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x146e1a000>
+2026-03-13 14:23:06,860 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:06,860 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:23:06,860 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:23:06,860 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:23:06,860 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:14,631 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:23:14 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:23:14,635 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:23:14,636 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:23:14,637 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:23:14,637 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:23:14,637 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:23:16,858 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:23:16,859 - llm - INFO -   📝 Running prompt 5/6: extract_parameters
+2026-03-13 14:23:16,859 - llm.cache - DEBUG - Cache MISS: 4ec44d769d57…
+2026-03-13 14:23:16,861 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:16,861 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:23:16,862 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:23:16,862 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:23:16,862 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:26,867 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:23:26,872 - llm - INFO -   📝 Running prompt 6/6: practical_applications
+2026-03-13 14:23:26,874 - llm.cache - DEBUG - Cache MISS: a33e3944dd4a…
+2026-03-13 14:23:26,877 - httpcore.connection - DEBUG - connect_tcp.started host='127.0.0.1' port=11434 local_address=None timeout=None socket_options=None
+2026-03-13 14:23:26,878 - httpcore.connection - DEBUG - connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x146d82a50>
+2026-03-13 14:23:26,879 - httpcore.http11 - DEBUG - send_request_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:26,880 - httpcore.http11 - DEBUG - send_request_headers.complete
+2026-03-13 14:23:26,880 - httpcore.http11 - DEBUG - send_request_body.started request=<Request [b'POST']>
+2026-03-13 14:23:26,880 - httpcore.http11 - DEBUG - send_request_body.complete
+2026-03-13 14:23:26,880 - httpcore.http11 - DEBUG - receive_response_headers.started request=<Request [b'POST']>
+2026-03-13 14:23:30,965 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:23:30 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:23:30,966 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:23:30,967 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:23:30,967 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:23:30,967 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:23:30,968 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:23:36,877 - llm - ERROR -   ❌ Prompt execution timed out after 10 seconds
+2026-03-13 14:23:36,880 - llm - INFO - 📦 Cache: 0 hits, 6 misses, 0 new entries (0.0% hit ratio)
+2026-03-13 14:23:36,880 - llm - INFO - ✅ LLM processing completed successfully
+2026-03-13 14:23:36,880 - llm.providers.ollama_provider - INFO - Ollama provider closed
+2026-03-13 14:23:36,881 - llm.providers.openai_provider - INFO - OpenAI provider connection closed
+2026-03-13 14:23:36,881 - llm.llm_processor - INFO - LLM Processor closed
+2026-03-13 14:23:47,157 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:23:47 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:23:47,157 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:23:47,157 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:23:47,158 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:23:47,158 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:23:47,158 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:23:47,158 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:23:47,158 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:24:03,330 - httpcore.http11 - DEBUG - receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Content-Type', b'application/json; charset=utf-8'), (b'Date', b'Fri, 13 Mar 2026 21:24:03 GMT'), (b'Transfer-Encoding', b'chunked')])
+2026-03-13 14:24:03,332 - httpx - INFO - HTTP Request: POST http://127.0.0.1:11434/api/chat "HTTP/1.1 200 OK"
+2026-03-13 14:24:03,332 - httpcore.http11 - DEBUG - receive_response_body.started request=<Request [b'POST']>
+2026-03-13 14:24:03,332 - httpcore.http11 - DEBUG - receive_response_body.complete
+2026-03-13 14:24:03,333 - httpcore.http11 - DEBUG - response_closed.started
+2026-03-13 14:24:03,333 - httpcore.http11 - DEBUG - response_closed.complete
+2026-03-13 14:24:03,333 - httpcore.connection - DEBUG - close.started
+2026-03-13 14:24:03,333 - httpcore.connection - DEBUG - close.complete
+2026-03-13 14:24:03,360 - llm - INFO - Processing LLM with enhanced Ollama integration
+2026-03-13 14:24:03,469 - llm - WARNING - No GNN files found for LLM processing
+2026-03-13 14:24:03,470 - llm - ERROR - ❌ LLM processing failed

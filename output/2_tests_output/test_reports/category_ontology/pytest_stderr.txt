@@ -1,0 +1,10 @@
+DEBUG:2026-03-13 14:24:24,097:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:24:24,097 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:24:24,422 - ontology - INFO - Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-13 14:24:24,422 - ontology - INFO - Validated 0 annotations: 0 valid, 0 invalid
+2026-03-13 14:24:24,423 - ontology - INFO - Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-13 14:24:24,423 - ontology - INFO - Validated 0 annotations: 0 valid, 0 invalid
+2026-03-13 14:24:24,425 - ontology - INFO - Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-13 14:24:24,425 - ontology - INFO - Validated 0 annotations: 0 valid, 0 invalid
+2026-03-13 14:24:24,427 - ontology - INFO - Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-13 14:24:24,427 - ontology - INFO - Validated 0 annotations: 0 valid, 0 invalid

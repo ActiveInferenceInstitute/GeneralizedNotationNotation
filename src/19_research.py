@@ -42,11 +42,11 @@ try:
     from research import process_research
 except ImportError:
     def process_research(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback research processing when module unavailable."""
+        """Recovery research processing when module unavailable."""
         import logging
         if logger is None:
             logger = logging.getLogger(__name__)
-        logger.warning("Research module not available - using fallback")
+        logger.warning("Research module not available - using recovery")
         return True
 
 run_script = create_standardized_pipeline_script(

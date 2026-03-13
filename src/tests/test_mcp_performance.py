@@ -20,7 +20,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 try:
     from mcp import MCPSDKNotFoundError
 except ImportError:
-    MCPSDKNotFoundError = Exception  # Fallback
+    MCPSDKNotFoundError = Exception  # Recovery
 
 
 def _safe_initialize():

@@ -17,27 +17,25 @@ except ImportError:
 
 # Standard import pattern for all pipeline modules
 try:
-    from utils import (
-        setup_step_logging,
+    from utils.structured_logging import (
         log_step_start,
         log_step_success,
         log_step_warning,
         log_step_error,
+    )
+    from utils.pipeline import (
+        setup_step_logging,
         validate_output_directory,
         get_pipeline_utilities,
-        UTILS_AVAILABLE
     )
+    UTILS_AVAILABLE = True
 
     # Enhanced imports for more complex modules
-    from utils import (
-        ArgumentParser,
-        PipelineArguments,
-        PerformanceTracker,
-        performance_tracker
-    )
+    from utils.argument_utils import ArgumentParser, PipelineArguments
+    from utils.performance_tracker import PerformanceTracker, performance_tracker
 
 except ImportError:
-    # Fallback: use step_logging (always importable, no external deps)
+    # Recovery: use step_logging (always importable, no external deps)
     from utils.logging.logging_utils import (
         setup_step_logging,
         log_step_warning,
@@ -54,7 +52,7 @@ except ImportError:
     UTILS_AVAILABLE = False
 
 def _create_fallback_parser(description: str, additional_arguments: Optional[Dict[str, Any]] = None) -> argparse.ArgumentParser:
-    """Create a fallback argument parser with standard arguments."""
+    """Create a recovery argument parser with standard arguments."""
     parser = argparse.ArgumentParser(description=description)
 
     # Standard arguments - use None for defaults that get set by pipeline template
@@ -291,7 +289,7 @@ def create_standardized_pipeline_script(
     Args:
         step_name: Name of the step (e.g., "1_gnn", "5_export")
         module_function: The main function to call for processing
-        fallback_parser_description: Description for fallback argument parser
+        fallback_parser_description: Description for recovery argument parser
         additional_arguments: Additional arguments to add to the parser
         step_specific_imports: Additional imports needed for the step
         
@@ -315,7 +313,7 @@ def create_standardized_pipeline_script(
                 from utils import ArgumentParser
                 parsed_args = ArgumentParser.parse_step_arguments(step_name)
             except Exception as e:
-                # Create fallback parser with step-specific arguments
+                # Create recovery parser with step-specific arguments
                 fallback_additional_args = additional_arguments or {}
 
                 # Add step-specific arguments from pipeline template configuration
@@ -326,7 +324,7 @@ def create_standardized_pipeline_script(
                         "flag": "--ontology-terms-file"
                     }
 
-                logging.warning(f"Enhanced parser failed for {step_name}, using fallback: {e}")
+                logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
                 parsed_args = _create_fallback_parser(fallback_parser_description, fallback_additional_args).parse_args()
 
             # Set up logging

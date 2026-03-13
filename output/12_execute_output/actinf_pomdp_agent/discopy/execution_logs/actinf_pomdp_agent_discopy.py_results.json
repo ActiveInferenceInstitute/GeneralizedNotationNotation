@@ -1,0 +1,26 @@
+{
+  "framework": "discopy",
+  "model_name": "actinf_pomdp_agent",
+  "script_name": "actinf_pomdp_agent_discopy.py",
+  "script_path": "output/11_render_output/actinf_pomdp_agent/discopy/actinf_pomdp_agent_discopy.py",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 0.007571,
+  "timestamp": "2026-03-13T13:58:10.126832",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/actinf_pomdp_agent/discopy')"
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 0,
+    "stderr_length": 100,
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/discopy"
+  }
+}

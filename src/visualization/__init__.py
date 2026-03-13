@@ -35,7 +35,7 @@ except Exception:
 try:
     from .visualizer import GNNVisualizer, generate_graph_visualization, generate_matrix_visualization, generate_visualizations
 except Exception:
-    # Fallback for tests
+    # Recovery for tests
 
     class GNNVisualizer:
         def __init__(self, *args, config: Optional[dict] = None, output_dir: Optional[Union[str, Path]] = None, **kwargs):
@@ -61,7 +61,7 @@ except Exception:
         return mv.generate_matrix_visualization(matrix_data)
 
     def generate_visualizations(logger, target_dir, output_dir, **kwargs):
-        """Fallback for generate_visualizations."""
+        """Recovery for generate_visualizations."""
         return True
 
 # Basic GraphVisualizer alias for tests

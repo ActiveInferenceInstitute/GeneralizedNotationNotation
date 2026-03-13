@@ -217,7 +217,7 @@ def load_defined_ontology_terms() -> Dict[str, Any]:
                 # New format: {"TermName": {"description": "...", "uri": "..."}}
                 # Old format: {"terms": {...}} or {"category": ["term1", "term2"]}
                 if "terms" in data:
-                    # Legacy format with "terms" wrapper
+                    # Previous format with "terms" wrapper
                     return data["terms"]
                 elif isinstance(data, dict) and data:
                     # Check if it's the ActInf format (term -> {description, uri})

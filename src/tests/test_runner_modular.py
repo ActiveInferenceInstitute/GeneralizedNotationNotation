@@ -91,8 +91,8 @@ class ModularTestRunner:
         return category not in ["performance", "specialized", "integration"]
 
     def _run_fallback_tests(self, category: str, test_files: List[str], python_executable: str, start_time: float) -> Dict[str, Any]:
-        """Fallback test execution when pytest fails with internal errors."""
-        self.logger.info(f"Running fallback test execution for category '{category}'")
+        """Recovery test execution when pytest fails with internal errors."""
+        self.logger.info(f"Running recovery test execution for category '{category}'")
 
         total_tests = 0
         passed_tests = 0
@@ -135,7 +135,7 @@ class ModularTestRunner:
             "tests_failed": failed_tests,
             "tests_skipped": 0,
             "duration": duration,
-            "stdout": f"Fallback execution: {passed_tests}/{total_tests} files passed syntax check",
+            "stdout": f"Recovery execution: {passed_tests}/{total_tests} files passed syntax check",
             "stderr": "",
             "returncode": 1 if failed_tests > 0 else 0,
             "resource_usage": {"memory_mb": 0, "cpu_percent": 0, "threads": 0}
@@ -316,6 +316,7 @@ class ModularTestRunner:
         cmd.extend(test_files)
 
         if (config.get("parallel", True)
+            and getattr(self.args, 'parallel', True)
             and not (hasattr(self.args, 'fast_only') and self.args.fast_only)
             and category != "pipeline"
             and has_xdist):
@@ -476,7 +477,7 @@ class ModularTestRunner:
                 stderr_text = "\n".join(collected_stderr)
 
                 if process.returncode == 3 and ("INTERNALERROR" in stdout_text or "INTERNALERROR" in stderr_text):
-                    self.logger.warning(f"Pytest internal error detected for category '{category}', attempting fallback...")
+                    self.logger.warning(f"Pytest internal error detected for category '{category}', attempting recovery...")
                     return self._run_fallback_tests(category, test_files, python_executable, category_start_time)
 
                 test_stats = self._parse_pytest_output(stdout_text, stderr_text)

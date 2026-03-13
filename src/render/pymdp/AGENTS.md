@@ -126,8 +126,8 @@ success, message, files = render_gnn_to_pymdp(
 - `pathlib` - Path manipulation
 
 ### Optional Dependencies
-- `matplotlib` - Visualization support (fallback: no plotting)
-- `scipy` - Advanced mathematical functions (fallback: numpy-only)
+- `matplotlib` - Visualization support (recovery: no plotting)
+- `scipy` - Advanced mathematical functions (recovery: numpy-only)
 
 ### Internal Dependencies
 - `render.renderer` - Base rendering functionality
@@ -342,7 +342,7 @@ for trial in range(num_trials):
 
 ### Recovery Strategies
 - **Model Validation**: Comprehensive pre-generation validation
-- **Fallback Templates**: Use simpler templates for complex models
+- **Recovery Templates**: Use simpler templates for complex models
 - **Error Reporting**: Detailed error messages with suggestions
 
 ### Error Examples
@@ -351,7 +351,7 @@ try:
     pymdp_code = generate_pymdp_code(model_data)
 except PyMDPGenerationError as e:
     logger.error(f"PyMDP generation failed: {e}")
-    # Fallback to basic template
+    # Recovery to basic template
     pymdp_code = generate_basic_pymdp_template(model_data)
 ```
 

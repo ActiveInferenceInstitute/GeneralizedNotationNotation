@@ -341,7 +341,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <aside class="sidebar">
     <div class="sidebar-logo">
       <h2>GNN Pipeline</h2>
-      <p>Generated 2026-03-06 15:11</p>
+      <p>Generated 2026-03-13 14:24</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-section">
@@ -362,22 +362,24 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     
 <div class="page-header">
   <h1>📋 Reports</h1>
-  <p class="subtitle">69 report artifacts collected from pipeline output</p>
+  <p class="subtitle">72 report artifacts collected from pipeline output</p>
 </div>
 <div class="section">
 <details>
-  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 97857 bytes</span></summary>
+  <summary>pipeline_execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 109811 bytes</span></summary>
   <div class="details-body"><pre>{
-    "start_time": "2026-03-06T14:27:49.615333",
+    "run_hash": "fcbcc769ba11",
+    "start_time": "2026-03-13T13:56:08.700750",
     "arguments": {
         "target_dir": "input/gnn_files",
         "output_dir": "output",
         "recursive": true,
-        "verbose": false,
+        "verbose": true,
+        "log_format": "human",
         "enable_round_trip": true,
         "enable_cross_format": true,
         "skip_steps": [],
-        "only_steps": [],
+        "only_steps": "3,5,7,8,12,15",
         "strict": false,
         "estimate_resources": false,
         "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
@@ -404,20 +406,73 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "steps": [
         {
             "status": "SUCCESS",
-            "stdout": "2026-03-06 14:27:50,047 - 0_template.py - INFO - Processing files from: input/gnn_files\n2026-03-06 14:27:50,047 - 0_template.py - INFO - Output directory: output/0_template_output\n2026-03-06 14:27:50,047 - 0_template.py - INFO - Recursive processing: True\n2026-03-06 14:27:50,048 - 0_template.py </pre></div>
+            "stdout": "\n--- Output for basics ---\n2026-03-13 13:56:08,977 - 3_gnn.py - INFO - \ud83d\ude80 Starting step: Processing GNN files with full multi-format generation\n2026-03-13 13:56:08,989 - 3_gnn.py - INFO - Initialized GNN parsing</pre></div>
 </details>
 <details>
-  <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 483 bytes</span></summary>
+  <summary>index.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">00_pipeline_summary · 3114 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:11:56.114559",
+  "ea255143fbf6": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files/basics",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": false,
+        "log_format": "human",
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "0,3",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+      },
+      "pipeline": {
+        "enabled": true,
+        "steps": [],
+        "skip_steps": [
+          13
+        ],
+        "force_steps": [],
+        "parallel": {
+          "enabled": false,
+          "max_workers": 4
+        },
+        "timeout": {
+          "step": 36</pre></div>
+</details>
+<details>
+  <summary>template_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">0_template_output · 379 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "timestamp": "2026-03-13T11:28:21.188273",
   "step_name": "template",
-  "input_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output",
-  "total_files": 19,
-  "successful_files": 19,
+  "input_directory": "input/gnn_files/basics",
+  "output_directory": "output/0_template_output",
+  "total_files": 2,
+  "successful_files": 2,
   "failed_files": 0,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   },
@@ -429,7 +484,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
   "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/simple_mdp/simple_mdp_processed.md",
-  "timestamp": "2026-03-06T15:11:56.108434",
+  "timestamp": "2026-03-13T11:27:59.214208",
   "file_size_bytes": 3311,
   "file_size_lines": 154,
   "processing_options": {
@@ -444,7 +499,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
   "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/two_state_bistable/two_state_bistable_processed.md",
-  "timestamp": "2026-03-06T15:11:56.110849",
+  "timestamp": "2026-03-13T11:27:59.215215",
   "file_size_bytes": 2742,
   "file_size_lines": 160,
   "processing_options": {
@@ -459,7 +514,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/structured/factor_graph_model.md",
   "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/factor_graph_model/factor_graph_model_processed.md",
-  "timestamp": "2026-03-06T15:11:56.112754",
+  "timestamp": "2026-03-13T11:27:59.215921",
   "file_size_bytes": 4380,
   "file_size_lines": 175,
   "processing_options": {
@@ -474,7 +529,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   <div class="details-body"><pre>{
   "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/multiagent/multi_agent_coordination.md",
   "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/multi_agent_coordination/multi_agent_coordination_processed.md",
-  "timestamp": "2026-03-06T15:11:56.108110",
+  "timestamp": "2026-03-13T11:27:59.214000",
   "file_size_bytes": 4225,
   "file_size_lines": 184,
   "processing_options": {
@@ -485,9 +540,9 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>deep_planning_horizon_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5294 bytes</span></summary>
+  <summary>deep_planning_horizon_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 5349 bytes</span></summary>
   <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+  "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
   "file_name": "deep_planning_horizon.md",
   "ontology_data": {
     "concepts": [],
@@ -536,14 +591,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "comment": null
       },
       "B": {
-        "annotation": "B=TransitionMatrix",
-        "term_name": "TransitionMatrix",
- </pre></div>
+        "annotation": "B=Transi</pre></div>
 </details>
 <details>
-  <summary>hmm_baseline_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 3159 bytes</span></summary>
+  <summary>hmm_baseline_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 3214 bytes</span></summary>
   <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+  "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md",
   "file_name": "hmm_baseline.md",
   "ontology_data": {
     "concepts": [],
@@ -591,14 +644,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "annotation": "s=HiddenState",
         "term_name": "HiddenState",
         "description": "A state of the environment or agent that is not directly observable.",
-        "uri": "obo:ACTO_000001",
-        "key": "s",
- </pre></div>
+</pre></div>
 </details>
 <details>
-  <summary>actinf_pomdp_agent_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 6003 bytes</span></summary>
+  <summary>actinf_pomdp_agent_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 6058 bytes</span></summary>
   <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+  "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
   "file_name": "actinf_pomdp_agent.md",
   "ontology_data": {
     "concepts": [],
@@ -644,33 +695,30 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "description": "A probabilistic mapping from hidden states to observations (e.g., 'A' matrix in some formulations, or sensorimotor contingencies).",
         "uri": "obo:TEMP_000061",
         "key": "A",
-        "value": "LikelihoodMatrix",
-        "comment": null
-      },
-   </pre></div>
+        "value": "</pre></div>
 </details>
 <details>
-  <summary>ontology_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 644 bytes</span></summary>
+  <summary>ontology_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 1084 bytes</span></summary>
   <div class="details-body"><pre>{
   "processed_files": 8,
   "reports": [
-    "output/10_ontology_output/simple_mdp_ontology_report.json",
-    "output/10_ontology_output/multi_armed_bandit_ontology_report.json",
-    "output/10_ontology_output/deep_planning_horizon_ontology_report.json",
-    "output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
-    "output/10_ontology_output/hmm_baseline_ontology_report.json",
-    "output/10_ontology_output/two_state_bistable_ontology_report.json",
-    "output/10_ontology_output/markov_chain_ontology_report.json",
-    "output/10_ontology_output/tmaze_epistemic_ontology_report.json"
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/simple_mdp_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/multi_armed_bandit_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/deep_planning_horizon_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/actinf_pomdp_agent_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/hmm_baseline_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/two_state_bistable_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/markov_chain_ontology_report.json",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/10_ontology_output/tmaze_epistemic_ontology_report.json"
   ],
   "success": true,
   "errors": []
 }</pre></div>
 </details>
 <details>
-  <summary>markov_chain_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 2624 bytes</span></summary>
+  <summary>markov_chain_ontology_report.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">10_ontology_output · 2679 bytes</span></summary>
   <div class="details-body"><pre>{
-  "file_path": "input/gnn_files/discrete/markov_chain.md",
+  "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md",
   "file_name": "markov_chain.md",
   "ontology_data": {
     "concepts": [],
@@ -719,13 +767,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       },
       "s_prime": {
         "annotation": "s_prime=NextHiddenState",
-        "term_name": "NextHiddenState",
-        "descripti</pre></div>
+   </pre></div>
 </details>
 <details>
-  <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 37656 bytes</span></summary>
+  <summary>render_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 47336 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:54.961982",
+  "timestamp": "2026-03-13T14:15:10.201381",
   "processing_type": "POMDP-aware rendering",
   "total_files": 8,
   "successful_files": 8,
@@ -740,16 +787,16 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "pomdp_processing_available": true
   },
   "file_results": {
-    "input/gnn_files/discrete/simple_mdp.md": {
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md": {
       "overall_success": true,
       "framework_results": {
         "pymdp": {
           "success": true,
-          "message": "Generated PyMDP simulation script: output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
+          "message": "Generated PyMDP simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py",
           "output_files": [
-            "output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py"
+            "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp/Simple MDP Agent_pymdp.py"
           ],
-          "output_directory": "output/11_render_output/simple_mdp/pymdp",
+          "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/pymdp",
           "warnings": [],
           "code_metrics": {
             "lines_of_code": 449,
@@ -760,18 +807,13 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         },
         "rxinfer": {
           "success": true,
-          "message": "Generated RxInfer.jl simulation script: output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
-          "output_files": [
-            "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl"
-          ],
-          "output_directory": "output/11_render_output/simple_mdp/rxinfer",
-          "w</pre></div>
+          "message": "Generated RxInfer.jl simulation script: /Users/4d/Documents/GitHub/generalizednotationnotation/output/11_re</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 551 bytes</span></summary>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 606 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:54.837749",
-  "source_file": "input/gnn_files/discrete/simple_mdp.md",
+  "timestamp": "2026-03-13T14:15:10.163439",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
   "model_name": "Simple MDP Agent",
   "pomdp_dimensions": {
     "num_states": 4,
@@ -800,10 +842,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 567 bytes</span></summary>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 622 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:54.947471",
-  "source_file": "input/gnn_files/discrete/two_state_bistable.md",
+  "timestamp": "2026-03-13T14:15:10.187974",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
   "model_name": "Two State Bistable POMDP",
   "pomdp_dimensions": {
     "num_states": 2,
@@ -832,10 +874,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 571 bytes</span></summary>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 626 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:54.955470",
-  "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
+  "timestamp": "2026-03-13T14:15:10.196876",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
   "model_name": "T-Maze Epistemic Foraging Agent",
   "pomdp_dimensions": {
     "num_states": 4,
@@ -864,10 +906,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 567 bytes</span></summary>
+  <summary>processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">11_render_output · 622 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:54.885117",
-  "source_file": "input/gnn_files/discrete/multi_armed_bandit.md",
+  "timestamp": "2026-03-13T14:15:10.168718",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
   "model_name": "Multi Armed Bandit Agent",
   "pomdp_dimensions": {
     "num_states": 3,
@@ -896,11 +938,11 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 323514 bytes</span></summary>
+  <summary>execution_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 352085 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:57.877220",
-  "target_directory": "input/gnn_files/discrete",
-  "output_directory": "output/12_execute_output",
+  "timestamp": "2026-03-13T14:15:11.821971",
+  "target_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output",
   "total_scripts_found": 56,
   "successful_executions": 56,
   "failed_executions": 0,
@@ -914,10 +956,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
       "success": true,
       "return_code": 0,
-      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.795s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+      "stdout": "NumPyro POMDP simulation complete: 15 timesteps in 0.683s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
       "stderr": "",
-      "execution_time": 1.336997,
-      "timestamp": "2026-03-06T15:00:57.903025",
+      "execution_time": 1.077427,
+      "timestamp": "2026-03-13T14:15:11.842989",
       "simulation_data": {
         "traces": [],
         "free_energy": [],
@@ -925,13 +967,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "observations": [],
         "actions": [],
         "policy": [],
-        "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.795s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
-        "raw_error": ""
-      },
-      "structured_result_file": "output/12_execute_output/simple_mdp/numpyr</pre></div>
+        "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.683s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n"</pre></div>
 </details>
 <details>
-  <summary>Simple MDP Agent_rxinfer.jl_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 2932 bytes</span></summary>
+  <summary>Simple MDP Agent_rxinfer.jl_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 3042 bytes</span></summary>
   <div class="details-body"><pre>{
   "framework": "rxinfer",
   "model_name": "simple_mdp",
@@ -939,8 +978,8 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   "script_path": "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 32.319766,
-  "timestamp": "2026-03-06T15:01:50.611786",
+  "execution_time": 18.760573,
+  "timestamp": "2026-03-13T14:15:47.040677",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -949,6 +988,35 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "actions": [],
     "policy": [],
     "raw_output": "\ud83d\udce6 Ensuring required packages are installed...\nA matrix size: (4, 4)\nB matrix size: (4, 4, 4)\nC vector (preferences): [0.0, 0.0, 0.0, 3.0]\nC preferred (softmax): [0.04331716447953073, 0.04331716447953073, 0.04331716447953073, 0.8700485065614079]\nD vector size: (4,)\n\n\ud83e\udde0 Running Active Inference simulation with EFE-based action selection...\n  Step 1: obs=3, action=2, belief_max=1.0, EFE=[2.514, 0.114, 2.814, 2.814]\n  Step 2: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 3: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 4: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 5: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 6: obs=3, action=2, belief_max=1.0, EFE=[2.514, 0.114, 2.814, 2.814]\n  Step 7: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 8: obs=4, action=1, belief_max=1.0, EFE=[0.114, 2.514, 2.814, 2.814]\n  Step 9: obs=4, action=1, belief_max=1.0</pre></div>
+</details>
+<details>
+  <summary>simple_mdp_rxinfer.jl_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 758 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "framework": "rxinfer",
+  "model_name": "simple_mdp",
+  "script_name": "simple_mdp_rxinfer.jl",
+  "script_path": "output/11_render_output/simple_mdp/rxinfer/simple_mdp_rxinfer.jl",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 1.180021,
+  "timestamp": "2026-03-13T13:58:11.544764",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/simple_mdp/rxinfer')"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 92,
+    "output_directory": "output/12_execute_output/simple_mdp/rxinfer"
+  }
+}</pre></div>
 </details>
 <details>
   <summary>simulation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 8369 bytes</span></summary>
@@ -1083,43 +1151,6 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
    </pre></div>
 </details>
 <details>
-  <summary>Simple MDP Agent_numpyro.py_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">12_execute_output · 1180 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "framework": "numpyro",
-  "model_name": "simple_mdp",
-  "script_name": "Simple MDP Agent_numpyro.py",
-  "script_path": "output/11_render_output/simple_mdp/numpyro/Simple MDP Agent_numpyro.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 1.336997,
-  "timestamp": "2026-03-06T15:00:57.903025",
-  "simulation_data": {
-    "traces": [],
-    "free_energy": [],
-    "states": [],
-    "observations": [],
-    "actions": [],
-    "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.795s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
-    "raw_error": ""
-  },
-  "execution_metadata": {
-    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 212,
-    "stderr_length": 0,
-    "output_directory": "output/12_execute_output/simple_mdp/numpyro"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "output/12_execute_output/simple_mdp/numpyro/simulation_data/numpyro_simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
-  }
-}</pre></div>
-</details>
-<details>
   <summary>llm_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 284864 bytes</span></summary>
   <div class="details-body"><pre>{
   "timestamp": "2026-03-06T14:42:34.654281",
@@ -1191,155 +1222,101 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
           "line":</pre></div>
 </details>
 <details>
-  <summary>d2fbb76c1ceaa3cf4dcc286e0bea405c8aaf5220c9bef90c32d5a420d71daae8.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2668 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "key": "d2fbb76c1ceaa3cf4dcc286e0bea405c8aaf5220c9bef90c32d5a420d71daae8",
-  "model": "gemma3:4b",
-  "timestamp": "2026-03-06T14:45:51.078526",
-  "content_length": 2453,
-  "prompt_length": 3575,
-  "response": "Okay, let\u2019s meticulously extract and organize the parameters from the provided GNN specification for the \u201cDynamic Perception Model.\u201d This breakdown will adhere to your requested structure, focusing on the Active Inference concepts and mathematical relationships.\n\n**1. Model Matrices:**\n\n*   **A matrices:**\n    *   Dimensions: [2, 2]\n    *   Structure: A 2x2 matrix representing the recognition mapping: P(observation | hidden state).  Each element (i, j) represents the probability of observing a particular observation (j) given that the hidden state is in state i.\n    *   Interpretation: This is the core of the perceptual model, quantifying how well the agent\u2019s current hidden state explains the received observation.\n*   **B matrices:**\n    *   Dimensions: [2, 2]\n    *   Structure: A 2x2 matrix representing the transition dynamics: P(s&lt;sub&gt;t+1&lt;/sub&gt; | s&lt;sub&gt;t&lt;/sub&gt;).  This governs how the hidden state evolves from one time step to the next.\n    *   Interpretation:  This matrix defines the inherent persistence or change in the hidden state.  The values (i, j) represent the probability of transitioning from state i to state j. Note that the specification explicitly states \u201cno action dependence,\u201d so B represents purely intrinsic dy</pre></div>
-</details>
-<details>
-  <summary>da078922abf2555b5b49795e9dac60938c4d5ed4a09156aacedab1934d7f2cd1.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2622 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "key": "da078922abf2555b5b49795e9dac60938c4d5ed4a09156aacedab1934d7f2cd1",
-  "model": "gemma3:4b",
-  "timestamp": "2026-03-06T14:47:20.149093",
-  "content_length": 5938,
-  "prompt_length": 6850,
-  "response": "Okay, let's analyze this GNN specification for the \u201cThree-Level Temporal Hierarchy Agent.\u201d This model represents a sophisticated attempt to model hierarchical decision-making, drawing heavily on Active Inference principles and incorporating a multi-scale temporal structure.\n\n**1. Model Purpose:**\n\nThis model aims to represent a system where an agent operates at multiple levels of abstraction, coordinating actions across different timescales. Specifically, it\u2019s designed to capture scenarios where an agent needs to react immediately (sensorimotor control), plan tactically (short-term goals), and manage long-term strategic objectives.  It\u2019s a plausible representation of systems like a robot navigating an environment, a predator hunting prey, or even a human responding to a complex situation \u2013 where rapid reflexes, strategic planning, and long-term goals all interact.  The hierarchical structure is intended to mimic how humans and animals often organize their cognitive processes.\n\n**2. Core Components:**\n\n*   **Hidden States (s_f0, s_f1, s_f2):** These are the core of the Active Inference framework.\n    *   `s_f0` (Fast Hidden State): Represents the agent\u2019s immediate sensory-motor state \u2013 its belief about the state of the envi</pre></div>
-</details>
-<details>
-  <summary>6208dc0f5fe622e2e5a00ce2bc3df9bf64ce0951f21cb3362192b783ec414dd5.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2612 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "key": "6208dc0f5fe622e2e5a00ce2bc3df9bf64ce0951f21cb3362192b783ec414dd5",
-  "model": "gemma3:4b",
-  "timestamp": "2026-03-06T14:43:46.668870",
-  "content_length": 1663,
-  "prompt_length": 2785,
-  "response": "Okay, let\u2019s meticulously extract and organize the parameters from the provided GNN specification, following your requested systematic breakdown. This analysis will focus on the Active Inference concepts and mathematical relationships inherent in the model.\n\n**1. Model Matrices:**\n\n*   **A Matrix (Recognition/Likelihood Matrix):**\n    *   **Dimensions:** 2x2 (as specified: `A[2,2,type=float]`)\n    *   **Structure:** A 2x2 matrix representing the conditional probability distribution of the observation *o* given the hidden state *s*:  `P(o|s) = A`.  This is the core of the perception model in Active Inference.\n    *   **Interpretation:** The entries of the matrix represent the strength of the association between each possible observation and each possible hidden state. The provided example shows a near-identity mapping with noise, indicating a strong initial belief that observation 1 is associated with hidden state 1, and observation 2 is associated with hidden state 2, but with some degree of uncertainty.\n*   **D Matrix (Prior Belief Matrix):**\n    *   **Dimensions:** 2x1 (as specified: `D[2,1,type=float]`)\n    *   **Structure:** A 2x1 matrix representing the prior belief over the hidden states.\n    *   **Interpretation:**  This matrix encodes the init</pre></div>
-</details>
-<details>
-  <summary>f2191d6fbb9aab11c7e4047a2fffa920be2a07cb01224251def39cd6f546059e.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">13_llm_output · 2459 bytes</span></summary>
-  <div class="details-body"><pre>{
-  "key": "f2191d6fbb9aab11c7e4047a2fffa920be2a07cb01224251def39cd6f546059e",
-  "model": "gemma3:4b",
-  "timestamp": "2026-03-06T14:44:09.989411",
-  "content_length": 1663,
-  "prompt_length": 61,
-  "response": "Okay, let's break down this \"Static Perception Model\" GNN specification in detail, focusing on the technical aspects relevant to Active Inference and Graph Neural Networks. This is a deliberately minimalist model, designed to isolate the core perception component of Active Inference.\n\n**1. Core Active Inference Framework &amp; GNN Representation:**\n\nThis model embodies the fundamental Active Inference principle:  **perception is driven by prediction.** It\u2019s a static representation, meaning it doesn't account for temporal dynamics (changes over time) or actions.  The GNN is designed to represent this static perception process as a graph.\n\n* **Nodes:** The nodes in the GNN represent the key elements of the Active Inference framework:\n    * **`s` (Hidden State):** This is the core of the model. It represents the agent's internal, unobserved state.  It's a 2-dimensional vector (2x1) representing the agent\u2019s belief about the underlying world.\n    * **`o` (Observation):** This is the external sensory input. It's a 2-dimensional one-hot encoded vector (2x1), indicating which of the two possible observations was received.\n    * **`D` (Prior):** This represents the agent\u2019s prior belief about the hidden state *before* receiving any observation. It\u2019s a</pre></div>
-</details>
-<details>
-  <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 8523 bytes</span></summary>
+  <summary>ml_integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">14_ml_integration_output · 6903 bytes</span></summary>
   <div class="details-body"><pre>{
   "status": "completed",
-  "target_dir": "input/gnn_files/discrete",
-  "output_dir": "output/14_ml_integration_output",
+  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/14_ml_integration_output",
   "models_trained": [
     {
-      "type": "decision_tree",
-      "framework": "sklearn",
-      "task": "family_classification",
-      "train_accuracy": 1.0,
-      "cv_mean_accuracy": 0.625,
-      "cv_std": 0.125,
-      "n_folds": 2,
-      "n_samples": 8,
-      "n_features": 14,
-      "feature_names": [
-        "num_states",
-        "num_observations",
-        "num_actions",
-        "num_variables",
-        "connectivity_ratio",
-        "max_dimension",
-        "total_parameters",
-        "planning_horizon",
-        "directed_connections",
-        "undirected_connections",
-        "has_precision",
-        "has_learning",
-        "has_ontology",
-        "has_parameterization"
-      ],
-      "artifact_path": "output/14_ml_integration_output/gnn_decision_tree.pkl",
-      "feature_importance": {
-        "num_states": 0.0,
-        "num_observations": 0.0,
-        "num_actions": 0.0,
-        "num_variables": 0.0,
-        "connectivity_ratio": 0.0,
-        "max_dimension": 0.0,
-        "total_parameters": 0.0,
-        "planning_horizon": 0.0,
-        "directed_connections": 1.0,
-        "undirected_connections": 0.0,
-        "has_precision": 0.0,
-        "has_learning": 0.0,
-        "has_ontology": 0.0,
-        "has_parameterization": 0.0
-      },
-      "top_features": [
-        [
-          "directed_connections",
-          1.0
-        ],
-        [
-          "num_</pre></div>
+      "source": "simple_mdp.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "pomdp",
+      "num_states": 4,
+      "total_parameters": 102
+    },
+    {
+      "source": "multi_armed_bandit.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "pomdp",
+      "num_states": 3,
+      "total_parameters": 53
+    },
+    {
+      "source": "deep_planning_horizon.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "pomdp",
+      "num_states": 4,
+      "total_parameters": 566
+    },
+    {
+      "source": "actinf_pomdp_agent.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "sklearn not available",
+      "model_family": "pomdp",
+      "num_states": 3,
+      "total_parameters": 56
+    },
+    {
+      "source": "hmm_baseline.md",
+      "type": "structural_analysis",
+      "framework": "internal_stats",
+      "accuracy": 1.0,
+      "note": "skle</pre></div>
 </details>
 <details>
-  <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 16649 bytes</span></summary>
+  <summary>audio_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">15_audio_output · 19729 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:10:23.798438",
+  "timestamp": "2026-03-13T14:00:06.372285",
   "processed_files": 8,
   "success": true,
   "errors": [],
   "audio_files_generated": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/simple_mdp_tonal.wav",
-        "rhythmic": "output/15_audio_output/simple_mdp_rhythmic.wav",
-        "ambient": "output/15_audio_output/simple_mdp_ambient.wav"
+        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_tonal.wav",
+        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_rhythmic.wav",
+        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/simple_mdp_ambient.wav"
       },
       "variables_count": 67,
       "connections_count": 0,
-      "generation_timestamp": "2026-03-06T15:10:24.142263"
+      "generation_timestamp": "2026-03-13T14:00:06.572273"
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
       "file_name": "multi_armed_bandit.md",
       "audio_files": {
-        "tonal": "output/15_audio_output/multi_armed_bandit_tonal.wav",
-        "rhythmic": "output/15_audio_output/multi_armed_bandit_rhythmic.wav",
-        "ambient": "output/15_audio_output/multi_armed_bandit_ambient.wav"
+        "tonal": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_tonal.wav",
+        "rhythmic": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_rhythmic.wav",
+        "ambient": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/15_audio_output/multi_armed_bandit_ambient.wav"
       },
       "variables_count": 60,
       "connections_count": 2,
-      "generation_timestamp": "2026-03-06T15:10:24.455092"
-    },
-    {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
-      "file_name": "deep_planning_horizon.md",
-      "audio_files": {
-        "tonal": "output/15_audio_output/deep_planning_horizon_tonal.wav",
-        "rhythmic": "output/15_audio_output/deep_planning_horizon_rhythmic.wav",
-        "ambient": "output/15_audio_output/deep_planning_horizon_ambient.wav"
-      },
-      "varia</pre></div>
+      "generation_timestamp":</pre></div>
 </details>
 <details>
-  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 257657 bytes</span></summary>
+  <summary>analysis_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 295057 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:10:29.483242",
+  "timestamp": "2026-03-13T11:37:25.308802",
   "processed_files": 8,
   "success": true,
   "errors": [],
   "statistical_analysis": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
       "file_size": 3322,
       "line_count": 154,
@@ -1394,16 +1371,13 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         },
         {
           "name": "A",
-          "definition": "A: 4x4",
-          "line": 83,
-          "type": "4x4"
-       </pre></div>
+          "definition": "A: 4x4"</pre></div>
 </details>
 <details>
-  <summary>hmm_baseline_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2387 bytes</span></summary>
+  <summary>hmm_baseline_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2442 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:10:39.885861",
-  "execution_results_dir": "output/12_execute_output/hmm_baseline",
+  "timestamp": "2026-03-13T11:37:34.321446",
+  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -1461,15 +1435,13 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "model_name": "hmm_baseline",
     "frameworks_compared": [
       "rxinfer",
-      "numpyro",
-      "activeinference_jl",
-      "pymdp",</pre></div>
+    </pre></div>
 </details>
 <details>
-  <summary>multi_armed_bandit_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 17268 bytes</span></summary>
+  <summary>multi_armed_bandit_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 17323 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:10:39.866636",
-  "execution_results_dir": "output/12_execute_output/multi_armed_bandit",
+  "timestamp": "2026-03-13T11:37:34.311322",
+  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -1510,13 +1482,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
           "model_name": "Multi Armed Bandit Agent",
           "free_energy_count": 15,
           "free_energy_values": [
-            2.126859134756673,
-            2.10623038897979</pre></div>
+    </pre></div>
 </details>
 <details>
   <summary>framework_comparison_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 43325 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:11:48.773364",
+  "timestamp": "2026-03-13T11:38:11.867604",
   "frameworks": {
     "numpyro": {
       "success_count": 8,
@@ -1546,10 +1517,10 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "output/12_execute_output/two_state_bistable/numpyro",</pre></div>
 </details>
 <details>
-  <summary>actinf_pomdp_agent_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2274 bytes</span></summary>
+  <summary>actinf_pomdp_agent_post_simulation_analysis.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">16_analysis_output · 2329 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:10:39.880302",
-  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "timestamp": "2026-03-13T11:37:34.319043",
+  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -1611,9 +1582,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "jax",
       "discopy"
     ],
-    "framework_count": 7,
-    "comparisons": {
-      "free_</pre></div>
+    </pre></div>
 </details>
 <details>
   <summary>integration_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">17_integration_output · 267 bytes</span></summary>
@@ -1634,47 +1603,45 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 7889 bytes</span></summary>
+  <summary>security_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">18_security_output · 9209 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:11:58.796995",
+  "timestamp": "2026-03-13T11:36:43.753336",
   "processed_files": 8,
   "success": true,
   "errors": [],
   "security_checks": [
     {
-      "file_path": "input/gnn_files/discrete/simple_mdp.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
       "file_name": "simple_mdp.md",
       "file_hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c",
       "file_size": 3322,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-06T15:11:58.797418"
+      "check_timestamp": "2026-03-13T11:36:43.753688"
     },
     {
-      "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
       "file_name": "multi_armed_bandit.md",
       "file_hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a",
       "file_size": 3332,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-06T15:11:58.798258"
+      "check_timestamp": "2026-03-13T11:36:43.754395"
     },
     {
-      "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
       "file_name": "deep_planning_horizon.md",
       "file_hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b",
       "file_size": 3776,
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-06T15:11:58.798733"
+      "check_timestamp": "2026-03-13T11:36:43.754855"
     },
     {
-      "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
-      "file_name": "actinf_pomdp_agent.md",
-      "file_hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df80</pre></div>
+      "file_path": "/Users/4d/D</pre></div>
 </details>
 <details>
   <summary>research_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">19_research_output · 10292 bytes</span></summary>
@@ -1782,7 +1749,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 <details>
   <summary>environment_setup_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">1_setup_output · 11002 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:11:51.153824",
+  "timestamp": "2026-03-13T11:28:01.675664",
   "validation": {
     "system_requirements": true,
     "uv_environment": true,
@@ -1837,15 +1804,15 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 872 bytes</span></summary>
+  <summary>mcp_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 993 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T14:53:58.364465",
-  "target_dir": "input/gnn_files/discrete",
-  "output_dir": "output/21_mcp_output",
+  "timestamp": "2026-03-13T11:36:47.551780",
+  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/21_mcp_output",
   "processing_status": "completed",
   "mcp_version": "1.1.3",
-  "tools_registered": 131,
-  "registered_modules_count": 30,
+  "tools_registered": 114,
+  "registered_modules_count": 31,
   "registered_modules": [
     "research",
     "ml_integration",
@@ -1861,6 +1828,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "render",
     "utils",
     "mcp",
+    "cli",
     "ontology",
     "gnn",
     "audio",
@@ -1869,21 +1837,21 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "api",
     "report",
     "sapf",
-    "analysis",
+    "execute",
     "export",
     "validation",
     "advanced_visualization",
-    "visualization",
+    "analysis",
     "gui",
-    "execute",
+    "visualization",
     "sympy_mcp"
   ],
-  "resources_count": 1,
-  "message": "MCP processing completed - 131 tools registered from 30 modules"
+  "resources_count": 0,
+  "message": "MCP processing completed - 114 tools registered from 31 modules"
 }</pre></div>
 </details>
 <details>
-  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 28367 bytes</span></summary>
+  <summary>registered_tools.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 24258 bytes</span></summary>
   <div class="details-body"><pre>[
   {
     "name": "analyze_audio_characteristics",
@@ -1914,13 +1882,6 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "version": "1.0.0"
   },
   {
-    "name": "check_execute_dependencies",
-    "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
-    "module": "src.execute",
-    "category": "execute",
-    "version": "1.0.0"
-  },
-  {
     "name": "check_integration_dependencies",
     "description": "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.",
     "module": "src.integration",
@@ -1929,15 +1890,21 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
   },
   {
     "name": "check_ml_frameworks",
-   </pre></div>
+    "description": "Check available ML frameworks (PyTorch, TensorFlow, JAX, scikit-learn) and their versions.",
+    "module": "src.ml_integration",
+    "category": "ml_integration",
+    "version": "1.0.0"
+  },
+  {
+    "name": "check_schema</pre></div>
 </details>
 <details>
-  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 31241 bytes</span></summary>
+  <summary>mcp_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">21_mcp_output · 26782 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T14:53:58.362691",
+  "timestamp": "2026-03-13T11:36:47.550426",
   "mcp_version": "1.1.3",
-  "tools_count": 131,
-  "resources_count": 1,
+  "tools_count": 114,
+  "resources_count": 0,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -1968,25 +1935,25 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "version": "1.0.0"
     },
     {
-      "name": "check_execute_dependencies",
-      "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
-      "module": "src.execute",
-      "category": "execute",
+      "name": "check_integration_dependencies",
+      "description": "Check which third-party integration dependencies (pymdp, JAX, Julia, etc.) are installed.",
+      "module": "src.integration",
+      "category": "integration",
       "version": "1.0.0"
     },
     {
-      "name": "check_integration_dependencies",
-      "description": "Check which third-pa</pre></div>
+      "name": "check_ml_frameworks",
+      "description": "Check availabl</pre></div>
 </details>
 <details>
-  <summary>gui_status.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 473 bytes</span></summary>
+  <summary>gui_status.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 583 bytes</span></summary>
   <div class="details-body"><pre>{
   "backend": "gradio",
   "launched": false,
-  "export_file": "output/22_gui_output/visual_model_gui2.md",
+  "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/22_gui_output/visual_model_gui2.md",
   "gui_type": "visual_matrix_editor",
   "status": "headless_mode",
-  "visual_data_file": "output/22_gui_output/visual_matrices.json",
+  "visual_data_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/22_gui_output/visual_matrices.json",
   "features": [
     "Visual matrix editing",
     "Drag-and-drop interface",
@@ -1999,7 +1966,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>gui_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 1052 bytes</span></summary>
+  <summary>gui_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">22_gui_output · 1162 bytes</span></summary>
   <div class="details-body"><pre>{
   "mode": "headless",
   "gui_types": [
@@ -2011,7 +1978,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "gui_type": "gui_1",
       "description": "Form-based Interactive GNN Constructor",
       "success": true,
-      "output_file": "output/22_gui_output/constructed_model_gui1.md",
+      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/22_gui_output/constructed_model_gui1.md",
       "backend": "headless",
       "features": [
         "Component management via forms",
@@ -2024,7 +1991,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "gui_type": "gui_2",
       "description": "Visual Matrix Editor for GNN Models",
       "success": true,
-      "output_file": "output/22_gui_output/visual_model_gui2.md",
+      "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/22_gui_output/visual_model_gui2.md",
       "backend": "headless",
       "features": [
         "Visual matrix representation and editing",
@@ -2141,27 +2108,27 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       </pre></div>
 </details>
 <details>
-  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 229898 bytes</span></summary>
+  <summary>report_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 410744 bytes</span></summary>
   <div class="details-body"><pre>{
-  "report_generation_time": "2026-03-06T14:54:01.962566",
-  "pipeline_output_directory": "output",
+  "report_generation_time": "2026-03-13T11:36:49.709961",
+  "pipeline_output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output",
   "steps": {
     "0_template_output": {
-      "directory": "output/0_template_output",
+      "directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output",
       "exists": true,
       "file_count": 39,
       "total_size_mb": 0.08,
       "file_types": {
         ".json": {
           "count": 20,
-          "total_size_mb": 0.009230613708496094
+          "total_size_mb": 0.008923530578613281
         },
         ".md": {
           "count": 19,
-          "total_size_mb": 0.0735931396484375
+          "total_size_mb": 0.07349014282226562
         }
       },
-      "last_modified": "2026-03-06T14:53:59.588541",
+      "last_modified": "2026-03-13T11:28:21.188342",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -2174,7 +2141,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       ]
     },
     "1_setup_output": {
-      "directory": "output/1_setup_output",
+      "directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/1_setup_output",
       "exists": true,
       "file_count": 2,
       "total_size_mb": 0.02,
@@ -2184,32 +2151,22 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
           "total_size_mb": 0.018525123596191406
         }
       },
-      "last_modified": "2026-03-06T14:53:55.620173",
+      "last_modified": "2026-03-13T11:28:02.120364",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": []
     },
     "2_tests_output": {
-      "directory": "output/2_tests_output",
-      "exists": true,
-      "file_count": 2,
-      "total_size_mb": 0.02,
-      "file_types": {
-        ".log": {
-          "count": 1,
-          "total_size_mb": 0.0
-        },
-        ".txt": {
-        </pre></div>
+      "directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/</pre></div>
 </details>
 <details>
-  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 524 bytes</span></summary>
+  <summary>report_generation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 647 bytes</span></summary>
   <div class="details-body"><pre>{
   "report_generation_summary": {
-    "generation_time": "2026-03-06T14:54:02.053998",
-    "pipeline_directory": "output",
-    "report_directory": "output/23_report_output",
+    "generation_time": "2026-03-13T11:36:49.809870",
+    "pipeline_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output",
+    "report_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/23_report_output",
     "health_score": 95.0,
     "generated_files": [
       "comprehensive_analysis_report.html",
@@ -2219,20 +2176,20 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "pipeline_summary": {
       "total_steps": 24,
       "successful_steps": 24,
-      "total_files": 1704,
-      "total_size_mb": 87.47,
+      "total_files": 1904,
+      "total_size_mb": 123.28000000000002,
       "success_rate": 100.0
     }
   }
 }</pre></div>
 </details>
 <details>
-  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 631 bytes</span></summary>
+  <summary>report_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">23_report_output · 796 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T14:54:02.125057",
-  "target_dir": "input/gnn_files/discrete",
-  "output_dir": "output/23_report_output",
-  "pipeline_output_dir": "output",
+  "timestamp": "2026-03-13T11:36:49.891283",
+  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/23_report_output",
+  "pipeline_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output",
   "processing_status": "completed",
   "report_format": "comprehensive",
   "reports_generated": [
@@ -2242,7 +2199,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
     "PIPELINE_REPORT.md"
   ],
   "report_count": 4,
-  "visualizations_discovered": 122,
+  "visualizations_discovered": 213,
   "html_reports_generated": 1,
   "html_validation_status": "valid",
   "html_validation_errors": [],
@@ -2254,86 +2211,73 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 390 bytes</span></summary>
+  <summary>intelligent_analysis_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 514 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T14:54:24.946998",
+  "timestamp": "2026-03-13T11:37:05.440111",
   "overall_status": "SUCCESS",
-  "health_score": 100,
-  "failure_count": 0,
-  "red_flag_count": 0,
-  "yellow_flag_count": 4,
-  "bottleneck_count": 4,
-  "recommendation_count": 6,
-  "report_file": "output/24_intelligent_analysis_output/intelligent_analysis_report.md",
-  "data_file": "output/24_intelligent_analysis_output/analysis_data.json"
+  "health_score": 81.30434782608695,
+  "failure_count": 2,
+  "red_flag_count": 2,
+  "yellow_flag_count": 2,
+  "bottleneck_count": 2,
+  "recommendation_count": 8,
+  "report_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/24_intelligent_analysis_output/intelligent_analysis_report.md",
+  "data_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/24_intelligent_analysis_output/analysis_data.json"
 }</pre></div>
 </details>
 <details>
-  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 10234 bytes</span></summary>
+  <summary>analysis_data.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">24_intelligent_analysis_output · 14699 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T14:54:24.943640",
+  "timestamp": "2026-03-13T11:37:05.439591",
   "analysis": {
     "overall_status": "SUCCESS",
-    "total_duration": 1572.570875,
-    "step_count": 24,
-    "failures": [],
-    "warnings": [],
-    "performance_metrics": {
-      "peak_memory_mb": 87.96875,
-      "successful_steps": 24,
-      "failed_steps": 0,
-      "warning_count": 0
-    },
-    "health_score": 100
-  },
-  "step_analyses": [
-    {
-      "step_number": 1,
-      "script_name": "0_template.py",
-      "description": "Template initialization",
-      "status": "SUCCESS",
-      "duration_seconds": 0.5166420936584473,
-      "memory_mb": 87.890625,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 0.52s"
-    },
-    {
-      "step_number": 2,
-      "script_name": "1_setup.py",
-      "description": "Environment setup",
-      "status": "SUCCESS",
-      "duration_seconds": 5.186640024185181,
-      "memory_mb": 87.953125,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 5.19s"
-    },
-    {
-      "step_number": 3,
-      "script_name": "2_tests.py",
-      "description": "Test suite execution",
-      "status": "SUCCESS",
-      "duration_seconds": 419.79424691200256,
-      "memory_mb": 87.96875,
-      "exit_code": 0,
-      "flags": [
-        "Very slow: 419.8s (&gt;120.0s threshold)"
-      ],
-      "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 419.79s"
-    },
-    {
-      "step_number": 4</pre></div>
+    "total_duration": 554.587273,
+    "step_count": 23,
+    "failures": [
+      {
+        "step": "2_tests.py",
+        "error": "No error captured",
+        "duration": 458.83509397506714,
+        "exit_code": 1
+      },
+      {
+        "step": "12_execute.py",
+        "error": "\n--- Stderr for discrete ---\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py\", line 40, in &lt;module&gt;\n    from execute import process_execute\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/__init__.py\", line 30, in &lt;module&gt;\n    from .executor import ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/executor.py\", line 18, in &lt;module&gt;\n    from .pymdp.pymdp_runner import run_pymdp_scripts\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 16, in &lt;module&gt;\n    from .pymdp_simulation import PyMDPSimulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_simulation.py\", line 405\n    &lt;&lt;&lt;&lt;&lt;&lt;&lt; Updated upstream\n    ^^\nSyntaxError: invalid syntax\n\n",
+        "duration": 0.3637669086456299,
+        "exit_code": 1
+      }
+    ],
+    "warnings": [
+      {
+        "step": "21_mcp.py",
+        "message": "1_mcp_output/mcp_results.j</pre></div>
 </details>
 <details>
-  <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 11246 bytes</span></summary>
+  <summary>coverage.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 2611574 bytes</span></summary>
+  <div class="details-body"><pre>{"meta": {"format": 3, "version": "7.13.1", "timestamp": "2026-03-13T14:15:59.006820", "branch_coverage": false, "show_contexts": false}, "files": {"src/0_template.py": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59, 61], "excluded_lines": [63, 64], "functions": {"main": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 1, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 1, "excluded_lines": 0, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [61], "excluded_lines": [], "start_line": 59}, "": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 12, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 12, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59], "excluded_lines": [63, 64], "start_line": 1}}, "classes": {"": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}</pre></div>
+</details>
+<details>
+  <summary>coverage.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 2619657 bytes</span></summary>
+  <div class="details-body"><pre>{"meta": {"format": 3, "version": "7.13.1", "timestamp": "2026-03-13T14:16:12.561713", "branch_coverage": false, "show_contexts": false}, "files": {"src/0_template.py": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59, 61], "excluded_lines": [63, 64], "functions": {"main": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 1, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 1, "excluded_lines": 0, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [61], "excluded_lines": [], "start_line": 59}, "": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 12, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 12, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59], "excluded_lines": [63, 64], "start_line": 1}}, "classes": {"": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}</pre></div>
+</details>
+<details>
+  <summary>coverage.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 2618807 bytes</span></summary>
+  <div class="details-body"><pre>{"meta": {"format": 3, "version": "7.13.1", "timestamp": "2026-03-13T14:16:33.296326", "branch_coverage": false, "show_contexts": false}, "files": {"src/0_template.py": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59, 61], "excluded_lines": [63, 64], "functions": {"main": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 1, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 1, "excluded_lines": 0, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [61], "excluded_lines": [], "start_line": 59}, "": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 12, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 12, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59], "excluded_lines": [63, 64], "start_line": 1}}, "classes": {"": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}</pre></div>
+</details>
+<details>
+  <summary>coverage.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 2605705 bytes</span></summary>
+  <div class="details-body"><pre>{"meta": {"format": 3, "version": "7.13.1", "timestamp": "2026-03-13T14:24:35.913374", "branch_coverage": false, "show_contexts": false}, "files": {"src/0_template.py": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59, 61], "excluded_lines": [63, 64], "functions": {"main": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 1, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 1, "excluded_lines": 0, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [61], "excluded_lines": [], "start_line": 59}, "": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 12, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 12, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59], "excluded_lines": [63, 64], "start_line": 1}}, "classes": {"": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}</pre></div>
+</details>
+<details>
+  <summary>coverage.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">2_tests_output · 1131121 bytes</span></summary>
+  <div class="details-body"><pre>{"meta": {"format": 3, "version": "7.13.1", "timestamp": "2026-03-13T14:17:57.961923", "branch_coverage": false, "show_contexts": false}, "files": {"src/0_template.py": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59, 61], "excluded_lines": [63, 64], "functions": {"main": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 1, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 1, "excluded_lines": 0, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [61], "excluded_lines": [], "start_line": 59}, "": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 12, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 12, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}, "missing_lines": [33, 34, 37, 39, 42, 43, 44, 45, 47, 48, 50, 59], "excluded_lines": [63, 64], "start_line": 1}}, "classes": {"": {"executed_lines": [], "summary": {"covered_lines": 0, "num_statements": 13, "percent_covered": 0.0, "percent_covered_display": "0", "missing_lines": 13, "excluded_lines": 2, "percent_statements_covered": 0.0, "percent_statements_covered_display": "0"}</pre></div>
+</details>
+<details>
+  <summary>gnn_processing_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 13996 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:17.638247",
-  "source_directory": "input/gnn_files/continuous",
-  "output_directory": "output/3_gnn_output",
+  "timestamp": "2026-03-13T14:15:05.020079",
+  "source_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous",
+  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/3_gnn_output",
   "processing_config": {
     "recursive": true,
     "verbose": true,
@@ -2386,10 +2330,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "pickle": "BinarySerializer"
     }
   },
-  "processed_files": [
-    {
-      "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files</pre></div>
+  "</pre></div>
 </details>
 <details>
   <summary>gnn_processing_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">3_gnn_output · 205 bytes</span></summary>
@@ -2513,7 +2454,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "8b935fda-fce6-4116-a6f8-d729577df9ca",
+      "id": "fb3820f7-4a06-406c-99ef-99f66acc8f60",
       "name": "A",
       "var_type": "likelihood_matrix",
       "dimensions": [
@@ -2528,7 +2469,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "ee92513c-5b6c-4fdf-b790-f4a87b1611af",
+      "id": "b9a1d6ff-83a8-4171-8bdb-a02047165909",
       "name": "B",
       "var_type": "transition_matrix",
       "dimensions": [
@@ -2544,7 +2485,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "f662becd-56f2-43a2-a953-cb2d3de94af1",
+      "id": "0f181a4c-b00e-447c-857f-c59a36007835",
       "name": "C",
       "var_type": "preference_vector",
       "dimensions": [
@@ -2617,22 +2558,22 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
  </pre></div>
 </details>
 <details>
-  <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 5336 bytes</span></summary>
+  <summary>model_registry.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">4_model_registry_output · 7114 bytes</span></summary>
   <div class="details-body"><pre>{
   "version": "1.0.0",
-  "updated_at": "2026-03-06T15:00:18.143913",
+  "updated_at": "2026-03-13T11:37:10.744791",
   "models": {
     "simple_mdp": {
       "model_id": "simple_mdp",
       "name": "GNN Example: Simple MDP (Fully Observable)",
       "description": "ActInfPOMDP",
       "created_at": "2026-03-06T14:34:57.928330",
-      "updated_at": "2026-03-06T15:00:18.143486",
+      "updated_at": "2026-03-13T11:37:10.744332",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "input/gnn_files/discrete/simple_mdp.md",
-          "created_at": "2026-03-06T15:00:18.143410",
+          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
+          "created_at": "2026-03-13T11:37:10.744229",
           "metadata": {},
           "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
         }
@@ -2646,12 +2587,12 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "name": "GNN Example: Multi-Armed Bandit",
       "description": "ActInfPOMDP",
       "created_at": "2026-03-06T14:34:57.928531",
-      "updated_at": "2026-03-06T15:00:18.143583",
+      "updated_at": "2026-03-13T11:37:10.744442",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
-          "created_at": "2026-03-06T15:00:18.143560",
+          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
+          "created_at": "2026-03-13T11:37:10.744416",
           "metadata": {},
           "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
         }
@@ -2660,24 +2601,22 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "metadata": {},
       "current_version": "1.0"
     },
-    "deep_planning_horizon": {
-      "model_id": "deep_planning_horizon",
-      "name": "GNN Example: Deep Planning Horizon</pre></div>
+    "deep_pla</pre></div>
 </details>
 <details>
-  <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 63667 bytes</span></summary>
+  <summary>type_check_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">5_type_checker_output · 63887 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:20.760681",
+  "timestamp": "2026-03-13T14:15:07.411172",
   "processed_files": 2,
   "success": true,
   "errors": [],
   "validation_results": [
     {
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
       "file_name": "predictive_coding_agent.md",
       "valid": false,
       "errors": [
-        "Duplicate variable names: e_s, Pi_s, belief, mu_star, o, Pi_d, t, error, mu, f_params, F_d, precision, g_params, F, Sigma, u, mu_dot, type, dt, e_d, level, F_s, parameters"
+        "Duplicate variable names: mu, f_params, level, Sigma, mu_star, Pi_d, error, parameters, Pi_s, type, e_d, u, F, F_s, belief, F_d, g_params, precision, t, dt, mu_dot, o, e_s"
       ],
       "warnings": [
         "Type issue: Unknown type 'Predictive' for variable 'Example'",
@@ -2693,8 +2632,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
         "Type issue: Unknown type 'confidence' for variable 'precision'",
         "Type issue: Unknown type 'confidence' for variable 'precision'",
         "Type issue: Unknown type 'centered' for variable 'belief'",
-        "Type issue: Unknown type 'moderate' for variable 'covariance'",
-        "Type issue: Unkn</pre></div>
+        "Type issue: Unknown type 'moderate</pre></div>
 </details>
 <details>
   <summary>validation_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 352 bytes</span></summary>
@@ -2722,15 +2660,15 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 3967 bytes</span></summary>
+  <summary>validation_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">6_validation_output · 4187 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:23.332838",
-  "source_directory": "input/gnn_files/continuous",
-  "output_directory": "output/6_validation_output",
+  "timestamp": "2026-03-13T11:37:15.774506",
+  "source_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous",
+  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/6_validation_output",
   "files_validated": [
     {
       "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
       "validations": {
         "semantic": {
           "file_path": "unknown",
@@ -2762,59 +2700,40 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
             "parallelization_potential": {
               "parallelizable_blocks": 0,
               "sequential_dependencies": 0,
-              "parallel_efficiency": 0.0,
-              "gpu_amenable": false,
-              "distributed_amenable": false
-            }
-          },
-          "warnings": [
-    </pre></div>
+             </pre></div>
 </details>
 <details>
-  <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 2690 bytes</span></summary>
+  <summary>export_results.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 3460 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:23.737603",
-  "source_directory": "input/gnn_files/discrete",
-  "output_directory": "output/7_export_output",
+  "timestamp": "2026-03-13T14:15:07.778021",
+  "source_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output",
   "files_exported": [
     {
       "file_name": "predictive_coding_agent.md",
-      "file_path": "input/gnn_files/continuous/predictive_coding_agent.md",
+      "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md",
       "exports": {
         "json": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_json.json",
           "file_size": 24936
         },
         "xml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_xml.xml",
           "file_size": 1380
         },
         "graphml": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_graphml.graphml",
           "file_size": 2026
         },
         "gexf": {
           "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
+          "export_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/7_export_output/predictive_coding_agent/predictive_coding_agent_gexf.gexf",
           "file_size": 1660
         },
-        "pickle": {
-          "success": true,
-          "export_file": "output/7_export_output/predictive_coding_agent/predictive_coding_agent_pickle.pkl",
-          "file_size": 13371
-        }
-      },
-      "success": true
-    },
-    {
-      "file_name": "continuous_navigation.md",
-      "file_path": "input/gnn_files/continuous/continuous_navigation.md",
-      "exports": {
-        "json": {
-      </pre></div>
+        "pickle": {</pre></div>
 </details>
 <details>
   <summary>export_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 180 bytes</span></summary>
@@ -2842,7 +2761,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "c8daf26d-8f72-4d05-b4e2-856aad322738",
+      "id": "e576bd3c-e05d-4081-ac97-8b6ee463f2ab",
       "name": "mu",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2857,7 +2776,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "3f961dc1-4707-4b7d-9828-549d7439deed",
+      "id": "3a17e0c1-1ecd-4d84-9595-eaf037fd79da",
       "name": "mu_dot",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2866,6 +2785,56 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       ],
       "data_type": "float",
       "description": "Velocity of hidden cause (first temporal deriva</pre></div>
+</details>
+<details>
+  <summary>static_perception_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 7051 bytes</span></summary>
+  <div class="details-body"><pre>{
+  "model_name": "Static Perception Model",
+  "version": "1.0",
+  "annotation": "The simplest Active Inference model demonstrating pure perception:\n\n- 2 hidden states mapped to 2 observations via a recognition matrix A\n- Prior D encodes initial beliefs over hidden states\n- No temporal dynamics — single-shot inference\n- Demonstrates the core observation model: P(o|s) = A\n- Suitable as a minimal baseline and for testing perception-only inference",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8f1f9f8a-d512-4b74-8d2d-f73c3a23ac7c",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        2,
+        2
+      ],
+      "data_type": "float",
+      "description": "Recognition/likelihood matrix: P(observation | hidden state)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b97e362-54ce-42a7-a9ed-85f5a70f0bb4",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Prior belief over hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b1e264b3-0d69-483b-8f0a-9020de50d088",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "f</pre></div>
 </details>
 <details>
   <summary>continuous_navigation_json.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">7_export_output · 26335 bytes</span></summary>
@@ -2878,7 +2847,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "ce429c22-fd2b-4d10-b7ab-78a7f6a4a933",
+      "id": "d910d0e4-33cf-47ef-b4ed-0c158d079d89",
       "name": "μ",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2893,7 +2862,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "b41749c0-2263-452a-b418-7c1bc9dc5e99",
+      "id": "eac7efbb-9be4-491f-90f0-39af230370ae",
       "name": "Σ",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2908,7 +2877,7 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "4e458a7a-5247-4ca9-99ab-3c2db8609136",
+      "id": "6b47228e-e6f6-449d-a23c-f988baaf71b2",
       "name": "μ_prime",
       "var_type": "hidden_state",
       "dimensions": [
@@ -2919,29 +2888,22 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
       "description": "Next positi</pre></div>
 </details>
 <details>
-  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 8307 bytes</span></summary>
+  <summary>visualization_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 13312 bytes</span></summary>
   <div class="details-body"><pre>{
   "processed_files": 8,
   "total_visualizations": 91,
   "visualization_files": [
-    "output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_D_heatmap.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_generative_model.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
-    "output/8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_A_heatmap.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_analysis.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_B_tensor.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_C_heatmap.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_D_heatmap.png",
-    "output/8_visualization_output/multi_armed_bandit/multi_armed_bandit_combined_analysis.png",
-    "out</pre></div>
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_B_analysis.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_B_tensor.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_D_heatmap.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_combined_analysis.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_generative_model.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_matrix_size_distribution.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_network_graph.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/simple_mdp/simple_mdp_section_content_length.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/8_visualization_output/</pre></div>
 </details>
 <details>
   <summary>simple_mdp_network_stats.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">8_visualization_output · 506 bytes</span></summary>
@@ -3074,30 +3036,24 @@ details[open] summary { border-radius: var(--radius) var(--radius) 0 0; }
 }</pre></div>
 </details>
 <details>
-  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 10284 bytes</span></summary>
+  <summary>advanced_viz_summary.json <span style="color:var(--text-3);font-size:11px;margin-left:8px">9_advanced_viz_output · 12926 bytes</span></summary>
   <div class="details-body"><pre>{
-  "timestamp": "2026-03-06T15:00:53.002701",
+  "timestamp": "2026-03-13T11:35:42.012498",
   "total_attempts": 19,
   "successful": 17,
   "failed": 0,
   "skipped": 2,
   "total_duration_ms": 0.0,
   "output_files": [
-    "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
-    "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
-    "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
-    "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-    "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
-    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "output/9_advanced_viz_output/continu</pre></div>
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
+    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_codi</pre></div>
 </details></div>
   </main>
 </body>

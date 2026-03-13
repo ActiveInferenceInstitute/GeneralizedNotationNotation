@@ -79,7 +79,7 @@ flowchart TD
     C -->|"Route by mode"| D{"Test Mode"}
     D -->|"fast_only=True"| E["run_fast_pipeline_tests()"]
     D -->|"comprehensive=True"| F["run_comprehensive_tests()"]
-    D -->|"fallback"| G["run_fast_reliable_tests()"]
+    D -->|"recovery"| G["run_fast_reliable_tests()"]
     
     E --> H["ModularTestRunner"]
     F --> H
@@ -528,7 +528,7 @@ def test_new_module_integration():
 1. **Category-Based**: Run tests by module category
 2. **Parallel Execution**: Use parallel execution for faster results
 3. **Resource Monitoring**: Monitor resource usage during execution
-4. **Error Recovery**: Handle errors gracefully with fallback mechanisms
+4. **Error Recovery**: Handle errors gracefully with recovery mechanisms
 
 ## Troubleshooting
 
@@ -625,7 +625,7 @@ If issues persist:
 
 ### Test Quality Metrics
 
-- **No Mock Usage**: All tests use real implementations per testing policy
+- **No Simulated Usage**: All tests use real implementations per testing policy
 - **Real Data**: All tests use real, representative data
 - **Error Handling**: Comprehensive error scenario testing
 - **Documentation**: Complete test documentation in AGENTS.md and README.md

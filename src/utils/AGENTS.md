@@ -125,7 +125,7 @@ logger = setup_step_logging("3_gnn", verbose=True)
 ### Argument Parsing Functions
 
 #### `ArgumentParser.parse_step_arguments(step_name: str) -> argparse.Namespace`
-**Description**: Parse arguments for a specific pipeline step with fallback support
+**Description**: Parse arguments for a specific pipeline step with recovery support
 
 **Parameters**:
 - `step_name` (str): Name of the pipeline step
@@ -413,7 +413,7 @@ output/
 ### Recovery Strategies
 - **Configuration Repair**: Use default values
 - **Path Resolution**: Resolve relative paths
-- **Logging Fallback**: Use basic logging
+- **Logging Recovery**: Use basic logging
 - **Resource Monitoring**: Continue without monitoring
 
 ---

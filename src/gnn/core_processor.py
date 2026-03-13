@@ -247,9 +247,9 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
             "processing_mode": "full"
         }
         if not success:
-            raise RuntimeError("Full processing failed; invoking lightweight fallback")
+            raise RuntimeError("Full processing failed; invoking lightweight recovery")
     except Exception:
-        # Fallback to lightweight processing expected by recovery tests
+        # Recovery to lightweight processing expected by recovery tests
         light = process_gnn_directory_lightweight(Path(target_dir))
         result = {
             "status": "SUCCESS",

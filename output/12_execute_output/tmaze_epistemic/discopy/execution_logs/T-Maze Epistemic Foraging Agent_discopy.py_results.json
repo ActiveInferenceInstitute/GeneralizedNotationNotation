@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/tmaze_epistemic/discopy/T-Maze Epistemic Foraging Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.420935,
-  "timestamp": "2026-03-06T15:01:20.023024",
+  "execution_time": 0.328523,
+  "timestamp": "2026-03-13T14:15:24.852543",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1573,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/tmaze_epistemic/discopy"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/tmaze_epistemic/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "output/12_execute_output/tmaze_epistemic/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

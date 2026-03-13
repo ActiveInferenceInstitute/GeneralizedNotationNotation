@@ -107,7 +107,7 @@ try:
     from .matrix_visualizer import MatrixVisualizer, process_matrix_visualization
     from .processor import generate_matrix_visualizations, generate_network_visualizations
 except Exception:
-    # Fallback implementations for missing dependencies
+    # Alternative implementations for missing dependencies
     class GNNVisualizer:
         def __init__(self, *args, **kwargs): 
             self.available = False
@@ -355,7 +355,7 @@ except Exception:
 # Allows graceful degradation when dependencies missing
 if MatrixVisualizer is None:
     logger.warning("Matrix visualization unavailable - matplotlib missing")
-    return create_fallback_html_report()
+    return create_alternative_html_report()
 ```
 
 ### MCP Integration Pattern

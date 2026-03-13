@@ -124,8 +124,8 @@ success, message, files = render_gnn_to_discopy(
 - `numpy` - Numerical computations
 
 ### Optional Dependencies
-- `pytket` - Quantum circuit compilation (fallback: basic diagrams)
-- `lambeq` - NLP diagram processing (fallback: basic composition)
+- `pytket` - Quantum circuit compilation (recovery: basic diagrams)
+- `lambeq` - NLP diagram processing (recovery: basic composition)
 
 ### Internal Dependencies
 - `render.renderer` - Base rendering functionality
@@ -356,7 +356,7 @@ if hasattr(diagram, 'to_pytket'):
 ### Recovery Strategies
 - **Type Validation**: Comprehensive type checking before generation
 - **Composition Verification**: Diagram composition validation
-- **Backend Fallback**: Fallback to basic evaluation when advanced backends fail
+- **Backend Recovery**: Recovery to basic evaluation when advanced backends fail
 
 ### Error Examples
 ```python
@@ -364,7 +364,7 @@ try:
     discopy_code = generate_discopy_code(model_data)
 except DisCoPyGenerationError as e:
     logger.error(f"DisCoPy generation failed: {e}")
-    # Fallback to basic diagram
+    # Recovery to basic diagram
     discopy_code = generate_basic_discopy_template(model_data)
 ```
 

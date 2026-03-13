@@ -17,7 +17,7 @@ try:
     PYDANTIC_AVAILABLE = True
 except ImportError:
     PYDANTIC_AVAILABLE = False
-    logger.debug("pydantic not installed — using dataclass fallback")
+    logger.debug("pydantic not installed — using dataclass recovery")
 
 if PYDANTIC_AVAILABLE:
 
@@ -69,7 +69,7 @@ if PYDANTIC_AVAILABLE:
         artifact_count: int = 0
 
 else:
-    # Dataclass fallback when pydantic is not installed
+    # Dataclass recovery when pydantic is not installed
     from dataclasses import dataclass, field
 
     @dataclass

@@ -187,10 +187,10 @@ success = process_report(
 
 ### Optional Dependencies
 
-- `jinja2` - HTML template rendering (fallback: basic HTML)
-- `markdown` - Markdown processing (fallback: text-based)
-- `weasyprint` - PDF generation (fallback: HTML only)
-- `plotly` - Interactive charts in HTML (fallback: static images)
+- `jinja2` - HTML template rendering (recovery: basic HTML)
+- `markdown` - Markdown processing (recovery: text-based)
+- `weasyprint` - PDF generation (recovery: HTML only)
+- `plotly` - Interactive charts in HTML (recovery: static images)
 
 ### Internal Dependencies
 
@@ -329,7 +329,7 @@ output/23_report_output/
 
 ### Graceful Degradation
 
-- **No template engine**: Fallback to basic HTML templates
+- **No template engine**: Recovery to basic HTML templates
 - **No visualization libraries**: Generate text-based reports
 - **Large datasets**: Sampling and summary generation
 

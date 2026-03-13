@@ -125,7 +125,7 @@ def check_audio_backends_mcp() -> Dict[str, Any]:
         result = check_audio_backends()
         return {"success": True, "backends": result}
     except Exception as e:
-        # Fallback status check
+        # Recovery status check
         backends: Dict[str, Dict[str, Any]] = {}
         import shutil
         backends["supercollider"] = {"available": bool(shutil.which("sclang")),

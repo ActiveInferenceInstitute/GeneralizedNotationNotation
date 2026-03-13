@@ -146,7 +146,7 @@ def check_disk_space(
 
     # Get disk usage
     total, used, free = shutil.disk_usage(path)
-    # Some tests mock disk_usage with small integer tuples that represent MB.
+    # Some tests simulated disk_usage with small integer tuples that represent MB.
     # Heuristically detect units: if values are very small, treat as MB, else bytes.
     if total < 1024 * 1024 * 16:  # <16MB total is unrealistic for real disks
         free_mb = float(free)

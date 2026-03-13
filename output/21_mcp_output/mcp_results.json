@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-03-06T15:12:03.541985",
+  "timestamp": "2026-03-13T11:36:47.550426",
   "mcp_version": "1.1.3",
-  "tools_count": 131,
-  "resources_count": 1,
+  "tools_count": 114,
+  "resources_count": 0,
   "tools": [
     {
       "name": "analyze_audio_characteristics",
@@ -30,13 +30,6 @@
       "description": "Check which audio generation backends (SuperCollider, Csound, sounddevice) are available.",
       "module": "src.sapf",
       "category": "audio",
-      "version": "1.0.0"
-    },
-    {
-      "name": "check_execute_dependencies",
-      "description": "Check which execution backend dependencies (pymdp, numpy, scipy, jax) are installed.",
-      "module": "src.execute",
-      "category": "execute",
       "version": "1.0.0"
     },
     {
@@ -68,10 +61,17 @@
       "version": "1.0.0"
     },
     {
-      "name": "check_visualization_capabilities",
-      "description": "Check available advanced visualization capabilities (D2, dashboard, network backends).",
-      "module": "src.advanced_visualization",
-      "category": "advanced_visualization",
+      "name": "cli.health",
+      "description": "Return CLI module health and list of available subcommands",
+      "module": "cli",
+      "category": "cli",
+      "version": "1.0.0"
+    },
+    {
+      "name": "cli.preflight",
+      "description": "Check pipeline environment readiness",
+      "module": "cli",
+      "category": "cli",
       "version": "1.0.0"
     },
     {
@@ -86,20 +86,6 @@
       "description": "Ensures a directory exists, creating it if necessary. Returns the absolute path.",
       "module": "",
       "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "execute_gnn_model",
-      "description": "Execute a single GNN model file: parse, construct POMDP, run N inference steps.",
-      "module": "src.execute",
-      "category": "execute",
-      "version": "1.0.0"
-    },
-    {
-      "name": "execute_pymdp_simulation",
-      "description": "Run a PyMDP Active Inference simulation from a GNN model (A/B/C/D matrices \u2192 Agent \u2192 perception-action loop).",
-      "module": "src.execute",
-      "category": "execute",
       "version": "1.0.0"
     },
     {
@@ -138,13 +124,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "get_advanced_visualization_module_info",
-      "description": "Return version, feature flags, and tool inventory of the advanced visualization module.",
-      "module": "src.advanced_visualization",
-      "category": "advanced_visualization",
-      "version": "1.0.0"
-    },
-    {
       "name": "get_analysis_capabilities",
       "description": "Get intelligent analysis capabilities, supported types, available tools, and feature flags.",
       "module": "src.intelligent_analysis",
@@ -180,36 +159,8 @@
       "version": "1.0.0"
     },
     {
-      "name": "get_execute_module_info",
-      "description": "Return version, feature flags, and API surface of the GNN execute module.",
-      "module": "src.execute",
-      "category": "execute",
-      "version": "1.0.0"
-    },
-    {
       "name": "get_file_info",
       "description": "Get detailed information about a file or directory including size, permissions, and contents.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "get_gnn_documentation",
-      "description": "Retrieve the content of a GNN documentation file, schema definition, or grammar specification.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "get_gnn_module_info",
-      "description": "Get comprehensive information about the GNN module capabilities and features.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "get_gnn_schema_info",
-      "description": "Get comprehensive information about the GNN schema structure and validation rules.",
       "module": "",
       "category": "",
       "version": "1.0.0"
@@ -439,13 +390,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "list_d2_visualization_types",
-      "description": "Return all D2 diagram types supported for GNN model visualization.",
-      "module": "src.advanced_visualization",
-      "category": "advanced_visualization",
-      "version": "1.0.0"
-    },
-    {
       "name": "list_export_formats",
       "description": "List all supported GNN export formats and their descriptions.",
       "module": "src.export",
@@ -544,20 +488,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "parse_gnn_content",
-      "description": "Parse GNN content with enhanced multi-format support and return structured model representation.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "process_advanced_visualization",
-      "description": "Process advanced visualization for GNN files: D2 diagrams, dashboards, network visualizations.",
-      "module": "src.advanced_visualization",
-      "category": "advanced_visualization",
-      "version": "1.0.0"
-    },
-    {
       "name": "process_analysis",
       "description": "Run statistical and complexity analysis on GNN files in a directory.",
       "module": "src.analysis",
@@ -572,24 +502,10 @@
       "version": "1.0.0"
     },
     {
-      "name": "process_execute",
-      "description": "Run GNN execution processing: validate and execute all GNN model files in a directory.",
-      "module": "src.execute",
-      "category": "execute",
-      "version": "1.0.0"
-    },
-    {
       "name": "process_export",
       "description": "Export GNN models to all supported output formats (JSON, YAML, Python, Julia, etc.).",
       "module": "src.export",
       "category": "export",
-      "version": "1.0.0"
-    },
-    {
-      "name": "process_gnn_directory",
-      "description": "Process a directory of GNN files with enhanced validation and testing capabilities.",
-      "module": "",
-      "category": "",
       "version": "1.0.0"
     },
     {
@@ -726,13 +642,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "run_round_trip_tests",
-      "description": "Run comprehensive round-trip tests on GNN files across all supported formats.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
       "name": "run_unit_tests",
       "description": "Run unit test suite for the GNN pipeline.",
       "module": "",
@@ -845,22 +754,8 @@
       "version": "1.0.0"
     },
     {
-      "name": "validate_cross_format_consistency_content",
-      "description": "Validate cross-format consistency for GNN content across all supported formats.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
       "name": "validate_dependencies",
       "description": "Validate system dependencies and required packages for the GNN pipeline.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
-      "name": "validate_directory_cross_format_consistency",
-      "description": "Validate cross-format consistency for files in a directory with comprehensive analysis.",
       "module": "",
       "category": "",
       "version": "1.0.0"
@@ -870,13 +765,6 @@
       "description": "Check whether a given export format is supported.",
       "module": "src.export",
       "category": "export",
-      "version": "1.0.0"
-    },
-    {
-      "name": "validate_gnn_content",
-      "description": "Enhanced validation of GNN file content with comprehensive testing capabilities.",
-      "module": "",
-      "category": "",
       "version": "1.0.0"
     },
     {
@@ -908,13 +796,6 @@
       "version": "1.0.0"
     },
     {
-      "name": "validate_schema_definitions_consistency",
-      "description": "Validate consistency between GNN schema definition files across different formats.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    },
-    {
       "name": "validate_single_gnn_file",
       "description": "Validate a single GNN file for syntax and type correctness.",
       "module": "",
@@ -922,17 +803,9 @@
       "version": "1.0.0"
     }
   ],
-  "resources": [
-    {
-      "uri": "gnn://documentation/{doc_name}",
-      "description": "Access GNN core documentation files like syntax and file structure definitions.",
-      "module": "",
-      "category": "",
-      "version": "1.0.0"
-    }
-  ],
+  "resources": [],
   "status": "healthy",
-  "registered_modules": 30,
+  "registered_modules": 31,
   "registered_module_names": [
     "research",
     "ml_integration",
@@ -948,23 +821,24 @@
     "render",
     "utils",
     "mcp",
+    "cli",
     "ontology",
     "gnn",
     "audio",
-    "analysis",
+    "llm",
     "type_checker",
     "api",
-    "llm",
     "report",
     "sapf",
+    "execute",
     "export",
     "validation",
     "advanced_visualization",
-    "visualization",
+    "analysis",
     "gui",
-    "execute",
+    "visualization",
     "sympy_mcp"
   ],
-  "target_dir": "input/gnn_files/discrete",
-  "output_dir": "output/21_mcp_output"
+  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/21_mcp_output"
 }

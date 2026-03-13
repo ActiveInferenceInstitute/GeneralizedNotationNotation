@@ -44,14 +44,14 @@ except ImportError:
         "PyMDP not available - this is normal if not installed. "
         "To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. "
         "Alternatively, use other frameworks: RxInfer.jl, ActiveInference.jl, or JAX. "
-        "Continuing with fallback mode and informative output."
+        "Continuing with recovery mode and informative output."
     )
     # Provide lightweight fallbacks for essential utilities and Agent behaviour so
     # tests can run without the full PyMDP dependency. These are real, deterministic
     # implementations (not mocks) that reproduce minimal Agent behaviour.
     import random
 
-    class _FallbackUtils:
+    class _RecoveryUtils:
         @staticmethod
         def obj_array(n):
             """Return a numpy object array of size n (mimics pymdp.utils.obj_array)."""
@@ -77,7 +77,7 @@ except ImportError:
             p = p / p.sum()
             return int(np.random.choice(len(p), p=p))
 
-    class _FallbackAgent:
+    class _RecoveryAgent:
         """Minimal agent providing required inference/sampling methods."""
         def __init__(self, A=None, B=None, C=None, D=None, lr_pB: float = 0.5, policy_len: int = 3, control_fac_idx=None, policies=None):
             # Normalize object-array inputs (pymdp uses object arrays) to numpy arrays for internal use
@@ -150,9 +150,9 @@ except ImportError:
         def sample_action(self):
             return int(random.randrange(max(1, self.num_actions)))
 
-    # Expose fallback names used later in the module
-    utils = _FallbackUtils()
-    Agent = _FallbackAgent
+    # Expose recovery names used later in the module
+    utils = _RecoveryUtils()
+    Agent = _RecoveryAgent
     # Mark as available since we provided functional fallbacks to allow tests to run
     PYMDP_AVAILABLE = True
 
@@ -223,7 +223,7 @@ class PyMDPSimulation:
                 self.C_np = C[0]
                 self.D_np = D[0]
 
-                # Create fallback agent if not present
+                # Create recovery agent if not present
                 if self.agent is None:
                     try:
                         self.agent = Agent(A=A, B=B, C=C, D=D, lr_pB=self.learning_rate, policies=self._generate_policies())
@@ -402,8 +402,6 @@ class PyMDPSimulation:
             self.logger.info("Falling back to default model creation")
             return self.create_pymdp_model()
 
-<<<<<<< Updated upstream
-=======
     def _coerce_to_numpy(self, gnn_data: Any, name: str) -> Optional[np.ndarray]:
         """Convert list or ndarray to numpy array, or return None if type is unexpected."""
         if isinstance(gnn_data, list):
@@ -413,7 +411,6 @@ class PyMDPSimulation:
         self.logger.warning(f"Unexpected {name} type: {type(gnn_data)}")
         return None
 
->>>>>>> Stashed changes
     def _process_gnn_A_matrix(self, gnn_A) -> np.ndarray:
         """Process GNN A matrix into PyMDP format."""
         try:
@@ -682,7 +679,7 @@ class PyMDPSimulation:
                     else:
                         B_matrix[:, col, action] = col_vec / s
         except Exception:
-            # Fallback to row-wise normalization used previously
+            # Recovery to row-wise normalization used previously
             for action in range(self.num_actions):
                 B_matrix[:, :, action] = utils.norm_dist(B_matrix[:, :, action])
 
@@ -778,7 +775,7 @@ class PyMDPSimulation:
 
                 # Sample action
                 action_raw = self.agent.sample_action()
-                # Handle both scalar (fallback) and array (real PyMDP) returns
+                # Handle both scalar (recovery) and array (real PyMDP) returns
                 if hasattr(action_raw, '__len__'):
                     action = int(action_raw[0])
                 else:

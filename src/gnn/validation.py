@@ -129,7 +129,7 @@ class ValidationStrategy:
         elif validation_level_enum == ValidationLevel.ROUND_TRIP:
             return self._validate_round_trip(file_path)
         else:
-            return self._validate_standard(file_path)  # Default fallback
+            return self._validate_standard(file_path)  # Default recovery
 
     def _validate_basic(self, file_path: Path) -> ValidationResult:
         """Basic validation - file accessibility and format detection."""
@@ -168,7 +168,7 @@ class ValidationStrategy:
         if self.validators['gnn']:
             return self.validators['gnn'].validate_file(file_path, ValidationLevel.STANDARD)
         else:
-            # Fallback to basic validation
+            # Recovery to basic validation
             result = self._validate_basic(file_path)
             result.validation_level = ValidationLevel.STANDARD
             result.warnings.append("Using basic validation - GNN validator unavailable")

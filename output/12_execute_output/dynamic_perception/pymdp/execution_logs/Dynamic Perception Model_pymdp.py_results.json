@@ -1,0 +1,26 @@
+{
+  "framework": "pymdp",
+  "model_name": "dynamic_perception",
+  "script_name": "Dynamic Perception Model_pymdp.py",
+  "script_path": "output/11_render_output/dynamic_perception/pymdp/Dynamic Perception Model_pymdp.py",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 0.007944,
+  "timestamp": "2026-03-13T13:58:10.053900",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/dynamic_perception/pymdp')"
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 0,
+    "stderr_length": 98,
+    "output_directory": "output/12_execute_output/dynamic_perception/pymdp"
+  }
+}

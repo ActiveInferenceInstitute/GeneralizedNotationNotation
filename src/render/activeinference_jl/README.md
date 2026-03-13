@@ -92,7 +92,7 @@ Generated Julia code includes:
 
 ## Dependencies
 
-- `julia` - Julia runtime (optional, fallback: skip Julia generation)
+- `julia` - Julia runtime (optional, recovery: skip Julia generation)
 - `ActiveInference.jl` - Julia package (must be installed in Julia)
 
 ## Testing

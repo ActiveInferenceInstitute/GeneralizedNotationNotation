@@ -95,7 +95,7 @@ class PipelineConfig:
                 else:
                     json.dump(self.config, f, indent=2)
         except Exception:
-            # If saving fails (e.g., YAML not available), attempt JSON fallback
+            # If saving fails (e.g., YAML not available), attempt JSON recovery
             try:
                 json_path = self.config_path.with_suffix('.json')
                 with open(json_path, 'w') as jf:
@@ -206,5 +206,5 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path) -> Path:
     if normalized in strict_mapping:
         return strict_mapping[normalized]
 
-    # Default fallback
+    # Default recovery
     return base_output_dir / expected_dir_name

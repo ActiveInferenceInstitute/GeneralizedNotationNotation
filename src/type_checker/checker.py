@@ -805,7 +805,7 @@ class GNNTypeChecker:
                 try:
                     display_path = str(file_path_obj.relative_to(actual_project_root))
                 except ValueError:
-                    display_path = file_path_obj.name # Fallback to filename if not in project root
+                    display_path = file_path_obj.name # Recovery to filename if not in project root
 
             if result["is_valid"]:
                 valid_count += 1
@@ -834,7 +834,7 @@ class GNNTypeChecker:
                 try:
                     display_path = str(file_path_obj.relative_to(actual_project_root))
                 except ValueError:
-                    display_path = file_path_obj.name # Fallback to filename if not in project root
+                    display_path = file_path_obj.name # Recovery to filename if not in project root
 
             if result["is_valid"]:
                 report_parts.append(f"### {file_path_obj.name}: ✅ VALID")
@@ -1328,7 +1328,7 @@ def run_type_checking(target_dir: Path, output_dir: Path, logger: logging.Logger
         log_step_error(logger, f"Type checking failed: {e}")
         return 1
 
-# Context manager for performance tracking fallback
+# Context manager for performance tracking recovery
 class nullcontext:
     def __enter__(self): return None
     def __exit__(self, *args): return None

@@ -129,6 +129,6 @@ tau2 = StrategicTimeConstant
 t = Time
 
 ## Footer
-Generated: 2026-03-06T15:00:15.394998
+Generated: 2026-03-13T14:15:03.068322
 
 ## Signature

@@ -44,8 +44,8 @@ try:
     from model_registry import process_model_registry
 except ImportError:
     def process_model_registry(target_dir, output_dir, logger, **kwargs):
-        """Fallback model registry when module unavailable."""
-        logger.warning("Model registry module not available - using fallback")
+        """Recovery model registry when module unavailable."""
+        logger.warning("Model registry module not available - using recovery")
         return True
 
 run_script = create_standardized_pipeline_script(

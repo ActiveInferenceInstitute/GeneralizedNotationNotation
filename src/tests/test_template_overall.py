@@ -105,10 +105,10 @@ s->s
         """Test validation of non-existent file."""
         from template import validate_file
 
-        fake_path = safe_filesystem.temp_dir / "nonexistent.md"
-
-        # Should handle gracefully - may return dict with error info
-        result = validate_file(fake_path)
+        nonexistent_path = safe_filesystem.temp_dir / "nonexistent.md"
+        # Since file doesn't exist, it should return False
+        
+        result = validate_file(nonexistent_path)
         # Result can be dict with valid=False or error info
         assert result is not None
         if isinstance(result, dict):

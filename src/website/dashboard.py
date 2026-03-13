@@ -51,6 +51,19 @@ def render_dashboard(
     detail_html = _render_step_details(steps, step_dirs)
     stats_html = _render_stats(summary, step_dirs)
 
+    # Mermaid Dependency Graph
+    mermaid_graph = _render_mermaid_graph(summary)
+    graph_section = ""
+    if mermaid_graph:
+        graph_section = f"""  <div class="section">
+    <h2>Model Dependency Graph</h2>
+    <div class="mermaid-container" style="background: var(--surface); padding: 20px; border-radius: 8px;">
+      <pre class="mermaid">
+{mermaid_graph}
+      </pre>
+    </div>
+  </div>"""
+
     # Assemble full page
     timestamp = summary.get("timestamp", datetime.now().isoformat())
     total_dur = summary.get("total_duration", "N/A")
@@ -66,6 +79,7 @@ def render_dashboard(
         timeline=timeline_svg,
         details=detail_html,
         stats=stats_html,
+        graph_section=graph_section,
     )
 
     output_path = Path(output_path)
@@ -87,6 +101,27 @@ def _load_json(path: Path) -> dict:
         except (json.JSONDecodeError, OSError):
             pass
     return {}
+
+def _render_mermaid_graph(summary: dict) -> str:
+    target_dir = summary.get("target_dir")
+    if not target_dir:
+        return ""
+    
+    target_path = Path(target_dir)
+    if not target_path.exists():
+        return ""
+        
+    try:
+        from gnn.dep_graph import render_graph_from_file
+        # Find first .gnn file
+        gnn_files = list(target_path.glob("*.gnn"))
+        if not gnn_files:
+            return ""
+            
+        return render_graph_from_file(str(gnn_files[0]), output_format="mermaid")
+    except Exception as e:
+        logger.warning(f"Could not render dependency graph to dashboard: {e}")
+        return ""
 
 
 def _discover_step_dirs(results_dir: Path) -> List[Path]:
@@ -276,6 +311,7 @@ svg text {{ font-family: 'Inter', system-ui, sans-serif; }}
     <h2>Step Details</h2>
     {details}
   </div>
+  {graph_section}
 </div>
 <script>
 function showStep(name) {{
@@ -283,6 +319,10 @@ function showStep(name) {{
     el.style.display = el.id === 'step-' + name ? 'block' : 'none';
   }});
 }}
+</script>
+<script type="module">
+import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
+mermaid.initialize({{ startOnLoad: true, theme: 'dark' }});
 </script>
 </body>
 </html>"""

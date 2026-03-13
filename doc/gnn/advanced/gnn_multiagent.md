@@ -237,9 +237,9 @@ The simulation loop for a GNN MAS will need to define the order of operations:
 4. **Communication Propagation:** Messages are propagated through channels according to their type and latency.
 5. **Environment Update:** (If a shared environment is modeled) The environment state updates based on agent actions and its own dynamics.
 
-### 5.2. Robust Execution (`FallbackAgent`)
+### 5.2. Robust Execution (`RecoveryAgent`)
 
-The system includes a functional `FallbackAgent` (in `src/execute/pymdp/simple_simulation.py`) that ensures pipeline continuity when the full PyMDP library is unavailable. This is **not a mock**, but a lightweight agent implementation that provides:
+The system includes a functional `RecoveryAgent` (in `src/execute/pymdp/simple_simulation.py`) that ensures pipeline continuity when the full PyMDP library is unavailable. This is **not a simulated object**, but a lightweight agent implementation that provides:
 
 - **Uniform Beliefs**: Maintains valid probability distributions over states.
 - **Random Policy Selection**: Selects actions from valid behavioral ranges.

@@ -1,0 +1,26 @@
+{
+  "framework": "rxinfer",
+  "model_name": "simple_mdp",
+  "script_name": "simple_mdp_rxinfer.jl",
+  "script_path": "output/11_render_output/simple_mdp/rxinfer/simple_mdp_rxinfer.jl",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 1.180021,
+  "timestamp": "2026-03-13T13:58:11.544764",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/simple_mdp/rxinfer')"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 92,
+    "output_directory": "output/12_execute_output/simple_mdp/rxinfer"
+  }
+}

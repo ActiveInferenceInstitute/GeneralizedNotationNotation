@@ -165,7 +165,7 @@ class GNNVisualizer:
                     parsed_data = {"error": f"Parser failed: {e}"}
 
             if parsed_data is None:
-                # Fallback: basic file analysis
+                # Recovery: basic file analysis
                 try:
                     with open(file_path, 'r') as f:
                         content = f.read()
@@ -349,7 +349,7 @@ class GNNVisualizer:
                         serializable_data[k] = str(v)
                 json.dump(serializable_data, f, indent=2)
             except Exception as e:
-                # Fallback to simple format
+                # Recovery to simple format
                 json.dump({"error": f"Failed to serialize data: {str(e)}"}, f)
 
     def _visualize_state_space(self, parsed_data: Dict[str, Any], output_dir: Path) -> None:

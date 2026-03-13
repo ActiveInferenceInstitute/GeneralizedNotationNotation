@@ -460,7 +460,7 @@ def process_semantic_validation(model_data: Union[str, Path, Dict[str, Any]], **
             "errors": validation_result["errors"],
             "warnings": validation_result["warnings"],
             "semantic_score": semantic_score,
-            "fallback": False
+            "recovery": False
         }
 
     except Exception as e:
@@ -472,7 +472,7 @@ def process_semantic_validation(model_data: Union[str, Path, Dict[str, Any]], **
             "errors": [str(e)],
             "warnings": [],
             "semantic_score": 0.0,
-            "fallback": True
+            "recovery": True
         }
 
 def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
@@ -501,7 +501,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         return "\n\n".join(content_parts)
 
-    # Fallback: try to get variables and connections
+    # Recovery: try to get variables and connections
     variables = model_data.get("variables", [])
     connections = model_data.get("connections", [])
 
@@ -530,7 +530,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         return "\n\n".join(content_parts)
 
-    # Final fallback: return empty string
+    # Final recovery: return empty string
     return ""
 
 def _calculate_semantic_score(validation_result: Dict[str, Any]) -> float:

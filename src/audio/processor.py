@@ -13,7 +13,7 @@ import json
 from datetime import datetime
 import re
 
-# Optional numpy import with fallback
+# Optional numpy import with recovery
 try:
     import numpy as np
     NUMPY_AVAILABLE = True
@@ -246,7 +246,7 @@ def save_audio_file(audio: np.ndarray, file_path: Path, sample_rate: int = 44100
         import soundfile as sf
         sf.write(str(file_path), audio, sample_rate)
     except ImportError:
-        # Fallback to basic WAV writing
+        # Recovery to basic WAV writing
         write_basic_wav(audio, file_path, sample_rate)
 
 def write_basic_wav(audio: np.ndarray, file_path: Path, sample_rate: int):

@@ -20,7 +20,7 @@ src/execute/
 ├── executor.py              # GNNExecutor class (framework dispatch)
 ├── processor.py             # Main processor (Step 12 entry point)
 ├── validator.py             # Output validation
-├── fallback.py              # Fallback execution strategies
+├── recovery.py              # Recovery execution strategies
 ├── data_extractors.py       # Result data extraction
 ├── julia_setup.py           # Julia environment setup
 ├── install_dependencies.py  # Dependency management

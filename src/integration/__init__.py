@@ -1,7 +1,7 @@
 """
 integration module for GNN Processing Pipeline.
 
-This module provides integration capabilities with fallback implementations.
+This module provides integration capabilities with recovery implementations.
 """
 
 # Import processor functions - single source of truth

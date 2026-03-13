@@ -17,7 +17,7 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
   - `generate_recommendations()` — actionable optimization suggestions
   - `generate_executive_report()` — comprehensive markdown report
   - `_run_llm_analysis()` — LLM-powered insight generation
-  - `_generate_rule_based_summary()` — fallback when LLM unavailable
+  - `_generate_rule_based_summary()` — recovery when LLM unavailable
 - `analyzer.py` - Analysis helper classes (476 lines)
   - `IntelligentAnalyzer` — stateful analysis class with health scoring
   - `AnalysisContext` — dataclass for pipeline context
@@ -38,7 +38,7 @@ AI-powered pipeline analysis with LLM-backed insights, per-step flag detection, 
 - Performance bottleneck identification
 - Per-step yellow/red flag detection
 - Health scoring (success rate, warning rate, duration/memory efficiency)
-- LLM-powered executive insights (with rule-based fallback)
+- LLM-powered executive insights (with rule-based recovery)
 - Trend and comparative analysis
 
 ## Key Exports

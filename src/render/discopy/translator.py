@@ -463,7 +463,7 @@ def parse_gnn_content(gnn_content: str) -> dict:
                                 initializer = initializer_from_json
                             except json.JSONDecodeError as e_json:
                                 logger.warning(f"TensorDef: json.loads failed for '{box_name}' after attempting to unquote/prepare. Error: {e_json}. init_str_for_json_parse was: {init_str_for_json_parse}")
-                                initializer = init_str_raw.strip() # Fallback to stripped raw string
+                                initializer = init_str_raw.strip() # Recovery to stripped raw string
                         else:
                             # Not a JSON literal (e.g. "load:...", "random_normal", or a simple string name for a function)
                             logger.debug(f"TensorDef: Initializer for '{box_name}' not treated as direct JSON: {init_str_raw}")
@@ -869,7 +869,7 @@ def gnn_connections_to_discopy_matrix_diagram(
     if JAX_AVAILABLE and jnp and hasattr(jnp, default_dtype_str):
         jax_dtype = getattr(jnp, default_dtype_str)
     else:
-        # Fallback if JAX not available or dtype string not a jnp attribute
+        # Recovery if JAX not available or dtype string not a jnp attribute
         # Using the string name itself as a placeholder if actual jnp dtype can't be resolved.
         # This might be okay if it's only used for numpy array creation later,
         # or if the actual tensor_def provides a valid jax_array_data directly.
@@ -954,7 +954,7 @@ def gnn_connections_to_discopy_matrix_diagram(
             if JAX_AVAILABLE and jnp and hasattr(jnp, box_dtype_str):
                 current_jax_dtype = getattr(jnp, box_dtype_str)
             else:
-                current_jax_dtype = box_dtype_str # Fallback to string name
+                current_jax_dtype = box_dtype_str # Recovery to string name
                 logger.debug(f"JAX/jnp not fully available or '{box_dtype_str}' not in jnp for box '{box_name_short}'. Using '{current_jax_dtype}' as current_jax_dtype placeholder.")
 
             initializer = tensor_def.get("initializer")
@@ -997,7 +997,7 @@ def gnn_connections_to_discopy_matrix_diagram(
                         # this is more of a graceful degradation attempt.
                         # The proper fix is to not call this function if JAX is not available.
                         # For now, we make a numpy array, but this won't work if a JAX tensor is strictly required by DisCoPy.
-                        import numpy # Local import for this fallback
+                        import numpy # Local import for this recovery
                         jax_array_data = numpy.array(processed_initializer, dtype=default_dtype_str).reshape(box_shape)
 
                 except Exception as e:
@@ -1223,7 +1223,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
                 discopy_dims_map,
                 tensor_definitions,
                 key_provider, # Pass the potentially None key_provider
-                default_dtype_str=getattr(jnp, 'float32', 'float32') if JAX_AVAILABLE and jnp else 'float32' # Pass jnp.dtype or fallback
+                default_dtype_str=getattr(jnp, 'float32', 'float32') if JAX_AVAILABLE and jnp else 'float32' # Pass jnp.dtype or recovery
             )
 
         if diagram:
@@ -1234,7 +1234,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
                 # Check if it's a JAX array (if jnp is not None and it's an instance)
                 if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                     logger.info(f"  First box data (JAX array): {first_box_data}")
-                elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as recovery
                     logger.info(f"  First box data (NumPy array): {first_box_data}")
                 elif isinstance(first_box_data, PlaceholderBase):
                     logger.info(f"  First box data is a Placeholder: {type(first_box_data)} (data: {getattr(first_box_data, 'args', '')})")
@@ -1262,7 +1262,7 @@ def gnn_file_to_discopy_matrix_diagram(gnn_file_path: Path, verbose: bool = Fals
                         # Check if it's a JAX array (if jnp is not None and it's an instance)
                         if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                             logger.info(f"  First box data (JAX array): {first_box_data}")
-                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as recovery
                             logger.info(f"  First box data (NumPy array): {first_box_data}")
                         else:
                             logger.info(f"  First box data type: {type(first_box_data)}")
@@ -1640,7 +1640,7 @@ B > C
                     # Check if it's a JAX array (if jnp is not None and it's an instance)
                     if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                         logger.info(f"  First box data (JAX array): {first_box_data}")
-                    elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                    elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as recovery
                         logger.info(f"  First box data (NumPy array): {first_box_data}")
 
                     else:
@@ -1667,7 +1667,7 @@ B > C
                         # Check if it's a JAX array (if jnp is not None and it's an instance)
                         if JAX_AVAILABLE and jnp and isinstance(first_box_data, jnp.ndarray):
                             logger.info(f"  First box data (JAX array): {first_box_data}")
-                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as fallback
+                        elif isinstance(first_box_data, numpy.ndarray): # Check for numpy array if JAX not used or as recovery
                             logger.info(f"  First box data (NumPy array): {first_box_data}")
                         else:
                             logger.info(f"  First box data type: {type(first_box_data)}")

@@ -1,25 +1,40 @@
 {
-  "timestamp": "2026-03-06T15:12:24.294211",
+  "timestamp": "2026-03-13T11:37:05.439591",
   "analysis": {
     "overall_status": "SUCCESS",
-    "total_duration": 1322.767265,
+    "total_duration": 554.587273,
     "step_count": 23,
     "failures": [
       {
         "step": "2_tests.py",
         "error": "No error captured",
-        "duration": 601.4226748943329,
+        "duration": 458.83509397506714,
+        "exit_code": 1
+      },
+      {
+        "step": "12_execute.py",
+        "error": "\n--- Stderr for discrete ---\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py\", line 40, in <module>\n    from execute import process_execute\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/__init__.py\", line 30, in <module>\n    from .executor import ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/executor.py\", line 18, in <module>\n    from .pymdp.pymdp_runner import run_pymdp_scripts\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 16, in <module>\n    from .pymdp_simulation import PyMDPSimulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_simulation.py\", line 405\n    <<<<<<< Updated upstream\n    ^^\nSyntaxError: invalid syntax\n\n",
+        "duration": 0.3637669086456299,
         "exit_code": 1
       }
     ],
-    "warnings": [],
+    "warnings": [
+      {
+        "step": "21_mcp.py",
+        "message": "1_mcp_output/mcp_results.json\n2026-03-13 11:36:47,551 - 21_mcp.py - INFO - \ud83d\udd27 Registered tools saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/output/21_mcp_output/registered_tools.json\n2026-03-13 11:36:47,551 - 21_mcp.py - INFO - \u2705 MCP summary saved to: /Users/4d/Documents/GitHub/generalizednotationnotation/output/21_mcp_output/mcp_processing_summary.json\n2026-03-13 11:36:47,551 - 21_mcp.py - INFO - \u2705 MCP processing completed successfully - 114 tools from 31 modules registered\n\n"
+      },
+      {
+        "step": "22_gui.py",
+        "message": "\n--- Output for discrete ---\n2026-03-13 11:36:49,235 - 22_gui.py - WARNING - GUI module not available - using fallback\n2026-03-13 11:36:49,235 - 22_gui.py - INFO - Install GUI support with: uv pip install -e .[gui]\n\n"
+      }
+    ],
     "performance_metrics": {
-      "peak_memory_mb": 70.125,
-      "successful_steps": 22,
-      "failed_steps": 1,
-      "warning_count": 0
+      "peak_memory_mb": 84.78125,
+      "successful_steps": 21,
+      "failed_steps": 2,
+      "warning_count": 3
     },
-    "health_score": 95.65217391304348
+    "health_score": 81.30434782608695
   },
   "step_analyses": [
     {
@@ -27,311 +42,307 @@
       "script_name": "0_template.py",
       "description": "Template initialization",
       "status": "SUCCESS",
-      "duration_seconds": 1.1123549938201904,
-      "memory_mb": 70.125,
+      "duration_seconds": 0.5103797912597656,
+      "memory_mb": 84.78125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 1.11s"
+      "summary": "Completed successfully in 0.51s"
     },
     {
       "step_number": 2,
       "script_name": "1_setup.py",
       "description": "Environment setup",
       "status": "SUCCESS",
-      "duration_seconds": 8.073961973190308,
-      "memory_mb": 28.109375,
+      "duration_seconds": 3.2056450843811035,
+      "memory_mb": 76.9375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 8.07s"
+      "summary": "Completed successfully in 3.21s"
     },
     {
       "step_number": 3,
       "script_name": "2_tests.py",
       "description": "Test suite execution",
       "status": "FAILED",
-      "duration_seconds": 601.4226748943329,
-      "memory_mb": 25.046875,
+      "duration_seconds": 458.83509397506714,
+      "memory_mb": 68.8125,
       "exit_code": 1,
       "flags": [
         "FAILED with exit code 1",
-        "Very slow: 601.4s (>120.0s threshold)"
+        "Very slow: 458.8s (>120.0s threshold)"
       ],
       "flag_type": "red",
-      "summary": "FAILED after 601.42s"
+      "summary": "FAILED after 458.84s"
     },
     {
       "step_number": 4,
       "script_name": "3_gnn.py",
       "description": "GNN file processing",
       "status": "SUCCESS",
-      "duration_seconds": 3.106698989868164,
-      "memory_mb": 19.515625,
+      "duration_seconds": 2.885150194168091,
+      "memory_mb": 36.59375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 3.11s"
+      "summary": "Completed successfully in 2.89s"
     },
     {
       "step_number": 5,
       "script_name": "4_model_registry.py",
       "description": "Model registry",
       "status": "SUCCESS",
-      "duration_seconds": 0.4314231872558594,
-      "memory_mb": 19.984375,
+      "duration_seconds": 0.3441159725189209,
+      "memory_mb": 37.09375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.43s"
+      "summary": "Completed successfully in 0.34s"
     },
     {
       "step_number": 6,
       "script_name": "5_type_checker.py",
       "description": "Type checking",
       "status": "SUCCESS",
-      "duration_seconds": 2.6265950202941895,
-      "memory_mb": 19.796875,
+      "duration_seconds": 2.486149787902832,
+      "memory_mb": 38.0625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 2.63s"
+      "summary": "Completed successfully in 2.49s"
     },
     {
       "step_number": 7,
       "script_name": "6_validation.py",
       "description": "Validation",
       "status": "SUCCESS",
-      "duration_seconds": 2.5734949111938477,
-      "memory_mb": 17.359375,
+      "duration_seconds": 2.3889358043670654,
+      "memory_mb": 38.4375,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 2.57s"
+      "summary": "Completed successfully in 2.39s"
     },
     {
       "step_number": 8,
       "script_name": "7_export.py",
       "description": "Multi-format export",
       "status": "SUCCESS",
-      "duration_seconds": 0.40651702880859375,
-      "memory_mb": 19.203125,
+      "duration_seconds": 0.3465549945831299,
+      "memory_mb": 38.578125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.41s"
+      "summary": "Completed successfully in 0.35s"
     },
     {
       "step_number": 9,
       "script_name": "8_visualization.py",
       "description": "Visualization",
       "status": "SUCCESS",
-      "duration_seconds": 2.209266185760498,
-      "memory_mb": 19.5,
+      "duration_seconds": 2.3500349521636963,
+      "memory_mb": 38.578125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 2.21s"
+      "summary": "Completed successfully in 2.35s"
     },
     {
       "step_number": 10,
       "script_name": "9_advanced_viz.py",
       "description": "Advanced visualization",
       "status": "SUCCESS",
-      "duration_seconds": 27.416693925857544,
-      "memory_mb": 17.140625,
+      "duration_seconds": 13.516026973724365,
+      "memory_mb": 38.5625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 27.42s"
+      "summary": "Completed successfully in 13.52s"
     },
     {
       "step_number": 11,
       "script_name": "10_ontology.py",
       "description": "Ontology processing",
       "status": "SUCCESS",
-      "duration_seconds": 0.9893238544464111,
-      "memory_mb": 19.328125,
+      "duration_seconds": 0.805382251739502,
+      "memory_mb": 34.90625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.99s"
+      "summary": "Completed successfully in 0.81s"
     },
     {
       "step_number": 12,
       "script_name": "11_render.py",
       "description": "Code rendering",
       "status": "SUCCESS",
-      "duration_seconds": 0.5845482349395752,
-      "memory_mb": 20.375,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 0.58s"
-    },
-    {
-      "step_number": 13,
-      "script_name": "12_execute.py",
-      "description": "Execution",
-      "status": "SUCCESS",
-      "duration_seconds": 565.9758670330048,
-      "memory_mb": 20.40625,
-      "exit_code": 0,
-      "flags": [
-        "Very slow: 566.0s (>120.0s threshold)"
-      ],
-      "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 565.98s"
-    },
-    {
-      "step_number": 14,
-      "script_name": "14_ml_integration.py",
-      "description": "ML integration",
-      "status": "SUCCESS",
-      "duration_seconds": 2.1797850131988525,
-      "memory_mb": 15.765625,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 2.18s"
-    },
-    {
-      "step_number": 15,
-      "script_name": "15_audio.py",
-      "description": "Audio processing",
-      "status": "SUCCESS",
-      "duration_seconds": 4.307384252548218,
-      "memory_mb": 15.875,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 4.31s"
-    },
-    {
-      "step_number": 16,
-      "script_name": "16_analysis.py",
-      "description": "Analysis",
-      "status": "SUCCESS",
-      "duration_seconds": 90.08232617378235,
-      "memory_mb": 15.84375,
-      "exit_code": 0,
-      "flags": [
-        "Slow: 90.1s (>60.0s threshold)"
-      ],
-      "flag_type": "yellow",
-      "summary": "Completed with 1 flag(s) in 90.08s"
-    },
-    {
-      "step_number": 17,
-      "script_name": "17_integration.py",
-      "description": "Integration",
-      "status": "SUCCESS",
-      "duration_seconds": 0.5684812068939209,
-      "memory_mb": 19.484375,
-      "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 0.57s"
-    },
-    {
-      "step_number": 18,
-      "script_name": "18_security.py",
-      "description": "Security",
-      "status": "SUCCESS",
-      "duration_seconds": 0.40836286544799805,
-      "memory_mb": 19.546875,
+      "duration_seconds": 0.4073028564453125,
+      "memory_mb": 36.546875,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
       "summary": "Completed successfully in 0.41s"
     },
     {
+      "step_number": 13,
+      "script_name": "12_execute.py",
+      "description": "Execution",
+      "status": "FAILED",
+      "duration_seconds": 0.3637669086456299,
+      "memory_mb": 37.390625,
+      "exit_code": 1,
+      "flags": [
+        "FAILED with exit code 1",
+        "Error output captured"
+      ],
+      "flag_type": "red",
+      "summary": "FAILED after 0.36s"
+    },
+    {
+      "step_number": 14,
+      "script_name": "14_ml_integration.py",
+      "description": "ML integration",
+      "status": "SUCCESS",
+      "duration_seconds": 1.5713720321655273,
+      "memory_mb": 37.625,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 1.57s"
+    },
+    {
+      "step_number": 15,
+      "script_name": "15_audio.py",
+      "description": "Audio processing",
+      "status": "SUCCESS",
+      "duration_seconds": 2.475537061691284,
+      "memory_mb": 37.84375,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 2.48s"
+    },
+    {
+      "step_number": 16,
+      "script_name": "16_analysis.py",
+      "description": "Analysis",
+      "status": "SUCCESS",
+      "duration_seconds": 54.942883014678955,
+      "memory_mb": 37.84375,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 54.94s"
+    },
+    {
+      "step_number": 17,
+      "script_name": "17_integration.py",
+      "description": "Integration",
+      "status": "SUCCESS",
+      "duration_seconds": 0.6096611022949219,
+      "memory_mb": 33.890625,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.61s"
+    },
+    {
+      "step_number": 18,
+      "script_name": "18_security.py",
+      "description": "Security",
+      "status": "SUCCESS",
+      "duration_seconds": 0.34191012382507324,
+      "memory_mb": 34.46875,
+      "exit_code": 0,
+      "flags": [],
+      "flag_type": "none",
+      "summary": "Completed successfully in 0.34s"
+    },
+    {
       "step_number": 19,
       "script_name": "19_research.py",
       "description": "Research",
       "status": "SUCCESS",
-      "duration_seconds": 0.471782922744751,
-      "memory_mb": 19.421875,
+      "duration_seconds": 0.35043811798095703,
+      "memory_mb": 35.015625,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.47s"
+      "summary": "Completed successfully in 0.35s"
     },
     {
       "step_number": 20,
       "script_name": "20_website.py",
       "description": "Website generation",
       "status": "SUCCESS",
-      "duration_seconds": 0.6661241054534912,
-      "memory_mb": 19.8125,
+      "duration_seconds": 0.40062689781188965,
+      "memory_mb": 35.703125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.67s"
+      "summary": "Completed successfully in 0.40s"
     },
     {
       "step_number": 21,
       "script_name": "21_mcp.py",
       "description": "Model Context Protocol processing",
-      "status": "SUCCESS",
-      "duration_seconds": 4.221055030822754,
-      "memory_mb": 19.828125,
+      "status": "SUCCESS_WITH_WARNINGS",
+      "duration_seconds": 3.3947460651397705,
+      "memory_mb": 35.75,
       "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 4.22s"
+      "flags": [
+        "Step completed with warnings"
+      ],
+      "flag_type": "yellow",
+      "summary": "Status: SUCCESS_WITH_WARNINGS (3.39s)"
     },
     {
       "step_number": 22,
       "script_name": "22_gui.py",
       "description": "GUI (Interactive GNN Constructor)",
-      "status": "SUCCESS",
-      "duration_seconds": 1.7556328773498535,
-      "memory_mb": 18.796875,
+      "status": "SUCCESS_WITH_WARNINGS",
+      "duration_seconds": 1.445322036743164,
+      "memory_mb": 36.671875,
       "exit_code": 0,
-      "flags": [],
-      "flag_type": "none",
-      "summary": "Completed successfully in 1.76s"
+      "flags": [
+        "Step completed with warnings"
+      ],
+      "flag_type": "yellow",
+      "summary": "Status: SUCCESS_WITH_WARNINGS (1.45s)"
     },
     {
       "step_number": 23,
       "script_name": "23_report.py",
       "description": "Report generation",
       "status": "SUCCESS",
-      "duration_seconds": 0.5758399963378906,
-      "memory_mb": 19.671875,
+      "duration_seconds": 0.5660970211029053,
+      "memory_mb": 37.578125,
       "exit_code": 0,
       "flags": [],
       "flag_type": "none",
-      "summary": "Completed successfully in 0.58s"
+      "summary": "Completed successfully in 0.57s"
     }
   ],
   "flags_summary": {
-    "red_count": 1,
+    "red_count": 2,
     "yellow_count": 2,
-    "green_count": 20
+    "green_count": 19
   },
   "bottlenecks": [
     {
       "step": "2_tests.py",
-      "duration_seconds": 601.4226748943329,
+      "duration_seconds": 458.83509397506714,
       "threshold_exceeded": true,
-      "above_average_ratio": 10.462165481356331,
-      "memory_mb": 25.046875
-    },
-    {
-      "step": "12_execute.py",
-      "duration_seconds": 565.9758670330048,
-      "threshold_exceeded": true,
-      "above_average_ratio": 9.845543619375132,
-      "memory_mb": 20.40625
+      "above_average_ratio": 19.030453238050114,
+      "memory_mb": 68.8125
     },
     {
       "step": "16_analysis.py",
-      "duration_seconds": 90.08232617378235,
-      "threshold_exceeded": true,
-      "above_average_ratio": 1.5670446804174996,
-      "memory_mb": 15.84375
+      "duration_seconds": 54.942883014678955,
+      "threshold_exceeded": false,
+      "above_average_ratio": 2.2787881304286683,
+      "memory_mb": 37.84375
     }
   ],
   "failures": [
@@ -341,11 +352,27 @@
       "description": "Test suite execution",
       "exit_code": 1,
       "error_output": null,
-      "stdout_tail": "14:50:13,880 - 2_tests.py - INFO - \u2705 All test dependencies available\n2026-03-06 14:50:13,880 - 2_tests.py - INFO - \u26a1 Running fast test suite with reliability improvements\n2026-03-06 14:50:13,880 - 2_tests.py - INFO - Running reliable fast test subset (timeout: 600s)\n2026-03-06 14:50:13,880 - 2_tests.py - INFO - Executing reliable tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=3 --durations=3 -v /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_core_modules.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_fast_suite.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_main_orchestrator.py\n2026-03-06 15:00:13,960 - 2_tests.py - ERROR - Reliable test execution timed out\n2026-03-06 15:00:13,990 - 2_tests.py - ERROR - \u274c Test execution failed\n2026-03-06 15:00:13,992 - 2_tests.py - ERROR - \ud83d\udca1 Check that test files exist and follow pytest naming conventions (test_*.py)\n",
-      "duration": 601.4226748943329,
-      "memory_at_failure": 25.046875,
+      "stdout_tail": "39,437 - 2_tests.py - INFO - \u2705 All test dependencies available\n2026-03-13 11:27:39,437 - 2_tests.py - INFO - \u26a1 Running fast test suite with reliability improvements\n2026-03-13 11:27:39,437 - 2_tests.py - INFO - Running reliable fast test subset (timeout: 600s)\n2026-03-13 11:27:39,437 - 2_tests.py - INFO - Executing reliable tests: /Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python -m pytest --tb=short --maxfail=3 --durations=3 -v /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_core_modules.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_fast_suite.py /Users/4d/Documents/GitHub/generalizednotationnotation/src/tests/test_main_orchestrator.py\n2026-03-13 11:35:17,836 - 2_tests.py - WARNING - Reliable fast tests had some failures\n2026-03-13 11:35:17,837 - 2_tests.py - ERROR - \u274c Test execution failed\n2026-03-13 11:35:17,837 - 2_tests.py - ERROR - \ud83d\udca1 Check that test files exist and follow pytest naming conventions (test_*.py)\n",
+      "duration": 458.83509397506714,
+      "memory_at_failure": 68.8125,
       "preceding_step": {
         "name": "1_setup.py",
+        "status": "SUCCESS"
+      },
+      "dependency_warnings": [],
+      "prerequisite_check_passed": true
+    },
+    {
+      "step_number": 13,
+      "step_name": "12_execute.py",
+      "description": "Execution",
+      "exit_code": 1,
+      "error_output": "\n--- Stderr for discrete ---\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/12_execute.py\", line 40, in <module>\n    from execute import process_execute\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/__init__.py\", line 30, in <module>\n    from .executor import ExecutionEngine, GNNExecutor, execute_gnn_model, run_simulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/executor.py\", line 18, in <module>\n    from .pymdp.pymdp_runner import run_pymdp_scripts\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/__init__.py\", line 16, in <module>\n    from .pymdp_simulation import PyMDPSimulation\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/src/execute/pymdp/pymdp_simulation.py\", line 405\n    <<<<<<< Updated upstream\n    ^^\nSyntaxError: invalid syntax\n\n",
+      "stdout_tail": "\n--- Output for discrete ---\n\n",
+      "duration": 0.3637669086456299,
+      "memory_at_failure": 37.390625,
+      "preceding_step": {
+        "name": "11_render.py",
         "status": "SUCCESS"
       },
       "dependency_warnings": [],
@@ -353,13 +380,14 @@
     }
   ],
   "recommendations": [
-    "\ud83d\udd34 **CRITICAL**: 1 step(s) have red flags requiring immediate attention.",
-    "   \u21b3 **2_tests.py**: FAILED with exit code 1, Very slow: 601.4s (>120.0s threshold)",
+    "\ud83d\udd34 **CRITICAL**: 2 step(s) have red flags requiring immediate attention.",
+    "   \u21b3 **2_tests.py**: FAILED with exit code 1, Very slow: 458.8s (>120.0s threshold)",
+    "   \u21b3 **12_execute.py**: FAILED with exit code 1, Error output captured",
     "\ud83d\udfe1 **WARNINGS**: 2 step(s) have yellow flags that should be reviewed.",
-    "   \u21b3 **12_execute.py**: Very slow: 566.0s (>120.0s threshold)",
-    "   \u21b3 **16_analysis.py**: Slow: 90.1s (>60.0s threshold)",
-    "\u26a1 **Performance**: Slowest step is **2_tests.py** (601.4s). Consider parallelization or caching.",
-    "\u2705 **Health**: Pipeline health is good (96/100)."
+    "   \u21b3 **21_mcp.py**: Step completed with warnings",
+    "   \u21b3 **22_gui.py**: Step completed with warnings",
+    "\u26a1 **Performance**: Slowest step is **2_tests.py** (458.8s). Consider parallelization or caching.",
+    "\u26a0\ufe0f **Health**: Pipeline health needs attention (81/100)."
   ],
   "llm_analysis_available": true
 }

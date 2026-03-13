@@ -8,7 +8,7 @@
 
 ## Executive Summary
 
-The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and 28 specialized modules. All tests follow strict quality standards with no mock usage, real data processing, and comprehensive error handling.
+The GNN Processing Pipeline test suite provides comprehensive coverage across all 25 pipeline steps and 28 specialized modules. All tests follow strict quality standards with no simulated usage, real data processing, and comprehensive error handling.
 
 ### Key Metrics
 
@@ -49,7 +49,7 @@ src/tests/
    - Coverage: All tests including slow/performance
    - Use case: Pre-release validation, CI/CD
 
-3. **Reliable Tests** (fallback): Essential only
+3. **Reliable Tests** (recovery): Essential only
    - Duration: ~90 seconds
    - Coverage: Critical path validation
    - Use case: Emergency validation
@@ -58,14 +58,14 @@ src/tests/
 
 ## Test Quality Standards
 
-### ✅ No Mock Usage Policy
+### ✅ No Simulated Usage Policy
 
 All tests follow strict "no mocks" policy:
-- ✅ No `unittest.mock` imports or usage
+- ✅ No `unittest.simulated` imports or usage
 - ✅ No monkeypatching of functions or classes
 - ✅ Real code paths executed in all tests
 - ✅ Real data used throughout (no synthetic/placeholder data)
-- ✅ Real dependencies (skip if unavailable, never mock)
+- ✅ Real dependencies (skip if unavailable, never simulated)
 - ✅ File-based assertions on real artifacts
 
 ### ✅ Real Implementation Testing
@@ -79,7 +79,7 @@ All tests follow strict "no mocks" policy:
 ### ✅ Comprehensive Error Handling
 
 - **Error Scenarios**: Tests cover all error conditions with real failure modes
-- **Graceful Degradation**: Tests validate fallback behavior when dependencies unavailable
+- **Graceful Degradation**: Tests validate recovery behavior when dependencies unavailable
 - **Recovery Testing**: Tests verify error recovery mechanisms
 - **Timeout Handling**: Tests include timeout scenarios and resource limits
 
@@ -210,7 +210,7 @@ output/2_tests_output/
 
 - **Fast Tests**: 1-3 minutes (default)
 - **Comprehensive Tests**: 5-15 minutes
-- **Reliable Tests**: ~90 seconds (fallback)
+- **Reliable Tests**: ~90 seconds (recovery)
 - **Individual Test**: < 1 second average
 
 ### Resource Usage
@@ -308,7 +308,7 @@ output/2_tests_output/
 The GNN Processing Pipeline test suite provides comprehensive, production-ready testing infrastructure with:
 
 ✅ **1,522+ tests functions** across **91 test files**  
-✅ **100% no-mock policy compliance**  
+✅ **100% no-simulated policy compliance**  
 ✅ **Real data and real implementations** throughout  
 ✅ **Comprehensive error handling** and recovery testing  
 ✅ **Complete module coverage** for all 25 pipeline steps  

@@ -5,7 +5,7 @@
 Orchestrates Model Context Protocol (MCP) processing. Discovers all pipeline modules, registers every module's domain-specific tools, and serves them as MCP-compatible tools accessible to AI agents and IDE extensions.
 
 **Last Updated**: March 6, 2026  
-**Status**: ✅ All tools real (no stubs), 0 skips, 1,522+ tests passing
+**Status**: ✅ All tools real (no placeholders), 0 skips, 1,522+ tests passing
 
 ## Usage
 
@@ -25,7 +25,7 @@ python src/21_mcp.py --target-dir input/gnn_files --output-dir output --verbose
 
 ## MCP Tool Registry (131 real tools)
 
-All tools are real named callable functions — no stubs, no lambdas, no generic wrappers. Each tool has a non-empty description and its `register_tools()` calls `logger.info`.
+All tools are real named callable functions — no placeholders, no lambdas, no generic wrappers. Each tool has a non-empty description and its `register_tools()` calls `logger.info`.
 
 ### GNN Core (gnn module)
 
@@ -222,8 +222,8 @@ All tools verified by `src/tests/test_mcp_audit.py` (1,522+ tests, 0 failures, 0
 - ✅ Every tool has a callable named function (no lambdas, no `None`)
 - ✅ Every tool has a non-empty description
 - ✅ Every `register_tools()` calls `logger.info` with tool count
-- ✅ Zero generic stubs (`list_functions` / `call_function` removed)
-- ✅ Zero async fallback timing issues (fixture polls for stabilisation)
+- ✅ Zero generic placeholders (`list_functions` / `call_function` removed)
+- ✅ Zero async polling timing issues (fixture polls for stabilisation)
 
 Run the audit:
 

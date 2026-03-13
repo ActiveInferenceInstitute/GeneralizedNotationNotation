@@ -140,9 +140,9 @@ success, message, files = render_gnn_to_jax(
 - `jax.numpy` - JAX numpy operations
 
 ### Optional Dependencies
-- `optax` - Gradient-based optimization (fallback: basic SGD)
-- `flax` - Neural network library (fallback: basic operations)
-- `distrax` - Probability distributions (fallback: basic distributions)
+- `optax` - Gradient-based optimization (recovery: basic SGD)
+- `flax` - Neural network library (recovery: basic operations)
+- `distrax` - Probability distributions (recovery: basic distributions)
 
 ### Internal Dependencies
 - `render.renderer` - Base rendering functionality
@@ -403,7 +403,7 @@ batch_simulate = vmap(simulation_step, in_axes=(0, 0, None, 0))
 ### Recovery Strategies
 - **Shape Validation**: Comprehensive dimension checking before generation
 - **Type Conversion**: Automatic dtype conversion when possible
-- **Fallback Implementation**: Non-JIT version when compilation fails
+- **Recovery Implementation**: Non-JIT version when compilation fails
 
 ### Error Examples
 ```python
@@ -411,7 +411,7 @@ try:
     jax_code = generate_jax_code(model_data)
 except JAXGenerationError as e:
     logger.error(f"JAX generation failed: {e}")
-    # Fallback to basic template
+    # Recovery to basic template
     jax_code = generate_basic_jax_template(model_data)
 ```
 

@@ -532,7 +532,7 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 ### MCP Tools (Step 21)
 
-The MCP step exposes every pipeline module as a callable tool. As of v2.0.0 there are **131 real tools** (no stubs, no lambdas) across 38+ domains:
+The MCP step exposes every pipeline module as a callable tool. As of v2.0.0 there are **131 real tools** (no placeholders, no lambdas) across 38+ domains:
 
 ```bash
 # Run the MCP audit to list all tools

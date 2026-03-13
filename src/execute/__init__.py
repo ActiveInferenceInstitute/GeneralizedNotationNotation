@@ -51,9 +51,9 @@ try:
     ERROR_RECOVERY_AVAILABLE = True
 except ImportError as e:
     import logging as _log
-    _log.getLogger(__name__).warning(f"Execute module import failed: {e} - using fallback")
-    # Import fallback functions
-    from .fallback import (
+    _log.getLogger(__name__).warning(f"Execute module import failed: {e} - using recovery")
+    # Import recovery functions
+    from .recovery import (
         ExecutionEngine,
         PyMdpExecutor,
         execute_simulation_from_gnn,

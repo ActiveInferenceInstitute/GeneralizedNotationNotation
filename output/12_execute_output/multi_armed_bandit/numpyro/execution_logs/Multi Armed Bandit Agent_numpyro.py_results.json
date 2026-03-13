@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/numpyro/Multi Armed Bandit Agent_numpyro.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.361242,
-  "timestamp": "2026-03-06T15:01:20.446648",
+  "execution_time": 0.902118,
+  "timestamp": "2026-03-13T14:15:25.184043",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,19 +14,19 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.748s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "NumPyro POMDP simulation complete: 15 timesteps in 0.530s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
     "raw_error": ""
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 212,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/multi_armed_bandit/numpyro"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/numpyro"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/multi_armed_bandit/numpyro/simulation_data/numpyro_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/numpyro/simulation_data/numpyro_simulation_results.json"
     ],
     "traces": [],
     "other": []

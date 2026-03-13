@@ -117,11 +117,11 @@ success = process_ml_integration(
 - `scikit-learn` - Traditional ML algorithms
 
 ### Optional Dependencies
-- `torch` - PyTorch deep learning (fallback: simplified models)
-- `tensorflow` - TensorFlow/Keras (fallback: scikit-learn)
-- `jax` - JAX high-performance computing (fallback: numpy)
-- `flax` - JAX neural networks (fallback: basic implementations)
-- `optax` - JAX optimization (fallback: basic optimizers)
+- `torch` - PyTorch deep learning (recovery: simplified models)
+- `tensorflow` - TensorFlow/Keras (recovery: scikit-learn)
+- `jax` - JAX high-performance computing (recovery: numpy)
+- `flax` - JAX neural networks (recovery: basic implementations)
+- `optax` - JAX optimization (recovery: basic optimizers)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing
@@ -230,7 +230,7 @@ output/14_ml_integration_output/
 ## Error Handling
 
 ### Graceful Degradation
-- **No ML frameworks**: Fallback to statistical analysis only
+- **No ML frameworks**: Recovery to statistical analysis only
 - **Training failures**: Generate model evaluation report
 - **Memory issues**: Reduce batch size and complexity
 

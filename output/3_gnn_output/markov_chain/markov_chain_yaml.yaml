@@ -53,10 +53,10 @@ connections:
   target_variables:
   - s_prime
   weight: null
-created_at: '2026-03-06T15:00:16.274019'
+created_at: '2026-03-13T14:15:03.920855'
 equations: []
 model_name: Simple Markov Chain
-modified_at: '2026-03-06T15:00:16.274020'
+modified_at: '2026-03-13T14:15:03.920855'
 ontology_mappings:
 - description: null
   ontology_term: EmissionMatrix

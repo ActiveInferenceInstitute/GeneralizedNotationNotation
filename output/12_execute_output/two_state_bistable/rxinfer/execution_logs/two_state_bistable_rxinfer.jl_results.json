@@ -1,0 +1,26 @@
+{
+  "framework": "rxinfer",
+  "model_name": "two_state_bistable",
+  "script_name": "two_state_bistable_rxinfer.jl",
+  "script_path": "output/11_render_output/two_state_bistable/rxinfer/two_state_bistable_rxinfer.jl",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 1.143214,
+  "timestamp": "2026-03-13T13:58:16.300814",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/two_state_bistable/rxinfer')"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 100,
+    "output_directory": "output/12_execute_output/two_state_bistable/rxinfer"
+  }
+}

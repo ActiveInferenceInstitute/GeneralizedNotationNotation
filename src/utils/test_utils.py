@@ -118,7 +118,7 @@ class TestRunner:
             actual_runner = ActualTestRunner(config=self.config)
             return actual_runner.run_tests(test_paths, output_dir)
         except ImportError:
-            self.logger.warning("Actual TestRunner not available, using fallback")
+            self.logger.warning("Actual TestRunner not available, using recovery")
             return {"success": False, "error": "TestRunner not available"}
 
 # Add TestResult class definition

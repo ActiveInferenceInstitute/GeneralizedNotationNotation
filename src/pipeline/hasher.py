@@ -43,7 +43,9 @@ def compute_run_hash(
     target_dir = Path(target_dir)
     file_hashes = []
     if target_dir.exists():
-        for f in sorted(target_dir.rglob("*.md")):
+        md_files = list(target_dir.rglob("*.md"))
+        gnn_files = list(target_dir.rglob("*.gnn"))
+        for f in sorted(md_files + gnn_files):
             try:
                 content = f.read_bytes()
                 fh = hashlib.sha256(content).hexdigest()

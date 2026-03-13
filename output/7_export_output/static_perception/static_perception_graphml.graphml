@@ -1,0 +1,22 @@
+<?xml version="1.0" ?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns">
+  <key id="d0" for="node" attr.name="label" attr.type="string"/>
+  <key id="d1" for="edge" attr.name="weight" attr.type="double"/>
+  <graph id="G" edgedefault="directed">
+    <node id="n0">
+      <data key="d0">A</data>
+    </node>
+    <node id="n1">
+      <data key="d0">D</data>
+    </node>
+    <node id="n2">
+      <data key="d0">s</data>
+    </node>
+    <node id="n3">
+      <data key="d0">o</data>
+    </node>
+    <edge id="e0" source="" target=""/>
+    <edge id="e1" source="" target=""/>
+    <edge id="e2" source="" target=""/>
+  </graph>
+</graphml>

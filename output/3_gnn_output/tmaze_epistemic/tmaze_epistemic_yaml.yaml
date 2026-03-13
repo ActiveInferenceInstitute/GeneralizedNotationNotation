@@ -153,10 +153,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-03-06T15:00:16.280599'
+created_at: '2026-03-13T14:15:03.927550'
 equations: []
 model_name: T-Maze Epistemic Foraging Agent
-modified_at: '2026-03-06T15:00:16.280600'
+modified_at: '2026-03-13T14:15:03.927551'
 ontology_mappings:
 - description: null
   ontology_term: LocationLikelihoodMatrix

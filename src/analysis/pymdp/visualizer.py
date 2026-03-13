@@ -51,7 +51,7 @@ class PyMDPVisualizer:
             style: Matplotlib style to use
             save_dir: Directory to save visualizations
         """
-        # Normalize legacy calling conventions
+        # Normalize previous calling conventions
         # If first positional arg provided and is a Path -> treat as output_dir
         if args:
             first = args[0]
@@ -63,12 +63,12 @@ class PyMDPVisualizer:
         self.grid_size = grid_size
         self.figsize = figsize
         self.style = style
-        # Allow passing config dict as alias for legacy callers
+        # Allow passing config dict as alias for previous callers
         if config:
             save_dir = save_dir or config.get('save_dir') or config.get('output_dir')
             grid_size = grid_size or config.get('grid_size')
 
-        # Prefer explicit save_dir, fallback to output_dir
+        # Prefer explicit save_dir, recovery to output_dir
         save_target = save_dir or output_dir
         self.save_dir = Path(save_target) if save_target is not None else None
         self.show_plots = bool(show_plots)

@@ -48,7 +48,7 @@ RxInfer extracts model dimensions from the GNN specification using a multi-sourc
 num_actions = (
     model_params.get('num_actions') or      # Explicit GNN model param
     model_params.get('num_controls') or      # Alternative GNN naming
-    model_params.get('n_actions') or         # Legacy naming
+    model_params.get('n_actions') or         # Previous naming convention
     inferred_actions or                      # Inferred from B matrix depth
     3                                        # Hardcoded default
 )
@@ -127,7 +127,7 @@ result = infer(
     iterations = 5
 )
 posterior = result.posteriors[:s]
-**Fallback Mechanism**: If RxInfer's inference engine fails (e.g., due to
+**Recovery Mechanism**: If RxInfer's inference engine fails (e.g., due to
 numerical issues), the system falls back to manual Bayesian updating:
 
 ```julia

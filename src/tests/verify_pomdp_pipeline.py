@@ -303,7 +303,7 @@ def test_analyze_metrics():
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 4. NORMALIZATION — Fixed stub
+# 4. NORMALIZATION — Fixed placeholder
 # ─────────────────────────────────────────────────────────────────────────────
 
 def test_normalize_matrices():
@@ -439,7 +439,7 @@ if __name__ == "__main__":
         ("3d. Expected free energy", test_efe),
         ("3e. Information gain", test_information_gain),
         ("3f. Full metrics analysis", test_analyze_metrics),
-        ("4a. normalize_matrices (fixed stub)", test_normalize_matrices),
+        ("4a. normalize_matrices (fixed placeholder)", test_normalize_matrices),
         ("5a. PyMDP visualizer", test_visualization_creation),
         ("5b. Post-simulation vizualizations", test_post_simulation_viz),
         ("6a. Full pipeline: render→execute→analyze", test_full_pipeline),

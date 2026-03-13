@@ -23,7 +23,7 @@ except ImportError as e:
     logger = logging.getLogger(__name__)
     logger.warning(f"Cross-format validation not available: {e}")
 
-    # Fallback implementation
+    # Recovery implementation
     class CrossFormatValidationStrategy:
         def __init__(self):
             pass

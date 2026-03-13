@@ -390,7 +390,7 @@ pytest src/tests/test_d2_visualizer.py --cov=src/advanced_visualization/d2_visua
 - Active Inference conceptual diagrams
 - Diagram compilation
 - Helper methods (name sanitization, shape mapping, etc.)
-- Error handling and fallback mechanisms
+- Error handling and recovery mechanisms
 - End-to-end workflows
 
 ## Performance

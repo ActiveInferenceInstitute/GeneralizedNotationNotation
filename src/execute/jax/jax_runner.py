@@ -27,7 +27,7 @@ def initialize_jax_devices() -> list:
         try:
             return jax.devices()
         except Exception:
-            # Fallback to CPU-like stub
+            # Recovery to CPU-like placeholder
             return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore
     except Exception:
         return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore

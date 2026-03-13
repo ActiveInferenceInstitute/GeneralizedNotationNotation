@@ -7,7 +7,7 @@ Tests verify that:
 
 1. Output directories are correctly named for each pipeline step
 2. Prerequisite validation detects required dependencies
-3. Nested directory structures (legacy patterns) are detected and warned about
+3. Nested directory structures (previous patterns) are detected and warned about
 4. Missing prerequisites generate appropriate warnings without failing execution
 5. The get_output_dir_for_script function prevents unintended directory nesting
 
@@ -33,7 +33,7 @@ from utils.pipeline_validator import validate_step_prerequisites
 
 @dataclass
 class PipelineArgs:
-    """Mock-free replacement for pipeline arguments."""
+    """Simulated-free replacement for pipeline arguments."""
     output_dir: Path
     target_dir: Path = None
     verbose: bool = False
@@ -84,7 +84,7 @@ class TestPipelineWarningsFix:
         expected_gnn_dir = output_dir / "3_gnn_output"
         expected_gnn_dir.mkdir()
 
-        # Create nested directory structure (legacy pattern)
+        # Create nested directory structure (previous pattern)
         nested_gnn_dir = expected_gnn_dir / "3_gnn_output"
         nested_gnn_dir.mkdir()
 

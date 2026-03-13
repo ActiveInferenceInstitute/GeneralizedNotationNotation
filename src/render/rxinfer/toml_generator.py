@@ -140,7 +140,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
                 matrix.append(elements)
             return matrix
 
-        # Fallback: try parsing as individual rows
+        # Recovery: try parsing as individual rows
         rows = []
         current_row = ""
         brace_count = 0
@@ -174,7 +174,7 @@ def _parse_gnn_matrix(matrix_str: str) -> List[List[float]]:
         return matrix
     except Exception as e:
         logger.warning(f"Failed to parse matrix {matrix_str}: {e}")
-        # Return identity matrix as fallback
+        # Return identity matrix as recovery
         return [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
 
 def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
@@ -245,7 +245,7 @@ def _parse_gnn_3d_matrix(matrix_str: str) -> List[List[List[float]]]:
         except Exception as e2:
             logger.warning(f"Alternative parsing also failed: {e2}")
 
-        # Return default 3D matrix as fallback
+        # Return default 3D matrix as recovery
         return [
             [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]],
             [[0.0, 1.0, 0.0], [1.0, 0.0, 0.0], [0.0, 0.0, 1.0]],
@@ -275,7 +275,7 @@ def _parse_gnn_vector(vector_str: str) -> List[float]:
         return elements
     except Exception as e:
         logger.warning(f"Failed to parse vector {vector_str}: {e}")
-        # Return uniform vector as fallback
+        # Return uniform vector as recovery
         return [0.33333, 0.33333, 0.33333]
 
 def _extract_parameter_from_section(section_content: str, param_name: str) -> Optional[str]:
@@ -314,7 +314,7 @@ def _extract_parameter_from_section(section_content: str, param_name: str) -> Op
                             if brace_count == 0:
                                 return section_content[start_idx:start_idx + i + 1]
 
-        # Fallback regex pattern
+        # Recovery regex pattern
         pattern = rf"{param_name}\s*=\s*(\{{[^}}]*\}})"
         match = re.search(pattern, section_content)
         if match:
@@ -963,7 +963,7 @@ def _extract_agents(gnn_spec: Dict[str, Any]) -> List[Dict[str, Any]]:
         if len(agents) == nr_agents:
             return agents
 
-    # Fallback to default agents if extraction fails
+    # Recovery to default agents if extraction fails
     return [
         {
             "id": 1,

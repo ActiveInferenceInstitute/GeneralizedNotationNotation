@@ -4,15 +4,15 @@ Real conventions drawn from `src/tests/conftest.py`, `src/tests/runner.py`, and 
 
 **Last Updated**: March 6, 2026
 
-## No-Mock Policy
+## Real-Implementation Policy
 
-All 91 test files follow a strict **no-mocks** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
+All 91 test files follow a strict **real-implementation** policy enforced by code review and stated in `TEST_SUITE_SUMMARY.md`:
 
-- ❌ No `unittest.mock` imports or usage
+- ❌ No standard testing substitution libraries (like patching)
 - ❌ No monkeypatching of functions or classes
 - ✅ Real code paths executed in every test
 - ✅ Real data — representative GNN files from `src/tests/test_data/`
-- ✅ Real dependencies — skip if unavailable via `pytest.importorskip()`, never stub
+- ✅ Real dependencies — skip if unavailable via `pytest.importorskip()`, never substitute
 - ✅ File-based assertions on real output artifacts
 
 ```python
@@ -23,7 +23,7 @@ def test_audio_backend():
     assert isinstance(result, dict)
     assert "available" in result  # may say "unavailable" — that is valid
 
-# ❌ WRONG — mock the dep away
+# ❌ WRONG — substitute the dependency
 @patch("audio.backends.soundfile", None)
 def test_audio_backend_missing():
     ...

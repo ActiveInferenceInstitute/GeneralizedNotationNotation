@@ -97,7 +97,7 @@ if length(E_vector_raw) != NUM_POLICIES
         # Expand: one value per action -> one value per policy
         E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)  # Uniform prior
     else
-        # Fallback: uniform distribution
+        # Recovery: uniform distribution
         E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)
     end
 else

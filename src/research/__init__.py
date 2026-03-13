@@ -1,7 +1,7 @@
 """
 research module for GNN Processing Pipeline.
 
-This module provides research capabilities with fallback implementations.
+This module provides research capabilities with recovery implementations.
 """
 
 # Import processor functions - single source of truth

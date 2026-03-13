@@ -125,9 +125,9 @@ def validate_module_imports(module_path: Path) -> Dict[str, List[str]]:
             if "setup_step_logging" not in content:
                 issues["errors"].append("Missing setup_step_logging call")
 
-        # Check for redundant fallback code
+        # Check for redundant recovery code
         if "def log_step_start(" in content and "logger.info" in content:
-            issues["warnings"].append("Contains redundant fallback logging functions")
+            issues["warnings"].append("Contains redundant recovery logging functions")
 
         # Check log function calling patterns (be more tolerant)
         log_functions = ["log_step_start", "log_step_success", "log_step_warning", "log_step_error"]
@@ -225,7 +225,7 @@ def validate_centralized_imports(module_path: Path) -> Dict[str, List[str]]:
 
         # Check for redundant error handling
         if "try:" in content and "except ImportError" in content and "from utils import" in content:
-            issues["improvements"].append("Redundant fallback imports - utils now provides graceful fallbacks")
+            issues["improvements"].append("Redundant recovery imports - utils now provides graceful fallbacks")
 
         # Check for consistent argument parsing
         if module_path.name == "main.py":

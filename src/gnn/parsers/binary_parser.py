@@ -67,7 +67,7 @@ class PickleGNNParser(BaseGNNParser):
                 if self._is_enhanced_gnn_data(data):
                     result.model = self._reconstruct_model_from_enhanced_data(data)
                 else:
-                    # Legacy format
+                    # Previous format
                     result.model.model_name = "PickleModel"
                     self._parse_dict_data(data, result)
             elif isinstance(data, GNNInternalRepresentation):

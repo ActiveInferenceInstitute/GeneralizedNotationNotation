@@ -163,11 +163,11 @@ elif not detection.get("correct_package"):
 - `json` - Result serialization
 
 ### Optional Dependencies
-- `inferactively-pymdp` - PyMDP simulation engine (package name: `inferactively-pymdp`, fallback: skip PyMDP)
+- `inferactively-pymdp` - PyMDP simulation engine (package name: `inferactively-pymdp`, recovery: skip PyMDP)
   - **Note**: The correct package name is `inferactively-pymdp`, not `pymdp`
   - The execute module automatically detects wrong package variants
-- `julia` - Julia runtime (fallback: skip Julia scripts)
-- `jax` - JAX framework (fallback: skip JAX)
+- `julia` - Julia runtime (recovery: skip Julia scripts)
+- `jax` - JAX framework (recovery: skip JAX)
 
 ---
 

@@ -495,7 +495,7 @@ try:
     result = generate_audio(content, output_file)
 except AudioGenerationError as e:
     logger.error(f"Audio generation failed: {e}")
-    # Provide fallback audio or error reporting
+    # Provide recovery audio or error reporting
 ```
 
 ### Backend Failures

@@ -28,10 +28,10 @@ src/2_tests.py                          ← thin orchestrator (86 lines)
     └── tests.run_tests()               ← runner.py (618 lines)
             ├── run_fast_pipeline_tests()   ← test_runner_modes.py
             ├── run_comprehensive_tests()   ← test_runner_modes.py
-            └── run_fast_reliable_tests()   ← test_runner_modes.py (fallback)
+            └── run_fast_reliable_tests()   ← test_runner_modes.py (alternative)
 ```
 
-Auto-fallback: if fast mode collects 0 tests, it automatically escalates to comprehensive.
+Auto-escalation: if fast mode collects 0 tests, it automatically escalates to comprehensive.
 
 ## CLI Arguments
 

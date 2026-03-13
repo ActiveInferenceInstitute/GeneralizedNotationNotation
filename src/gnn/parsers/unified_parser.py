@@ -311,7 +311,7 @@ class UnifiedGNNParser:
             return GNNFormat.MARKDOWN
 
         except Exception:
-            # Default fallback
+            # Default recovery
             return GNNFormat.MARKDOWN
 
     def _get_parser(self, format: GNNFormat) -> BaseGNNParser:

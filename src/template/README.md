@@ -41,7 +41,7 @@ flowchart TD
   - Import core functions from corresponding modules
   - Handle argument parsing and logging setup
   - Call modular functions with proper parameters
-  - Provide fallback implementations if modules unavailable
+  - Provide recovery implementations if modules unavailable
   - Return standardized exit codes (0=success, 1=error)
 
 ### 3. Modular Scripts in Folders
@@ -117,7 +117,7 @@ try:
     TEMPLATE_AVAILABLE = True
 except ImportError:
     TEMPLATE_AVAILABLE = False
-    # Fallback function definitions if template module is not available
+    # Recovery function definitions if template module is not available
     def process_template_standardized(*args, **kwargs):
         return False
     # ... other fallbacks
@@ -134,7 +134,7 @@ def process_template_standardized_wrapper(
     try:
         # Check if template module is available
         if not TEMPLATE_AVAILABLE:
-            log_step_warning(logger, "Template module not available, using fallback functions")
+            log_step_warning(logger, "Template module not available, using recovery functions")
         
         # Get pipeline configuration
         config = get_pipeline_config()
@@ -317,7 +317,7 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
 - **Modular Scripts**: Domain-specific logic implementation
 
 ### 2. Graceful Degradation
-- Thin orchestrators provide fallback implementations
+- Thin orchestrators provide recovery implementations
 - Pipeline continues even if individual modules fail
 - Comprehensive error reporting and logging
 

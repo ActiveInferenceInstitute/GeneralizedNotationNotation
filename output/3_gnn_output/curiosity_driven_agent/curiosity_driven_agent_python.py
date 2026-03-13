@@ -6,7 +6,7 @@ An Active Inference agent with:
 - Precision parameter γ weighting epistemic vs instrumental contributions
 - 5 hidden states, 5 observations, 4 actions in a navigation context
 - Agent is rewarded for reducing posterior uncertainty
-Generated: 2026-03-06T15:00:17.122581
+Generated: 2026-03-13T14:15:04.690188
 """
 
 import numpy as np

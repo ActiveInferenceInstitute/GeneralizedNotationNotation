@@ -530,7 +530,7 @@ try:
     results = perform_statistical_analysis(file_path)
 except AnalysisError as e:
     logger.error(f"Analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Data Validation

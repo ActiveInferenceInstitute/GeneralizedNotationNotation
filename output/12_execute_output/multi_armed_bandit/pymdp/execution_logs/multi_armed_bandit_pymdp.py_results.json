@@ -1,0 +1,26 @@
+{
+  "framework": "pymdp",
+  "model_name": "multi_armed_bandit",
+  "script_name": "multi_armed_bandit_pymdp.py",
+  "script_path": "output/11_render_output/multi_armed_bandit/pymdp/multi_armed_bandit_pymdp.py",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 1.683676,
+  "timestamp": "2026-03-13T13:58:08.317838",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\u26a0\ufe0f  Visualization suite not available: No module named 'h5py' - using basic plotting\n\ud83d\ude80 ENHANCED PyMDP Active Inference POMDP Simulation\n======================================================================\n\ud83d\udcc1 Model: multi_armed_bandit\n\ud83d\udcc4 Source: unknown.md\n\ud83d\udd27 Framework: PyMDP Enhanced\n======================================================================\n\u274c Enhanced PyMDP Simulation: Failed: name 'EnhancedPOMDPAgent' is not defined\n",
+    "raw_error": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/multi_armed_bandit_pymdp.py\", line 457, in main\nNameError: name 'EnhancedPOMDPAgent' is not defined\nTraceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/multi_armed_bandit_pymdp.py\", line 511, in <module>\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/multi_armed_bandit/pymdp/multi_armed_bandit_pymdp.py\", line 457, in main\nNameError: name 'EnhancedPOMDPAgent' is not defined\n"
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 433,
+    "stderr_length": 658,
+    "output_directory": "output/12_execute_output/multi_armed_bandit/pymdp"
+  }
+}

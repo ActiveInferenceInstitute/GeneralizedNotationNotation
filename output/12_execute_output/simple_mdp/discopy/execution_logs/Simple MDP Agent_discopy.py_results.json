@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/discopy/Simple MDP Agent_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.442143,
-  "timestamp": "2026-03-06T15:01:08.694933",
+  "execution_time": 0.330026,
+  "timestamp": "2026-03-13T14:15:16.377019",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1558,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/simple_mdp/discopy"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

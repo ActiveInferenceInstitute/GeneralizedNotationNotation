@@ -130,7 +130,7 @@ success = generate_exports(
 
 ### Optional Dependencies
 
-- `networkx` - Graph format export (fallback: basic XML-based export)
+- `networkx` - Graph format export (recovery: basic XML-based export)
 
 ---
 
@@ -209,14 +209,14 @@ output/7_export_output/
 
 ### Error Categories
 
-1. **Format Errors**: Format not supported or unavailable (fallback: skip format)
-2. **Validation Errors**: Schema validation fails (fallback: export without validation)
+1. **Format Errors**: Format not supported or unavailable (recovery: skip format)
+2. **Validation Errors**: Schema validation fails (recovery: export without validation)
 3. **Serialization Errors**: Cannot serialize model (return error)
 4. **File I/O Errors**: Cannot write export files (return error)
 
 ### Error Recovery
 
-- **Format Fallback**: Automatically skip unavailable formats
+- **Format Recovery**: Automatically skip unavailable formats
 - **Partial Export**: Export what's possible, report failures
 - **Resource Cleanup**: Proper cleanup of export resources on errors
 

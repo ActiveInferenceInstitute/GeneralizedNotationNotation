@@ -392,7 +392,7 @@ try:
     results = process_setup(target_dir, output_dir)
 except UVSetupError as e:
     logger.error(f"UV setup processing failed: {e}")
-    # Provide fallback setup or error reporting
+    # Provide recovery setup or error reporting
 ```
 
 ### UV Environment Issues
@@ -402,7 +402,7 @@ try:
     env_created = create_uv_environment(env_path)
 except UVEnvironmentError as e:
     logger.warning(f"UV environment creation failed: {e}")
-    # Provide fallback environment or error reporting
+    # Provide recovery environment or error reporting
 ```
 
 ### UV Dependency Issues
@@ -412,7 +412,7 @@ try:
     deps_installed = install_uv_dependencies(pyproject_toml)
 except UVDependencyError as e:
     logger.error(f"UV dependency installation failed: {e}")
-    # Provide fallback installation or error reporting
+    # Provide recovery installation or error reporting
 ```
 
 ## UV Performance Optimization
@@ -478,8 +478,8 @@ def test_uv_system_requirements():
 - **uv**: Modern Python package manager
 
 ### Optional Dependencies
-- **virtualenv**: Legacy virtual environment management
-- **pip**: Legacy package installation
+- **virtualenv**: Previous virtual environment management
+- **pip**: Previous package installation
 - **conda**: Conda environment management
 - **docker**: Container environment management
 

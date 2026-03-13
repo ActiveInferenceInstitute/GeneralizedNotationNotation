@@ -750,7 +750,7 @@ Active Inference Free Energy Principle: {
         elif "Policy" in concept:
             return "parallelogram"
 
-        # Fallback based on dimensions
+        # Recovery based on dimensions
         dims = var_info.get("dimensions", [])
         if len(dims) == 2 and dims[0] > 1 and dims[1] > 1:
             return "hexagon"  # Matrix
@@ -831,7 +831,7 @@ def process_gnn_file_with_d2(
             except Exception as e:
                 logger.warning(f"Failed to load parsed JSON: {e}")
 
-    # Fallback: parse GNN file directly
+    # Recovery: parse GNN file directly
     if model_data is None:
         try:
             from gnn.parser import parse_gnn_file

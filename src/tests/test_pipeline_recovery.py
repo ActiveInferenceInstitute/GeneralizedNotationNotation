@@ -8,7 +8,7 @@ focusing on known failure modes and their recovery mechanisms.
 Key test areas:
 1. NumPy recursion error recovery
 2. Async/await error handling
-3. Lightweight processing fallback
+3. Lightweight processing recovery
 4. Hardware initialization issues
 5. Resource management
 6. Error reporting
@@ -126,10 +126,10 @@ class TestAsyncAwaitRecovery:
         assert "analysis" in result
 
 class TestLightweightProcessingRecovery:
-    """Test suite for lightweight processing fallback."""
+    """Test suite for lightweight processing recovery."""
 
     def test_gnn_lightweight_fallback(self, test_environment, sample_gnn_file):
-        """Test fallback to lightweight GNN processing."""
+        """Test recovery to lightweight GNN processing."""
         from gnn.core_processor import process_gnn_directory
 
         # Call real method; it should choose a mode based on availability
@@ -157,7 +157,7 @@ class TestHardwareInitializationRecovery:
     """Test suite for hardware initialization recovery."""
 
     def test_jax_cpu_fallback(self, test_environment):
-        """Test JAX CPU fallback when TPU/GPU unavailable."""
+        """Test JAX CPU recovery when TPU/GPU unavailable."""
         from execute.jax.jax_runner import initialize_jax_devices
 
         devices = initialize_jax_devices()
@@ -166,7 +166,7 @@ class TestHardwareInitializationRecovery:
         assert "cpu" in str(devices[0]).lower()
 
     def test_execution_hardware_recovery(self, test_environment, sample_gnn_file):
-        """Test execution with hardware fallback."""
+        """Test execution with hardware recovery."""
         from execute.executor import execute_gnn_model
 
         result = execute_gnn_model(

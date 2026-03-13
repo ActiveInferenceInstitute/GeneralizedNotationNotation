@@ -51,18 +51,18 @@ try:
     from setup import setup_uv_environment, setup_complete_environment, install_optional_package_group
 except ImportError:
     def setup_uv_environment(verbose=False, recreate=False, dev=True, extras=None, skip_jax_test=True):
-        """Fallback setup function when module unavailable."""
+        """Recovery setup function when module unavailable."""
         import logging
         logger = logging.getLogger(__name__)
-        logger.warning("Setup module not available - using fallback")
+        logger.warning("Setup module not available - using recovery")
         return True
 
     def setup_complete_environment(verbose=False, recreate=False, install_optional=False, optional_groups=None, output_dir=None):
-        """Fallback full setup function."""
+        """Recovery full setup function."""
         return setup_uv_environment(verbose=verbose, recreate=recreate, output_dir=output_dir)
 
     def install_optional_package_group(group_name, verbose=False):
-        """Fallback optional package installation."""
+        """Recovery optional package installation."""
         import logging
         logger = logging.getLogger(__name__)
         logger.warning(f"Cannot install {group_name} - setup module not available")

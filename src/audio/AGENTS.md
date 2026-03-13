@@ -98,9 +98,9 @@
 - `soundfile` - WAV file I/O
 
 ### Optional Dependencies
-- `librosa` - Audio analysis (fallback: basic generation)
-- `pedalboard` - Audio effects (fallback: skip effects)
-- `sapf` - SAPF backend (fallback: skip SAPF)
+- `librosa` - Audio analysis (recovery: basic generation)
+- `pedalboard` - Audio effects (recovery: skip effects)
+- `sapf` - SAPF backend (recovery: skip SAPF)
 
 ---
 
@@ -182,13 +182,13 @@ output/15_audio_output/
 - **Invalid GNN model**: Return structured error, skip model
 
 ### Error Categories
-1. **Backend Unavailable**: Framework not installed (fallback: skip backend)
+1. **Backend Unavailable**: Framework not installed (recovery: skip backend)
 2. **Audio Generation Failure**: Cannot generate audio (return error)
 3. **File I/O Errors**: Cannot write WAV files (return error)
 4. **Model Parsing Errors**: Invalid GNN structure (skip model, log error)
 
 ### Error Recovery
-- **Backend Fallback**: Automatically try next available backend
+- **Backend Recovery**: Automatically try next available backend
 - **Partial Generation**: Generate what's possible, report failures
 - **Resource Cleanup**: Proper cleanup of audio resources on errors
 

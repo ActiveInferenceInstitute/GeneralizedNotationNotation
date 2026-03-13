@@ -1,8 +1,8 @@
 {
-  "timestamp": "2026-03-06T15:12:06.478290",
-  "target_dir": "input/gnn_files/discrete",
-  "output_dir": "output/23_report_output",
-  "pipeline_output_dir": "output",
+  "timestamp": "2026-03-13T11:36:49.891283",
+  "target_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete",
+  "output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/23_report_output",
+  "pipeline_output_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output",
   "processing_status": "completed",
   "report_format": "comprehensive",
   "reports_generated": [
@@ -12,7 +12,7 @@
     "PIPELINE_REPORT.md"
   ],
   "report_count": 4,
-  "visualizations_discovered": 122,
+  "visualizations_discovered": 213,
   "html_reports_generated": 1,
   "html_validation_status": "valid",
   "html_validation_errors": [],

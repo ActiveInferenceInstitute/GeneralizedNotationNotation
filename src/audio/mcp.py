@@ -36,7 +36,7 @@ def process_audio_mcp(
     Run GNN audio processing pipeline for all GNN files in a directory.
 
     Converts GNN model files to audio representations using the configured
-    audio backend (scipy, soundfile, pedalboard, or pure-Python fallback).
+    audio backend (scipy, soundfile, pedalboard, or pure-Python recovery).
 
     Args:
         target_directory: Directory containing GNN files to process.

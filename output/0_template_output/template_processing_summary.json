@@ -1,13 +1,13 @@
 {
-  "timestamp": "2026-03-06T15:48:32.103649",
+  "timestamp": "2026-03-13T11:28:21.188273",
   "step_name": "template",
-  "input_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files",
-  "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output",
-  "total_files": 19,
-  "successful_files": 19,
+  "input_directory": "input/gnn_files/basics",
+  "output_directory": "output/0_template_output",
+  "total_files": 2,
+  "successful_files": 2,
   "failed_files": 0,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   },

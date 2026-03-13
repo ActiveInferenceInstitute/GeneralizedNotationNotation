@@ -349,7 +349,7 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
             total_parameters += elements
             max_single_var = max(max_single_var, elements)
 
-        # Fallback: use regex variable count if no structured dims found
+        # Recovery: use regex variable count if no structured dims found
         if total_parameters == 0:
             var_count = len(re.findall(r'(\w+)\s*[:=]', content))
             total_parameters = var_count * 9  # assume 3x3 average

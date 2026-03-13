@@ -10,7 +10,7 @@ This test suite verifies:
 5. Environment health checks
 6. All UV-related setup functions fully succeed with real methods
 
-Following the project's Zero Mock policy - all tests use real methods.
+Following the project's Zero Simulated policy - all tests use real methods.
 """
 
 import pytest

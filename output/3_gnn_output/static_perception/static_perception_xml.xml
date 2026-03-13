@@ -7,8 +7,8 @@
 - No temporal dynamics — single-shot inference
 - Demonstrates the core observation model: P(o|s) = A
 - Suitable as a minimal baseline and for testing perception-only inference</annotation>
-    <created_at>2026-03-06T15:00:15.036363</created_at>
-    <modified_at>2026-03-06T15:00:15.036364</modified_at>
+    <created_at>2026-03-13T14:15:02.713974</created_at>
+    <modified_at>2026-03-13T14:15:02.713975</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="Recognition/likelihood matrix: P(observation | hidden state)"/>

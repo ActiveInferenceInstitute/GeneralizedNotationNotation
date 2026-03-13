@@ -35,7 +35,7 @@ def get_real_logger():
 
     logger.stream = stream
 
-    # Helper to retrieve trapped messages exactly like the mock
+    # Helper to retrieve trapped messages exactly like the simulated
     def get_messages(level=None):
         content = stream.getvalue().splitlines()
         if not level:

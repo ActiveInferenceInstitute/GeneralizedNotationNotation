@@ -155,11 +155,11 @@ def _generate_fallback_report(
     model_data: Dict,
     logger: logging.Logger
 ):
-    """Generate fallback HTML report when advanced libraries unavailable"""
+    """Generate recovery HTML report when advanced libraries unavailable"""
     html_content = f"""<!DOCTYPE html>
 <html>
 <head>
-    <title>{model_name} - {viz_type.upper()} Visualization (Fallback)</title>
+    <title>{model_name} - {viz_type.upper()} Visualization (Recovery)</title>
     <style>
         body {{ font-family: Arial, sans-serif; margin: 20px; }}
         h1 {{ color: #333; }}
@@ -185,7 +185,7 @@ def _generate_fallback_report(
     with open(output_file, "w") as f:
         f.write(html_content)
 
-    logger.info(f"Generated fallback report: {output_file}")
+    logger.info(f"Generated recovery report: {output_file}")
 
 
 def validate_visualization_data(model_data: Dict, logger: logging.Logger) -> Dict[str, Any]:

@@ -176,7 +176,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                     entry["comment"] = comment
                 result.append(entry)
 
-    # Fallback: if no explicit section found, scan whole document for state-like lines
+    # Recovery: if no explicit section found, scan whole document for state-like lines
     if not result and not found_section:
         for line in lines:
             m = _STATE_LINE_RE.match(line)

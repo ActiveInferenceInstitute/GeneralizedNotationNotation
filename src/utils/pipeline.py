@@ -17,7 +17,7 @@ def get_output_dir_for_script(script_name: str, base_output_dir: Path = None) ->
         from pipeline.config import get_output_dir_for_script as _get_output_dir
         return _get_output_dir(script_name, base_output_dir if base_output_dir is not None else Path("output"))
     except (ImportError, Exception):
-        # Fallback implementation if pipeline.config is not available
+        # Recovery implementation if pipeline.config is not available
         if base_output_dir is None:
             base_output_dir = Path("output")
         script_stem = Path(script_name).stem
@@ -30,7 +30,7 @@ def setup_step_logging(step_name: str, verbose: bool = False):
         from .logging_utils import setup_step_logging as _setup_step_logging
         return _setup_step_logging(step_name, verbose)
     except ImportError:
-        # Fallback logging setup
+        # Recovery logging setup
         logger = logging.getLogger(step_name)
         if verbose:
             logger.setLevel(logging.DEBUG)
@@ -38,9 +38,9 @@ def setup_step_logging(step_name: str, verbose: bool = False):
             logger.setLevel(logging.INFO)
         return logger
 
-class FallbackArgumentParser:
+class RecoveryArgumentParser:
     """
-    Fallback argument parser for fallback scenarios.
+    Recovery argument parser for recovery scenarios.
     """
 
     @staticmethod
@@ -76,9 +76,9 @@ def get_pipeline_utilities(step_name: str, verbose: bool = False) -> Tuple[Any, 
         return logger, parser
 
     except ImportError:
-        # Fallback to default utilities
+        # Recovery to default utilities
         logger = setup_step_logging(step_name, verbose)
-        parser = FallbackArgumentParser()
+        parser = RecoveryArgumentParser()
 
         return logger, parser
 

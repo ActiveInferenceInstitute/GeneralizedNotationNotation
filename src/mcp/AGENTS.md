@@ -157,9 +157,9 @@ success = process_mcp(
 - `logging` - Request/response logging
 
 ### Optional Dependencies
-- `aiohttp` - HTTP server implementation (fallback: basic HTTP)
-- `websockets` - WebSocket server (fallback: polling-based)
-- `fastapi` - REST API framework (fallback: basic HTTP)
+- `aiohttp` - HTTP server implementation (recovery: basic HTTP)
+- `websockets` - WebSocket server (recovery: polling-based)
+- `fastapi` - REST API framework (recovery: basic HTTP)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing
@@ -281,9 +281,9 @@ output/21_mcp_output/
 ## Error Handling
 
 ### Graceful Degradation
-- **No transport libraries**: Fallback to stdio-only mode
+- **No transport libraries**: Recovery to stdio-only mode
 - **Tool registration failures**: Continue with available tools
-- **Server startup failures**: Fallback to client-only mode
+- **Server startup failures**: Recovery to client-only mode
 
 ### Error Categories
 1. **Protocol Errors**: Invalid JSON-RPC requests/responses

@@ -61,7 +61,7 @@ def _parse_matrix_string(matrix_str: str) -> Any:
     # This is safer than simple replacement as it avoids accidentally converting dictionaries.
     if '{' in processed_str and ':' not in processed_str:
         processed_str = processed_str.replace('{', '[').replace('}', ']')
-    # Fallback to original heuristic for single-level, non-nested structures that might be dicts.
+    # Recovery to original heuristic for single-level, non-nested structures that might be dicts.
     elif processed_str.startswith("{") and processed_str.endswith("}"):
         inner_content = processed_str[1:-1].strip()
         # If it looks like a dict (contains a colon not inside a tuple/list), leave it.

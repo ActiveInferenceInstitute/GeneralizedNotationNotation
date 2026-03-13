@@ -58,7 +58,7 @@ graph TB
     
     ProviderSelect -->|API Key Available| OpenAI
     ProviderSelect -->|API Key Available| Anthropic
-    ProviderSelect -->|Local Fallback| Ollama
+    ProviderSelect -->|Local Recovery| Ollama
     ProviderSelect -->|Alternative| OpenRouter
     
     OpenAI --> Analyzer
@@ -86,12 +86,12 @@ flowchart TD
     CheckKeys -->|No Keys| CheckOllama{Ollama<br/>Available?}
     
     CheckOllama -->|Yes| UseOllama[Use Ollama]
-    CheckOllama -->|No| Fallback[Fallback Analysis]
+    CheckOllama -->|No| Recovery[Recovery Analysis]
     
     UseOpenAI --> Process[Process with LLM]
     UseAnthropic --> Process
     UseOllama --> Process
-    Fallback --> Process
+    Recovery --> Process
     
     Process --> Results[Analysis Results]
 ```
@@ -222,7 +222,7 @@ OpenRouter multi-provider integration.
 - Multiple LLM provider access
 - Cost optimization
 - Provider selection based on task
-- Fallback mechanisms
+- Recovery mechanisms
 
 #### PerplexityProvider (`perplexity_provider.py`)
 Perplexity AI integration.
@@ -515,7 +515,7 @@ try:
     analysis = analyze_gnn_model_with_llm(content, model_name)
 except LLMAnalysisError as e:
     logger.error(f"LLM analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Provider Failures

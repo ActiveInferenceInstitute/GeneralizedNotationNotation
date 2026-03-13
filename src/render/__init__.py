@@ -67,9 +67,9 @@ except ImportError:
 try:
     from .pymdp.pymdp_renderer import PyMDPRenderer
 except ImportError:
-    # Provide a minimal stub for tests
+    # Provide a minimal placeholder for tests
     class PyMDPRenderer:
-        """Fallback PyMDPRenderer when module unavailable."""
+        """Recovery PyMDPRenderer when module unavailable."""
         def __init__(self): pass
         def render(self, spec): return ""
 
@@ -77,7 +77,7 @@ try:
     from .jax.jax_renderer import JAXRenderer
 except ImportError:
     class JAXRenderer:
-        """Fallback JAXRenderer when module unavailable."""
+        """Recovery JAXRenderer when module unavailable."""
         def __init__(self): pass
         def render(self, spec): return ""
 

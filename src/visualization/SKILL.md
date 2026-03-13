@@ -52,12 +52,12 @@ process_visualization_main(target_dir, output_dir, verbose=True)
 
 ## Safe-to-Fail Pattern
 
-Visualization uses a four-tier fallback system:
+Visualization uses a four-tier recovery system:
 
 1. Full visualizer with all dependencies
 2. Matrix-only visualizer
 3. Basic plots
-4. HTML fallback report
+4. HTML recovery report
 
 ## Dependencies
 
@@ -72,7 +72,7 @@ uv sync --extra visualization
 ## Output
 
 - PNG/SVG images in `output/8_visualization_output/`
-- HTML fallback reports when matplotlib unavailable
+- HTML recovery reports when matplotlib unavailable
 
 
 ## MCP Tools

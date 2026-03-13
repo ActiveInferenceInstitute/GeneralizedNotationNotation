@@ -29,7 +29,7 @@ else:
 MIN_PYTHON_VERSION = (3, 11)
 
 OPTIONAL_GROUPS = {
-    'dev': 'Development tools (pytest-mock, black, isort, sphinx, jupyterlab, etc.)',
+    'dev': 'Development tools (pytest-simulated, black, isort, sphinx, jupyterlab, etc.)',
     'active-inference': 'Active Inference ecosystem (pymdp, jax, flax, optax)',
     'ml-ai': 'Machine Learning (torch, transformers, accelerate)',
     'llm': 'LLM providers (openai, anthropic, cohere, ollama)',

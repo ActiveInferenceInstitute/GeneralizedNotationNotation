@@ -59,7 +59,7 @@ class TestGNNPyMDPIntegration:
         elif hasattr(parsed_data, 'data'):
             assert parsed_data.data is not None
         else:
-            # Fallback for dict returns
+            # Recovery for dict returns
             assert parsed_data
 
     def test_pymdp_renderer_exists(self, gnn_file):

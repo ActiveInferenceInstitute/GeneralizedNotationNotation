@@ -379,7 +379,7 @@ try:
     results = process_report(target_dir, output_dir)
 except ReportGenerationError as e:
     logger.error(f"Report generation failed: {e}")
-    # Provide fallback report or error reporting
+    # Provide recovery report or error reporting
 ```
 
 ### Analysis Failures
@@ -389,7 +389,7 @@ try:
     analysis = analyze_pipeline_results(results_dir)
 except AnalysisError as e:
     logger.warning(f"Analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Formatting Failures
@@ -399,7 +399,7 @@ try:
     formatted_report = format_markdown_report(content)
 except FormattingError as e:
     logger.error(f"Formatting failed: {e}")
-    # Provide fallback formatting or error reporting
+    # Provide recovery formatting or error reporting
 ```
 
 ## Performance Optimization

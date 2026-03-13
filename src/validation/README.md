@@ -335,11 +335,11 @@ quality_config = {
 
 ## Error Handling
 
-All entry-point functions use try/except blocks internally and return error dicts with `fallback: True` instead of raising exceptions:
+All entry-point functions use try/except blocks internally and return error dicts with `recovery: True` instead of raising exceptions:
 
 ```python
 result = process_semantic_validation("nonexistent.gnn")
-if result.get("fallback"):
+if result.get("recovery"):
     print(f"Error: {result['error']}")
 else:
     print(f"Valid: {result['valid']}")

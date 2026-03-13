@@ -193,9 +193,9 @@ output/sapf/
 4. **Resource Errors**: Insufficient resources for audio generation
 
 ### Recovery Strategies
-- **Format Fallback**: Try alternative audio formats
+- **Format Recovery**: Try alternative audio formats
 - **Quality Reduction**: Reduce audio quality for compatibility
-- **Backend Fallback**: Use alternative audio backends
+- **Backend Recovery**: Use alternative audio backends
 - **Error Documentation**: Provide detailed error reports
 
 ---

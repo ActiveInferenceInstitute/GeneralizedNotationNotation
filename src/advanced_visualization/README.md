@@ -155,7 +155,7 @@ Generates advanced HTML visualizations with interactive components.
 - `generate_advanced_visualization(extracted_data: Dict[str, Any], model_name: str) -> str`
   - Creates comprehensive HTML visualization
   - Includes interactive charts and analysis
-  - Provides error handling and fallback content
+  - Provides error handling and recovery content
 
 - `_generate_error_page(model_name: str, errors: List[str]) -> str`
   - Generates error page with diagnostic information
@@ -305,7 +305,7 @@ dashboard_path = dashboard.generate_dashboard(content, model_name, output_dir)
 
 ## Error Handling and Recovery
 
-### Fallback Mechanisms
+### Recovery Mechanisms
 - **Dependency Failures**: Graceful degradation to basic HTML
 - **Data Extraction Errors**: Error pages with diagnostic information
 - **Visualization Failures**: Alternative visualization methods
@@ -440,7 +440,7 @@ def test_pipeline_integration():
 #### 1. Missing Dependencies
 ```
 Error: ModuleNotFoundError: No module named 'plotly'
-Solution: Install optional dependencies or use fallback visualizations
+Solution: Install optional dependencies or use recovery visualizations
 ```
 
 #### 2. Memory Issues
@@ -452,7 +452,7 @@ Solution: Enable performance mode or process in chunks
 #### 3. Visualization Failures
 ```
 Error: Failed to generate 3D visualization
-Solution: Check browser compatibility or use 2D fallback
+Solution: Check browser compatibility or use 2D recovery
 ```
 
 ### Debug Mode

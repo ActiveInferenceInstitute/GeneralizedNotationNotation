@@ -307,7 +307,7 @@ Follow GNN pipeline development guidelines:
 - Comprehensive test coverage (>90%)
 - Type hints for all public functions
 - Docstrings with examples
-- No mock implementations
+- No simulated implementations
 
 ## References
 

@@ -398,7 +398,7 @@ output/11_render_output/
 4. **Configuration Errors**: Invalid framework options
 
 ### Recovery Strategies
-- **Framework Fallback**: Try alternative frameworks
+- **Framework Recovery**: Try alternative frameworks
 - **Template Simplification**: Use simpler templates
 - **Partial Generation**: Generate what is possible
 - **Error Documentation**: Provide detailed error reports

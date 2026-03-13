@@ -45,7 +45,7 @@ def generate_analysis_from_logs(
     pytorch_results = list(results_dir.rglob("**/pytorch/**/simulation_results.json"))
     # Also check for pytorch-prefixed results
     pytorch_results += list(results_dir.rglob("**/pytorch_simulation_results.json"))
-    # Fallback: check root
+    # Recovery: check root
     root_result = results_dir / "simulation_results.json"
     if root_result.exists() and root_result not in pytorch_results:
         pytorch_results.append(root_result)

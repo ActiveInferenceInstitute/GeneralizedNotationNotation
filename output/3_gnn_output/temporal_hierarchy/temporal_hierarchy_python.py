@@ -10,7 +10,7 @@ A three-level hierarchical Active Inference agent with distinct temporal scales:
 - Each level maintains its own generative model with A, B, C, D matrices
 - Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
 - Demonstrates deep temporal models from Friston et al. hierarchical Active Inference
-Generated: 2026-03-06T15:00:15.396472
+Generated: 2026-03-13T14:15:03.069521
 """
 
 import numpy as np

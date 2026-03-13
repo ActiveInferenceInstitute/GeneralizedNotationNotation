@@ -23,8 +23,8 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
     venv_candidates = [
         script_dir.parent / ".venv",  # .venv in project root (preferred)
         script_dir.parent.parent / ".venv",  # .venv in grandparent (project root from src/)
-        script_dir / ".venv",  # Standard .venv in script directory (fallback)
-        script_dir.parent / "venv",  # venv in parent directory (fallback)
+        script_dir / ".venv",  # Standard .venv in script directory (recovery)
+        script_dir.parent / "venv",  # venv in parent directory (recovery)
     ]
 
     for venv_path in venv_candidates:
@@ -63,6 +63,6 @@ def get_venv_python(script_dir: Path) -> tuple[Path | None, Path | None]:
 
     if not venv_python_path:
         logger.warning("⚠️ Virtual environment Python not found. Using system Python. This may lead to issues if dependencies are not globally available.")
-        venv_python_path = Path(sys.executable) # Fallback to current interpreter
+        venv_python_path = Path(sys.executable) # Recovery to current interpreter
 
     return venv_python_path, site_packages_path

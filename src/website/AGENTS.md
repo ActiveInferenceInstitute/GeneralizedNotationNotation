@@ -224,7 +224,7 @@ output/20_website_output/
 4. **File I/O**: File system operation failures
 
 ### Recovery Strategies
-- **Template Fallback**: Use default templates
+- **Template Recovery**: Use default templates
 - **Content Simplification**: Simplify content processing
 - **Asset Skip**: Skip problematic assets
 - **Error Documentation**: Generate error reports

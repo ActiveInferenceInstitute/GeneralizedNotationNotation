@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-06T15:10:39.880302",
-  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
+  "timestamp": "2026-03-13T11:37:34.319043",
+  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",

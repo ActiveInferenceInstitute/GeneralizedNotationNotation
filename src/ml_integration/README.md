@@ -344,7 +344,7 @@ try:
     results = train_gnn_model(gnn_content, framework)
 except TrainingError as e:
     logger.error(f"Training failed: {e}")
-    # Provide fallback training or error reporting
+    # Provide recovery training or error reporting
 ```
 
 ### Framework Issues

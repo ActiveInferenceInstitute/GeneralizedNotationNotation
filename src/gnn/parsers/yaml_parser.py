@@ -33,7 +33,7 @@ class YAMLGNNParser(BaseGNNParser):
         """Initialize the YAML parser."""
         super().__init__()
         if not HAS_YAML:
-            logger.warning("PyYAML not available, using fallback YAML parser")
+            logger.warning("PyYAML not available, using recovery YAML parser")
 
     def parse_file(self, file_path: str) -> ParseResult:
         """Parse a YAML file containing GNN specifications."""
@@ -92,8 +92,8 @@ class YAMLGNNParser(BaseGNNParser):
             return result
 
     def _fallback_yaml_parse(self, content: str) -> Dict[str, Any]:
-        """Fallback YAML parser when PyYAML is not available."""
-        logger.info("Using fallback YAML parser")
+        """Recovery YAML parser when PyYAML is not available."""
+        logger.info("Using recovery YAML parser")
 
         data = {}
         current_section = None

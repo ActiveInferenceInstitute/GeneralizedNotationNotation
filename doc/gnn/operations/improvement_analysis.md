@@ -63,7 +63,7 @@ def check_python_dependency(self, dep: DependencyInfo) -> Tuple[bool, str, Optio
     # ... more special cases
 ```
 
-**Pattern C: Safe imports with multiple fallbacks** (`src/execute/executor.py:18-67`)
+**Pattern C: Safe imports with multiple alternatives** (`src/execute/executor.py:18-67`)
 
 ```python
 try:
@@ -80,7 +80,7 @@ except ImportError as e:
 
 - Unified dependency checking via `DependencyManager`
 - Consistent availability flags: `{MODULE}_AVAILABLE`
-- Standardized fallback functions for all optional imports
+- Standardized alternative functions for all optional imports
 - Central registration of all dependency requirements
 
 **Implementation Location:** `src/utils/dependency_manager.py` needs expansion to handle all modules
@@ -114,10 +114,10 @@ def log_step_error(logger_or_step_name, message: str = None, **metadata):
     # Simple error logging functions
 ```
 
-**System D: Module-specific fallbacks** (`src/execute/executor.py:56-67`)
+**System D: Module-specific alternatives** (`src/execute/executor.py:56-67`)
 
 ```python
-# Inline fallback functions when utils not available
+# Inline alternative functions when utils not available
 def log_step_error(logger, msg): 
     _logging.getLogger(__name__).error(f"❌ {msg}")
 ```
@@ -196,7 +196,7 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
     nx = None
 ```
 
-**Inconsistent Fallback Strategies**
+**Inconsistent Alternative Strategies**
 
 - Some modules provide no-op functions
 - Others return None or False
@@ -208,7 +208,7 @@ except (ImportError, RecursionError, AttributeError, ValueError) as e:
 **Unified Import System:**
 
 - Single import manager for all optional dependencies
-- Consistent fallback behavior across all modules
+- Consistent alternative behavior across all modules
 - Python version compatibility handled centrally  
 - Standard error messages and user guidance
 
@@ -271,7 +271,7 @@ def process_gnn_content(content: str) -> dict:
 **Issues:**
 
 - Multiple logging systems competing for the same functionality
-- Import fallbacks defined inline instead of centrally managed
+- Import alternatives defined inline instead of centrally managed
 - Performance tracking scattered across multiple files
 
 ### src/render/ Module
@@ -299,7 +299,7 @@ def process_gnn_content(content: str) -> dict:
 1. **Standardize Dependency Management**
    - Expand `DependencyManager` to handle all modules
    - Create unified availability checking system
-   - Implement consistent fallback strategies
+   - Implement consistent alternative strategies
 
 2. **Unify Error Handling**
    - Consolidate all error handling into `PipelineErrorHandler`
@@ -316,7 +316,7 @@ def process_gnn_content(content: str) -> dict:
 2. **Import System Overhaul**
    - Create `src/utils/import_manager.py`
    - Handle Python 3.13 compatibility centrally
-   - Standardize fallback function patterns
+   - Standardize alternative function patterns
 
 ### Phase 3: MCP Completion (Weeks 5-6)
 

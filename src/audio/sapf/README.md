@@ -347,7 +347,7 @@ try:
     processed_audio = process_sapf_audio(audio_data, spectral_config)
 except SpectralProcessingError as e:
     logger.error(f"Spectral processing failed: {e}")
-    # Provide fallback processing or error reporting
+    # Provide recovery processing or error reporting
 ```
 
 ### Analysis Issues
@@ -357,7 +357,7 @@ try:
     spectral_data = analyze_spectrum(audio_data)
 except AnalysisError as e:
     logger.warning(f"Spectral analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Sonification Issues
@@ -367,7 +367,7 @@ try:
     audio_output = sonify_gnn_model_spectral(model_data, sonification_config)
 except SonificationError as e:
     logger.error(f"Spectral sonification failed: {e}")
-    # Provide fallback sonification or error reporting
+    # Provide recovery sonification or error reporting
 ```
 
 ## Performance Optimization
@@ -481,7 +481,7 @@ Solution: Check audio data length and provide sufficient samples
 #### 3. Sonification Issues
 ```
 Error: Spectral sonification failed - invalid mapping
-Solution: Validate mapping configuration and provide fallback
+Solution: Validate mapping configuration and provide recovery
 ```
 
 #### 4. Performance Issues

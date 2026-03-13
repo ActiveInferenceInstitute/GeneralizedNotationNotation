@@ -57,9 +57,9 @@ def run_gui(
         starter_path.write_text(starter_md)
 
         if headless or _GUI_BACKEND is None:
-            # Enhanced fallback handling for missing GUI backend
+            # Enhanced recovery handling for missing GUI backend
             if _GUI_BACKEND is None:
-                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+                logger.warning("⚠️ Gradio not available - generating recovery artifacts only")
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
             else:
                 logger.info("📦 Running GUI 1 in HEADLESS mode - generating artifacts only")
@@ -68,7 +68,7 @@ def run_gui(
             gui_output_dir = output_root
             gui_output_dir.mkdir(parents=True, exist_ok=True)
 
-            # Create comprehensive fallback status report
+            # Create comprehensive recovery status report
             fallback_status = {
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
@@ -88,7 +88,7 @@ def run_gui(
 
             (gui_output_dir / "gui_status.json").write_text(json.dumps(fallback_status, indent=2))
 
-            log_step_success(logger, f"GUI 1 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
+            log_step_success(logger, f"GUI 1 artifacts generated ({'recovery' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
         # Interactive mode - build and launch Gradio GUI

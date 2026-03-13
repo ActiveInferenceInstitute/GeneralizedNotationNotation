@@ -64,7 +64,7 @@ import importlib
 try:
     sapf = importlib.import_module('src.sapf')
 except ImportError:
-    # Fallback to relative import if package context differs
+    # Recovery to relative import if package context differs
     from . import sapf
 
 __all__ = [

@@ -450,7 +450,7 @@ try:
     success = process_website(target_dir, output_dir)
 except WebsiteError as e:
     logger.error(f"Website generation failed: {e}")
-    # Provide fallback website or error reporting
+    # Provide recovery website or error reporting
 ```
 
 ### Embedding Issues
@@ -460,7 +460,7 @@ try:
     success = embed_visualizations(viz_dir, website_dir)
 except EmbeddingError as e:
     logger.warning(f"Visualization embedding failed: {e}")
-    # Provide fallback embedding or error reporting
+    # Provide recovery embedding or error reporting
 ```
 
 ### Customization Issues
@@ -470,7 +470,7 @@ try:
     success = customize_website_theme(theme_config)
 except CustomizationError as e:
     logger.error(f"Website customization failed: {e}")
-    # Provide fallback theme or error reporting
+    # Provide recovery theme or error reporting
 ```
 
 ## Performance Optimization

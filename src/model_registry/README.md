@@ -380,7 +380,7 @@ try:
     model_id = register_model(model_path, metadata)
 except RegistrationError as e:
     logger.error(f"Model registration failed: {e}")
-    # Provide fallback registration or error reporting
+    # Provide recovery registration or error reporting
 ```
 
 ### Search Failures
@@ -391,7 +391,7 @@ try:
     results = search_models(query, filters)
 except SearchError as e:
     logger.warning(f"Search failed: {e}")
-    # Provide fallback search or error reporting
+    # Provide recovery search or error reporting
 ```
 
 ### Version Management Issues
@@ -402,7 +402,7 @@ try:
     new_version = create_model_version(model_id, version)
 except VersionError as e:
     logger.error(f"Version creation failed: {e}")
-    # Provide fallback versioning or error reporting
+    # Provide recovery versioning or error reporting
 ```
 
 ## Performance Optimization

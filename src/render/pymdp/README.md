@@ -97,7 +97,7 @@ Generated PyMDP code is fully executable and includes:
 
 ## Dependencies
 
-- `pymdp` - PyMDP package (optional, fallback: skip PyMDP generation)
+- `pymdp` - PyMDP package (optional, recovery: skip PyMDP generation)
 - `numpy` - Numerical arrays
 - `pathlib` - File path handling
 

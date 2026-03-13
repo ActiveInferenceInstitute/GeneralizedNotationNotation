@@ -456,7 +456,7 @@ try:
     success = execute_pipeline(target_dir, output_dir)
 except PipelineError as e:
     logger.error(f"Pipeline execution failed: {e}")
-    # Provide fallback or error reporting
+    # Provide recovery or error reporting
 ```
 
 ### Step Failures
@@ -466,7 +466,7 @@ try:
     success = execute_step(step_name, target_dir, output_dir)
 except StepError as e:
     logger.error(f"Step {step_name} failed: {e}")
-    # Provide fallback or error reporting
+    # Provide recovery or error reporting
 ```
 
 ### Configuration Failures
@@ -476,7 +476,7 @@ try:
     config = get_pipeline_config()
 except ConfigError as e:
     logger.error(f"Configuration loading failed: {e}")
-    # Provide fallback configuration or error reporting
+    # Provide recovery configuration or error reporting
 ```
 
 ## Performance Optimization

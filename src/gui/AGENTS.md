@@ -181,8 +181,8 @@ success = process_gui(
 - `numpy` - Numerical operations for visualizations
 
 ### Optional Dependencies
-- `plotly` - Interactive visualizations (fallback: matplotlib)
-- `matplotlib` - Static plotting (fallback: basic HTML)
+- `plotly` - Interactive visualizations (recovery: matplotlib)
+- `matplotlib` - Static plotting (recovery: basic HTML)
 - `networkx` - Network graph visualization
 
 ### Internal Dependencies
@@ -357,7 +357,7 @@ The `navigation.html` file provides comprehensive navigation to all pipeline out
 ## Error Handling
 
 ### Graceful Degradation
-- **No gradio**: Fallback to HTML-based interfaces
+- **No gradio**: Recovery to HTML-based interfaces
 - **No plotly**: Use matplotlib for visualizations
 - **Browser unavailable**: Generate static artifacts only
 

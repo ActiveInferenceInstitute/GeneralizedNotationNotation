@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/discopy/Hidden Markov Model Baseline_discopy.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.433545,
-  "timestamp": "2026-03-06T15:01:38.573582",
+  "execution_time": 0.338776,
+  "timestamp": "2026-03-13T14:15:38.039683",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -52,13 +52,13 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1570,
     "stderr_length": 0,
-    "output_directory": "output/12_execute_output/hmm_baseline/discopy"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/discopy"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/hmm_baseline/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
-      "output/12_execute_output/hmm_baseline/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/discopy/simulation_data/discopy_diagrams_circuit_info.json"
     ],
     "traces": [],
     "other": []

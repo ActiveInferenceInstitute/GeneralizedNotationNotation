@@ -18,7 +18,7 @@ try:
     from execute.julia_setup import is_julia_available
 except ImportError:
     def is_julia_available() -> bool:  # type: ignore[misc]
-        """Fallback when julia_setup is unavailable: check PATH directly."""
+        """Recovery when julia_setup is unavailable: check PATH directly."""
         import shutil
         return shutil.which("julia") is not None
 

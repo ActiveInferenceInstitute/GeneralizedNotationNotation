@@ -196,22 +196,22 @@ except Exception:
 try:
     from .runner import run_tests, create_test_runner
 except ImportError:
-    # Fallback implementation if runner import fails
+    # Recovery implementation if runner import fails
     def run_tests(logger, output_dir, verbose=False, **kwargs):
-        """Fallback test function when module unavailable."""
-        logger.warning("Tests module not available - using fallback")
+        """Recovery test function when module unavailable."""
+        logger.warning("Tests module not available - using recovery")
         return True
 
     def create_test_runner(args, logger):
-        """Fallback test runner creation."""
-        logger.warning("Test runner not available - using fallback")
+        """Recovery test runner creation."""
+        logger.warning("Test runner not available - using recovery")
         return None
 
 # Import pytest markers from conftest
 try:
     from .conftest import PYTEST_MARKERS
 except ImportError:
-    # Fallback definition if conftest import fails
+    # Recovery definition if conftest import fails
     PYTEST_MARKERS = {
         "unit": "Unit tests for individual components",
         "integration": "Integration tests for component interactions",

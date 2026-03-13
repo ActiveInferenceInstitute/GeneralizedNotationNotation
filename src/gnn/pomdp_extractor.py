@@ -481,7 +481,7 @@ class POMDPExtractor:
                 self.logger.warning(f"ast.literal_eval failed for {value_str}: {e}. Falling back to manual parsing.")
                 return self._parse_nested_structure_safe(value_str)
 
-        # Fallback for simple comma-separated values without brackets
+        # Recovery for simple comma-separated values without brackets
         values = []
         for item in value_str.split(','):
             item = item.strip()

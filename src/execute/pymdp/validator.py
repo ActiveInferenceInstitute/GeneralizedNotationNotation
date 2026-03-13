@@ -83,7 +83,7 @@ def validate_pymdp_environment() -> Dict[str, Any]:
             "Alternative frameworks still available: RxInfer.jl, ActiveInference.jl, JAX, DisCoPy."
         )
         logger.info(
-            "PyMDP not available for execution - using fallback analysis. "
+            "PyMDP not available for execution - using recovery analysis. "
             f"Install with: {instructions}"
         )
 

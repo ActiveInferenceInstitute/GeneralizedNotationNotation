@@ -3,7 +3,7 @@
 Enhanced Dependency Manager for GNN Pipeline
 
 This module provides comprehensive dependency checking and management
-across all pipeline steps with intelligent fallback strategies.
+across all pipeline steps with intelligent recovery strategies.
 """
 
 import subprocess

@@ -60,7 +60,7 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 ### Step Index
 
 - **📋 [STEP_INDEX.md](STEP_INDEX.md)** — Comprehensive 20-column reference table for all 25 steps
-  - Covers: script, module, phase, input, output, frameworks, timeouts, dependencies, fallback behavior, data flow, matrix routing, criticality, and category
+  - Covers: script, module, phase, input, output, frameworks, timeouts, dependencies, recovery behavior, data flow, matrix routing, criticality, and category
 
 ### Infrastructure Modules
 

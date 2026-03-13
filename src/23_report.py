@@ -42,11 +42,11 @@ try:
     from report import process_report
 except ImportError:
     def process_report(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback report processing when module unavailable."""
+        """Recovery report processing when module unavailable."""
         import logging
         if logger is None:
             logger = logging.getLogger(__name__)
-        logger.warning("Report module not available - using fallback")
+        logger.warning("Report module not available - using recovery")
         return True
 
 run_script = create_standardized_pipeline_script(

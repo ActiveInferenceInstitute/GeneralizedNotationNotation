@@ -443,7 +443,7 @@ try:
     results = process_security(target_dir, output_dir)
 except SecurityError as e:
     logger.error(f"Security processing failed: {e}")
-    # Provide fallback security or error reporting
+    # Provide recovery security or error reporting
 ```
 
 ### Vulnerability Issues
@@ -453,7 +453,7 @@ try:
     vulnerabilities = analyze_security_vulnerabilities(content)
 except VulnerabilityError as e:
     logger.warning(f"Vulnerability analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Compliance Issues
@@ -463,7 +463,7 @@ try:
     compliance = validate_security_compliance(content, standards)
 except ComplianceError as e:
     logger.error(f"Compliance validation failed: {e}")
-    # Provide fallback validation or error reporting
+    # Provide recovery validation or error reporting
 ```
 
 ## Performance Optimization

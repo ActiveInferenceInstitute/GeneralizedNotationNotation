@@ -179,7 +179,7 @@ def analyze_execution_results(
                         model_name_for_analysis = result.get("model_name", "unknown")
 
                         if isinstance(extracted, dict):
-                            # Fallback: if extractors didn't find free_energy, try
+                            # Recovery: if extractors didn't find free_energy, try
                             # pulling it directly from the loaded JSON result data.
                             # The simulation_results.json files store EFE as:
                             #   - efe_history (rxinfer, activeinference_jl)
@@ -195,7 +195,7 @@ def analyze_execution_results(
                                     efe = result["simulation_trace"]["efe_history"]
                                 if efe:
                                     extracted["free_energy"] = efe
-                                    logger.debug(f"Fallback: extracted EFE for {framework} from result data ({len(efe)} entries)")
+                                    logger.debug(f"Recovery: extracted EFE for {framework} from result data ({len(efe)} entries)")
 
                             # Also pull beliefs if missing
                             if not extracted.get("beliefs"):

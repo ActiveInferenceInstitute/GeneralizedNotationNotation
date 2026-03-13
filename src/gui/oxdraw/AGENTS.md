@@ -152,8 +152,8 @@ gnn_model = convert_mermaid_file_to_gnn(
 
 ### Optional Dependencies
 
-- `oxdraw` (Rust CLI) - Interactive visual editor (fallback: headless mode only)
-- `ontology.processor` - Ontology validation (fallback: skip validation)
+- `oxdraw` (Rust CLI) - Interactive visual editor (recovery: headless mode only)
+- `ontology.processor` - Ontology validation (recovery: skip validation)
 
 ### Internal Dependencies
 
@@ -347,7 +347,7 @@ print(f"   Connections: {len(gnn_model['connections'])}")
 4. **Ontology Validation**: Warnings for invalid terms
 5. **File I/O Errors**: Graceful error handling with context
 
-### Fallback Strategies
+### Recovery Strategies
 
 - **No oxdraw CLI**: Headless conversion only (no interactive editing)
 - **Invalid Metadata**: Use visual structure only
@@ -472,7 +472,7 @@ cargo install oxdraw
 oxdraw --version
 ```
 
-**Fallback**: Module works in headless mode without oxdraw CLI
+**Recovery**: Module works in headless mode without oxdraw CLI
 
 #### Issue 2: "Metadata not preserved"
 

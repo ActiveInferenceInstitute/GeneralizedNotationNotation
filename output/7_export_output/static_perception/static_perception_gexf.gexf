@@ -1,0 +1,20 @@
+<?xml version="1.0" ?>
+<gexf xmlns="http://www.gexf.net/1.2draft" version="1.2">
+  <meta lastmodifieddate="2024-01-01">
+    <creator>GNN Pipeline</creator>
+    <description>GNN Model Export</description>
+  </meta>
+  <graph mode="static" defaultedgetype="directed">
+    <nodes>
+      <node id="n0" label="A"/>
+      <node id="n1" label="D"/>
+      <node id="n2" label="s"/>
+      <node id="n3" label="o"/>
+    </nodes>
+    <edges>
+      <edge id="e0" source="" target=""/>
+      <edge id="e1" source="" target=""/>
+      <edge id="e2" source="" target=""/>
+    </edges>
+  </graph>
+</gexf>

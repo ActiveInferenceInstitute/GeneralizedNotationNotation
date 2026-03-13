@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/deep_planning_horizon/rxinfer/Deep Planning Horizon POMDP_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 30.583136,
-  "timestamp": "2026-03-06T15:06:52.017835",
+  "execution_time": 21.29332,
+  "timestamp": "2026-03-13T14:19:26.556377",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1770,
     "stderr_length": 220,
-    "output_directory": "output/12_execute_output/deep_planning_horizon/rxinfer"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/deep_planning_horizon/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/deep_planning_horizon/rxinfer/simulation_data/rxinfer_simulation_results.json"
     ],
     "traces": [],
     "other": []

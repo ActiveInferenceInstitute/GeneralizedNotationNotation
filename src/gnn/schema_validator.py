@@ -54,7 +54,7 @@ class GNNParser:
     SECTION_PATTERN = re.compile(r'^## (.+)$')
     VARIABLE_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\[([^\]]+)\])?(?:,type=([a-zA-Z]+))?(?:\s*#\s*(.*))?$')
     CONNECTION_PATTERN = re.compile(r'^(.+?)\s*(>|->|-|\|)\s*(.+?)(?:\s*#\s*(.*))?$')
-    # Accept both '=' and ':' as assignment separators to support legacy files
+    # Accept both '=' and ':' as assignment separators to support previous files
     PARAMETER_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*[:=]\s*)(.+?)(?:\s*#\s*(.*))?$')
     ONTOLOGY_PATTERN = re.compile(r'^([\w_π][\w\d_π]*)(\s*=\s*)([a-zA-Z_][a-zA-Z0-9_]*)(?:\s*#\s*(.*))?$')
     COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')
@@ -75,7 +75,7 @@ class GNNParser:
         else:
             self.parsing_system = None
             logger.info("Basic GNN parser initialized")
-        # Expose basic schema metadata expected by tests and legacy callers
+        # Expose basic schema metadata expected by tests and previous callers
         try:
             self.schema = self.parsing_system.validator.schema if self.parsing_system else {}
         except Exception:
@@ -166,7 +166,7 @@ class GNNParser:
                 any(section in content for section in ['GNNSection', 'ModelName', 'StateSpaceBlock'])):
                 return 'markdown'
 
-            return 'markdown'  # Default fallback
+            return 'markdown'  # Default recovery
 
         except UnicodeDecodeError:
             return 'binary'
@@ -252,7 +252,7 @@ class GNNParser:
             except (ValueError, Exception) as e:
                 logger.warning(f"Multi-format parsing failed for {format_hint}: {e}")
 
-        # Fallback to markdown parsing
+        # Recovery to markdown parsing
         return self._parse_markdown_content(content, source_name)
 
     def _convert_parse_result_to_parsed_gnn(self, result, source_format: str) -> ParsedGNN:
@@ -613,7 +613,7 @@ class GNNParser:
         try:
             return ast.literal_eval(value_str)
         except (ValueError, SyntaxError):
-            # Fallback parsing
+            # Recovery parsing
             inner = value_str[1:-1].strip()
             if not inner:
                 return []
@@ -806,7 +806,7 @@ class GNNValidator:
         """
         Load JSON or YAML schema with robust error handling.
         
-        Handles potential recursion and parsing errors by providing fallback mechanisms.
+        Handles potential recursion and parsing errors by providing recovery mechanisms.
         """
         try:
             # First, try standard loading
@@ -825,9 +825,9 @@ class GNNValidator:
             # Log the specific error
             logger.warning(f"Schema loading error for {self.schema_path}: {e}")
 
-            # Fallback to minimal schema
+            # Recovery to minimal schema
             return {
-                "title": "Fallback GNN Schema",
+                "title": "Recovery GNN Schema",
                 "description": "Minimal schema due to loading error",
                 "type": "object",
                 "properties": {},
@@ -839,7 +839,7 @@ class GNNValidator:
 
             # Return an empty, permissive schema
             return {
-                "title": "Emergency Fallback Schema",
+                "title": "Emergency Recovery Schema",
                 "description": "Completely permissive schema due to critical loading error",
                 "type": "object",
                 "additionalProperties": True
@@ -1267,7 +1267,7 @@ class GNNValidator:
             result.warnings.append(f"Basic parser validation failed: {e}")
 
     def _validate_structure(self, content: str, result: ValidationResult):
-        """Legacy method - now delegates to markdown validation."""
+        """Previous method - now delegates to markdown validation."""
         self._validate_markdown_structure(content, result)
 
     def _validate_semantics(self, parsed: ParsedGNN, result: ValidationResult):

@@ -8,8 +8,8 @@
 - No action selection — the agent passively observes a changing world
 - Demonstrates belief updating (state inference) across time steps
 - Suitable for tracking hidden sources from noisy observations</annotation>
-    <created_at>2026-03-06T15:00:15.044054</created_at>
-    <modified_at>2026-03-06T15:00:15.044055</modified_at>
+    <created_at>2026-03-13T14:15:02.720457</created_at>
+    <modified_at>2026-03-13T14:15:02.720458</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="Recognition matrix: P(observation | hidden state)"/>

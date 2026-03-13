@@ -175,7 +175,7 @@ class VisualLogger:
                 )
                 progress.update(task, advance=1)
         else:
-            # Fallback text-based progress
+            # Recovery text-based progress
             bar = self._create_text_progress_bar(step_num, total_steps, bar_width)
             print(f"\n🔢 {progress_text} - {description}")
             print(f"   {bar}")

@@ -79,7 +79,7 @@ def validate_step_prerequisites(script_name: str, args, logger, skip_steps: list
             # Use centralized function to get correct output directory
             expected_output_dir = get_output_dir_for_script(req_step, args.output_dir)
 
-            # Also check for nested directories (legacy pattern)
+            # Also check for nested directories (previous pattern)
             nested_output_dir = expected_output_dir / expected_output_dir.name
 
             # Check both possible locations

@@ -58,7 +58,7 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
             "analysis_timestamp": datetime.now().isoformat()
         }
 
-        # Attempt LLM-based summary using multi-provider system (with Ollama fallback)
+        # Attempt LLM-based summary using multi-provider system (with Ollama recovery)
         try:
             # Use async-aware API when available
             ops = LLMOperations()
@@ -70,7 +70,7 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
                 summary_text = summary_candidate
             result["llm_summary"] = summary_text
         except Exception as e:
-            # Fallback: if a provider class is patched (tests), try using it directly
+            # Recovery: if a provider class is patched (tests), try using it directly
             try:
                 provider = OpenAIProvider()  # tests may monkeypatch this symbol
                 candidate = provider.analyze(content)
@@ -137,7 +137,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
     """Extract connections from GNN content.
     
     Parses the ## Connections section for GNN operators (>, -, <)
-    and falls back to legacy patterns (->. →, connects).
+    and falls back to previous patterns (->. →, connects).
     """
     connections = []
 
@@ -164,7 +164,7 @@ def extract_connections(content: str) -> List[Dict[str, Any]]:
                     "line": content[:conn_match.start() + conn_section.start()].count('\n') + 1
                 })
 
-    # Fallback: legacy patterns throughout the entire file
+    # Recovery: previous patterns throughout the entire file
     if not connections:
         conn_patterns = [
             r'(\w+)\s*->\s*(\w+)',  # source -> target

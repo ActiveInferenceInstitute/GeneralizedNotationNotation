@@ -1,0 +1,5 @@
+Category: model_registry
+Success: False
+Duration: 2.00s
+Peak Memory: 24.28 MB
+CPU Usage: 0.0%

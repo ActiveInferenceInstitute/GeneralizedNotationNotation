@@ -36,7 +36,7 @@ class TimeoutConfig:
     strategy: TimeoutStrategy = TimeoutStrategy.RETRY_EXPONENTIAL
     retry_delay: float = 1.0          # Base retry delay in seconds
     exponential_base: float = 2.0     # Exponential backoff base
-    graceful_fallback: Optional[Callable] = None  # Fallback function for graceful degradation
+    graceful_fallback: Optional[Callable] = None  # Recovery function for graceful degradation
     log_retries: bool = True          # Whether to log retry attempts
 
 @dataclass
@@ -177,14 +177,14 @@ class TimeoutManager:
         # All attempts failed - check for graceful degradation
         if config.strategy == TimeoutStrategy.GRACEFUL_DEGRADATION and config.graceful_fallback:
             try:
-                self.logger.info(f"Using graceful fallback for {operation_name}")
+                self.logger.info(f"Using graceful recovery for {operation_name}")
                 fallback_result = config.graceful_fallback(*args, **kwargs)
                 result.success = True
                 result.result = fallback_result
                 result.used_fallback = True
                 result.error = None
             except Exception as e:
-                result.error = f"Fallback also failed: {e}"
+                result.error = f"Recovery also failed: {e}"
 
         result.total_time = time.time() - start_time
         return result
@@ -263,7 +263,7 @@ class TimeoutManager:
         # All attempts failed - check for graceful degradation
         if config.strategy == TimeoutStrategy.GRACEFUL_DEGRADATION and config.graceful_fallback:
             try:
-                self.logger.info(f"Using graceful fallback for {operation_name}")
+                self.logger.info(f"Using graceful recovery for {operation_name}")
                 if asyncio.iscoroutinefunction(config.graceful_fallback):
                     fallback_result = await config.graceful_fallback(*args, **kwargs)
                 else:
@@ -273,7 +273,7 @@ class TimeoutManager:
                 result.used_fallback = True
                 result.error = None
             except Exception as e:
-                result.error = f"Fallback also failed: {e}"
+                result.error = f"Recovery also failed: {e}"
 
         result.total_time = time.time() - start_time
         return result
@@ -335,7 +335,7 @@ class LLMTimeoutManager(TimeoutManager):
         """Execute LLM call with specialized timeout handling."""
         config = config or self.default_config
 
-        # Add graceful fallback for LLM calls
+        # Add graceful recovery for LLM calls
         def llm_fallback(*args, **kwargs):
             return f"LLM request timed out. Model: {model}, Prompt length: {len(prompt)} chars"
 

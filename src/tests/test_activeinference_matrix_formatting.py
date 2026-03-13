@@ -86,7 +86,7 @@ class TestMatrixToJulia:
         assert "[1.0 0.0; 0.0 1.0]" in result
 
     def test_string_input(self):
-        """Test string fallback behavior."""
+        """Test string recovery behavior."""
         data = "[[0.9, 0.1], [0.1, 0.9]]"
         # The function attempts literal_eval for strings
         result = _matrix_to_julia(data)

@@ -43,8 +43,8 @@ try:
     from template import process_template_standardized
 except ImportError:
     def process_template_standardized(target_dir, output_dir, logger, **kwargs):
-        """Fallback template processing when module unavailable."""
-        logger.warning("Template module not available - using fallback")
+        """Recovery template processing when module unavailable."""
+        logger.warning("Template module not available - using recovery")
         return True
 
 run_script = create_standardized_pipeline_script(

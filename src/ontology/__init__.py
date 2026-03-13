@@ -1,7 +1,7 @@
 """
 ontology module for GNN Processing Pipeline.
 
-This module provides ontology capabilities with fallback implementations.
+This module provides ontology capabilities with recovery implementations.
 """
 
 from pathlib import Path

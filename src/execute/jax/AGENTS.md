@@ -24,7 +24,7 @@
 - Automatic device detection and selection
 - Performance profiling and resource monitoring
 - Memory-efficient execution with gradient checkpointing
-- Error recovery and fallback strategies
+- Error recovery and recovery strategies
 - Hardware validation and compatibility checking
 
 ---
@@ -109,9 +109,9 @@ success = run_jax_scripts(
 - `numpy` - Array operations and numerical computing
 
 ### Optional Dependencies
-- `optax` - Gradient-based optimization (fallback: basic SGD)
-- `flax` - Neural network library (fallback: basic operations)
-- `psutil` - System resource monitoring (fallback: basic monitoring)
+- `optax` - Gradient-based optimization (recovery: basic SGD)
+- `flax` - Neural network library (recovery: basic operations)
+- `psutil` - System resource monitoring (recovery: basic monitoring)
 
 ### Internal Dependencies
 - `execute.executor` - Base execution functionality
@@ -280,7 +280,7 @@ for script_path in scripts:
 ### Automatic Device Selection
 - **Hardware Detection**: Automatically detect available CPU, GPU, and TPU devices
 - **Performance Ranking**: Rank devices by expected performance
-- **Fallback Strategy**: Graceful fallback to slower devices when preferred hardware unavailable
+- **Recovery Strategy**: Graceful recovery to slower devices when preferred hardware unavailable
 - **Memory Management**: Automatic memory allocation based on device capabilities
 
 ### GPU Acceleration Features
@@ -422,7 +422,7 @@ execution_results = {
 5. **Timeout Exceeded**: Script execution takes too long
 
 ### Recovery Strategies
-- **Device Fallback**: Automatic fallback to available devices (GPU → CPU)
+- **Device Recovery**: Automatic recovery to available devices (GPU → CPU)
 - **Memory Optimization**: Gradient checkpointing and memory pooling
 - **Code Restructuring**: Automatic code modifications for JIT compatibility
 - **Numerical Stabilization**: Automatic detection and correction of instabilities
@@ -433,7 +433,7 @@ try:
     results = execute_jax_script(script_path, device="gpu")
 except JAXExecutionError as e:
     logger.error(f"JAX execution failed: {e}")
-    # Attempt recovery with CPU fallback
+    # Attempt recovery with CPU recovery
     results = execute_jax_script(script_path, device="cpu")
 ```
 
@@ -552,7 +552,7 @@ def run_jax_scripts_tool(pipeline_output_dir: str, device: str = "auto") -> Dict
 #### Issue 1: "JAX device not available"
 **Symptom**: Execution fails with device access error
 **Cause**: Requested device not installed or not accessible
-**Solution**: Check device availability and use fallback device
+**Solution**: Check device availability and use recovery device
 
 #### Issue 2: "JIT compilation failed"
 **Symptom**: Script fails during JIT compilation phase

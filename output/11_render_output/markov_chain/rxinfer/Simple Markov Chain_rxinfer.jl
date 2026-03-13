@@ -1,7 +1,7 @@
 #!/usr/bin/env julia
 # RxInfer.jl Active Inference Simulation
 # Generated from GNN Model: Simple Markov Chain
-# Generated: 2026-03-06 15:00:54
+# Generated: 2026-03-13 14:15:10
 
 using Pkg
 
@@ -249,8 +249,8 @@ function run_simulation()
             final_posterior = posterior[end]
             current_belief = probvec(final_posterior)
         catch e
-            # Fallback: manual Bayesian update if RxInfer fails
-            println("  Step $t: RxInfer inference fallback - $e")
+            # Recovery: manual Bayesian update if RxInfer fails
+            println("  Step $t: RxInfer inference recovery - $e")
             likelihood = A_matrix[obs, :]
             unnormalized = current_belief .* likelihood
             current_belief = unnormalized ./ sum(unnormalized)

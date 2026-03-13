@@ -183,7 +183,7 @@ function run_simulation(config)
         if current_state <= size(A, 2)
             obs = A[:, current_state] + 0.1 * randn(size(A, 1))
         else
-            obs = A[:, 1] + 0.1 * randn(size(A, 1))  # Fallback to first column
+            obs = A[:, 1] + 0.1 * randn(size(A, 1))  # Recovery to first column
         end
         push!(observations_data, obs)
 
@@ -237,7 +237,7 @@ function run_simulation(config)
     
     # Extract results - handle both RxInfer result object and fallback Dict
     if isa(result, Dict)
-        # Fallback case
+        # Recovery case
         beliefs = result[:posteriors][:s]
         free_energy_history = result[:free_energy]
     else

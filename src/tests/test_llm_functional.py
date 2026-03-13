@@ -11,7 +11,6 @@ import sys
 import os
 import logging
 from pathlib import Path
-from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -168,36 +167,48 @@ class TestModelSelection:
         selected = _select_best_ollama_model([], logger)
         assert selected == "gemma3:4b"
 
-    @pytest.mark.unit
-    @patch.dict(os.environ, {"OLLAMA_MODEL": "my-custom:latest"})
     def test_select_from_env_variable(self):
         """Should honor OLLAMA_MODEL environment variable."""
         logger = logging.getLogger("test")
-        selected = _select_best_ollama_model(["gemma3:4b"], logger)
-        assert selected == "my-custom:latest"
+        original_val = os.environ.get("OLLAMA_MODEL")
+        os.environ["OLLAMA_MODEL"] = "my-custom:latest"
+        try:
+            selected = _select_best_ollama_model(["gemma3:4b"], logger)
+            assert selected == "my-custom:latest"
+        finally:
+            if original_val is not None:
+                os.environ["OLLAMA_MODEL"] = original_val
+            else:
+                del os.environ["OLLAMA_MODEL"]
 
 
 class TestEnvironmentLoading:
     """Test environment-based configuration helpers."""
 
-    @pytest.mark.unit
-    @patch.dict(os.environ, {
-        "OPENAI_API_KEY": "",
-        "OPENROUTER_API_KEY": "",
-        "PERPLEXITY_API_KEY": "",
-        "OLLAMA_DISABLED": "0",
-    }, clear=False)
     def test_load_api_keys_includes_ollama(self):
         """Ollama should be included by default when not disabled."""
-        keys = load_api_keys_from_env()
-        assert "ollama" in keys
+        original_env = os.environ.copy()
+        os.environ["OPENAI_API_KEY"] = ""
+        os.environ["OPENROUTER_API_KEY"] = ""
+        os.environ["PERPLEXITY_API_KEY"] = ""
+        os.environ["OLLAMA_DISABLED"] = "0"
+        try:
+            keys = load_api_keys_from_env()
+            assert "ollama" in keys
+        finally:
+            os.environ.clear()
+            os.environ.update(original_env)
 
-    @pytest.mark.unit
-    @patch.dict(os.environ, {"OLLAMA_DISABLED": "1"}, clear=False)
     def test_load_api_keys_ollama_disabled(self):
         """When OLLAMA_DISABLED=1, ollama key should not be present."""
-        keys = load_api_keys_from_env()
-        assert "ollama" not in keys
+        original_env = os.environ.copy()
+        os.environ["OLLAMA_DISABLED"] = "1"
+        try:
+            keys = load_api_keys_from_env()
+            assert "ollama" not in keys
+        finally:
+            os.environ.clear()
+            os.environ.update(original_env)
 
     @pytest.mark.unit
     def test_get_default_provider_configs_structure(self):

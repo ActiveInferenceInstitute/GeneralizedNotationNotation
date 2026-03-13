@@ -203,10 +203,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-03-06T15:00:16.677162'
+created_at: '2026-03-13T14:15:04.307612'
 equations: []
 model_name: Factor Graph Active Inference Model
-modified_at: '2026-03-06T15:00:16.677163'
+modified_at: '2026-03-13T14:15:04.307613'
 ontology_mappings:
 - description: null
   ontology_term: ProprioceptiveLikelihoodMatrix

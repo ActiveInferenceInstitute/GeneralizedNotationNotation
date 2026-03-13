@@ -68,7 +68,7 @@ class TestPipelineStepIntegration:
 
         logger = logging.getLogger("test_integration")
 
-        # Create mock output structure
+        # Create sample output structure
         viz_output = tmp_path / "8_visualization_output"
         viz_output.mkdir(parents=True, exist_ok=True)
 

@@ -136,7 +136,7 @@ class TestPipelineScriptDiscovery:
     def test_pipeline_script_sorting(self):
         """Test pipeline script sorting logic."""
         # Test script sorting by number and name
-        mock_scripts = [
+        sample_scripts = [
             {"num": 3, "basename": "3_gnn.py"},
             {"num": 1, "basename": "1_setup.py"},
             {"num": 13, "basename": "13_llm.py"},
@@ -145,7 +145,7 @@ class TestPipelineScriptDiscovery:
         ]
 
         # Sort like the main orchestrator would
-        sorted_scripts = sorted(mock_scripts, key=lambda x: (x['num'], x['basename']))
+        sorted_scripts = sorted(sample_scripts, key=lambda x: (x['num'], x['basename']))
 
         # Verify correct order - include all scripts that exist
         expected_order = [1, 2, 3, 13, 14]
@@ -374,8 +374,8 @@ class TestEndToEndIntegration:
         # This test verifies the dependency resolution logic
         # is working correctly in the main pipeline orchestrator
 
-        # Mock pipeline steps for testing
-        mock_steps = [
+        # Sample pipeline steps for testing
+        sample_steps = [
             ("0_template.py", "Template initialization"),
             ("1_setup.py", "Environment setup"),
             ("2_tests.py", "Test suite execution"),

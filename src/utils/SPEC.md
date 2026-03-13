@@ -16,7 +16,7 @@ Minimal, always-importable logging functions for pipeline steps.
 - `log_step_error(logger, msg)` - Log error with ❌ emoji
 - `setup_step_logging(name, verbose)` - Create configured logger
 
-**Design:** Zero external dependencies, fallback-safe.
+**Design:** Zero external dependencies, recovery-safe.
 
 ### 2. base_processor.py
 Abstract base class for standardized processing patterns.

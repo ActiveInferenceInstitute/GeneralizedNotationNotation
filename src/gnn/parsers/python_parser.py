@@ -75,7 +75,7 @@ class PythonGNNParser(BaseGNNParser):
             tree = ast.parse(content)
             return self._parse_ast(tree, content)
         except SyntaxError:
-            # Fallback to regex parsing
+            # Recovery to regex parsing
             return self._parse_regex(content)
 
     def _parse_ast(self, tree: ast.AST, content: str) -> GNNInternalRepresentation:
@@ -185,12 +185,12 @@ class PythonGNNParser(BaseGNNParser):
             return result
 
     def _parse_regex(self, content: str) -> GNNInternalRepresentation:
-        """Fallback regex parsing."""
+        """Recovery regex parsing."""
         model_name = self._extract_model_name_regex(content)
 
         model = GNNInternalRepresentation(
             model_name=model_name,
-            annotation="Parsed from Python implementation (regex fallback)"
+            annotation="Parsed from Python implementation (regex recovery)"
         )
 
         # Parse imports

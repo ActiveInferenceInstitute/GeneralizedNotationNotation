@@ -68,7 +68,7 @@ def run_gui(
         if headless or _GUI_BACKEND is None:
             # Generate headless artifacts for GUI 2
             if _GUI_BACKEND is None:
-                logger.warning("⚠️ Gradio not available - generating fallback artifacts only")
+                logger.warning("⚠️ Gradio not available - generating recovery artifacts only")
                 logger.info("💡 Install GUI support with: uv pip install -e .[gui]")
             else:
                 logger.info("📦 Running GUI 2 in HEADLESS mode - generating artifacts only")
@@ -106,7 +106,7 @@ def run_gui(
                 ]
             }, indent=2))
 
-            log_step_success(logger, f"GUI 2 artifacts generated ({'fallback' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
+            log_step_success(logger, f"GUI 2 artifacts generated ({'recovery' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
 
         # Interactive mode - build visual matrix editor GUI

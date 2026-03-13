@@ -109,7 +109,7 @@ class XMLGNNParser(BaseGNNParser):
             result.add_error(f"Failed to parse XML content: {e}")
             return result
 
-    def _parse_xml_root(self, root: ET.Element) -> ParseResult:
+    def _parse_xml_root(self, root: Any) -> ParseResult:
         """Parse XML root element."""
         try:
             model = self._convert_xml_to_model(root)
@@ -124,7 +124,7 @@ class XMLGNNParser(BaseGNNParser):
             result.add_error(f"Failed to convert XML to model: {e}")
             return result
 
-    def _convert_xml_to_model(self, root: ET.Element) -> GNNInternalRepresentation:
+    def _convert_xml_to_model(self, root: Any) -> GNNInternalRepresentation:
         """Convert XML element to GNN internal representation."""
 
         # Extract model name from root element or attributes
@@ -164,7 +164,7 @@ class XMLGNNParser(BaseGNNParser):
 
         return model
 
-    def _parse_metadata(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_metadata(self, root: Any, model: GNNInternalRepresentation):
         """Parse metadata from XML."""
         metadata_elem = root.find('.//metadata')
         if metadata_elem is not None:
@@ -172,7 +172,7 @@ class XMLGNNParser(BaseGNNParser):
             if annotation_elem is not None and annotation_elem.text:
                 model.annotation = annotation_elem.text
 
-    def _parse_xml_variables(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_variables(self, root: Any, model: GNNInternalRepresentation):
         """Parse variables from XML."""
         # Look for variables in multiple possible locations
         variables_containers = [
@@ -188,7 +188,7 @@ class XMLGNNParser(BaseGNNParser):
                 if variable:
                     model.variables.append(variable)
 
-    def _parse_xml_variable(self, var_elem: ET.Element) -> Optional[Variable]:
+    def _parse_xml_variable(self, var_elem: Any) -> Optional[Variable]:
         """Parse a single variable from XML element."""
         try:
             name = var_elem.get('name') or var_elem.get('id') or var_elem.tag
@@ -235,7 +235,7 @@ class XMLGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse XML variable {var_elem.tag}: {e}")
             return None
 
-    def _parse_xml_connections(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_connections(self, root: Any, model: GNNInternalRepresentation):
         """Parse connections from XML."""
         # Look for connections in prioritized order to avoid duplicates
         connection_elements = []
@@ -255,7 +255,7 @@ class XMLGNNParser(BaseGNNParser):
             if connection:
                 model.connections.append(connection)
 
-    def _parse_xml_connection(self, conn_elem: ET.Element) -> Optional[Connection]:
+    def _parse_xml_connection(self, conn_elem: Any) -> Optional[Connection]:
         """Parse a single connection from XML element."""
         try:
             # Get source and target variables
@@ -314,7 +314,7 @@ class XMLGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse XML connection {conn_elem.tag}: {e}")
             return None
 
-    def _parse_xml_parameters(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_parameters(self, root: Any, model: GNNInternalRepresentation):
         """Parse parameters from XML."""
         # Look for parameters in multiple locations
         params_containers = [
@@ -329,7 +329,7 @@ class XMLGNNParser(BaseGNNParser):
                 if parameter:
                     model.parameters.append(parameter)
 
-    def _parse_xml_parameter(self, param_elem: ET.Element) -> Optional[Parameter]:
+    def _parse_xml_parameter(self, param_elem: Any) -> Optional[Parameter]:
         """Parse a single parameter from XML element."""
         try:
             name = param_elem.get('name') or param_elem.get('id')
@@ -366,7 +366,7 @@ class XMLGNNParser(BaseGNNParser):
 
         return VariableType.HIDDEN_STATE
 
-    def _parse_xml_equations(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_equations(self, root: Any, model: GNNInternalRepresentation):
         """Parse equations from XML."""
         equations_containers = [
             root.findall('.//equations/equation'),
@@ -379,7 +379,7 @@ class XMLGNNParser(BaseGNNParser):
                 if equation:
                     model.equations.append(equation)
 
-    def _parse_xml_equation(self, eq_elem: ET.Element) -> Optional[Equation]:
+    def _parse_xml_equation(self, eq_elem: Any) -> Optional[Equation]:
         """Parse a single equation from XML element."""
         try:
             content = eq_elem.text or ""
@@ -398,7 +398,7 @@ class XMLGNNParser(BaseGNNParser):
             logger.warning(f"Failed to parse XML equation {eq_elem.tag}: {e}")
             return None
 
-    def _parse_xml_time_specification(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_time_specification(self, root: Any, model: GNNInternalRepresentation):
         """Parse time specification from XML."""
         time_elem = root.find('.//time_specification')
         if time_elem is not None:
@@ -420,7 +420,7 @@ class XMLGNNParser(BaseGNNParser):
                 horizon=horizon
             )
 
-    def _parse_xml_ontology_mappings(self, root: ET.Element, model: GNNInternalRepresentation):
+    def _parse_xml_ontology_mappings(self, root: Any, model: GNNInternalRepresentation):
         """Parse ontology mappings from XML."""
         ontology_containers = [
             root.findall('.//ontology_mappings/mapping'),
@@ -434,7 +434,7 @@ class XMLGNNParser(BaseGNNParser):
                 if mapping:
                     model.ontology_mappings.append(mapping)
 
-    def _parse_xml_ontology_mapping(self, mapping_elem: ET.Element) -> Optional[OntologyMapping]:
+    def _parse_xml_ontology_mapping(self, mapping_elem: Any) -> Optional[OntologyMapping]:
         """Parse a single ontology mapping from XML element."""
         try:
             variable_name = mapping_elem.get('variable')
@@ -538,7 +538,7 @@ class PNMLParser(XMLGNNParser):
         """Initialize the PNML parser."""
         super().__init__()
 
-    def _convert_xml_to_model(self, root: ET.Element) -> GNNInternalRepresentation:
+    def _convert_xml_to_model(self, root: Any) -> GNNInternalRepresentation:
         """Convert PNML to GNN internal representation."""
 
         # PNML has specific structure
@@ -556,7 +556,7 @@ class PNMLParser(XMLGNNParser):
 
         return model
 
-    def _parse_pnml_net(self, net_elem: ET.Element, model: GNNInternalRepresentation):
+    def _parse_pnml_net(self, net_elem: Any, model: GNNInternalRepresentation):
         """Parse a PNML net element."""
         # Parse places as variables
         places = net_elem.findall('.//place')
@@ -579,7 +579,7 @@ class PNMLParser(XMLGNNParser):
             if connection:
                 model.connections.append(connection)
 
-    def _parse_pnml_place(self, place_elem: ET.Element) -> Optional[Variable]:
+    def _parse_pnml_place(self, place_elem: Any) -> Optional[Variable]:
         """Parse a PNML place as a variable."""
         place_id = place_elem.get('id')
         if not place_id:
@@ -597,7 +597,7 @@ class PNMLParser(XMLGNNParser):
             description=f"PNML place: {place_id}"
         )
 
-    def _parse_pnml_transition(self, trans_elem: ET.Element) -> Optional[Variable]:
+    def _parse_pnml_transition(self, trans_elem: Any) -> Optional[Variable]:
         """Parse a PNML transition as a variable."""
         trans_id = trans_elem.get('id')
         if not trans_id:
@@ -615,7 +615,7 @@ class PNMLParser(XMLGNNParser):
             description=f"PNML transition: {trans_id}"
         )
 
-    def _parse_pnml_arc(self, arc_elem: ET.Element) -> Optional[Connection]:
+    def _parse_pnml_arc(self, arc_elem: Any) -> Optional[Connection]:
         """Parse a PNML arc as a connection."""
         source = arc_elem.get('source')
         target = arc_elem.get('target')

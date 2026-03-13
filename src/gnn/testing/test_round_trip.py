@@ -167,7 +167,7 @@ logging.basicConfig(
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 # Define types locally to avoid circular imports
-# Fallback: define simple types to avoid import issues
+# Recovery: define simple types to avoid import issues
 @dataclass
 class RoundTripResult:
     source_format: Any = None
@@ -283,7 +283,7 @@ try:
         CROSS_FORMAT_AVAILABLE = True
     except ImportError:
         CROSS_FORMAT_AVAILABLE = False
-        # Create a minimal mock cross-format validator
+        # Create a minimal simulated cross-format validator
         class CrossFormatValidator:
             def validate_cross_format_consistency(self, content: str):
                 return type('Result', (), {'is_consistent': True, 'inconsistencies': []})()
@@ -314,7 +314,7 @@ class GNNRoundTripTester:
                     logger.info("Successfully initialized full parsing system")
             except Exception as e:
                 if LOGGING_CONFIG['enable_debug']:
-                    logger.warning(f"Parsing system initialization failed, using fallback: {e}")
+                    logger.warning(f"Parsing system initialization failed, using recovery: {e}")
                 self.parsing_system = None
         else:
             try:
@@ -642,13 +642,13 @@ class GNNRoundTripTester:
         if primary_ref.exists():
             return primary_ref
 
-        # Try fallback files
-        for fallback in REFERENCE_CONFIG['fallback_reference_files']:
-            fallback_path = project_root / fallback
+        # Try recovery files
+        for recovery in REFERENCE_CONFIG['fallback_reference_files']:
+            fallback_path = project_root / recovery
             if fallback_path.exists():
                 return fallback_path
 
-        # Default fallback
+        # Default recovery
         default_path = Path(__file__).parent.parent / "gnn_examples/actinf_pomdp_agent.md"
         return default_path
 
@@ -739,7 +739,7 @@ class GNNRoundTripTester:
                 if LOGGING_CONFIG['enable_debug']:
                     logger.warning(f"Unknown format in overrides: {fmt_name}")
 
-        # If no parsing system available, return configured formats anyway for fallback testing
+        # If no parsing system available, return configured formats anyway for recovery testing
         if not self.parsing_system:
             if LOGGING_CONFIG['enable_debug']:
                 logger.warning("No parsing system available, using individual serializers for testing")
@@ -888,22 +888,22 @@ class GNNRoundTripTester:
 
         reference_result = None
 
-        # Try parsing with full system first, then fallback
+        # Try parsing with full system first, then recovery
         if self.parsing_system:
             try:
                 reference_result = self.parsing_system.parse_file(self.reference_file, GNNFormat.MARKDOWN)
             except Exception as parse_error:
                 if LOGGING_CONFIG['enable_debug']:
-                    logger.warning(f"Full parsing system failed, using fallback: {parse_error}")
+                    logger.warning(f"Full parsing system failed, using recovery: {parse_error}")
                 reference_result = None
 
-        # Use direct parser fallback if main parsing failed or unavailable
+        # Use direct parser recovery if main parsing failed or unavailable
         if not reference_result or not reference_result.success:
             try:
                 if LOGGING_CONFIG['enable_detailed_output']:
                     print("   └─ Using direct markdown parser...")
 
-                # Use direct markdown parser as fallback
+                # Use direct markdown parser as recovery
                 direct_parser = self._create_direct_markdown_parser()
                 reference_model = direct_parser.parse_file(self.reference_file)
 
@@ -915,7 +915,7 @@ class GNNRoundTripTester:
                 })()
 
             except Exception as fallback_error:
-                error_msg = f"Both parsing system and fallback failed: {fallback_error}"
+                error_msg = f"Both parsing system and recovery failed: {fallback_error}"
                 print(f"❌ CRITICAL ERROR: {error_msg}")
                 report.critical_errors.append(error_msg)
                 return report
@@ -1124,14 +1124,14 @@ class GNNRoundTripTester:
                     if "No serializer available" in str(e):
                         if LOGGING_CONFIG['enable_detailed_output']:
                             print("         ⚠️  Parsing system failed, using individual serializer...")
-                        # Fallback to individual serializer when parsing system fails
+                        # Recovery to individual serializer when parsing system fails
                         converted_content = self._serialize_with_individual_serializer(reference_model, target_format)
                         if not converted_content:
                             raise ValueError(f"Both parsing system and individual serializer failed for {target_format.value}")
                     else:
                         raise e
             else:
-                # Fallback to direct serializer access with comprehensive serializer map
+                # Recovery to direct serializer access with comprehensive serializer map
                 converted_content = self._serialize_with_individual_serializer(reference_model, target_format)
                 if not converted_content:
                     raise ValueError(f"Individual serializer for {target_format.value} failed")
@@ -1166,7 +1166,7 @@ class GNNRoundTripTester:
                         binary_data = base64.b64decode(converted_content)
                         temp_file.write_bytes(binary_data)
                     except Exception:
-                        # Fallback to text if decode fails
+                        # Recovery to text if decode fails
                         temp_file.write_text(converted_content, encoding='utf-8')
                 else:
                     temp_file.write_text(converted_content, encoding='utf-8')

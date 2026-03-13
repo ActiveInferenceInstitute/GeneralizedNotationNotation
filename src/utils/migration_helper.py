@@ -42,7 +42,7 @@ class PipelineMigrationHelper:
             with open(module_path, 'r', encoding='utf-8') as f:
                 content = f.read()
 
-            # Check for redundant fallback patterns
+            # Check for redundant recovery patterns
             if self._has_redundant_fallbacks(content):
                 issues["redundant_fallbacks"].append("Has redundant import fallbacks")
 
@@ -109,7 +109,7 @@ class PipelineMigrationHelper:
         return changes
 
     def _has_redundant_fallbacks(self, content: str) -> bool:
-        """Check if module has redundant fallback imports."""
+        """Check if module has redundant recovery imports."""
         patterns = [
             r'try:\s+from utils import.*?except ImportError.*?def setup_step_logging',
             r'except ImportError as e:.*?logging\.basicConfig',
@@ -161,7 +161,7 @@ class PipelineMigrationHelper:
         return module_path.name in compute_intensive
 
     def _remove_redundant_fallbacks(self, content: str) -> Tuple[str, List[str]]:
-        """Remove redundant fallback import patterns."""
+        """Remove redundant recovery import patterns."""
         changes = []
 
         # Pattern 1: Remove try/except around utils import with custom fallbacks
@@ -169,16 +169,16 @@ class PipelineMigrationHelper:
 
         def replace_fallback(match):
             utils_import = match.group(1)
-            changes.append("Removed redundant import fallback - utils provides graceful fallbacks")
+            changes.append("Removed redundant import recovery - utils provides graceful fallbacks")
             return utils_import + "\n"
 
         content = re.sub(pattern1, replace_fallback, content, flags=re.DOTALL)
 
-        # Pattern 2: Remove UTILS_AVAILABLE fallback definitions
+        # Pattern 2: Remove UTILS_AVAILABLE recovery definitions
         pattern2 = r'except ImportError.*?UTILS_AVAILABLE = False.*?(?=\n\w|\n#|\Z)'
         if re.search(pattern2, content, re.DOTALL):
             content = re.sub(pattern2, '', content, flags=re.DOTALL)
-            changes.append("Removed redundant UTILS_AVAILABLE fallback")
+            changes.append("Removed redundant UTILS_AVAILABLE recovery")
 
         return content, changes
 

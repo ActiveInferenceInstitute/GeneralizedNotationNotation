@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Multi Armed Bandit Agent
-Generated: 2026-03-06 15:00:54
+Generated: 2026-03-13 14:15:10
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -26,7 +26,7 @@ except ImportError:
             timeout=180
         )
         if result.returncode != 0:
-            # Fallback to pip if UV fails
+            # Recovery to pip if UV fails
             print("⚠️  UV install failed, trying pip...")
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "install", "discopy"],
@@ -137,7 +137,7 @@ def create_active_inference_circuit(S, O, A, P, components):
         generative_model = prior_block >> (state_inf @ Id(P)) >> policy_inf >> action_sel
         print("✓ Created generative model with composed priors")
     except Exception as e:
-        # Fallback: type mismatch means priors cannot directly compose
+        # Recovery: type mismatch means priors cannot directly compose
         print(f"⚠️  Prior composition type mismatch ({e}), using perception-action loop")
         generative_model = perception_action_loop
     
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Multi Armed Bandit Agent',
-        'timestamp': '2026-03-06 15:00:54',
+        'timestamp': '2026-03-13 14:15:10',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

@@ -11,7 +11,7 @@ The GNN module follows the **Thin Orchestrator** pattern: lightweight coordinati
 | Types | `types.py` | Shared data classes (`ParsedGNN`, `ValidationResult`, `GNNFormat`, etc.) |
 | Parser | `parser.py` | GNN file parsing, format detection, validation entry point |
 | Schema Validator | `schema_validator.py` | Full `GNNParser` with section-level parsing, `GNNValidator` for multi-level validation |
-| Simple Validator | `simple_validator.py` | Lightweight fallback validator without complex dependencies |
+| Simple Validator | `simple_validator.py` | Lightweight recovery validator without complex dependencies |
 | Validation | `validation.py` | `ValidationStrategy` orchestrating multi-level validation |
 | Processor | `processor.py` | Lightweight GNN directory processing and file discovery |
 | Core Processor | `core_processor.py` | Full pipeline orchestration with phased processing |

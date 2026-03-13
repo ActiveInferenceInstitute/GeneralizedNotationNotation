@@ -117,7 +117,7 @@ class SyntheticAudioGenerator:
                     'amplitude': amplitude
                 })
 
-            # Simple frequency extraction (fallback)
+            # Simple frequency extraction (recovery)
             freq_match = re.search(r'(\d+\.?\d*)\s+0\s+(sinosc|lfsaw)', line)
             if freq_match and not sine_match and not saw_match:
                 freq = float(freq_match.group(1))

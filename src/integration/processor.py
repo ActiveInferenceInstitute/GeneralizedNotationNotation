@@ -119,7 +119,7 @@ def process_integration(
                             else:
                                 G.setdefault(comp, [])
 
-                # 2. Also extract from YAML-style definitions (legacy support)
+                # 2. Also extract from YAML-style definitions (previous support)
                 matches = re.finditer(r'^\s*-\s*name:\s*(\w+)', content, re.MULTILINE)
                 for match in matches:
                     comp = match.group(1)

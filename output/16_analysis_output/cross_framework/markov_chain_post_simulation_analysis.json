@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-06T15:10:39.896761",
-  "execution_results_dir": "output/12_execute_output/markov_chain",
+  "timestamp": "2026-03-13T11:37:34.327896",
+  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",

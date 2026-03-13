@@ -146,8 +146,8 @@ success, message, files = render_gnn_to_activeinference_jl(
 - `Plots.jl` - Visualization support
 
 ### Optional Dependencies
-- `Agents.jl` - Agent-based modeling (fallback: single agent)
-- `DifferentialEquations.jl` - Continuous dynamics (fallback: discrete time)
+- `Agents.jl` - Agent-based modeling (recovery: single agent)
+- `DifferentialEquations.jl` - Continuous dynamics (recovery: discrete time)
 
 ### Internal Dependencies
 - `render.renderer` - Base rendering functionality
@@ -402,7 +402,7 @@ plot_simulation_results(agent)
 ### Recovery Strategies
 - **Model Validation**: Comprehensive pre-generation validation
 - **Dimension Checking**: Automatic dimension compatibility verification
-- **Template Fallback**: Use simpler templates for complex models
+- **Template Recovery**: Use simpler templates for complex models
 
 ### Error Examples
 ```python
@@ -410,7 +410,7 @@ try:
     ai_code = generate_activeinference_jl_code(model_data)
 except ActiveInferenceGenerationError as e:
     logger.error(f"ActiveInference.jl generation failed: {e}")
-    # Fallback to basic template
+    # Recovery to basic template
     ai_code = generate_basic_activeinference_template(model_data)
 ```
 

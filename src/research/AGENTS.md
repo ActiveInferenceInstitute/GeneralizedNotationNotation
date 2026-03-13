@@ -205,8 +205,8 @@ output/19_research_output/
 
 ### Recovery Strategies
 - **Data Cleaning**: Automatic data quality improvement
-- **Analysis Fallback**: Alternative analysis methods
-- **Visualization Fallback**: Simplified visualizations
+- **Analysis Recovery**: Alternative analysis methods
+- **Visualization Recovery**: Simplified visualizations
 - **Report Recovery**: Error-aware report generation
 
 ---

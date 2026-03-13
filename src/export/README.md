@@ -586,7 +586,7 @@ output/7_export_output/
 - **Format Conversion**: Lossless conversion between formats
 - **Schema Validation**: Format-specific schema validation
 - **Error Handling**: Graceful handling of format-specific issues
-- **Fallback Mechanisms**: Alternative export methods
+- **Recovery Mechanisms**: Alternative export methods
 
 ## Error Handling
 
@@ -598,7 +598,7 @@ try:
     result = export_single_gnn_file(gnn_file, exports_dir)
 except ExportError as e:
     logger.error(f"Export failed: {e}")
-    # Provide fallback export or error reporting
+    # Provide recovery export or error reporting
 ```
 
 ### Format-Specific Issues

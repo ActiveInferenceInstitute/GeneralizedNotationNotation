@@ -111,9 +111,9 @@ success = run_activeinference_analysis(
 - `pathlib` - Path manipulation utilities
 
 ### Optional Dependencies
-- `numpy` - Numerical computations (fallback: basic arrays)
-- `pandas` - Data analysis (fallback: basic data structures)
-- `matplotlib` - Visualization (fallback: no plotting)
+- `numpy` - Numerical computations (recovery: basic arrays)
+- `pandas` - Data analysis (recovery: basic data structures)
+- `matplotlib` - Visualization (recovery: no plotting)
 
 ### Internal Dependencies
 - `execute.executor` - Base execution functionality
@@ -386,7 +386,7 @@ analysis_results = {
 ### Recovery Strategies
 - **Environment Validation**: Comprehensive pre-execution validation
 - **Graceful Degradation**: Continue with available analysis components
-- **Fallback Analysis**: Use basic analysis when advanced features fail
+- **Recovery Analysis**: Use basic analysis when advanced features fail
 - **Detailed Logging**: Comprehensive error reporting and diagnostics
 
 ### Error Examples

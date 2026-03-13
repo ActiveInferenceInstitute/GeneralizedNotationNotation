@@ -42,11 +42,11 @@ try:
     from integration import process_integration
 except ImportError:
     def process_integration(target_dir, output_dir, logger=None, **kwargs):
-        """Fallback integration processing when module unavailable."""
+        """Recovery integration processing when module unavailable."""
         import logging
         if logger is None:
             logger = logging.getLogger(__name__)
-        logger.warning("Integration module not available - using fallback")
+        logger.warning("Integration module not available - using recovery")
         return True
 
 run_script = create_standardized_pipeline_script(

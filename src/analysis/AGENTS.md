@@ -114,8 +114,8 @@ success = process_analysis(
 - `scipy` - Advanced statistical functions
 
 ### Optional Dependencies
-- `matplotlib` - Statistical visualization (fallback: text-based reports)
-- `seaborn` - Enhanced statistical plots (fallback: matplotlib)
+- `matplotlib` - Statistical visualization (recovery: text-based reports)
+- `seaborn` - Enhanced statistical plots (recovery: matplotlib)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Standardized pipeline processing patterns

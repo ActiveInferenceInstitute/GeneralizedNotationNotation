@@ -370,7 +370,7 @@ try:
     results = process_type_checker(target_dir, output_dir)
 except TypeCheckerError as e:
     logger.error(f"Type checking failed: {e}")
-    # Provide fallback type checking or error reporting
+    # Provide recovery type checking or error reporting
 ```
 
 ### Inference Issues
@@ -380,7 +380,7 @@ try:
     types = infer_types(content)
 except InferenceError as e:
     logger.warning(f"Type inference failed: {e}")
-    # Provide fallback inference or error reporting
+    # Provide recovery inference or error reporting
 ```
 
 ### Validation Issues
@@ -390,7 +390,7 @@ try:
     validation = validate_syntax(content)
 except ValidationError as e:
     logger.error(f"Syntax validation failed: {e}")
-    # Provide fallback validation or error reporting
+    # Provide recovery validation or error reporting
 ```
 
 ## Performance Optimization

@@ -145,9 +145,9 @@ results = execute_pymdp_simulation_from_gnn(
 - `pandas` - Data manipulation and analysis
 
 ### Optional Dependencies
-- `plotly` - Interactive visualizations (fallback: matplotlib)
-- `seaborn` - Statistical visualization (fallback: matplotlib)
-- `tqdm` - Progress bars (fallback: basic progress)
+- `plotly` - Interactive visualizations (recovery: matplotlib)
+- `seaborn` - Statistical visualization (recovery: matplotlib)
+- `tqdm` - Progress bars (recovery: basic progress)
 
 ### Internal Dependencies
 - `execute.executor` - Base execution functionality
@@ -429,7 +429,7 @@ simulation_results = {
 - **Model Validation**: Comprehensive pre-execution validation
 - **Parameter Adjustment**: Automatic parameter tuning for convergence
 - **Memory Optimization**: Model size reduction or chunked execution
-- **Fallback Execution**: Simplified execution with reduced features
+- **Recovery Execution**: Simplified execution with reduced features
 
 ### Error Examples
 ```python

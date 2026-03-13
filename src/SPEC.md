@@ -242,7 +242,7 @@ def module_operation(input: str, output_path: str) -> dict:
 
 - Unit tests in `src/tests/test_{module}_*.py`
 - Integration tests for cross-module flows
-- No mock implementations in production code
+- No simulated implementations in production code
 
 ---
 

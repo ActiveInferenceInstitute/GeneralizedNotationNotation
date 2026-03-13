@@ -340,7 +340,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         return "\n\n".join(content_parts)
 
-    # Fallback: try to get variables and connections
+    # Recovery: try to get variables and connections
     variables = model_data.get("variables", [])
     connections = model_data.get("connections", [])
 
@@ -369,7 +369,7 @@ def _extract_content_from_dict(model_data: Dict[str, Any]) -> str:
 
         return "\n\n".join(content_parts)
 
-    # Final fallback: return empty string
+    # Final recovery: return empty string
     return ""
 
 def _calculate_performance_score(profile_result: Dict[str, Any]) -> float:

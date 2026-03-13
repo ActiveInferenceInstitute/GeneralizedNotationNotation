@@ -66,11 +66,11 @@ def test_ollama_provider_initialize(monkeypatch):
     provider = OllamaProvider()
     ok = provider.initialize()
 
-    # The provider has a CLI fallback that can succeed even when the Python
+    # The provider has a CLI recovery that can succeed even when the Python
     # ollama package fails to list models. Test that initialization succeeds
-    # if either the Python client OR CLI fallback works.
+    # if either the Python client OR CLI recovery works.
     if ok:
-        # Initialization succeeded (either via Python client or CLI fallback)
+        # Initialization succeeded (either via Python client or CLI recovery)
         assert provider.is_initialized() is True
         info = provider.get_provider_info()
         assert info["provider_type"] == "ollama"
@@ -158,7 +158,7 @@ async def test_processor_uses_ollama_when_no_keys(monkeypatch):
     except Exception:
         initialized = False
 
-    # The LLM processor can initialize with Ollama via CLI fallback even if
+    # The LLM processor can initialize with Ollama via CLI recovery even if
     # the Python ollama package check fails. Test both cases appropriately.
     if not initialized:
         # Ollama not available at all - skip the rest of the test

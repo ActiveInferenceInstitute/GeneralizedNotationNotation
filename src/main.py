@@ -111,12 +111,12 @@ except ImportError:
     # Fall back to the basic version imported above under its alias.
     setup_step_logging = _basic_setup_step_logging
     STRUCTURED_LOGGING_AVAILABLE = False
-    # Provide fallback implementations when visual logging is not available
+    # Provide recovery implementations when visual logging is not available
     from dataclasses import dataclass
 
     @dataclass
     class VisualConfig:
-        """Fallback visual config when visual_logging is not available."""
+        """Recovery visual config when visual_logging is not available."""
         enable_colors: bool = True
         enable_progress_bars: bool = True
         enable_emoji: bool = True
@@ -127,7 +127,7 @@ except ImportError:
         compact_mode: bool = False
 
     class VisualLogger:
-        """Fallback visual logger when visual_logging is not available."""
+        """Recovery visual logger when visual_logging is not available."""
         def __init__(self, name, config=None):
             self.name = name
             self.config = config
@@ -181,7 +181,7 @@ def main():
 
     visual_logger = create_visual_logger("pipeline", visual_config)
 
-    # Setup logging (use structured if available, fallback to standard)
+    # Setup logging (use structured if available, recovery to standard)
     if STRUCTURED_LOGGING_AVAILABLE:
         # Prepare log directory
         log_dir = args.output_dir / "00_pipeline_logs"
@@ -199,16 +199,16 @@ def main():
             PipelineLogger._log_file_handler = None
 
         # Initialize with log_dir to create pipeline.log
-        PipelineLogger.initialize(log_dir=log_dir, enable_structured=True)
+        PipelineLogger.initialize(log_dir=log_dir, enable_structured=True, log_format=args.log_format)
 
         # Enable JSON logging (adds pipeline.jsonl handler)
         PipelineLogger.enable_json_logging(log_dir)
 
-        logger = setup_step_logging("pipeline", args.verbose, enable_structured=True)
+        logger = setup_step_logging("pipeline", args.verbose, enable_structured=True, log_format=args.log_format)
         # Reset progress tracker for new pipeline run
         reset_progress_tracker()
     else:
-        logger = setup_step_logging("pipeline", args.verbose)
+        logger = setup_step_logging("pipeline", args.verbose, log_format=args.log_format if hasattr(args, "log_format") else "human")
 
     # Set correlation ID for tracking
     import uuid
@@ -310,11 +310,26 @@ def main():
     skip_numbers = sorted(list(set(cmd_skip + cfg_skip)))
     
     if skip_numbers:
-        steps_to_execute = [step for i, step in enumerate(pipeline_steps) if i not in skip_numbers]
+        # Map original indices to scripts to avoid losing track if already filtered
+        original_indices = {script: i for i, (script, desc) in enumerate(pipeline_steps)}
+        
+        filtered_steps = []
+        for step in steps_to_execute:
+            script_name = step[0]
+            original_idx = original_indices.get(script_name, -1)
+            if original_idx not in skip_numbers:
+                filtered_steps.append(step)
+                
+        steps_to_execute = filtered_steps
         logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
+
+    # Calculate run hash for content addressability
+    from pipeline.hasher import compute_run_hash, index_run
+    run_hash = compute_run_hash(args.target_dir, config=config_pipeline_settings)
 
     # Initialize pipeline execution summary
     pipeline_summary = {
+        "run_hash": run_hash,
         "start_time": datetime.now().isoformat(),
         "arguments": args.to_dict(),
         "steps": [],
@@ -605,6 +620,15 @@ def main():
             with open(summary_path, 'w') as f:
                 json.dump(pipeline_summary, f, indent=4, default=str)
             logger.info("Pipeline summary saved successfully")
+            
+            # Index completion
+            run_hash = pipeline_summary.get("run_hash")
+            if run_hash:
+                index_run(
+                    run_hash=run_hash,
+                    summary_path=summary_path,
+                    config={"args": args.to_dict(), "pipeline": config_pipeline_settings}
+                )
 
             # Log summary statistics
             steps = pipeline_summary["steps"]
@@ -614,7 +638,7 @@ def main():
 
         except Exception as e:
             logger.error(f"Failed to save pipeline summary: {e}")
-            # Try to save a minimal summary as fallback
+            # Try to save a minimal summary as recovery
             try:
                 minimal_summary = {
                     "start_time": pipeline_summary.get("start_time"),
@@ -628,7 +652,7 @@ def main():
                 }
                 with open(summary_path, 'w') as f:
                     json.dump(minimal_summary, f, indent=4, default=str)
-                logger.info("Minimal summary saved as fallback")
+                logger.info("Minimal summary saved as recovery")
             except Exception as fallback_error:
                 logger.error(f"Failed to save even minimal summary: {fallback_error}")
 

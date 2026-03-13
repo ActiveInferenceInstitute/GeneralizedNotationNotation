@@ -7,7 +7,7 @@ This module provides audio generation functionality.
 
 from typing import Dict, Any, List
 
-# Optional numpy import with fallback
+# Optional numpy import with recovery
 try:
     import numpy as np
     NUMPY_AVAILABLE = True

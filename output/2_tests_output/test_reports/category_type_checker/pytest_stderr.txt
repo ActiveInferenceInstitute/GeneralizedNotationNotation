@@ -1,0 +1,51 @@
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 879, in import_plugin
+    __import__(importspec)
+ModuleNotFoundError: No module named 'pytest_timeout'
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pytest/__main__.py", line 9, in <module>
+    raise SystemExit(pytest.console_main())
+                     ^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 223, in console_main
+    code = main()
+           ^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 193, in main
+    config = _prepareconfig(new_args, plugins)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 361, in _prepareconfig
+    config: Config = pluginmanager.hook.pytest_cmdline_parse(
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pluggy/_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pluggy/_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 167, in _multicall
+    raise exception
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/helpconfig.py", line 124, in pytest_cmdline_parse
+    config = yield
+             ^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pluggy/_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1186, in pytest_cmdline_parse
+    self.parse(args)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 1532, in parse
+    self.pluginmanager.consider_preparse(args, exclude_only=False)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 808, in consider_preparse
+    self.consider_pluginarg(parg)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 831, in consider_pluginarg
+    self.import_plugin(arg, consider_entry_points=True)
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 881, in import_plugin
+    raise ImportError(
+  File "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/_pytest/config/__init__.py", line 879, in import_plugin
+    __import__(importspec)
+ImportError: Error importing plugin "pytest_timeout": No module named 'pytest_timeout'

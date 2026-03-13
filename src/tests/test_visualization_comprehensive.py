@@ -255,7 +255,7 @@ B -> C: "preferences"
         )
 
         # Warnings expected when things go wrong
-        # (may not have warnings if fallback succeeds)
+        # (may not have warnings if recovery succeeds)
 
 
 class TestVisualizationComponents:

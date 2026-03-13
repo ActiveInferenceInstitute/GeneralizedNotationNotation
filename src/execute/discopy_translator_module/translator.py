@@ -24,7 +24,7 @@ try:
 except ImportError as e:
     logger.debug(f"DisCoPy not available: {e}")
     DISCOPY_AVAILABLE = False
-    # Stub classes for graceful degradation
+    # Placeholder classes for graceful degradation
     Diagram = Word = Cap = Cup = None
     Ket = Bra = X = Z = H = None
 

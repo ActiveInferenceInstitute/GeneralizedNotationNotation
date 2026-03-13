@@ -98,10 +98,10 @@ PYTHONPATH=src python src/mcp/validate_tools.py
 
 ## Why Convergence Polling, Not `time.sleep()`
 
-The MCP server registers modules synchronously but falls back to background threads for modules that time out. A fixed `time.sleep()` can still race if the machine is under load. The polling loop stops as soon as the count stops growing, so it is both faster on idle machines and more robust under load.
+The MCP server registers modules synchronously but reverts to background threads for modules that time out. A fixed `time.sleep()` can still race if the machine is under load. The polling loop stops as soon as the count stops growing, so it is both faster on idle machines and more robust under load.
 
 ## See Also
 
-- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — No-stub policy, canonical mcp.py pattern
+- [mcp/tool_development_guide.md](../mcp/tool_development_guide.md) — No-placeholder policy, canonical mcp.py pattern
 - [mcp/tool_reference.md](../mcp/tool_reference.md) — full DOMAIN_TOOLS list in table form
 - [testing/test_patterns.md](test_patterns.md) — general test patterns and fixtures

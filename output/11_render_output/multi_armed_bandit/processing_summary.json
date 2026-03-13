@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-06T15:00:54.885117",
-  "source_file": "input/gnn_files/discrete/multi_armed_bandit.md",
+  "timestamp": "2026-03-13T14:15:10.168718",
+  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
   "model_name": "Multi Armed Bandit Agent",
   "pomdp_dimensions": {
     "num_states": 3,

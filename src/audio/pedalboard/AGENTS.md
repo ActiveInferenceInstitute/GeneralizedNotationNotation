@@ -120,9 +120,9 @@ processed_audio = process_pedalboard_audio(
 - `soundfile` - Audio file I/O
 
 ### Optional Dependencies
-- `librosa` - Audio analysis (fallback: basic processing)
-- `scipy` - Advanced signal processing (fallback: numpy-only)
-- `pyaudio` - Real-time audio I/O (fallback: file-based)
+- `librosa` - Audio analysis (recovery: basic processing)
+- `scipy` - Advanced signal processing (recovery: numpy-only)
+- `pyaudio` - Real-time audio I/O (recovery: file-based)
 
 ### Internal Dependencies
 - `audio.classes` - Base audio processing classes
@@ -390,7 +390,7 @@ output/audio_pedalboard/
 
 ### Recovery Strategies
 - **Parameter Validation**: Automatic parameter clamping and validation
-- **Fallback Effects**: Substitute unsupported effects with alternatives
+- **Recovery Effects**: Substitute unsupported effects with alternatives
 - **Format Conversion**: Automatic sample rate conversion when possible
 
 ### Error Examples
@@ -399,7 +399,7 @@ try:
     processed_audio = process_pedalboard_audio(audio_data, effects_chain)
 except PedalboardError as e:
     logger.error(f"Effects processing failed: {e}")
-    # Fallback to basic processing
+    # Recovery to basic processing
     processed_audio = process_basic_audio(audio_data)
 ```
 
@@ -518,7 +518,7 @@ def process_audio_tool(audio_file_path: str, effects_config: List[Dict]) -> Dict
 #### Issue 2: "Sample rate not supported"
 **Symptom**: Audio processing fails with sample rate errors
 **Cause**: Incompatible sample rates between audio and effects
-**Solution**: Resample audio to supported rate or use fallback effects
+**Solution**: Resample audio to supported rate or use recovery effects
 
 #### Issue 3: "Real-time processing latency too high"
 **Symptom**: Audio glitches or delays in real-time processing

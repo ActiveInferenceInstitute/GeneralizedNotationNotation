@@ -68,7 +68,7 @@ def detect_pymdp_installation() -> Dict[str, Any]:
             except ImportError:
                 pass
 
-        # Check for legacy/wrong package indicators ONLY if Agent was not found
+        # Check for previous/wrong package indicators ONLY if Agent was not found
         # Or just note it as a warning but don't fail if Agent is present
         if "MDP" in available_attrs or "MDPSolver" in available_attrs:
             result["has_mdp_solver"] = True
@@ -150,7 +150,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
     Attempt to automatically install the correct PyMDP package using UV.
     
     This function uses UV exclusively for package installation.
-    No legacy pip fallback is used.
+    No previous pip recovery is used.
     
     Args:
         use_uv: Deprecated parameter, kept for backwards compatibility.
@@ -177,7 +177,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
             logger.info(f"Successfully installed {package_name} using UV sync")
             return True, f"Successfully installed {package_name} via uv sync"
 
-        # Fallback: try uv pip install directly
+        # Recovery: try uv pip install directly
         logger.info("UV sync failed, trying uv pip install...")
         result = subprocess.run(
             ["uv", "pip", "install", package_name],

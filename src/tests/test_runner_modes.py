@@ -164,7 +164,7 @@ def run_comprehensive_tests(logger: logging.Logger, output_dir: Path, verbose: b
             self.output_dir = str(output_dir)
             self.verbose = verbose
             self.categories = None
-            self.parallel = True
+            self.parallel = False
 
     args = ComprehensiveArgs(output_dir, verbose)
     runner = ModularTestRunner(args, logger)

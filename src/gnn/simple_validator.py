@@ -3,7 +3,7 @@
 Simple GNN Validator Module
 
 This module provides a simplified validator for GNN files without relying on
-complex dependencies or circular imports. It's designed to be used as a fallback
+complex dependencies or circular imports. It's designed to be used as a recovery
 when the full validation system encounters issues.
 """
 

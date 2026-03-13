@@ -711,7 +711,7 @@ try:
     results = render_gnn_model(content, framework, output_dir)
 except RenderingError as e:
     logger.error(f"Rendering failed: {e}")
-    # Provide fallback rendering or error reporting
+    # Provide recovery rendering or error reporting
 ```
 
 ### Framework Issues

@@ -309,8 +309,8 @@ json_output = parser.serialize(model, GNNFormat.JSON)
 
 ### Optional Dependencies
 
-- `yaml` - YAML format support (fallback: skip YAML generation)
-- `protobuf` - Protocol buffer support (fallback: skip Protobuf generation)
+- `yaml` - YAML format support (recovery: skip YAML generation)
+- `protobuf` - Protocol buffer support (recovery: skip Protobuf generation)
 
 ### Internal Dependencies
 
@@ -424,11 +424,11 @@ output/3_gnn_output/
 3. **Serialization Errors**: Log warning, skip problematic format
 4. **Validation Errors**: Log error, optionally continue based on strict mode
 
-### Fallback Strategies
+### Recovery Strategies
 
 - **Primary**: Parse all formats successfully
-- **Fallback 1**: Skip problematic format, continue with others
-- **Fallback 2**: Generate minimal JSON representation
+- **Recovery 1**: Skip problematic format, continue with others
+- **Recovery 2**: Generate minimal JSON representation
 - **Final**: Log error, continue pipeline (non-blocking)
 
 ### Error Reporting

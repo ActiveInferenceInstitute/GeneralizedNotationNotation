@@ -36,7 +36,7 @@ Successfully integrated the new multi-provider LLM system with the existing `llm
 - **`LLMProcessor`** class coordinating multiple providers
 - **`AnalysisType`** enum for different GNN analysis types
 - Provider selection logic based on task requirements
-- Fallback mechanisms and parallel provider comparison
+- Recovery mechanisms and parallel provider comparison
 - Global processor instance management
 
 ### 3. Enhanced LLM Operations (`src/llm/llm_operations.py`)
@@ -44,13 +44,13 @@ Successfully integrated the new multi-provider LLM system with the existing `llm
 #### Backward Compatibility
 - **Maintained Original Interface**: All existing methods work unchanged
 - **Drop-in Replacement**: Global `llm_ops` instance uses new system
-- **Legacy Mode**: Optional fallback to OpenAI-only implementation
+- **Previous Mode**: Optional recovery to OpenAI-only implementation
 
 #### Enhanced Capabilities
 - **Multi-Provider Support**: Automatic provider selection and failover
 - **New Analysis Types**: Enhancement suggestions, validation, comprehensive analysis
 - **Async Support**: Full async/await with sync wrappers for compatibility
-- **Error Handling**: Robust fallback mechanisms
+- **Error Handling**: Robust recovery mechanisms
 
 #### New Methods Added
 - `enhance_gnn(gnn_content)`: Generate enhancement suggestions
@@ -75,9 +75,9 @@ Successfully integrated the new multi-provider LLM system with the existing `llm
 
 ### 3. Robust Error Handling
 - Graceful degradation when providers unavailable
-- Automatic fallback between providers
+- Automatic recovery between providers
 - Comprehensive logging and error reporting
-- Legacy mode fallback for critical failures
+- Previous mode recovery for critical failures
 
 ### 4. Performance Features
 - Async/await support throughout
@@ -149,7 +149,7 @@ custom_ops = LLMOperations(api_key="custom-key")
 ### 1. Comprehensive Test Suite
 - **`test_llm_system.py`**: Full system testing with real API integration
 - **`demo_enhanced_llm.py`**: Practical demonstration script
-- **Error Handling Tests**: Validates fallback mechanisms
+- **Error Handling Tests**: Validates recovery mechanisms
 
 ### 2. Real-World Scenarios
 - Quick model analysis workflows
@@ -186,7 +186,7 @@ custom_ops = LLMOperations(api_key="custom-key")
 ### 2. Maintained Compatibility
 - **Zero Breaking Changes**: All existing code continues to work
 - **Gradual Migration**: Optional adoption of new features
-- **Legacy Support**: Fallback to original implementation
+- **Previous Support**: Recovery to original implementation
 
 ### 3. Extensible Architecture
 - **Plugin System**: Easy addition of new providers

@@ -27,7 +27,7 @@
 
 ### Key Capabilities
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)
-- Automated fallback to local Ollama if no API keys
+- Automated recovery to local Ollama if no API keys
 - Context-aware prompt generation
 - Structured output parsing
 - Rate limiting and error handling
@@ -39,7 +39,7 @@
 ### Public Functions
 
 #### `process_llm(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
-**Description**: Main LLM processing function with automatic Ollama fallback. Processes GNN files using LLM analysis with multi-provider support.
+**Description**: Main LLM processing function with automatic Ollama recovery. Processes GNN files using LLM analysis with multi-provider support.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to analyze
@@ -129,7 +129,7 @@ success = process_llm(
 2. **Anthropic** - Claude-3, Claude-2
 3. **Ollama** - Local models (llama2, mistral, etc.)
 
-### Fallback Mechanism
+### Recovery Mechanism
 1. Check for API keys in environment
 2. If no keys → Check Ollama availability (`ollama list`)
 3. If Ollama available → Use local model
@@ -181,9 +181,9 @@ success = process_llm(
 - `pathlib` - File operations
 
 ### Optional Dependencies
-- `openai` - OpenAI API (fallback: skip cloud LLMs)
-- `anthropic` - Anthropic API (fallback: skip cloud LLMs)
-- `ollama` (subprocess) - Local LLM (fallback: skip LLM analysis)
+- `openai` - OpenAI API (recovery: skip cloud LLMs)
+- `anthropic` - Anthropic API (recovery: skip cloud LLMs)
+- `ollama` (subprocess) - Local LLM (recovery: skip LLM analysis)
 
 ### Internal Dependencies
 - `utils.pipeline_template` - Logging utilities
@@ -244,20 +244,20 @@ output/13_llm_output/
 - **Duration**: 3.73 seconds
 - **Memory**: 28.8 MB
 - **Status**: SUCCESS
-- **Provider Used**: Ollama (fallback)
+- **Provider Used**: Ollama (recovery)
 
 ---
 
 ## Recent Improvements
 
-### Ollama Fallback Enhancement ✅
+### Ollama Recovery Enhancement ✅
 **Added**: Automatic Ollama availability check
 ```python
 # Check if Ollama is available
 result = subprocess.run(['ollama', 'list'], 
                        capture_output=True, timeout=5)
 if result.returncode == 0:
-    # Use Ollama as fallback
+    # Use Ollama as recovery
 ```
 
 ---
@@ -276,7 +276,7 @@ if result.returncode == 0:
 1. Ollama detection and availability check
 2. Model selection and prioritization
 3. LLM processing with Ollama integration
-4. Fallback mode when Ollama unavailable
+4. Recovery mode when Ollama unavailable
 5. Error handling and recovery
 6. Timeout management for LLM calls
 
@@ -390,8 +390,8 @@ OLLAMA_MODEL=tinyllama python src/13_llm.py --target-dir input/gnn_files
 cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 ```
 
-#### 6. Fallback Mode Warnings
-**Symptom**: "Proceeding with fallback LLM analysis" messages
+#### 6. Recovery Mode Warnings
+**Symptom**: "Proceeding with recovery LLM analysis" messages
 
 **Explanation**: This is expected when Ollama is not available. The module provides basic analysis without live LLM interaction.
 
@@ -400,7 +400,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 2. Install at least one model (see issue #3)
 3. Re-run the LLM step
 
-**Fallback Capabilities**:
+**Recovery Capabilities**:
 - ✅ Basic pattern extraction
 - ✅ Variable and connection identification
 - ✅ Structure analysis
@@ -481,7 +481,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 
 #### ✅ Intelligent Model Selection
 - Prioritizes small, fast models for quick execution
-- Automatic fallback chain
+- Automatic recovery chain
 - Environment variable override support
 - Logs selected model for transparency
 
@@ -492,7 +492,7 @@ cat output/13_llm_output/llm_results/llm_results.json | grep "selected_model"
 - Clear success/failure indicators ✅/❌
 
 #### ✅ Error Recovery
-- Graceful fallback when Ollama unavailable
+- Graceful recovery when Ollama unavailable
 - Per-prompt error handling
 - Timeout protection with retry logic
 - Comprehensive error messages
@@ -551,7 +551,7 @@ export OLLAMA_TIMEOUT=60                # Request timeout (seconds)
 export OLLAMA_HOST=http://localhost:11434  # Ollama server URL
 
 # Behavior
-export OLLAMA_DISABLED=0                # Disable Ollama (use fallback)
+export OLLAMA_DISABLED=0                # Disable Ollama (use recovery)
 export DEFAULT_PROVIDER=ollama          # Default LLM provider
 ```
 
@@ -570,19 +570,19 @@ configs['ollama']['default_max_tokens'] = 1024
 ## Error Handling
 
 ### Graceful Degradation
-- **No API Keys**: Automatically fallback to Ollama if available
+- **No API Keys**: Automatically recovery to Ollama if available
 - **Ollama Unavailable**: Skip LLM analysis, log informative message, continue pipeline
 - **LLM Timeout**: Retry with shorter timeout, then skip if still fails
 - **Invalid Response**: Parse what's possible, log warning
 
 ### Error Categories
-1. **Provider Unavailable**: No API keys and Ollama not available (fallback: skip analysis)
-2. **API Errors**: Rate limits, network errors (fallback: retry with backoff)
-3. **Timeout Errors**: LLM response too slow (fallback: use faster model or skip)
-4. **Parsing Errors**: Invalid LLM response format (fallback: use raw response)
+1. **Provider Unavailable**: No API keys and Ollama not available (recovery: skip analysis)
+2. **API Errors**: Rate limits, network errors (recovery: retry with backoff)
+3. **Timeout Errors**: LLM response too slow (recovery: use faster model or skip)
+4. **Parsing Errors**: Invalid LLM response format (recovery: use raw response)
 
 ### Error Recovery
-- **Automatic Fallback**: Try next available provider automatically
+- **Automatic Recovery**: Try next available provider automatically
 - **Partial Analysis**: Generate what's possible, report failures
 - **Resource Cleanup**: Proper cleanup of LLM connections on errors
 - **Informative Messages**: Clear error messages with recovery suggestions
@@ -629,7 +629,7 @@ configs['ollama']['default_max_tokens'] = 1024
 
 **Features**:
 - Multi-provider LLM support (OpenAI, Anthropic, Ollama)
-- Automatic Ollama fallback
+- Automatic Ollama recovery
 - Context-aware prompt generation
 - Structured output parsing
 - Rate limiting and error handling

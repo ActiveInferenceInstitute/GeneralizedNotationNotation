@@ -42,14 +42,14 @@ try:
     from audio import process_audio
 except ImportError:
     def process_audio(target_dir: str, output_dir: str, logger: object = None, **kwargs: object) -> bool:
-        """Fallback audio processing when module unavailable."""
+        """Recovery audio processing when module unavailable."""
         import logging
         if logger is None:
             logger = logging.getLogger(__name__)
-        logger.warning(f"Audio module not available - using fallback: {e}")
+        logger.warning(f"Audio module not available - using recovery: {e}")
         logger.info("Install audio support with: uv pip install -e .[audio]")
 
-        # Create a fallback result file to let downstream steps know we skipped
+        # Create a recovery result file to let downstream steps know we skipped
         try:
             from pathlib import Path
             import json

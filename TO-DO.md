@@ -1,7 +1,7 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-03-06  
-**Current Version**: 2.0.0  
+**Last Updated**: 2026-03-13  
+**Current Version**: 2.2.0  
 **Pipeline Steps**: 25 (0–24) · **Modules**: 38 · **MCP Tools**: 131 · **Tests**: 1,522+ · **Renderers**: 8/8
 
 ---
@@ -9,6 +9,8 @@
 <details>
 <summary><strong>Changelog</strong> (completed releases)</summary>
 
+- **v2.2.0** (2026-03-13) — `src/gnn/watcher.py` (Live re-validation Watcher mode), `src/gnn/dep_graph.py` (Model Dependency Graph & Dashboard integration).
+- **v2.1.0** (2026-03-13) — `src/cli/__init__.py` (CLI Polish: health, preflight, lsp, serve), `src/pipeline/context.py` (Pipeline Event Hooks + SSE), `src/utils/logging/logging_utils.py` (Structured JSON Logging).
 - **v2.0.0** (2026-03-06) — `src/api/app.py` (FastAPI, 6 endpoints, SSE streaming), `src/render/health.py` (8/8 renderer health check), `src/gnn/parse_cache.py` (section-level incremental cache), `src/pipeline/preflight.py` (config + environment validation).
 - **v1.9.0** (2026-03-06) — `src/gnn/multimodel.py` (multi-model file support), `src/render/stan/stan_renderer.py` (Stan code generation), `src/lsp/__init__.py` (LSP diagnostics + hover).
 - **v1.8.0** (2026-03-06) — `src/cli/__init__.py` (6 subcommands), `src/pipeline/hasher.py` (content-addressable hashing), `src/gnn/frontmatter.py` (YAML front-matter with fallback).
@@ -29,16 +31,16 @@
 
 > **Scope**: Add preflight check subcommand and wire lsp/api subcommands into CLI.
 
-- [ ] **`gnn preflight`** subcommand — Runs `run_preflight()` from `src/pipeline/preflight.py`. Outputs Markdown report.
-- [ ] **`gnn lsp`** subcommand — Launches `start_server()` from `src/lsp/__init__.py` on stdio.
-- [ ] **`gnn serve`** subcommand — Starts `start_server()` from `src/api/app.py` with `--host` and `--port`.
-- [ ] **`gnn health`** subcommand — Runs `check_renderers()` + `check_environment()` and prints summary.
-- [ ] **pyproject.toml** — Update entrypoint to `gnn = "src.cli:main"`.
+- [x] **`gnn preflight`** subcommand — Runs `run_preflight()` from `src/pipeline/preflight.py`. Outputs Markdown report.
+- [x] **`gnn lsp`** subcommand — Launches `start_server()` from `src/lsp/__init__.py` on stdio.
+- [x] **`gnn serve`** subcommand — Starts `start_server()` from `src/api/app.py` with `--host` and `--port`.
+- [x] **`gnn health`** subcommand — Runs `check_renderers()` + `check_environment()` and prints summary.
+- [x] **pyproject.toml** — Update entrypoint to `gnn = "src.cli:main"`.
 
 ### v2.1.0a Acceptance
 
-- [ ] `gnn preflight` produces Markdown report with 🟢/🔴 status
-- [ ] `gnn health` shows 8/8 renderers
+- [x] `gnn preflight` produces Markdown report with 🟢/🔴 status
+- [x] `gnn health` shows 8/8 renderers
 
 ---
 
@@ -46,14 +48,14 @@
 
 > **Scope**: Wire PipelineContext event callbacks for SSE integration.
 
-- [ ] **`PipelineContext.on_step_start`** callback — Optional callable invoked at step start.
-- [ ] **`PipelineContext.on_step_complete`** callback — Optional callable invoked at step end.
-- [ ] **`PipelineContext.on_error`** callback — Optional callable invoked on step failure.
-- [ ] **API integration** — Wire callbacks to SSE event broadcasting in `api/app.py`.
+- [x] **`PipelineContext.on_step_start`** callback — Optional callable invoked at step start.
+- [x] **`PipelineContext.on_step_complete`** callback — Optional callable invoked at step end.
+- [x] **`PipelineContext.on_error`** callback — Optional callable invoked on step failure.
+- [x] **API integration** — Wire callbacks to SSE event broadcasting in `api/app.py`.
 
 ### v2.1.0b Acceptance
 
-- [ ] SSE stream emits `step_start` / `step_complete` events during run
+- [x] SSE stream emits `step_start` / `step_complete` events during run
 
 ---
 
@@ -61,13 +63,13 @@
 
 > **Scope**: Machine-readable logs for pipeline observability.
 
-- [ ] **`src/pipeline/logging_config.py`** [NEW] — Configures structured JSON logging (stdlib `logging`). Fields: timestamp, level, step, message, duration.
-- [ ] **`--log-format json`** CLI flag — Switches to JSON line output for piping to log aggregators.
-- [ ] **Log rotation** — Configured via `logging.handlers.RotatingFileHandler`, 10 MB per file, 5 backups.
+- [x] **`src/pipeline/logging_config.py`** [NEW] — Configures structured JSON logging (stdlib `logging`). Fields: timestamp, level, step, message, duration.
+- [x] **`--log-format json`** CLI flag — Switches to JSON line output for piping to log aggregators.
+- [x] **Log rotation** — Configured via `logging.handlers.RotatingFileHandler`, 10 MB per file, 5 backups.
 
 ### v2.1.0c Acceptance
 
-- [ ] `gnn run --log-format json 2>&1 | python -m json.tool` parses each line
+- [x] `gnn run --log-format json 2>&1 | python -m json.tool` parses each line
 
 ---
 
@@ -75,14 +77,14 @@
 
 > **Scope**: File-watching for live re-validation during development.
 
-- [ ] **`src/gnn/watcher.py`** [NEW] — Uses `watchdog` (or `inotify` fallback) to monitor GNN files.
-- [ ] **`gnn watch <dir>`** subcommand — Monitors `input/gnn_files/` and re-runs validate on change.
-- [ ] **Debouncing** — 250ms debounce to avoid rapid-fire re-validation.
-- [ ] **Integration** — On change, runs `validate_required_sections()` + `parse_state_space()` and prints results.
+- [x] **`src/gnn/watcher.py`** [NEW] — Uses `watchdog` (or `inotify` fallback) to monitor GNN files.
+- [x] **`gnn watch <dir>`** subcommand — Monitors `input/gnn_files/` and re-runs validate on change.
+- [x] **Debouncing** — 250ms debounce to avoid rapid-fire re-validation.
+- [x] **Integration** — On change, runs `validate_required_sections()` + `parse_state_space()` and prints results.
 
 ### v2.2.0a Acceptance
 
-- [ ] Editing a `.md` file triggers re-validation within 500ms
+- [x] Editing a `.md` file triggers re-validation within 500ms
 
 ---
 
@@ -90,24 +92,44 @@
 
 > **Scope**: Generate visual dependency graph from multi-model files.
 
-- [ ] **`src/gnn/dep_graph.py`** [NEW] — Builds networkx/mermaid graph from inter-model connections.
-- [ ] **`gnn graph <file.md>`** subcommand — Outputs Mermaid diagram to stdout or `.svg` file.
-- [ ] **Dashboard integration** — Embed dependency graph in `dashboard.html`.
+- [x] **`src/gnn/dep_graph.py`** [NEW] — Builds networkx/mermaid graph from inter-model connections.
+- [x] **`gnn graph <file.md>`** subcommand — Outputs Mermaid diagram to stdout or `.svg` file.
+- [x] **Dashboard integration** — Embed dependency graph in `dashboard.html`.
 
 ### v2.2.0b Acceptance
 
-- [ ] `gnn graph multi_model.md` outputs valid Mermaid diagram
+- [x] `gnn graph multi_model.md` outputs valid Mermaid diagram
 
 ---
 
 ## v2.3.0 — Deep Roadmap (Unscheduled)
 
-> Major features requiring significant effort.
+> Major computational scale-out and developer experience features. Scoped and ready for unblocking.
 
-- [ ] Full VSCode extension (beyond LSP diagnostics)
-- [ ] Distributed Ray/Dask execution for parallel parameter sweeps
-- [ ] GPU-accelerated JAX on cloud instances
-- [ ] Content-addressable model registry with `gnn reproduce <run-hash>` CLI
+### v2.3.0a - Content-Addressable Model Registry (`gnn reproduce`)
+
+- [ ] Update `src/pipeline/hasher.py` to recursively capture `.gnn` file shasums into `index.json`.
+- [ ] Implement `src/cli/__init__.py::_cmd_reproduce` to read `.history/index.json`.
+- [ ] Wire the captured configuration parameters (including `testing_matrix` states) back into `PipelineArguments`.
+- [ ] Trigger execution bypassing normal CLI arg parsing.
+
+### v2.3.0b - Distributed Parameter Sweeps (Ray/Dask integration)
+
+- [ ] Create `src/execute/distributed.py` module.
+- [ ] Migrate `12_execute.py` to optionally wrap standard grid search with `@ray.remote`.
+- [ ] Create robust retry semantics for node failure in external cloud instances.
+
+### v2.3.0c - GPU-accelerated JAX
+
+- [ ] Create `src/render/jax/gpu_utils.py` to inspect available CUDA/TPU cores.
+- [ ] Automatically modify JAX code generation in `jax_renderer.py` to specify parallel execution contexts (`jax.pmap`, `jax.vmap`).
+- [ ] Adjust Dockerfiles/Setup phase to test for XLA compile compatibility.
+
+### v2.3.0d - Visual Studio Code Extension
+
+- [ ] Bootstrapped extension scaffolding via `yo code`.
+- [ ] Integrate existing GNN TextMate syntax file (`package.json/contributes/grammars`).
+- [ ] Write LanguageClient wrapper `extension.ts` connecting via stdin/stdout to `gnn lsp`.
 
 ---
 

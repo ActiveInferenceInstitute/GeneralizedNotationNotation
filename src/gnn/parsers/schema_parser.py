@@ -114,7 +114,7 @@ class XSDParser(BaseGNNParser):
             for enum_val in enum_class:
                 if enum_val.value == value_str:
                     return enum_val
-            # Fallback to first enum value
+            # Recovery to first enum value
             return list(enum_class)[0]
         except Exception:
             return list(enum_class)[0]
@@ -148,7 +148,7 @@ class XSDParser(BaseGNNParser):
             result.add_error(f"Failed to parse XSD content: {e}")
             return result
 
-    def parse_xml_element(self, root: ET.Element) -> ParseResult:
+    def parse_xml_element(self, root: Any) -> ParseResult:
         result = ParseResult(model=self.create_empty_model())
 
         # Convert XML element back to string to look for embedded data
@@ -159,7 +159,7 @@ class XSDParser(BaseGNNParser):
         if embedded_data:
             return self._parse_from_embedded_data(embedded_data, result)
 
-        # Fallback to basic XSD parsing
+        # Recovery to basic XSD parsing
         result.model.model_name = root.get('targetNamespace', 'XSDModel').split('/')[-1]
 
         # Parse element definitions
@@ -296,7 +296,7 @@ class ASN1Parser(BaseGNNParser):
             for enum_val in enum_class:
                 if enum_val.value == value_str:
                     return enum_val
-            # Fallback to first enum value
+            # Recovery to first enum value
             return list(enum_class)[0]
         except Exception:
             return list(enum_class)[0]
@@ -485,7 +485,7 @@ class PKLParser(BaseGNNParser):
             for enum_val in enum_class:
                 if enum_val.value == value_str:
                     return enum_val
-            # Fallback to first enum value
+            # Recovery to first enum value
             return list(enum_class)[0]
         except Exception:
             return list(enum_class)[0]
@@ -1091,7 +1091,7 @@ class AlloyParser(BaseGNNParser):
         if embedded_data:
             return self._parse_from_embedded_data(embedded_data, result)
 
-        # Fallback to standard parsing
+        # Recovery to standard parsing
         result.model.model_name = "AlloyModel"
 
         try:
@@ -1236,7 +1236,7 @@ class ZNotationParser(BaseGNNParser):
         if embedded_data:
             return self._parse_from_embedded_data(embedded_data, result)
 
-        # Fallback to standard parsing
+        # Recovery to standard parsing
         result.model.model_name = "ZNotationModel"
 
         try:

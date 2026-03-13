@@ -189,7 +189,7 @@ try:
 
     from .pipeline import (
         setup_step_logging,
-        FallbackArgumentParser,
+        RecoveryArgumentParser,
         get_pipeline_utilities,
         validate_output_directory,
         execute_pipeline_step_template,
@@ -240,7 +240,7 @@ except ImportError as e:
     # Import recovery functions when modules are not available
     logging.warning(f"Some utils modules not available: {e}")
     from .recovery import (
-        FallbackArgumentParser,
+        RecoveryArgumentParser,
         setup_step_logging
     )
 
@@ -331,7 +331,7 @@ __all__ = [
     'get_system_info',
 
     # Pipeline utilities
-    'FallbackArgumentParser',
+    'RecoveryArgumentParser',
     'get_pipeline_utilities',
     'validate_output_directory',
     'get_output_dir_for_script',

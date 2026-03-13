@@ -277,7 +277,7 @@ def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
                 if stats["tests_run"] > 0:
                     break
 
-        # Fallback: count individual test results if summary line not found
+        # Recovery: count individual test results if summary line not found
         # Look for lines like "test_foo.py::test_bar PASSED [  1%]"
         if stats["tests_passed"] == 0 and stats["tests_failed"] == 0:
             for line in lines:

@@ -106,11 +106,11 @@ def plot_tensor_output(tensor_data, output_file_path: Path, title: str = "Tensor
                 logger.info(f"Saved 1D plot to {file_path}")
             except Exception as e:
                 logger.error(f"Failed to generate 1D plot for '{title}' to {file_path}: {e}", exc_info=True)
-                # Fallback to saving raw data
+                # Recovery to saving raw data
                 raw_data_path = output_file_path.with_name(output_file_path.name + "_1d_raw.txt")
                 try:
                     numpy.savetxt(raw_data_path, numpy_tensor, header=f"{title}\nShape: {array_shape}", encoding='utf-8')
-                    logger.info(f"Saved 1D raw data to {raw_data_path} as fallback.")
+                    logger.info(f"Saved 1D raw data to {raw_data_path} as recovery.")
                 except Exception as save_e:
                     logger.error(f"Failed to save 1D raw data for '{title}' to {raw_data_path}: {save_e}")
 
@@ -138,11 +138,11 @@ def plot_tensor_output(tensor_data, output_file_path: Path, title: str = "Tensor
                 logger.info(f"Saved 2D heatmap to {file_path}")
             except Exception as e:
                 logger.error(f"Failed to generate 2D heatmap for '{title}' to {file_path}: {e}", exc_info=True)
-                 # Fallback to saving raw data
+                 # Recovery to saving raw data
                 raw_data_path = output_file_path.with_name(output_file_path.name + "_2d_raw.txt")
                 try:
                     numpy.savetxt(raw_data_path, numpy_tensor, header=f"{title}\nShape: {array_shape}", encoding='utf-8', fmt='%.18e')
-                    logger.info(f"Saved 2D raw data to {raw_data_path} as fallback.")
+                    logger.info(f"Saved 2D raw data to {raw_data_path} as recovery.")
                 except Exception as save_e:
                     logger.error(f"Failed to save 2D raw data for '{title}' to {raw_data_path}: {save_e}")
 

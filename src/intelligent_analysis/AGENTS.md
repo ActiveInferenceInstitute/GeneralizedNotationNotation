@@ -59,7 +59,7 @@ intelligent_analysis/
 | Executive Reports | Enabled | Markdown, JSON, and HTML reports |
 | Per-Step Analysis | Enabled | Individual step health analysis |
 | Yellow/Red Flags | Enabled | Warning and error detection per step |
-| Rule-Based Fallback | Enabled | Works without LLM infrastructure |
+| Rule-Based Recovery | Enabled | Works without LLM infrastructure |
 | MCP Integration | Enabled | MCP tool registration available |
 
 ## Usage
@@ -468,14 +468,14 @@ Checks availability of `llm_processor`, `numpy`, and `pandas`. Returns availabil
 
 ### Graceful Degradation Strategy
 
-The module implements a layered fallback approach:
+The module implements a layered recovery approach:
 
-| Scenario | Primary Path | Fallback | Behavior |
+| Scenario | Primary Path | Recovery | Behavior |
 |----------|-------------|----------|----------|
 | LLM available | `_run_llm_analysis()` via `llm.llm_processor` | `_generate_rule_based_summary()` | Full AI-powered executive summary |
 | LLM import fails | Catches `ImportError` on `llm.llm_processor` | Rule-based summary | Structured summary without AI |
 | LLM API call fails | Catches generic `Exception` on `processor.get_response()` | Rule-based summary | Falls back with error logged |
-| LLM processor returns None | Checks `if not processor` | Rule-based summary | Immediate fallback |
+| LLM processor returns None | Checks `if not processor` | Rule-based summary | Immediate recovery |
 | Pipeline summary missing | Checks `summary_path.exists()` | Returns `False` | Logs error, step marked failed |
 | JSON parse failure | Catches `Exception` on `json.load()` | Returns `False` | Logs error with exception details |
 | Report write failure | Catches `Exception` on file write | Returns `False` | Logs error, analysis data may still save |
@@ -505,9 +505,9 @@ The module implements a layered fallback approach:
    -> Always succeeds (returns list based on available data)
 
 7. Run LLM analysis
-   -> Import error: fallback to rule-based
-   -> API error: fallback to rule-based
-   -> Timeout: fallback to rule-based
+   -> Import error: recovery to rule-based
+   -> API error: recovery to rule-based
+   -> Timeout: recovery to rule-based
 
 8. Generate executive report
    -> Always succeeds (string concatenation)
@@ -679,14 +679,14 @@ def test_detect_cascading_failure_pattern():
 ### Mocking LLM Calls
 
 ```python
-from unittest.mock import patch, AsyncMock
+from unittest.simulated import patch, AsyncMock
 
 @patch("intelligent_analysis.processor._run_llm_analysis")
 def test_process_with_llm_failure(mock_llm, sample_summary_data, tmp_path):
     """Test that LLM failure falls back to rule-based analysis."""
     mock_llm.side_effect = Exception("LLM unavailable")
 
-    # The processor should still succeed with rule-based fallback
+    # The processor should still succeed with rule-based recovery
     import logging
     logger = logging.getLogger("test")
 
@@ -717,7 +717,7 @@ def test_process_with_llm_failure(mock_llm, sample_summary_data, tmp_path):
 |-----------|------|---------|-------------|
 | `bottleneck_threshold` | `float` | `60.0` | Duration threshold in seconds for flagging slow steps via `identify_bottlenecks()` |
 | `analysis_model` | `str` | `"gemma3:4b"` | LLM model name used in `_run_llm_analysis()` for AI-powered insights |
-| `skip_llm` | `bool` | `False` | When True, skips LLM analysis and uses rule-based fallback only |
+| `skip_llm` | `bool` | `False` | When True, skips LLM analysis and uses rule-based recovery only |
 | `max_tokens` | `int` | `2500` | Maximum tokens for LLM response in `_run_llm_analysis()` |
 
 ### Hardcoded Thresholds in `analyze_individual_steps()`
@@ -766,7 +766,7 @@ Step 24 is the **final step** in the GNN pipeline. It runs after all other steps
 The module looks for the summary file at two locations:
 
 1. `{output_dir}/00_pipeline_summary/pipeline_execution_summary.json`
-2. `{output_dir}/../00_pipeline_summary/pipeline_execution_summary.json` (fallback)
+2. `{output_dir}/../00_pipeline_summary/pipeline_execution_summary.json` (recovery)
 
 ### Output Data
 
@@ -832,7 +832,7 @@ Step 24: intelligent_analysis
 ### Optimization Tips
 
 1. Use `--skip-llm` for fast iteration during development
-2. The rule-based fallback produces actionable results without any LLM
+2. The rule-based recovery produces actionable results without any LLM
 3. If using Ollama, prefer `gemma3:4b` for fastest response times
 4. The analysis itself (excluding LLM) is CPU-bound and single-threaded
 
@@ -857,7 +857,7 @@ Step 24: intelligent_analysis
 
 ## Architecture Decisions
 
-### Why Rule-Based Fallback Alongside LLM?
+### Why Rule-Based Recovery Alongside LLM?
 
 The module was designed to always produce useful output, regardless of LLM availability. In production environments:
 
@@ -896,7 +896,7 @@ The `_run_llm_analysis()` function is async because it uses the shared `llm.llm_
 **Features**:
 
 - Per-step analysis with yellow/red flag detection
-- Rule-based fallback analysis
+- Rule-based recovery analysis
 - LLM-powered executive summaries
 - Health scoring with weighted components
 - Pattern detection (cascading failures, memory growth, etc.)

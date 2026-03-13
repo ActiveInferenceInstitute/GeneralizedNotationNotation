@@ -168,7 +168,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-06T15:00:17.120385",
+  "created_at": "2026-03-13T14:15:04.688296",
   "equations": [],
   "extensions": {
     "footer": "Curiosity-Driven Active Inference Agent v1 - GNN Representation.\nDemonstrates explicit epistemic value (information gain) alongside instrumental value.\nUseful for studying exploration-exploitation in Active Inference.",
@@ -176,7 +176,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Curiosity-Driven Active Inference Agent",
-  "modified_at": "2026-03-06T15:00:17.120387",
+  "modified_at": "2026-03-13T14:15:04.688297",
   "ontology_mappings": [
     {
       "description": null,

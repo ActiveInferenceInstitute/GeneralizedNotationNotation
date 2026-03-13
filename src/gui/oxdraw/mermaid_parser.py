@@ -94,7 +94,7 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
         except json.JSONDecodeError:
             pass
 
-    # Try legacy single-line format
+    # Try previous single-line format
     legacy_pattern = r'%%\s*GNN_METADATA:\s*(\{.*?\})'
     match = re.search(legacy_pattern, mermaid_content, re.DOTALL)
 

@@ -19,9 +19,9 @@ python src/13_llm.py --target-dir input/gnn_files --output-dir output --verbose
 python src/main.py --only-steps 13 --verbose
 ```
 
-## Provider Fallback Chain
+## Provider Recovery Chain
 
-The LLM module supports multiple providers with automatic fallback:
+The LLM module supports multiple providers with automatic recovery:
 
 1. **Ollama** (local) — Preferred for privacy and speed
 2. **OpenAI** — GPT-4/3.5 API

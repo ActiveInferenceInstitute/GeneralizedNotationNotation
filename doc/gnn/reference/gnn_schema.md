@@ -231,7 +231,7 @@ src/8_visualization.py (thin orchestrator)
     │   ├── parse_matrix_data() (line 367)
     │   ├── generate_matrix_visualizations() (line 403)
     │   └── generate_network_visualizations() (line 523)
-    └── __init__.py (safe imports with fallbacks, line 15-47)
+    └── __init__.py (safe imports with alternatives, line 15-47)
 
 src/9_advanced_viz.py (thin orchestrator)
 └── src/advanced_visualization/

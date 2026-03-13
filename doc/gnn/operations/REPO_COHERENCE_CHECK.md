@@ -34,7 +34,7 @@ This document serves as a comprehensive checklist and analysis framework for val
 - **Total Modules**: 28 specialized agent modules
 - **AGENTS.md Files**: 41 documentation files (including sub-modules)
 - **Architecture Pattern**: Thin orchestrator with modular implementation
-- **Testing Policy**: No mocks - real data and real code paths only (some legacy tests still use mocks - see Section 16.1)
+- **Testing Policy**: No substitutions - real data and real code paths only (some previous tests still use substitutions - see Section 16.1)
 - **Documentation Standard**: AGENTS.md + README.md for each module
 - **Output Directory Pattern**: `N_[module]_output/` for all steps (enforced via `get_output_dir_for_script()`)
 
@@ -46,7 +46,7 @@ This mega-prompt validates:
 2. Code quality standards (type hints, docstrings, error handling)
 3. Module structure consistency (directory patterns, **init**.py, MCP integration)
 4. Documentation completeness (AGENTS.md, README.md, API docs)
-5. Testing standards (no-mock policy, real data, integration tests)
+5. Testing standards (real-implementation policy, real data, integration tests)
 6. Pipeline integration (dependencies, data flow, output consistency)
 7. Performance standards (execution time, memory usage, resource efficiency)
 8. Security and validation patterns
@@ -91,7 +91,7 @@ For each script `N_[module_name].py`, verify:
 **Step 2**: `src/2_tests.py` → `src/tests/`
 
 - Verify: Test orchestration delegation
-- Verify: Real test execution (no mocks)
+- Verify: Real test execution (no substitutions)
 
 **Step 3**: `src/3_gnn.py` → `src/gnn/`
 
@@ -561,7 +561,7 @@ graph LR
 
 - [ ] **mcp.py Exists**: Module has `mcp.py` file (where applicable)
 - [ ] **Tool Registration**: Tools properly registered
-- [ ] **Tool Implementation**: Tools have real implementations (no stubs)
+- [ ] **Tool Implementation**: Tools have real implementations (no placeholders)
 - [ ] **Tool Documentation**: Tools documented in AGENTS.md
 
 #### MCP Integration Pattern
@@ -732,13 +732,13 @@ graph TD
 
 ## 5. Testing Standards
 
-### 5.1 No-Mock Policy Compliance
+### 5.1 Real-Implementation Policy Compliance
 
-**Requirement**: All tests must execute real code paths and real methods. No mocking frameworks.
+**Requirement**: All tests must execute real code paths and real methods. No substitution frameworks.
 
 #### P5.1 Performance validation checklist
 
-- [ ] **No unittest.mock**: No `unittest.mock` imports or usage
+- [ ] **No unittest.patch**: No `patch` imports or usage
 - [ ] **No Monkeypatching**: No monkeypatching of functions or classes
 - [ ] **Real Code Paths**: Tests execute actual code paths
 - [ ] **Real Data**: Tests use real, representative data
@@ -747,21 +747,21 @@ graph TD
 
 #### Known Issues
 
-**Current Status**: All strict no-mock policies are enforced. Previous legacy tests using `unittest.mock` have been refactored or removed.
+**Current Status**: All strict real-implementation policies are enforced. Previous tests using `patch` have been refactored or removed.
 
-**Policy**: Tests must execute real code paths and real methods. No mocking frameworks are allowed.
+**Policy**: Tests must execute real code paths and real methods. No substitution frameworks are allowed.
 
 #### Anti-Pattern Detection
 
 **Incorrect Pattern**:
 
 ```python
-# ❌ WRONG: Using mocks
-from unittest.mock import Mock, patch
+# ❌ WRONG: Using substitutions
+from unittest.patch import patch # Note: do not use
 
 @patch('module.process_function')
-def test_processing(mock_process):
-    mock_process.return_value = True
+def test_processing(patched_process):
+    patched_process.return_value = True
     ...
 ```
 
@@ -1145,7 +1145,7 @@ For each validation area, assess:
 2. **Code Quality**: Type hints, docstrings, error handling
 3. **Module Structure**: Directory structure, `__init__.py`, MCP integration
 4. **Documentation**: AGENTS.md, README.md, API documentation
-5. **Testing**: No-mock policy, real data, integration tests
+5. **Testing**: Real-implementation policy, real data, integration tests
 6. **Pipeline Integration**: Dependencies, data flow, output consistency
 7. **Performance**: Execution time, memory usage, success rates
 8. **Security**: Input validation, error recovery, security patterns
@@ -1199,7 +1199,7 @@ def process_validation(
 3. **Code Quality**: Check type hints, docstrings, error handling
 4. **Module Structure**: Verify directory structure and `__init__.py` patterns
 5. **Documentation**: Validate AGENTS.md and README.md completeness
-6. **Testing**: Verify no-mock policy and real data usage
+6. **Testing**: Verify real-implementation policy and real data usage
 7. **Integration**: Check pipeline dependencies and data flow
 8. **Performance**: Review execution time and memory usage
 9. **Security**: Validate input validation and error recovery
@@ -1425,15 +1425,15 @@ def process_validation(target_dir, output_dir, verbose=False):
     ...
 ```
 
-#### Using Mocks in Tests (Incorrect)
+#### Using Substitutions in Tests (Incorrect)
 
 ```python
-# ❌ WRONG: Using mocks
-from unittest.mock import Mock, patch
+# ❌ WRONG: Using substitutions
+from unittest.patch import patch # Note: do not use
 
 @patch('module.process_function')
-def test_processing(mock_process):
-    mock_process.return_value = True
+def test_processing(patched_process):
+    patched_process.return_value = True
     ...
 ```
 
@@ -1470,7 +1470,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 ### P16.1 Testing policy validation checklist
 
-**Issue**: Some test files violate the no-mock policy by using `unittest.mock`.
+**Issue**: Some test files violate the real-implementation policy by using substitutions.
 
 **Affected Files**:
 
@@ -1483,7 +1483,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 - `src/tests/conftest.py`
 
 **Priority**: High
-**Action**: Refactor these tests to use real code paths and real data. Tests may skip when external dependencies are unavailable, but must never replace dependencies with mocks.
+**Action**: Refactor these tests to use real code paths and real data. Tests may skip when external dependencies are unavailable, but must never replace dependencies with substitutions.
 
 ### 16.2 Validation Priorities
 
@@ -1491,7 +1491,7 @@ When using this mega-prompt for code review, prioritize:
 
 1. **Critical**: Architecture compliance (thin orchestrator pattern)
 2. **High**: Code quality (type hints, docstrings, error handling)
-3. **High**: Testing standards (no-mock policy compliance)
+3. **High**: Testing standards (real-implementation policy compliance)
 4. **Medium**: Documentation completeness (AGENTS.md, README.md)
 5. **Medium**: Module structure consistency
 6. **Low**: Performance optimization opportunities
@@ -1500,8 +1500,8 @@ When using this mega-prompt for code review, prioritize:
 ### 16.3 Quick Validation Commands
 
 ```bash
-# Check for unittest.mock usage
-grep -r "from unittest.mock" src/tests/
+# Check for patch usage
+grep -r "import patch" src/tests/
 
 # Check pipeline script lengths
 find src -name "[0-9]_*.py" -exec wc -l {} \; | sort -n

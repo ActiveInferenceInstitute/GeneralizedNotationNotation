@@ -1,0 +1,26 @@
+{
+  "framework": "activeinference_jl",
+  "model_name": "deep_planning_horizon",
+  "script_name": "deep_planning_horizon_activeinference_jl.jl",
+  "script_path": "output/11_render_output/deep_planning_horizon/activeinference_jl/deep_planning_horizon_activeinference_jl.jl",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 2.182295,
+  "timestamp": "2026-03-13T13:59:40.453998",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "ERROR: SystemError: opening file \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/deep_planning_horizon/activeinference_jl/deep_planning_horizon_activeinference_jl.jl\": No such file or directory\nStacktrace:\n [1] include(mod::Module, _path::String)\n   @ Base ./Base.jl:306\n [2] exec_options(opts::Base.JLOptions)\n   @ Base ./client.jl:317\n [3] _start()\n   @ Base ./client.jl:550\n"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 409,
+    "output_directory": "output/12_execute_output/deep_planning_horizon/activeinference_jl"
+  }
+}

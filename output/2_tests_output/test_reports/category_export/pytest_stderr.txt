@@ -1,0 +1,5 @@
+DEBUG:2026-03-13 14:17:36,140:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:17:36,140 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
+/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/lib/python3.12/site-packages/pytest_cov/plugin.py:363: CovReportWarning: Failed to generate report: Couldn't use data file '/Users/4d/Documents/GitHub/generalizednotationnotation/.coverage': no such table: line_bits
+
+  warnings.warn(CovReportWarning(message), stacklevel=1)

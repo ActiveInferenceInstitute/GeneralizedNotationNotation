@@ -177,7 +177,7 @@ def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[s
             (r'subprocess\s*\.', "Subprocess execution risk"),
             (r'subprocess\.call\s*\(', "Subprocess call -- potential command injection"),
             (r'subprocess\.Popen\s*\(', "Subprocess Popen -- potential command injection"),
-            (r'file\s*\(', "Legacy file() call"),
+            (r'file\s*\(', "Previous file() call"),
         ]
 
         for pattern, description in vuln_patterns:

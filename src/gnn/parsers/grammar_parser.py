@@ -133,7 +133,7 @@ class BNFParser(BaseGNNParser):
             result.success = True
             return self._parse_from_embedded_data(embedded_data, result)
 
-        # Fallback to standard parsing
+        # Recovery to standard parsing
         try:
             model = self._parse_bnf_content(content)
             return ParseResult(model=model, success=True)

@@ -1,0 +1,5 @@
+Category: research
+Success: False
+Duration: 2.01s
+Peak Memory: 24.38 MB
+CPU Usage: 0.0%

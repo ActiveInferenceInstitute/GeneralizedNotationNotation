@@ -24,7 +24,7 @@ python src/9_advanced_viz.py --viz-type dashboard --interactive --verbose
 | Processor | `src/advanced_visualization/processor.py` |
 | Module function | `process_advanced_viz_standardized_impl()` |
 
-Uses direct import — no try/except fallback.
+Uses direct import — no try/except handlers.
 
 ## CLI Arguments
 

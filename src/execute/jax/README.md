@@ -164,7 +164,7 @@ output/
 
 2. **Device Not Found**
    ```python
-   # Use CPU fallback
+   # Use CPU recovery
    execute_jax_script(script_path, device="cpu")
    ```
 

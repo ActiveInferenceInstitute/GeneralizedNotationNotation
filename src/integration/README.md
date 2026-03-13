@@ -95,7 +95,7 @@ Integrates system-wide functionality across modules.
 - **Cross-Module Error Handling**: Handle errors that span multiple modules
 - **Recovery Mechanisms**: Implement recovery strategies for system failures
 - **Error Propagation**: Properly propagate errors through the system
-- **Fallback Strategies**: Provide fallback options for module failures
+- **Recovery Strategies**: Provide recovery options for module failures
 
 ## Usage Examples
 
@@ -391,7 +391,7 @@ try:
     results = process_integration(target_dir, output_dir)
 except IntegrationError as e:
     logger.error(f"Integration failed: {e}")
-    # Provide fallback integration or error reporting
+    # Provide recovery integration or error reporting
 ```
 
 ### Module Coordination Issues
@@ -401,7 +401,7 @@ try:
     coordination = coordinate_pipeline_modules()
 except CoordinationError as e:
     logger.warning(f"Module coordination issue: {e}")
-    # Implement fallback coordination strategy
+    # Implement recovery coordination strategy
 ```
 
 ### Data Flow Issues

@@ -134,9 +134,9 @@ processed_audio = process_sapf_audio(
 - `librosa` - Audio analysis and spectral processing
 
 ### Optional Dependencies
-- `soundfile` - Audio file I/O (fallback: basic WAV support)
-- `matplotlib` - Spectral visualization (fallback: no visualization)
-- `pyaudio` - Real-time audio I/O (fallback: file-based processing)
+- `soundfile` - Audio file I/O (recovery: basic WAV support)
+- `matplotlib` - Spectral visualization (recovery: no visualization)
+- `pyaudio` - Real-time audio I/O (recovery: file-based processing)
 
 ### Internal Dependencies
 - `audio.classes` - Base audio classes and utilities
@@ -326,7 +326,7 @@ output/audio_sapf/
 
 ### Recovery Strategies
 - **Window Size Adjustment**: Automatically adjust to nearest power of 2
-- **Fallback Processing**: Use time-domain processing as fallback
+- **Recovery Processing**: Use time-domain processing as recovery
 - **Error Logging**: Comprehensive error reporting with suggestions
 
 ### Error Examples
@@ -335,7 +335,7 @@ try:
     processed_audio = process_sapf_audio(audio_data, spectral_config)
 except SpectralProcessingError as e:
     logger.error(f"Spectral processing failed: {e}")
-    # Fallback to time-domain processing
+    # Recovery to time-domain processing
     processed_audio = process_time_domain(audio_data, config)
 ```
 

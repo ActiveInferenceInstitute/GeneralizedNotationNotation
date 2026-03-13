@@ -76,7 +76,7 @@ class OllamaProvider(BaseLLMProvider):
                     "Falling back to CLI. "
                     f"Module location: {getattr(ollama, '__file__', 'unknown')}"
                 )
-                # Fall through to CLI fallback instead of failing outright
+                # Fall through to CLI recovery instead of failing outright
                 raise ImportError("ollama package is not functional")
             self._ollama = ollama
             try:
@@ -87,11 +87,11 @@ class OllamaProvider(BaseLLMProvider):
             logger.info("Ollama provider initialized (python client)")
             return True
         except ImportError:
-            # Fallback to CLI if available
+            # Recovery to CLI if available
             if shutil.which("ollama"):
                 self._use_cli = True
                 self._is_initialized = True
-                logger.info("Ollama provider initialized (CLI fallback)")
+                logger.info("Ollama provider initialized (CLI recovery)")
                 return True
             logger.warning("Ollama not available. Install python client with 'uv pip install ollama' or install Ollama CLI from https://ollama.ai")
             return False
@@ -137,7 +137,7 @@ class OllamaProvider(BaseLLMProvider):
 
                 def _call_cli() -> Dict[str, Any]:
                     import time as _t
-                    # Prefer JSON mode via `ollama chat` if available; fallback to `ollama run`
+                    # Prefer JSON mode via `ollama chat` if available; recovery to `ollama run`
                     try:
                         logger.debug(f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s")
                         t0 = _t.monotonic()
@@ -163,7 +163,7 @@ class OllamaProvider(BaseLLMProvider):
                             return json.loads(completed.stdout)
                     except Exception as json_error:
                         logger.debug(f"JSON mode failed: {json_error}")
-                    # Fallback to `ollama run`
+                    # Recovery to `ollama run`
                     logger.debug(f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s")
                     t0 = _t.monotonic()
                     completed = subprocess.run(

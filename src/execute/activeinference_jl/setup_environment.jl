@@ -8,7 +8,7 @@ This script provides robust, reproducible environment setup for ActiveInference.
 - Environment validation and health checks  
 - Dependency resolution and conflict management
 - Version compatibility checking
-- Fallback mechanisms for failed installations
+- Recovery mechanisms for failed installations
 - Environment reporting and diagnostics
 
 Usage: julia setup_environment.jl [--verbose] [--force-reinstall] [--validate-only]

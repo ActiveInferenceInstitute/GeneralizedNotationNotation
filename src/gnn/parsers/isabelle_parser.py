@@ -268,7 +268,7 @@ class IsabelleParser(BaseGNNParser):
             else:
                 return body_clean
         except (ValueError, ArithmeticError):
-            return body_clean  # Fallback: return raw string when numeric parsing fails
+            return body_clean  # Recovery: return raw string when numeric parsing fails
 
     def _extract_connections(self, content: str) -> List[Connection]:
         """Extract connections from function applications."""

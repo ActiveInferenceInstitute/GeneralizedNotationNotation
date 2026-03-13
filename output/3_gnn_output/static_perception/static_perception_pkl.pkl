@@ -7,7 +7,7 @@
 - No temporal dynamics — single-shot inference
 - Demonstrates the core observation model: P(o|s) = A
 - Suitable as a minimal baseline and for testing perception-only inference
-/// Generated: 2026-03-06T15:00:15.042686
+/// Generated: 2026-03-13T14:15:02.719252
 /// Enhanced by GNN PKL Serializer
 ///
 

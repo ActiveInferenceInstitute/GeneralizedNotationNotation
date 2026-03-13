@@ -19,7 +19,7 @@ python src/7_export.py --target-dir input/gnn_files --output-dir output --verbos
 | Processor | `src/export/processor.py` |
 | Module function | `process_export()` |
 
-Uses direct import (no try/except fallback) — one of the cleanest orchestrators.
+Uses direct import (no try/except handlers) — one of the cleanest orchestrators.
 
 ## Supported Formats
 

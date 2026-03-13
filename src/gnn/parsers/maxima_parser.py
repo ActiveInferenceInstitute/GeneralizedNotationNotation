@@ -124,7 +124,7 @@ class MaximaParser(BaseGNNParser):
         if embedded_data:
             return self._parse_from_embedded_data(embedded_data, result)
 
-        # Fallback to standard parsing
+        # Recovery to standard parsing
         try:
             # Extract model name from comments or filename
             result.model.model_name = self._extract_model_name(content)

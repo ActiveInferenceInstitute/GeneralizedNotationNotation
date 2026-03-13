@@ -45,7 +45,7 @@ def generate_analysis_from_logs(
     numpyro_results = list(results_dir.rglob("**/numpyro/**/simulation_results.json"))
     # Also check for numpyro-prefixed results
     numpyro_results += list(results_dir.rglob("**/numpyro_simulation_results.json"))
-    # Fallback: check root
+    # Recovery: check root
     root_result = results_dir / "simulation_results.json"
     if root_result.exists() and root_result not in numpyro_results:
         numpyro_results.append(root_result)

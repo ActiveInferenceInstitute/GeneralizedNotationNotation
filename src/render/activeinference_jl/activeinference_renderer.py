@@ -129,7 +129,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     n_timesteps = model_params.get("num_timesteps", 20)  # Default 20 for backward compat
     model_info["n_timesteps"] = n_timesteps
 
-    # --- Fallback 1: from original statespaceblock format ---
+    # --- Recovery 1: from original statespaceblock format ---
     if n_states is None or n_obs is None or n_actions is None:
         statespace = gnn_spec.get("statespaceblock", [])
         for entry in statespace:
@@ -172,7 +172,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 except Exception:
                     pass
 
-    # --- Fallback 2: from raw ModelParameters section ---
+    # --- Recovery 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:
         params = gnn_spec.get("raw_sections", {}).get("ModelParameters", "")
         import re
@@ -189,7 +189,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
             if m_actions:
                 n_actions = int(m_actions.group(1))
 
-    # --- Fallback 3: infer from matrix shapes in initialparameterization ---
+    # --- Recovery 3: infer from matrix shapes in initialparameterization ---
     if n_states is None or n_obs is None or n_actions is None:
         init_params = gnn_spec.get("initialparameterization", {})
 
@@ -235,7 +235,7 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     # --- Extract matrices from initialparameterization ---
     initial_params = gnn_spec.get("initialparameterization", {})
     if not initial_params:
-        # Try legacy field
+        # Try previous field
         initial_params = gnn_spec.get("InitialParameterization", {})
     if not initial_params:
         raise ValueError("No initialparameterization found in GNN spec.")
@@ -446,7 +446,7 @@ if length(E_vector_raw) != NUM_POLICIES
         # Expand: one value per action -> one value per policy
         E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)  # Uniform prior
     else
-        # Fallback: uniform distribution
+        # Recovery: uniform distribution
         E_vector = fill(1.0 / NUM_POLICIES, NUM_POLICIES)
     end
 else

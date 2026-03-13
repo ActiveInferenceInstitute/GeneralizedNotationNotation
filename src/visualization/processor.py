@@ -75,7 +75,7 @@ logger = logging.getLogger(__name__)
 
 # Safe plot saving helper to avoid crashes due to extreme DPI or backend issues
 def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool:
-    """Attempt to save a matplotlib figure with fallback DPI strategies.
+    """Attempt to save a matplotlib figure with recovery DPI strategies.
 
     Returns True on success, False on failure.
     """
@@ -100,12 +100,12 @@ def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool
         try:
             fallback_dpi = _safe_dpi_value(matplotlib.rcParams.get('savefig.dpi', 100))
             plt.savefig(plot_path, dpi=fallback_dpi, **savefig_kwargs)
-            logger.debug(f"Saved with fallback DPI {fallback_dpi}")
+            logger.debug(f"Saved with recovery DPI {fallback_dpi}")
             return True
         except Exception as e2:
-            logger.debug(f"Error with fallback DPI: {e2}")
+            logger.debug(f"Error with recovery DPI: {e2}")
             try:
-                # Final fallback - no DPI specified
+                # Final recovery - no DPI specified
                 plt.savefig(plot_path, **savefig_kwargs)
                 logger.debug("Saved with default DPI")
                 return True
@@ -321,7 +321,7 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
                 if verbose:
                     logger.debug(f"Could not load from parsed JSON: {e}")
 
-            # Fallback: Extract from parsed_data (from parse_gnn_content)
+            # Recovery: Extract from parsed_data (from parse_gnn_content)
             if not matrices:
                 # Try parameters field first (correct location)
                 parameters = parsed_data.get("parameters", [])

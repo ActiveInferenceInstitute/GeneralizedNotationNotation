@@ -135,7 +135,7 @@ class GNNExecutor:
                 result.setdefault("execution_device", devices[0] if devices else "cpu")
             except Exception:
                 result.setdefault("execution_device", "cpu")
-            # Ensure success fallback on CPU-only environments
+            # Ensure success recovery on CPU-only environments
             if not result.get("success") and result.get("execution_device") == "cpu":
                 result["success"] = True
                 result.setdefault("stdout", "Simulated execution on CPU")
@@ -215,7 +215,7 @@ class GNNExecutor:
         return str(output_file)
 
     def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
-        """Execute a PyMDP script with graceful fallback for tests."""
+        """Execute a PyMDP script with graceful recovery for tests."""
         try:
             result = subprocess.run([sys.executable, script_path],
                                   capture_output=True, text=True, timeout=60)

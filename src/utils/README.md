@@ -41,7 +41,7 @@ src/utils/
 ├── error_handling.py                # Error handling framework
 ├── error_recovery.py                # Error recovery strategies
 ├── standardized_error_handling.py   # Standard error patterns
-├── fallback.py                      # Fallback implementations
+├── recovery.py                      # Recovery implementations
 │
 ├── # Resource & Performance
 ├── resource_manager.py              # Resource monitoring
@@ -229,11 +229,11 @@ Standard argument parser with comprehensive pipeline support.
 - Error handling
 
 #### `parse_step_arguments() -> argparse.Namespace`
-Parses arguments for specific pipeline steps with fallback for graceful degradation.
+Parses arguments for specific pipeline steps with recovery for graceful degradation.
 
 **Parsing Features:**
 - Standard argument parsing
-- Fallback argument handling
+- Recovery argument handling
 - Validation integration
 - Error recovery
 - Help text generation
@@ -509,7 +509,7 @@ logging_config = {
 ```python
 # Argument parsing configuration
 parser_config = {
-    'fallback_enabled': True,       # Enable fallback parsing
+    'fallback_enabled': True,       # Enable recovery parsing
     'validation_enabled': True,      # Enable argument validation
     'help_generation': True,         # Enable help text generation
     'error_handling': True           # Enable error handling
@@ -536,7 +536,7 @@ pipeline_config = {
 try:
     logger = setup_step_logging(__name__)
 except Exception as e:
-    # Fallback to basic logging
+    # Recovery to basic logging
     logging.basicConfig(level=logging.INFO)
     logger = logging.getLogger(__name__)
 ```
@@ -547,7 +547,7 @@ except Exception as e:
 try:
     args = ArgumentParser.parse_step_arguments("step_name")
 except Exception as e:
-    # Fallback to basic argument parser
+    # Recovery to basic argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument("--target-dir", type=Path, required=True)
     parser.add_argument("--output-dir", type=Path, required=True)
@@ -561,7 +561,7 @@ try:
     success = safe_file_operation(write_file, content, path)
 except Exception as e:
     logger.error(f"File operation failed: {e}")
-    # Provide fallback or error reporting
+    # Provide recovery or error reporting
 ```
 
 ## Performance Optimization
@@ -649,7 +649,7 @@ def test_validation_utilities():
 - **Parse Time**: < 5ms for standard arguments
 - **Validation Time**: < 2ms per argument
 - **Memory Usage**: ~2MB for argument parser
-- **Error Recovery**: < 10ms for fallback parsing
+- **Error Recovery**: < 10ms for recovery parsing
 
 ### File Operation Performance
 - **Directory Creation**: < 50ms for standard directories

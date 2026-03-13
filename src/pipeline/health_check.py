@@ -24,7 +24,7 @@ from pathlib import Path
 from typing import Dict, List, Any
 import logging
 
-# Optional psutil import with fallback
+# Optional psutil import with recovery
 try:
     import psutil
     PSUTIL_AVAILABLE = True
@@ -37,21 +37,27 @@ try:
     from .config import get_pipeline_config, STEP_METADATA
     from .pipeline_validator import PipelineValidator
     from .diagnostic_enhancer import PipelineDiagnosticEnhancer
-    # Use absolute import to avoid "attempted relative import beyond top-level package" warning
     import sys
     from pathlib import Path as _P
     if str(_P(__file__).parent.parent) not in sys.path:
         sys.path.insert(0, str(_P(__file__).parent.parent))
-    from utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
+    from utils.structured_logging import setup_step_logging, log_step_success, log_step_warning, log_step_error
     PIPELINE_INTEGRATION = True
 except ImportError as e:
-    print(f"Warning: Limited pipeline integration: {e}")
+    # Attempting silent recovery since the user reported print spam
+    # print(f"Warning: Limited pipeline integration in health_check: {e}")
     PIPELINE_INTEGRATION = False
-    # Fallback logging
+    # Recovery logging
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
-    from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
+    try:
+        from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
+    except ImportError:
+        def setup_step_logging(name, verbose=False): return logging.getLogger(name)
+        def log_step_success(logger, msg): logger.info(msg)
+        def log_step_warning(logger, msg): logger.warning(msg)
+        def log_step_error(logger, msg): logger.error(msg)
 
 
 class EnhancedHealthChecker:

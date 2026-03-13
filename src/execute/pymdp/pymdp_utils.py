@@ -390,7 +390,7 @@ def parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
         if rows:
             return np.array(rows)
         else:
-            # Fallback parsing
+            # Recovery parsing
             return np.array(ast.literal_eval(matrix_str))
 
     except Exception as e:

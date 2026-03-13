@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 38.379065,
-  "timestamp": "2026-03-06T15:08:01.155368",
+  "execution_time": 19.389572,
+  "timestamp": "2026-03-13T14:20:10.719654",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1435,
     "stderr_length": 220,
-    "output_directory": "output/12_execute_output/markov_chain/rxinfer"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/markov_chain/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/rxinfer/simulation_data/rxinfer_simulation_results.json"
     ],
     "traces": [],
     "other": []

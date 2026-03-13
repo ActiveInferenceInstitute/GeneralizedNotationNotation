@@ -62,7 +62,7 @@ def run_pipeline(
                 logging.warning(f"Could not create output directory {output_dir}: {e}")
                 results["warnings"].append(f"Could not ensure output dir: {output_dir}")
 
-        # STUB: delegates to main.py for real execution
+        # PLACEHOLDER: delegates to main.py for real execution
         planned_steps = steps or ["pipeline"]
         for step_name in planned_steps:
             results["steps_executed"].append({

@@ -18,7 +18,7 @@ import logging
 try:
     from analysis.pymdp.visualizer import PyMDPVisualizer, save_all_visualizations
 except ImportError:
-    # Fallback for relative imports
+    # Recovery for relative imports
     try:
         from .visualizer import PyMDPVisualizer, save_all_visualizations
     except ImportError:
@@ -79,7 +79,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
 
                 logger.info(f"Processing PyMDP results for {model_name}")
 
-                # Extract trace data - check both new structured format and legacy flat format
+                # Extract trace data - check both new structured format and previous flat format
                 trace = data.get('simulation_trace', {})
                 beliefs = trace.get('beliefs') or data.get('beliefs', [])
                 true_states = trace.get('true_states') or data.get('true_states', [])
@@ -208,7 +208,7 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                         logger.warning(f"Failed to generate obs vs true state plot: {e}")
 
                 else:
-                    # Fallback: use PyMDPVisualizer directly for individual plots
+                    # Recovery: use PyMDPVisualizer directly for individual plots
                     if PyMDPVisualizer:
                         viz = PyMDPVisualizer(output_dir=model_viz_dir, show_plots=False)
 
@@ -267,8 +267,8 @@ def generate_analysis_from_logs(execution_results_dir: Path, output_dir: Path, v
                     import traceback
                     logger.debug(traceback.format_exc())
     else:
-        # FALLBACK: Search for legacy trace files
-        logger.info("No simulation_results.json found, searching for legacy trace files...")
+        # RECOVERY: Search for previous trace files
+        logger.info("No simulation_results.json found, searching for previous trace files...")
         pymdp_dirs = list(execution_results_dir.glob("*/pymdp"))
 
         if not pymdp_dirs:

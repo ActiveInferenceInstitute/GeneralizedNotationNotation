@@ -20,7 +20,7 @@ python src/3_gnn.py --target-dir input/gnn_files --output-dir output --verbose
 | Module function | `process_gnn_multi_format()` |
 | POMDP extractor | `src/gnn/pomdp_extractor.py` |
 
-This is the **cleanest thin orchestrator** in the pipeline — only 31 lines with a direct import (no try/except fallback).
+This is the **cleanest thin orchestrator** in the pipeline — only 31 lines with a direct import (no try/except alternative).
 
 ## Key Capabilities
 

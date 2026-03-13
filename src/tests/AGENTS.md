@@ -117,7 +117,7 @@ success = run_tests(
 - Runs only essential test files: `test_core_modules.py`, `test_fast_suite.py`, `test_main_orchestrator.py`
 - 90-second timeout for reliability
 - Improved error handling and reporting
-- Used as fallback when fast pipeline tests are not suitable
+- Used as recovery when fast pipeline tests are not suitable
 
 #### `_extract_collection_errors(stdout, stderr) -> List[str]`
 **Description**: Extract and parse collection errors from pytest output. Detects import errors, syntax errors, and other collection failures.
@@ -345,7 +345,7 @@ flowchart TD
     A["2_tests.py<br/>(Thin Orchestrator)"] -->|"Calls run_tests()"| B["runner.run_tests()"]
     B -->|"fast_only=True"| C["run_fast_pipeline_tests()"]
     B -->|"comprehensive=True"| D["run_comprehensive_tests()"]
-    B -->|"fallback"| E["run_fast_reliable_tests()"]
+    B -->|"recovery"| E["run_fast_reliable_tests()"]
     
     C --> F["ModularTestRunner"]
     D --> F
@@ -373,7 +373,7 @@ flowchart TD
 - **runner.run_tests()**: Main entry point that routes to appropriate test execution mode
 - **run_fast_pipeline_tests()**: Default mode - fast tests for quick pipeline validation
 - **run_comprehensive_tests()**: Comprehensive mode - all tests with full coverage
-- **run_fast_reliable_tests()**: Fallback mode - essential tests only
+- **run_fast_reliable_tests()**: Recovery mode - essential tests only
 - **ModularTestRunner**: Category-based test execution with resource monitoring
 - **pytest**: Test framework for actual test discovery and execution
 
@@ -474,7 +474,7 @@ def test_new_module_complex():
 ### Test Execution Modes
 1. **Fast Tests** (`--fast-only`): 1-3 minutes, essential validation
 2. **Comprehensive Tests** (`--comprehensive`): 5-15 minutes, all tests including slow/performance
-3. **Reliable Tests** (fallback): Essential tests only, 90-second timeout
+3. **Reliable Tests** (recovery): Essential tests only, 90-second timeout
 
 ### Key Test Scenarios
 1. **Module Import Validation**: All modules can be imported and have expected structure
@@ -486,9 +486,9 @@ def test_new_module_complex():
 7. **Test Suite Execution**: Test runner functionality and management
 
 ### Test Quality Standards
-- **No Mock Usage**: All tests use real implementations per testing policy
+- **No Simulated Usage**: All tests use real implementations per testing policy
 - **Real Data**: All tests use real, representative data (no synthetic/placeholder data)
-- **Real Dependencies**: Tests use real dependencies (skip if unavailable, never mock)
+- **Real Dependencies**: Tests use real dependencies (skip if unavailable, never simulated)
 - **File-Based Assertions**: Tests assert on real file outputs and artifacts
 - **Error Recovery**: Tests validate error handling with real failure modes
 - **Performance Monitoring**: Built-in timing and resource usage tracking

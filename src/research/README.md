@@ -354,7 +354,7 @@ try:
     results = process_research(target_dir, output_dir)
 except ResearchError as e:
     logger.error(f"Research processing failed: {e}")
-    # Provide fallback research or error reporting
+    # Provide recovery research or error reporting
 ```
 
 ### Analysis Failures
@@ -364,7 +364,7 @@ try:
     analysis = conduct_research_analysis(data)
 except AnalysisError as e:
     logger.warning(f"Research analysis failed: {e}")
-    # Provide fallback analysis or error reporting
+    # Provide recovery analysis or error reporting
 ```
 
 ### Experimental Failures
@@ -374,7 +374,7 @@ try:
     experiment_results = execute_experiment(experiment_design)
 except ExperimentError as e:
     logger.error(f"Experiment failed: {e}")
-    # Provide fallback experiment or error reporting
+    # Provide recovery experiment or error reporting
 ```
 
 ## Performance Optimization

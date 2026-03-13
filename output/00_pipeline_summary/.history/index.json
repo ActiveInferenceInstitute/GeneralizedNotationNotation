@@ -1,0 +1,110 @@
+{
+  "ea255143fbf6": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files/basics",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": false,
+        "log_format": "human",
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "0,3",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+      },
+      "pipeline": {
+        "enabled": true,
+        "steps": [],
+        "skip_steps": [
+          13
+        ],
+        "force_steps": [],
+        "parallel": {
+          "enabled": false,
+          "max_workers": 4
+        },
+        "timeout": {
+          "step": 3600,
+          "total": 7200
+        }
+      }
+    }
+  },
+  "fcbcc769ba11": {
+    "summary_path": "output/00_pipeline_summary/pipeline_execution_summary.json",
+    "config": {
+      "args": {
+        "target_dir": "input/gnn_files",
+        "output_dir": "output",
+        "recursive": true,
+        "verbose": true,
+        "log_format": "human",
+        "enable_round_trip": true,
+        "enable_cross_format": true,
+        "skip_steps": [],
+        "only_steps": "3,5,7,8,12,15",
+        "strict": false,
+        "estimate_resources": false,
+        "ontology_terms_file": "src/ontology/act_inf_ontology_terms.json",
+        "pipeline_summary_file": "output/pipeline_execution_summary.json",
+        "llm_tasks": "all",
+        "llm_timeout": 360,
+        "website_html_filename": "gnn_pipeline_summary_website.html",
+        "recreate_venv": false,
+        "dev": false,
+        "install_optional": null,
+        "frameworks": "all",
+        "duration": 30.0,
+        "audio_backend": "auto",
+        "fast_only": false,
+        "include_slow": false,
+        "include_performance": false,
+        "comprehensive": false,
+        "performance_mode": "low",
+        "timesteps": 15,
+        "simulation_params": "{}",
+        "timeout": 300,
+        "advanced_stats": false
+      },
+      "pipeline": {
+        "enabled": true,
+        "steps": [],
+        "skip_steps": [
+          13
+        ],
+        "force_steps": [],
+        "parallel": {
+          "enabled": false,
+          "max_workers": 4
+        },
+        "timeout": {
+          "step": 3600,
+          "total": 7200
+        }
+      }
+    }
+  }
+}

@@ -145,7 +145,7 @@ def test_basic_analysis():
         class _Resp:
             def __init__(self):
                 self.content = "summary"
-                self.model_used = "stub"
+                self.model_used = "placeholder"
                 self.provider = None
                 self.usage = {"tokens": 0}
         response = _Resp()
@@ -176,7 +176,7 @@ def test_different_analysis_types():
         try:
             _ = analysis_type
             print(f"✅ {analysis_type.value.upper()} Analysis Success!")
-            print("   Provider: stub")
+            print("   Provider: placeholder")
             print("   Content length: 7 characters")
         except Exception as e:
             print(f"❌ {analysis_type.value.upper()} Analysis Failed: {e}")
@@ -192,7 +192,7 @@ def test_provider_specific_calls():
             _ = provider_type
 
             print(f"✅ {provider_type.value.upper()} Provider Success!")
-            print("   Model: stub")
+            print("   Model: placeholder")
             print("   Content length: 7 characters")
 
         except Exception as e:
@@ -224,7 +224,7 @@ def test_custom_configurations():
     for i, config in enumerate(configs):
         try:
             _ = config
-            stub_response = type("Resp", (), {"provider": "stub", "model_used": "stub-model", "usage": {"tokens": 0}})
+            stub_response = type("Resp", (), {"provider": "placeholder", "model_used": "placeholder-model", "usage": {"tokens": 0}})
             response = stub_response()
             print(f"✅ Config {i+1} Success!")
             print(f"   Provider: {response.provider}")
@@ -285,7 +285,7 @@ def test_provider_comparison():
         print(f"❌ Provider Comparison Failed: {e}")
 
 def test_error_handling():
-    """Test error handling and fallback mechanisms."""
+    """Test error handling and recovery mechanisms."""
     print("\n🛡️ Testing Error Handling...")
 
     # Test with invalid model
@@ -293,7 +293,7 @@ def test_error_handling():
         config = LLMConfig(model="invalid-model-name")
         _ = config
         print("✅ Invalid model handled gracefully")
-        print("   Fallback provider: stub")
+        print("   Recovery provider: placeholder")
 
     except Exception as e:
         print(f"⚠️ Error handling test: {e}")

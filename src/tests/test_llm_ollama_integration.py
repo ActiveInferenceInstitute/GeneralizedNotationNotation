@@ -3,7 +3,7 @@
 Comprehensive Ollama integration tests for LLM module.
 
 These tests validate Ollama detection, model selection, and real LLM processing
-with proper fallback handling when Ollama is not available.
+with proper recovery handling when Ollama is not available.
 """
 
 import pytest
@@ -268,14 +268,14 @@ Minimize free energy while maintaining preferred states.
         # Check for results file - processor saves directly to output_dir
         results_file = llm_output_dir / "llm_results.json"
 
-        # Test should pass if file exists OR if graceful fallback occurred
+        # Test should pass if file exists OR if graceful recovery occurred
         if results_file.exists():
             with open(results_file) as f:
                 results = json.load(f)
 
             # Verify results structure
             assert "timestamp" in results
-            # ollama_available key may not exist if using fallback
+            # ollama_available key may not exist if using recovery
             assert "processed_files" in results or "analysis_results" in results
             assert "provider_matrix" in results or "errors" in results or "analysis_results" in results
         else:
@@ -290,7 +290,7 @@ Minimize free energy while maintaining preferred states.
 
     @pytest.mark.slow
     def test_llm_processing_without_ollama(self, test_gnn_dir, test_output_dir, caplog, monkeypatch):
-        """Test LLM processing fallback when Ollama is not available (slow test)."""
+        """Test LLM processing recovery when Ollama is not available (slow test)."""
         import logging
         caplog.set_level(logging.INFO)
 
@@ -308,16 +308,16 @@ Minimize free energy while maintaining preferred states.
             verbose=True
         )
 
-        # Should complete with fallback
+        # Should complete with recovery
         assert isinstance(result, bool)
 
-        # Check that fallback mode was used or results were generated
+        # Check that recovery mode was used or results were generated
         results_file = llm_output_dir / "llm_results" / "llm_results.json"
         if results_file.exists():
             with open(results_file) as f:
                 results = json.load(f)
 
-            # Should use fallback provider (openai, ollama fallback, or mock)
+            # Should use recovery provider (openai, ollama recovery, or simulated)
             # Don't assert specific provider since it depends on available APIs
             assert "llm_provider" in results or "errors" in results or "analysis_results" in results
 
@@ -331,9 +331,9 @@ Minimize free energy while maintaining preferred states.
             assert "llm" in log_text.lower() or result == True, \
                 "Should either create results or complete with indication of attempt"
 
-        # Check logging mentions fallback
+        # Check logging mentions recovery
         log_text = caplog.text.lower()
-        assert "fallback" in log_text or "not found" in log_text or "not available" in log_text
+        assert "recovery" in log_text or "not found" in log_text or "not available" in log_text
 
     @pytest.mark.slow
     @pytest.mark.timeout(180)  # 3 minute timeout for LLM processing
@@ -375,7 +375,7 @@ Minimize free energy while maintaining preferred states.
                     # Check logging mentions the model
                     log_text = caplog.text
                     assert "model" in log_text.lower() or "🤖" in log_text
-            # else: fallback mode, model selection not required
+            # else: recovery mode, model selection not required
 
     @pytest.mark.slow
     @pytest.mark.timeout(120)  # 2 minute timeout

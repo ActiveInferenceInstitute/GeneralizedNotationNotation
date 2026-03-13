@@ -1,0 +1,780 @@
+DEBUG:2026-03-13 14:15:49,746:jax._src.path:41: etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:15:49,746 - jax._src.path - DEBUG - etils.epath found. Using etils.epath for file I/O.
+2026-03-13 14:15:50,135 - render.processor - INFO - 🚀 Starting POMDP-aware render processing
+2026-03-13 14:15:50,136 - render.processor - INFO - Processing GNN files in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7
+2026-03-13 14:15:50,136 - render.processor - INFO - Output directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/render_output
+2026-03-13 14:15:50,139 - render.processor - INFO - Found 1 GNN files to process
+2026-03-13 14:15:50,139 - render.processor - INFO - Target frameworks: all available
+2026-03-13 14:15:50,139 - render.processor - INFO - 📁 Processing: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/test_agent.md
+2026-03-13 14:15:50,143 - gnn.pomdp_extractor - INFO - No C vector found — generating uniform preferences (3 observations)
+2026-03-13 14:15:50,144 - gnn.pomdp_extractor - INFO - No D vector found — generating uniform prior (3 states)
+2026-03-13 14:15:50,144 - render.processor - INFO - ✅ Extracted POMDP 'test_agent' with 3 states, 3 observations, 3 actions
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing POMDP 'test_agent' for frameworks: ['pymdp', 'rxinfer', 'activeinference_jl', 'jax', 'discopy', 'pytorch', 'numpyro']
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing framework: pymdp
+2026-03-13 14:15:50,144 - render.pomdp_processor - ERROR - ❌ pymdp: POMDP not compatible with pymdp: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing framework: rxinfer
+2026-03-13 14:15:50,144 - render.pomdp_processor - ERROR - ❌ rxinfer: POMDP not compatible with rxinfer: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing framework: activeinference_jl
+2026-03-13 14:15:50,144 - render.pomdp_processor - ERROR - ❌ activeinference_jl: POMDP not compatible with activeinference_jl: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing framework: jax
+2026-03-13 14:15:50,144 - render.pomdp_processor - ERROR - ❌ jax: POMDP not compatible with jax: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,144 - render.pomdp_processor - INFO - Processing framework: discopy
+2026-03-13 14:15:50,145 - render.pomdp_processor - INFO - Created documentation: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/render_output/test_agent/discopy/README.md
+2026-03-13 14:15:50,145 - render.pomdp_processor - INFO - ✅ discopy: Generated DisCoPy categorical diagram script: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/render_output/test_agent/discopy/test_agent_discopy.py
+2026-03-13 14:15:50,145 - render.pomdp_processor - INFO - Processing framework: pytorch
+2026-03-13 14:15:50,145 - render.pomdp_processor - ERROR - ❌ pytorch: POMDP not compatible with pytorch: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,145 - render.pomdp_processor - INFO - Processing framework: numpyro
+2026-03-13 14:15:50,145 - render.pomdp_processor - ERROR - ❌ numpyro: POMDP not compatible with numpyro: Missing required matrices: ['A', 'B']
+2026-03-13 14:15:50,146 - render.processor - INFO - ✅ Successfully processed test_agent.md
+2026-03-13 14:15:50,147 - render.processor - INFO - Created overview documentation: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/render_output/README.md
+2026-03-13 14:15:50,147 - render.processor - INFO - 🎉 Render processing completed!
+2026-03-13 14:15:50,147 - render.processor - INFO - 📊 Files: 1/1 successful
+2026-03-13 14:15:50,147 - render.processor - INFO - 🧠 Framework renderings: 1/7 successful (14.3%)
+2026-03-13 14:15:50,147 - render.processor - INFO - 📄 Summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1jakujm7/render_output/render_processing_summary.json
+2026-03-13 14:15:50,154 - render.jax.jax_renderer - INFO - Extracting matrices from raw text format
+2026-03-13 14:15:50,154 - render.jax.jax_renderer - WARNING - No InitialParameterization found in GNN spec
+2026-03-13 14:15:50,154 - render.jax.jax_renderer - INFO - JAX model code written to /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo1i7fprt/render_jax/model_jax.py
+2026-03-13 14:15:50,164 - render.rxinfer.toml_generator - INFO - Generating RxInfer Julia script at /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_to_rxinfer_toml0.jl
+2026-03-13 14:15:50,165 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ): could not convert string to float: '(1.0'
+2026-03-13 14:15:50,165 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix , ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ): could not convert string to float: ''
+2026-03-13 14:15:50,165 - render.rxinfer.toml_generator - WARNING - Failed to parse matrix , ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) ): could not convert string to float: ''
+2026-03-13 14:15:50,165 - render.rxinfer.toml_generator - INFO - Successfully wrote RxInfer Julia script to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_to_rxinfer_toml0.jl
+2026-03-13 14:15:50,169 - render.jax.jax_renderer - INFO - Extracting matrices from raw text format
+2026-03-13 14:15:50,170 - render.jax.jax_renderer - WARNING - No InitialParameterization found in GNN spec
+2026-03-13 14:15:50,170 - render.jax.jax_renderer - INFO - JAX model code written to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_to_jax0/model_jax.py
+2026-03-13 14:15:50,172 - render.jax.jax_renderer - INFO - Extracting matrices from raw text format
+2026-03-13 14:15:50,172 - render.jax.jax_renderer - WARNING - No InitialParameterization found in GNN spec
+2026-03-13 14:15:50,172 - render.jax.jax_renderer - INFO - JAX model code written to /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_to_jax_pomdp0/model_jax.py
+2026-03-13 14:15:50,174 - render.processor - INFO - 🚀 Starting POMDP-aware render processing
+2026-03-13 14:15:50,174 - render.processor - INFO - Processing GNN files in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0j_pyr1y
+2026-03-13 14:15:50,174 - render.processor - INFO - Output directory: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_single_file_render_speed0/render_output
+2026-03-13 14:15:50,175 - render.processor - WARNING - No GNN files found in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp0j_pyr1y
+2026-03-13 14:15:50,178 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,178 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,178 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,178 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,178 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,178 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,178 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,179 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,179 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_0.py
+2026-03-13 14:15:50,179 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,179 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,179 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,179 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,179 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,179 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_1.py
+2026-03-13 14:15:50,180 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,180 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,180 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,180 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,180 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,181 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,181 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_2.py
+2026-03-13 14:15:50,181 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,181 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,181 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,181 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,181 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_3.py
+2026-03-13 14:15:50,182 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,182 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,182 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,182 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,182 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,183 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,183 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,183 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_4.py
+2026-03-13 14:15:50,183 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,183 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,183 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,183 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,183 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,184 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,184 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,184 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,184 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_5.py
+2026-03-13 14:15:50,184 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,184 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,184 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,185 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,185 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,185 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,185 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,185 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,185 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_6.py
+2026-03-13 14:15:50,185 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,185 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,185 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,186 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,186 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,186 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,186 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,186 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,186 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_7.py
+2026-03-13 14:15:50,186 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,186 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,186 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,186 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,187 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,187 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,187 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,187 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,187 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_8.py
+2026-03-13 14:15:50,187 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,187 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,187 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,187 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,188 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,188 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,188 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,188 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,188 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_pymdp_generation_speed0/test_pymdp_9.py
+2026-03-13 14:15:50,193 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,193 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,193 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,194 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,194 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,194 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,194 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,194 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,195 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_multi_framework_generatio0/test_output.py
+2026-03-13 14:15:50,203 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,203 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,203 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,203 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,204 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,204 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,204 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,204 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,206 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_0.py
+2026-03-13 14:15:50,206 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,206 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,206 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,206 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,207 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,207 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,207 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,207 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,209 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_1.py
+2026-03-13 14:15:50,209 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,209 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,209 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,210 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,210 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,210 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,210 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,210 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,212 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_2.py
+2026-03-13 14:15:50,212 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,212 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,213 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,213 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,213 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,213 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,213 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,214 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,215 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_3.py
+2026-03-13 14:15:50,216 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,216 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,216 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,216 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,216 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,217 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,217 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,217 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,218 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_4.py
+2026-03-13 14:15:50,219 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,219 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,219 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,219 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,219 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,219 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,219 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,219 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,220 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_5.py
+2026-03-13 14:15:50,221 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,221 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,221 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,221 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,221 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,221 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,221 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,221 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,222 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_6.py
+2026-03-13 14:15:50,222 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,222 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,222 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,222 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,223 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,223 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,223 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,223 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,224 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_7.py
+2026-03-13 14:15:50,225 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,225 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,225 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,225 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,225 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,225 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,225 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,225 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,226 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_8.py
+2026-03-13 14:15:50,227 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,227 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,227 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,227 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,228 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,228 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,228 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,228 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,229 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_9.py
+2026-03-13 14:15:50,229 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,229 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,229 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,230 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,230 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,230 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,230 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,230 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,230 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_10.py
+2026-03-13 14:15:50,231 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,231 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,231 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,231 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,231 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,231 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,231 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,231 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,232 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_11.py
+2026-03-13 14:15:50,233 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,233 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,233 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,233 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,233 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,233 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,233 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,233 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,234 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_12.py
+2026-03-13 14:15:50,234 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,234 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,234 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,235 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,235 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,235 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,235 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,235 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,236 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_13.py
+2026-03-13 14:15:50,236 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,236 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,236 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,236 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,236 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,236 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,236 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,236 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,237 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_14.py
+2026-03-13 14:15:50,237 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,237 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,237 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,237 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,238 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,238 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,238 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,238 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,239 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_15.py
+2026-03-13 14:15:50,239 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,239 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,239 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,239 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,239 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,239 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,239 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,239 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,240 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_16.py
+2026-03-13 14:15:50,240 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,240 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,240 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,240 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,240 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,240 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,240 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,240 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,241 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_17.py
+2026-03-13 14:15:50,241 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,241 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,241 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,241 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,241 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,241 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,241 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,241 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,242 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_18.py
+2026-03-13 14:15:50,242 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,242 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,242 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,242 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,242 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,242 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,242 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,242 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,243 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_code_generation_benchmark0/bench_19.py
+2026-03-13 14:15:50,245 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,245 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,245 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,245 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,245 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,245 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,245 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,245 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,246 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_0.py
+2026-03-13 14:15:50,246 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,246 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,246 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,246 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,246 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,246 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,246 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,246 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,247 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_1.py
+2026-03-13 14:15:50,247 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,247 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,247 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,247 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,247 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,247 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,247 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,247 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,248 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_2.py
+2026-03-13 14:15:50,248 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,248 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,248 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,248 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,248 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,248 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,248 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,248 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,249 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_3.py
+2026-03-13 14:15:50,249 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,249 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,249 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,249 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,249 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,249 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,249 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,249 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,250 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_4.py
+2026-03-13 14:15:50,250 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,250 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,250 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,250 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,250 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,250 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,250 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,250 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,251 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_5.py
+2026-03-13 14:15:50,251 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,251 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,251 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,251 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,251 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,251 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,251 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,252 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,252 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_6.py
+2026-03-13 14:15:50,252 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,252 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,252 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,252 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,252 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,252 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,253 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,253 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,253 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_7.py
+2026-03-13 14:15:50,253 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,253 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,253 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,253 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,253 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,254 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,254 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,254 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,255 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_8.py
+2026-03-13 14:15:50,255 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,255 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,255 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,255 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,255 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,255 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,255 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,255 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,256 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_9.py
+2026-03-13 14:15:50,256 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,256 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,256 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,256 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,256 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,257 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,257 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,257 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,257 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_10.py
+2026-03-13 14:15:50,257 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,257 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,257 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,258 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,258 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,258 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,258 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,258 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,258 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_11.py
+2026-03-13 14:15:50,258 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,259 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,259 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,259 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,259 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,259 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,259 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,259 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,259 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_12.py
+2026-03-13 14:15:50,260 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,260 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,260 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,260 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,260 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,260 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,260 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,260 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,261 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_13.py
+2026-03-13 14:15:50,261 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,261 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,261 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,261 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,261 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,261 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,261 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,261 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,262 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_14.py
+2026-03-13 14:15:50,262 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,262 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,262 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,262 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,262 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,262 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,262 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,262 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,263 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_15.py
+2026-03-13 14:15:50,263 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,263 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,263 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,263 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,263 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,263 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,263 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,263 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,264 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_16.py
+2026-03-13 14:15:50,264 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,264 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,264 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,264 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,264 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,264 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,264 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,264 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_17.py
+2026-03-13 14:15:50,265 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,265 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,265 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,265 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,265 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_18.py
+2026-03-13 14:15:50,266 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,266 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,266 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,266 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,266 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,266 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,266 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,266 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,266 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_19.py
+2026-03-13 14:15:50,267 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,267 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,267 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,267 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,267 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,267 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,267 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,267 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,267 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_20.py
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,268 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,268 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,268 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,268 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,268 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_21.py
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,268 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,269 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,269 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,269 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,269 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,269 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,269 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,269 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_22.py
+2026-03-13 14:15:50,269 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,269 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,270 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,270 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,270 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,270 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,270 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,270 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,270 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_23.py
+2026-03-13 14:15:50,270 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,270 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,270 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,271 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,271 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,271 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,271 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,271 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,271 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_24.py
+2026-03-13 14:15:50,271 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,271 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,271 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,272 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,272 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,272 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,272 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,272 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,272 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_25.py
+2026-03-13 14:15:50,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,273 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,273 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,273 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,273 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,273 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,273 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,273 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,274 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_26.py
+2026-03-13 14:15:50,274 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,274 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,274 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,274 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,274 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,274 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,274 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,274 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,275 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_27.py
+2026-03-13 14:15:50,275 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,275 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,275 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,275 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,275 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,275 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,275 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,276 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,276 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_28.py
+2026-03-13 14:15:50,276 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,276 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,276 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,277 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,277 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,277 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,277 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,277 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,277 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_29.py
+2026-03-13 14:15:50,278 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,278 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,278 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,278 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,278 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,278 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,278 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,278 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,279 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_30.py
+2026-03-13 14:15:50,279 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,279 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,279 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,279 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,279 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,279 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,279 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,279 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,280 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_31.py
+2026-03-13 14:15:50,280 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,280 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,280 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,280 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,280 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,280 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,280 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,280 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,281 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_32.py
+2026-03-13 14:15:50,281 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,281 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,281 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,281 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,281 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,281 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,281 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,281 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,282 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_33.py
+2026-03-13 14:15:50,282 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,282 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,282 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,282 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,282 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,282 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,282 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,282 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,283 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_34.py
+2026-03-13 14:15:50,283 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,283 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,283 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,283 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,283 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,283 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,283 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,283 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,284 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_35.py
+2026-03-13 14:15:50,284 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,284 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,284 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,284 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,284 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,284 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,284 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,284 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,285 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_36.py
+2026-03-13 14:15:50,285 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,285 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,285 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,285 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,285 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,285 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,285 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,285 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,286 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_37.py
+2026-03-13 14:15:50,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,286 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,286 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,286 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,286 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,286 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,286 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,286 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,287 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_38.py
+2026-03-13 14:15:50,287 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,287 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,287 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,287 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,287 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,287 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,287 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,287 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,288 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_39.py
+2026-03-13 14:15:50,288 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,288 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,288 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,288 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,288 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,288 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,288 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,288 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,289 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_40.py
+2026-03-13 14:15:50,289 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,289 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,289 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,289 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,289 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,289 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,289 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,289 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,290 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_41.py
+2026-03-13 14:15:50,290 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,290 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,290 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,290 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,290 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,290 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,290 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,290 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,291 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_42.py
+2026-03-13 14:15:50,291 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,291 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,291 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,291 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,291 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,291 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,291 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,291 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,292 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_43.py
+2026-03-13 14:15:50,292 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,292 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,292 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,292 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,292 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,292 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,292 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,292 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,293 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_44.py
+2026-03-13 14:15:50,293 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,293 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,293 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,293 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,293 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,293 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,293 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,293 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,294 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_45.py
+2026-03-13 14:15:50,294 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,294 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,294 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,294 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,294 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,294 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,294 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,294 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,295 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_46.py
+2026-03-13 14:15:50,295 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,295 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,295 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,295 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,295 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,295 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,295 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,295 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,296 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_47.py
+2026-03-13 14:15:50,296 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,296 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,296 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,296 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,296 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,296 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,296 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,296 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,297 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_48.py
+2026-03-13 14:15:50,297 - gnn.parsers.markdown_parser - DEBUG - Parsed variable 's' with dimensions [3, 1], type=int
+2026-03-13 14:15:50,297 - gnn.parsers.markdown_parser - DEBUG - Parsed variable: s with dimensions [3, 1]
+2026-03-13 14:15:50,297 - gnn.parsers.markdown_parser - DEBUG - Parsed connection: ['s'] -> ['o']
+2026-03-13 14:15:50,297 - gnn.parsers.markdown_parser - WARNING - Connection references unknown target variables: ['o']
+2026-03-13 14:15:50,297 - render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-13 14:15:50,297 - render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-13 14:15:50,297 - render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-13 14:15:50,297 - render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-13 14:15:50,298 - render.pymdp.pymdp_renderer - INFO - Generated PyMDP simulation: /private/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/pytest-of-4d/pytest-190/test_render_no_memory_leak0/mem_test_49.py

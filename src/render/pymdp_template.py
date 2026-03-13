@@ -203,7 +203,7 @@ class POMDPAgent:
             if posterior_sum > 1e-12:
                 posterior = posterior / posterior_sum
             else:
-                posterior = np.ones(self.num_states) / self.num_states  # Uniform fallback
+                posterior = np.ones(self.num_states) / self.num_states  # Uniform recovery
             
             current_belief = posterior
             
@@ -332,7 +332,7 @@ def create_comprehensive_visualizations(results, output_dir):
         log_success("Visualizations", f"Generated {{len(viz_files)}} comprehensive visualization files")
         
     else:
-        # Fallback to basic visualizations
+        # Recovery to basic visualizations
         log_success("Visualization", "Using Basic Visualization (Suite not available)")
         
         viz_dir = Path(output_dir) / "visualizations"
@@ -423,7 +423,7 @@ def export_comprehensive_data(results, output_dir):
         log_success("Data Export", f"Exported {{len(exported_files)}} data files in multiple formats")
         
     else:
-        # Fallback to basic JSON export
+        # Recovery to basic JSON export
         log_success("Data Export", "Using Basic JSON Export")
         
         data_dir = Path(output_dir) / "data_exports" 
@@ -460,10 +460,10 @@ def main():
         print("=" * 70)
         
         # Create enhanced agent
-        agent = EnhancedPOMDPAgent()
+        agent = POMDPAgent()
         
         # Run comprehensive simulation
-        results = agent.run_enhanced_simulation(num_steps={num_timesteps})
+        results = agent.run_simulation(num_steps={num_timesteps})
         
         # Set up output directory
         output_dir = Path(".")

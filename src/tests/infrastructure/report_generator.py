@@ -49,7 +49,7 @@ def generate_markdown_report(report_path: Path, summary: Dict[str, Any]):
 
 
 def generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
-    """Generate fallback report when main report generation fails."""
+    """Generate recovery report when main report generation fails."""
     try:
         fallback_file = output_dir / "test_report_fallback.txt"
         with open(fallback_file, 'w') as f:
@@ -61,10 +61,10 @@ def generate_fallback_report(output_dir: Path, summary: Dict[str, Any]):
             f.write(f"Skipped: {summary.get('total_tests_skipped', 0)}\n")
             f.write(f"Execution Time: {summary.get('total_execution_time', 0):.2f}s\n")
 
-        logging.info(f"✅ Fallback report generated: {fallback_file}")
+        logging.info(f"✅ Recovery report generated: {fallback_file}")
 
     except Exception as e:
-        logging.warning(f"Failed to generate fallback report: {e}")
+        logging.warning(f"Failed to generate recovery report: {e}")
 
 
 def generate_timeout_report(output_dir: Path, cmd: List[str], timeout: int):

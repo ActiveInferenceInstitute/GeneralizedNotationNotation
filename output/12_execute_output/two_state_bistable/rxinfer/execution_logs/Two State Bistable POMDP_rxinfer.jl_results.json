@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/two_state_bistable/rxinfer/Two State Bistable POMDP_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 21.555522,
-  "timestamp": "2026-03-06T15:02:48.856281",
+  "execution_time": 17.735849,
+  "timestamp": "2026-03-13T14:16:22.732292",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1490,
     "stderr_length": 220,
-    "output_directory": "output/12_execute_output/two_state_bistable/rxinfer"
+    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "output/12_execute_output/two_state_bistable/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/two_state_bistable/rxinfer/simulation_data/rxinfer_simulation_results.json"
     ],
     "traces": [],
     "other": []

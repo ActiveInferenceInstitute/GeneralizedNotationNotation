@@ -57,12 +57,12 @@ class AdvancedVisualizer:
         generated: List[str] = []
 
         if not VIS_PROCESSOR_AVAILABLE:
-            # Generate fallback visualizations
+            # Generate recovery visualizations
             try:
                 fallback_files = self._generate_fallback_visualizations(content, model_name, model_output_dir)
                 generated.extend(fallback_files)
             except Exception as e:
-                self.logger.warning(f"Fallback visualizations failed for {model_name}: {e}")
+                self.logger.warning(f"Recovery visualizations failed for {model_name}: {e}")
             return generated
 
         # Extract data using local data extractor
@@ -70,12 +70,12 @@ class AdvancedVisualizer:
         extracted_data = extractor.extract_from_content(content)
 
         if not extracted_data.get("success", False):
-            self.logger.warning(f"Data extraction failed for {model_name}, using fallback")
+            self.logger.warning(f"Data extraction failed for {model_name}, using recovery")
             try:
                 fallback_files = self._generate_fallback_visualizations(content, model_name, model_output_dir)
                 generated.extend(fallback_files)
             except Exception as e:
-                self.logger.warning(f"Fallback visualizations failed for {model_name}: {e}")
+                self.logger.warning(f"Recovery visualizations failed for {model_name}: {e}")
             return generated
 
         # Generate statistical visualizations
@@ -156,7 +156,7 @@ class AdvancedVisualizer:
             return None
 
     def _generate_fallback_visualizations(self, content: str, model_name: str, output_dir: Path) -> List[str]:
-        """Generate fallback visualizations when advanced libraries aren't available"""
+        """Generate recovery visualizations when advanced libraries aren't available"""
         generated = []
 
         try:
@@ -164,13 +164,13 @@ class AdvancedVisualizer:
             summary_file = output_dir / f"{model_name}_fallback_summary.html"
             html_content = f"""
 <!DOCTYPE html>
-<html><head><title>{model_name} - Fallback Visualization</title>
+<html><head><title>{model_name} - Recovery Visualization</title>
 <style>body {{ font-family: Arial, sans-serif; margin: 20px; }}
 .content {{ background: #f0f0f0; padding: 20px; border-radius: 10px; }}
 pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wrap; }}
 </style></head>
 <body>
-<h1>{model_name} - Fallback Visualization</h1>
+<h1>{model_name} - Recovery Visualization</h1>
 <div class="content">
 <h2>Model Content Summary</h2>
 <pre>{content[:1000]}{'...' if len(content) > 1000 else ''}</pre>
@@ -182,7 +182,7 @@ pre {{ background: white; padding: 15px; border-radius: 5px; white-space: pre-wr
             generated.append(str(summary_file))
 
         except Exception as e:
-            self.logger.error(f"Failed to generate fallback visualization: {e}")
+            self.logger.error(f"Failed to generate recovery visualization: {e}")
 
         return generated
 

@@ -182,12 +182,12 @@ class PipelineDependencyManager:
                 optional_missing.append(dep)
                 results["warnings"].append(f"Optional dependency missing: {dep}")
 
-                # Check if fallback is available
+                # Check if recovery is available
                 if dep in config.fallbacks:
-                    fallback = config.fallbacks[dep]
-                    results["fallbacks_available"][dep] = fallback
+                    recovery = config.fallbacks[dep]
+                    results["fallbacks_available"][dep] = recovery
                     results["recommendations"].append(
-                        f"Using {fallback} as fallback for {dep}"
+                        f"Using {recovery} as recovery for {dep}"
                     )
 
         # Run custom validators
@@ -232,11 +232,11 @@ class PipelineDependencyManager:
     @contextmanager
     def graceful_import(self, module_name: str, step_name: Optional[str] = None):
         """
-        Context manager for graceful imports with fallback handling.
+        Context manager for graceful imports with recovery handling.
         
         Args:
             module_name: Module to import
-            step_name: Pipeline step name for fallback lookup
+            step_name: Pipeline step name for recovery lookup
             
         Yields:
             Either the imported module or None if unavailable
@@ -247,12 +247,12 @@ class PipelineDependencyManager:
         except ImportError:
             self.logger.warning(f"{module_name} not available - graceful degradation enabled")
 
-            # Check for fallback
+            # Check for recovery
             if step_name and step_name in self.step_configs:
                 config = self.step_configs[step_name]
                 if module_name in config.fallbacks:
                     fallback_name = config.fallbacks[module_name]
-                    self.logger.info(f"Using fallback: {fallback_name}")
+                    self.logger.info(f"Using recovery: {fallback_name}")
 
             yield None
 

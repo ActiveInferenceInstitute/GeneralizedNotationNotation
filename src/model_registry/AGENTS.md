@@ -220,10 +220,10 @@ output/4_model_registry_output/
 
 ### Error Categories
 
-1. **File I/O Errors**: Cannot read/write registry file (fallback: use in-memory registry)
-2. **Validation Errors**: Invalid GNN file structure (fallback: skip file, continue)
-3. **Version Conflicts**: Model already registered with different version (fallback: auto-increment)
-4. **Registry Corruption**: Invalid JSON structure (fallback: restore from backup)
+1. **File I/O Errors**: Cannot read/write registry file (recovery: use in-memory registry)
+2. **Validation Errors**: Invalid GNN file structure (recovery: skip file, continue)
+3. **Version Conflicts**: Model already registered with different version (recovery: auto-increment)
+4. **Registry Corruption**: Invalid JSON structure (recovery: restore from backup)
 
 ### Error Recovery
 

@@ -206,9 +206,9 @@ output/8_visualization_output/
 4. **Dependency**: Missing visualization dependencies
 
 ### Recovery Strategies
-- **Layout Fallback**: Use simpler layout algorithms
+- **Layout Recovery**: Use simpler layout algorithms
 - **Matrix Sampling**: Sample large matrices
-- **Format Fallback**: Try alternative output formats
+- **Format Recovery**: Try alternative output formats
 - **Dependency Skip**: Skip advanced visualizations
 
 ---

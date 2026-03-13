@@ -213,7 +213,7 @@ class TestRunner:
                         tests_run = tests_passed + tests_failed + tests_skipped
                         break
 
-            # Fallback: look for collected items line
+            # Recovery: look for collected items line
             if tests_run == 0:
                 for line in lines:
                     if "collected" in line:

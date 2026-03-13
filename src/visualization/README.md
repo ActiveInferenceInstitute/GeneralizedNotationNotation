@@ -496,7 +496,7 @@ try:
     results = process_visualization(target_dir, output_dir)
 except VisualizationError as e:
     logger.error(f"Visualization failed: {e}")
-    # Provide fallback visualization or error reporting
+    # Provide recovery visualization or error reporting
 ```
 
 ### Graph Issues
@@ -506,7 +506,7 @@ try:
     graph_viz = visualize_gnn_graph(content, output_path)
 except GraphError as e:
     logger.warning(f"Graph visualization failed: {e}")
-    # Provide fallback graph visualization or error reporting
+    # Provide recovery graph visualization or error reporting
 ```
 
 ### Matrix Issues
@@ -516,7 +516,7 @@ try:
     matrix_viz = visualize_matrices(content, output_path)
 except MatrixError as e:
     logger.error(f"Matrix visualization failed: {e}")
-    # Provide fallback matrix visualization or error reporting
+    # Provide recovery matrix visualization or error reporting
 ```
 
 ## Performance Optimization

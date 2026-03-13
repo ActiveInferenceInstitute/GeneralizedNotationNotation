@@ -1,0 +1,61 @@
+{
+  "framework": "discopy",
+  "model_name": "two_state_bistable",
+  "script_name": "two_state_bistable_discopy.py",
+  "script_path": "output/11_render_output/two_state_bistable/discopy/two_state_bistable_discopy.py",
+  "success": true,
+  "return_code": 0,
+  "execution_time": 1.35203,
+  "timestamp": "2026-03-13T13:57:55.225848",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "\ud83d\ude80 ENHANCED DisCoPy Categorical Analysis\n======================================================================\n\u2705 Diagram Creation: Creating enhanced categorical diagrams\n\u2705 Diagram Creation: Created 6 categorical diagrams\n\u2705 Analysis: Running enhanced categorical analysis (12 steps)\n\ud83d\udcca Categorical Analysis Step 1: {'type': 'categorical_step_1', 'score': 0.941, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 2: {'type': 'categorical_step_2', 'score': 0.885, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 3: {'type': 'categorical_step_3', 'score': 0.906, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 4: {'type': 'categorical_step_4', 'score': 0.95, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 5: {'type': 'categorical_step_5', 'score': 0.979, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 6: {'type': 'categorical_step_6', 'score': 0.884, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 7: {'type': 'categorical_step_7', 'score': 1.0, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 8: {'type': 'categorical_step_8', 'score': 0.798, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 9: {'type': 'categorical_step_9', 'score': 0.849, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 10: {'type': 'categorical_step_10', 'score': 0.977, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 11: {'type': 'categorical_step_11', 'score': 1.0, 'valid': True}\n\ud83d\udcca Categorical Analysis Step 12: {'type': 'categorical_step_12', 'score': 0.901, 'valid': True}\n\u2705 Analysis Complete: 12 categorical analysis steps completed\n  \ud83d\udcca Average semantic score: 0.923 (\u00b10.060)\n  \ud83c\udfaf Analysis efficiency: 1118.36 steps/second\n  \u2705 Categorical validity: True\n\u2705 Visualization: Generating enhanced DisCoPy visualizations\n\u2705 Visualization: Generated 3 enhanced visualization files\n\u2705 Data Export: Exporting comprehensive categorical analysis data\n\u2705 Data Export: Exported 3 data files\n======================================================================\n\u2705 ENHANCED DisCoPy analysis completed successfully!\n\ud83d\udcca Performance: 0.923 avg semantic score\n\ud83c\udfa8 Visualizations: 3 files created\n\ud83d\udcbe Data exports: 3 files created\n======================================================================\n",
+    "raw_error": "",
+    "diagrams": [
+      "Creation",
+      "Creation"
+    ],
+    "components": [
+      "A_matrix",
+      "B_matrix",
+      "C_vector",
+      "D_vector",
+      "E_vector",
+      "state_inference",
+      "policy_inference",
+      "action_selection"
+    ],
+    "analysis": {
+      "num_components": 8,
+      "loop_domain": "O",
+      "loop_codomain": "A",
+      "model_domain": "O",
+      "model_codomain": "A"
+    },
+    "parameters": {
+      "num_states": 2,
+      "num_observations": 2,
+      "num_actions": 2
+    }
+  },
+  "execution_metadata": {
+    "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
+    "stdout_length": 2100,
+    "stderr_length": 0,
+    "output_directory": "output/12_execute_output/two_state_bistable/discopy"
+  },
+  "collected_outputs": {
+    "visualizations": [],
+    "simulation_data": [
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_analysis.json",
+      "output/12_execute_output/two_state_bistable/discopy/simulation_data/discopy_diagrams_circuit_info.json"
+    ],
+    "traces": [],
+    "other": []
+  }
+}

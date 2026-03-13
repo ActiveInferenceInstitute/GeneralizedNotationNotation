@@ -1,0 +1,26 @@
+{
+  "framework": "activeinference_jl",
+  "model_name": "multi_armed_bandit",
+  "script_name": "multi_armed_bandit_activeinference_jl.jl",
+  "script_path": "output/11_render_output/multi_armed_bandit/activeinference_jl/multi_armed_bandit_activeinference_jl.jl",
+  "success": false,
+  "return_code": -2,
+  "execution_time": 0.981767,
+  "timestamp": "2026-03-13T13:58:26.808336",
+  "simulation_data": {
+    "traces": [],
+    "free_energy": [],
+    "states": [],
+    "observations": [],
+    "actions": [],
+    "policy": [],
+    "raw_output": "",
+    "raw_error": "[Errno 2] No such file or directory: PosixPath('output/11_render_output/multi_armed_bandit/activeinference_jl')"
+  },
+  "execution_metadata": {
+    "executor": "julia",
+    "stdout_length": 0,
+    "stderr_length": 111,
+    "output_directory": "output/12_execute_output/multi_armed_bandit/activeinference_jl"
+  }
+}

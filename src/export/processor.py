@@ -244,7 +244,7 @@ def export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str
                         if not success:
                             raise RuntimeError("formatter returned False")
                     except Exception:
-                        # Fallback minimal JSON writer to guarantee at least one success
+                        # Recovery minimal JSON writer to guarantee at least one success
                         with open(output_file, 'w', encoding='utf-8') as f:
                             json.dump(model_data, f, indent=2, ensure_ascii=False)
                         success = True

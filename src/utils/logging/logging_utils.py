@@ -30,15 +30,15 @@ except ImportError:
     try:
         from ..performance_tracker import PerformanceTracker, performance_tracker
     except ImportError:
-        # Fallback: define minimal stubs for graceful degradation
+        # Recovery: define minimal stubs for graceful degradation
         class PerformanceTracker:
-            """Fallback performance tracker when module unavailable."""
+            """Recovery performance tracker when module unavailable."""
             def __init__(self): pass
             @contextmanager
             def track_operation(self, name: str, metadata: dict = None):
                 yield
             def get_summary(self) -> dict:
-                return {"status": "fallback", "operations": []}
+                return {"status": "recovery", "operations": []}
         performance_tracker = PerformanceTracker()
 
 class CorrelationFormatter(logging.Formatter):
@@ -186,18 +186,19 @@ def setup_step_logging(step_name: str, verbose: bool = False) -> logging.Logger:
 
     return logger
 
-def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False) -> logging.Logger:
+def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human") -> logging.Logger:
     """
     Setup logging for the main pipeline orchestrator.
     
     Args:
         log_dir: Directory for log files
         verbose: Whether to enable verbose logging
+        log_format: format for console output ('human' or 'json')
         
     Returns:
         Configured main logger
     """
-    PipelineLogger.initialize(log_dir=log_dir)
+    PipelineLogger.initialize(log_dir=log_dir, log_format=log_format)
     PipelineLogger.set_verbosity(verbose)
 
     correlation_id = PipelineLogger.set_correlation_context("main")
@@ -358,7 +359,7 @@ class PipelineLogger(BasicPipelineLogger):
 
     @classmethod
     def initialize(cls, log_dir: Optional[Path] = None, console_level: int = logging.INFO,
-                  file_level: int = logging.DEBUG, enable_structured: bool = True) -> None:
+                  file_level: int = logging.DEBUG, enable_structured: bool = True, log_format: str = "human") -> None:
         """Initialize logging with structured data support."""
         if cls._initialized:
             return
@@ -370,17 +371,23 @@ class PipelineLogger(BasicPipelineLogger):
 
         # Choose formatter based on structured logging preference
         if enable_structured:
-            console_formatter = VisualFormatter(
-                '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s',
-                include_performance=True
-            )
+            if log_format == "json":
+                console_formatter = JSONFormatter()
+            else:
+                console_formatter = VisualFormatter(
+                    '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s',
+                    include_performance=True
+                )
             file_formatter = StructuredFormatter(
                 '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
             )
         else:
-            console_formatter = CorrelationFormatter(
-                '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s'
-            )
+            if log_format == "json":
+                console_formatter = JSONFormatter()
+            else:
+                console_formatter = CorrelationFormatter(
+                    '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(message)s'
+                )
             file_formatter = CorrelationFormatter(
                 '%(asctime)s [%(correlation_id)s:%(step_name)s] %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s'
             )
@@ -426,7 +433,7 @@ class PipelineLogger(BasicPipelineLogger):
     def enable_json_logging(cls, log_dir: Path, level: int = logging.DEBUG):
         """Enable dedicated JSON-formatted log file."""
         if not cls._initialized:
-            # Fallback to initialize first if not ready
+            # Recovery to initialize first if not ready
             cls.initialize(log_dir=log_dir)
             return
 
@@ -489,7 +496,7 @@ class PipelineLogger(BasicPipelineLogger):
             raise
 
 def setup_step_logging(step_name: str, verbose: bool = False,
-                               enable_structured: bool = True) -> logging.Logger:
+                               enable_structured: bool = True, log_format: str = "human") -> logging.Logger:
     """
     Setup logging for a pipeline step with structured data support.
 
@@ -497,12 +504,13 @@ def setup_step_logging(step_name: str, verbose: bool = False,
         step_name: Name of the pipeline step
         verbose: Whether to enable verbose logging
         enable_structured: Whether to enable structured logging
+        log_format: 'human' or 'json' Output format
         
     Returns:
         Configured logger for the step
     """
     # Initialize enhanced pipeline logger
-    PipelineLogger.initialize(enable_structured=enable_structured)
+    PipelineLogger.initialize(enable_structured=enable_structured, log_format=log_format)
 
     # Set correlation context
     correlation_id = PipelineLogger.set_correlation_context(step_name.replace('.py', ''))

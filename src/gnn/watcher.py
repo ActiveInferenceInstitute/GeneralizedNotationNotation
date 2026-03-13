@@ -82,7 +82,7 @@ class GNNWatcher:
             observer.join()
 
     def _start_polling(self, interval: float = 1.0):
-        """Fallback polling-based watcher."""
+        """Recovery polling-based watcher."""
         self._running = True
         snapshots: dict = {}
 

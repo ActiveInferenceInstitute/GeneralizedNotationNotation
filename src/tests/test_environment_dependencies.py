@@ -135,7 +135,7 @@ class TestMLDependencies:
                 return
             except ImportError:
                 pass
-            # Fallback to legacy pymdp API
+            # Recovery to previous pymdp API
             import pymdp
             assert hasattr(pymdp, 'MDP') or hasattr(pymdp, 'mdp') or hasattr(pymdp, '__version__'), \
                 "pymdp missing expected attributes"
@@ -234,13 +234,13 @@ class TestDependencyDiscovery:
     @pytest.mark.fast
     def test_list_installed_packages(self):
         """Test we can list installed packages."""
-        # Use importlib.metadata (Python 3.10+) or fallback to uv
+        # Use importlib.metadata (Python 3.10+) or recovery to uv
         try:
             from importlib.metadata import distributions
             packages = [d.metadata['Name'] for d in distributions()]
             assert len(packages) > 0
         except ImportError:
-            # Fallback to uv pip list for uv-managed environments
+            # Recovery to uv pip list for uv-managed environments
             import subprocess
             result = subprocess.run(
                 ['uv', 'pip', 'list', '--format=freeze'],

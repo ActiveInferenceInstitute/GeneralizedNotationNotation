@@ -121,9 +121,9 @@ def plot_tensor_output(
             logger.info(f"Saved tensor visualization to {output_file}")
         except Exception as save_error:
             logger.warning(f"Error saving with standard settings: {save_error}")
-            # Fallback save
+            # Recovery save
             plt.savefig(output_file, dpi=100)
-            logger.info(f"Saved with fallback settings to {output_file}")
+            logger.info(f"Saved with recovery settings to {output_file}")
 
         plt.close()
 

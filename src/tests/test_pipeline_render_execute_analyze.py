@@ -24,7 +24,7 @@ from pathlib import Path
 import sys
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import modules with fallback handling
+# Import modules with recovery handling
 try:
     from render.processor import process_render, render_gnn_spec
     RENDER_AVAILABLE = True

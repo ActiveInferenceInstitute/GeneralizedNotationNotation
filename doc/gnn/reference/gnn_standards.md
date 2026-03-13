@@ -13,7 +13,7 @@ The GNN pipeline follows strict architectural patterns and standards:
   - See: **[src/README.md](../../src/README.md)** for thin orchestrator pattern details
 - **Module Architecture**: Each module follows consistent structure with public APIs
   - See: **[src/AGENTS.md](../../src/AGENTS.md)** for complete module registry
-- **Testing Standards**: No mocks, real data validation, >90% test coverage
+- **Testing Standards**: No substitutions, real data validation, >90% test coverage
   - See: **[doc/gnn/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
@@ -56,15 +56,15 @@ src/<module_name>/
 
 ## Testing Standards
 
-### Zero-Mock Policy
+### Real-Implementation Policy
 
-All tests must use real implementations. **No mock objects, fake methods, or stub functions** are permitted.
+All tests must use real implementations. **No substitute objects, simulated methods, or placeholder functions** are permitted.
 
 ```python
 # ❌ PROHIBITED
-@mock.patch("module.real_function")
-def test_with_mock(mock_fn):
-    mock_fn.return_value = fake_result
+@patch("module.real_function")
+def test_with_substitution(patched_fn):
+    patched_fn.return_value = simulated_result
 
 # ✅ REQUIRED
 def test_with_real_data():

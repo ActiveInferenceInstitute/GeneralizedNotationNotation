@@ -200,7 +200,7 @@ function simulate_belief_evolution(actions::Vector{Int},
         if size(B_matrix, 3) >= action
             predicted_next_beliefs = B_matrix[:, :, action]' * current_beliefs
         else
-            # Fallback: no change
+            # Recovery: no change
             predicted_next_beliefs = current_beliefs
         end
         
@@ -242,7 +242,7 @@ function sample_observation(state::Int, A_matrix::Matrix{Float64})
         obs_probs = A_matrix[:, state]
         return sample(Weights(obs_probs))
     else
-        return 1  # Fallback
+        return 1  # Recovery
     end
 end
 

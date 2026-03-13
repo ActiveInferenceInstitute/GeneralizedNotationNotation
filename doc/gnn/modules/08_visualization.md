@@ -19,7 +19,7 @@ python src/8_visualization.py --target-dir input/gnn_files --output-dir output -
 | Processor | `src/visualization/processor.py` |
 | Module function | `process_visualization_main()` |
 
-Uses direct import — no try/except fallback.
+Uses direct import — no try/except handlers.
 
 ## Output
 

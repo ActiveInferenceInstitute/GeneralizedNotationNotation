@@ -119,8 +119,8 @@ success, message, files = render_gnn_to_rxinfer(
 - `TOML.jl` - TOML file parsing (for Julia)
 
 ### Optional Dependencies
-- `Plots.jl` - Visualization support (fallback: no plotting)
-- `DataFrames.jl` - Data manipulation (fallback: basic arrays)
+- `Plots.jl` - Visualization support (recovery: no plotting)
+- `DataFrames.jl` - Data manipulation (recovery: basic arrays)
 
 ### Internal Dependencies
 - `render.renderer` - Base rendering functionality
@@ -368,7 +368,7 @@ result = inference(
 
 ### Recovery Strategies
 - **Model Validation**: Comprehensive pre-generation validation
-- **Template Fallback**: Use simpler templates for complex models
+- **Template Recovery**: Use simpler templates for complex models
 - **Syntax Checking**: Julia syntax validation of generated code
 
 ### Error Examples
@@ -377,7 +377,7 @@ try:
     rxinfer_code = generate_rxinfer_code(model_data)
 except RxInferGenerationError as e:
     logger.error(f"RxInfer.jl generation failed: {e}")
-    # Fallback to minimal template
+    # Recovery to minimal template
     rxinfer_code = generate_minimal_rxinfer_template(model_data)
 ```
 

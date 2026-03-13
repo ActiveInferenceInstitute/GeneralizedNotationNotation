@@ -11,7 +11,7 @@ This test file validates:
 - Active Inference conceptual diagram generation
 - D2 diagram compilation to multiple formats
 - End-to-end processing of GNN files with D2
-- Error handling and fallback mechanisms
+- Error handling and recovery mechanisms
 """
 
 import unittest

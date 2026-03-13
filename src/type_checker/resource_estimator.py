@@ -930,7 +930,7 @@ class GNNResourceEstimator:
                 try:
                     display_path = str(file_path_obj.relative_to(actual_project_root))
                 except ValueError:
-                    display_path = file_path_obj.name # Fallback
+                    display_path = file_path_obj.name # Recovery
 
             report_content.append(f"## {file_path_obj.name}")
             report_content.append(f"Path: {display_path}")

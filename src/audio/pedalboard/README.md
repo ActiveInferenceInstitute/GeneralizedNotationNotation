@@ -338,7 +338,7 @@ try:
     processed_audio = process_pedalboard_audio(audio_data, effects_chain)
 except AudioProcessingError as e:
     logger.error(f"Audio processing failed: {e}")
-    # Provide fallback processing or error reporting
+    # Provide recovery processing or error reporting
 ```
 
 ### Effects Chain Issues
@@ -348,7 +348,7 @@ try:
     effects_chain = create_effects_chain(effects_config)
 except EffectsChainError as e:
     logger.warning(f"Effects chain creation failed: {e}")
-    # Provide fallback effects or error reporting
+    # Provide recovery effects or error reporting
 ```
 
 ### Sonification Issues
@@ -358,7 +358,7 @@ try:
     audio_output = sonify_gnn_model(model_data, sonification_config)
 except SonificationError as e:
     logger.error(f"Sonification failed: {e}")
-    # Provide fallback sonification or error reporting
+    # Provide recovery sonification or error reporting
 ```
 
 ## Performance Optimization
@@ -471,7 +471,7 @@ Solution: Check effect type and provide valid alternatives
 #### 3. Sonification Issues
 ```
 Error: Sonification failed - invalid model data
-Solution: Validate model data structure and provide fallback
+Solution: Validate model data structure and provide recovery
 ```
 
 #### 4. Performance Issues

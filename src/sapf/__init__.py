@@ -58,7 +58,7 @@ def get_module_info() -> dict:
         try:
             return _audio_sapf.get_module_info()
         except Exception as e:
-            _logger.debug(f"get_module_info delegation failed, using fallback: {e}")
+            _logger.debug(f"get_module_info delegation failed, using recovery: {e}")
 
     return {
         'version': __version__,

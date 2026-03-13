@@ -13,7 +13,7 @@ The intelligent_analysis module provides comprehensive AI-powered analysis of GN
 - **Performance Bottleneck Detection**: Identifies slow steps and optimization opportunities
 - **Per-Step Flag Detection**: Yellow (warning) and red (error) flags for each step
 - **LLM-Powered Insights**: AI-generated analysis when LLM infrastructure is available
-- **Rule-Based Fallback**: Works without LLM using heuristic analysis
+- **Rule-Based Recovery**: Works without LLM using heuristic analysis
 - **Executive Reports**: Markdown, JSON, and HTML formatted reports
 
 ## Module Structure

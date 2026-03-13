@@ -571,7 +571,7 @@ def generate_matrix_visualizations(parsed_data: Dict[str, Any], output_dir: Path
             if SEABORN_AVAILABLE and sns is not None:
                 sns.heatmap(matrix_data, annot=matrix_data.size < 100, cmap='viridis')
             else:
-                # Fallback to matplotlib imshow
+                # Recovery to matplotlib imshow
                 plt.imshow(matrix_data, cmap='viridis', aspect='auto')
                 plt.colorbar()
                 # Add annotations if small enough
@@ -766,7 +766,7 @@ def analyze_framework_outputs(execution_output_dir: Path, logger: Optional[loggi
         "metrics": {}
     }
 
-    # Read execution summary - check summaries/ subfolder first, fallback to root
+    # Read execution summary - check summaries/ subfolder first, recovery to root
     execution_summary_file = execution_output_dir / "summaries" / "execution_summary.json"
     if not execution_summary_file.exists():
         execution_summary_file = execution_output_dir / "execution_summary.json"
@@ -926,7 +926,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                     logger.debug(f"  [{framework}] Error reading {output_file}: {e}")
                     continue
 
-        # Fallback: CSV simulation data (ActiveInference.jl outputs CSV, not JSON)
+        # Recovery: CSV simulation data (ActiveInference.jl outputs CSV, not JSON)
         if not metrics["data_source"]:
             csv_candidates = [
                 impl_dir / "simulation_data" / "simulation_results.csv",

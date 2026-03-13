@@ -91,7 +91,7 @@ Generated DisCoPy code includes:
 
 ## Dependencies
 
-- `discopy` - DisCoPy package (optional, fallback: skip DisCoPy generation)
+- `discopy` - DisCoPy package (optional, recovery: skip DisCoPy generation)
 - `graphviz` - Graph visualization (optional)
 
 ## Testing

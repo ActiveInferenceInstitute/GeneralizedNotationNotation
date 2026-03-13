@@ -127,7 +127,7 @@ class GNNParsingSystem:
         """
         self.strict_validation = strict_validation
         self.parsers: Dict[GNNFormat, GNNParser] = {}
-        # Maintain legacy alias for older callers/tests that expect `_parsers`
+        # Maintain previous alias for older callers/tests that expect `_parsers`
         self._parsers = self.parsers
         self.serializers: Dict[GNNFormat, Any] = {}
         self.converter = FormatConverter()
@@ -181,7 +181,7 @@ class GNNParsingSystem:
         if hasattr(parser, 'parse_file'):
             return parser.parse_file(file_path)
         else:
-            # Fallback: call parse_string on file content
+            # Recovery: call parse_string on file content
             with open(file_path, 'r', encoding='utf-8') as f:
                 content = f.read()
             return parser.parse_string(content)

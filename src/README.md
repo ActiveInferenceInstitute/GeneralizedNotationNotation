@@ -138,17 +138,17 @@ This README documents the comprehensive safety enhancements implemented across a
 
 - **Comprehensive Error Classification**: Added detailed dependency tracking and graceful degradation
 - **Safe matplotlib Context**: Context managers for safe matplotlib operations with automatic cleanup
-- **Multiple Fallback Levels**: Full visualizer → Matrix visualizer → Basic plots → HTML fallback
+- **Multiple Recovery Levels**: Full visualizer → Matrix visualizer → Basic plots → HTML recovery
 - **Correlation ID Tracking**: Each visualization attempt has unique tracking for debugging
 - **Robust Output Management**: All outputs saved to `/output/visualization/` regardless of success/failure
 - **Pipeline Continuation**: Non-blocking failures with graceful degradation; continuation governed by configuration
 
 **Step 9: Advanced Visualization**
 
-- **Modular Dependency Handling**: Safe imports with fallback handling for all advanced visualization components
-- **Comprehensive Fallback System**: Creates detailed HTML reports, JSON data, and error diagnostics when advanced features unavailable
+- **Modular Dependency Handling**: Safe imports with recovery handling for all advanced visualization components
+- **Comprehensive Recovery System**: Creates detailed HTML reports, JSON data, and error diagnostics when advanced features unavailable
 - **Resource Management**: Safe processing contexts with automatic cleanup and timeout handling
-- **Interactive Fallback**: Beautiful HTML visualizations with dependency status and recovery suggestions
+- **Interactive Recovery**: Beautiful HTML visualizations with dependency status and recovery suggestions
 - **Performance Tracking**: Detailed timing and resource usage tracking for all visualization attempts
 
 #### 2. **Execute Step (12) - Robust Execution Patterns**
@@ -166,7 +166,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Comprehensive Output Directory Structure**: All outputs organized in `/output/` with step-specific subdirectories
 - **Detailed Result Tracking**: JSON summaries, detailed logs, and performance metrics for every step
 - **Error Recovery Reports**: Automatic generation of recovery suggestions and diagnostic information
-- **Fallback Visualization Assets**: HTML reports, dependency status, and content analysis when primary methods fail
+- **Recovery Visualization Assets**: HTML reports, dependency status, and content analysis when primary methods fail
 - **Execution Reporting**: Detailed markdown reports with execution results, timing, and recovery suggestions
 
 #### 4. **Pipeline Continuation Logic**
@@ -184,7 +184,7 @@ This README documents the comprehensive safety enhancements implemented across a
 - **Execute Processor**: Robust PyMDP error recovery, Julia dependency validation, and improved timeout handling
 - **Render Processor**: Pre-render validation of POMDP structures and matrix normalization
 - **Analysis Module**: Cross-simulation result aggregation, statistical summarization, and improved visualizations
-- **LLM Module**: Enhanced provider fallback logic (Ollama → OpenAI → etc.) with configurable timeouts
+- **LLM Module**: Enhanced provider recovery logic (Ollama → OpenAI → etc.) with configurable timeouts
 
 ### 📊 Pipeline Execution Analysis
 
@@ -236,7 +236,7 @@ output/
 **Visualization Safe-to-Fail Patterns:**
 
 1. **Dependency Detection**: Runtime detection of matplotlib, networkx, and visualization modules
-2. **Graceful Degradation**: Four-tier fallback system from full visualization to basic HTML reports
+2. **Graceful Degradation**: Four-tier recovery system from full visualization to basic HTML reports
 3. **Context Management**: Safe matplotlib contexts preventing resource leaks
 4. **Error Classification**: Specific error types with targeted recovery suggestions
 5. **Output Persistence**: All visualization attempts generate outputs regardless of success
@@ -324,5 +324,5 @@ cat output/execution_results.json
 
 - All error reports include specific recovery suggestions
 - Dependency status clearly documented in output files
-- Fallback visualizations provide immediate value even when advanced features unavailable
+- Recovery visualizations provide immediate value even when advanced features unavailable
 - Execution failures include detailed classification and retry recommendations

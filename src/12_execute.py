@@ -55,6 +55,11 @@ run_script = create_standardized_pipeline_script(
             "type": int,
             "default": 300,
             "help": "Maximum execution time in seconds for subprocesses"
+        },
+        "distributed": {
+            "flag": "--distributed",
+            "action": "store_true",
+            "help": "Run scripts and model parameter sweeps in parallel across a Ray cluster"
         }
     }
 )

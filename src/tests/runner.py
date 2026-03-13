@@ -10,7 +10,7 @@ Architecture:
   - run_tests() - Main entry point that routes to appropriate mode
   - run_fast_pipeline_tests() - Fast tests for quick pipeline validation (default)
   - run_comprehensive_tests() - All tests including slow/performance tests
-  - run_fast_reliable_tests() - Essential tests fallback mode
+  - run_fast_reliable_tests() - Essential tests recovery mode
   
   The ModularTestRunner class provides category-based execution with:
   - Resource monitoring (memory, CPU)
@@ -85,7 +85,7 @@ from utils.pipeline_template import (
 # Calculate project root (don't import from conftest as it's a pytest fixture)
 project_root = Path(__file__).parent.parent.parent
 
-# psutil reference for legacy code
+# psutil reference for previous code
 try:
     import psutil as _psutil  # type: ignore
 except Exception:
@@ -289,7 +289,7 @@ class TestRunner:
                         tests_run = tests_passed + tests_failed + tests_skipped
                         break
 
-            # Fallback: look for collected items line
+            # Recovery: look for collected items line
             if tests_run == 0:
                 for line in lines:
                     if "collected" in line:
@@ -517,7 +517,7 @@ def run_tests(
     fast_only: bool = True,  # Default to fast tests for pipeline integration
     comprehensive: bool = False,
     generate_coverage: bool = False,  # Disable coverage by default for speed
-    auto_fallback: bool = True  # Automatically fallback to comprehensive if no fast tests collected
+    auto_fallback: bool = True  # Automatically recovery to comprehensive if no fast tests collected
 ) -> bool:
     """
     Run optimized test suite with improved performance and reliability.
@@ -548,18 +548,18 @@ def run_tests(
             logger.info("🏃 Running fast pipeline test subset for quick validation")
             success = run_fast_pipeline_tests(logger, output_dir, verbose)
 
-            # Auto-fallback: if no tests collected and fallback enabled, try comprehensive
+            # Auto-recovery: if no tests collected and recovery enabled, try comprehensive
             if not success and auto_fallback:
                 if _check_zero_tests_collected(output_dir, logger):
                     logger.warning("⚠️ Fast test suite yielded 0 tests. Automatically falling back to comprehensive mode.")
-                    return run_comprehensive_tests(logger, output_dir, verbose, generate_coverage)
+                    return run_comprehensive_tests(logger, output_dir, verbose)
 
             return success
 
         # For comprehensive mode, run all tests but with better timeout handling
         if comprehensive:
             logger.info("🔬 Running comprehensive test suite with enhanced monitoring")
-            return run_comprehensive_tests(logger, output_dir, verbose, generate_coverage)
+            return run_comprehensive_tests(logger, output_dir, verbose)
 
         # Default to fast tests with improved reliability
         logger.info("⚡ Running fast test suite with reliability improvements")

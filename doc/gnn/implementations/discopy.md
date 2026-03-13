@@ -230,7 +230,7 @@ DisCoPy does **not** produce `beliefs`, `actions`, `observations`, or `efe_histo
 |---|---|---|---|
  | D-1 | Execution | ~~No dedicated runner~~ — added `execute_discopy_script()` in `discopy_executor.py` with syntax validation and log persistence | ✅ FIXED |
  | D-2 | Rendering | No actual matrix values are injected into the generated script — only dimensions | Low |
- | D-3 | Rendering | ~~The `generative_model` was just assigned to `perception_action_loop`~~ — now composes `D_vector @ C_vector` priors with graceful fallback | ✅ FIXED |
+ | D-3 | Rendering | ~~The `generative_model` was just assigned to `perception_action_loop`~~ — now composes `D_vector @ C_vector` priors with graceful handling | ✅ FIXED |
  | D-4 | Analysis | `create_discopy_visualizations()` at 250 lines generates visualizations from `circuit_info.json` but could also render actual string diagrams using `discopy.drawing` if matplotlib is available | Medium |
  | D-5 | Telemetry | No numerical simulation data exported — could add an optional mode to evaluate the circuit with actual tensor values using `discopy.tensor` | Low |
 
