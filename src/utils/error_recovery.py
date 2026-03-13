@@ -33,8 +33,8 @@ class ErrorContext:
     severity: ErrorSeverity
     message: str
     error_code: str
-    details: Dict[str, Any] = None
-    recovery_suggestions: List[str] = None
+    details: Optional[Dict[str, Any]] = None
+    recovery_suggestions: Optional[List[str]] = None
     original_exception: Optional[Exception] = None
 
     def to_dict(self) -> Dict[str, Any]:
