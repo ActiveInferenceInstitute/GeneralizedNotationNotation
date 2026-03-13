@@ -147,26 +147,8 @@ class PipelineArguments:
 
         # Check that target directory exists if not a special placeholder
         if not str(self.target_dir).startswith("<"):
-            # Try to resolve path relative to project root if not found
             if not self.target_dir.exists():
-                # Check if we're running from src directory and target_dir is relative to project root
-                import sys
-                if hasattr(sys, '_getframe'):
-                    try:
-                        current_file = Path(sys._getframe(1).f_code.co_filename)
-                        if current_file.name == 'main.py' and current_file.parent.name == 'src':
-                            project_root = current_file.parent.parent
-                            project_target_dir = project_root / self.target_dir.name
-                            if project_target_dir.exists():
-                                self.target_dir = project_target_dir
-                            else:
-                                errors.append(f"Target directory does not exist: {self.target_dir}")
-                        else:
-                            errors.append(f"Target directory does not exist: {self.target_dir}")
-                    except (ValueError, AttributeError):
-                        errors.append(f"Target directory does not exist: {self.target_dir}")
-                else:
-                    errors.append(f"Target directory does not exist: {self.target_dir}")
+                errors.append(f"Target directory does not exist: {self.target_dir}")
 
         # Check that ontology terms file exists if specified and not placeholder
         if (self.ontology_terms_file and
