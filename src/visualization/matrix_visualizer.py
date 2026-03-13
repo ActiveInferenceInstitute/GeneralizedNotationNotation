@@ -8,32 +8,16 @@ including heatmaps, statistics, and analysis of model parameters.
 Specialized support for 3D tensors like POMDP transition matrices.
 """
 
-# Safe imports with fallbacks
+from analysis.viz_base import plt, np, patches, sns, MATPLOTLIB_AVAILABLE
+import csv
+
 try:
-    import matplotlib.pyplot as plt
-    import matplotlib.patches as patches
     from matplotlib import cm
-    import csv
-    MATPLOTLIB_AVAILABLE = True
-except (ImportError, RecursionError):
-    plt = None
-    patches = None
-    cm = None
-    MATPLOTLIB_AVAILABLE = False
-
-try:
-    import numpy as np
-    NUMPY_AVAILABLE = True
 except ImportError:
-    np = None
-    NUMPY_AVAILABLE = False
+    cm = None
 
-try:
-    import seaborn as sns
-    SEABORN_AVAILABLE = True
-except (ImportError, RecursionError):
-    sns = None
-    SEABORN_AVAILABLE = False
+NUMPY_AVAILABLE = np is not None
+SEABORN_AVAILABLE = sns is not None
 
 import ast
 import warnings
@@ -652,13 +636,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                 plt.savefig(output_path, dpi=safe_dpi, bbox_inches='tight')
             except Exception:
                 try:
-                    # Fallback with smaller figure and very safe DPI
+                    # Recovery with smaller figure and very safe DPI
                     fig.set_size_inches(8, 6)
                     fallback_dpi = 72  # Extremely safe DPI
                     plt.savefig(output_path, dpi=fallback_dpi)
                 except Exception:
                     try:
-                        # Final fallback - no DPI specified, minimal figure
+                        # Final recovery - no DPI specified, minimal figure
                         fig.set_size_inches(6, 4)
                         plt.savefig(output_path)
                     except Exception:
@@ -793,7 +777,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            # Fallback: create error report
+            # Recovery: create error report
             try:
                 with open(output_path.with_suffix('.txt'), 'w') as f:
                     f.write("Matrix Analysis Failed\n")
