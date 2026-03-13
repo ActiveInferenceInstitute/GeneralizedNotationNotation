@@ -101,31 +101,8 @@ class ParsedGNN:
     round_trip_verified: bool = False
 
 
-# From parsers/common.py
-class GNNFormat(Enum):
-    MARKDOWN = "markdown"
-    SCALA = "scala"
-    LEAN = "lean"
-    COQ = "coq"
-    PYTHON = "python"
-    BNF = "bnf"
-    EBNF = "ebnf"
-    ISABELLE = "isabelle"
-    MAXIMA = "maxima"
-    XML = "xml"
-    PNML = "pnml"
-    JSON = "json"
-    PROTOBUF = "protobuf"
-    YAML = "yaml"
-    XSD = "xsd"
-    ASN1 = "asn1"
-    PKL = "pkl"
-    ALLOY = "alloy"
-    Z_NOTATION = "z_notation"
-    TLA_PLUS = "tla_plus"
-    AGDA = "agda"
-    HASKELL = "haskell"
-    PICKLE = "pickle"
+# Single authoritative definition lives in parsers/common.py.
+from .parsers.common import GNNFormat  # re-export for types module consumers  # noqa: E402
 
 @dataclass
 class ParseResult:

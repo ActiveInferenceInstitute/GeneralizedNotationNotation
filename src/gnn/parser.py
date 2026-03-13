@@ -101,7 +101,7 @@ class GNNParsingSystem:
         if parser:
             return parser(file_path)
         else:
-            # Fallback to basic parser
+            # Recovery to basic parser
             return self._basic_parser(file_path)
 
     def _detect_format(self, file_path: Path) -> str:
@@ -169,18 +169,22 @@ class GNNParsingSystem:
 
         return parsed
 
-class GNNFormat:
-    """Represents a GNN format specification."""
+class GNNFormatSpec:
+    """Represents a GNN format specification (MIME types, extensions).
+
+    Note: For the GNNFormat Enum used throughout the pipeline, see
+    gnn.parsers.common.GNNFormat.
+    """
 
     def __init__(self):
-        """Initialize the GNN format."""
+        """Initialize the GNN format spec."""
         self.name = "GNN"
         self.version = "1.0"
         self.extensions = [".gnn", ".md"]
         self.mime_types = ["text/gnn", "text/markdown"]
 
 class GNNFormalParser:
-    """Stub class for when Lark is not available."""
+    """Placeholder class for when Lark is not available."""
     def __init__(self): pass
     def parse_file(self, file_path): return None
     def parse_content(self, content, source_name="<string>"): return None
@@ -188,16 +192,14 @@ class GNNFormalParser:
     def visualize_parse_tree(self, content): return "Lark not available"
 
 class ParsedGNNFormal:
-    """Stub class for when Lark is not available."""
+    """Placeholder class for when Lark is not available."""
     def __init__(self): pass
 
 def parse_gnn_formal(file_path): return None
 def validate_gnn_syntax_formal(content): return False, ["Lark not available"]
 def get_parse_tree_visualization(content): return "Lark not available"
 
-def parsers(*args, **kwargs):
-    """Legacy function for backward compatibility."""
-    return GNNParsingSystem()
+
 
 def validate_gnn(file_path_or_content, validation_level=ValidationLevel.STANDARD, **kwargs):
     """
@@ -369,7 +371,7 @@ def _convert_parse_result_to_parsed_gnn(parse_result, source_format: str = "unkn
             source_format=source_format
         )
     except Exception as e:
-        # Fallback to minimal representation on error
+        # Recovery to minimal representation on error
         from .types import ParsedGNN
         return ParsedGNN(
             gnn_section=f"{source_format.upper()}GNN",

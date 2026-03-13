@@ -24,16 +24,15 @@ from .parser import (
     ValidationLevel,
     ParsedGNN,
     GNNParsingSystem,
-    GNNFormat,
     GNNFormalParser,
     ParsedGNNFormal,
     parse_gnn_formal,
     validate_gnn_syntax_formal,
     get_parse_tree_visualization,
-    parsers,
     validate_gnn,
     _convert_parse_result_to_parsed_gnn
 )
+from .parsers.common import GNNFormat
 
 __version__ = "1.1.3"
 # Ensure tests see MCP feature presence consistently
@@ -79,7 +78,6 @@ __all__ = [
     'parse_gnn_formal',
     'validate_gnn_syntax_formal',
     'get_parse_tree_visualization',
-    'parsers',
     'validate_gnn',
     '_convert_parse_result_to_parsed_gnn',
     '__version__',
