@@ -6,7 +6,7 @@ This module provides advanced visualization capabilities including:
 - Interactive dashboards
 - Statistical analysis plots
 - Multi-format export support
-- Comprehensive error handling and fallback mechanisms
+- Comprehensive error handling and recovery mechanisms
 
 Implementation is split across sub-modules for maintainability:
 - _shared: Dataclasses, validation, and utility functions (no circular imports)
@@ -24,7 +24,7 @@ from typing import Dict, List, Optional
 import time
 from datetime import datetime
 
-# Import matplotlib for plotting (with fallback for headless environments)
+# Import matplotlib for plotting (with recovery for headless environments)
 try:
     import matplotlib
     matplotlib.use('Agg')  # Use non-interactive backend
@@ -36,7 +36,7 @@ except ImportError:
     plt = None
     np = None
 
-# Import performance tracker with fallback
+# Import performance tracker with recovery
 try:
     from utils.performance_tracker import PerformanceTracker
 except ImportError:
@@ -44,7 +44,7 @@ except ImportError:
         from utils import performance_tracker
         PerformanceTracker = performance_tracker.PerformanceTracker
     except (ImportError, AttributeError):
-        # Fallback: simple performance tracker
+        # Recovery: simple performance tracker
         class PerformanceTracker:
             def __init__(self):
                 self.timings = {}
@@ -132,13 +132,13 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
 
     # Check seaborn (already checked globally)
     if not SEABORN_AVAILABLE:
-        logger.debug("seaborn not available - will use matplotlib fallback")
+        logger.debug("seaborn not available - will use matplotlib recovery")
 
     # Check bokeh
     if importlib.util.find_spec("bokeh") is not None:
         dependencies["bokeh"] = True
     else:
-        logger.debug("bokeh not available - will use plotly fallback")
+        logger.debug("bokeh not available - will use plotly recovery")
 
     # Check numpy
     if np is not None:
@@ -315,7 +315,7 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
                 logger.debug(f"    ... and {len(features)-3} more")
 
 
-def process_advanced_viz_standardized_impl(
+def process_advanced_viz(
     target_dir: Path,
     output_dir: Path,
     logger: logging.Logger,

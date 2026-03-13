@@ -28,29 +28,28 @@ class LLMResponse:
     content: str
     model_used: str
     provider: str
-    # Avoid Optional[...] due to Python 3.9 typing recursion bug in some environments
-    usage: Dict[str, int] = None  # type: ignore[assignment]
-    finish_reason: str = None  # type: ignore[assignment]
-    metadata: Dict[str, Any] = None  # type: ignore[assignment]
+    usage: Optional[Dict[str, int]] = None
+    finish_reason: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
 
 @dataclass
 class LLMMessage:
     """Standardized message format for LLM conversations."""
     role: str  # 'system', 'user', 'assistant'
     content: str
-    name: str = None  # type: ignore[assignment]
+    name: Optional[str] = None
 
 @dataclass
 class LLMConfig:
     """Configuration parameters for LLM requests."""
-    model: str = None  # type: ignore[assignment]
-    max_tokens: int = None  # type: ignore[assignment]
-    temperature: float = None  # type: ignore[assignment]
-    top_p: float = None  # type: ignore[assignment]
-    frequency_penalty: float = None  # type: ignore[assignment]
-    presence_penalty: float = None  # type: ignore[assignment]
+    model: Optional[str] = None
+    max_tokens: Optional[int] = None
+    temperature: Optional[float] = None
+    top_p: Optional[float] = None
+    frequency_penalty: Optional[float] = None
+    presence_penalty: Optional[float] = None
     stream: bool = False
-    timeout: float = None  # type: ignore[assignment]
+    timeout: Optional[float] = None
 
 class BaseLLMProvider(ABC):
     """

@@ -52,7 +52,7 @@ except ImportError:
     process_gnn_file_with_d2 = None
 
 # Import main processor function for thin orchestrator
-from .processor import process_advanced_viz_standardized_impl
+from .processor import process_advanced_viz
 
 __all__ = [
     'AdvancedVisualizer',
@@ -66,7 +66,7 @@ __all__ = [
     'generate_dashboard',
     'VisualizationDataExtractor',
     'extract_visualization_data',
-    'process_advanced_viz_standardized_impl',  # Main processing function
+    'process_advanced_viz',  # Main processing function
     'D2Visualizer',  # D2 diagram generation
     'D2DiagramSpec',  # D2 diagram specifications
     'D2GenerationResult',  # D2 generation results

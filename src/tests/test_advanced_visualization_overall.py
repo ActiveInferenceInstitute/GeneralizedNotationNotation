@@ -16,13 +16,13 @@ class TestAdvancedVisualizationModule:
             AdvancedVisualizer,
             DashboardGenerator,
             VisualizationDataExtractor,
-            process_advanced_viz_standardized_impl,
+            process_advanced_viz,
             D2_AVAILABLE
         )
         assert callable(AdvancedVisualizer)
         assert callable(DashboardGenerator)
         assert callable(VisualizationDataExtractor)
-        assert callable(process_advanced_viz_standardized_impl)
+        assert callable(process_advanced_viz)
         assert isinstance(D2_AVAILABLE, bool)
 
     def test_visualization_functions(self):
@@ -192,9 +192,9 @@ state -> state
 class TestProcessAdvancedViz:
     """Test main processing function."""
 
-    def test_process_advanced_viz_standardized_impl(self, safe_filesystem):
+    def test_process_advanced_viz(self, safe_filesystem):
         """Test standardized advanced visualization processing."""
-        from advanced_visualization import process_advanced_viz_standardized_impl
+        from advanced_visualization import process_advanced_viz
 
         # Create test GNN file
         gnn_content = """# Advanced Viz Test
@@ -217,7 +217,7 @@ Dynamic
         logger = logging.getLogger("test_adv_viz")
 
         try:
-            result = process_advanced_viz_standardized_impl(
+            result = process_advanced_viz(
                 target_dir=safe_filesystem.temp_dir,
                 output_dir=output_dir,
                 logger=logger,
@@ -230,7 +230,7 @@ Dynamic
 
     def test_process_with_viz_types(self, safe_filesystem):
         """Test processing with different visualization types."""
-        from advanced_visualization import process_advanced_viz_standardized_impl
+        from advanced_visualization import process_advanced_viz
 
         gnn_content = """# Viz Types Test
 
@@ -247,7 +247,7 @@ s[3]
 
         for viz_type in viz_types:
             try:
-                result = process_advanced_viz_standardized_impl(
+                result = process_advanced_viz(
                     target_dir=safe_filesystem.temp_dir,
                     output_dir=output_dir,
                     logger=logger,

@@ -11,7 +11,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Import utilities from the advanced_visualization module
-from . import process_advanced_viz_standardized_impl, D2_AVAILABLE
+from . import process_advanced_viz, D2_AVAILABLE
 
 # MCP Tools for Advanced Visualization Module
 
@@ -35,7 +35,7 @@ def process_advanced_visualization_mcp(
         Dictionary with operation status and results.
     """
     try:
-        success = process_advanced_viz_standardized_impl(
+        success = process_advanced_viz(
             target_dir=Path(target_directory),
             output_dir=Path(output_directory),
             verbose=verbose

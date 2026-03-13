@@ -16,11 +16,11 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent))
 
 from utils.pipeline_template import create_standardized_pipeline_script
-from advanced_visualization.processor import process_advanced_viz_standardized_impl
+from advanced_visualization.processor import process_advanced_viz
 
 run_script = create_standardized_pipeline_script(
     "9_advanced_viz.py",
-    process_advanced_viz_standardized_impl,
+    process_advanced_viz,
     "Advanced visualization and exploration with safe-to-fail patterns",
     additional_arguments={
         "viz_type": {
