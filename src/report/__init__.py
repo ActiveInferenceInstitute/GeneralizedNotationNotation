@@ -2,7 +2,7 @@ from __future__ import annotations
 """
 report module for GNN Processing Pipeline.
 
-This module provides report capabilities with fallback implementations.
+This module provides report capabilities with recovery implementations.
 """
 
 __version__ = "1.1.3"
@@ -26,15 +26,17 @@ from utils.pipeline_template import (
 )
 
 # Import processor functions
+# generate_report = processor's file-level report builder (target_dir, output_dir, format) -> dict
+# generate_comprehensive_report = generator's pipeline-output aggregator (pipeline_output_dir, ...) -> bool
 from .processor import (
     process_report as process_report_impl,
     analyze_gnn_file,
     generate_html_report,
     generate_markdown_report,
-    generate_comprehensive_report as generate_report,
+    generate_report,
 )
 
-# Import generator functions
+# Import generator functions (distinct signature and purpose from processor's generate_report)
 from .generator import generate_comprehensive_report
 
 

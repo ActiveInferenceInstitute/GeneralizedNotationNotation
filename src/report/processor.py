@@ -283,3 +283,6 @@ Generated on: {report_data.get('timestamp', 'Unknown')}
         markdown += f"- {file_info['file']}\n"
 
     return markdown
+
+# Explicit alias so __init__.py can import by this name without shadowing generator's generate_comprehensive_report
+generate_report = generate_comprehensive_report

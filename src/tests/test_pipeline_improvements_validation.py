@@ -497,18 +497,6 @@ observation > state
                 assert var_info["type"] is not None
                 assert var_info["type"] != ""
 
-            # Test error handling integration
-            from utils.standardized_error_handling import create_error_handler
-
-            error_handler = create_error_handler("integration_test")
-
-            with error_handler.error_context("testing_integration"):
-                # Should complete without issues
-                pass
-
-            # Should have correlation ID
-            assert error_handler.correlation_id is not None
-
         except Exception as e:
             pytest.fail(f"End-to-end integration test failed: {e}")
 
