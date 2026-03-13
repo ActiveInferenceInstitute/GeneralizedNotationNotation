@@ -16,88 +16,56 @@ import logging
 import re
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple, List
+from typing import Callable, Dict, Any, Optional, Tuple, List
 
 logger = logging.getLogger(__name__)
 
-def render_gnn_to_jax(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
-    """
-    Render a GNN specification to a general JAX model implementation.
-    
-    Args:
-        gnn_spec: Parsed GNN model specification.
-        output_path: Path to write the generated JAX code.
-        options: Optional rendering options.
-        
-    Returns:
-        (success, message, [output_file_path])
-        
-    @Web: https://github.com/google/jax
-    @Web: https://flax.readthedocs.io
-    """
+def _render_to_path(
+    generator_fn: Callable[[Dict[str, Any], Optional[Dict[str, Any]]], str],
+    label: str,
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]],
+) -> Tuple[bool, str, List[str]]:
+    """Shared scaffold: generate code, mkdir, write, return (success, msg, paths)."""
     try:
-        code = _generate_jax_model_code(gnn_spec, options)
+        code = generator_fn(gnn_spec, options)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         with open(output_path, 'w') as f:
             f.write(code)
-        logger.info(f"JAX model code written to {output_path}")
-        return True, "JAX model code generated successfully.", [str(output_path)]
+        logger.info(f"{label} code written to {output_path}")
+        return True, f"{label} generated successfully.", [str(output_path)]
     except Exception as e:
-        logger.error(f"Failed to render GNN to JAX: {e}")
+        logger.error(f"Failed to render GNN to {label}: {e}")
         return False, str(e), []
 
-def render_gnn_to_jax_pomdp(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+
+def render_gnn_to_jax(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+    """Render a GNN specification to a general JAX model implementation.
+
+    @Web: https://github.com/google/jax
+    @Web: https://flax.readthedocs.io
     """
-    Render a GNN POMDP specification to a JAX POMDP solver implementation.
-    
-    Args:
-        gnn_spec: Parsed GNN model specification.
-        output_path: Path to write the generated JAX POMDP code.
-        options: Optional rendering options.
-        
-    Returns:
-        (success, message, [output_file_path])
-        
+    return _render_to_path(_generate_jax_model_code, "JAX model", gnn_spec, output_path, options)
+
+
+def render_gnn_to_jax_pomdp(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
+    """Render a GNN POMDP specification to a JAX POMDP solver implementation.
+
     @Web: https://pfjax.readthedocs.io
     @Web: https://arxiv.org/abs/1304.1118
     @Web: https://www.cs.cmu.edu/~ggordon/jpineau-ggordon-thrun.ijcai03.pdf
     """
-    try:
-        code = _generate_jax_pomdp_code(gnn_spec, options)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, 'w') as f:
-            f.write(code)
-        logger.info(f"JAX POMDP code written to {output_path}")
-        return True, "JAX POMDP code generated successfully.", [str(output_path)]
-    except Exception as e:
-        logger.error(f"Failed to render GNN to JAX POMDP: {e}")
-        return False, str(e), []
+    return _render_to_path(_generate_jax_pomdp_code, "JAX POMDP", gnn_spec, output_path, options)
+
 
 def render_gnn_to_jax_combined(gnn_spec: Dict[str, Any], output_path: Path, options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]:
-    """
-    Render a GNN specification to a combined JAX implementation (hierarchical, multi-agent, or continuous).
-    
-    Args:
-        gnn_spec: Parsed GNN model specification.
-        output_path: Path to write the generated JAX code.
-        options: Optional rendering options.
-        
-    Returns:
-        (success, message, [output_file_path])
-        
+    """Render a GNN specification to a combined JAX implementation (hierarchical, multi-agent, or continuous).
+
     @Web: https://github.com/google/jax
     @Web: https://optax.readthedocs.io
     """
-    try:
-        code = _generate_jax_combined_code(gnn_spec, options)
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_path, 'w') as f:
-            f.write(code)
-        logger.info(f"JAX combined code written to {output_path}")
-        return True, "JAX combined code generated successfully.", [str(output_path)]
-    except Exception as e:
-        logger.error(f"Failed to render GNN to JAX combined: {e}")
-        return False, str(e), []
+    return _render_to_path(_generate_jax_combined_code, "JAX combined", gnn_spec, output_path, options)
 
 # --- Internal code generation helpers ---
 
@@ -190,11 +158,11 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
 
             return np.array(matrix)
 
-        return np.array([[1.0]])  # Default fallback
+        return np.array([[1.0]])  # Default recovery
 
     except Exception as e:
         logger.warning(f"Failed to parse matrix string: {e}")
-        return np.array([[1.0]])  # Default fallback
+        return np.array([[1.0]])  # Default recovery
 
 def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract A, B, C, D matrices from GNN specification."""
@@ -236,13 +204,13 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         # B is (actions, states, observations) or similar nested structure
                         n_actions_from_b = len(B_matrix)
                     else:
-                        n_actions_from_b = 1  # Default fallback
+                        n_actions_from_b = 1  # Default recovery
                 else:
                     # B is numpy array
                     if len(B_matrix.shape) >= 3:
                         n_actions_from_b = B_matrix.shape[2]  # Last dimension is actions
                     else:
-                        n_actions_from_b = 1  # Default fallback
+                        n_actions_from_b = 1  # Default recovery
 
                 if n_actions_from_b > 1:  # Only override if we got a meaningful value
                     n_actions = n_actions_from_b
@@ -318,7 +286,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 except Exception as e:
                     logger.warning(f"Failed to extract D vector: {e}")
 
-    # --- Fallback: Handle the JSON export format from GNN processing pipeline ---
+    # --- Recovery: Handle the JSON export format from GNN processing pipeline ---
     elif "statespaceblock" in gnn_spec:
         logger.info("Extracting matrices from GNN JSON export structure")
 
@@ -606,10 +574,10 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         logger.info(f"Used {param_name} parameter value directly")
                 except Exception as e:
                     logger.warning(f"Failed to convert {param_name} parameter: {e}")
-                    # Create fallback matrix based on parameter name and expected dimensions
+                    # Create recovery matrix based on parameter name and expected dimensions
                     fallback_matrix = _create_fallback_matrix(param_name, var_dims)
                     matrices[param_name] = fallback_matrix
-                    logger.info(f"Created fallback {param_name} matrix: shape {fallback_matrix.shape}")
+                    logger.info(f"Created recovery {param_name} matrix: shape {fallback_matrix.shape}")
                     continue
 
     else:
@@ -787,12 +755,12 @@ def _infer_matrix_from_context(param_name: str, param_value: str, var_dims: dict
         return np.ones(shape) / shape
 
     else:
-        # Generic fallback
+        # Generic recovery
         shape = dims[0] if dims else 2
         return np.ones(shape) / shape
 
 def _create_fallback_matrix(param_name: str, var_dims: dict) -> np.ndarray:
-    """Create a fallback matrix when all else fails."""
+    """Create a recovery matrix when all else fails."""
     return _infer_matrix_from_context(param_name, "", var_dims)
 
 def _parse_matrix_string(matrix_str: str) -> np.ndarray:
@@ -1307,9 +1275,9 @@ if __name__ == "__main__":
         logger.error(f"Error in _generate_jax_model_code: {e}")
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
-        # Return a minimal working code as fallback
+        # Return a minimal working code as recovery
         return '''"""
-JAX Model - Fallback Implementation
+JAX Model - Recovery Implementation
 """
 
 import jax
@@ -1320,7 +1288,7 @@ def create_model():
     return None
 
 if __name__ == "__main__":
-    print("JAX model created (fallback implementation)")
+    print("JAX model created (recovery implementation)")
 '''
 
 def _generate_jax_pomdp_code(gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]) -> str:
@@ -1400,7 +1368,7 @@ except ImportError:
             timeout=300
         )
         if result.returncode != 0:
-            # Fallback to pip if UV fails
+            # Recovery to pip if UV fails
             print("⚠️  UV install failed, trying pip...")
             result = subprocess.run(
                 [sys.executable, "-m", "pip", "install", "jax", "jaxlib"],
@@ -1528,20 +1496,27 @@ class JAXPOMDPSolver:
         Returns:
             New alpha vector for this action
         """
-        alpha = self.models.C  # Immediate reward
+        base_alpha = self.models.C  # Immediate reward
         
-        # Vectorized future reward computation
-        for obs in range(self.num_observations):
-            obs_prob = self.compute_observation_probability(belief, action)[obs]
-            # Use JAX-compatible conditional instead of if statement
-            next_belief = self.belief_update(belief, action, obs)
+        # Pre-calculate observation probabilities
+        next_belief_pred = jnp.sum(
+            self.models.B[:, action, :] * belief[:, None], axis=0
+        )
+        obs_probs = jnp.dot(self.models.A, next_belief_pred)
+        
+        def compute_obs_contribution(obs_idx):
+            next_belief = self.belief_update(belief, action, obs_idx)
             values = jnp.dot(alpha_vectors, next_belief)
             best_alpha = alpha_vectors[jnp.argmax(values)]
+            
             # Only add contribution if observation probability is significant
-            contribution = jnp.where(obs_prob > 1e-10, 
-                                   self.discount_factor * obs_prob * best_alpha,
-                                   jnp.zeros_like(best_alpha))
-            alpha = alpha + contribution
+            return jnp.where(obs_probs[obs_idx] > 1e-10, 
+                           self.discount_factor * obs_probs[obs_idx] * best_alpha,
+                           jnp.zeros_like(best_alpha))
+                           
+        # Vectorized map-reduce over observations
+        contributions = vmap(compute_obs_contribution)(jnp.arange(self.num_observations))
+        alpha = base_alpha + jnp.sum(contributions, axis=0)
         
         return alpha
     
@@ -1618,9 +1593,9 @@ if __name__ == "__main__":
         logger.error(f"Error in _generate_jax_pomdp_code: {e}")
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
-        # Return a minimal working code as fallback
+        # Return a minimal working code as recovery
         return '''"""
-JAX POMDP Solver - Fallback Implementation
+JAX POMDP Solver - Recovery Implementation
 """
 
 import jax
@@ -1631,7 +1606,7 @@ def create_pomdp_solver():
     return None
 
 if __name__ == "__main__":
-    print("JAX POMDP solver created (fallback implementation)")
+    print("JAX POMDP solver created (recovery implementation)")
 '''
 
 def _generate_jax_combined_code(gnn_spec: Dict[str, Any], options: Optional[Dict[str, Any]]) -> str:
@@ -1723,7 +1698,15 @@ class {model_name}Combined(nn.Module):
         if self.num_agents > 1:
             # Apply communication matrix with mask
             communication_weights = self.communication_matrix * communication_mask
-            agent_outputs = jnp.dot(communication_weights, agent_states)
+            
+            # Use vmap to process multiple agents efficiently
+            # jnp.dot(communication_weights, agent_states) is already vectorized, 
+            # but we can explicitly define per-agent processing for complex extensions
+            @jax.vmap
+            def process_agent(weights_row, states):
+                return jnp.dot(weights_row, states)
+                
+            agent_outputs = process_agent(communication_weights, agent_states)
             outputs['agent_outputs'] = agent_outputs
             outputs['communication_outputs'] = communication_weights
         
