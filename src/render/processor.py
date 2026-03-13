@@ -157,26 +157,25 @@ def process_render(
     target_dir: Path,
     output_dir: Path,
     verbose: bool = False,
-    **kwargs
+    frameworks=None,
+    strict_validation: bool = True,
 ) -> bool:
     """
     Process render for GNN specifications with POMDP-aware processing.
-    
+
     This enhanced processor:
     1. Extracts POMDP state spaces from GNN files
-    2. Modularly injects them into framework-specific renderers  
+    2. Modularly injects them into framework-specific renderers
     3. Creates implementation-specific output subfolders
     4. Provides structured documentation and results
-    
+
     Args:
         target_dir: Directory containing GNN files to process
         output_dir: Output directory for rendered files
         verbose: Enable verbose logging
-        **kwargs: Additional processing options including:
-            - frameworks: List of frameworks to render for (default: all)
-            - strict_validation: Enable strict POMDP validation
-            - include_documentation: Generate framework documentation
-        
+        frameworks: List of frameworks to render for (default: all)
+        strict_validation: Enable strict POMDP validation
+
     Returns:
         True if processing succeeded, False otherwise
     """
@@ -216,9 +215,7 @@ def process_render(
 
         logger.info(f"Found {len(gnn_files)} GNN files to process")
 
-        # Processing configuration
-        frameworks = kwargs.get('frameworks', None)  # None means all frameworks
-        strict_validation = kwargs.get('strict_validation', True)
+        # Processing configuration — frameworks=None means all frameworks
 
         if frameworks:
             logger.info(f"Target frameworks: {frameworks}")
