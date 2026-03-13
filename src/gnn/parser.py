@@ -5,13 +5,9 @@ GNN parser module for GNN pipeline.
 
 from pathlib import Path
 from typing import Dict, Any, Union, Optional
-from enum import Enum
 
-class ValidationLevel(Enum):
-    """Validation levels for GNN files."""
-    BASIC = "basic"
-    STANDARD = "standard"
-    STRICT = "strict"
+# Single authoritative definition lives in types.py (includes RESEARCH and ROUND_TRIP).
+from .types import ValidationLevel
 
 class ParsedGNN:
     """Represents a parsed GNN file."""
