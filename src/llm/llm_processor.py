@@ -386,13 +386,12 @@ class LLMProcessor:
             raise RuntimeError("LLM Processor not initialized")
 
         # Select provider
+        if not self.providers:
+            raise RuntimeError("No providers available")
         if provider_type and provider_type in self.providers:
             provider = self.providers[provider_type]
         else:
             provider = next(iter(self.providers.values()))
-
-        if not provider:
-            raise RuntimeError("No providers available")
 
         async for chunk in provider.generate_stream(messages, config):
             yield chunk
@@ -499,13 +498,12 @@ class LLMProcessor:
             raise RuntimeError("LLM Processor not initialized")
 
         # Select provider
+        if not self.providers:
+            raise RuntimeError("No providers available")
         if provider_type and provider_type in self.providers:
             provider = self.providers[provider_type]
         else:
             provider = next(iter(self.providers.values()))
-
-        if not provider:
-            raise RuntimeError("No providers available")
 
         # Create or update config
         if config is None:

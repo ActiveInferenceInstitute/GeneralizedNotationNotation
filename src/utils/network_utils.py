@@ -8,20 +8,9 @@ batch operations, and network timing measurements.
 import time
 import logging
 try:
-    import requests
-except Exception:
-    # Provide minimal in-repo fallback for tests that don't perform real HTTP calls
-    class _DummyResponse:
-        status_code = 0
-        content = b''
-        headers = {}
-
-    class _DummyRequests:
-        @staticmethod
-        def request(method, url, **kwargs):
-            raise RuntimeError('requests library not available in test environment')
-
-    requests = _DummyRequests()
+    import httpx
+except ImportError:
+    httpx = None  # type: ignore[assignment]
 from typing import Dict, Any, List
 
 logger = logging.getLogger(__name__)
@@ -41,7 +30,9 @@ def timed_request(url: str, method: str = "GET", **kwargs) -> Dict[str, Any]:
     start_time = time.time()
 
     try:
-        response = requests.request(method, url, **kwargs)
+        if httpx is None:
+            raise RuntimeError("httpx library not available")
+        response = httpx.request(method, url, **kwargs)
         end_time = time.time()
 
         return {

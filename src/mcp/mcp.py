@@ -1371,8 +1371,6 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     Raises:
         MCPSDKNotFoundError: If SDK is missing and halt_on_missing_sdk is True
     """
-    global _critical_mcp_warning_issued
-
     # Check SDK status
     sdk_found = _MCP_SDK_STATUS.check_status()
 

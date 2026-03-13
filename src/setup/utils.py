@@ -14,19 +14,18 @@ logger = logging.getLogger(__name__)
 def ensure_directory(directory_path: Path) -> Path:
     """
     Ensure a directory exists, creating it if necessary.
-    
+
     Args:
         directory_path: Path to the directory to ensure
-        
+
     Returns:
-        True if directory exists or was created successfully, False otherwise
+        The directory path (same as input)
+
+    Raises:
+        OSError: If the directory could not be created
     """
-    try:
-        directory_path.mkdir(parents=True, exist_ok=True)
-        return directory_path
-    except Exception as e:
-        logger.error(f"Failed to ensure directory {directory_path}: {e}")
-        return False
+    directory_path.mkdir(parents=True, exist_ok=True)
+    return directory_path
 
 def find_gnn_files(directory: Path, recursive: bool = True) -> List[Path]:
     """

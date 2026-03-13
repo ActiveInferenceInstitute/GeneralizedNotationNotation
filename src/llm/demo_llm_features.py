@@ -169,10 +169,10 @@ def demo_processor_modes():
     """Demonstrate different processor modes and configurations."""
     print("\nTesting Different Processor Modes...")
 
-    with _demo_section("Legacy Mode"):
-        legacy_ops = LLMOperations(use_legacy=True)
-        print(f"Legacy processor: {legacy_ops.get_processor_info()}")
-        print(f"Legacy providers: {legacy_ops.get_available_providers()}")
+    with _demo_section("Default Mode"):
+        legacy_ops = LLMOperations()
+        print(f"Processor: {legacy_ops.get_processor_info()}")
+        print(f"Providers: {legacy_ops.get_available_providers()}")
 
     with _demo_section("Multi-Provider Mode"):
         ops = LLMOperations()
@@ -236,10 +236,10 @@ def demo_error_handling():
         result = ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result with no keys: {result[:100]}...")
 
-    with _demo_section("Testing legacy fallback"):
-        legacy_ops = LLMOperations(use_legacy=True)
+    with _demo_section("Testing fallback"):
+        legacy_ops = LLMOperations()
         result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
-        print(f"Legacy result: {result[:100]}...")
+        print(f"Result: {result[:100]}...")
 
 def main():
     """Run all demonstration scenarios."""
