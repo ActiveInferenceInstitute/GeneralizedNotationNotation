@@ -214,13 +214,69 @@ if FASTAPI_AVAILABLE:
             for hash_, entry in _runs.items()
         }
 
+    # ── Run state / event tracking ────────────────────────────────────────────
+
+    class RunTracker:
+        """Owns all state mutations and event appends for a single pipeline run."""
+
+        def __init__(self, entry: Dict[str, Any], run_hash: str) -> None:
+            self._entry = entry
+            self._run_hash = run_hash
+
+        def emit_pipeline_start(self) -> None:
+            self._entry["events"].append({
+                "type": "pipeline_start",
+                "run_hash": self._run_hash,
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        def on_step_start(self, name: str, step_num: int) -> None:
+            self._entry["current_step"] = name
+            self._entry["events"].append({
+                "type": "step_start",
+                "step_num": step_num,
+                "step_name": name,
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        def on_step_complete(self, name: str, step_num: int, status: str, duration: float) -> None:
+            self._entry["steps_completed"] = self._entry.get("steps_completed", 0) + 1
+            self._entry["events"].append({
+                "type": "step_complete",
+                "step_num": step_num,
+                "step_name": name,
+                "status": status,
+                "duration": duration,
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        def on_error(self, name: str, error_msg: str) -> None:
+            self._entry["events"].append({
+                "type": "error",
+                "step_name": name,
+                "error": error_msg,
+                "timestamp": datetime.now().isoformat(),
+            })
+
+        def mark_completed(self, start: float) -> None:
+            self._entry["status"] = "completed"
+            self._entry["completed_at"] = datetime.now().isoformat()
+            self._entry["duration_seconds"] = round(time.time() - start, 2)
+
+        def mark_failed(self, error: Exception, start: float) -> None:
+            self._entry["status"] = "failed"
+            self._entry["errors"].append(str(error))
+            self._entry["completed_at"] = datetime.now().isoformat()
+            self._entry["duration_seconds"] = round(time.time() - start, 2)
+
     # ── Background pipeline execution ────────────────────────────────────────
 
     async def _execute_pipeline(run_hash: str, request: RunRequest):
-        """Execute pipeline in background, updating run store."""
+        """Execute pipeline in background, updating run store via RunTracker."""
         entry = _runs[run_hash]
         entry["status"] = "running"
         start = time.time()
+        tracker = RunTracker(entry, run_hash)
 
         try:
             from pipeline.context import PipelineContext
@@ -229,48 +285,12 @@ if FASTAPI_AVAILABLE:
                 output_dir=Path(request.output_dir),
                 target_dir=Path(request.target_dir),
             )
+            ctx.on_step_start = tracker.on_step_start
+            ctx.on_step_complete = tracker.on_step_complete
+            ctx.on_error = tracker.on_error
 
-            # Setup event callbacks
-            def handle_step_start(name, step_num):
-                entry["current_step"] = name
-                entry["events"].append({
-                    "type": "step_start",
-                    "step_num": step_num,
-                    "step_name": name,
-                    "timestamp": datetime.now().isoformat(),
-                })
+            tracker.emit_pipeline_start()
 
-            def handle_step_complete(name, step_num, status, duration):
-                entry["steps_completed"] = entry.get("steps_completed", 0) + 1
-                entry["events"].append({
-                    "type": "step_complete",
-                    "step_num": step_num,
-                    "step_name": name,
-                    "status": status,
-                    "duration": duration,
-                    "timestamp": datetime.now().isoformat(),
-                })
-
-            def handle_error(name, error_msg):
-                entry["events"].append({
-                    "type": "error",
-                    "step_name": name,
-                    "error": error_msg,
-                    "timestamp": datetime.now().isoformat(),
-                })
-
-            ctx.on_step_start = handle_step_start
-            ctx.on_step_complete = handle_step_complete
-            ctx.on_error = handle_error
-
-            # Emit start event
-            entry["events"].append({
-                "type": "pipeline_start",
-                "run_hash": run_hash,
-                "timestamp": datetime.now().isoformat(),
-            })
-
-            # Step discovery
             from pipeline.step_registry import discover_steps
             steps = discover_steps()
 
@@ -297,18 +317,11 @@ if FASTAPI_AVAILABLE:
                     duration=time.time() - step_start,
                 )
 
-            # Save summary
             ctx.save_summary()
-
-            entry["status"] = "completed"
-            entry["completed_at"] = datetime.now().isoformat()
-            entry["duration_seconds"] = round(time.time() - start, 2)
+            tracker.mark_completed(start)
 
         except Exception as e:
-            entry["status"] = "failed"
-            entry["errors"].append(str(e))
-            entry["completed_at"] = datetime.now().isoformat()
-            entry["duration_seconds"] = round(time.time() - start, 2)
+            tracker.mark_failed(e, start)
             logger.error(f"Pipeline run {run_hash} failed: {e}")
 
     # ── Helpers ──────────────────────────────────────────────────────────────
