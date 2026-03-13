@@ -78,21 +78,6 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
 
     return parser
 
-"""
-Standardized Pipeline Module Function Template
-
-This module provides templates and utilities for creating consistent module functions
-across all pipeline steps.
-"""
-
-import argparse
-from typing import Callable, Optional, Dict, Any, List
-# Import utilities - these are already imported above
-# from . import (
-#     setup_step_logging, log_step_start, log_step_success,
-#     log_step_warning, log_step_error, ArgumentParser, UTILS_AVAILABLE
-# )
-# from ..pipeline import STEP_METADATA, get_output_dir_for_script
 
 def standard_module_function(
     target_dir: Path,
