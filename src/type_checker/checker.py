@@ -29,13 +29,9 @@ class SimpleGNNParser:
 
     def parse_file(self, file_path: str) -> Dict[str, Any]:
         """Parse a GNN file and return structured content."""
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                content = f.read()
-            return self._parse_markdown_format(content)
-        except Exception as e:
-            logger.error(f"Failed to parse file {file_path}: {e}")
-            return {}
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+        return self._parse_markdown_format(content)
 
     def _parse_markdown_format(self, content: str) -> Dict[str, Any]:
         """Parse GNN file in Markdown format."""

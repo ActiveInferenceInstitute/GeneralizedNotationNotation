@@ -578,17 +578,17 @@ if __name__ == "__main__":
 
 def render_gnn_to_pymdp(
     gnn_spec: Dict[str, Any],
-    output_script_path: Path,
+    output_path: Path,
     options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
     Render GNN specification to PyMDP simulation script.
-    
+
     Args:
         gnn_spec: Parsed GNN specification dictionary
-        output_script_path: Path for output PyMDP script
+        output_path: Path for output PyMDP script
         options: Optional rendering options
-        
+
     Returns:
         Tuple of (success, message, warnings)
     """
@@ -600,11 +600,11 @@ def render_gnn_to_pymdp(
         pymdp_code = renderer._generate_pymdp_simulation_code(gnn_spec, model_name)
 
         # Write output file
-        output_script_path.parent.mkdir(parents=True, exist_ok=True)
-        with open(output_script_path, 'w', encoding='utf-8') as f:
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(output_path, 'w', encoding='utf-8') as f:
             f.write(pymdp_code)
 
-        message = f"Generated PyMDP simulation script: {output_script_path}"
+        message = f"Generated PyMDP simulation script: {output_path}"
         warnings = []
 
         # Check for potential issues

@@ -138,6 +138,17 @@ def register_mcp_tools():
     return tools
 
 
+def register_tools(mcp_instance) -> None:
+    """Register oxdraw tools with the MCP server using the universal protocol."""
+    for tool in register_mcp_tools():
+        mcp_instance.register_tool(
+            tool["name"],
+            tool["handler"],
+            tool.get("input_schema", {}),
+            tool.get("description", ""),
+        )
+
+
 def tool_convert_to_mermaid(args: Dict[str, Any]) -> Dict[str, Any]:
     """
     MCP tool handler: Convert GNN to Mermaid.

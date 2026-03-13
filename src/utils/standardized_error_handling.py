@@ -66,124 +66,39 @@ class StandardizedErrorHandler:
 
     def handle_dependency_error(self, dependency_name: str, error: Exception,
                               install_hint: Optional[str] = None) -> bool:
-        """
-        Handle dependency-related errors with consistent messaging.
-        
-        Args:
-            dependency_name: Name of the missing dependency
-            error: The import or dependency error
-            install_hint: Optional installation instruction
-            
-        Returns:
-            bool: True if should continue with graceful degradation, False if critical
-        """
-        context = {
-            "dependency": dependency_name,
-            "install_hint": install_hint or f"uv pip install {dependency_name}"
-        }
-
-        pipeline_error = self.pipeline_error_handler.create_error(
-            step_name=self.step_name,
-            error=error,
+        """Handle a missing dependency; always returns True (graceful degradation)."""
+        hint = install_hint or f"uv pip install {dependency_name}"
+        log_step_warning(self.logger, f"{dependency_name} not available - {hint}")
+        self.pipeline_error_handler.create_error(
+            step_name=self.step_name, error=error,
             category=ErrorCategory.DEPENDENCY,
-            context=context
+            context={"dependency": dependency_name, "install_hint": hint},
         )
-
-        # Log dependency error with helpful information
-        if install_hint:
-            log_step_warning(
-                self.logger,
-                f"{dependency_name} not available - {install_hint}"
-            )
-        else:
-            log_step_warning(
-                self.logger,
-                f"{dependency_name} not available - install with: uv pip install {dependency_name}"
-            )
-
-        # Dependency errors are usually recoverable with graceful degradation
         return True
 
     def handle_file_operation_error(self, operation: str, file_path: Path,
                                   error: Exception, critical: bool = False) -> bool:
-        """
-        Handle file operation errors consistently.
-        
-        Args:
-            operation: Description of file operation (read, write, etc.)
-            file_path: Path to the file involved
-            error: The file operation error
-            critical: Whether this error should halt execution
-            
-        Returns:
-            bool: True if should continue, False if should halt
-        """
-        context = {
-            "file_operation": operation,
-            "file_path": str(file_path),
-            "file_exists": file_path.exists() if isinstance(file_path, Path) else False
-        }
-
-        category = ErrorCategory.FILE_ERROR
-        if not critical:
-            log_step_warning(
-                self.logger,
-                f"File {operation} failed for {file_path}: {error}"
-            )
-        else:
-            log_step_error(
-                self.logger,
-                f"Critical file {operation} failed for {file_path}: {error}"
-            )
-
+        """Handle a file operation error; returns False only if critical."""
+        msg = f"{'Critical file' if critical else 'File'} {operation} failed for {file_path}: {error}"
+        (log_step_error if critical else log_step_warning)(self.logger, msg)
         pipeline_error = self.pipeline_error_handler.create_error(
-            step_name=self.step_name,
-            error=error,
-            category=category,
-            context=context
+            step_name=self.step_name, error=error,
+            category=ErrorCategory.FILE_ERROR,
+            context={"file_operation": operation, "file_path": str(file_path)},
         )
-
-        exit_code = self.pipeline_error_handler.handle_error(pipeline_error)
-        return exit_code != 1  # Continue unless critical
+        return self.pipeline_error_handler.handle_error(pipeline_error) != 1
 
     def handle_validation_error(self, validation_type: str, details: str,
                               error: Optional[Exception] = None) -> bool:
-        """
-        Handle validation errors consistently.
-        
-        Args:
-            validation_type: Type of validation that failed
-            details: Details about the validation failure
-            error: Optional underlying exception
-            
-        Returns:
-            bool: True if should continue with warnings, False if should halt
-        """
-        context = {
-            "validation_type": validation_type,
-            "validation_details": details
-        }
-
-        if error:
-            pipeline_error = self.pipeline_error_handler.create_error(
-                step_name=self.step_name,
-                error=error,
-                category=ErrorCategory.VALIDATION,
-                context=context
-            )
-        else:
-            # Create synthetic error for validation failures without exceptions
-            validation_error = ValueError(f"{validation_type} validation failed: {details}")
-            pipeline_error = self.pipeline_error_handler.create_error(
-                step_name=self.step_name,
-                error=validation_error,
-                category=ErrorCategory.VALIDATION,
-                context=context
-            )
-
+        """Handle a validation failure; returns False only if the error is critical."""
+        context = {"validation_type": validation_type, "validation_details": details}
+        exc = error or ValueError(f"{validation_type} validation failed: {details}")
+        pipeline_error = self.pipeline_error_handler.create_error(
+            step_name=self.step_name, error=exc,
+            category=ErrorCategory.VALIDATION, context=context,
+        )
         log_step_warning(self.logger, f"Validation warning: {validation_type} - {details}")
-        exit_code = self.pipeline_error_handler.handle_error(pipeline_error)
-        return exit_code != 1
+        return self.pipeline_error_handler.handle_error(pipeline_error) != 1
 
     def get_error_summary(self) -> Dict[str, Any]:
         """

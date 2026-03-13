@@ -327,7 +327,7 @@ class OpenAIProvider(BaseLLMProvider):
 
         async def _run():
             return await self.generate_response(
-                [{"role": "user", "content": prompt}]
+                [LLMMessage(role="user", content=prompt)]
             )
 
         def _extract(result):

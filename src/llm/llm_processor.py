@@ -402,7 +402,7 @@ class LLMProcessor:
         gnn_content: str,
         analysis_type: AnalysisType = AnalysisType.SUMMARY,
         config: Optional[LLMConfig] = None
-    ) -> Dict[str, LLMResponse]:
+    ) -> Dict[str, Optional[LLMResponse]]:
         """
         Compare responses from multiple providers for the same GNN content.
         

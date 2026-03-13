@@ -564,7 +564,7 @@ end
 
 def render_gnn_to_rxinfer(
     gnn_spec: Dict[str, Any],
-    output_script_path: Path,
+    output_path: Path,
     options: Optional[Dict[str, Any]] = None
 ) -> Tuple[bool, str, List[str]]:
     """
@@ -572,7 +572,7 @@ def render_gnn_to_rxinfer(
     
     Args:
         gnn_spec: Parsed GNN specification dictionary
-        output_script_path: Path for output RxInfer script
+        output_path: Path for output RxInfer script
         options: Optional rendering options
         
     Returns:
@@ -600,14 +600,14 @@ def render_gnn_to_rxinfer(
 
         # Write output file
         try:
-            output_script_path.parent.mkdir(parents=True, exist_ok=True)
-            with open(output_script_path, 'w', encoding='utf-8') as f:
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(output_path, 'w', encoding='utf-8') as f:
                 f.write(rxinfer_code)
         except Exception as write_error:
             logger.error(f"Failed to write output file: {write_error}")
             return False, f"Error writing RxInfer.jl script: {write_error}", []
 
-        message = f"Generated RxInfer.jl simulation script: {output_script_path}"
+        message = f"Generated RxInfer.jl simulation script: {output_path}"
         warnings = []
 
         # Check for potential issues

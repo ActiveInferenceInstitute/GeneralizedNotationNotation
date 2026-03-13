@@ -43,11 +43,17 @@ def import_mcp():
 
         return mcp_module.mcp_instance, mcp_module.initialize, getattr(mcp_module, 'MCPError', Exception)
 
+
+def _get_mcp():
+    """Import and initialize the MCP module, returning (mcp_instance, MCPError)."""
+    mcp_instance, initialize, MCPError = import_mcp()
+    initialize()
+    return mcp_instance, MCPError
+
 def list_capabilities(args):
     """Enhanced listing of all available MCP capabilities with better formatting."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         capabilities = mcp_instance.get_capabilities()
 
@@ -142,8 +148,7 @@ def list_capabilities(args):
 def execute_tool(args):
     """Execute an MCP tool with enhanced parameter validation and error reporting."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         # Validate tool exists
         if args.tool_name not in mcp_instance.tools:
@@ -234,8 +239,7 @@ def execute_tool(args):
 def get_resource(args):
     """Retrieve an MCP resource."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         result = mcp_instance.get_resource(args.uri)
 
@@ -256,8 +260,7 @@ def get_resource(args):
 def get_server_status(args):
     """Get detailed server status information."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         status = mcp_instance.get_server_status()
 
@@ -289,8 +292,7 @@ def get_server_status(args):
 def get_tool_info(args):
     """Get detailed information about a specific tool."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         tool_info = mcp_instance.tools.get(args.tool_name)
         if not tool_info:
@@ -359,8 +361,7 @@ def get_tool_info(args):
 def get_diagnostics(args):
     """Get comprehensive diagnostic information."""
     try:
-        mcp_instance, initialize, MCPError = import_mcp()
-        initialize()
+        mcp_instance, MCPError = _get_mcp()
 
         # Get diagnostics using the new meta-tool
         try:
