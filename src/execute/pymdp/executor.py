@@ -34,11 +34,6 @@ def execute_pymdp_simulation_from_gnn(
     try:
         logger.info(f"Starting PyMDP simulation from GNN spec (correlation_id: {correlation_id})")
 
-        # Create enhanced context
-        context = create_enhanced_pymdp_context(
-            gnn_spec, output_dir, correlation_id, config_overrides
-        )
-
         # Execute simulation
         success, results = execute_pymdp_simulation(gnn_spec, output_dir, correlation_id)
 
