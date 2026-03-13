@@ -21,9 +21,6 @@ from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
 
-# Global server start time for uptime tracking
-SERVER_START_TIME = time.time()
-
 def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
     """
     Get comprehensive status information about the MCP server.
@@ -35,7 +32,8 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
         Dictionary containing detailed server status information including
         performance metrics, health status, and operational statistics.
     """
-    uptime_seconds = time.time() - SERVER_START_TIME
+    start_time = getattr(mcp_instance_ref, '_server_start_time', None) or time.time()
+    uptime_seconds = time.time() - start_time
     uptime_str = time.strftime("%H:%M:%S", time.gmtime(uptime_seconds))
 
     # Get server status from the instance
@@ -81,7 +79,7 @@ def get_mcp_server_status(mcp_instance_ref) -> Dict[str, Any]:
         "server_name": mcp_instance_ref.get_capabilities().get("name", "Unknown GNN MCP Server"),
         "server_version": mcp_instance_ref.get_capabilities().get("version", "Unknown"),
         "status": "running",
-        "start_time_unix": SERVER_START_TIME,
+        "start_time_unix": start_time,
         "uptime_seconds": uptime_seconds,
         "uptime_formatted": uptime_str,
         "loaded_modules_count": len([m for m in mcp_instance_ref.modules.values() if m.status == "loaded"]),
@@ -401,6 +399,10 @@ def register_tools(mcp_instance):
         mcp_instance: The main MCP instance to register tools with.
     """
     logger.info("Registering MCP meta-tools")
+
+    # Record service start time on the instance (used by get_mcp_server_status for accurate uptime)
+    if not hasattr(mcp_instance, '_server_start_time'):
+        mcp_instance._server_start_time = time.time()
 
     # Register meta-tools
     mcp_instance.register_tool(

@@ -95,8 +95,29 @@ class PerformanceTracker:
         """Get current timestamp as ISO format string."""
         return datetime.now().isoformat()
 
-# Global performance tracker instance
-performance_tracker = PerformanceTracker()
+_performance_tracker_instance: "Optional[PerformanceTracker]" = None
+
+
+def get_performance_tracker() -> "PerformanceTracker":
+    """Return the shared PerformanceTracker instance (created on first call).
+
+    Tests can reset state by setting utils.performance_tracker._performance_tracker_instance = None.
+    """
+    global _performance_tracker_instance
+    if _performance_tracker_instance is None:
+        _performance_tracker_instance = PerformanceTracker()
+    return _performance_tracker_instance
+
+
+# Module-level alias for backwards compatibility.  No longer allocated at import
+# time — first access triggers lazy construction via get_performance_tracker().
+class _LazyPerformanceTracker:
+    """Proxy that defers PerformanceTracker construction to first attribute access."""
+    def __getattr__(self, name: str):
+        return getattr(get_performance_tracker(), name)
+
+
+performance_tracker = _LazyPerformanceTracker()
 
 _monitoring_data = {}
 _monitoring_lock = threading.Lock()
@@ -104,6 +125,7 @@ _monitoring_lock = threading.Lock()
 
 __all__ = [
     'PerformanceTracker',
+    'get_performance_tracker',
     'performance_tracker',
     'track_operation_standalone',
     'get_performance_metrics',
