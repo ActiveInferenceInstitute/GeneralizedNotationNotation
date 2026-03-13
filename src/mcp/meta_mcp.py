@@ -16,6 +16,7 @@ Key Features:
 
 import time
 import logging
+from functools import partial
 from typing import Dict, Any
 
 logger = logging.getLogger(__name__)
@@ -401,28 +402,6 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering MCP meta-tools")
 
-    # Create wrapper functions to pass the mcp_instance
-    def get_status_wrapper():
-        return get_mcp_server_status(mcp_instance)
-
-    def get_auth_wrapper():
-        return get_mcp_auth_status(mcp_instance)
-
-    def get_encryption_wrapper():
-        return get_mcp_encryption_status(mcp_instance)
-
-    def get_module_info_wrapper(module_name: str):
-        return get_mcp_module_info(mcp_instance, module_name)
-
-    def get_tool_categories_wrapper():
-        return get_mcp_tool_categories(mcp_instance)
-
-    def get_performance_metrics_wrapper():
-        return get_mcp_performance_metrics(mcp_instance)
-
-    def get_diagnostics_wrapper():
-        return get_mcp_diagnostics(mcp_instance)
-
     # Register meta-tools
     mcp_instance.register_tool(
         name="get_mcp_server_capabilities",
@@ -436,7 +415,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_server_status",
-        func=get_status_wrapper,
+        func=partial(get_mcp_server_status, mcp_instance),
         schema={},
         description="Provides comprehensive operational status of the MCP server, including uptime, modules, and performance metrics.",
         module="meta",
@@ -446,7 +425,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_server_auth_status",
-        func=get_auth_wrapper,
+        func=partial(get_mcp_auth_status, mcp_instance),
         schema={},
         description="Describes the current authentication mechanisms and security configuration of the MCP server.",
         module="meta",
@@ -456,7 +435,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_server_encryption_status",
-        func=get_encryption_wrapper,
+        func=partial(get_mcp_encryption_status, mcp_instance),
         schema={},
         description="Describes the current encryption status for server transport and data handling with security recommendations.",
         module="meta",
@@ -466,7 +445,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_module_info",
-        func=get_module_info_wrapper,
+        func=partial(get_mcp_module_info, mcp_instance),
         schema={
             "type": "object",
             "properties": {
@@ -485,7 +464,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_tool_categories",
-        func=get_tool_categories_wrapper,
+        func=partial(get_mcp_tool_categories, mcp_instance),
         schema={},
         description="Get tools organized by category for easier discovery and navigation.",
         module="meta",
@@ -495,7 +474,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_performance_metrics",
-        func=get_performance_metrics_wrapper,
+        func=partial(get_mcp_performance_metrics, mcp_instance),
         schema={},
         description="Get performance metrics and statistics for the MCP server, including execution times and error rates.",
         module="meta",
@@ -505,7 +484,7 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_mcp_diagnostics",
-        func=get_diagnostics_wrapper,
+        func=partial(get_mcp_diagnostics, mcp_instance),
         schema={},
         description="Get comprehensive diagnostic information for troubleshooting and monitoring, including health checks and recommendations.",
         module="meta",

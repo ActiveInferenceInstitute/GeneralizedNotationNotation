@@ -497,8 +497,12 @@ def extract_discopy_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
 
 
 def extract_jax_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
-    """Extract JAX simulation data from saved files."""
-    # Similar to PyMDP
+    """Extract JAX simulation data from saved files.
+
+    JAX scripts write to the same shared contract as PyMDP:
+    simulation_data/simulation_results.json with keys beliefs, actions,
+    observations, num_timesteps; and visualizations/*.{png,svg}.
+    """
     return extract_pymdp_data_from_files(output_dir, logger)
 
 
