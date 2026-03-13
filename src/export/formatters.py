@@ -8,6 +8,7 @@ This module provides format-specific export functionality.
 from pathlib import Path
 from typing import Dict, Any
 import json
+import logging
 import pickle
 import xml.etree.ElementTree as ET
 try:
@@ -15,13 +16,16 @@ try:
 except ImportError:
     from xml.dom.minidom import parseString as _xml_parseString  # type: ignore[no-redef]
 
+logger = logging.getLogger(__name__)
+
 def export_to_json(parsed_content: Dict[str, Any], output_file: Path) -> bool:
     """Export parsed content to JSON format."""
     try:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(parsed_content, f, indent=2, ensure_ascii=False)
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_json failed: %s", e)
         return False
 
 def export_to_xml(parsed_content: Dict[str, Any], output_file: Path) -> bool:
@@ -59,7 +63,8 @@ def export_to_xml(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             f.write(xml_str)
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_xml failed: %s", e)
         return False
 
 def export_to_graphml(parsed_content: Dict[str, Any], output_file: Path) -> bool:
@@ -110,7 +115,8 @@ def export_to_graphml(parsed_content: Dict[str, Any], output_file: Path) -> bool
             f.write(xml_str)
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_graphml failed: %s", e)
         return False
 
 def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
@@ -157,7 +163,8 @@ def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             f.write(xml_str)
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_gexf failed: %s", e)
         return False
 
 def export_to_pickle(parsed_content: Dict[str, Any], output_file: Path) -> bool:
@@ -166,7 +173,8 @@ def export_to_pickle(parsed_content: Dict[str, Any], output_file: Path) -> bool:
         with open(output_file, 'wb') as f:
             pickle.dump(parsed_content, f)
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_pickle failed: %s", e)
         return False
 
 def export_to_json_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
@@ -175,7 +183,8 @@ def export_to_json_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
         with open(output_file, 'w', encoding='utf-8') as f:
             json.dump(model_data, f, indent=2, ensure_ascii=False)
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_json_gnn failed: %s", e)
         return False
 
 def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
@@ -224,7 +233,8 @@ def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
             f.write(xml_str)
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_xml_gnn failed: %s", e)
         return False
 
 def export_to_python_pickle(model_data: Dict[str, Any], output_file: Path) -> bool:
@@ -233,7 +243,8 @@ def export_to_python_pickle(model_data: Dict[str, Any], output_file: Path) -> bo
         with open(output_file, 'wb') as f:
             pickle.dump(model_data, f)
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_python_pickle failed: %s", e)
         return False
 
 def export_to_plaintext_summary(model_data: Dict[str, Any], output_file: Path) -> bool:
@@ -267,7 +278,8 @@ def export_to_plaintext_summary(model_data: Dict[str, Any], output_file: Path) -
                 f.write(f"  - {section_name}: {len(section_content)} lines\n")
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_plaintext_summary failed: %s", e)
         return False
 
 def export_to_plaintext_dsl(model_data: Dict[str, Any], output_file: Path) -> bool:
@@ -302,5 +314,6 @@ def export_to_plaintext_dsl(model_data: Dict[str, Any], output_file: Path) -> bo
                 f.write("\n")
 
         return True
-    except Exception:
+    except Exception as e:
+        logger.warning("export_to_plaintext_dsl failed: %s", e)
         return False
