@@ -21,7 +21,7 @@ if TYPE_CHECKING:
 # Path normalization and output collection
 # ---------------------------------------------------------------------------
 
-def normalize_and_deduplicate_paths(found_files: List[Path], logger) -> List[Path]:
+def normalize_and_deduplicate_paths(found_files: List[Path], logger: logging.Logger) -> List[Path]:
     """
     Normalize paths and remove duplicates/nested paths.
 
@@ -79,7 +79,7 @@ def collect_execution_outputs(
     script_path: Path,
     output_dir: Path,
     framework: "FrameworkName",
-    logger
+    logger: logging.Logger
 ) -> Dict[str, List[str]]:
     """
     Collect all outputs from executed script and copy to execute output directory.
@@ -272,7 +272,7 @@ def extract_simulation_data_from_files(
     return enhanced_data
 
 
-def extract_pymdp_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+def extract_pymdp_data_from_files(output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """Extract PyMDP simulation data from saved files."""
     data = {}
 
@@ -315,7 +315,7 @@ def extract_pymdp_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
     return data
 
 
-def extract_rxinfer_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+def extract_rxinfer_data_from_files(output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """Extract RxInfer.jl simulation data from saved files."""
     data = {}
 
@@ -346,7 +346,7 @@ def extract_rxinfer_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
     return data
 
 
-def extract_activeinference_jl_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+def extract_activeinference_jl_data_from_files(output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """Extract ActiveInference.jl simulation data from saved files."""
     data = {}
 
@@ -443,7 +443,7 @@ def extract_activeinference_jl_data_from_files(output_dir: Path, logger) -> Dict
     return data
 
 
-def extract_discopy_data_from_files(output_dir: Path, logger) -> Dict[str, Any]:
+def extract_discopy_data_from_files(output_dir: Path, logger: logging.Logger) -> Dict[str, Any]:
     """Extract DisCoPy simulation data from saved files."""
     data = {}
 
@@ -507,7 +507,7 @@ extract_jax_data_from_files = extract_pymdp_data_from_files
 # Stdout/stderr-based extraction (parses execution output text)
 # ---------------------------------------------------------------------------
 
-def extract_simulation_data(stdout: str, stderr: str, framework: "FrameworkName", logger) -> Dict[str, Any]:
+def extract_simulation_data(stdout: str, stderr: str, framework: "FrameworkName", logger: logging.Logger) -> Dict[str, Any]:
     """
     Extract simulation data from execution output.
 
