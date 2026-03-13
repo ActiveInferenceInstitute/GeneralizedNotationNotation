@@ -26,7 +26,7 @@ Source modules:
 - venv_utils: Virtual environment path helpers
 - system_utils: System information gathering
 - test_utils: Test runner, categories, stages, and coverage targets
-- pipeline: Legacy utilities re-exported for backwards compatibility
+- pipeline: Previous utilities re-exported for backwards compatibility
 - error_handling: Structured error handler, categories, and recovery strategies
 - structured_logging: Structured log emission with correlation context
 - dependency_audit: Dependency auditing and optimization utilities
@@ -196,6 +196,10 @@ try:
         get_output_dir_for_script
     )
 
+    from .pipeline_template import (
+        create_standardized_pipeline_script,
+    )
+
     # Import error handling framework
     from .error_handling import (
         PipelineErrorHandler,
@@ -233,9 +237,9 @@ try:
     )
 
 except ImportError as e:
-    # Import fallback functions when modules are not available
+    # Import recovery functions when modules are not available
     logging.warning(f"Some utils modules not available: {e}")
-    from .fallback import (
+    from .recovery import (
         FallbackArgumentParser,
         setup_step_logging
     )
@@ -410,5 +414,8 @@ __all__ = [
     # Base processor utilities
     'BaseProcessor',
     'ProcessingResult',
-    'create_processor'
+    'create_processor',
+
+    # Pipeline template utilities (most-imported submodule, exposed here to avoid bypass)
+    'create_standardized_pipeline_script',
 ]

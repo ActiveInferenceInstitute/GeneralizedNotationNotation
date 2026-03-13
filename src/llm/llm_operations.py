@@ -357,17 +357,36 @@ class LLMOperations:
 
         return {"mode": "uninitialized"}
 
-# Global instance for easy access - now using multi-provider by default
-llm_ops = LLMOperations()
+# Lazy singleton — instantiated on first use so env vars are read at call time,
+# not at import time (which would snapshot env state for the process lifetime).
+_llm_ops: Optional["LLMOperations"] = None
+
+
+def _get_llm_ops() -> "LLMOperations":
+    global _llm_ops
+    if _llm_ops is None:
+        _llm_ops = LLMOperations()
+    return _llm_ops
+
+
+# Backward-compat alias; callers that imported llm_ops directly get the lazy getter.
+# New callers should use _get_llm_ops() or instantiate LLMOperations directly.
+class _LazyOps:
+    """Proxy that defers LLMOperations construction to first attribute access."""
+    def __getattr__(self, name: str):
+        return getattr(_get_llm_ops(), name)
+
+
+llm_ops = _LazyOps()
 
 # Convenience functions for backward compatibility
 def construct_prompt(content_parts: List[str], task_description: str) -> str:
     """Convenience function for prompt construction."""
-    return llm_ops.construct_prompt(content_parts, task_description)
+    return _get_llm_ops().construct_prompt(content_parts, task_description)
 
 def get_llm_response(prompt: str, model: str = DEFAULT_MODEL, max_tokens: int = DEFAULT_MAX_TOKENS) -> str:
     """Convenience function for getting LLM response."""
-    return llm_ops.get_llm_response(prompt, model, max_tokens)
+    return _get_llm_ops().get_llm_response(prompt, model, max_tokens)
 
 def load_api_key() -> Optional[str]:
     """

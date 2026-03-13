@@ -264,7 +264,7 @@ class MCP:
                     if not success:
                         all_modules_loaded_successfully = False
                 except FuturesTimeoutError:
-                    # Timeout is a transient issue - module may load later via fallback
+                    # Timeout is a transient issue - module may load later via recovery
                     logger.warning(f"Module {module_name} loading timed out (>{per_module_timeout:.0f}s) — skipped")
                     all_modules_loaded_successfully = False
                 except Exception as e:
@@ -279,7 +279,7 @@ class MCP:
                         last_updated=time.time()
                     )
         else:
-            # Fallback sequential loading
+            # Recovery sequential loading
             for directory in directories:
                 mcp_file = directory / "mcp.py"
                 if not mcp_file.exists():
@@ -1349,8 +1349,22 @@ class MCP:
             self._enable_rate_limiting = True
             self._strict_validation = True
 
-# --- Global MCP Instance ---
-mcp_instance = MCP()
+# --- Global MCP Instance (lazy) ---
+# Deferred to first access so importing this module does not allocate a
+# ThreadPoolExecutor or other resources before the caller is ready.
+_mcp_instance: Optional["MCP"] = None
+
+
+class _LazyMCP:
+    """Proxy that creates the real MCP singleton on first attribute access."""
+    def __getattr__(self, name: str):
+        global _mcp_instance
+        if _mcp_instance is None:
+            _mcp_instance = MCP()
+        return getattr(_mcp_instance, name)
+
+
+mcp_instance = _LazyMCP()
 
 # --- Initialization Function ---
 def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,
@@ -1410,8 +1424,11 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     return mcp_instance, sdk_found, all_modules_loaded
 
 def get_mcp_instance() -> MCP:
-    """Get the global MCP instance."""
-    return mcp_instance
+    """Get the global MCP instance, creating it on first call."""
+    global _mcp_instance
+    if _mcp_instance is None:
+        _mcp_instance = MCP()
+    return _mcp_instance
 
 def list_available_tools() -> List[str]:
     """List all available tool names."""
@@ -1448,7 +1465,7 @@ def register_tools(server):
     """No-op: this module IS the MCP server, not a plugin.
 
     The auto-discovery loop imports ``src.mcp.mcp`` and looks for
-    ``register_tools``.  Providing this stub avoids the warning
+    ``register_tools``.  Providing this placeholder avoids the warning
     "Module src.mcp.mcp found but has no register_tools function."
     """
     pass
