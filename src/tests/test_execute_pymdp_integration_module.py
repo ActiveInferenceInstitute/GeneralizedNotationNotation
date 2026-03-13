@@ -97,7 +97,7 @@ class TestGNNPyMDPIntegration:
 
         simulation = PyMDPSimulation(config)
         # Create model first
-        simulation.create_model()
+        simulation.create_pymdp_model()
         # Use correct method name
         results = simulation.run_simulation()
 

@@ -1390,11 +1390,6 @@ class GnnToPyMdpConverter:
             "E": "E"
         }
 
-        # Combine all parameters into appropriate dictionaries
-        control_params = {}
-        if self.control_factor_indices:
-            control_params["control_fac_idx"] = self.control_factor_indices
-
         algorithm_params = algo_params if algo_params else {}
 
         # Handle general_params safely
@@ -1403,7 +1398,7 @@ class GnnToPyMdpConverter:
         agent_code_lines = generate_pymdp_agent_instantiation(
             agent_name="agent",
             model_params=model_params,
-            control_params=control_params,
+            control_fac_idx_list=self.control_factor_indices or None,
             algorithm_params=algorithm_params,
             action_names=action_names,
             qs_initial=qs_initial,

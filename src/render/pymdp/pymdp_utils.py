@@ -197,7 +197,6 @@ def generate_pymdp_matrix_definition(
 def generate_pymdp_agent_instantiation(
     agent_name: str,
     model_params: Dict[str, str],
-    control_params: Optional[Dict[str, Any]] = None,
     learning_params: Optional[Dict[str, Any]] = None,
     algorithm_params: Optional[Dict[str, Any]] = None,
     policy_len: Optional[int] = None,
@@ -234,10 +233,6 @@ def generate_pymdp_agent_instantiation(
     if learning_params: all_params.update(learning_params)
     if algorithm_params: all_params.update(algorithm_params)
 
-    # Deprecated control_params - merge if present
-    if control_params:
-        logger.warning("Usage of 'control_params' in generate_pymdp_agent_instantiation is deprecated. Merge into other relevant parameter groups.")
-        all_params.update(control_params)
 
 
     param_lines = []
