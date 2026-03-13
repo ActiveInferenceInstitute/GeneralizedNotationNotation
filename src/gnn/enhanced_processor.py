@@ -80,7 +80,7 @@ def is_enhanced_testing_available() -> bool:
     return not _get_testing_modules().is_empty()
 
 
-def enhanced_validation_with_gnn_processing(
+def validate_gnn_with_round_trip(
     target_dir: Path,
     validation_level: str = "standard",
     enable_round_trip: bool = False,
