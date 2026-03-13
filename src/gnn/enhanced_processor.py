@@ -12,23 +12,51 @@ Enhanced Features:
 - Production-ready testing infrastructure
 """
 
+from __future__ import annotations
+from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, List, Optional, Tuple
+from typing import Any, List, Optional, Tuple, Type
 import logging
 import json
 import time
 from datetime import datetime
 from utils import log_step_start, log_step_success, log_step_warning, log_step_error
 
+
+@dataclass
+class TestingModules:
+    """Typed container for lazily-imported GNN testing classes.
+
+    Fields are None when the corresponding module could not be imported
+    (circular-dependency guard).  Check ``ENHANCED_TESTING_AVAILABLE`` or
+    individual fields before use.
+    """
+    GNNRoundTripTester: Optional[Type[Any]] = None
+    ComprehensiveTestReport: Optional[Type[Any]] = None
+    RoundTripResult: Optional[Type[Any]] = None
+    GNNParsingSystem: Optional[Type[Any]] = None
+    GNNFormat: Optional[Type[Any]] = None
+    GNNValidator: Optional[Type[Any]] = None
+    ValidationLevel: Optional[Type[Any]] = None
+    ValidationResult: Optional[Type[Any]] = None
+    CrossFormatValidator: Optional[Type[Any]] = None
+    CrossFormatValidationResult: Optional[Type[Any]] = None
+
+    def is_empty(self) -> bool:
+        """Return True when none of the modules loaded successfully."""
+        return all(v is None for v in vars(self).values())
+
+
 # Import enhanced GNN testing capabilities with lazy loading to avoid circular imports
 ENHANCED_TESTING_AVAILABLE = False
-_testing_modules_cache = {}
+_testing_modules_cache: Optional[TestingModules] = None
 
-def _get_testing_modules():
+
+def _get_testing_modules() -> TestingModules:
     """Lazy import of testing modules to avoid circular dependencies."""
     global _testing_modules_cache, ENHANCED_TESTING_AVAILABLE
 
-    if _testing_modules_cache:
+    if _testing_modules_cache is not None:
         return _testing_modules_cache
 
     try:
@@ -39,23 +67,24 @@ def _get_testing_modules():
         schema_validator = importlib.import_module('gnn.schema_validator')
         cross_format_validator = importlib.import_module('gnn.cross_format_validator')
 
-        _testing_modules_cache = {
-            'GNNRoundTripTester': getattr(test_round_trip, 'GNNRoundTripTester', None),
-            'ComprehensiveTestReport': getattr(test_round_trip, 'ComprehensiveTestReport', None),
-            'RoundTripResult': getattr(test_round_trip, 'RoundTripResult', None),
-            'GNNParsingSystem': getattr(parsers, 'GNNParsingSystem', None),
-            'GNNFormat': getattr(parsers, 'GNNFormat', None),
-            'GNNValidator': getattr(schema_validator, 'GNNValidator', None),
-            'ValidationLevel': getattr(schema_validator, 'ValidationLevel', None),
-            'ValidationResult': getattr(schema_validator, 'ValidationResult', None),
-            'CrossFormatValidator': getattr(cross_format_validator, 'CrossFormatValidator', None),
-            'CrossFormatValidationResult': getattr(cross_format_validator, 'CrossFormatValidationResult', None),
-        }
+        _testing_modules_cache = TestingModules(
+            GNNRoundTripTester=getattr(test_round_trip, 'GNNRoundTripTester', None),
+            ComprehensiveTestReport=getattr(test_round_trip, 'ComprehensiveTestReport', None),
+            RoundTripResult=getattr(test_round_trip, 'RoundTripResult', None),
+            GNNParsingSystem=getattr(parsers, 'GNNParsingSystem', None),
+            GNNFormat=getattr(parsers, 'GNNFormat', None),
+            GNNValidator=getattr(schema_validator, 'GNNValidator', None),
+            ValidationLevel=getattr(schema_validator, 'ValidationLevel', None),
+            ValidationResult=getattr(schema_validator, 'ValidationResult', None),
+            CrossFormatValidator=getattr(cross_format_validator, 'CrossFormatValidator', None),
+            CrossFormatValidationResult=getattr(cross_format_validator, 'CrossFormatValidationResult', None),
+        )
         ENHANCED_TESTING_AVAILABLE = True
         return _testing_modules_cache
     except (ImportError, AttributeError, RecursionError):
         ENHANCED_TESTING_AVAILABLE = False
-        return {}
+        _testing_modules_cache = TestingModules()
+        return _testing_modules_cache
 
 
 def enhanced_validation_with_gnn_processing(
@@ -75,20 +104,20 @@ def enhanced_validation_with_gnn_processing(
 
     # Load testing modules lazily
     modules = _get_testing_modules()
-    if not modules:
+    if modules.is_empty():
         logger.warning("Enhanced testing modules not available, using basic validation")
         return 2, "Enhanced testing modules not available"
 
     try:
         # Initialize validation level
         try:
-            val_level = modules['ValidationLevel'](validation_level.lower())
+            val_level = modules.ValidationLevel(validation_level.lower())
         except ValueError:
             logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
-            val_level = modules['ValidationLevel'].STANDARD
+            val_level = modules.ValidationLevel.STANDARD
 
         # Initialize enhanced validator
-        validator = modules['GNNValidator'](
+        validator = modules.GNNValidator(
             validation_level=val_level,
             enable_round_trip_testing=enable_round_trip
         )
@@ -164,13 +193,13 @@ def process_gnn_folder(
 
     # Initialize validation level
     try:
-        val_level = _testing_modules_cache['ValidationLevel'](validation_level.lower())
+        val_level = _testing_modules_cache.ValidationLevel(validation_level.lower())
     except ValueError:
         logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
-        val_level = _testing_modules_cache['ValidationLevel'].STANDARD
+        val_level = _testing_modules_cache.ValidationLevel.STANDARD
 
     # Initialize enhanced validator
-    validator = _testing_modules_cache['GNNValidator'](
+    validator = _testing_modules_cache.GNNValidator(
         validation_level=val_level,
         enable_round_trip_testing=enable_round_trip
     )
@@ -360,7 +389,7 @@ def _basic_gnn_processing(
     **kwargs
 ) -> bool:
     """
-    Fallback basic GNN processing when enhanced testing is not available.
+    Recovery basic GNN processing when enhanced testing is not available.
     """
     log_step_warning(logger, "Using basic GNN processing (enhanced features unavailable)")
 
@@ -463,7 +492,7 @@ def _validate_binary_cross_format(file_path: Path, cross_validator) -> Any:
         # Binary files need special handling for cross-format validation
         if not file_path.exists():
             logger.error(f"Binary file not found: {file_path}")
-            # Return a fallback result
+            # Return a recovery result
             return type('CrossFormatValidationResult', (), {
                 'is_valid': False,
                 'errors': [f"File not found: {file_path}"],
@@ -543,7 +572,7 @@ def run_gnn_round_trip_tests(
     try:
         # Load testing modules lazily
         modules = _get_testing_modules()
-        if not modules:
+        if modules.is_empty():
             log_step_warning(logger, "Enhanced testing modules not available")
             return False
 
@@ -551,7 +580,7 @@ def run_gnn_round_trip_tests(
         temp_dir = round_trip_output_dir / "temp"
         temp_dir.mkdir(exist_ok=True)
 
-        tester = modules['GNNRoundTripTester'](temp_dir)
+        tester = modules.GNNRoundTripTester(temp_dir)
 
         # Configure reference file
         if reference_file:
@@ -579,7 +608,7 @@ def run_gnn_round_trip_tests(
             subset_formats = []
             for fmt_name in test_subset:
                 try:
-                    fmt = modules['GNNFormat'](fmt_name.lower())
+                    fmt = modules.GNNFormat(fmt_name.lower())
                     if fmt in tester.supported_formats:
                         subset_formats.append(fmt)
                     else:
@@ -588,7 +617,7 @@ def run_gnn_round_trip_tests(
                     logger.warning(f"Unknown format: {fmt_name}")
 
             if subset_formats:
-                tester.supported_formats = [modules['GNNFormat'].MARKDOWN] + subset_formats
+                tester.supported_formats = [modules.GNNFormat.MARKDOWN] + subset_formats
                 logger.info(f"Testing subset: {[f.value for f in subset_formats]}")
             else:
                 logger.warning("No valid formats in subset, using all supported")
@@ -703,13 +732,13 @@ def validate_gnn_cross_format_consistency(
     try:
         # Load testing modules lazily
         modules = _get_testing_modules()
-        if not modules:
+        if modules.is_empty():
             log_step_warning(logger, "Enhanced validation modules not available")
             return False
 
         # Initialize enhanced validators
-        validator = modules['GNNValidator'](validation_level=modules['ValidationLevel'].STRICT)
-        cross_validator = modules['CrossFormatValidator']()
+        validator = modules.GNNValidator(validation_level=modules.ValidationLevel.STRICT)
+        cross_validator = modules.CrossFormatValidator()
 
         # Discover GNN files to test
         if files_to_test:
