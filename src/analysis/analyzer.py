@@ -24,8 +24,6 @@ except ImportError:
     stats = None
 
 try:
-    import matplotlib
-    matplotlib.use('Agg')
     import matplotlib.pyplot as plt
     from matplotlib import cm
     MATPLOTLIB_AVAILABLE = True

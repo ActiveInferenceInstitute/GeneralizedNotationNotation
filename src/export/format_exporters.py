@@ -17,21 +17,22 @@ import json
 import xml.etree.ElementTree as ET
 import pickle
 
-# Safe NetworkX import to avoid pathlib recursion errors
 try:
-    import sys
-    if sys.version_info >= (3, 13):
-        # For Python 3.13+, use a safer import approach
-        import os
-        # Disable automatic backends completely for Python 3.13
-        os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
-        os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
     import networkx as nx
     HAS_NETWORKX = True
 except (ImportError, RecursionError, AttributeError, ValueError):
     nx = None
     HAS_NETWORKX = False
     logging.getLogger(__name__).warning("NetworkX library not found. Graph export functionalities (GEXF, GraphML) will be disabled.")
+
+
+def _configure_networkx() -> None:
+    """Apply NetworkX environment workarounds on Python 3.13+ (called lazily)."""
+    import sys
+    import os
+    if sys.version_info >= (3, 13):
+        os.environ.pop('NETWORKX_AUTOMATIC_BACKENDS', None)
+        os.environ['NETWORKX_CACHE_CONVERTED_GRAPHS'] = '1'
 
 logger = logging.getLogger(__name__)
 
@@ -248,6 +249,7 @@ def export_to_python_pickle(gnn_model: Dict[str, Any], output_file_path: str) ->
 
 def _build_networkx_graph(gnn_model: Dict[str, Any]) -> 'Optional[nx.DiGraph]':
     if not HAS_NETWORKX: return None
+    _configure_networkx()
     graph = nx.DiGraph(name=gnn_model.get('name', 'GNN_Model'))
 
     # Add nodes from StateSpaceBlock (contains all variables including states, observations, etc.)

@@ -97,31 +97,8 @@ def main(cli_args=None):
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
     except (ImportError, ModuleNotFoundError) as e:
-        logger.warning(f"Could not import GNN parser: {e}")
-        # Fall back to JSON or markdown parsing
-        if gnn_file_path.suffix.lower() == '.json':
-            import json
-            try:
-                with open(gnn_file_path, "r", encoding="utf-8") as f:
-                    gnn_spec = json.load(f)
-                logger.info(f"Successfully parsed JSON GNN file: {gnn_file_path}")
-            except json.JSONDecodeError as e:
-                logger.error(f"Failed to parse JSON GNN file: {gnn_file_path} - {e}")
-                return 1
-        else:
-            # Try markdown parsing
-            try:
-                from .pymdp.pymdp_renderer import parse_gnn_markdown
-                with open(gnn_file_path, "r", encoding="utf-8") as f:
-                    content = f.read()
-                gnn_spec = parse_gnn_markdown(content, gnn_file_path)
-                if not gnn_spec:
-                    logger.error(f"Failed to parse markdown GNN file: {gnn_file_path}")
-                    return 1
-                logger.info(f"Successfully parsed markdown GNN file: {gnn_file_path}")
-            except Exception as e:
-                logger.error(f"Failed to parse GNN file: {gnn_file_path} - {e}")
-                return 1
+        logger.error(f"GNN parser unavailable — cannot render without canonical parser: {e}")
+        return 1
 
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
