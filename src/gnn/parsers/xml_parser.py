@@ -9,7 +9,10 @@ Date: 2025-01-11
 License: MIT
 """
 
-import xml.etree.ElementTree as ET
+try:
+    import defusedxml.ElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET  # type: ignore[no-redef]
 import logging
 from typing import Dict, List, Any, Optional
 

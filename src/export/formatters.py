@@ -10,7 +10,10 @@ from typing import Dict, Any
 import json
 import pickle
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
+try:
+    from defusedxml.minidom import parseString as _xml_parseString
+except ImportError:
+    from xml.dom.minidom import parseString as _xml_parseString  # type: ignore[no-redef]
 
 def export_to_json(parsed_content: Dict[str, Any], output_file: Path) -> bool:
     """Export parsed content to JSON format."""
@@ -51,7 +54,7 @@ def export_to_xml(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             conn_elem.set("target", conn.get("target", ""))
 
         # Write XML
-        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(xml_str)
 
@@ -102,7 +105,7 @@ def export_to_graphml(parsed_content: Dict[str, Any], output_file: Path) -> bool
             edge.set("target", conn.get("target", ""))
 
         # Write GraphML
-        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(xml_str)
 
@@ -149,7 +152,7 @@ def export_to_gexf(parsed_content: Dict[str, Any], output_file: Path) -> bool:
             edge.set("target", conn.get("target", ""))
 
         # Write GEXF
-        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(xml_str)
 
@@ -216,7 +219,7 @@ def export_to_xml_gnn(model_data: Dict[str, Any], output_file: Path) -> bool:
             conn_elem.set("target", conn.get("target", ""))
 
         # Write XML
-        xml_str = minidom.parseString(ET.tostring(root)).toprettyxml(indent="  ")
+        xml_str = _xml_parseString(ET.tostring(root)).toprettyxml(indent="  ")
         with open(output_file, 'w', encoding='utf-8') as f:
             f.write(xml_str)
 

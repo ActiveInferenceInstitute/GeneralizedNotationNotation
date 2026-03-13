@@ -10,7 +10,10 @@ License: MIT
 """
 
 import re
-import xml.etree.ElementTree as ET
+try:
+    import defusedxml.ElementTree as ET
+except ImportError:
+    import xml.etree.ElementTree as ET  # type: ignore[no-redef]
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 
