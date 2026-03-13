@@ -10,12 +10,12 @@ from typing import Any, Dict, List, Optional
 
 def validate_execution_environment() -> Dict[str, Any]:
     """
-    Recovery execution environment validation.
+    Recovery stub for execution environment validation (executor module unavailable).
 
     Returns:
         Dictionary with validation results
     """
-    return {"summary": {"total_errors": 0}, "overall_status": "unknown"}
+    return {"summary": {"total_errors": 0}, "overall_status": "unknown", "stub": True}
 
 def get_execution_health_status() -> Dict[str, str]:
     """
@@ -38,12 +38,12 @@ def log_validation_results(results: Any, logger: Any) -> None:
 
 def check_python_environment() -> Dict[str, Any]:
     """
-    Recovery Python environment check.
+    Recovery stub for Python environment check (executor module unavailable).
 
     Returns:
         Dictionary with environment info
     """
-    return {}
+    return {"stub": True}
 
 def check_system_dependencies() -> Dict[str, Any]:
     """
