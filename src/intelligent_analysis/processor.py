@@ -11,7 +11,7 @@ import json
 import logging
 import asyncio
 from pathlib import Path
-from typing import Dict, Any, Optional, List, Tuple
+from typing import Dict, Any, Optional, List, Literal, Tuple
 from datetime import datetime
 from dataclasses import dataclass, field
 
@@ -22,18 +22,23 @@ from utils.pipeline_template import (
 )
 
 
+# Constrained types for step flag severity and execution status.
+FlagType = Literal["none", "yellow", "red"]
+StepStatus = Literal["success", "failed", "warning", "skipped", "unknown"]
+
+
 @dataclass
 class StepAnalysis:
     """Detailed analysis of a single pipeline step."""
     step_number: int
     script_name: str
     description: str
-    status: str
+    status: str          # StepStatus — kept str for JSON round-trip compatibility
     duration_seconds: float
     memory_mb: float
     exit_code: int
     flags: List[str] = field(default_factory=list)
-    flag_type: str = "none"  # "none", "yellow", "red"
+    flag_type: FlagType = "none"
     summary: str = ""
     stdout_snippet: str = ""
     stderr_snippet: str = ""
