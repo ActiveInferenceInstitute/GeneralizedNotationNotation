@@ -13,16 +13,16 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 # Deferred numpy import to avoid recursion issues
 def _get_numpy():
-    """Safely import numpy with fallback."""
+    """Safely import numpy with recovery."""
     try:
         import numpy as np
         return np
     except RecursionError:
         # Handle recursion error by using a minimal implementation
-        logging.warning("Numpy recursion detected, using fallback implementation")
+        logging.warning("Numpy recursion detected, using recovery implementation")
         return None
     except ImportError:
-        logging.warning("Numpy not available, using fallback implementation")
+        logging.warning("Numpy not available, using recovery implementation")
         return None
 
 # Use a lazy loading approach for numpy
@@ -36,19 +36,57 @@ def get_numpy():
     return _numpy_cache
 
 class NumpySafeOperations:
-    """Safe wrapper for numpy operations with fallbacks."""
+    """Safe wrapper for numpy operations with fallbacks.
+
+    Methods that map 1-to-1 with a numpy attribute delegate through ``_np_op``.
+    Methods with non-trivial fallback logic implement their own branching.
+    """
 
     def __init__(self):
         self.np = get_numpy()
 
-    def array(self, data):
-        """Create array with fallback."""
+    # ── Core dispatch helper ──────────────────────────────────────────────────
+
+    def _np_op(self, np_attr, fallback, *args, **kwargs):
+        """Call ``self.np.<np_attr>(*args, **kwargs)`` or ``fallback(*args, **kwargs)``."""
         if self.np is not None:
-            return self.np.array(data)
-        return data  # Return raw data if numpy not available
+            return getattr(self.np, np_attr)(*args, **kwargs)
+        return fallback(*args, **kwargs)
+
+    # ── Simple delegates ──────────────────────────────────────────────────────
+
+    def array(self, data):
+        """Create array (returns raw data when numpy unavailable)."""
+        return self._np_op('array', lambda d: d, data)
+
+    def sum(self, arr, axis=None, keepdims=False):
+        """Sum (returns builtin sum over iterable when numpy unavailable)."""
+        return self._np_op(
+            'sum',
+            lambda a, axis=None, keepdims=False: sum(a) if hasattr(a, '__iter__') else a,
+            arr, axis=axis, keepdims=keepdims,
+        )
+
+    def where(self, condition, x, y):
+        """Element-wise where (returns list comprehension when numpy unavailable)."""
+        return self._np_op(
+            'where',
+            lambda c, xi, yi: [xi if ci else yi for ci in c] if hasattr(c, '__iter__') else (xi if c else yi),
+            condition, x, y,
+        )
+
+    def any(self, arr):
+        """Any (returns builtin any when numpy unavailable)."""
+        return self._np_op(
+            'any',
+            lambda a: any(a) if hasattr(a, '__iter__') else bool(a),
+            arr,
+        )
+
+    # ── Non-trivial fallbacks (own branching) ─────────────────────────────────
 
     def ones(self, shape):
-        """Create ones array with fallback."""
+        """Create ones array with recovery."""
         if self.np is not None:
             return self.np.ones(shape)
         if isinstance(shape, (int, tuple)):
@@ -59,7 +97,7 @@ class NumpySafeOperations:
         return [1.0]
 
     def zeros(self, shape):
-        """Create zeros array with fallback."""
+        """Create zeros array with recovery."""
         if self.np is not None:
             return self.np.zeros(shape)
         if isinstance(shape, (int, tuple)):
@@ -69,7 +107,7 @@ class NumpySafeOperations:
         return [0.0]
 
     def eye(self, n):
-        """Create identity matrix with fallback."""
+        """Create identity matrix with recovery."""
         if self.np is not None:
             return self.np.eye(n)
         # Create identity matrix as nested lists
@@ -81,7 +119,7 @@ class NumpySafeOperations:
         return matrix
 
     def empty(self, shape, dtype=None):
-        """Create empty array with fallback."""
+        """Create empty array with recovery."""
         if self.np is not None:
             return self.np.empty(shape, dtype=dtype)
         # Return None for object dtype, appropriate structure for others
@@ -89,37 +127,11 @@ class NumpySafeOperations:
             return [None] * shape if isinstance(shape, int) else None
         return self.zeros(shape)
 
-    def sum(self, arr, axis=None, keepdims=False):
-        """Sum with fallback."""
-        if self.np is not None:
-            return self.np.sum(arr, axis=axis, keepdims=keepdims)
-        # Simple fallback sum
-        if hasattr(arr, '__iter__'):
-            return sum(arr)
-        return arr
-
-    def where(self, condition, x, y):
-        """Where operation with fallback."""
-        if self.np is not None:
-            return self.np.where(condition, x, y)
-        # Simple fallback
-        if hasattr(condition, '__iter__'):
-            return [x if c else y for c in condition]
-        return x if condition else y
-
-    def any(self, arr):
-        """Any operation with fallback."""
-        if self.np is not None:
-            return self.np.any(arr)
-        if hasattr(arr, '__iter__'):
-            return any(arr)
-        return bool(arr)
-
     def newaxis(self):
-        """Get newaxis with fallback."""
+        """Get newaxis (returns None when numpy unavailable)."""
         if self.np is not None:
             return self.np.newaxis
-        return None  # Fallback
+        return None
 
     def _create_ones_list(self, shape):
         """Create nested list of ones."""
@@ -817,9 +829,9 @@ class GnnToPyMdpConverter:
                 return [[parsed_value]]
 
         except Exception as e:
-            self._add_log(f"DEBUG: Could not parse matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying fallback parsing.")
+            self._add_log(f"DEBUG: Could not parse matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying recovery parsing.")
 
-            # Fallback: manual parsing for complex cases
+            # Recovery: manual parsing for complex cases
             return self._parse_matrix_fallback(matrix_str)
 
     def _parse_gnn_3d_matrix_string(self, matrix_str: str) -> List[List[List[float]]]:
@@ -884,9 +896,9 @@ class GnnToPyMdpConverter:
                 return [[[parsed_value]]]
 
         except Exception as e:
-            self._add_log(f"DEBUG: Could not parse 3D matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying fallback parsing.")
+            self._add_log(f"DEBUG: Could not parse 3D matrix string with ast.literal_eval: '{processed_str}'. Error: {e}. Trying recovery parsing.")
 
-            # Fallback: manual parsing for complex cases
+            # Recovery: manual parsing for complex cases
             return self._parse_3d_matrix_fallback(matrix_str)
 
     def _strip_comments_from_multiline_str(self, m_str: str) -> str:
@@ -903,7 +915,7 @@ class GnnToPyMdpConverter:
         return ' '.join(cleaned_lines)
 
     def _parse_matrix_fallback(self, matrix_str: str) -> List[List[float]]:
-        """Fallback parsing for complex matrix strings."""
+        """Recovery parsing for complex matrix strings."""
         import re
 
         # Remove comments and extra whitespace
@@ -961,7 +973,7 @@ class GnnToPyMdpConverter:
         return matrix
 
     def _parse_3d_matrix_fallback(self, matrix_str: str) -> List[List[List[float]]]:
-        """Fallback parsing for complex 3D matrix strings."""
+        """Recovery parsing for complex 3D matrix strings."""
 
         # Remove comments and extra whitespace
         lines = [line.strip() for line in matrix_str.split('\n') if line.strip() and not line.strip().startswith('#')]
@@ -1159,7 +1171,7 @@ class GnnToPyMdpConverter:
             if np is not None:
                 array_str = self._numpy_array_to_string(np.array(self.A_spec), indent=0)
             else:
-                array_str = str(self.A_spec)  # Fallback to string representation
+                array_str = str(self.A_spec)  # Recovery to string representation
             assignment = f"{var_name} = {array_str}"
             matrix_assignments.append(assignment)
             self._add_log(f"Injected A matrix from GNN InitialParameterization as {var_name}.")
