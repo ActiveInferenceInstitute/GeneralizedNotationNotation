@@ -173,7 +173,11 @@ graphs = [
     "discopy>=1.1.0",
 ]
 
+# Aspirational/user-facing groups: no core pipeline callers; installed by users
+# who extend GNN for their own workflows (notebooks, distributed compute, persistence).
 research = [
+    # NOTE: jupyterlab/jupyter-server duplicate dev group entries intentionally —
+    # research group targets non-developer end-users who don't install dev extras.
     "jupyterlab>=4.0.0",
     "jupyter-server>=2.0.0",
     "sympy>=1.12.0",
@@ -183,6 +187,8 @@ research = [
     # pymdp-toolbox not available, omitted
 ]
 
+# Distributed/cloud execution: used by execute/distributed.py (RayDispatcher) and
+# users who run large parameter sweeps on clusters.
 scaling = [
     "dask>=2023.0.0",
     "distributed>=2023.0.0",
@@ -194,6 +200,7 @@ scaling = [
     "ray>=2.0.0",  # distributed execution in execute/distributed.py
 ]
 
+# Persistence layer: for users who want to store GNN models/results in a relational DB.
 database = [
     "sqlalchemy>=2.0.0",
     "alembic>=1.10.0",
