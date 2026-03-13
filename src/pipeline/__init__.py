@@ -44,11 +44,13 @@ FEATURES = {
     'dependency_validation': True
 }
 
-# Minimal classes expected by tests
+# Minimal stub classes — interface expected by tests; not a real pipeline runner.
+# Use execute_pipeline() or run_pipeline() from pipeline.execution for actual execution.
 class PipelineOrchestrator:
     def __init__(self):
         self.steps = []
     def run(self) -> bool:
+        """Stub — always returns True. Use execute_pipeline() for actual pipeline execution."""
         return True
     def get_pipeline_steps(self) -> list[str]:
         cfg = get_pipeline_config()
@@ -61,11 +63,14 @@ class PipelineOrchestrator:
         return {"status": "SUCCESS", "steps": steps, "executed": len(steps)}
 
 class PipelineStep:
+    """Stub step class — always returns True. Not wired to actual step execution."""
     def __init__(self, name: str):
         self.name = name
     def execute(self) -> bool:
+        """Stub — always returns True."""
         return True
     def validate(self) -> bool:
+        """Stub — always returns True."""
         return True
 
 def get_module_info() -> dict:
