@@ -6,8 +6,6 @@ This module provides GNN file discovery, parsing, and validation capabilities.
 
 from .processor import (
     process_gnn_directory_lightweight,
-    _extract_sections_lightweight,
-    _extract_variables_lightweight,
     discover_gnn_files,
     parse_gnn_file,
     validate_gnn_structure,
@@ -30,7 +28,6 @@ from .parser import (
     validate_gnn_syntax_formal,
     get_parse_tree_visualization,
     validate_gnn,
-    _convert_parse_result_to_parsed_gnn
 )
 from .parsers.common import GNNFormat
 
@@ -56,8 +53,6 @@ def validate_gnn_file(content: str):
 __all__ = [
     # Processor functions
     'process_gnn_directory_lightweight',
-    '_extract_sections_lightweight',
-    '_extract_variables_lightweight',
     'discover_gnn_files',
     'parse_gnn_file',
     'validate_gnn_structure',
@@ -79,7 +74,6 @@ __all__ = [
     'validate_gnn_syntax_formal',
     'get_parse_tree_visualization',
     'validate_gnn',
-    '_convert_parse_result_to_parsed_gnn',
     '__version__',
     'FEATURES',
     'process_gnn',
