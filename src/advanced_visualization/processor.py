@@ -16,6 +16,7 @@ Implementation is split across sub-modules for maintainability:
 This file re-exports all public names for backward compatibility.
 """
 
+import importlib.util
 import logging
 import json
 from pathlib import Path
@@ -124,10 +125,9 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
         logger.info("matplotlib not available - some visualizations will be skipped")
 
     # Check plotly
-    try:
-        import plotly
+    if importlib.util.find_spec("plotly") is not None:
         dependencies["plotly"] = True
-    except ImportError:
+    else:
         logger.info("plotly not available - interactive visualizations will be limited")
 
     # Check seaborn (already checked globally)
@@ -135,10 +135,9 @@ def _check_dependencies(logger: logging.Logger) -> Dict[str, bool]:
         logger.debug("seaborn not available - will use matplotlib fallback")
 
     # Check bokeh
-    try:
-        import bokeh
+    if importlib.util.find_spec("bokeh") is not None:
         dependencies["bokeh"] = True
-    except ImportError:
+    else:
         logger.debug("bokeh not available - will use plotly fallback")
 
     # Check numpy

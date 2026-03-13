@@ -15,7 +15,6 @@ from typing import Dict, Any, List, Optional, Union, Callable
 # Imports for specific exporters
 import json
 import xml.etree.ElementTree as ET
-from xml.dom import minidom
 import pickle
 
 # Safe NetworkX import to avoid pathlib recursion errors
@@ -186,9 +185,8 @@ def _gnn_model_to_dict(gnn_file_path_str: str) -> Dict[str, Any]:
 
 # --- XML Helpers ---
 def _pretty_print_xml(element: ET.Element) -> str:
-    rough_string = ET.tostring(element, 'utf-8')
-    reparsed = minidom.parseString(rough_string)
-    return reparsed.toprettyxml(indent="  ")
+    ET.indent(element, space="  ")
+    return ET.tostring(element, encoding='unicode')
 
 def _dict_to_xml(tag: str, d: Union[Dict, List, Any]) -> ET.Element:
     elem = ET.Element(tag)
