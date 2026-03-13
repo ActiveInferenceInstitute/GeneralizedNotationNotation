@@ -56,7 +56,9 @@ run_script = create_standardized_pipeline_script(
             "default": "{}",
             "help": "JSON string containing additional simulation parameters"
         }
-    }
+    },
+    default_target_dir="input/gnn_files",
+    default_recursive=True,
 )
 
 def main() -> int:

@@ -61,7 +61,9 @@ run_script = create_standardized_pipeline_script(
             "action": "store_true",
             "help": "Run scripts and model parameter sweeps in parallel across a Ray cluster"
         }
-    }
+    },
+    default_target_dir="output/11_render_output",
+    default_recursive=True,
 )
 
 def main() -> int:

@@ -281,18 +281,22 @@ def create_standardized_pipeline_script(
     module_function: Callable,
     fallback_parser_description: str,
     additional_arguments: Optional[Dict[str, Any]] = None,
-    step_specific_imports: Optional[List[str]] = None
+    step_specific_imports: Optional[List[str]] = None,
+    default_target_dir: Optional[str] = None,
+    default_recursive: bool = False,
 ) -> Callable:
     """
     Create a standardized pipeline script with consistent argument parsing and error handling.
-    
+
     Args:
         step_name: Name of the step (e.g., "1_gnn", "5_export")
         module_function: The main function to call for processing
         fallback_parser_description: Description for recovery argument parser
         additional_arguments: Additional arguments to add to the parser
         step_specific_imports: Additional imports needed for the step
-        
+        default_target_dir: Default target directory when none is provided on CLI
+        default_recursive: Default recursive flag value
+
     Returns:
         Function that can be called to run the standardized script
     """
@@ -316,14 +320,6 @@ def create_standardized_pipeline_script(
                 # Create recovery parser with step-specific arguments
                 fallback_additional_args = additional_arguments or {}
 
-                # Add step-specific arguments from pipeline template configuration
-                if step_name == "10_ontology.py" and "ontology_terms_file" not in fallback_additional_args:
-                    fallback_additional_args["ontology_terms_file"] = {
-                        "type": Path,
-                        "help": "Path to ontology terms JSON file",
-                        "flag": "--ontology-terms-file"
-                    }
-
                 logging.warning(f"Enhanced parser failed for {step_name}, using recovery: {e}")
                 parsed_args = _create_fallback_parser(fallback_parser_description, fallback_additional_args).parse_args()
 
@@ -333,28 +329,14 @@ def create_standardized_pipeline_script(
             # Convert paths with proper handling for None values
             target_dir_raw = getattr(parsed_args, 'target_dir', None)
             if target_dir_raw is None:
-                # Set default based on step type
-                if step_name == "11_render.py":
-                    # Step 11 usually processes GNN files directly
-                    target_dir = Path('input/gnn_files')
-                elif step_name == "12_execute.py":
-                    # Step 12 processes rendered simulators from step 11 by default
-                    target_dir = Path('output/11_render_output')
-                else:
-                    # Default for other steps
-                    target_dir = Path('input/gnn_files')
+                target_dir = Path(default_target_dir) if default_target_dir else Path('input/gnn_files')
             else:
                 target_dir = Path(target_dir_raw)
 
             output_dir_raw = getattr(parsed_args, 'output_dir', 'output')
             output_dir = Path(output_dir_raw) if output_dir_raw is not None else Path('output')
 
-            # Set recursive flag default based on step type
-            if step_name in ["11_render.py", "12_execute.py"]:
-                # Steps 9 and 10 need recursive processing by default
-                recursive_default = True
-            else:
-                recursive_default = False
+            recursive_default = default_recursive
 
             # Normalize the output directory to the standardized numbered step folder
             try:
