@@ -4,7 +4,7 @@ Distributed Execution Module for GNN
 Provides Ray-based parallel dispatching for script execution and parameter sweeps.
 """
 import logging
-from typing import List, Dict, Any, Callable
+from typing import List, Dict, Any, Callable, Optional
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -13,7 +13,7 @@ class RayDispatcher:
     """
     Dispatcher for Ray-based distributed parameter sweeps and script execution.
     """
-    def __init__(self, address: str = None, num_cpus: int = None):
+    def __init__(self, address: Optional[str] = None, num_cpus: Optional[int] = None):
         """Initialize connection to Ray cluster."""
         self.address = address
         self.num_cpus = num_cpus
