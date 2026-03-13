@@ -22,26 +22,16 @@ class AnalysisContext:
     timestamp: str = field(default_factory=lambda: datetime.now().isoformat())
     pipeline_name: str = "GNN Pipeline"
     analysis_type: str = "comprehensive"
+    overall_status: str = field(init=False)
+    total_duration: float = field(init=False)
+    steps: List[Dict[str, Any]] = field(init=False)
+    performance_summary: Dict[str, Any] = field(init=False)
 
-    @property
-    def overall_status(self) -> str:
-        """Get overall pipeline status."""
-        return self.summary_data.get("overall_status", "UNKNOWN")
-
-    @property
-    def total_duration(self) -> float:
-        """Get total pipeline duration in seconds."""
-        return self.summary_data.get("total_duration_seconds", 0.0)
-
-    @property
-    def steps(self) -> List[Dict[str, Any]]:
-        """Get list of pipeline steps."""
-        return self.summary_data.get("steps", [])
-
-    @property
-    def performance_summary(self) -> Dict[str, Any]:
-        """Get performance summary data."""
-        return self.summary_data.get("performance_summary", {})
+    def __post_init__(self) -> None:
+        self.overall_status = self.summary_data.get("overall_status", "UNKNOWN")
+        self.total_duration = self.summary_data.get("total_duration_seconds", 0.0)
+        self.steps = self.summary_data.get("steps", [])
+        self.performance_summary = self.summary_data.get("performance_summary", {})
 
     def get_failed_steps(self) -> List[Dict[str, Any]]:
         """Get list of failed steps."""
