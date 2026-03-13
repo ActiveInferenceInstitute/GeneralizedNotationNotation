@@ -653,8 +653,12 @@ def extract_activeinference_jl_data(stdout: str, stderr: str) -> Dict[str, Any]:
 
 
 def extract_jax_data(stdout: str, stderr: str) -> Dict[str, Any]:
-    """Extract JAX-specific simulation data."""
-    # Similar to PyMDP but may have different output format
+    """Extract JAX simulation data from stdout/stderr.
+
+    JAX scripts emit the same structured output as PyMDP (JSON lines with
+    beliefs/actions/observations), so this is an intentional alias for
+    extract_pymdp_data rather than a JAX-specific implementation.
+    """
     return extract_pymdp_data(stdout, stderr)
 
 
