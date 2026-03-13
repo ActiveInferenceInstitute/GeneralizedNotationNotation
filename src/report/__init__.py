@@ -58,7 +58,7 @@ def analyze_pipeline_data(data: Dict[str, Any]) -> Dict[str, Any]:
 # Minimal classes expected by tests
 class ReportGenerator:
     """Minimal ReportGenerator API expected by tests."""
-    def generate(self, context=None, output_dir: Path | None = None) -> dict:
+    def generate(self, context: "Any | None" = None, output_dir: Path | None = None) -> dict:
         return {"status": "SUCCESS", "reports": []}
 
     # Methods expected by tests
