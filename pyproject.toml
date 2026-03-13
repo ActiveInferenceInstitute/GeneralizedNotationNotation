@@ -195,7 +195,11 @@ database = [
     "alembic>=1.10.0",
 ]
 
-# All optional dependencies (install everything)
+# All optional dependencies (install everything).
+# MAINTAINER NOTE: This list manually duplicates packages from the named
+# groups above (active-inference, llm, visualization, audio, gui, etc.).
+# When adding a package to any named group, ALSO add it here.
+# Ideally this would use `{include-group = "name"}` syntax once supported.
 all = [
     # Active Inference ecosystem (pymdp already in main deps as 0.0.1)
     "jax[cpu]>=0.4.0",
