@@ -25,6 +25,14 @@ from ._shared import (
     _generate_fallback_report,
 )
 
+try:
+    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+except ImportError:
+    try:
+        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+    except ImportError:
+        _MatrixVisualizer = None
+
 
 def _generate_3d_visualization(
     model_name: str,
@@ -159,7 +167,7 @@ def _generate_3d_visualization(
             attempt.status = "success"
             attempt.output_files.append(str(output_dir / f"{model_name}_3d_fallback.html"))
         else:
-            logger.info(f"3D visualization for {model_name} - using matplotlib fallback")
+            logger.info(f"3D visualization for {model_name} - using matplotlib recovery")
             attempt.fallback_used = True
             _generate_fallback_report(model_name, "3d", output_dir, model_data, logger)
             attempt.status = "success"
@@ -347,16 +355,11 @@ def _generate_pomdp_transition_analysis(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
 
-        try:
-            from visualization.matrix_visualizer import MatrixVisualizer
-        except ImportError:
-            try:
-                from src.visualization.matrix_visualizer import MatrixVisualizer
-            except ImportError:
-                attempt.status = "failed"
-                attempt.error_message = "MatrixVisualizer not available"
-                return attempt
-        mv = MatrixVisualizer()
+        if _MatrixVisualizer is None:
+            attempt.status = "failed"
+            attempt.error_message = "MatrixVisualizer not available"
+            return attempt
+        mv = _MatrixVisualizer()
 
         parameters = model_data.get("parameters", [])
         matrices = mv.extract_matrix_data_from_parameters(parameters)
@@ -456,16 +459,11 @@ def _generate_policy_visualization(
                 if "policy" in var_type.lower() or name == "\u03c0" or name == "pi":
                     policy_data[name] = var
 
-        try:
-            from visualization.matrix_visualizer import MatrixVisualizer
-        except ImportError:
-            try:
-                from src.visualization.matrix_visualizer import MatrixVisualizer
-            except ImportError:
-                attempt.status = "failed"
-                attempt.error_message = "MatrixVisualizer not available"
-                return attempt
-        mv = MatrixVisualizer()
+        if _MatrixVisualizer is None:
+            attempt.status = "failed"
+            attempt.error_message = "MatrixVisualizer not available"
+            return attempt
+        mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         if 'E' in matrices:

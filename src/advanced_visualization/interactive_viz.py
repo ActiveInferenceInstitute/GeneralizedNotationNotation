@@ -14,6 +14,14 @@ from typing import Dict, List, Any
 
 from ._shared import AdvancedVisualizationAttempt
 
+try:
+    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+except ImportError:
+    try:
+        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+    except ImportError:
+        _MatrixVisualizer = None
+
 
 def _generate_interactive_plotly_dashboard(
     model_name: str,
@@ -49,8 +57,11 @@ def _generate_interactive_plotly_dashboard(
         parameters = model_data.get("parameters", [])
         connections = model_data.get("connections", [])
 
-        from visualization.matrix_visualizer import MatrixVisualizer
-        mv = MatrixVisualizer()
+        if _MatrixVisualizer is None:
+            attempt.status = "skipped"
+            attempt.error_message = "MatrixVisualizer not available"
+            return attempt
+        mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         fig = make_subplots(

@@ -21,6 +21,14 @@ from ._shared import (
     sns,
 )
 
+try:
+    from visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+except ImportError:
+    try:
+        from src.visualization.matrix_visualizer import MatrixVisualizer as _MatrixVisualizer
+    except ImportError:
+        _MatrixVisualizer = None
+
 
 def _generate_statistical_plots(
     model_name: str,
@@ -155,16 +163,11 @@ def _generate_matrix_correlations(
             attempt.error_message = "matplotlib/numpy not available"
             return attempt
 
-        try:
-            from visualization.matrix_visualizer import MatrixVisualizer
-        except ImportError:
-            try:
-                from src.visualization.matrix_visualizer import MatrixVisualizer
-            except ImportError:
-                attempt.status = "failed"
-                attempt.error_message = "MatrixVisualizer not available"
-                return attempt
-        mv = MatrixVisualizer()
+        if _MatrixVisualizer is None:
+            attempt.status = "failed"
+            attempt.error_message = "MatrixVisualizer not available"
+            return attempt
+        mv = _MatrixVisualizer()
 
         # Extract matrices
         parameters = model_data.get("parameters", [])
@@ -275,8 +278,11 @@ def _generate_interactive_plotly_dashboard(
         parameters = model_data.get("parameters", [])
         connections = model_data.get("connections", [])
 
-        from visualization.matrix_visualizer import MatrixVisualizer
-        mv = MatrixVisualizer()
+        if _MatrixVisualizer is None:
+            attempt.status = "skipped"
+            attempt.error_message = "MatrixVisualizer not available"
+            return attempt
+        mv = _MatrixVisualizer()
         matrices = mv.extract_matrix_data_from_parameters(parameters)
 
         # Create dashboard with subplots
