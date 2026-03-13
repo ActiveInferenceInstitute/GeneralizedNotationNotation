@@ -12,7 +12,7 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any
 
-from .processor import AdvancedVisualizationAttempt
+from ._shared import AdvancedVisualizationAttempt
 
 
 def _generate_interactive_plotly_dashboard(

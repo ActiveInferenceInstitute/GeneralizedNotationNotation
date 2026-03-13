@@ -65,8 +65,8 @@ class PipelineScriptValidator:
         """Validate all numbered pipeline scripts."""
         results = {}
 
-        # Find all numbered scripts (0-23)
-        for i in range(24):
+        # Find all numbered scripts (0-24)
+        for i in range(25):
             # Look for scripts matching the pattern
             script_patterns = [
                 f"{i}_*.py",
@@ -460,7 +460,7 @@ class PipelineScriptValidator:
                             function_name = parts[1]
                             module_name = issue.message.split(" in ")[-1] if " in " in issue.message else "unknown"
                             script_fixes.append(
-                                f"Add function stub: def {function_name}(*args, **kwargs): pass"
+                                f"Add function placeholder: def {function_name}(*args, **kwargs): pass"
                             )
 
                 if script_fixes:
