@@ -179,7 +179,6 @@ try:
     )
 
     from .pipeline import (
-        setup_step_logging,
         RecoveryArgumentParser,
         get_pipeline_utilities,
         validate_output_directory,
