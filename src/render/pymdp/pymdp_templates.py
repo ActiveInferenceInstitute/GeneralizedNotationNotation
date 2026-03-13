@@ -261,7 +261,6 @@ def generate_example_usage_template(
     usage_lines = ["", "# --- Example Usage ---", "if __name__ == '__main__':"]
     indent = "    "
 
-    # Initialize agent
     usage_lines.append(f"{indent}# Initialize agent (already done above)")
     usage_lines.append(f"{indent}# agent = {model_name}  # Agent is already instantiated above as 'agent'")
     usage_lines.append(f"{indent}print(f\"Agent '{model_name}' initialized with {{agent.num_factors if hasattr(agent, 'num_factors') else 'N/A'}} factors and {{agent.num_modalities if hasattr(agent, 'num_modalities') else 'N/A'}} modalities.\")")
@@ -274,17 +273,14 @@ def generate_example_usage_template(
     usage_lines.append(f"{indent}num_factors = {num_factors}")
     usage_lines.append(f"{indent}control_fac_idx = {control_factor_indices}")
 
-    # Initial observation and state
     default_o = [0] * num_modalities if num_modalities > 0 else []
     usage_lines.append(f"{indent}o_current = {default_o} # Example initial observation (e.g. first outcome for each modality)")
 
     default_s = [0] * num_factors if num_factors > 0 else []
     usage_lines.append(f"{indent}s_current = {default_s} # Example initial true states for simulation")
 
-    # Simulation parameters
     usage_lines.append(f"{indent}T = {sim_timesteps} # Number of timesteps")
 
-    # Generative process setup
     if use_gp_copy:
         usage_lines.append(f"{indent}A_gen_process = copy.deepcopy(A)")
         usage_lines.append(f"{indent}B_gen_process = copy.deepcopy(B)")
@@ -292,29 +288,24 @@ def generate_example_usage_template(
         usage_lines.append(f"{indent}A_gen_process = A")
         usage_lines.append(f"{indent}B_gen_process = B")
 
-    # Simulation loop
     usage_lines.append("")
     usage_lines.append(f"{indent}for t_step in range(T):")
     inner_indent = indent * 2
 
-    # Print observations
     if print_obs:
         usage_lines.append(f"{inner_indent}print(f\"\\n--- Timestep {{t_step + 1}} ---\")")
         usage_lines.append(f"{inner_indent}if o_current is not None:")
         usage_lines.append(f"{inner_indent}{indent}for g_idx, o_val in enumerate(o_current):")
         usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"Observation ({{obs_names[g_idx] if obs_names else f'Modality {{g_idx}}'}}): {{o_val}}\")")
 
-    # Inference
     usage_lines.append(f"{inner_indent}# Infer states")
     usage_lines.append(f"{inner_indent}qs_current = agent.infer_states(o_current)")
 
-    # Print beliefs
     if print_beliefs:
         usage_lines.append(f"{inner_indent}if qs_current is not None:")
         usage_lines.append(f"{inner_indent}{indent}for f_idx, q_val in enumerate(qs_current):")
         usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"Beliefs about {{state_names[f_idx] if state_names else f'Factor {{f_idx}}'}}: {{q_val}}\")")
 
-    # Policy inference and action selection
     usage_lines.append("")
     usage_lines.append(f"{inner_indent}# Infer policies and sample action")
     usage_lines.append(f"{inner_indent}q_pi_current, efe_current = agent.infer_policies()")
@@ -331,7 +322,6 @@ def generate_example_usage_template(
     usage_lines.append(f"{inner_indent}{indent}for i, cf_idx in enumerate(control_fac_idx):")
     usage_lines.append(f"{inner_indent}{indent}{indent}action_env[cf_idx] = int(action_agent[i])")
 
-    # Print actions
     if print_actions:
         usage_lines.append(f"{inner_indent}# Construct action names for printing")
         usage_lines.append(f"{inner_indent}action_names_str_list = []")
@@ -345,7 +335,6 @@ def generate_example_usage_template(
         usage_lines.append(f"{inner_indent}{indent}{indent}{indent}action_names_str_list.append(f\"{{state_names[cf_idx] if state_names else f'Factor {{cf_idx}}'}}: Action idx {{action_idx_on_factor}}\")")
         usage_lines.append(f"{inner_indent}print(f\"Action taken: {{', '.join(action_names_str_list) if action_names_str_list else 'No controllable actions or names not found'}}\")")
 
-    # Update environment state
     usage_lines.append("")
     usage_lines.append(f"{inner_indent}# Update true states of the environment based on action")
     usage_lines.append(f"{inner_indent}s_next = np.zeros(num_factors, dtype=int)")
@@ -356,13 +345,11 @@ def generate_example_usage_template(
     usage_lines.append(f"{inner_indent}{indent}{indent}s_next[f_idx] = utils.sample(B_gen_process[f_idx][:, s_current[f_idx], action_for_factor])")
     usage_lines.append(f"{inner_indent}s_current = s_next.tolist()")
 
-    # Print updated states
     if print_states:
         usage_lines.append(f"{inner_indent}if s_current is not None:")
         usage_lines.append(f"{inner_indent}{indent}for f_idx, s_val in enumerate(s_current):")
         usage_lines.append(f"{inner_indent}{indent}{indent}print(f\"New true state ({{state_names[f_idx] if state_names else f'Factor {{f_idx}}'}}): {{s_val}}\")")
 
-    # Generate next observation
     usage_lines.append("")
     usage_lines.append(f"{inner_indent}# Generate next observation based on new true states")
     usage_lines.append(f"{inner_indent}o_next = np.zeros(num_modalities, dtype=int)")
@@ -382,7 +369,6 @@ def generate_example_usage_template(
     usage_lines.append(f"{inner_indent}{indent}{indent}o_next[g_idx] = utils.sample(prob_vector)")
     usage_lines.append(f"{inner_indent}o_current = o_next.tolist()")
 
-    # Simulation conclusion
     usage_lines.append("")
     usage_lines.append(f"{indent}print(f\"\\nSimulation finished after {{T}} timesteps.\")")
 

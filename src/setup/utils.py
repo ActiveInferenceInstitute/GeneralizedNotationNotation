@@ -151,41 +151,8 @@ def get_setup_options() -> dict:
         'output_formats': ['json', 'yaml', 'toml', 'markdown']
     }
 
-def setup_environment(*args, **kwargs):
-    """
-    Setup environment (alias for setup_uv_environment).
-    
-    Args:
-        *args: Positional arguments
-        **kwargs: Keyword arguments
-        
-    Returns:
-        Setup result
-    """
-    try:
-        from .setup import setup_uv_environment
-        return setup_uv_environment(*args, **kwargs)
-    except Exception as e:
-        logger.error(f"Failed to setup environment: {e}")
-        return False
-
-def install_dependencies(*args, **kwargs):
-    """
-    Install dependencies using UV.
-
-    Args:
-        *args: Positional arguments
-        **kwargs: Keyword arguments
-
-    Returns:
-        Installation result
-    """
-    try:
-        from .setup import install_uv_dependencies
-        return install_uv_dependencies(*args, **kwargs)
-    except Exception as e:
-        logger.error(f"Failed to install dependencies: {e}")
-        return False
+from .setup import setup_uv_environment as setup_environment
+from .setup import install_uv_dependencies as install_dependencies
 
 def check_uv_project_status(project_root: Path) -> Dict[str, Any]:
     """

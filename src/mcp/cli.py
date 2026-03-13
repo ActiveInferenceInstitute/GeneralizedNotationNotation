@@ -50,6 +50,20 @@ def _get_mcp():
     initialize()
     return mcp_instance, MCPError
 
+
+def _cli_error(operation: str, e: Exception, args, suggestions: bool = False) -> None:
+    """Shared CLI error handler — logs, optionally prints traceback and suggestions, exits 1."""
+    logger.error(f"Error {operation}: {e}")
+    if getattr(args, "verbose", False):
+        import traceback
+        logger.error(f"Traceback: {traceback.format_exc()}")
+    print(f"\n❌ Error: {e}", file=sys.stderr)
+    if suggestions:
+        print("💡 Suggestions:", file=sys.stderr)
+        print("  - Check if MCP server is running", file=sys.stderr)
+        print("  - Verify GNN modules are properly installed", file=sys.stderr)
+    sys.exit(1)
+
 def list_capabilities(args):
     """Enhanced listing of all available MCP capabilities with better formatting."""
     try:
@@ -134,16 +148,7 @@ def list_capabilities(args):
                 pass
 
     except Exception as e:
-        logger.error(f"Error listing capabilities: {e}")
-        if args.verbose:
-            import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
-        print(f"\n❌ Error: {e}", file=sys.stderr)
-        print("💡 Suggestions:", file=sys.stderr)
-        print("  - Check if MCP server is running", file=sys.stderr)
-        print("  - Verify GNN modules are properly installed", file=sys.stderr)
-        print("  - Run with --verbose for more details", file=sys.stderr)
-        sys.exit(1)
+        _cli_error("listing capabilities", e, args, suggestions=True)
 
 def execute_tool(args):
     """Execute an MCP tool with enhanced parameter validation and error reporting."""
@@ -229,12 +234,7 @@ def execute_tool(args):
             print(f"📋 Error Data: {e.data}", file=sys.stderr)
         sys.exit(1)
     except Exception as e:
-        logger.error(f"Error executing tool: {e}")
-        if args.verbose:
-            import traceback
-            print(f"🔍 Traceback: {traceback.format_exc()}", file=sys.stderr)
-        print(f"\n❌ Unexpected error: {e}", file=sys.stderr)
-        sys.exit(1)
+        _cli_error("executing tool", e, args)
 
 def get_resource(args):
     """Retrieve an MCP resource."""
@@ -254,8 +254,7 @@ def get_resource(args):
         logger.error(f"MCP Error: {e}")
         sys.exit(1)
     except Exception as e:
-        logger.error(f"Error retrieving resource: {e}")
-        sys.exit(1)
+        _cli_error("retrieving resource", e, args)
 
 def get_server_status(args):
     """Get detailed server status information."""
@@ -286,8 +285,7 @@ def get_server_status(args):
                     print(f"  {tool}: {time_avg:.3f}s")
 
     except Exception as e:
-        logger.error(f"Error getting server status: {e}")
-        sys.exit(1)
+        _cli_error("getting server status", e, args)
 
 def get_tool_info(args):
     """Get detailed information about a specific tool."""
@@ -351,12 +349,7 @@ def get_tool_info(args):
             print(json.dumps(detailed_info['schema'], indent=2))
 
     except Exception as e:
-        logger.error(f"Error getting tool info: {e}")
-        if args.verbose:
-            import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
-        print(f"\n❌ Error: {e}", file=sys.stderr)
-        sys.exit(1)
+        _cli_error("getting tool info", e, args)
 
 def get_diagnostics(args):
     """Get comprehensive diagnostic information."""
@@ -369,7 +362,7 @@ def get_diagnostics(args):
             diagnostics = result.get('diagnostics', {})
             overall_health = result.get('overall_health', 'unknown')
         except Exception:
-            # Fallback to basic diagnostics
+            # Recovery to basic diagnostics
             diagnostics = {"issues": [], "warnings": [], "recommendations": []}
             overall_health = "unknown"
 
@@ -439,15 +432,7 @@ def get_diagnostics(args):
                 logger.warning(f"Could not get detailed status: {e}")
 
     except Exception as e:
-        logger.error(f"Error getting diagnostics: {e}")
-        if args.verbose:
-            import traceback
-            logger.error(f"Traceback: {traceback.format_exc()}")
-        print(f"\n❌ Error: {e}", file=sys.stderr)
-        print("💡 Suggestions:", file=sys.stderr)
-        print("  - Check if MCP server is running", file=sys.stderr)
-        print("  - Verify GNN modules are properly installed", file=sys.stderr)
-        sys.exit(1)
+        _cli_error("getting diagnostics", e, args, suggestions=True)
 
 def start_server(args):
     """Start the MCP server."""
@@ -465,11 +450,9 @@ def start_server(args):
             logger.error(f"Unsupported transport: {args.transport}")
             sys.exit(1)
     except ImportError as e:
-        logger.error(f"Failed to import server implementation: {e}")
-        sys.exit(1)
+        _cli_error("importing server implementation", e, args)
     except Exception as e:
-        logger.error(f"Error starting server: {e}")
-        sys.exit(1)
+        _cli_error("starting server", e, args)
 
 def main():
     """Main CLI entry point."""
@@ -486,36 +469,29 @@ def main():
 
     subparsers = parser.add_subparsers(dest="command", help="Command to execute")
 
-    # List capabilities
     list_parser = subparsers.add_parser("list", help="List available capabilities")
     list_parser.set_defaults(func=list_capabilities)
 
-    # Execute tool
     execute_parser = subparsers.add_parser("execute", help="Execute a tool with enhanced validation")
     execute_parser.add_argument("tool_name", help="Name of the tool to execute")
     execute_parser.add_argument("--params", help="JSON parameters for the tool")
     execute_parser.add_argument("--validate", action="store_true", help="Validate parameters against tool schema")
     execute_parser.set_defaults(func=execute_tool)
 
-    # Get resource
     resource_parser = subparsers.add_parser("resource", help="Get a resource")
     resource_parser.add_argument("uri", help="URI of the resource to retrieve")
     resource_parser.set_defaults(func=get_resource)
 
-    # Get server status
     status_parser = subparsers.add_parser("status", help="Get server status")
     status_parser.set_defaults(func=get_server_status)
 
-    # Get tool info
     info_parser = subparsers.add_parser("info", help="Get tool information")
     info_parser.add_argument("tool_name", help="Name of the tool")
     info_parser.set_defaults(func=get_tool_info)
 
-    # Get diagnostics
     diagnostics_parser = subparsers.add_parser("diagnostics", help="Get comprehensive diagnostic information")
     diagnostics_parser.set_defaults(func=get_diagnostics)
 
-    # Start server
     server_parser = subparsers.add_parser("server", help="Start MCP server with health monitoring")
     server_parser.add_argument("--transport", choices=["stdio", "http"], default="stdio",
                               help="Transport mechanism to use (default: stdio)")
