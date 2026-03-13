@@ -17,6 +17,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, List, Optional, Tuple, Type
 import logging
+import functools
 import json
 import time
 from datetime import datetime
@@ -47,17 +48,9 @@ class TestingModules:
         return all(v is None for v in vars(self).values())
 
 
-# Import enhanced GNN testing capabilities with lazy loading to avoid circular imports
-_testing_modules_cache: Optional[TestingModules] = None
-
-
+@functools.lru_cache(maxsize=None)
 def _get_testing_modules() -> TestingModules:
     """Lazy import of testing modules to avoid circular dependencies."""
-    global _testing_modules_cache
-
-    if _testing_modules_cache is not None:
-        return _testing_modules_cache
-
     try:
         # Use lazy imports to break circular dependency
         import importlib
@@ -66,7 +59,7 @@ def _get_testing_modules() -> TestingModules:
         schema_validator = importlib.import_module('gnn.schema_validator')
         cross_format_validator = importlib.import_module('gnn.cross_format_validator')
 
-        _testing_modules_cache = TestingModules(
+        return TestingModules(
             GNNRoundTripTester=getattr(test_round_trip, 'GNNRoundTripTester', None),
             ComprehensiveTestReport=getattr(test_round_trip, 'ComprehensiveTestReport', None),
             RoundTripResult=getattr(test_round_trip, 'RoundTripResult', None),
@@ -78,10 +71,8 @@ def _get_testing_modules() -> TestingModules:
             CrossFormatValidator=getattr(cross_format_validator, 'CrossFormatValidator', None),
             CrossFormatValidationResult=getattr(cross_format_validator, 'CrossFormatValidationResult', None),
         )
-        return _testing_modules_cache
     except (ImportError, AttributeError, RecursionError):
-        _testing_modules_cache = TestingModules()
-        return _testing_modules_cache
+        return TestingModules()
 
 
 def is_enhanced_testing_available() -> bool:
@@ -195,13 +186,13 @@ def process_gnn_folder(
 
     # Initialize validation level
     try:
-        val_level = _testing_modules_cache.ValidationLevel(validation_level.lower())
+        val_level = _get_testing_modules().ValidationLevel(validation_level.lower())
     except ValueError:
         logger.warning(f"Invalid validation level '{validation_level}', using STANDARD")
-        val_level = _testing_modules_cache.ValidationLevel.STANDARD
+        val_level = _get_testing_modules().ValidationLevel.STANDARD
 
     # Initialize enhanced validator
-    validator = _testing_modules_cache.GNNValidator(
+    validator = _get_testing_modules().GNNValidator(
         validation_level=val_level,
         enable_round_trip_testing=enable_round_trip
     )
