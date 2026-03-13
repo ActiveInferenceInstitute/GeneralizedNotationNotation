@@ -126,8 +126,10 @@ class LLMOperations:
             loop = None
 
         if loop and loop.is_running():
-            # Running inside existing event loop; return coroutine for caller to await
-            return self._get_async_response(prompt, model, max_tokens)
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(asyncio.run, self._get_async_response(prompt, model, max_tokens))
+                return future.result()
         else:
             try:
                 return asyncio.run(self._get_async_response(prompt, model, max_tokens))
@@ -177,8 +179,10 @@ class LLMOperations:
                 loop = None
 
             if loop and loop.is_running():
-                # Return coroutine for the caller to await
-                return self._async_summarize_gnn(gnn_content, max_length)
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                    future = pool.submit(asyncio.run, self._async_summarize_gnn(gnn_content, max_length))
+                    return future.result()
             else:
                 return asyncio.run(self._async_summarize_gnn(gnn_content, max_length))
         except Exception as e:
@@ -216,7 +220,10 @@ class LLMOperations:
                 loop = None
 
             if loop and loop.is_running():
-                return self._async_analyze_structure(gnn_content)
+                import concurrent.futures
+                with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                    future = pool.submit(asyncio.run, self._async_analyze_structure(gnn_content))
+                    return future.result()
             else:
                 return asyncio.run(self._async_analyze_structure(gnn_content))
         except Exception as e:
