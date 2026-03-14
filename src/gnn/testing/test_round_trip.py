@@ -244,9 +244,7 @@ try:
 
     from gnn.parsers.common import GNNInternalRepresentation, GNNFormat, ParseResult
     from gnn.parsers import GNNParsingSystem
-    from gnn.parsers.unified_parser import UnifiedGNNParser
     # Update serializer imports
-    from gnn.parsers.markdown_serializer import MarkdownSerializer
     from gnn.parsers.json_serializer import JSONSerializer
     from gnn.parsers.xml_serializer import XMLSerializer
     from gnn.parsers.yaml_serializer import YAMLSerializer

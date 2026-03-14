@@ -16,7 +16,6 @@ logger = logging.getLogger(__name__)
 
 # Check for optional dependencies
 try:
-    import discopy
     from discopy import Diagram, Word, Cap, Cup
     from discopy.quantum import Ket, Bra, X, Z, H
     DISCOPY_AVAILABLE = True

@@ -77,7 +77,7 @@ def main():
 
     try:
         # Import GNN modules
-        from gnn.enhanced_processor import run_comprehensive_gnn_testing, run_gnn_round_trip_tests
+        from gnn.enhanced_processor import run_comprehensive_gnn_testing
         from gnn.testing.test_round_trip import GNNRoundTripTester
         from gnn.schema_validator import GNNValidator
 
