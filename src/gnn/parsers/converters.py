@@ -60,14 +60,5 @@ class FormatConverter:
         logger.debug(f"Registered conversion: {from_format} -> {to_format}")
 
     def is_supported(self, from_format: str, to_format: str) -> bool:
-        """
-        Check if a conversion is supported.
-        
-        Args:
-            from_format: Source format
-            to_format: Target format
-            
-        Returns:
-            True if conversion is supported
-        """
+        """Return True if a conversion from from_format to to_format is registered."""
         return (from_format, to_format) in self.supported_conversions

@@ -342,11 +342,9 @@ async def _process_llm_async(
         else:
             logger.info("ℹ️ Proceeding with recovery LLM analysis (no live model interaction)")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize results
         results = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,

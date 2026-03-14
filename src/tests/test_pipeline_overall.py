@@ -16,6 +16,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from tests.conftest import *
 
+# Fail at collection time if pipeline is not importable (rather than false-green per-test skips)
+pipeline = pytest.importorskip("pipeline")
+
 
 class TestPipelineModuleComprehensive:
     """Comprehensive tests for the pipeline module."""

@@ -115,11 +115,9 @@ def process_analysis(
     try:
         log_step_start(logger, "Processing analysis")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 
-        # Initialize results
         results = {
             "timestamp": datetime.now().isoformat(),
             "processed_files": 0,

@@ -132,8 +132,8 @@ class TestMCPServer:
 
         server = MCPServer()
 
-        # Server should have common methods
-        assert hasattr(server, '__class__')
+        assert hasattr(server, 'register_tool'), "MCPServer must have a register_tool method"
+        assert callable(server.register_tool), "register_tool must be callable"
 
 
 class TestMCPErrors:

@@ -211,6 +211,7 @@ def generate_html_navigation(
             ("MCP", "21_mcp_output", ["*.json"]),
             ("GUI", "22_gui_output", ["*.md", "*.json"]),
             ("Report", "23_report_output", ["*.html", "*.md", "*.json"]),
+            ("Intelligent Analysis", "24_intelligent_analysis_output", ["*.json", "*.md", "*.html"]),
         ]
 
         # Collect output information

@@ -142,7 +142,6 @@ def generate_oscillator_audio(frequency: float, duration: float, oscillator_type
         return generator.generate_synthetic_audio(config)
 
     except Exception:
-        # Return silence on error
         return np.zeros(int(sample_rate * duration))
 
 def apply_envelope(audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:
@@ -247,7 +246,6 @@ class SyntheticAudioGenerator:
             return audio
 
         except Exception:
-            # Return silence on error
             return np.zeros(int(config.get('sample_rate', 44100) * config.get('duration', 1.0)))
 
     def apply_envelope(self, audio: np.ndarray, envelope_type: str = 'ADSR') -> np.ndarray:

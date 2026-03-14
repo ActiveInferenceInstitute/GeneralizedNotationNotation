@@ -189,18 +189,7 @@ def compute_information_gain(
     prior_beliefs: np.ndarray,
     posterior_beliefs: np.ndarray
 ) -> float:
-    """
-    Compute information gain from prior to posterior beliefs.
-
-    IG = D_KL(posterior || prior)
-
-    Args:
-        prior_beliefs: Prior belief distribution
-        posterior_beliefs: Posterior belief distribution
-
-    Returns:
-        Information gain in nats
-    """
+    """Compute information gain IG = D_KL(posterior || prior) in nats."""
     return compute_kl_divergence(posterior_beliefs, prior_beliefs)
 
 

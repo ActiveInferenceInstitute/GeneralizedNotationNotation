@@ -40,7 +40,6 @@ def process_report(
     try:
         log_step_start(logger, "Processing report")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 

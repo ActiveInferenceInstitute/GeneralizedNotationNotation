@@ -42,7 +42,6 @@ def process_ontology(
     try:
         log_step_start(logger, "Processing ontology")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 

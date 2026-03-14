@@ -151,7 +151,6 @@ def process_visualization(
     try:
         log_step_start(logger, "Processing visualizations")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 

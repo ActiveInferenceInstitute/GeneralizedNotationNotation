@@ -190,7 +190,6 @@ def process_execute(
         requested_frameworks = parse_frameworks_parameter(frameworks, logger)
         logger.info(f"Requested frameworks: {requested_frameworks}")
 
-        # Create results directory
         results_dir = output_dir
         results_dir.mkdir(parents=True, exist_ok=True)
 

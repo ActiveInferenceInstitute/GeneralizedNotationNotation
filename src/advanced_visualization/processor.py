@@ -343,14 +343,12 @@ def process_advanced_viz(
     logger.info("ADVANCED VISUALIZATION PROCESSING")
     logger.info("=" * 80)
 
-    # Initialize results
     results = AdvancedVisualizationResults()
 
     # Set default export formats
     if export_formats is None:
         export_formats = ["html", "json"]
 
-    # Create output directory
     output_dir = Path(output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
