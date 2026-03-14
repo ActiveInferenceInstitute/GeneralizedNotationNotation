@@ -399,31 +399,31 @@ def check_test_dependencies(logger: logging.Logger) -> Dict[str, Any]:
     }
 
     try:
-        import pytest
+        import pytest  # noqa: F811 - presence check
         dependencies["pytest"] = True
     except ImportError:
         pass
 
     try:
-        import pytest_cov
+        import pytest_cov  # noqa: F811 - presence check
         dependencies["pytest-cov"] = True
     except ImportError:
         pass
 
     try:
-        import xdist
+        import xdist  # noqa: F811 - presence check
         dependencies["pytest-xdist"] = True
     except ImportError:
         pass
 
     try:
-        import psutil
+        import psutil  # noqa: F811 - presence check
         dependencies["psutil"] = True
     except ImportError:
         pass
 
     try:
-        import coverage
+        import coverage  # noqa: F811 - presence check
         dependencies["coverage"] = True
     except ImportError:
         pass

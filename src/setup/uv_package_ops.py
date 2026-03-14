@@ -7,7 +7,7 @@ Add/remove/update/lock dependency operations extracted from uv_management.py.
 import subprocess
 import sys
 import logging
-from typing import Dict, Any
+from typing import Dict
 
 from .constants import (
     PROJECT_ROOT,

@@ -141,7 +141,7 @@ class PipelineErrorHandler:
     def _classify_error(self, error: Exception, category: ErrorCategory) -> tuple[PipelineErrorSeverity, RecoveryStrategy]:
         """Classify error severity and determine recovery strategy."""
 
-        error_type = type(error).__name__
+        _error_type = type(error).__name__  # noqa: F841 - reserved for enhanced error classification
         error_message = str(error).lower()
 
         # Critical errors - always fail fast

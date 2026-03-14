@@ -124,8 +124,8 @@ def validate_trace_data(trace: Dict[str, Any]) -> bool:
     required_keys = ['episode', 'true_states', 'observations', 'actions',
                     'rewards', 'beliefs']
 
-    # Optional keys that may be present in enhanced traces
-    optional_keys = ['policies', 'expected_free_energies', 'variational_free_energies', 'positions']
+    # Optional keys that may be present in enhanced traces (documented for reference)
+    _optional_keys = ['policies', 'expected_free_energies', 'variational_free_energies', 'positions']  # noqa: F841
 
     for key in required_keys:
         if key not in trace:

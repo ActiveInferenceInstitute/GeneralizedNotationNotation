@@ -563,7 +563,7 @@ class TestSAPFModuleComprehensive:
 		"""Test that SAPF module can be imported and has expected structure."""
 		try:
 			# Try to import from the audio module first
-			from src.audio.sapf import (
+			from src.audio.sapf import (  # noqa: F401 - importability test
 				convert_gnn_to_sapf, generate_sapf_audio, validate_sapf_code,
 				create_sapf_visualization, generate_sapf_report
 			)

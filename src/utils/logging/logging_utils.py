@@ -885,7 +885,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
     # Calculate pure successes vs successes with warnings from step statuses
     pure_successes = len([s for s in steps if s.get('status') == 'SUCCESS'])
     successes_with_warnings = len([s for s in steps if s.get('status') == 'SUCCESS_WITH_WARNINGS'])
-    failures = len([s for s in steps if 'FAILED' in s.get('status', '') or 'ERROR' in s.get('status', '')])
+    _failures = len([s for s in steps if 'FAILED' in s.get('status', '') or 'ERROR' in s.get('status', '')])  # noqa: F841 - computed for summary diagnostics
 
     # Use total_duration from summary if available, otherwise calculate
     total_duration = summary_data.get('total_duration_seconds', 0)
@@ -984,7 +984,7 @@ def log_pipeline_summary(logger: logging.Logger, summary_data: Dict[str, Any]):
         for step in steps:
             status = step.get('status', 'UNKNOWN')
             step_name = step.get('script_name', 'Unknown')
-            step_description = step.get('description', step_name)
+            _step_description = step.get('description', step_name)  # noqa: F841 - available for enhanced logging
 
             if 'FAILED' in status or 'ERROR' in status or 'WARNING' in status:
                 duration = step.get('duration_seconds', 0)

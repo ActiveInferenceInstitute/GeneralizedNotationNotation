@@ -17,7 +17,7 @@ except ImportError:
 
 # Standard import pattern for all pipeline modules
 try:
-    from utils.structured_logging import (
+    from utils.structured_logging import (  # noqa: F401 - standard pipeline imports
         log_step_start,
         log_step_success,
         log_step_warning,
@@ -31,7 +31,7 @@ try:
 
 except ImportError:
     # Recovery: use step_logging (always importable, no external deps)
-    from utils.logging.logging_utils import (
+    from utils.logging.logging_utils import (  # noqa: F401 - standard pipeline imports
         setup_step_logging,
         log_step_start,
         log_step_success,

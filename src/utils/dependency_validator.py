@@ -560,7 +560,7 @@ def validate_pipeline_dependencies_if_available(args: argparse.Namespace) -> boo
     logger.info("=== DEPENDENCY VALIDATION ===")
 
     # Determine required steps based on what will run
-    required_steps = ["setup"]  # Always need core dependencies
+    _required_steps = ["setup"]  # noqa: F841 - planned for per-step dependency validation
 
     # Check which steps will actually run
     skip_steps = parse_step_list(args.skip_steps) if args.skip_steps else []

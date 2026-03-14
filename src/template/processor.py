@@ -11,7 +11,7 @@ import json
 import datetime
 from typing import Dict, Any
 
-from utils.logging.logging_utils import log_step_start, log_step_success, log_step_warning, log_step_error
+from utils.logging.logging_utils import log_step_success, log_step_warning, log_step_error
 
 try:
     from utils import setup_step_logging, performance_tracker

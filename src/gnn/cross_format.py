@@ -10,9 +10,6 @@ to maintain consistency with the modular architecture.
 try:
     from .cross_format_validator import (
         CrossFormatValidator,
-        CrossFormatValidationResult,
-        validate_cross_format_consistency,
-        validate_schema_consistency
     )
 
     # Create alias for strategy pattern

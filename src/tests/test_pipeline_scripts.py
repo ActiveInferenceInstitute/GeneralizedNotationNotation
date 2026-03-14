@@ -199,9 +199,9 @@ class TestPipelineScriptExecution:
         # We need pymdp for execution to work (at least minimally)
         # Check if render/execute/analysis modules are importable first to avoid failures on environments without them
         try:
-            import render
-            import execute
-            import analysis
+            import render  # noqa: F401 - importability check
+            import execute  # noqa: F401 - importability check
+            import analysis  # noqa: F401 - importability check
         except ImportError:
             pytest.skip("Full pipeline modules not available")
 
@@ -722,7 +722,7 @@ def test_pipeline_script_performance():
     import time
     from pathlib import Path
 
-    src_dir = Path(__file__).parent.parent
+    _src_dir = Path(__file__).parent.parent  # noqa: F841 - available for future perf tests
 
     # Test that pipeline module imports are fast
     modules_to_check = ['gnn', 'render', 'validation', 'visualization']

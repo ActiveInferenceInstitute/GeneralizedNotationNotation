@@ -17,7 +17,7 @@ import json
 import logging
 import argparse
 from pathlib import Path
-from typing import Dict, List, Any, Optional, Union
+from typing import Dict, Any, Optional, Union
 
 import matplotlib.pyplot as plt
 

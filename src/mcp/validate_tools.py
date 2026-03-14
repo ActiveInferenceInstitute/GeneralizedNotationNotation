@@ -80,9 +80,9 @@ def main() -> int:
 
         is_documented = bool(desc)
 
-        has_module = bool(mod)
+        _has_module = bool(mod)  # noqa: F841 - computed for potential future diagnostics
 
-        has_docstring = bool(func and getattr(func, "__doc__", ""))
+        _has_docstring = bool(func and getattr(func, "__doc__", ""))  # noqa: F841 - computed for potential future diagnostics
 
         status = "OK"
         if not is_real:

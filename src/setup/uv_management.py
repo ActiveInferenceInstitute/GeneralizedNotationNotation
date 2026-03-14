@@ -16,9 +16,9 @@ import json
 from typing import Dict, Any, Optional
 
 from .constants import (
-    VENV_DIR, PYPROJECT_FILE, LOCK_FILE, PROJECT_ROOT,
+    VENV_DIR, PROJECT_ROOT,
     VENV_PATH, PYPROJECT_PATH, LOCK_PATH, VENV_PYTHON,
-    MIN_PYTHON_VERSION, OPTIONAL_GROUPS,
+    MIN_PYTHON_VERSION,
 )
 
 logger = logging.getLogger(__name__)

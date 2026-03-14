@@ -26,7 +26,6 @@ try:
         log_step_start,
         log_step_success,
         log_step_error,
-        log_step_warning
     )
 except ImportError:
     from src.utils.logging.logging_utils import (

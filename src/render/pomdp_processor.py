@@ -457,9 +457,6 @@ class POMDPRenderProcessor:
         Returns:
             Renderer result dictionary
         """
-        config = self.framework_configs[framework]
-        model_name = gnn_spec.get('name', 'pomdp_model')
-
         if framework == 'pymdp':
             return self._call_pymdp_renderer(gnn_spec, output_dir, **kwargs)
         elif framework == 'rxinfer':

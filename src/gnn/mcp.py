@@ -25,11 +25,9 @@ logger = logging.getLogger(__name__)
 # Import enhanced GNN capabilities
 try:
     from .schema_validator import (
-        GNNValidator, GNNParser, ValidationResult, ValidationLevel,
-        validate_gnn_file, ParsedGNN
+        GNNValidator, GNNParser, ValidationLevel,
     )
     from .cross_format_validator import (
-        CrossFormatValidator, CrossFormatValidationResult,
         validate_cross_format_consistency, validate_schema_consistency
     )
     from .processors import (

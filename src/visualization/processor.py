@@ -68,7 +68,7 @@ except ImportError:
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
 # Import analysis utilities via compatibility shim
-from visualization.matrix_compat import parse_matrix_data, generate_matrix_visualizations
+from visualization.matrix_compat import parse_matrix_data, generate_matrix_visualizations  # noqa: F401 - re-exported via __init__.py
 
 # Set up logger
 logger = logging.getLogger(__name__)

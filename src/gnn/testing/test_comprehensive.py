@@ -510,14 +510,14 @@ class TestGNNExampleValidation(unittest.TestCase):
                 # This is a simplified check - full validation would need
                 # to parse variable groups properly
                 if isinstance(connection.source, str):
-                    source_vars = [connection.source]
+                    _source_vars = [connection.source]  # noqa: F841
                 else:
-                    source_vars = connection.source if isinstance(connection.source, list) else []
+                    _source_vars = connection.source if isinstance(connection.source, list) else []  # noqa: F841
 
                 if isinstance(connection.target, str):
-                    target_vars = [connection.target]
+                    _target_vars = [connection.target]  # noqa: F841
                 else:
-                    target_vars = connection.target if isinstance(connection.target, list) else []
+                    _target_vars = connection.target if isinstance(connection.target, list) else []  # noqa: F841
 
 
 class TestGNNPerformance(unittest.TestCase):

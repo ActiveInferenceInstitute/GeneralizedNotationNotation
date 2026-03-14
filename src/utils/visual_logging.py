@@ -25,8 +25,6 @@ try:
     from rich.table import Table
     from rich.text import Text
     from rich.layout import Layout
-    from rich.live import Live
-    from rich.columns import Columns
     RICH_AVAILABLE = True
 except ImportError:
     RICH_AVAILABLE = False

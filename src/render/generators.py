@@ -127,7 +127,6 @@ def generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Uni
     """Generate ActiveInference.jl simulation code with enhanced features."""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
-        model_snake = _sanitize_identifier(model_name, lowercase=True)
         model_pascal = _to_pascal_case(model_name)
         gnn_file = model_data.get('source_file', 'unknown.md')
 
@@ -539,7 +538,6 @@ def generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Pat
     """Generate DisCoPy categorical analysis code with enhanced features."""
     try:
         model_name = model_data.get('model_name', 'GNN Model')
-        model_snake = _sanitize_identifier(model_name, lowercase=True)
         gnn_file = model_data.get('source_file', 'unknown.md')
 
         code = f'''#!/usr/bin/env python3
@@ -915,7 +913,6 @@ def generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Pat
     try:
         model_name = model_data.get('model_name', 'GNN Model')
         model_snake = _sanitize_identifier(model_name, lowercase=True)
-        model_pascal = _to_pascal_case(model_name)
         gnn_file = model_data.get('source_file', 'unknown.md')
 
         code = f'''#!/usr/bin/env julia

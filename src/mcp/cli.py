@@ -301,7 +301,9 @@ def get_tool_info(args):
                 "schema": tool_info.schema,
                 "module": tool_info.module,
                 "category": tool_info.category,
-                "version": tool_info.version
+                "version": tool_info.version,
+                "deprecated": tool_info.deprecated,
+                "experimental": tool_info.experimental,
             }
 
         if args.format == "json":

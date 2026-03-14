@@ -4,7 +4,6 @@ MCP registration for CLI module.
 Provides tools for pipeline execution and health checking via MCP.
 """
 
-from pathlib import Path
 from typing import Any, Dict
 import logging
 
@@ -28,8 +27,7 @@ def cli_health_check(params: Dict[str, Any] = None) -> Dict[str, Any]:
 def cli_preflight(params: Dict[str, Any] = None) -> Dict[str, Any]:
     """Run preflight checks for the pipeline environment."""
     try:
-        from . import _cmd_preflight
-        import sys
+        from . import _cmd_preflight  # noqa: F811 - presence check
         # Return info without running the full check
         return {
             "success": True,

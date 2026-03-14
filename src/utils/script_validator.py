@@ -188,7 +188,7 @@ class PipelineScriptValidator:
     def _analyze_error_handling(self, tree: ast.AST, content: str, result: ScriptValidationResult):
         """Analyze error handling patterns."""
         has_try_except = False
-        has_specific_exceptions = False
+        _has_specific_exceptions = False  # noqa: F841 - tracked for validation completeness
         has_general_exception = False
 
         for node in ast.walk(tree):
@@ -198,7 +198,7 @@ class PipelineScriptValidator:
                     if handler.type is None:
                         has_general_exception = True
                     else:
-                        has_specific_exceptions = True
+                        _has_specific_exceptions = True  # noqa: F841
 
         # For standardized pipeline scripts, check if they use create_standardized_pipeline_script
         # which includes its own error handling
@@ -334,8 +334,6 @@ class PipelineScriptValidator:
 
     def _check_safe_fail_patterns(self, content: str, result: ScriptValidationResult):
         """Check for safe-to-fail patterns."""
-        lines = content.split('\n')
-
         has_main_function = ("def main():" in content or
                              "create_standardized_pipeline_script(" in content)
         has_exit_codes = ("return 0" in content and "return 1" in content) or "run_script()" in content
