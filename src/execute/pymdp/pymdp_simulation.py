@@ -40,7 +40,6 @@ try:
     PYMDP_AVAILABLE = True
     PYMDP_REAL = True  # True only when the real inferactively-pymdp package is present
 except ImportError:
-    PYMDP_AVAILABLE = False
     PYMDP_REAL = False  # False in recovery/fallback mode
     logging.warning(
         "PyMDP not available - this is normal if not installed. "

@@ -1431,13 +1431,13 @@ def get_mcp_instance() -> MCP:
         _mcp_instance = MCP()
     return _mcp_instance
 
-def list_available_tools() -> List[str]:
-    """List all available tool names."""
-    return list(mcp_instance.tools.keys())
+def list_available_tools() -> List[Dict[str, Any]]:
+    """List all available tools with metadata."""
+    return mcp_instance.list_available_tools()
 
-def list_available_resources() -> List[str]:
-    """List all available resource URI templates."""
-    return list(mcp_instance.resources.keys())
+def list_available_resources() -> List[Dict[str, Any]]:
+    """List all available resources with metadata."""
+    return mcp_instance.list_available_resources()
 
 def get_tool_info(tool_name: str) -> Optional[Dict[str, Any]]:
     """Get information about a specific tool."""

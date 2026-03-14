@@ -241,8 +241,8 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
     full_success = False
     try:
         full_success = processor.process(context)
-    except Exception:
-        full_success = False
+    except Exception as e:
+        logger.debug("GNN processing failed, falling back to lightweight mode: %s", e)
 
     if full_success:
         result = {

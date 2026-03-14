@@ -63,11 +63,6 @@ def validate_pomdp_for_rendering(pomdp_space: Any) -> Tuple[bool, List[str]]:
     if not hasattr(pomdp_space, 'num_actions') or pomdp_space.num_actions is None:
         errors.append("Missing number of actions")
 
-    # Check matrices if present
-    if hasattr(pomdp_space, 'A_matrix') and pomdp_space.A_matrix is not None:
-        # Basic shape check would go here if we assume numpy arrays
-        pass
-
     return len(errors) == 0, errors
 
 

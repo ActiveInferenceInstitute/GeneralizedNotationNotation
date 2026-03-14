@@ -161,7 +161,6 @@ from .pymdp_utils import (
 from .pymdp_templates import (
     generate_file_header,
     generate_conversion_summary,
-    generate_debug_block,
     generate_example_usage_template,
     generate_placeholder_matrices
 )
@@ -1442,7 +1441,7 @@ class GnnToPyMdpConverter:
 
         return example_lines
 
-    def get_full_python_script(self, include_example_usage: bool = True, include_debug: bool = False) -> str:
+    def get_full_python_script(self, include_example_usage: bool = True) -> str:
         """Generate the complete Python script for the PyMDP agent."""
         # First, ensure all necessary matrix conversions have been performed
         if not self.script_parts["matrix_definitions"]:
@@ -1468,17 +1467,6 @@ class GnnToPyMdpConverter:
 
         # Generate conversion summary from the log
         conversion_summary = generate_conversion_summary(self.conversion_log)
-
-        debug_section = ""
-        if include_debug:
-            action_names_dict_str = str(self.action_names_per_control_factor) if self.action_names_per_control_factor else "{}"
-            qs_initial_str = "None"
-            agent_hyperparams_dict_str = str(self.agent_hyperparams) if self.agent_hyperparams else "{}"
-            debug_section = generate_debug_block(
-                action_names_dict_str=action_names_dict_str,
-                qs_initial_str=qs_initial_str,
-                agent_hyperparams_dict_str=agent_hyperparams_dict_str
-            )
 
         # Assemble the final script
         script_sections = [
@@ -1507,9 +1495,6 @@ class GnnToPyMdpConverter:
         # Add the example usage code if requested
         if include_example_usage:
             script_sections.append("\n".join(self.script_parts["example_usage"]))
-
-        # Add the debug section at the end
-        script_sections.append(debug_section)
 
         # Combine all sections into a single script
         full_script = "\n\n".join(section for section in script_sections if section)

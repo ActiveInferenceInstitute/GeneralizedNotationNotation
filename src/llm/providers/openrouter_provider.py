@@ -98,7 +98,7 @@ class OpenRouterProvider(BaseLLMProvider):
     @property
     def available_models(self) -> List[str]:
         """Return list of available OpenRouter models."""
-        return self.AVAILABLE_MODELS.copy()
+        return list(self.AVAILABLE_MODELS)
 
     def initialize(self) -> bool:
         """

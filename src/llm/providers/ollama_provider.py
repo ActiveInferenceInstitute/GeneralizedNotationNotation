@@ -61,7 +61,7 @@ class OllamaProvider(BaseLLMProvider):
 
     @property
     def available_models(self) -> List[str]:
-        return self.AVAILABLE_MODELS.copy()
+        return list(self.AVAILABLE_MODELS)
 
     def initialize(self) -> bool:
         # Prefer Python client
