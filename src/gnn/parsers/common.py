@@ -530,12 +530,12 @@ def normalize_variable_name(name: str) -> str:
     Returns:
         Normalized variable name
     """
+    # Remove any whitespace first so 'pi' check works on trimmed input
+    name = name.strip()
+
     # Handle special Unicode characters like π
     if name == 'π' or name.lower() == 'pi':
         return 'π'  # Standardize on Unicode π
-
-    # Remove any whitespace
-    name = name.strip()
 
     # Keep case sensitivity for specific Active Inference standard variables
     if name in ['A', 'B', 'C', 'D', 'E', 'F', 'G']:

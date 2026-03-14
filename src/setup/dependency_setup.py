@@ -27,6 +27,8 @@ from .uv_management import (
 
 logger = logging.getLogger(__name__)
 
+_jax_install_attempts: int = 0
+
 
 def install_jax_and_test(verbose: bool = False) -> bool:
     """
@@ -39,13 +41,11 @@ def install_jax_and_test(verbose: bool = False) -> bool:
     This function now tests JAX using the venv Python to avoid import issues.
     """
 
-    # Prevent infinite recursion by tracking attempts
-    if hasattr(install_jax_and_test, '_attempts'):
-        install_jax_and_test._attempts += 1
-    else:
-        install_jax_and_test._attempts = 0
+    # Prevent infinite recursion by tracking attempts at module level
+    global _jax_install_attempts
+    _jax_install_attempts += 1
 
-    if install_jax_and_test._attempts > 2:
+    if _jax_install_attempts > 2:
         logger.warning("JAX installation attempts exceeded limit, skipping")
         return False
 

@@ -6,7 +6,6 @@ Provides comprehensive visualization and data export utilities for all framework
 
 import numpy as np
 import matplotlib.pyplot as plt
-import seaborn as sns
 import pandas as pd
 import json
 import csv
@@ -14,13 +13,27 @@ import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
-import h5py
+
+try:
+    import seaborn as sns
+    _SNS_AVAILABLE = True
+except ImportError:
+    sns = None
+    _SNS_AVAILABLE = False
+
+try:
+    import h5py
+    _H5PY_AVAILABLE = True
+except ImportError:
+    h5py = None
+    _H5PY_AVAILABLE = False
 
 logger = logging.getLogger(__name__)
 
 # Set style for consistent, professional plots
 plt.style.use('seaborn-v0_8')
-sns.set_palette("husl")
+if _SNS_AVAILABLE:
+    sns.set_palette("husl")
 
 class ComprehensiveDataExporter:
     """Exports simulation data in multiple formats for reproducibility"""
@@ -50,13 +63,16 @@ class ComprehensiveDataExporter:
             exported_files.append(csv_file)
 
         # 3. HDF5 Export (for large datasets)
-        try:
-            hdf5_file = self.data_dir / f"{self.simulation_name}_data_{timestamp}.h5"
-            with h5py.File(hdf5_file, 'w') as f:
-                self._write_dict_to_hdf5(data_dict, f)
-            exported_files.append(hdf5_file)
-        except ImportError:
-            print("HDF5 not available, skipping HDF5 export")
+        if _H5PY_AVAILABLE:
+            try:
+                hdf5_file = self.data_dir / f"{self.simulation_name}_data_{timestamp}.h5"
+                with h5py.File(hdf5_file, 'w') as f:
+                    self._write_dict_to_hdf5(data_dict, f)
+                exported_files.append(hdf5_file)
+            except Exception:
+                logger.debug("HDF5 export failed, skipping")
+        else:
+            logger.debug("h5py not available, skipping HDF5 export")
 
         # 4. Metadata file
         meta_file = self.data_dir / f"{self.simulation_name}_metadata_{timestamp}.json"
