@@ -267,7 +267,9 @@ class EnhancedHealthChecker:
 
             # Determine group status
             if group_result["missing"]:
-                if len(group_result["missing"]) == len(group_info["dependencies"] or [1]):
+                deps = group_info["dependencies"]
+                all_missing = len(group_result["missing"]) == len(deps) if deps else True
+                if all_missing:
                     group_result["status"] = "unavailable"
                 else:
                     group_result["status"] = "partial"

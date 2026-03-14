@@ -451,11 +451,11 @@ class ParseResult:
 
     def has_errors(self) -> bool:
         """Check if there are any errors."""
-        return len(self.errors) > 0
+        return bool(self.errors)
 
     def has_warnings(self) -> bool:
         """Check if there are any warnings."""
-        return len(self.warnings) > 0
+        return bool(self.warnings)
 
     def add_error(self, error: str):
         """Add an error to the result."""

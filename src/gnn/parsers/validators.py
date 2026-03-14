@@ -61,11 +61,11 @@ class GNNParserValidationResult:
 
     def has_errors(self) -> bool:
         """Check if there are any errors."""
-        return len(self.errors) > 0
+        return bool(self.errors)
 
     def has_warnings(self) -> bool:
         """Check if there are any warnings."""
-        return len(self.warnings) > 0
+        return bool(self.warnings)
 
     def get_summary(self) -> str:
         """Get a summary of validation results."""

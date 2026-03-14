@@ -147,7 +147,7 @@ class GNNProcessor:
             self.logger.info(f"Discovered {len(context.discovered_files)} GNN files")
             context.processing_results['discovered_files'] = len(context.discovered_files)
             context.processing_results['file_list'] = [str(f) for f in context.discovered_files]
-            return len(context.discovered_files) > 0
+            return bool(context.discovered_files)
         except Exception as e:
             self.logger.error(f"File discovery failed: {e}")
             return False
@@ -169,7 +169,7 @@ class GNNProcessor:
             self.logger.info(f"Found {len(context.valid_files)} valid GNN files")
             context.processing_results['valid_files'] = len(context.valid_files)
             context.processing_results['validation_results'] = validation_results
-            return len(context.valid_files) > 0
+            return bool(context.valid_files)
         except Exception as e:
             self.logger.error(f"Validation failed: {e}")
             return False

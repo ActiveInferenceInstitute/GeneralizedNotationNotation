@@ -420,19 +420,21 @@ class LLMProcessor:
         """
         results = {}
 
-        tasks = []
-        for provider_type, provider in self.providers.items():
-            task = self._analyze_with_provider(provider, gnn_content, analysis_type, config)
-            tasks.append((provider_type.value, task))
+        provider_names = [pt.value for pt in self.providers]
+        coros = [
+            self._analyze_with_provider(provider, gnn_content, analysis_type, config)
+            for provider in self.providers.values()
+        ]
 
         # Execute all analyses in parallel
-        for provider_name, task in tasks:
-            try:
-                response = await task
-                results[provider_name] = response
-            except Exception as e:
-                logger.error(f"Provider {provider_name} failed: {e}")
+        import asyncio
+        responses = await asyncio.gather(*coros, return_exceptions=True)
+        for provider_name, response in zip(provider_names, responses):
+            if isinstance(response, Exception):
+                logger.error(f"Provider {provider_name} failed: {response}")
                 results[provider_name] = None
+            else:
+                results[provider_name] = response
 
         return results
 
@@ -755,8 +757,7 @@ class GNNLLMProcessor:
 
     async def close(self):
         """Close the GNN LLM processor."""
-        if self.base_processor:
-            await self.base_processor.close()
+        await self.base_processor.close()
         self.initialized = False
 
 
