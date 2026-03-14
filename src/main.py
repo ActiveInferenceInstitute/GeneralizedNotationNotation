@@ -97,7 +97,6 @@ from utils.pipeline_validator import validate_step_prerequisites, validate_pipel
 try:
     from utils.logging.logging_utils import (
         PipelineProgressTracker,
-        VisualLoggingEnhancer,
         PipelineLogger,
         log_pipeline_summary,
         reset_progress_tracker,
@@ -110,8 +109,6 @@ try:
         print_pipeline_banner,
         print_step_summary,
         print_completion_summary,
-        format_step_header,
-        format_status_message,
         create_visual_logger
     )
     STRUCTURED_LOGGING_AVAILABLE = True

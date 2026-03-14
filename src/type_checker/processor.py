@@ -48,7 +48,6 @@ class GNNTypeChecker:
             log_step_start(logger, "Processing type checker")
 
             output_dir.mkdir(parents=True, exist_ok=True)
-            results_dir = output_dir
 
             # Initialize results
             results = {

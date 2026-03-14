@@ -99,7 +99,7 @@ class MatrixVisualizer:
             return True
 
         except Exception as e:
-            print(f"Failed to export matrix to CSV: {e}")
+            logger.error(f"Failed to export matrix to CSV: {e}")
             return False
 
     def extract_matrix_data_from_parameters(self, parameters: Union[List[Dict], Dict]) -> Dict[str, np.ndarray]:
@@ -304,7 +304,7 @@ class MatrixVisualizer:
             return True
 
         except Exception as e:
-            print(f"Error generating matrix heatmap for {matrix_name}: {e}")
+            logger.error(f"Error generating matrix heatmap for {matrix_name}: {e}")
             plt.close()
             return False
 
@@ -336,7 +336,7 @@ class MatrixVisualizer:
         """
         try:
             if tensor.ndim != 3:
-                print(f"Tensor {tensor_name} is not 3D (shape: {tensor.shape})")
+                logger.warning(f"Tensor {tensor_name} is not 3D (shape: {tensor.shape})")
                 return False
 
             # Get dimensions
@@ -413,7 +413,7 @@ class MatrixVisualizer:
             return True
 
         except Exception as e:
-            print(f"Error generating 3D tensor visualization for {tensor_name}: {e}")
+            logger.error(f"Error generating 3D tensor visualization for {tensor_name}: {e}")
             plt.close()
             return False
 
@@ -477,7 +477,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
         """
         try:
             if tensor.ndim != 3:
-                print(f"Expected 3D tensor, got shape: {tensor.shape}")
+                logger.warning(f"Expected 3D tensor, got shape: {tensor.shape}")
                 return False
 
             dim1, dim2, dim3 = tensor.shape
@@ -650,7 +650,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating POMDP transition analysis: {e}")
+            logger.error(f"Error generating POMDP transition analysis: {e}")
             plt.close()
             return False
 
@@ -894,7 +894,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating combined matrix overview: {e}")
+            logger.error(f"Error generating combined matrix overview: {e}")
             plt.close()
             return False
 
@@ -998,7 +998,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating matrix statistics: {e}")
+            logger.error(f"Error generating matrix statistics: {e}")
             plt.close()
             return False
 
@@ -1055,13 +1055,13 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                             generated_files.append(str(file_output_dir / "matrix_statistics.png"))
 
                 except Exception as e:
-                    print(f"Error processing {gnn_file}: {e}")
+                    logger.error(f"Error processing {gnn_file}: {e}")
                     continue
 
             return generated_files
 
         except Exception as e:
-            print(f"Error processing directory {input_dir}: {e}")
+            logger.error(f"Error processing directory {input_dir}: {e}")
             return generated_files
 
     def _parse_gnn_content_for_parameters(self, content: str) -> Dict[str, Any]:
@@ -1142,7 +1142,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating single matrix heatmap for {matrix_name}: {e}")
+            logger.error(f"Error generating single matrix heatmap for {matrix_name}: {e}")
             return False
 
     def generate_matrix_correlation_plot(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
@@ -1188,7 +1188,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating correlation plot for {matrix_name}: {e}")
+            logger.error(f"Error generating correlation plot for {matrix_name}: {e}")
             return False
 
     def generate_matrix_histogram(self, matrix_data: np.ndarray, matrix_name: str, output_path: Path) -> bool:
@@ -1223,7 +1223,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating histogram for {matrix_name}: {e}")
+            logger.error(f"Error generating histogram for {matrix_name}: {e}")
             return False
 
     def generate_matrix_composed_view(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
@@ -1286,7 +1286,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             return True
 
         except Exception as e:
-            print(f"Error generating composed matrix view: {e}")
+            logger.error(f"Error generating composed matrix view: {e}")
             return False
 
     def _sample_matrix_for_display(self, matrix: np.ndarray, max_size: int = 20) -> np.ndarray:
