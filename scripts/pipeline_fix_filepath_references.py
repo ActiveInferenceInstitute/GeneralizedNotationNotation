@@ -119,7 +119,7 @@ def main():
         return 1
 
     with open(audit_report_path, 'r') as f:
-        audit_data = json.load(f)
+        _audit_data = json.load(f)
 
     total_fixes = {"script_refs": 0, "paths": 0}
     files_fixed = []

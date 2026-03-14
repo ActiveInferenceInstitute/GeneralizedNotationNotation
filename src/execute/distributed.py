@@ -94,8 +94,6 @@ class Dispatcher:
             return ray.get(futures)
             
         elif self.backend == "dask":
-            from distributed.client import Client
-            
             # Use retries parameter if manually providing the tuple logic
             futures = [self.client.submit(execute_fn, info, **kwargs) for info in script_infos]
             return self.client.gather(futures)

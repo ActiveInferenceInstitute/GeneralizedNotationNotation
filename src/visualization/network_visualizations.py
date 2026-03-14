@@ -9,8 +9,6 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 import json
-import numpy as np
-
 # Import visualization libraries with error handling
 try:
     import matplotlib
@@ -43,7 +41,7 @@ except ImportError:
 logger = logging.getLogger(__name__)
 
 # Import shared helpers from processor
-from .processor import _save_plot_safely, _safe_tight_layout
+from .processor import _safe_tight_layout
 
 
 def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Path, model_name: str) -> List[str]:

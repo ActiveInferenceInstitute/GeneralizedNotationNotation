@@ -229,7 +229,7 @@ Examples:
         return 0
 
     updater = VersionUpdater(args.version, args.project_root)
-    success = updater.run_update()
+    _success = updater.run_update()
 
     if updater.print_summary():
         print(f"\n🎉 Successfully updated project to version {args.version}")

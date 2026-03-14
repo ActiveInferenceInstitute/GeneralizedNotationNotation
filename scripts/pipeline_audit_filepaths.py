@@ -404,7 +404,7 @@ class FilepathAuditor:
 
         elif file_path.suffix == '.py':
             # Scan Python imports
-            imports = self.scan_python_imports(file_path)
+            _imports = self.scan_python_imports(file_path)
             # Check for output directory references in strings/comments
             try:
                 content = file_path.read_text(encoding='utf-8')
@@ -439,7 +439,7 @@ class FilepathAuditor:
             return
 
         for dir_name, step_num in self.expected_output_dirs.items():
-            dir_path = output_dir / dir_name
+            _dir_path = output_dir / dir_name
             # Note: directories might not exist if pipeline hasn't run, so this is just a check
 
     def scan_all_files(self):

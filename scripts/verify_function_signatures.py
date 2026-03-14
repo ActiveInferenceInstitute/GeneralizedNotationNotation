@@ -79,7 +79,7 @@ def extract_functions_from_agents(agents_path: Path) -> List[Dict[str, Any]]:
         if func_section_end == -1:
             func_section_end = len(content)
 
-        func_section = content[func_section_start:func_section_end]
+        _func_section = content[func_section_start:func_section_end]
 
         # Extract parameters
         params_match = re.search(r'\(([^)]*)\)', match.group(0))

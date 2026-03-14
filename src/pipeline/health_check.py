@@ -291,7 +291,7 @@ class EnhancedHealthChecker:
         }
 
         # Check for all numbered pipeline scripts (0-24)
-        expected_scripts = []
+        _expected_scripts = []
         for step_num in range(25):  # 0-24
             # Check for both .py files and module directories
             script_path = src_dir / f"{step_num}_*.py"
@@ -353,7 +353,7 @@ class EnhancedHealthChecker:
             results["validator_available"] = True
 
             # Test diagnostic enhancer
-            enhancer = PipelineDiagnosticEnhancer()
+            _enhancer = PipelineDiagnosticEnhancer()
             results["diagnostic_available"] = True
 
             results["integration_status"] = "full"
