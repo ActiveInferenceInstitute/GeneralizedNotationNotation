@@ -507,7 +507,6 @@ class GNNTypeChecker:
             return
 
         variables = content['Variables']
-        var_names = set(variables.keys())
 
         # Basic validation - just check if equations section is present and non-empty
         equation_lines = [line.strip() for line in equations.split('\n') if line.strip() and not line.startswith('#')]

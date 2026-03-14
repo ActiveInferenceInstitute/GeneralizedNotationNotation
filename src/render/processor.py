@@ -238,8 +238,6 @@ def process_render(
 
         if pomdp_available:
             # Use POMDP-aware processing
-            pomdp_processor = POMDPRenderProcessor(output_dir)
-
             for gnn_file in gnn_files:
                 try:
                     logger.info(f"📁 Processing: {gnn_file}")

@@ -11,12 +11,12 @@ License: MIT
 
 import re
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, List, Optional
 import logging
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation, ParseError,
-    Variable, Connection, Parameter, Equation, TimeSpecification, OntologyMapping,
+    Variable, Connection, Equation, TimeSpecification, OntologyMapping,
     DataType, normalize_variable_name, parse_dimensions, infer_variable_type, parse_connection_operator
 )
 from .markdown_parser_parameter import ParameterParsingMixin

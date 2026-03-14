@@ -14,9 +14,8 @@ from typing import Dict, Any
 from utils.logging.logging_utils import log_step_success, log_step_warning, log_step_error
 
 try:
-    from utils import setup_step_logging, performance_tracker
+    from utils import performance_tracker
 except ImportError:
-    from utils.logging.logging_utils import setup_step_logging
 
     class _MinimalPerformanceTracker:
         def track_operation(self, name, metadata=None):
