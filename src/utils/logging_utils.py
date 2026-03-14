@@ -27,18 +27,16 @@ def setup_correlation_context(correlation_id: str = None, step_name: str = None)
         _correlation_context.step_name = step_name
 
 
-_pipeline_loggers: Dict[str, logging.Logger] = {}
-
-
 class PipelineLogger:
     """Centralized logger for the GNN pipeline with correlation support."""
 
     _initialized = False
+    _loggers: Dict[str, logging.Logger] = {}  # intentionally mutable class-level cache
 
     @classmethod
     def get_logger(cls, name: str, level: int = logging.INFO) -> logging.Logger:
         """Get or create a logger for the given name."""
-        if name not in _pipeline_loggers:
+        if name not in cls._loggers:
             logger = logging.getLogger(name)
             logger.setLevel(level)
 
@@ -51,9 +49,9 @@ class PipelineLogger:
                 handler.setFormatter(formatter)
                 logger.addHandler(handler)
 
-            _pipeline_loggers[name] = logger
+            cls._loggers[name] = logger
 
-        return _pipeline_loggers[name]
+        return cls._loggers[name]
 
     @classmethod
     def setup(cls, log_dir: Path = None, verbose: bool = False):
