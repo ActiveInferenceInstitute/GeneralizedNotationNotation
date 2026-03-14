@@ -56,18 +56,19 @@ def find_rxinfer_scripts(
 def execute_rxinfer_script(
     script_path: Path,
     verbose: bool = False,
-    timeout: int = 300
+    output_dir: Optional[Path] = None,
+    timeout: int = 300,
 ) -> bool:
-    """
-    Execute a single RxInfer.jl script.
-    
+    """Execute a single RxInfer.jl script.
+
     Args:
-        script_path: Path to the RxInfer.jl script or TOML configuration
-        verbose: Whether to enable verbose output
-        timeout: Execution timeout in seconds (default: 300)
-        
+        script_path: Path to the RxInfer.jl script or TOML configuration.
+        verbose: Whether to enable verbose output.
+        output_dir: Directory for execution logs (unused currently, reserved for consistency).
+        timeout: Execution timeout in seconds (default: 300).
+
     Returns:
-        bool: True if execution was successful, False otherwise
+        bool: True if execution was successful, False otherwise.
     """
     if not script_path.exists():
         logger.error(f"Script file not found: {script_path}")

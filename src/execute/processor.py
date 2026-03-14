@@ -25,17 +25,18 @@ logger = logging.getLogger(__name__)
 
 
 
-def check_julia_dependencies(verbose: bool, logger) -> bool:
-    """
-    Check if required Julia packages are available.
-    
+def check_julia_dependencies(verbose: bool, log: Optional[logging.Logger] = None) -> bool:
+    """Check if required Julia packages are available.
+
     Args:
-        verbose: Enable verbose logging
-        logger: Logger instance
-        
+        verbose: Enable verbose logging.
+        log: Optional logger instance; defaults to module logger if not provided.
+
     Returns:
-        True if dependencies ok, False otherwise
+        True if dependencies ok, False otherwise.
     """
+    if log is None:
+        log = logger
     try:
         # check basic julia availability
         subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)
@@ -51,7 +52,7 @@ def check_julia_dependencies(verbose: bool, logger) -> bool:
 
         if result.returncode != 0:
             if verbose:
-                logger.warning(f"Julia package check failed: {result.stderr}")
+                log.warning(f"Julia package check failed: {result.stderr}")
             return False
 
         return True
