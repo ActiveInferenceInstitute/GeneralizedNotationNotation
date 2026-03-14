@@ -288,7 +288,7 @@ def process_render(
                         logger.error(f"❌ Failed to process {gnn_file.name}")
 
                     # Count framework-level successes
-                    for _framework, result in processing_result['framework_results'].items():
+                    for _, result in processing_result['framework_results'].items():
                         total_framework_attempts += 1
                         if result['success']:
                             total_framework_successes += 1
@@ -636,46 +636,6 @@ def render_gnn_spec(
     except Exception as e:
         return False, f"Error rendering {target}: {e}", []
 
-def _render_gnn_spec_basic(
-    gnn_spec: Dict[str, Any],
-    target: str,
-    output_directory: Union[str, Path],
-    options: Optional[Dict[str, Any]] = None
-) -> Tuple[bool, str, List[str]]:
-    """Basic GNN spec rendering without POMDP awareness."""
-    try:
-        output_dir = Path(output_directory)
-        output_dir.mkdir(parents=True, exist_ok=True)
-
-        from .generators import (
-            generate_pymdp_code, generate_rxinfer_code,
-            generate_activeinference_jl_code, generate_discopy_code
-        )
-
-        if target.lower() == "pymdp":
-            code = generate_pymdp_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_pymdp.py"
-        elif target.lower() == "rxinfer":
-            code = generate_rxinfer_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_rxinfer.jl"
-        elif target.lower() == "activeinference_jl":
-            code = generate_activeinference_jl_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_activeinference.jl"
-        elif target.lower() == "discopy":
-            code = generate_discopy_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
-        else:
-            return False, f"Unsupported target: {target}", []
-
-        if code:
-            with open(output_file, 'w') as f:
-                f.write(code)
-            return True, f"Successfully generated {target} code", [str(output_file)]
-        else:
-            return False, f"Failed to generate {target} code", []
-
-    except Exception as e:
-        return False, f"Error rendering {target}: {e}", []
 
 def get_module_info() -> Dict[str, Any]:
     """Get information about the enhanced render module."""

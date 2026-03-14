@@ -72,7 +72,7 @@ def get_analysis_results_mcp(output_directory: str,
                 if model_name and model_name not in json_file.name:
                     continue
                 results.append({"file": json_file.name, "data": data})
-            except Exception as e:
+            except (json.JSONDecodeError, OSError, ValueError) as e:
                 logger.debug(f"Skipping {json_file.name}: {e}")
 
         return {
