@@ -1,5 +1,4 @@
 """Tests for utility functions and classes in gnn/parsers/common.py."""
-import pytest
 from gnn.parsers.common import (
     normalize_variable_name,
     parse_dimensions,

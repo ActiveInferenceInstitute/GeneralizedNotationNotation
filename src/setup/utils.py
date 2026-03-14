@@ -5,7 +5,7 @@ Setup Utils module for GNN Processing Pipeline.
 This module provides setup utility functions.
 """
 
-from typing import Dict, Any, List
+from typing import Dict, List
 import logging
 from pathlib import Path
 
@@ -151,5 +151,3 @@ def get_setup_options() -> dict:
         'output_formats': ['json', 'yaml', 'toml', 'markdown']
     }
 
-from .setup import setup_uv_environment as setup_environment
-from .setup import install_uv_dependencies as install_dependencies

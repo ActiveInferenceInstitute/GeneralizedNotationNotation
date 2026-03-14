@@ -1,6 +1,4 @@
 """Tests for analysis/viz_base.py — safe_savefig and check_matplotlib."""
-import pytest
-from pathlib import Path
 from unittest.mock import patch, MagicMock
 import analysis.viz_base as viz_base
 

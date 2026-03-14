@@ -13,11 +13,11 @@ import os
 import sys
 import subprocess
 from pathlib import Path
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Any
 
 logger = logging.getLogger(__name__)
 
-def initialize_jax_devices() -> list:
+def initialize_jax_devices() -> List[Any]:
     """Initialize and return available JAX devices, falling back to CPU on errors.
 
     This matches tests expecting a callable that always returns at least one device-like object.

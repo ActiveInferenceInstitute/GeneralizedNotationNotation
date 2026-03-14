@@ -18,21 +18,14 @@ except ImportError:
 # Standard import pattern for all pipeline modules
 try:
     from utils.structured_logging import (
-        log_step_start,
-        log_step_success,
         log_step_warning,
         log_step_error,
     )
     from utils.pipeline import (
         setup_step_logging,
         validate_output_directory,
-        get_pipeline_utilities,
     )
     UTILS_AVAILABLE = True
-
-    # Enhanced imports for more complex modules
-    from utils.argument_utils import ArgumentParser, PipelineArguments
-    from utils.performance_tracker import PerformanceTracker, performance_tracker
 
 except ImportError:
     # Recovery: use step_logging (always importable, no external deps)

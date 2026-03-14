@@ -230,7 +230,7 @@ class GNNProcessor:
             self.logger.error(f"Report generation failed: {e}")
 
 
-def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recursive: bool = True) -> dict:
+def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recursive: bool = True) -> Dict[str, Any]:
     """Public wrapper expected by tests to process a directory of GNN files.
 
     Executes discovery and validation phases and writes minimal results when output_dir is provided.
@@ -268,12 +268,12 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
     return result
 
 
-def process_gnn_directory_lightweight(target_dir: Path) -> dict:
+def process_gnn_directory_lightweight(target_dir: Path) -> Dict[str, Any]:
     """Very lightweight processing returning a mapping of file path to status, expected by tests."""
     files = list(Path(target_dir).glob("**/*.md"))
     return {str(p): {"status": "processed", "format": "markdown", "size": p.stat().st_size} for p in files}
 
-def process_gnn_directory_full(target_dir: Path, output_dir: Path | None = None) -> dict:
+def process_gnn_directory_full(target_dir: Path, output_dir: Path | None = None) -> Dict[str, Any]:
     """Full processing placeholder exposed for tests to patch; delegates to process()."""
     return process_gnn_directory(target_dir, output_dir=output_dir or Path.cwd(), recursive=True)
 

@@ -8,7 +8,7 @@ Low-dependency visual design interface for Active Inference models
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 try:
     import gradio as gr

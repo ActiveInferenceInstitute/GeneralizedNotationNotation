@@ -8,7 +8,7 @@ including heatmaps, statistics, and analysis of model parameters.
 Specialized support for 3D tensors like POMDP transition matrices.
 """
 
-from analysis.viz_base import plt, np, patches, sns, MATPLOTLIB_AVAILABLE
+from analysis.viz_base import plt, np, sns, MATPLOTLIB_AVAILABLE
 import csv
 
 try:

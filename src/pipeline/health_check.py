@@ -43,9 +43,9 @@ try:
         sys.path.insert(0, str(_P(__file__).parent.parent))
     from utils.structured_logging import setup_step_logging, log_step_success, log_step_warning, log_step_error
     PIPELINE_INTEGRATION = True
-except ImportError as e:
+except ImportError:
     # Attempting silent recovery since the user reported print spam
-    # print(f"Warning: Limited pipeline integration in health_check: {e}")
+    # print(f"Warning: Limited pipeline integration in health_check")
     PIPELINE_INTEGRATION = False
     # Recovery logging
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

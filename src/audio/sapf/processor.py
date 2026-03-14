@@ -12,7 +12,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 def process_gnn_to_audio(gnn_content: str, model_name: str, output_dir: str,
-                        duration: float = 10.0, validate_only: bool = False) -> dict:
+                        duration: float = 10.0, validate_only: bool = False) -> Dict[str, Any]:
     """
     Process GNN content to audio using SAPF.
     

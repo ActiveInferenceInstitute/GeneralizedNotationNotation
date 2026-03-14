@@ -6,10 +6,11 @@ This module provides SAPF utility functions.
 """
 
 import logging
+from typing import Any, Dict
 
 logger = logging.getLogger(__name__)
 
-def get_module_info() -> dict:
+def get_module_info() -> Dict[str, Any]:
     """
     Get comprehensive information about the SAPF module and its capabilities.
     
@@ -55,7 +56,7 @@ def get_module_info() -> dict:
         ]
     }
 
-def get_audio_generation_options() -> dict:
+def get_audio_generation_options() -> Dict[str, Any]:
     """
     Get audio generation options and capabilities.
     
