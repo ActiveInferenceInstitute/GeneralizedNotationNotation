@@ -9,13 +9,21 @@ memory, inference, storage, FLOPS, and complexity estimates for GNN models.
 import logging
 import math
 import re
-from typing import Dict, List, Any
+from typing import Dict, List, Any, TypedDict
 
 logger = logging.getLogger(__name__)
 
 
+class VariableSpec(TypedDict, total=False):
+    """Shape of a single variable entry in the variables mapping."""
+    type: str        # e.g. "float", "int", "categorical"
+    dimensions: List[int]  # e.g. [3, 3] or [1]
+
+VariableMap = Dict[str, VariableSpec]
+
+
 def estimate_memory(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     memory_factors: Dict[str, int],
 ) -> float:
     """
@@ -45,7 +53,7 @@ def estimate_memory(
 
 
 def detailed_memory_breakdown(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     memory_factors: Dict[str, int],
 ) -> Dict[str, Any]:
     """Create detailed memory breakdown by variable and type."""
@@ -88,7 +96,7 @@ def detailed_memory_breakdown(
 
 
 def estimate_flops(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
     model_type: str,
@@ -173,7 +181,7 @@ def estimate_inference_time(
 
 
 def estimate_batched_inference(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     model_type: str,
     flops_estimate: Dict[str, Any],
     hardware_specs: Dict[str, float],
@@ -203,7 +211,7 @@ def estimate_batched_inference(
 
 
 def estimate_matrix_operation_costs(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
     operation_costs: Dict[str, int],
@@ -274,7 +282,7 @@ def estimate_matrix_operation_costs(
 
 
 def estimate_model_overhead(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
 ) -> Dict[str, Any]:
@@ -295,7 +303,7 @@ def estimate_model_overhead(
 
 
 def estimate_inference(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     model_type: str,
     edges: List[Dict[str, Any]],
     equations: str,
@@ -350,7 +358,7 @@ def estimate_inference(
 
 
 def estimate_storage(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
     memory_factors: Dict[str, int],
@@ -381,7 +389,7 @@ def estimate_storage(
 
 
 def calculate_complexity(
-    variables: Dict[str, Any],
+    variables: VariableMap,
     edges: List[Dict[str, Any]],
     equations: str,
 ) -> Dict[str, float]:

@@ -567,8 +567,12 @@ def parse_dimensions(dim_str: str) -> List[int]:
     except (ValueError, TypeError, AttributeError):
         return [1]  # Default dimension
 
-def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = None) -> T:
-    """Safely convert string to enum, handling case insensitivity."""
+def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = None) -> Optional[T]:
+    """Safely convert string to enum, handling case insensitivity.
+
+    Returns the converted enum value, the provided default, or None if no
+    default was given and conversion failed.
+    """
     if isinstance(value, enum_class):
         return value
 
@@ -591,10 +595,7 @@ def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = No
         except ValueError as e:
             logger.debug("All enum conversions failed, falling through to default: %s", e)
 
-    # Return default if provided, otherwise first enum value
-    if default is not None:
-        return default
-    return list(enum_class)[0]
+    return default
 
 def infer_variable_type(name: str) -> VariableType:
     """

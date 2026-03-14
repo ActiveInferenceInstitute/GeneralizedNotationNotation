@@ -120,7 +120,7 @@ class GNNValidator:
 
         return result
 
-    def _validate_basic_structure(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_basic_structure(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate basic model structure."""
         # Check model name
         if not model.model_name or not model.model_name.strip():
@@ -149,7 +149,7 @@ class GNNValidator:
                 component_type="structure"
             ))
 
-    def _validate_variables(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_variables(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate variables in the model."""
         variable_names = set()
 
@@ -168,7 +168,7 @@ class GNNValidator:
             # Validate individual variable
             self._validate_variable(variable, result)
 
-    def _validate_variable(self, variable: Variable, result: ValidationResult):
+    def _validate_variable(self, variable: Variable, result: ValidationResult) -> None:
         """Validate a single variable."""
         # Check name
         if not variable.name or not variable.name.strip():
@@ -205,7 +205,7 @@ class GNNValidator:
         # Validate Active Inference specific constraints
         self._validate_variable_active_inference(variable, result)
 
-    def _validate_variable_active_inference(self, variable: Variable, result: ValidationResult):
+    def _validate_variable_active_inference(self, variable: Variable, result: ValidationResult) -> None:
         """Validate Active Inference specific variable constraints."""
         name_lower = variable.name.lower()
 
@@ -251,7 +251,7 @@ class GNNValidator:
                 details={"current_type": variable.data_type.value, "suggested_types": ["binary", "categorical", "integer"]}
             ))
 
-    def _validate_connections(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_connections(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate connections in the model."""
         variable_names = {var.name for var in model.variables}
 
@@ -294,7 +294,7 @@ class GNNValidator:
             self._validate_connection_active_inference(connection, model, result, i)
 
     def _validate_connection_active_inference(self, connection: Connection, model: GNNInternalRepresentation,
-                                             result: ValidationResult, index: int):
+                                             result: ValidationResult, index: int) -> None:
         """Validate Active Inference specific connection constraints."""
         var_lookup = {var.name: var for var in model.variables}
 
@@ -334,7 +334,7 @@ class GNNValidator:
                                 details={"source": source_var_name, "target": target_var_name}
                             ))
 
-    def _validate_parameters(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_parameters(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate parameters in the model."""
         parameter_names = set()
 
@@ -359,7 +359,7 @@ class GNNValidator:
                     component_type="parameter"
                 ))
 
-    def _validate_semantics(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_semantics(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate semantic consistency of the model."""
         # Check for unreferenced variables
         referenced_vars = set()
@@ -385,7 +385,7 @@ class GNNValidator:
         # Check for disconnected components
         self._check_connectivity(model, result)
 
-    def _check_connectivity(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _check_connectivity(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Check if the model graph is connected."""
         if not model.variables or not model.connections:
             return
@@ -430,7 +430,7 @@ class GNNValidator:
                 details={"num_components": len(components), "components": [list(comp) for comp in components]}
             ))
 
-    def _validate_active_inference(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_active_inference(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate Active Inference specific constraints."""
         # Check for essential Active Inference components
         actinf_vars = {
@@ -504,7 +504,7 @@ class GNNValidator:
         # POMDP and other checks
         self._validate_pomdp_structure(model, actinf_vars, result)
 
-    def _validate_pomdp_structure(self, model: GNNInternalRepresentation, actinf_vars: Dict[str, bool], result: ValidationResult):
+    def _validate_pomdp_structure(self, model: GNNInternalRepresentation, actinf_vars: Dict[str, bool], result: ValidationResult) -> None:
         """Validate the structure of a POMDP model."""
         # Check for policy variable π
         if not actinf_vars['π']:
@@ -564,7 +564,7 @@ class GNNValidator:
         # Validate matrix dimensions consistency
         self._validate_matrix_dimensions(model, result)
 
-    def _validate_matrix_dimensions(self, model: GNNInternalRepresentation, result: ValidationResult):
+    def _validate_matrix_dimensions(self, model: GNNInternalRepresentation, result: ValidationResult) -> None:
         """Validate Active Inference matrix dimension consistency."""
         # Get dimensions of different variable types
         hidden_states = [var for var in model.variables if var.var_type == VariableType.HIDDEN_STATE]
