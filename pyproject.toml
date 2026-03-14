@@ -70,7 +70,9 @@ dev = [
 
     # Code quality and linting
     "isort>=5.12.0",
-    "black>=23.0.0",
+    # Security: CVE-2026-32274 — arbitrary file writes from unsanitized cache name.
+    # Fixed in black >=26.3.1. See: https://github.com/advisories/GHSA-black-cve-2026
+    "black>=26.3.1",
     "flake8>=4.0.0",
     "mypy>=0.950",
     "pre-commit>=3.0.0",
@@ -162,7 +164,9 @@ audio = [
 
 # GUI interfaces: Gradio/Streamlit frontends (step 22)
 gui = [
-    "gradio>=4.0.0",
+    # Security: CVE-2026-28414 (path traversal), CVE-2026-28416 (SSRF via proxy_url).
+    # Fixed in gradio >=6.7.0. See: https://github.com/advisories/GHSA-gradio-cve-2026
+    "gradio>=6.7.0",
     "streamlit>=1.25.0",
 ]
 
@@ -255,7 +259,7 @@ all = [
     "pyaudio>=0.2.0",
 
     # GUI and interactive interfaces
-    "gradio>=4.0.0",
+    "gradio>=6.7.0",
     "streamlit>=1.25.0",
 
     # Research and scientific computing
