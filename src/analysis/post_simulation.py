@@ -14,6 +14,25 @@ Implementation is split across sub-modules for maintainability:
 This file re-exports all public names for backward compatibility.
 """
 
+__all__ = [
+    # trace_analysis
+    "analyze_simulation_traces", "analyze_free_energy", "analyze_policy_convergence",
+    "analyze_state_distributions", "compare_framework_results",
+    # framework_extractors
+    "extract_pymdp_data", "extract_rxinfer_data", "extract_activeinference_jl_data",
+    "extract_jax_data", "extract_discopy_data",
+    # math_utils
+    "compute_shannon_entropy", "compute_kl_divergence", "compute_variational_free_energy",
+    "compute_expected_free_energy", "compute_information_gain", "analyze_active_inference_metrics",
+    # visualizations
+    "plot_belief_evolution", "animate_belief_evolution", "visualize_all_framework_outputs",
+    "generate_belief_heatmaps", "generate_action_analysis", "generate_free_energy_plots",
+    "generate_observation_analysis", "generate_cross_framework_comparison",
+    "generate_unified_framework_dashboard",
+    # local
+    "analyze_execution_results",
+]
+
 import json
 import logging
 from pathlib import Path

@@ -73,7 +73,7 @@ def get_analysis_results_mcp(output_directory: str,
                     continue
                 results.append({"file": json_file.name, "data": data})
             except (json.JSONDecodeError, OSError, ValueError) as e:
-                logger.debug(f"Skipping {json_file.name}: {e}")
+                logger.warning(f"Skipping {json_file.name}: {e}")
 
         return {
             "success": True,
