@@ -31,14 +31,14 @@ class OllamaProvider(BaseLLMProvider):
     """Ollama implementation of the LLM provider interface."""
 
     # Include quality local models; smaller/faster ones prioritized for reliability
-    AVAILABLE_MODELS = [
+    AVAILABLE_MODELS = (
         "gemma3:4b",
         "ministral-3:3b",
         "mistral:7b",
         "llama3.1:8b",
         "qwen2:7b",
         "llama3.1:70b",
-    ]
+    )
 
     DEFAULT_MODEL = "gemma3:4b"
 

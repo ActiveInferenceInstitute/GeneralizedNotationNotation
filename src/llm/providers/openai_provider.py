@@ -26,14 +26,14 @@ class OpenAIProvider(BaseLLMProvider):
     """OpenAI implementation of the LLM provider interface."""
 
     # Available OpenAI models for GNN analysis
-    AVAILABLE_MODELS = [
+    AVAILABLE_MODELS = (
         "gpt-4o",
         "gpt-4o-mini",
         "gpt-4-turbo",
         "gpt-4",
         "gpt-3.5-turbo",
         "gpt-3.5-turbo-16k"
-    ]
+    )
 
     DEFAULT_MODEL = "gpt-4o-mini"
 

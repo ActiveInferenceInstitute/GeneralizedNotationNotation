@@ -34,7 +34,7 @@ class PerplexityProvider(BaseLLMProvider):
     """Perplexity implementation of the LLM provider interface."""
 
     # Available Perplexity models
-    AVAILABLE_MODELS = [
+    AVAILABLE_MODELS = (
         "llama-3.1-sonar-small-128k-online",
         "llama-3.1-sonar-large-128k-online",
         "llama-3.1-sonar-huge-128k-online",
@@ -42,7 +42,7 @@ class PerplexityProvider(BaseLLMProvider):
         "llama-3.1-sonar-large-128k-chat",
         "llama-3.1-8b-instruct",
         "llama-3.1-70b-instruct"
-    ]
+    )
 
     DEFAULT_MODEL = "llama-3.1-sonar-large-128k-online"
     BASE_URL = "https://api.perplexity.ai"

@@ -164,15 +164,15 @@ class GNNTypeChecker:
     """
 
     # Required sections per GNN specification (more flexible)
-    REQUIRED_SECTIONS = {
+    REQUIRED_SECTIONS = frozenset({
         'GNNSection',
         'GNNVersionAndFlags',
         'StateSpaceBlock',
         'Connections'
-    }
+    })
 
     # Optional but common sections
-    OPTIONAL_SECTIONS = {
+    OPTIONAL_SECTIONS = frozenset({
         'ModelName',
         'ModelAnnotation',
         'InitialParameterization',
@@ -182,25 +182,25 @@ class GNNTypeChecker:
         'ModelParameters',
         'Footer',
         'Signature'
-    }
+    })
 
     # Allowed time specifications
-    VALID_TIME_SPECS = {
+    VALID_TIME_SPECS = frozenset({
         'Static',
         'Dynamic',
         'Time=t',
         'Discrete',
         'ModelTimeHorizon=Unbounded'
-    }
+    })
 
     # Valid types for variables
-    VALID_TYPES = {
+    VALID_TYPES = frozenset({
         'float',
         'int',
         'bool',
         'string',
         'categorical'
-    }
+    })
 
     def __init__(self, strict_mode: bool = False):
         """

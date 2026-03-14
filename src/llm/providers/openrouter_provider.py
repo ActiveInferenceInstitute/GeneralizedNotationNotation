@@ -36,7 +36,7 @@ class OpenRouterProvider(BaseLLMProvider):
     """OpenRouter implementation of the LLM provider interface."""
 
     # Popular models available through OpenRouter
-    AVAILABLE_MODELS = [
+    AVAILABLE_MODELS = (
         # OpenAI models
         "openai/gpt-4o",
         "openai/gpt-4o-mini",
@@ -64,7 +64,7 @@ class OpenRouterProvider(BaseLLMProvider):
         "mistralai/mistral-7b-instruct",
         "cohere/command-r-plus",
         "perplexity/llama-3.1-sonar-large-128k-online",
-    ]
+    )
 
     DEFAULT_MODEL = "openai/gpt-4o-mini"
     BASE_URL = "https://openrouter.ai/api/v1"

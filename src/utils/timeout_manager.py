@@ -303,7 +303,7 @@ class TimeoutManager:
             try:
                 return future.result(timeout=timeout)
             except concurrent.futures.TimeoutError:
-                raise TimeoutError(f"Operation timed out after {timeout} seconds")
+                raise TimeoutError(f"Operation timed out after {timeout} seconds") from None
 
     def get_active_operations(self) -> Dict[str, float]:
         """Get currently active operations and their start times."""

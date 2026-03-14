@@ -13,6 +13,7 @@ import logging
 import logging.handlers
 import sys
 from datetime import datetime
+from types import MappingProxyType
 from pathlib import Path
 from typing import Optional
 
@@ -52,13 +53,13 @@ class HumanFormatter(logging.Formatter):
     Human-readable colored formatter for terminal output.
     """
 
-    COLORS = {
+    COLORS = MappingProxyType({
         "DEBUG": "\033[36m",     # Cyan
         "INFO": "\033[32m",      # Green
         "WARNING": "\033[33m",   # Yellow
         "ERROR": "\033[31m",     # Red
         "CRITICAL": "\033[35m",  # Magenta
-    }
+    })
     RESET = "\033[0m"
 
     def format(self, record: logging.LogRecord) -> str:

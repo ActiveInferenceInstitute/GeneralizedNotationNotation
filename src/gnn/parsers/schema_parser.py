@@ -141,7 +141,7 @@ class XSDParser(BaseGNNParser):
             return self._parse_from_embedded_data(embedded_data, result)
 
         try:
-            root = ET.fromstring(content)
+            root = ET.fromstring(content)  # nosec B314 - GNN schema files are researcher-generated, not untrusted input
             return self.parse_xml_element(root)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())

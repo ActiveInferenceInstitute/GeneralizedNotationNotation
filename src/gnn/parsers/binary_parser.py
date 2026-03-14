@@ -31,7 +31,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try binary read first
             with open(file_path, 'rb') as f:
-                data = pickle.load(f)
+                data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
             return self._parse_pickle_data(data)
         except Exception as binary_error:
             # If binary fails, try reading as base64-encoded text
@@ -50,7 +50,7 @@ class PickleGNNParser(BaseGNNParser):
         try:
             # Try to decode base64 content
             binary_data = base64.b64decode(content)
-            data = pickle.loads(binary_data)
+            data = pickle.loads(binary_data)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
             return self._parse_pickle_data(data)
         except Exception as e:
             result = ParseResult(model=self.create_empty_model())

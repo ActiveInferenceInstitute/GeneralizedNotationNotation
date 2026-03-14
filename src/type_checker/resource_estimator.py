@@ -16,6 +16,7 @@ import sys
 import json
 import logging
 import argparse
+from types import MappingProxyType
 from pathlib import Path
 from typing import Dict, Any, Optional, Union
 
@@ -43,7 +44,7 @@ class GNNResourceEstimator:
     """
 
     # Default computational cost factors (realistic units)
-    MEMORY_FACTORS = {
+    MEMORY_FACTORS = MappingProxyType({
         'float': 4,    # bytes per float (single precision)
         'double': 8,   # bytes per double (double precision)
         'int': 4,      # bytes per int (32-bit)
@@ -51,10 +52,10 @@ class GNNResourceEstimator:
         'bool': 1,     # bytes per bool
         'string': 16,  # average bytes per string reference
         'categorical': 4  # bytes per category (int encoding)
-    }
+    })
 
     # Operation cost factors in FLOPS
-    OPERATION_COSTS = {
+    OPERATION_COSTS = MappingProxyType({
         'matrix_multiply': 2,  # 2 FLOPS per element (multiply and add)
         'scalar_multiply': 1,  # 1 FLOP per element
         'addition': 1,        # 1 FLOP per element
@@ -64,10 +65,10 @@ class GNNResourceEstimator:
         'softmax': 30,        # ~30 FLOPS per element (exp, sum, div)
         'sigmoid': 25,        # ~25 FLOPS per element
         'tanh': 30            # ~30 FLOPS per element
-    }
+    })
 
     # Inference speed factors (relative to static models)
-    INFERENCE_FACTORS = {
+    INFERENCE_FACTORS = MappingProxyType({
         'Static': 1.0,          # Base reference
         'Dynamic': 2.5,         # Dynamic models ~2.5x more expensive
         'Hierarchical': 3.5,    # Hierarchical models ~3.5x more expensive
@@ -77,15 +78,15 @@ class GNNResourceEstimator:
         'bool': 0.5,            # Booleans ~0.5x of float cost
         'string': 1.2,          # String ops ~1.2x of float cost
         'categorical': 1.1      # Categorical ~1.1x of float cost
-    }
+    })
 
     # Hardware specifications (representative values)
-    HARDWARE_SPECS = {
+    HARDWARE_SPECS = MappingProxyType({
         'cpu_flops_per_second': 50e9,   # 50 GFLOPS for typical CPU
         'memory_bandwidth': 25e9,       # 25 GB/s memory bandwidth
         'disk_read_speed': 500e6,       # 500 MB/s disk read
         'disk_write_speed': 450e6,      # 450 MB/s disk write
-    }
+    })
 
     def __init__(self, type_check_data: Optional[str] = None):
         """

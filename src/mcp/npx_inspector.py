@@ -110,7 +110,7 @@ class StdioMCPClient:
                     print(f"INSPECTOR (info): Received unrelated message or notification: {response}", file=sys.stderr)
             except queue.Empty:
                 if self.process.poll() is not None: # Server process terminated
-                    raise ConnectionError("Server process terminated unexpectedly.")
+                    raise ConnectionError("Server process terminated unexpectedly.") from None
                 continue # Timeout, try again
             except json.JSONDecodeError as e:
                 print(f"INSPECTOR (error): Could not decode JSON from server: {line.strip()} - {e}", file=sys.stderr)

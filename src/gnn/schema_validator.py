@@ -16,6 +16,7 @@ Enhanced Features:
 import json
 import re
 from pathlib import Path
+from types import MappingProxyType
 from typing import Dict, List, Any, Optional, Tuple, Union
 import logging
 import hashlib
@@ -60,12 +61,12 @@ class GNNParser:
     COMMENT_PATTERN = re.compile(r'^\s*#\s*(.*)$')
 
     # Enhanced format detection patterns
-    FORMAT_SIGNATURES = {
-        'json': [r'^\s*\{', r'"model_name":', r'"variables":'],
-        'xml': [r'^\s*<\?xml', r'<gnn.*>', r'<model'],
-        'yaml': [r'^---', r'model_name:', r'variables:'],
-        'binary': [b'\x80\x03', b'pickle', b'\x00\x00\x00'],  # Pickle signatures
-    }
+    FORMAT_SIGNATURES = MappingProxyType({
+        'json': (r'^\s*\{', r'"model_name":', r'"variables":'),
+        'xml': (r'^\s*<\?xml', r'<gnn.*>', r'<model'),
+        'yaml': (r'^---', r'model_name:', r'variables:'),
+        'binary': (b'\x80\x03', b'pickle', b'\x00\x00\x00'),  # Pickle signatures
+    })
 
     def __init__(self, enhanced_validation: bool = True):
         self.enhanced_validation = enhanced_validation
@@ -178,7 +179,7 @@ class GNNParser:
         try:
             import pickle
             with open(file_path, 'rb') as f:
-                data = pickle.load(f)
+                data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
 
             # Convert pickle data to ParsedGNN format
             return self._convert_pickle_to_parsed_gnn(data)
@@ -985,7 +986,7 @@ class GNNValidator:
             elif file_format == 'xml':
                 import xml.etree.ElementTree as ET
                 try:
-                    root = ET.fromstring(content)
+                    root = ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
                     result.warnings.append("XML format validated successfully")
                 except ET.ParseError as e:
                     result.errors.append(f"XML parsing error: {e}")
