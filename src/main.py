@@ -62,6 +62,8 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Any, List, Optional
 
+_module_logger = logging.getLogger(__name__)
+
 # Detect project root and ensure we're working from there
 SCRIPT_DIR = Path(__file__).parent  # src/
 PROJECT_ROOT = SCRIPT_DIR.parent     # project root (one level up from src/)
@@ -759,7 +761,7 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                     _cfg = yaml.safe_load(f) or {}
                     config_skip_steps = _cfg.get("pipeline", {}).get("skip_steps", [])
             except (ImportError, OSError, ValueError):
-                pass  # Config file parsing is optional
+                logger.debug("Could not parse input/config.yaml for skip_steps, continuing with defaults")
 
         # Validate step prerequisites
         prereq_result = validate_step_prerequisites(script_name, args, logger,
@@ -970,6 +972,7 @@ def parse_step_list(step_input: Any) -> List[int]:
         try:
             return [int(s.strip()) for s in step_input.split(',') if s.strip()]
         except ValueError:
+            _module_logger.debug("Could not parse step list '%s' as comma-separated integers", step_input)
             return []
     return []
 

@@ -17,7 +17,10 @@ FEATURES = {
     "mcp_integration": True
 }
 
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 def process_llm(*args, **kwargs):
     from .processor import process_llm as _impl
@@ -195,12 +198,12 @@ def get_available_providers() -> list:
         from .providers import openai_provider as _openai  # noqa: F401
         providers.append("openai")
     except ImportError:
-        pass  # openai provider not installed
+        logger.debug("openai provider not installed, skipping")
     try:
         from .providers import openrouter_provider as _openrouter  # noqa: F401
         providers.append("openrouter")
     except ImportError:
-        pass  # openrouter provider not installed
+        logger.debug("openrouter provider not installed, skipping")
     return providers
 
 

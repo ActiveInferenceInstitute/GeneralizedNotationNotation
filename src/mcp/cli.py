@@ -135,8 +135,8 @@ def list_capabilities(args):
                 print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
                 print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
                 print(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
-            except (AttributeError, KeyError, TypeError):
-                pass  # Performance stats are optional
+            except (AttributeError, KeyError, TypeError) as e:
+                logger.debug(f"Could not retrieve performance stats: {e}")
 
     except Exception as e:
         _cli_error("listing capabilities", e, args, suggestions=True)
@@ -206,8 +206,8 @@ def execute_tool(args):
                         print(f"  Uses: {stats.get('use_count', 0)}")
                         print(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
                         print(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
-                except (AttributeError, KeyError, TypeError):
-                    pass  # Tool stats are optional
+                except (AttributeError, KeyError, TypeError) as e:
+                    logger.debug(f"Could not retrieve tool stats: {e}")
 
     except MCPError as e:
         print(f"\n❌ MCP Error: {e}", file=sys.stderr)

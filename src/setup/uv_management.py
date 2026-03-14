@@ -470,7 +470,7 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
             if versions:
                 validation_results["dependencies"] = True
         except (subprocess.SubprocessError, OSError, json.JSONDecodeError):
-            pass  # Dependencies check is non-critical
+            logger.debug("Dependencies version check skipped (non-critical)")
 
         try:
             if VENV_PYTHON.exists():
@@ -488,7 +488,7 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
                 import jax
                 validation_results["jax_installation"] = True
         except (ImportError, subprocess.TimeoutExpired, FileNotFoundError):
-            pass
+            logger.debug("JAX installation check skipped (not available or timed out)")
 
         validation_results["overall_status"] = all([
             validation_results["system_requirements"],

@@ -305,8 +305,7 @@ class GNNVisualizer:
             try:
                 display_file_path = Path(file_path).resolve().relative_to(self.project_root)
             except ValueError:
-                # Keep as name if not under project_root for some reason
-                pass
+                logger.debug("File %s not under project_root, using basename for display", file_path)
 
         # Create a simple text report
         with open(output_dir / 'file_content.md', 'w') as f:

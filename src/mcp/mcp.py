@@ -1153,7 +1153,7 @@ class MCP:
                 process = psutil.Process()
                 memory_usage = process.memory_info().rss
             except ImportError:
-                pass
+                logger.debug("psutil not available, skipping memory usage reporting")
 
             # Calculate cache statistics
             cache_size = len(self._result_cache)
@@ -1391,7 +1391,7 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     try:
         mcp_instance.set_performance_mode(performance_mode)
     except (AttributeError, TypeError):
-        pass  # Performance mode is optional
+        logger.debug("Performance mode setting not supported on this MCP instance")
 
     all_modules_loaded = mcp_instance.discover_modules(
         force_refresh=False,

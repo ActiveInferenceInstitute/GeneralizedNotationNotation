@@ -1,6 +1,9 @@
 """Step timeout configuration for the GNN pipeline."""
 
+import logging
 import os
+
+logger = logging.getLogger(__name__)
 
 # Timeout configuration in seconds
 STEP_TIMEOUTS = {
@@ -29,8 +32,8 @@ def get_step_timeout(script_name: str, comprehensive: bool = False) -> int:
     if env_val:
         try:
             return int(env_val)
-        except ValueError:
-            pass
+        except ValueError as e:
+            logger.debug("Invalid timeout value in %s: %s", env_key, e)
 
     timeout_config = STEP_TIMEOUTS.get(script_name)
     if timeout_config is None:

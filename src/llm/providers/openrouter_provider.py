@@ -346,7 +346,7 @@ class OpenRouterProvider(BaseLLMProvider):
                                 chunk_data["choices"][0]["delta"].get("content")):
                                 yield chunk_data["choices"][0]["delta"]["content"]
                         except json.JSONDecodeError:
-                            # Skip malformed chunks
+                            logger.debug("Skipping malformed streaming chunk: %s", data_str[:100])
                             continue
 
         except Exception as e:

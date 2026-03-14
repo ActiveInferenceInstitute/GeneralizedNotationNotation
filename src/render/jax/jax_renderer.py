@@ -228,7 +228,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                                 n_actions = n_actions_from_spec
                                 logger.info(f"Corrected n_actions from B matrix specification: {n_actions}")
                         except (ValueError, IndexError):
-                            pass
+                            logger.debug("Could not extract n_actions from B matrix spec shape_parts")
         if init_params:
             logger.info("Found initialparameterization, extracting actual matrix values")
 
@@ -306,6 +306,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     try:
                         dims.append(int(part))
                     except ValueError:
+                        logger.debug("Skipping non-integer dimension token: %s", part)
                         continue
                 var_dims[var_name] = dims
 
@@ -427,6 +428,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                     try:
                         dims.append(int(part))
                     except ValueError:
+                        logger.debug("Skipping non-integer dimension token: %s", part)
                         continue
 
                 if dims:  # Only add if we successfully parsed dimensions
@@ -699,7 +701,7 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
 
                 return new_vector
         except (ValueError, TypeError, IndexError):
-            pass  # Fall through to return default matrix
+            logger.debug("Could not improve matrix from parameterization for %s, using default", param_name)
 
     # If we can't improve it, return the default
     return default_matrix
@@ -1010,7 +1012,7 @@ try:
         # Multi-device data parallelism
         parallel_belief_update = jax.pmap(belief_update, in_axes=(None, 0, 0))
 except (RuntimeError, ValueError):
-    pass  # pmap unavailable on single-device setups
+    logger.debug("pmap unavailable (single-device setup or runtime error)")
 
 
 @jit

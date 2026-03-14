@@ -24,12 +24,12 @@ def get_hardware_topology() -> Dict[str, Any]:
         try:
             gpu_devices = jax.local_devices(backend="gpu")
         except RuntimeError:
-            pass
-            
+            logger.debug("GPU backend not available")
+
         try:
             tpu_devices = jax.local_devices(backend="tpu")
         except RuntimeError:
-            pass
+            logger.debug("TPU backend not available")
         
         topology = {
             "total_devices": len(devices),

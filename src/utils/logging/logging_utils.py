@@ -314,7 +314,7 @@ def rotate_logs(log_dir: Path, max_files: int = 5, compress: bool = True):
                 try:
                     log_files[i].unlink()
                 except OSError:
-                    pass
+                    pass  # intentional: best-effort cleanup of old log files during rotation
 
     except Exception as e:
         # Don't fail pipeline on log rotation issues

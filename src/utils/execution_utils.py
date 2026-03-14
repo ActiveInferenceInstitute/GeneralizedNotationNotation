@@ -7,12 +7,15 @@ It allows long-running processes (like test suites) to display their progress im
 rather than buffering all output until completion.
 """
 
+import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import os
 import threading
 from typing import List, Dict, Any, Optional, Union
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 def execute_command_streaming(
     cmd: List[str],
@@ -98,9 +101,8 @@ def execute_command_streaming(
                             sys.stdout.flush()
                         if capture_output:
                             stdout_captured.append(line)
-            except (ValueError, OSError):
-                # Handle cases where stream is closed
-                pass
+            except (ValueError, OSError) as e:
+                logger.debug("Stream read ended: %s", e)
             finally:
                 stream.close()
 

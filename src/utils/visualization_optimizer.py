@@ -17,6 +17,8 @@ import logging
 from dataclasses import dataclass
 from datetime import datetime
 
+logger = logging.getLogger(__name__)
+
 @dataclass
 class VisualizationCache:
     """Cache management for visualization artifacts."""
@@ -45,8 +47,8 @@ class VisualizationCache:
         try:
             with open(self.metadata_file, 'w') as f:
                 json.dump(self.metadata, f, indent=2)
-        except OSError:
-            pass  # Continue if metadata save fails
+        except OSError as e:
+            logger.debug("Could not save cache metadata: %s", e)
 
     def get_cache_key(self, content: str, params: Dict[str, Any]) -> str:
         """Generate cache key from content and parameters."""
@@ -99,8 +101,8 @@ class VisualizationCache:
             for file_path in entry.get('files', []):
                 try:
                     Path(file_path).unlink(missing_ok=True)
-                except OSError:
-                    pass  # File may already be deleted
+                except OSError as e:
+                    logger.debug("Could not remove cache file %s: %s", file_path, e)
             del self.metadata[cache_key]
             self._save_metadata()
 

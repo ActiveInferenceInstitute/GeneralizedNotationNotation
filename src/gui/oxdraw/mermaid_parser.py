@@ -5,12 +5,15 @@ Extracts GNN model structure from Mermaid flowcharts with embedded metadata,
 enabling bidirectional synchronization with oxdraw editor.
 """
 
+import logging
 import os
 import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import json
 import re
+
+logger = logging.getLogger(__name__)
 
 
 def mermaid_to_gnn(
@@ -53,8 +56,9 @@ def mermaid_to_gnn(
                 raise ValueError(
                     f"Invalid ontology terms: {validation_result['invalid_annotations']}"
                 )
-        except ImportError:
+        except ImportError as e:
             # Ontology module not available, skip validation
+            logger.debug(f"Ontology module not available for validation: {e}")
             pass
 
     # Construct GNN model dictionary
@@ -93,7 +97,8 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
         try:
             metadata_json = match.group(1).strip()
             return json.loads(metadata_json)
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            logger.debug(f"Failed to parse GNN metadata JSON (multi-line format): {e}")
             pass
 
     # Try previous single-line format
@@ -103,7 +108,8 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
     if match:
         try:
             return json.loads(match.group(1))
-        except json.JSONDecodeError:
+        except json.JSONDecodeError as e:
+            logger.debug(f"Failed to parse GNN metadata JSON (legacy format): {e}")
             pass
 
     return {}

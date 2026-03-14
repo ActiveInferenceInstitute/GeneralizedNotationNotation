@@ -29,6 +29,7 @@ def register_module_tools(module_name: str) -> bool:
                 module = importlib.import_module(module_path)
                 break
             except (ImportError, ModuleNotFoundError):
+                logger.debug("Could not import %s, trying next path", module_path)
                 continue
 
         if module is None:

@@ -98,8 +98,8 @@ def _load_json(path: Path) -> dict:
         try:
             with open(path) as f:
                 return json.load(f)
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            logger.debug("Could not load JSON from %s: %s", path, e)
     return {}
 
 def _render_mermaid_graph(summary: dict) -> str:

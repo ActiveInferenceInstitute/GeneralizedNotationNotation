@@ -183,7 +183,7 @@ def _generate_standalone_panels(parsed_data: Dict[str, Any], output_dir: Path, m
                             matrix_sizes.append(arr.size)
                             matrix_names.append(param.get("name", "Unknown"))
                         except (ValueError, TypeError):
-                            pass  # Skip non-numeric matrix data
+                            logger.debug("Skipping non-numeric matrix data for param '%s'", param.get("name", "?"))
 
         if matrix_sizes:
             fig, ax = plt.subplots(figsize=(10, 6))

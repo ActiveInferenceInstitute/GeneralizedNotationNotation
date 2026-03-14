@@ -238,7 +238,7 @@ def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[s
                         "severity": "low"
                     })
             except OSError:
-                pass  # Permission check may fail on some platforms
+                logger.debug("Permission check failed on %s (platform limitation)", file_path.name)
 
     except Exception as e:
         vulnerabilities.append({

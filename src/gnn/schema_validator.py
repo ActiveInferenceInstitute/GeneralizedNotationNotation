@@ -79,7 +79,8 @@ class GNNParser:
         # Expose basic schema metadata expected by tests and previous callers
         try:
             self.schema = self.parsing_system.validator.schema if self.parsing_system else {}
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Could not load schema from parsing system: {e}")
             self.schema = {}
 
     def validate_file(self, file_path: Union[str, Path], validation_level: Optional[ValidationLevel] = None) -> 'ValidationResult':
@@ -171,7 +172,8 @@ class GNNParser:
 
         except UnicodeDecodeError:
             return 'binary'
-        except Exception:
+        except Exception as e:
+            logger.debug(f"Format detection failed for file: {e}")
             return 'unknown'
 
     def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
@@ -539,7 +541,7 @@ class GNNParser:
         try:
             return json.loads(value_str)
         except json.JSONDecodeError:
-            pass
+            logger.debug("Value is not valid JSON, trying GNN-specific formats: %s", value_str[:80])
 
         # Try specific GNN formats
         if value_str.startswith('{') and value_str.endswith('}'):
@@ -655,7 +657,7 @@ class GNNParser:
             else:
                 return int(value_str)
         except ValueError:
-            pass
+            logger.debug("Value is not numeric, treating as string: %s", value_str[:80])
 
         # String values
         if value_str.startswith('"') and value_str.endswith('"'):
@@ -1373,7 +1375,7 @@ class GNNValidator:
                     total_sum = sum(float(x) for x in matrix_data if isinstance(x, (int, float)))
                     return abs(total_sum - 1.0) <= tolerance
         except (TypeError, ValueError):
-            pass
+            logger.debug("Could not verify stochastic matrix normalization, assuming valid")
         return True  # Conservative: assume valid if can't check
 
 

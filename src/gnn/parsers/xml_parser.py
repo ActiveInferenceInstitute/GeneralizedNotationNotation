@@ -214,7 +214,7 @@ class XMLGNNParser(BaseGNNParser):
                 try:
                     dimensions = [int(d.strip()) for d in dims_str.split(',')]
                 except ValueError:
-                    pass
+                    logger.debug("Non-integer dimension in '%s', keeping as string: %s", var_elem.get('name', '?'), dims_str)
 
             # Get description
             description = var_elem.get('description', '')
@@ -297,7 +297,7 @@ class XMLGNNParser(BaseGNNParser):
                 try:
                     weight = float(weight_str)
                 except ValueError:
-                    pass
+                    logger.debug("Non-numeric weight value ignored: %s", weight_str)
 
             # Get description
             description = conn_elem.get('description', '')
@@ -470,7 +470,7 @@ class XMLGNNParser(BaseGNNParser):
                 json_data = match.group(1)
                 return json.loads(json_data)
             except json.JSONDecodeError:
-                pass
+                logger.debug("Embedded MODEL_DATA JSON is malformed, falling back to XML parsing")
         return None
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any]) -> GNNInternalRepresentation:

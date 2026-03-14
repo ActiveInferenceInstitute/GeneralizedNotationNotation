@@ -117,7 +117,7 @@ def extract_state_space_dims(content: str) -> Dict[str, List[int]]:
                     try:
                         var_dims.append(int(part))
                     except ValueError:
-                        pass
+                        logger.debug("Skipping non-integer dimension part: %s", part)
                 if var_dims:
                     dims[var_name] = var_dims
 

@@ -86,7 +86,8 @@ def safe_savefig(
         _log.warning(f"Failed to save figure to {output_path}: {e}")
         try:
             plt.close()
-        except (OSError, ValueError):
+        except (OSError, ValueError) as e:
+            logger.debug(f"plt.close() failed (non-fatal): {e}")
             pass  # nosec B110 -- intentional: plt.close() failure is non-fatal
         return None
 

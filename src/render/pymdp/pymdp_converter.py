@@ -566,6 +566,7 @@ class GnnToPyMdpConverter:
                     try:
                         dims.append(int(part))
                     except ValueError:
+                        logger.debug("Skipping non-integer dimension token: %s", part)
                         continue
 
                 self._parse_variable_definition(var_name, dims, obs_modalities, state_factors)
@@ -965,6 +966,7 @@ class GnnToPyMdpConverter:
                                 # Single value
                                 row_values.append(float(part))
                         except ValueError:
+                            logger.debug("Skipping non-float value in matrix row")
                             continue
 
             if row_values:
@@ -1049,6 +1051,7 @@ class GnnToPyMdpConverter:
                             # Single value
                             row_values.append(float(part))
                     except ValueError:
+                        logger.debug("Skipping non-float value in 3D matrix row")
                         continue
 
         return row_values

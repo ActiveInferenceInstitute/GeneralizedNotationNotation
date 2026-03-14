@@ -3,15 +3,18 @@
 Pipeline configuration module.
 """
 
+import logging
 from pathlib import Path
 from typing import Dict, Any, Optional
 import json
+
+logger = logging.getLogger(__name__)
 
 # Make PyYAML optional to avoid hard failures during import time
 try:
     import yaml  # type: ignore
     _YAML_AVAILABLE = True
-except Exception:
+except ImportError:
     yaml = None  # type: ignore
     _YAML_AVAILABLE = False
 
@@ -76,8 +79,8 @@ class PipelineConfig:
                             return {}
                     else:
                         return json.load(f)
-            except Exception:
-                # Any parsing error should not crash pipeline; return empty config
+            except (json.JSONDecodeError, OSError, ValueError) as e:
+                logger.debug("Could not parse config file %s: %s", self.config_path, e)
                 return {}
         return {}
 
@@ -94,13 +97,14 @@ class PipelineConfig:
                     yaml.dump(self.config, f)  # type: ignore
                 else:
                     json.dump(self.config, f, indent=2)
-        except Exception:
-            # If saving fails (e.g., YAML not available), attempt JSON recovery
+        except (OSError, ValueError) as e:
+            logger.debug("Config save failed (%s), attempting JSON recovery", e)
             try:
                 json_path = self.config_path.with_suffix('.json')
                 with open(json_path, 'w') as jf:
                     json.dump(self.config, jf, indent=2)
-            except Exception:  # nosec B110 -- intentionally silent; config save failure must not crash the pipeline
+            except Exception as e:  # nosec B110 -- intentionally silent; config save failure must not crash the pipeline
+                logger.debug(f"JSON recovery config save also failed: {e}")
                 pass
 
 def get_pipeline_config() -> dict:

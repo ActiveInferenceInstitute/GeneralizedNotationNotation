@@ -40,8 +40,8 @@ def _compute_run_hash_impl(
                 # Store relative path for better identification
                 rel_path = str(f.relative_to(target_dir)) if target_dir in f.parents else f.name
                 file_hashes_dict[rel_path] = fh
-            except OSError:
-                pass
+            except OSError as e:
+                logger.debug(f"Could not read file {f} for hashing: {e}")
 
     for fh in file_hashes_list:
         hasher.update(fh.encode())
@@ -106,8 +106,8 @@ def index_run(
         try:
             with open(index_path) as f:
                 index = json.load(f)
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            logger.debug(f"Could not load history index {index_path}: {e}")
 
     # Add/update entry
     entry = {

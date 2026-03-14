@@ -95,8 +95,8 @@ def read_research_results_mcp(output_directory: str,
                 except (json.JSONDecodeError, ValueError):
                     data = content[:1000]
                 results.append({"file": f.name, "content": data})
-            except OSError:
-                pass  # Skip unreadable files
+            except OSError as e:
+                logger.debug("Skipping unreadable file %s: %s", f.name, e)
 
         return {
             "success": True,

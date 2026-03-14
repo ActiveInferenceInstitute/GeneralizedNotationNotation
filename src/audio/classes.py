@@ -5,8 +5,11 @@ Audio classes module for GNN Processing Pipeline.
 This module provides audio-related classes.
 """
 
+import logging
 from pathlib import Path
 from typing import Dict, Any, List, Optional
+
+logger = logging.getLogger(__name__)
 
 class AudioGenerator:
     """Generates audio from GNN models."""
@@ -93,7 +96,8 @@ class AudioGenerator:
                             sample_rate = f.getframerate()
                             channels = f.getnchannels()
                             duration = frames / float(sample_rate)
-                    except (wave.Error, OSError, ValueError):
+                    except (wave.Error, OSError, ValueError) as e:
+                        logger.debug(f"Could not read wav metadata from {path}: {e}")
                         pass  # nosec B110 -- intentional: recovery if wave module fails to read audio metadata
                 elif suffix in ['.mp3', '.ogg', '.flac']:
                     # Estimate based on file size if mutagen/ffmpeg not available

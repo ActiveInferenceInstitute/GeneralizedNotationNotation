@@ -157,7 +157,8 @@ class AdvancedVisualizer:
             with open(out, 'w', encoding='utf-8') as f:
                 f.write(html)
             return out
-        except (OSError, ValueError, TypeError) as _e:
+        except (OSError, ValueError, TypeError) as e:
+            self.logger.debug(f"HTML summary generation failed: {e}")
             return None  # HTML summary generation is best-effort
 
     def _generate_fallback_visualizations(self, content: str, model_name: str, output_dir: Path) -> List[str]:
@@ -376,7 +377,8 @@ def create_visualization_from_data(data: Dict[str, Any]) -> Optional[Dict[str, A
         else:
             return create_default_visualization(data)
 
-    except (KeyError, ValueError, TypeError):
+    except (KeyError, ValueError, TypeError) as e:
+        logging.getLogger(__name__).debug(f"Visualization creation failed: {e}")
         return None  # visualization creation is best-effort
 
 def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
@@ -391,7 +393,8 @@ def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 
         return section
 
-    except (KeyError, TypeError):
+    except (KeyError, TypeError) as e:
+        logging.getLogger(__name__).debug(f"Dashboard section creation failed: {e}")
         return None  # malformed data, skip section
 
 def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:

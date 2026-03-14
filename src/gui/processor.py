@@ -239,7 +239,8 @@ def generate_html_navigation(
                                 "type": file_path.suffix.lower()
                             })
                             total_files += 1
-                        except OSError:
+                        except OSError as e:
+                            logger.debug(f"Could not read file {file_path}: {e}")
                             pass  # Skip unreadable files
 
             if step_files:

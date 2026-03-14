@@ -124,7 +124,7 @@ def _safe_tight_layout():
                                   message='.*[Tt]ight.?layout.*')
             plt.tight_layout()
     except (ValueError, RuntimeError):
-        pass  # Tight layout is not critical
+        logger.debug("tight_layout adjustment skipped (non-critical)")  # Tight layout is not critical
 
 def process_visualization(
     target_dir: Path,
@@ -243,8 +243,8 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
                 for png_file in existing_pngs:
                     try:
                         Path(png_file).unlink()
-                    except OSError:
-                        pass
+                    except OSError as e:
+                        logger.debug("Could not remove stale cache file %s: %s", png_file, e)
 
         # Parse GNN content with optimization checks
         parsed_data = parse_gnn_content(content)
@@ -338,7 +338,8 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
                                 import numpy as np
                                 m_data = np.array(m_info["data"], dtype=float)
                                 matrices[m_name] = m_data
-                            except (ValueError, TypeError):
+                            except (ValueError, TypeError) as e:
+                                logger.debug("Skipping non-numeric matrix data for %s: %s", m_info.get("name", "?"), e)
                                 continue
 
             # Generate visualizations for extracted matrices
@@ -387,8 +388,8 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
                     f.write(f"Sampled variables: {parsed_data['_sampling_applied']['sampled_variables']}\n")
                     f.write(f"Original connections: {parsed_data['_sampling_applied']['original_connections']}\n")
                     f.write(f"Sampled connections: {parsed_data['_sampling_applied']['sampled_connections']}\n")
-            except OSError:
-                pass  # Non-critical sampling note
+            except OSError as e:
+                logger.debug("Could not write sampling note for %s: %s", model_name, e)
 
         return visualizations
 
@@ -553,7 +554,7 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
                                 "definition": stripped_line
                             })
                     except (ValueError, TypeError, SyntaxError):
-                        pass  # Matrix parsing is best-effort
+                        logger.debug("Best-effort matrix parsing failed for line: %s", stripped_line[:80])
 
         # Save any remaining multiline parameter
         if current_param_name and current_param_lines:

@@ -191,7 +191,8 @@ class StdioServer:
                     # Continue processing other messages
                     try:
                         self.request_queue.task_done()
-                    except ValueError:
+                    except ValueError as e:
+                        logger.debug(f"Task done notification failed (already completed): {e}")
                         pass  # Task already done or never queued
         except Exception as e:
             logger.error(f"Fatal error in processor thread: {str(e)}")

@@ -56,7 +56,7 @@ def parse_initial_value(value_str: str) -> Any:
         # Float
         return float(value_str)
     except ValueError:
-        pass
+        logger.debug("Value '%s' is not a simple numeric, trying structured formats", value_str[:40])
 
     # Check for tuple/matrix notation {(a,b), (c,d)}
     if value_str.startswith('{') and value_str.endswith('}'):
