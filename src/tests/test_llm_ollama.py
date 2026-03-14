@@ -84,7 +84,7 @@ def test_ollama_provider_initialize(monkeypatch):
 @pytest.mark.unit
 @pytest.mark.safe_to_fail
 @pytest.mark.timeout(30)  # Prevent hanging if Ollama is slow
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_ollama_simple_chat(monkeypatch):
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
@@ -110,7 +110,7 @@ async def test_ollama_simple_chat(monkeypatch):
 @pytest.mark.unit
 @pytest.mark.safe_to_fail
 @pytest.mark.timeout(30)  # Prevent hanging if Ollama is slow
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_ollama_streaming(monkeypatch):
     if not _ollama_available():
         pytest.skip("Ollama not available locally")
@@ -141,7 +141,7 @@ async def test_ollama_streaming(monkeypatch):
 @pytest.mark.slow  # This test makes real LLM calls which can be slow
 @pytest.mark.safe_to_fail
 @pytest.mark.timeout(30)  # Prevent hanging during pipeline runs
-@pytest.mark.asyncio
+@pytest.mark.anyio
 async def test_processor_uses_ollama_when_no_keys(monkeypatch):
     # Clear cloud keys to force local provider preference
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)

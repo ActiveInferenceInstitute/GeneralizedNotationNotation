@@ -22,14 +22,14 @@ except ImportError:
     NUMPY_AVAILABLE = False
 
 try:
-    from utils.pipeline_template import (
+    from utils.logging.logging_utils import (
         log_step_start,
         log_step_success,
         log_step_error,
         log_step_warning
     )
 except ImportError:
-    from src.utils.pipeline_template import (
+    from src.utils.logging.logging_utils import (
         log_step_start,
         log_step_success,
         log_step_error

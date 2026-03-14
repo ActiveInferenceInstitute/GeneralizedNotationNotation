@@ -17,8 +17,8 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 from mcp.mcp import (
     MCP,
     MCPTool,
-    MCPServer,
 )
+from mcp.server import MCPServer
 from mcp.exceptions import (
     MCPToolNotFoundError,
     MCPInvalidParamsError,

@@ -60,7 +60,7 @@ import time
 import logging
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 
 # Detect project root and ensure we're working from there
 SCRIPT_DIR = Path(__file__).parent  # src/
@@ -76,9 +76,17 @@ sys.path.insert(0, str(SCRIPT_DIR))
 
 from utils.pipeline_template import (
     setup_step_logging as _basic_setup_step_logging,
-    log_step_start,
-    log_step_error
 )
+try:
+    from utils.logging.logging_utils import (
+        log_step_start,
+        log_step_error
+    )
+except ImportError:
+    from utils.logging_utils import (
+        log_step_start,
+        log_step_error
+    )
 from utils.argument_utils import ArgumentParser, PipelineArguments
 from utils.resource_manager import get_current_memory_usage
 from utils.pipeline_validator import validate_step_prerequisites, validate_pipeline_step_sequence
@@ -154,19 +162,22 @@ except ImportError:
         status_msg = 'COMPLETED' if success else 'FAILED'
         logging.getLogger("pipeline").info(f"\n{'='*60}\nPipeline {status_msg} in {duration:.2f}s\n{stats}\n{'='*60}")
 
-def main():
+def main(override_args=None, override_config: Optional[Dict[str, Any]] = None):
     """Main pipeline orchestration function."""
-    # Parse arguments
-    parser = ArgumentParser.create_main_parser()
-    parsed = parser.parse_args()
+    if override_args is not None:
+        args = override_args
+    else:
+        # Parse arguments
+        parser = ArgumentParser.create_main_parser()
+        parsed = parser.parse_args()
 
-    # Convert to PipelineArguments
-    kwargs = {}
-    for key, value in vars(parsed).items():
-        if value is not None:
-            kwargs[key] = value
+        # Convert to PipelineArguments
+        kwargs = {}
+        for key, value in vars(parsed).items():
+            if value is not None:
+                kwargs[key] = value
 
-    args = PipelineArguments(**kwargs)
+        args = PipelineArguments(**kwargs)
 
     # Setup visual logging
     visual_config = VisualConfig(
@@ -247,17 +258,23 @@ def main():
         ("24_intelligent_analysis.py", "Intelligent pipeline analysis")
     ]
 
-    # Load configuration from config.yaml
-    input_config_path = Path("input/config.yaml")
+    # Load configuration from config.yaml or override context
+    full_config = {}
     config_pipeline_settings = {}
-    if input_config_path.exists():
-        try:
-            import yaml
-            with open(input_config_path, "r") as f:
-                full_config = yaml.safe_load(f) or {}
-                config_pipeline_settings = full_config.get("pipeline", {})
-        except Exception as e:
-            logger.warning(f"Could not load pipeline settings from input/config.yaml: {e}")
+    
+    if override_config is not None:
+        full_config = override_config
+        config_pipeline_settings = full_config.get("pipeline", {})
+    else:
+        input_config_path = Path("input/config.yaml")
+        if input_config_path.exists():
+            try:
+                import yaml
+                with open(input_config_path, "r") as f:
+                    full_config = yaml.safe_load(f) or {}
+                    config_pipeline_settings = full_config.get("pipeline", {})
+            except Exception as e:
+                logger.warning(f"Could not load pipeline settings from input/config.yaml: {e}")
 
     # Handle step filtering with automatic dependency resolution
     # Order of precedence: Command line > Config file > All steps
@@ -325,11 +342,16 @@ def main():
 
     # Calculate run hash for content addressability
     from pipeline.hasher import compute_run_hash, index_run
-    run_hash = compute_run_hash(args.target_dir, config=config_pipeline_settings)
+    run_hash, file_hashes = compute_run_hash(
+        args.target_dir, 
+        config=config_pipeline_settings, 
+        return_file_hashes=True
+    )
 
     # Initialize pipeline execution summary
     pipeline_summary = {
         "run_hash": run_hash,
+        "file_hashes": file_hashes,
         "start_time": datetime.now().isoformat(),
         "arguments": args.to_dict(),
         "steps": [],
@@ -627,7 +649,8 @@ def main():
                 index_run(
                     run_hash=run_hash,
                     summary_path=summary_path,
-                    config={"args": args.to_dict(), "pipeline": config_pipeline_settings}
+                    config={"args": args.to_dict(), "pipeline": config_pipeline_settings},
+                    file_hashes=pipeline_summary.get("file_hashes")
                 )
 
             # Log summary statistics

@@ -1,0 +1,525 @@
+///
+/// GNN Model: Three-Level Temporal Hierarchy Agent
+/// Annotation: A three-level hierarchical Active Inference agent with distinct temporal scales:
+
+- Level 0 (fast, 100ms): Sensorimotor control — immediate reflexive responses
+- Level 1 (medium, 1s): Tactical planning — goal-directed behavior sequences
+- Level 2 (slow, 10s): Strategic planning — long-term objective management
+- Top-down flow: Strategy sets tactical goals, tactics set sensorimotor preferences
+- Bottom-up flow: Sensorimotor observations inform tactical beliefs, tactical outcomes inform strategy
+- Each level maintains its own generative model with A, B, C, D matrices
+- Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
+- Demonstrates deep temporal models from Friston et al. hierarchical Active Inference
+/// Generated: 2026-03-13T18:17:22.638582
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Three-Level Temporal Hierarchy Agent"
+  annotation: String = "A three-level hierarchical Active Inference agent with distinct temporal scales:
+
+- Level 0 (fast, 100ms): Sensorimotor control — immediate reflexive responses
+- Level 1 (medium, 1s): Tactical planning — goal-directed behavior sequences
+- Level 2 (slow, 10s): Strategic planning — long-term objective management
+- Top-down flow: Strategy sets tactical goals, tactics set sensorimotor preferences
+- Bottom-up flow: Sensorimotor observations inform tactical beliefs, tactical outcomes inform strategy
+- Each level maintains its own generative model with A, B, C, D matrices
+- Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
+- Demonstrates deep temporal models from Friston et al. hierarchical Active Inference"
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["A0"] = new Variable {
+      name = "A0"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(3, 4)
+    }}
+    ["A1"] = new Variable {
+      name = "A1"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(4, 3)
+    }}
+    ["A2"] = new Variable {
+      name = "A2"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(3, 2)
+    }}
+    ["B0"] = new Variable {
+      name = "B0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 4, 3)
+    }}
+    ["B1"] = new Variable {
+      name = "B1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 3, 3)
+    }}
+    ["B2"] = new Variable {
+      name = "B2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2, 2, 2)
+    }}
+    ["C0"] = new Variable {
+      name = "C0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["C1"] = new Variable {
+      name = "C1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["C2"] = new Variable {
+      name = "C2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["D0"] = new Variable {
+      name = "D0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4)
+    }}
+    ["D1"] = new Variable {
+      name = "D1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["D2"] = new Variable {
+      name = "D2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2)
+    }}
+    ["G0"] = new Variable {
+      name = "G0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["G1"] = new Variable {
+      name = "G1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["G2"] = new Variable {
+      name = "G2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["o0"] = new Variable {
+      name = "o0"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(3, 1)
+    }}
+    ["o1"] = new Variable {
+      name = "o1"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+    ["o2"] = new Variable {
+      name = "o2"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["pi0"] = new Variable {
+      name = "pi0"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["pi1"] = new Variable {
+      name = "pi1"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["pi2"] = new Variable {
+      name = "pi2"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(2)
+    }}
+    ["s0"] = new Variable {
+      name = "s0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+    ["s1"] = new Variable {
+      name = "s1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["s2"] = new Variable {
+      name = "s2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+    ["t"] = new Variable {
+      name = "t"
+      varType = "hidden_state"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["tau0"] = new Variable {
+      name = "tau0"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["tau1"] = new Variable {
+      name = "tau1"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["tau2"] = new Variable {
+      name = "tau2"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["u0"] = new Variable {
+      name = "u0"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["u1"] = new Variable {
+      name = "u1"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+    ["u2"] = new Variable {
+      name = "u2"
+      varType = "action"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("D0")
+      targetVariables = List("s0")
+      connectionType = "directed"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("s0")
+      targetVariables = List("A0")
+      connectionType = "undirected"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("A0")
+      targetVariables = List("o0")
+      connectionType = "undirected"
+    }}
+    ["connection_3"] = new Connection {
+      sourceVariables = List("C0")
+      targetVariables = List("G0")
+      connectionType = "directed"
+    }}
+    ["connection_4"] = new Connection {
+      sourceVariables = List("G0")
+      targetVariables = List("pi0")
+      connectionType = "directed"
+    }}
+    ["connection_5"] = new Connection {
+      sourceVariables = List("pi0")
+      targetVariables = List("u0")
+      connectionType = "directed"
+    }}
+    ["connection_6"] = new Connection {
+      sourceVariables = List("B0")
+      targetVariables = List("u0")
+      connectionType = "directed"
+    }}
+    ["connection_7"] = new Connection {
+      sourceVariables = List("D1")
+      targetVariables = List("s1")
+      connectionType = "directed"
+    }}
+    ["connection_8"] = new Connection {
+      sourceVariables = List("s1")
+      targetVariables = List("A1")
+      connectionType = "undirected"
+    }}
+    ["connection_9"] = new Connection {
+      sourceVariables = List("A1")
+      targetVariables = List("o1")
+      connectionType = "undirected"
+    }}
+    ["connection_10"] = new Connection {
+      sourceVariables = List("C1")
+      targetVariables = List("G1")
+      connectionType = "directed"
+    }}
+    ["connection_11"] = new Connection {
+      sourceVariables = List("G1")
+      targetVariables = List("pi1")
+      connectionType = "directed"
+    }}
+    ["connection_12"] = new Connection {
+      sourceVariables = List("pi1")
+      targetVariables = List("u1")
+      connectionType = "directed"
+    }}
+    ["connection_13"] = new Connection {
+      sourceVariables = List("B1")
+      targetVariables = List("u1")
+      connectionType = "directed"
+    }}
+    ["connection_14"] = new Connection {
+      sourceVariables = List("D2")
+      targetVariables = List("s2")
+      connectionType = "directed"
+    }}
+    ["connection_15"] = new Connection {
+      sourceVariables = List("s2")
+      targetVariables = List("A2")
+      connectionType = "undirected"
+    }}
+    ["connection_16"] = new Connection {
+      sourceVariables = List("A2")
+      targetVariables = List("o2")
+      connectionType = "undirected"
+    }}
+    ["connection_17"] = new Connection {
+      sourceVariables = List("C2")
+      targetVariables = List("G2")
+      connectionType = "directed"
+    }}
+    ["connection_18"] = new Connection {
+      sourceVariables = List("G2")
+      targetVariables = List("pi2")
+      connectionType = "directed"
+    }}
+    ["connection_19"] = new Connection {
+      sourceVariables = List("pi2")
+      targetVariables = List("u2")
+      connectionType = "directed"
+    }}
+    ["connection_20"] = new Connection {
+      sourceVariables = List("B2")
+      targetVariables = List("u2")
+      connectionType = "directed"
+    }}
+    ["connection_21"] = new Connection {
+      sourceVariables = List("s2")
+      targetVariables = List("C1")
+      connectionType = "directed"
+    }}
+    ["connection_22"] = new Connection {
+      sourceVariables = List("s1")
+      targetVariables = List("C0")
+      connectionType = "directed"
+    }}
+    ["connection_23"] = new Connection {
+      sourceVariables = List("s2")
+      targetVariables = List("D1")
+      connectionType = "directed"
+    }}
+    ["connection_24"] = new Connection {
+      sourceVariables = List("s0")
+      targetVariables = List("o1")
+      connectionType = "directed"
+    }}
+    ["connection_25"] = new Connection {
+      sourceVariables = List("s1")
+      targetVariables = List("o2")
+      connectionType = "directed"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["A0"] = new Parameter {
+      name = "A0"
+      value = List([0.85, 0.05, 0.05, 0.05], [0.05, 0.85, 0.05, 0.05], [0.05, 0.05, 0.85, 0.05])
+      paramType = "constant"
+    }}
+    ["A1"] = new Parameter {
+      name = "A1"
+      value = List([0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8], [0.1, 0.1, 0.1])
+      paramType = "constant"
+    }}
+    ["A2"] = new Parameter {
+      name = "A2"
+      value = List([0.9, 0.1], [0.1, 0.9], [0.1, 0.1])
+      paramType = "constant"
+    }}
+    ["C0"] = new Parameter {
+      name = "C0"
+      value = List([0.0, -1.0, 1.0])
+      paramType = "constant"
+    }}
+    ["C1"] = new Parameter {
+      name = "C1"
+      value = List([-0.5, 1.0, 1.5, -1.0])
+      paramType = "constant"
+    }}
+    ["C2"] = new Parameter {
+      name = "C2"
+      value = List([-1.0, 2.0, 0.5])
+      paramType = "constant"
+    }}
+    ["D0"] = new Parameter {
+      name = "D0"
+      value = List([0.25, 0.25, 0.25, 0.25])
+      paramType = "constant"
+    }}
+    ["D1"] = new Parameter {
+      name = "D1"
+      value = List([0.33, 0.33, 0.34])
+      paramType = "constant"
+    }}
+    ["D2"] = new Parameter {
+      name = "D2"
+      value = List([0.5, 0.5])
+      paramType = "constant"
+    }}
+    ["tau0"] = new Parameter {
+      name = "tau0"
+      value = List([0.1])
+      paramType = "constant"
+    }}
+    ["tau1"] = new Parameter {
+      name = "tau1"
+      value = List([1.0])
+      paramType = "constant"
+    }}
+    ["tau2"] = new Parameter {
+      name = "tau2"
+      value = List([10.0])
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Three-Level Temporal Hierarchy Agent","annotation":"A three-level hierarchical Active Inference agent with distinct temporal scales:\n\n- Level 0 (fast, 100ms): Sensorimotor control \u2014 immediate reflexive responses\n- Level 1 (medium, 1s): Tactical planning \u2014 goal-directed behavior sequences\n- Level 2 (slow, 10s): Strategic planning \u2014 long-term objective management\n- Top-down flow: Strategy sets tactical goals, tactics set sensorimotor preferences\n- Bottom-up flow: Sensorimotor observations inform tactical beliefs, tactical outcomes inform strategy\n- Each level maintains its own generative model with A, B, C, D matrices\n- Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)\n- Demonstrates deep temporal models from Friston et al. hierarchical Active Inference","variables":[{"name":"A0","var_type":"action","data_type":"float","dimensions":[3,4]},{"name":"B0","var_type":"hidden_state","data_type":"float","dimensions":[4,4,3]},{"name":"C0","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"D0","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"s0","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"o0","var_type":"observation","data_type":"integer","dimensions":[3,1]},{"name":"pi0","var_type":"policy","data_type":"float","dimensions":[3]},{"name":"u0","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G0","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A1","var_type":"action","data_type":"float","dimensions":[4,3]},{"name":"B1","var_type":"hidden_state","data_type":"float","dimensions":[3,3,3]},{"name":"C1","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D1","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"s1","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"o1","var_type":"observation","data_type":"float","dimensions":[4,1]},{"name":"pi1","var_type":"policy","data_type":"float","dimensions":[3]},{"name":"u1","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G1","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A2","var_type":"action","data_type":"float","dimensions":[3,2]},{"name":"B2","var_type":"hidden_state","data_type":"float","dimensions":[2,2,2]},{"name":"C2","var_type":"hidden_state","data_type":"float","dimensions":[3]},{"name":"D2","var_type":"hidden_state","data_type":"float","dimensions":[2]},{"name":"s2","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"o2","var_type":"observation","data_type":"float","dimensions":[3,1]},{"name":"pi2","var_type":"policy","data_type":"float","dimensions":[2]},{"name":"u2","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G2","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"tau0","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"tau1","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"tau2","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D0"],"target_variables":["s0"],"connection_type":"directed"},{"source_variables":["s0"],"target_variables":["A0"],"connection_type":"undirected"},{"source_variables":["A0"],"target_variables":["o0"],"connection_type":"undirected"},{"source_variables":["C0"],"target_variables":["G0"],"connection_type":"directed"},{"source_variables":["G0"],"target_variables":["pi0"],"connection_type":"directed"},{"source_variables":["pi0"],"target_variables":["u0"],"connection_type":"directed"},{"source_variables":["B0"],"target_variables":["u0"],"connection_type":"directed"},{"source_variables":["D1"],"target_variables":["s1"],"connection_type":"directed"},{"source_variables":["s1"],"target_variables":["A1"],"connection_type":"undirected"},{"source_variables":["A1"],"target_variables":["o1"],"connection_type":"undirected"},{"source_variables":["C1"],"target_variables":["G1"],"connection_type":"directed"},{"source_variables":["G1"],"target_variables":["pi1"],"connection_type":"directed"},{"source_variables":["pi1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["B1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["D2"],"target_variables":["s2"],"connection_type":"directed"},{"source_variables":["s2"],"target_variables":["A2"],"connection_type":"undirected"},{"source_variables":["A2"],"target_variables":["o2"],"connection_type":"undirected"},{"source_variables":["C2"],"target_variables":["G2"],"connection_type":"directed"},{"source_variables":["G2"],"target_variables":["pi2"],"connection_type":"directed"},{"source_variables":["pi2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["B2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["s2"],"target_variables":["C1"],"connection_type":"directed"},{"source_variables":["s1"],"target_variables":["C0"],"connection_type":"directed"},{"source_variables":["s2"],"target_variables":["D1"],"connection_type":"directed"},{"source_variables":["s0"],"target_variables":["o1"],"connection_type":"directed"},{"source_variables":["s1"],"target_variables":["o2"],"connection_type":"directed"}],"parameters":[{"name":"A0","value":[[0.85,0.05,0.05,0.05],[0.05,0.85,0.05,0.05],[0.05,0.05,0.85,0.05]],"param_type":"constant"},{"name":"C0","value":[[0.0,-1.0,1.0]],"param_type":"constant"},{"name":"D0","value":[[0.25,0.25,0.25,0.25]],"param_type":"constant"},{"name":"A1","value":[[0.8,0.1,0.1],[0.1,0.8,0.1],[0.1,0.1,0.8],[0.1,0.1,0.1]],"param_type":"constant"},{"name":"C1","value":[[-0.5,1.0,1.5,-1.0]],"param_type":"constant"},{"name":"D1","value":[[0.33,0.33,0.34]],"param_type":"constant"},{"name":"A2","value":[[0.9,0.1],[0.1,0.9],[0.1,0.1]],"param_type":"constant"},{"name":"C2","value":[[-1.0,2.0,0.5]],"param_type":"constant"},{"name":"D2","value":[[0.5,0.5]],"param_type":"constant"},{"name":"tau0","value":[[0.1]],"param_type":"constant"},{"name":"tau1","value":[[1.0]],"param_type":"constant"},{"name":"tau2","value":[[10.0]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":100,"step_size":null},"ontology_mappings":[{"variable_name":"A0","ontology_term":"FastLikelihoodMatrix","description":null},{"variable_name":"B0","ontology_term":"FastTransitionMatrix","description":null},{"variable_name":"C0","ontology_term":"FastPreferenceVector","description":null},{"variable_name":"D0","ontology_term":"FastPrior","description":null},{"variable_name":"s0","ontology_term":"FastHiddenState","description":null},{"variable_name":"o0","ontology_term":"FastObservation","description":null},{"variable_name":"pi0","ontology_term":"FastPolicyVector","description":null},{"variable_name":"u0","ontology_term":"FastAction","description":null},{"variable_name":"G0","ontology_term":"FastExpectedFreeEnergy","description":null},{"variable_name":"A1","ontology_term":"TacticalLikelihoodMatrix","description":null},{"variable_name":"B1","ontology_term":"TacticalTransitionMatrix","description":null},{"variable_name":"C1","ontology_term":"TacticalPreferenceVector","description":null},{"variable_name":"D1","ontology_term":"TacticalPrior","description":null},{"variable_name":"s1","ontology_term":"TacticalHiddenState","description":null},{"variable_name":"o1","ontology_term":"TacticalObservation","description":null},{"variable_name":"pi1","ontology_term":"TacticalPolicyVector","description":null},{"variable_name":"u1","ontology_term":"TacticalAction","description":null},{"variable_name":"G1","ontology_term":"TacticalExpectedFreeEnergy","description":null},{"variable_name":"A2","ontology_term":"StrategicLikelihoodMatrix","description":null},{"variable_name":"B2","ontology_term":"StrategicTransitionMatrix","description":null},{"variable_name":"C2","ontology_term":"StrategicPreferenceVector","description":null},{"variable_name":"D2","ontology_term":"StrategicPrior","description":null},{"variable_name":"s2","ontology_term":"StrategicHiddenState","description":null},{"variable_name":"o2","ontology_term":"StrategicObservation","description":null},{"variable_name":"pi2","ontology_term":"StrategicPolicyVector","description":null},{"variable_name":"u2","ontology_term":"StrategicAction","description":null},{"variable_name":"G2","ontology_term":"StrategicExpectedFreeEnergy","description":null},{"variable_name":"tau0","ontology_term":"FastTimeConstant","description":null},{"variable_name":"tau1","ontology_term":"TacticalTimeConstant","description":null},{"variable_name":"tau2","ontology_term":"StrategicTimeConstant","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]} */
+
+// Variables:
+// Variable: A0 (action)
+// Variable: B0 (hidden_state)
+// Variable: C0 (hidden_state)
+// Variable: D0 (hidden_state)
+// Variable: s0 (hidden_state)
+// Variable: o0 (observation)
+// Variable: pi0 (policy)
+// Variable: u0 (action)
+// Variable: G0 (hidden_state)
+// Variable: A1 (action)
+// Variable: B1 (hidden_state)
+// Variable: C1 (hidden_state)
+// Variable: D1 (hidden_state)
+// Variable: s1 (hidden_state)
+// Variable: o1 (observation)
+// Variable: pi1 (policy)
+// Variable: u1 (action)
+// Variable: G1 (hidden_state)
+// Variable: A2 (action)
+// Variable: B2 (hidden_state)
+// Variable: C2 (hidden_state)
+// Variable: D2 (hidden_state)
+// Variable: s2 (hidden_state)
+// Variable: o2 (observation)
+// Variable: pi2 (policy)
+// Variable: u2 (action)
+// Variable: G2 (hidden_state)
+// Variable: tau0 (hidden_state)
+// Variable: tau1 (hidden_state)
+// Variable: tau2 (hidden_state)
+// Variable: t (hidden_state)
+// Connections:
+// Connection: D0 --directed--> s0
+// Connection: s0 --undirected--> A0
+// Connection: A0 --undirected--> o0
+// Connection: C0 --directed--> G0
+// Connection: G0 --directed--> pi0
+// Connection: pi0 --directed--> u0
+// Connection: B0 --directed--> u0
+// Connection: D1 --directed--> s1
+// Connection: s1 --undirected--> A1
+// Connection: A1 --undirected--> o1
+// Connection: C1 --directed--> G1
+// Connection: G1 --directed--> pi1
+// Connection: pi1 --directed--> u1
+// Connection: B1 --directed--> u1
+// Connection: D2 --directed--> s2
+// Connection: s2 --undirected--> A2
+// Connection: A2 --undirected--> o2
+// Connection: C2 --directed--> G2
+// Connection: G2 --directed--> pi2
+// Connection: pi2 --directed--> u2
+// Connection: B2 --directed--> u2
+// Connection: s2 --directed--> C1
+// Connection: s1 --directed--> C0
+// Connection: s2 --directed--> D1
+// Connection: s0 --directed--> o1
+// Connection: s1 --directed--> o2
+// Parameters:
+// Parameter: A0 = [[0.85, 0.05, 0.05, 0.05], [0.05, 0.85, 0.05, 0.05], [0.05, 0.05, 0.85, 0.05]]
+// Parameter: C0 = [[0.0, -1.0, 1.0]]
+// Parameter: D0 = [[0.25, 0.25, 0.25, 0.25]]
+// Parameter: A1 = [[0.8, 0.1, 0.1], [0.1, 0.8, 0.1], [0.1, 0.1, 0.8], [0.1, 0.1, 0.1]]
+// Parameter: C1 = [[-0.5, 1.0, 1.5, -1.0]]
+// Parameter: D1 = [[0.33, 0.33, 0.34]]
+// Parameter: A2 = [[0.9, 0.1], [0.1, 0.9], [0.1, 0.1]]
+// Parameter: C2 = [[-1.0, 2.0, 0.5]]
+// Parameter: D2 = [[0.5, 0.5]]
+// Parameter: tau0 = [[0.1]]
+// Parameter: tau1 = [[1.0]]
+// Parameter: tau2 = [[10.0]]

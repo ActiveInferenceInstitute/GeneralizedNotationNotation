@@ -9,8 +9,8 @@
 - Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)
 - Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation
 - The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value</annotation>
-    <created_at>2026-03-13T14:15:03.927550</created_at>
-    <modified_at>2026-03-13T14:15:03.927551</modified_at>
+    <created_at>2026-03-13T18:17:53.768389</created_at>
+    <modified_at>2026-03-13T18:17:53.768389</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="A_loc" type="action" description="Location likelihood: P(o_loc | s_loc) — identity"/>

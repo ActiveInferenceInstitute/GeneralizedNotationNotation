@@ -132,6 +132,14 @@ vmapped_fn = jax.vmap(test_vmap)
 vmap_result = vmapped_fn(jax.numpy.array([[1.0, 2.0], [3.0, 4.0]]))
 print("JAX vmap test passed")
 
+# XLA compilation compatibility check
+@jax.jit
+def test_xla(x):
+    return x * 2
+xla_res = test_xla(jax.numpy.ones(10)).block_until_ready()
+if len(xla_res) == 10:
+    print("XLA compile compatibility check passed")
+
 optimizer = optax.adam(0.01)
 params = {"w": jax.numpy.ones((2, 2))}
 opt_state = optimizer.init(params)

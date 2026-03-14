@@ -1,0 +1,1017 @@
+{
+  "model_name": "T-Maze Epistemic Foraging Agent",
+  "version": "1.0",
+  "annotation": "The classic T-maze task from Active Inference literature (Friston et al.):\n\n- Agent navigates a T-shaped maze with 4 locations: center, left arm, right arm, cue location\n- Two observation modalities: location (where am I?) and reward/cue (what do I see?)\n- Reward is hidden behind one of the two arms (left or right), determined by context\n- Cue location provides partial information about which arm holds the reward\n- Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)\n- Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation\n- The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1024e34f-30e0-48d7-89fe-930bf30d74d5",
+      "name": "s_loc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Location state: (0:center, 1:left_arm, 2:right_arm, 3:cue_location)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1a43e513-4b7b-4526-875a-2403e805baea",
+      "name": "s_ctx",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Context state: (0:reward_left, 1:reward_right)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bdd94de4-801e-4fd5-a710-bf118b436292",
+      "name": "o_loc",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Location observation: (0:center, 1:left, 2:right, 3:cue)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7aedd716-3536-48bf-b6ba-2568f4065ab9",
+      "name": "o_rew",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Reward/cue observation: (0:no_reward, 1:reward, 2:cue_left)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b524d92f-f924-44f8-a1f6-3ce8bdecdec4",
+      "name": "A_loc",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Location likelihood: P(o_loc | s_loc) \u2014 identity",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b9e28338-4c2b-47cd-9fd4-dc9d5bf76261",
+      "name": "A_rew",
+      "var_type": "action",
+      "dimensions": [
+        3,
+        4,
+        2
+      ],
+      "data_type": "float",
+      "description": "Reward likelihood: P(o_rew | s_loc, s_ctx) \u2014 context-dependent",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e6d3aa8-20ec-4d13-b009-c9d1a574615c",
+      "name": "B_loc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Location transitions: P(s_loc' | s_loc, action)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "37e1b983-e30a-41fb-aad4-865fe62410d8",
+      "name": "B_ctx",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2,
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Context transitions: identity (context doesn't change)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "36e38dc9-1dc0-4d5f-86ae-77eb572d1fbf",
+      "name": "C_loc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "No location preference (agent doesn't prefer a location per se)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "39c5a5e1-968b-43c1-b81f-380bdbe57d02",
+      "name": "C_rew",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Reward preference: strongly prefers reward observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "949615eb-61c1-4614-b183-e6d4e05800ed",
+      "name": "D_loc",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Prior: agent starts at center",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a35448bd-d6bc-40f5-a86a-7e9762f55622",
+      "name": "D_ctx",
+      "var_type": "hidden_state",
+      "dimensions": [
+        2
+      ],
+      "data_type": "float",
+      "description": "Prior: uncertain about which arm has reward",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "df2642c8-1942-44ba-95c1-3acf2d1d7dc1",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Policy over 4 actions: (go_left, go_right, go_cue, stay)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cdc35fda-6c4b-415f-8bcc-183a64379536",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Selected action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a0238c6b-7a30-4e6d-a347-8cd4807467df",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy per policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "fb7e8395-7f81-450d-8799-60817cfbd211",
+      "name": "G_epi",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Epistemic value (information gain about context)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "69c6a5b7-9fd2-4aa6-8626-79b0965e210d",
+      "name": "G_ins",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Instrumental value (expected reward)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3b907a4d-3e36-4217-b6cb-d6d2419b44b1",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "814dde30-070a-4e47-9a03-9bb8c7e8fd52",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "82bc4539-547b-42d2-9517-cbb099c2d823",
+      "source_variables": [
+        "D_loc"
+      ],
+      "target_variables": [
+        "s_loc"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8e343cdf-61e0-49f0-811c-48c4ad2ab610",
+      "source_variables": [
+        "D_ctx"
+      ],
+      "target_variables": [
+        "s_ctx"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "8fe6cfb6-eed4-4b0a-bcd8-ff9c4515a69a",
+      "source_variables": [
+        "s_loc"
+      ],
+      "target_variables": [
+        "A_loc"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a5233b89-50d8-408b-8667-00a58ceed52c",
+      "source_variables": [
+        "A_loc"
+      ],
+      "target_variables": [
+        "o_loc"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "adac0087-39a0-43cd-bd91-1df6d1bbaef8",
+      "source_variables": [
+        "s_loc"
+      ],
+      "target_variables": [
+        "A_rew"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "efc37d0e-b072-49d6-a0ef-51b318cbf3b9",
+      "source_variables": [
+        "s_ctx"
+      ],
+      "target_variables": [
+        "A_rew"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3292cca2-c2f8-41d1-ad71-7cf58b92ba5f",
+      "source_variables": [
+        "A_rew"
+      ],
+      "target_variables": [
+        "o_rew"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9f0b66e7-3cf4-49f1-8a64-5579bbc14a4b",
+      "source_variables": [
+        "s_loc"
+      ],
+      "target_variables": [
+        "B_loc"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "bcdc107f-ac9e-40bd-a7d6-89471d4a54c6",
+      "source_variables": [
+        "s_ctx"
+      ],
+      "target_variables": [
+        "B_ctx"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "178cd81b-1b0a-45d7-9972-50a5c17b1ac1",
+      "source_variables": [
+        "C_rew"
+      ],
+      "target_variables": [
+        "G_ins"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "85b437e7-a7dc-4429-a02b-7ab1ea90d2de",
+      "source_variables": [
+        "G_epi"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c13c051-eea8-4e06-bcdc-cc87fd2bcf99",
+      "source_variables": [
+        "G_ins"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "72b95f9f-b32b-493a-81ac-cd8478eb0695",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "99d40b01-b2ee-44ee-8d79-29d5ebc39065",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a696db9-b775-40fd-bf42-7da10bfb6733",
+      "source_variables": [
+        "B_loc"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9f0209ee-2b84-49b9-815b-b3e7ce0e7e17",
+      "source_variables": [
+        "s_loc"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "44bc972b-9a0b-4cd4-955f-c20257b2f948",
+      "source_variables": [
+        "s_ctx"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c86509c-d795-43af-8996-81cd516fd867",
+      "source_variables": [
+        "o_loc"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "33121b95-b61f-466b-be8d-8752ca40e717",
+      "source_variables": [
+        "o_rew"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "296abd47-36b2-473d-b3de-016e7d166f0d",
+      "name": "A_loc",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "af95f093-3b6c-4f59-97fe-79e1ea03f389",
+      "name": "B_loc",
+      "value": [
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            1.0,
+            0.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a0e5727a-3338-4af5-acb3-edeeae3d89f1",
+      "name": "B_ctx",
+      "value": [
+        [
+          [
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "878f008a-4f9d-43dc-810a-c13be2a5880c",
+      "name": "C_loc",
+      "value": [
+        [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7ab12326-4929-49b9-a8c6-6f01d59c95d1",
+      "name": "C_rew",
+      "value": [
+        [
+          -1.0,
+          3.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "1235b55a-ef25-4b22-a1dc-5ec384388edc",
+      "name": "D_loc",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5ce94b76-5991-49f9-aed5-83265d07a125",
+      "name": "D_ctx",
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "b658997a-2a67-4e03-9a36-65e5ab144c51",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 3,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "265325ac-38d2-4c5d-a520-07ab9fecfc4d",
+      "variable_name": "A_loc",
+      "ontology_term": "LocationLikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "42a0d1e5-8415-4aa8-871c-77e912c9e73d",
+      "variable_name": "A_rew",
+      "ontology_term": "RewardLikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "36e6f188-a562-447d-95b1-e43543b39fd7",
+      "variable_name": "B_loc",
+      "ontology_term": "LocationTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "065411d8-7a7c-4e43-883b-0034d5553ed7",
+      "variable_name": "B_ctx",
+      "ontology_term": "ContextTransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "19763607-a368-4470-90c1-777c7f830d77",
+      "variable_name": "C_loc",
+      "ontology_term": "LocationPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7cbd463a-3249-4031-b09e-f6362207b6c1",
+      "variable_name": "C_rew",
+      "ontology_term": "RewardPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e7cc800f-706f-4227-86da-ea42ceef8780",
+      "variable_name": "D_loc",
+      "ontology_term": "LocationPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a79cd95b-025c-444b-b76d-592d1336b376",
+      "variable_name": "D_ctx",
+      "ontology_term": "ContextPrior",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "dd000c3e-c016-442f-a8ea-457d29a6d988",
+      "variable_name": "s_loc",
+      "ontology_term": "LocationHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a301d72f-7b0e-46dc-bf72-4f8a1578a830",
+      "variable_name": "s_ctx",
+      "ontology_term": "ContextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a3793a45-ed7f-43eb-8324-6f0ec1a7e2d5",
+      "variable_name": "o_loc",
+      "ontology_term": "LocationObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "995c61c0-6d23-4049-9014-e7b1d0eeed28",
+      "variable_name": "o_rew",
+      "ontology_term": "RewardObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e2d0590-6422-4a93-937d-29f4769b6306",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc083625-4554-49ce-bb49-29d47007353e",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5f760e39-bf9a-4fae-98aa-3f96deef0aa5",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "afb6ade0-3f44-472e-8ced-3f3963583ef7",
+      "variable_name": "G_epi",
+      "ontology_term": "EpistemicValue",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "166bf05a-0e57-408d-83b6-4618d7e639e0",
+      "variable_name": "G_ins",
+      "ontology_term": "InstrumentalValue",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6cfa72f6-11cd-4402-aceb-1fbb38c67e4b",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "07c347a6-a9c0-4bda-bab9-d7dbbeea3bdb",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T18:17:23.052236",
+  "modified_at": "2026-03-13T18:17:23.052237",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "T-Maze Epistemic Foraging Agent v1 - GNN Representation.\nDemonstrates the natural exploration-exploitation trade-off in Active Inference.\nAgent visits cue location to reduce uncertainty before committing to reward arm.\nClassic paradigm from Friston et al. Active Inference literature.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "T-Maze Epistemic Foraging Agent",
+    "ModelAnnotation": "The classic T-maze task from Active Inference literature (Friston et al.):\n\n- Agent navigates a T-shaped maze with 4 locations: center, left arm, right arm, cue location\n- Two observation modalities: location (where am I?) and reward/cue (what do I see?)\n- Reward is hidden behind one of the two arms (left or right), determined by context\n- Cue location provides partial information about which arm holds the reward\n- Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)\n- Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation\n- The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value",
+    "StateSpaceBlock": "# Hidden state factors\n\ns_loc[4,1,type=float]        # Location state: (0:center, 1:left_arm, 2:right_arm, 3:cue_location)\ns_ctx[2,1,type=float]        # Context state: (0:reward_left, 1:reward_right)\n\n# Observation modalities\n\no_loc[4,1,type=int]          # Location observation: (0:center, 1:left, 2:right, 3:cue)\no_rew[3,1,type=int]          # Reward/cue observation: (0:no_reward, 1:reward, 2:cue_left)\n\n# Generative model matrices\n\nA_loc[4,4,type=float]        # Location likelihood: P(o_loc | s_loc) \u2014 identity\nA_rew[3,4,2,type=float]      # Reward likelihood: P(o_rew | s_loc, s_ctx) \u2014 context-dependent\n\n# Transition matrices\n\nB_loc[4,4,4,type=float]      # Location transitions: P(s_loc' | s_loc, action)\nB_ctx[2,2,1,type=float]      # Context transitions: identity (context doesn't change)\n\n# Preferences\n\nC_loc[4,type=float]          # No location preference (agent doesn't prefer a location per se)\nC_rew[3,type=float]          # Reward preference: strongly prefers reward observation\n\n# Priors\n\nD_loc[4,type=float]          # Prior: agent starts at center\nD_ctx[2,type=float]          # Prior: uncertain about which arm has reward\n\n# Policy and action\n\npi[4,type=float]             # Policy over 4 actions: (go_left, go_right, go_cue, stay)\nu[1,type=int]                # Selected action\nG[pi,type=float]             # Expected Free Energy per policy\nG_epi[pi,type=float]         # Epistemic value (information gain about context)\nG_ins[pi,type=float]         # Instrumental value (expected reward)\n\n# Inference\n\nF[1,type=float]              # Variational Free Energy\n\n# Time\n\nt[1,type=int]                # Discrete time step",
+    "Connections": "D_loc>s_loc\nD_ctx>s_ctx\ns_loc-A_loc\nA_loc-o_loc\ns_loc-A_rew\ns_ctx-A_rew\nA_rew-o_rew\ns_loc-B_loc\ns_ctx-B_ctx\nC_rew>G_ins\nG_epi>G\nG_ins>G\nG>pi\npi>u\nB_loc>u\ns_loc-F\ns_ctx-F\no_loc-F\no_rew-F",
+    "InitialParameterization": "# Location likelihood: identity mapping (agent knows its location)\n\nA_loc={\n  (1.0, 0.0, 0.0, 0.0),\n  (0.0, 1.0, 0.0, 0.0),\n  (0.0, 0.0, 1.0, 0.0),\n  (0.0, 0.0, 0.0, 1.0)\n}\n\n# Reward likelihood depends on location \u00d7 context\n\n# At center or cue: no reward visible\n\n# At left arm: reward if context=reward_left\n\n# At right arm: reward if context=reward_right\n\n# At cue location: cue_left shown if context=reward_left\n\n# Shape: [3 reward_obs, 4 locations, 2 contexts]\n\n# Slice for context=reward_left\n\n# center: (1.0, 0.0, 0.0), left: (0.0, 1.0, 0.0), right: (1.0, 0.0, 0.0), cue: (0.0, 0.0, 1.0)\n\n# Slice for context=reward_right\n\n# center: (1.0, 0.0, 0.0), left: (1.0, 0.0, 0.0), right: (0.0, 1.0, 0.0), cue: (1.0, 0.0, 0.0)\n\n# Transition: deterministic moves\n\nB_loc={\n  ( (0.0,0.0,0.0,0.0), (1.0,1.0,0.0,0.0), (0.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0) ),\n  ( (0.0,0.0,0.0,0.0), (0.0,0.0,0.0,0.0), (1.0,0.0,1.0,0.0), (0.0,0.0,0.0,1.0) ),\n  ( (0.0,0.0,0.0,0.0), (0.0,0.0,0.0,0.0), (0.0,0.0,0.0,0.0), (1.0,0.0,0.0,1.0) ),\n  ( (1.0,0.0,0.0,0.0), (0.0,0.0,0.0,0.0), (0.0,0.0,0.0,0.0), (0.0,1.0,1.0,0.0) )\n}\n\n# Context is static\n\nB_ctx={\n  ( (1.0, 0.0), (0.0, 1.0) )\n}\n\n# Preferences: strongly prefer reward, indifferent to no-reward or cue\n\nC_loc={(0.0, 0.0, 0.0, 0.0)}\nC_rew={(-1.0, 3.0, 0.0)}\n\n# Prior: starts at center, uncertain about context\n\nD_loc={(1.0, 0.0, 0.0, 0.0)}\nD_ctx={(0.5, 0.5)}",
+    "Equations": "# G(pi) = G_epi(pi) + G_ins(pi)\n\n# G_epi(pi) = -E_Q[H[P(o|s)]] = expected information gain about hidden context\n\n# G_ins(pi) = -E_Q[log P(C|o)] = expected reward under policy\n\n# The epistemic component drives the agent to visit the cue location\n\n# to reduce uncertainty about context before committing to an arm",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=3",
+    "ActInfOntologyAnnotation": "A_loc=LocationLikelihoodMatrix\nA_rew=RewardLikelihoodMatrix\nB_loc=LocationTransitionMatrix\nB_ctx=ContextTransitionMatrix\nC_loc=LocationPreferenceVector\nC_rew=RewardPreferenceVector\nD_loc=LocationPrior\nD_ctx=ContextPrior\ns_loc=LocationHiddenState\ns_ctx=ContextHiddenState\no_loc=LocationObservation\no_rew=RewardObservation\npi=PolicyVector\nu=Action\nG=ExpectedFreeEnergy\nG_epi=EpistemicValue\nG_ins=InstrumentalValue\nF=VariationalFreeEnergy\nt=Time",
+    "ModelParameters": "num_locations: 4\nnum_contexts: 2\nnum_location_obs: 4\nnum_reward_obs: 3\nnum_actions: 4\nnum_timesteps: 3\nnum_modalities: 2\nnum_state_factors: 2",
+    "Footer": "T-Maze Epistemic Foraging Agent v1 - GNN Representation.\nDemonstrates the natural exploration-exploitation trade-off in Active Inference.\nAgent visits cue location to reduce uncertainty before committing to reward arm.\nClassic paradigm from Friston et al. Active Inference literature.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

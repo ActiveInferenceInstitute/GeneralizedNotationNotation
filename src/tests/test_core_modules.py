@@ -350,15 +350,14 @@ class TestMCPModuleComprehensive:
 		"""Test that MCP module can be imported and has expected structure."""
 		try:
 			from src.mcp import (
-				register_tools, get_available_tools, handle_mcp_request,
-				start_mcp_server, generate_mcp_report
+				register_module_tools as register_tools, get_available_tools, handle_mcp_request,
+				generate_mcp_report
 			)
 
 			# Test that functions are callable
 			assert callable(register_tools), "register_tools should be callable"
 			assert callable(get_available_tools), "get_available_tools should be callable"
 			assert callable(handle_mcp_request), "handle_mcp_request should be callable"
-			assert callable(start_mcp_server), "start_mcp_server should be callable"
 			assert callable(generate_mcp_report), "generate_mcp_report should be callable"
 
 			logging.info("MCP module imports validated")
@@ -370,7 +369,7 @@ class TestMCPModuleComprehensive:
 	@pytest.mark.safe_to_fail
 	def test_mcp_tool_registration(self):
 		"""Test MCP tool registration."""
-		from src.mcp import register_tools, get_available_tools
+		from src.mcp import register_module_tools as register_tools, get_available_tools
 
 		try:
 			# Register tools

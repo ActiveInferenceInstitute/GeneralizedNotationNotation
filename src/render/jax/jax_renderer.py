@@ -998,6 +998,20 @@ def select_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[
     
     return selected_action, efe_values
 
+# Batched operations for parallel execution across multiple agents or parallel rollouts
+# JAX's vmap allows automatic vectorization of functions
+batched_belief_update = jax.vmap(belief_update, in_axes=(None, 0, 0))
+batched_compute_expected_free_energy = jax.vmap(compute_expected_free_energy, in_axes=(None, 0, None))
+
+# Optional pmap for multiple devices if available
+import os
+try:
+    if len(jax.devices()) > 1 and os.environ.get("JAX_ENABLE_PMAP", "1") == "1":
+        # Multi-device data parallelism
+        parallel_belief_update = jax.pmap(belief_update, in_axes=(None, 0, 0))
+except Exception:
+    pass
+
 
 @jit
 def state_transition(params: Dict[str, jnp.ndarray], belief: jnp.ndarray, 

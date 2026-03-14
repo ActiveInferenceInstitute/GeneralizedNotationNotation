@@ -238,8 +238,9 @@ def process_execute(
                 details = []
 
                 if is_distributed:
-                    from .distributed import RayDispatcher
-                    dispatcher = RayDispatcher()
+                    from .distributed import Dispatcher
+                    backend = kwargs.get('backend', 'ray')
+                    dispatcher = Dispatcher(backend=backend)
                     
                     def ray_script_runner(info, **kws):
                         # Re-instantiate logger to avoid pickle issues

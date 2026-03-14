@@ -1,0 +1,59 @@
+/* GNN Model: Predictive Coding Active Inference Agent */
+/* A continuous-state Active Inference agent implementing predictive coding:
+
+- Two-level predictive hierarchy: sensory predictions and dynamics predictions
+- Prediction errors drive belief updating via gradient descent on free energy
+- Precision-weighted prediction errors enable attentional modulation
+- Sensory level: predicts observations from hidden causes
+- Dynamics level: predicts state evolution from generative dynamics
+- Action minimizes expected free energy by changing sensory input
+- Uses generalized coordinates of motion (position, velocity, acceleration)
+- Demonstrates the core predictive processing framework underlying Active Inference */
+
+/* Variables */
+F: matrix[1];
+F_d: matrix[1];
+F_s: matrix[1];
+Pi_d: matrix[3,3];
+Pi_s: matrix[4,4];
+Sigma: matrix[3,3];
+e_d: matrix[3,1];
+e_s: matrix[4,1];
+f_params: matrix[9];
+g_params: matrix[12];
+mu: matrix[3,1];
+mu_dot: matrix[3,1];
+mu_star: matrix[3,1];
+o: matrix[4,1];
+t: matrix[1];
+u: matrix[2,1];
+
+/* Parameters */
+Pi_d: [[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]];
+Pi_s: [[8.0, 0.0, 0.0, 0.0], [0.0, 8.0, 0.0, 0.0], [0.0, 0.0, 8.0, 0.0], [0.0, 0.0, 0.0, 8.0]];
+Sigma: [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]];
+mu: [[0.0], [0.0], [0.0]];
+mu_dot: [[0.0], [0.0], [0.0]];
+mu_star: [[1.0], [1.0], [0.5]];
+
+/* Connections */
+/* g_params depends on mu */
+/* o depends on g_params */
+/* e_s depends on o */
+/* e_s depends on mu */
+/* e_s depends on Pi_s */
+/* F_s depends on e_s */
+/* f_params depends on mu */
+/* mu_dot depends on f_params */
+/* e_d depends on mu_dot */
+/* e_d depends on Pi_d */
+/* F_d depends on e_d */
+/* F depends on F_s */
+/* F depends on F_d */
+/* mu depends on F */
+/* u depends on F */
+/* F depends on mu_star */
+/* Sigma depends on mu */
+/* Pi_s depends on Sigma */
+
+/* MODEL_DATA: {"model_name":"Predictive Coding Active Inference Agent","annotation":"A continuous-state Active Inference agent implementing predictive coding:\n\n- Two-level predictive hierarchy: sensory predictions and dynamics predictions\n- Prediction errors drive belief updating via gradient descent on free energy\n- Precision-weighted prediction errors enable attentional modulation\n- Sensory level: predicts observations from hidden causes\n- Dynamics level: predicts state evolution from generative dynamics\n- Action minimizes expected free energy by changing sensory input\n- Uses generalized coordinates of motion (position, velocity, acceleration)\n- Demonstrates the core predictive processing framework underlying Active Inference","variables":[{"name":"mu","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"mu_dot","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"Sigma","var_type":"hidden_state","data_type":"float","dimensions":[3,3]},{"name":"e_s","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"e_d","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"g_params","var_type":"hidden_state","data_type":"float","dimensions":[12]},{"name":"f_params","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"Pi_s","var_type":"policy","data_type":"float","dimensions":[4,4]},{"name":"Pi_d","var_type":"policy","data_type":"float","dimensions":[3,3]},{"name":"o","var_type":"observation","data_type":"float","dimensions":[4,1]},{"name":"u","var_type":"action","data_type":"float","dimensions":[2,1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"F_s","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"F_d","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"mu_star","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"t","var_type":"hidden_state","data_type":"float","dimensions":[1]}],"connections":[{"source_variables":["mu"],"target_variables":["g_params"],"connection_type":"undirected"},{"source_variables":["g_params"],"target_variables":["o"],"connection_type":"undirected"},{"source_variables":["o"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["Pi_s"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["e_s"],"target_variables":["F_s"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["f_params"],"connection_type":"undirected"},{"source_variables":["f_params"],"target_variables":["mu_dot"],"connection_type":"undirected"},{"source_variables":["mu_dot"],"target_variables":["e_d"],"connection_type":"undirected"},{"source_variables":["Pi_d"],"target_variables":["e_d"],"connection_type":"undirected"},{"source_variables":["e_d"],"target_variables":["F_d"],"connection_type":"undirected"},{"source_variables":["F_s"],"target_variables":["F"],"connection_type":"directed"},{"source_variables":["F_d"],"target_variables":["F"],"connection_type":"directed"},{"source_variables":["F"],"target_variables":["mu"],"connection_type":"directed"},{"source_variables":["F"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["mu_star"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["Sigma"],"connection_type":"undirected"},{"source_variables":["Sigma"],"target_variables":["Pi_s"],"connection_type":"undirected"}],"parameters":[{"name":"mu","value":[[0.0],[0.0],[0.0]],"param_type":"constant"},{"name":"mu_dot","value":[[0.0],[0.0],[0.0]],"param_type":"constant"},{"name":"Sigma","value":[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"Pi_s","value":[[8.0,0.0,0.0,0.0],[0.0,8.0,0.0,0.0],[0.0,0.0,8.0,0.0],[0.0,0.0,0.0,8.0]],"param_type":"constant"},{"name":"Pi_d","value":[[4.0,0.0,0.0],[0.0,4.0,0.0],[0.0,0.0,4.0]],"param_type":"constant"},{"name":"mu_star","value":[[1.0],[1.0],[0.5]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"5.0","step_size":null},"ontology_mappings":[{"variable_name":"mu","ontology_term":"BeliefMean","description":null},{"variable_name":"mu_dot","ontology_term":"BeliefVelocity","description":null},{"variable_name":"Sigma","ontology_term":"BeliefCovariance","description":null},{"variable_name":"e_s","ontology_term":"SensoryPredictionError","description":null},{"variable_name":"e_d","ontology_term":"DynamicPredictionError","description":null},{"variable_name":"g_params","ontology_term":"SensoryMappingParameters","description":null},{"variable_name":"f_params","ontology_term":"DynamicsParameters","description":null},{"variable_name":"Pi_s","ontology_term":"SensoryPrecision","description":null},{"variable_name":"Pi_d","ontology_term":"DynamicPrecision","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"u","ontology_term":"ContinuousAction","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"F_s","ontology_term":"SensoryFreeEnergy","description":null},{"variable_name":"F_d","ontology_term":"DynamicFreeEnergy","description":null},{"variable_name":"mu_star","ontology_term":"PriorExpectation","description":null},{"variable_name":"t","ontology_term":"ContinuousTime","description":null}]} */

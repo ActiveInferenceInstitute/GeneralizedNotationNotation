@@ -59,7 +59,14 @@ run_script = create_standardized_pipeline_script(
         "distributed": {
             "flag": "--distributed",
             "action": "store_true",
-            "help": "Run scripts and model parameter sweeps in parallel across a Ray cluster"
+            "help": "Run scripts and model parameter sweeps in parallel across a Ray/Dask cluster"
+        },
+        "backend": {
+            "flag": "--backend",
+            "type": str,
+            "choices": ["ray", "dask"],
+            "default": "ray",
+            "help": "Backend to use for distributed execution (default is ray)"
         }
     },
     default_target_dir="output/11_render_output",

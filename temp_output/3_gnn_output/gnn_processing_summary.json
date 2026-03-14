@@ -1,0 +1,10 @@
+{
+  "total_files": 2,
+  "successful_parses": 2,
+  "failed_parses": 0,
+  "total_formats_generated": 44,
+  "formats_per_file": {
+    "predictive_coding_agent.md": 22,
+    "continuous_navigation.md": 22
+  }
+}

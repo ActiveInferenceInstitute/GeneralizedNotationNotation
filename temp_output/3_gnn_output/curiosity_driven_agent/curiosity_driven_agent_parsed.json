@@ -1,0 +1,919 @@
+{
+  "model_name": "Curiosity-Driven Active Inference Agent",
+  "version": "1.0",
+  "annotation": "An Active Inference agent with:\n- Explicit epistemic value (information gain / Bayesian surprise) component in G\n- Separate instrumental value (preference satisfaction) component\n- Precision parameter \u03b3 weighting epistemic vs instrumental contributions\n- 5 hidden states, 5 observations, 4 actions in a navigation context\n- Agent is rewarded for reducing posterior uncertainty",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "de9dbe0e-5cf4-421e-bd7c-7ca15246b22e",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        5,
+        5
+      ],
+      "data_type": "float",
+      "description": "Likelihood matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "818b64f7-917d-407d-995f-7e2fdfeff098",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        5,
+        5,
+        4
+      ],
+      "data_type": "float",
+      "description": "Transition matrix (4 actions: up/down/left/right)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4df231fe-22c2-4131-b8ec-6ca33c7cac4f",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        5
+      ],
+      "data_type": "float",
+      "description": "Instrumental preference vector (goal observations)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a946d1b9-265c-4762-98f2-3f3095f56955",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        5
+      ],
+      "data_type": "float",
+      "description": "Prior over hidden states (uniform = no preference)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "901c37e8-4e25-4195-b345-67b42c7247a1",
+      "name": "E",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Habit vector over actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b577d38e-94da-4c3e-8538-8ff97e045ded",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        5,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "33aedd67-1a13-496b-a86b-a970c1f81ffe",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        5,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next hidden state belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e4f676ab-2e30-4913-9e2a-ac153a906330",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        5,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "bebcca3a-d246-42e8-a3c1-8e4bec0a9796",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Policy distribution over actions",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec586ce1-1428-4f62-bcec-6a09ff1ddd81",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Selected action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d0f7686-c44f-4dce-8b3a-2f237b13939d",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Total Expected Free Energy (epistemic + instrumental)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9d856df4-c145-4252-9293-fe145de81baf",
+      "name": "G_epi",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Epistemic value component (information gain)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "4427dfa9-2f43-496d-b109-31929423552c",
+      "name": "G_ins",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Instrumental value component (preference satisfaction)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "17d96106-c5ce-4cb1-9dc0-724ffe9d681b",
+      "name": "\u03b3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Precision weighting epistemic vs instrumental value",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a5a4e47a-41cd-49f8-82a7-ac4af0a4d442",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy for state inference",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ab602b30-0864-48f7-9b09-382045e9eb82",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Discrete time step",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "90a2711f-0fa5-4505-9e4e-ca205cecc3bc",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "42d36bb4-d643-4e78-9a52-ee051f7b42f5",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "72fa433d-b9bd-4d56-955c-2f4666cfe090",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "232bf7c3-6a6c-4afb-a9da-3f725b726087",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1914156e-7111-43da-8490-caf2b1db7e3b",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_ins"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "55bcab30-65d9-4110-b3b2-fd71983226d1",
+      "source_variables": [
+        "G_epi"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b5719343-cbc3-42d5-b593-499bfe08a0a2",
+      "source_variables": [
+        "G_ins"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3590efd7-90fb-4117-bc96-d322d7693f41",
+      "source_variables": [
+        "\u03b3"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "015c6111-fd43-48d9-902f-9263fd6521c6",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c8702ca-dd7f-4fbe-91a3-2c6f40904478",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "57b9a33c-8d98-4ec4-bf8b-0b7f637e64c7",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3318e8c1-9b9f-4589-89ce-cd69986a800d",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3bf92ab4-c2b8-485f-ac6c-b6e0192d5734",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "11ca6281-216f-4d1e-a104-3b177af1cefa",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fe4036ab-bb1b-43fe-9450-d675e1aef609",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a6b96a68-b355-4751-9cd0-d4e730fc77b6",
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.025,
+          0.025,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.9,
+          0.025,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.9,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.025,
+          0.9,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.025,
+          0.025,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "19886124-de7f-4a07-8511-80bedfa56457",
+      "name": "B",
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.8,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.0,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b019cb34-a78b-48d4-8ec6-f00f7282c053",
+      "name": "C",
+      "value": [
+        [
+          -2.0,
+          -2.0,
+          -2.0,
+          -2.0,
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "85ced7a9-f959-4893-b249-7d9fc1febcbf",
+      "name": "D",
+      "value": [
+        [
+          0.2,
+          0.2,
+          0.2,
+          0.2,
+          0.2
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "cfe755a6-09bb-43b4-8b0f-a3904c9fc9bb",
+      "name": "E",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "c40ea505-1584-4bb8-874e-7ae422036103",
+      "name": "\u03b3",
+      "value": [
+        [
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "d0711e53-3fcf-4b05-9fad-011ae51d3d63",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 30,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9ac85eeb-1ddd-4a2c-aaf1-4c79feea9278",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f62395b3-4b99-4868-bf9e-8cf70d0be961",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6c17a5d2-39dd-48ce-aaa5-07de729141eb",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff1af189-0287-460d-a46c-3ea5b1c34921",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f4ff6f43-afa1-4d0b-89da-3e1f51fa3fe3",
+      "variable_name": "E",
+      "ontology_term": "Habit",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2abf222e-b5a4-43e4-b977-312919cf3fc0",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a5e52b3b-1c5b-4c9d-8038-7f573541e48d",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7544a895-8c82-44f1-bf07-46918c32179b",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a0d85df-b026-423e-98ff-957c4b4e8f0a",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "fde4baf0-6597-48e4-b386-c96f40b756e0",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8fcc8ec4-88c8-4a7e-aecd-fd1e42d13255",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b2b39c86-9b83-4bb7-bfe0-ef37c96560e1",
+      "variable_name": "G_epi",
+      "ontology_term": "EpistemicValue",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "352193b7-576a-4852-a537-85c4b46da235",
+      "variable_name": "G_ins",
+      "ontology_term": "InstrumentalValue",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "bdbbb2a1-86bc-459b-a296-3435b400cc84",
+      "variable_name": "\u03b3",
+      "ontology_term": "PrecisionParameter",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ba32b4d1-b58a-41d8-bfde-55fe8b7748e5",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "2a3178fa-481b-425b-8191-7acd3b93b83e",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T18:17:23.411640",
+  "modified_at": "2026-03-13T18:17:23.411641",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Curiosity-Driven Active Inference Agent v1 - GNN Representation.\nDemonstrates explicit epistemic value (information gain) alongside instrumental value.\nUseful for studying exploration-exploitation in Active Inference.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Curiosity-Driven Active Inference Agent",
+    "ModelAnnotation": "An Active Inference agent with:\n- Explicit epistemic value (information gain / Bayesian surprise) component in G\n- Separate instrumental value (preference satisfaction) component\n- Precision parameter \u03b3 weighting epistemic vs instrumental contributions\n- 5 hidden states, 5 observations, 4 actions in a navigation context\n- Agent is rewarded for reducing posterior uncertainty",
+    "StateSpaceBlock": "# Core generative model\nA[5,5,type=float]      # Likelihood matrix\nB[5,5,4,type=float]    # Transition matrix (4 actions: up/down/left/right)\nC[5,type=float]        # Instrumental preference vector (goal observations)\nD[5,type=float]        # Prior over hidden states (uniform = no preference)\nE[4,type=float]        # Habit vector over actions\n\n# State and observation\ns[5,1,type=float]      # Hidden state belief\ns_prime[5,1,type=float] # Next hidden state belief\no[5,1,type=int]        # Current observation\n\n# Policy and free energy\n\u03c0[4,type=float]        # Policy distribution over actions\nu[1,type=int]          # Selected action\nG[\u03c0,type=float]        # Total Expected Free Energy (epistemic + instrumental)\nG_epi[\u03c0,type=float]    # Epistemic value component (information gain)\nG_ins[\u03c0,type=float]    # Instrumental value component (preference satisfaction)\n\n# Precision parameters\n\u03b3[1,type=float]        # Precision weighting epistemic vs instrumental value\nF[\u03c0,type=float]        # Variational Free Energy for state inference\n\n# Time\nt[1,type=int]          # Discrete time step",
+    "Connections": "D>s\ns-A\ns>s_prime\nA-o\nC>G_ins\nG_epi>G\nG_ins>G\n\u03b3>G\nE>\u03c0\nG>\u03c0\n\u03c0>u\nB>u\nu>s_prime\ns-F\no-F",
+    "InitialParameterization": "A={\n  (0.9, 0.025, 0.025, 0.025, 0.025),\n  (0.025, 0.9, 0.025, 0.025, 0.025),\n  (0.025, 0.025, 0.9, 0.025, 0.025),\n  (0.025, 0.025, 0.025, 0.9, 0.025),\n  (0.025, 0.025, 0.025, 0.025, 0.9)\n}\n\nB={\n  ( (0.9,0.1,0.0,0.0,0.0), (0.1,0.8,0.1,0.0,0.0), (0.0,0.1,0.8,0.1,0.0), (0.0,0.0,0.1,0.8,0.1), (0.0,0.0,0.0,0.1,0.9) ),\n  ( (0.9,0.1,0.0,0.0,0.0), (0.0,0.9,0.1,0.0,0.0), (0.0,0.0,0.9,0.1,0.0), (0.0,0.0,0.0,0.9,0.1), (0.0,0.0,0.0,0.0,1.0) ),\n  ( (1.0,0.0,0.0,0.0,0.0), (0.1,0.9,0.0,0.0,0.0), (0.0,0.1,0.9,0.0,0.0), (0.0,0.0,0.1,0.9,0.0), (0.0,0.0,0.0,0.1,0.9) ),\n  ( (0.9,0.0,0.0,0.0,0.1), (0.0,0.9,0.0,0.0,0.1), (0.0,0.0,0.9,0.0,0.1), (0.0,0.0,0.0,0.9,0.1), (0.0,0.0,0.0,0.0,1.0) )\n}\n\n# Prefer goal state (state 5 = index 4) with high log-probability\nC={(-2.0, -2.0, -2.0, -2.0, 2.0)}\n\nD={(0.2, 0.2, 0.2, 0.2, 0.2)}\nE={(0.25, 0.25, 0.25, 0.25)}\n\n# Precision: balanced epistemic/instrumental weighting\n\u03b3={(1.0)}",
+    "Equations": "# G = G_epi + \u03b3 * G_ins\n# G_epi[\u03c0] = -E_Q[H[P(o|s)]] = expected information gain (Bayesian surprise)\n# G_ins[\u03c0] = -E_Q[log P(C|o)] = expected preference satisfaction\n# State inference: F = D_KL[Q(s)||P(s)] - E_Q[log P(o|s)]",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=30",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nE=Habit\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\n\u03c0=PolicyVector\nu=Action\nG=ExpectedFreeEnergy\nG_epi=EpistemicValue\nG_ins=InstrumentalValue\n\u03b3=PrecisionParameter\nF=VariationalFreeEnergy\nt=Time",
+    "ModelParameters": "num_hidden_states: 5\nnum_obs: 5\nnum_actions: 4\nnum_timesteps: 30\nepistemic_weight: 1.0\ninstrumental_weight: 1.0",
+    "Footer": "Curiosity-Driven Active Inference Agent v1 - GNN Representation.\nDemonstrates explicit epistemic value (information gain) alongside instrumental value.\nUseful for studying exploration-exploitation in Active Inference.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

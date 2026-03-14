@@ -7,8 +7,8 @@
 - 4 actions: stay, move-north, move-south, move-east.
 - Preferences strongly favor state/observation 3 (goal location).
 - Tests the degenerate POMDP case where partial observability is absent.</annotation>
-    <created_at>2026-03-13T14:15:03.865280</created_at>
-    <modified_at>2026-03-13T14:15:03.865281</modified_at>
+    <created_at>2026-03-13T18:17:53.713169</created_at>
+    <modified_at>2026-03-13T18:17:53.713169</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="A" type="likelihood_matrix" description="Observation model: identity (fully observable)"/>

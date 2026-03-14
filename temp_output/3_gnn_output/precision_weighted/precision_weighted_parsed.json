@@ -1,0 +1,826 @@
+{
+  "model_name": "Precision-Weighted Active Inference Agent",
+  "version": "1.0",
+  "annotation": "An Active Inference agent with explicit precision parameters:\n- \u03c9 (omega): sensory precision weighting likelihood confidence\n- \u03b3 (gamma): policy precision controlling action randomness\n- \u03b2 (beta): inverse temperature for policy selection (softmax)\n- 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)\n- Precision parameters enable modeling of attention and confidence",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1279743b-de8e-480b-84e4-6b0713946615",
+      "name": "A",
+      "var_type": "likelihood_matrix",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Likelihood matrix (modulated by \u03c9)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6f01b73f-a92d-4cbf-8425-6ddf9c655b23",
+      "name": "B",
+      "var_type": "transition_matrix",
+      "dimensions": [
+        3,
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Transition matrix",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ea65bb4e-80b6-4fa8-8138-13b5a49fe378",
+      "name": "C",
+      "var_type": "preference_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Log-preferences over observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8f6dfe27-1657-43ab-b4c2-f0b0799d8653",
+      "name": "D",
+      "var_type": "prior_vector",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Prior over hidden states",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8dc5bf24-a557-46d5-ac5a-10bcc747fa1d",
+      "name": "E",
+      "var_type": "policy",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Habit (prior over actions)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "f17603f3-83bf-46eb-9593-29735eb0c004",
+      "name": "s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Hidden state distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee08d673-5aac-47b3-85b6-108a26019bd6",
+      "name": "s_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Next hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8d626adc-b075-4d43-b67c-94b638090a8c",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Current observation",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5169bd75-f9cb-4669-a6a8-9cc807dbf757",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "9beec462-26a0-4177-afaf-12f4f5fbc9c2",
+      "name": "\u03c9",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Sensory precision (modulates A matrix confidence)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5e75cdd8-75ca-4f71-aac7-ef923f33588b",
+      "name": "\u03b3",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Policy precision (temperature for action selection)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "da5d144f-67f8-472b-a478-03a7ad842ae3",
+      "name": "\u03b2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Inverse temperature (\u03b2 = 1/\u03b3, controls randomness)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "6329ea28-e221-4fc2-af01-9925ff0d4bcd",
+      "name": "\u03c0",
+      "var_type": "policy",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Policy distribution",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "dc381982-11f7-4e44-b6f4-cd17ccaef63a",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Selected action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "e5eb0e38-d063-4b67-9978-1d96ab0607e4",
+      "name": "G",
+      "var_type": "policy",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Expected Free Energy",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e0f54e0b-dab7-4f0a-b515-dd9b5adf0dd5",
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "488d8228-aab7-40aa-9ee6-973bc36d5788",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "701a9b2e-a433-4556-aced-079073502c01",
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7dd8c9f0-e443-4d19-81ba-65d578afc610",
+      "source_variables": [
+        "\u03c9"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a8b4a09-7936-4c3d-9892-0da3d2723f76",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "9afb0f70-a0ab-4821-bc37-67f850413e55",
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b215070c-1898-4305-8f32-75bc2bc50ceb",
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "14ac67c2-5cde-45fa-8876-c7bda740ceb2",
+      "source_variables": [
+        "\u03b3"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4e8de4d5-7d5e-4db6-965b-296bcd4324e4",
+      "source_variables": [
+        "\u03b2"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec526bab-4841-4afd-8f0d-8bfb21e093ab",
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "\u03c0"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f0783f99-f59f-4059-95c5-bb8d90f132b6",
+      "source_variables": [
+        "\u03c0"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "792f7d06-a1dd-492e-a77d-a50251ea5db3",
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "490571d6-eb94-43ed-ba04-de3cf0659e12",
+      "source_variables": [
+        "u"
+      ],
+      "target_variables": [
+        "s_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ef28ba89-ebf4-4ab7-8d6f-809bef62db2d",
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "619d9558-a0c7-4ae6-8d85-b0e0cb7c2023",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "95f11343-b885-4710-b8a2-7aff3351d581",
+      "source_variables": [
+        "\u03c9"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "bbe3d0b7-333f-4827-b7fc-8ff08dba29aa",
+      "name": "A",
+      "value": [
+        [
+          0.9,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.9,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.9
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "5fff6c14-b4ed-4bdc-ac76-bdac50d38b1d",
+      "name": "B",
+      "value": [
+        [
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            1.0
+          ]
+        ],
+        [
+          [
+            0.0,
+            0.0,
+            1.0
+          ],
+          [
+            0.0,
+            1.0,
+            0.0
+          ],
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a1f67f16-e507-4d9d-8ca9-8d7acce23327",
+      "name": "C",
+      "value": [
+        [
+          0.1,
+          0.1,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b80415ae-0043-4d2c-9280-36fe0a703299",
+      "name": "D",
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7691cb90-bc6d-4cf1-8364-cf05e1f90f5f",
+      "name": "E",
+      "value": [
+        [
+          0.333,
+          0.333,
+          0.333
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "e8d5c56e-78a7-4308-98b5-998af5ea2d5c",
+      "name": "\u03c9",
+      "value": [
+        [
+          4.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "287c7002-4f6a-4929-aebf-d05bbec374aa",
+      "name": "\u03b3",
+      "value": [
+        [
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "72a00f47-65c8-42f7-a0f3-9aa4c397f137",
+      "name": "\u03b2",
+      "value": [
+        [
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "5a769905-3d7d-4e98-9f5d-0fce91ea1bee",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "258c86e1-a8db-4e88-a557-eeb0807fd615",
+      "variable_name": "A",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6f54e465-a2e2-4667-ba39-a5a73bb98533",
+      "variable_name": "B",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b9f61184-eb00-4e45-bf9b-cf88b17bf94c",
+      "variable_name": "C",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "61caadbb-011c-4b76-8868-c04cdb55580c",
+      "variable_name": "D",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "497378c5-f089-4d3e-baed-e015536fa98d",
+      "variable_name": "E",
+      "ontology_term": "Habit",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "446b21e8-0f75-41f0-9147-69771d344cd8",
+      "variable_name": "s",
+      "ontology_term": "HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "eedfbf5b-be24-4f8a-b5a8-e03a0b0f0635",
+      "variable_name": "s_prime",
+      "ontology_term": "NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "bf9ac495-9544-4bf6-b098-dd3adc084533",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "0c4c45eb-5cac-42f2-9b95-e673f69d210e",
+      "variable_name": "\u03c0",
+      "ontology_term": "PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "aa52d054-5ff8-4256-bd14-85dda0999366",
+      "variable_name": "u",
+      "ontology_term": "Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e789f56a-05f2-466c-afa0-b43584b521ac",
+      "variable_name": "G",
+      "ontology_term": "ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "774978e0-584e-4601-9b24-b87b3dcb37aa",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6d5fc4b2-2bc9-41f0-bbca-fec0b924136c",
+      "variable_name": "\u03c9",
+      "ontology_term": "SensoryPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "890b5241-d753-41c6-8689-a6c54630ac7e",
+      "variable_name": "\u03b3",
+      "ontology_term": "PolicyPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f4f75b33-488e-4dc0-8df1-8c28fff8ac77",
+      "variable_name": "\u03b2",
+      "ontology_term": "InverseTemperature",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ff0e8e1c-eac3-4669-8a40-94e5d497cda2",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T18:17:23.401584",
+  "modified_at": "2026-03-13T18:17:23.401585",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP",
+    "footer": "Precision-Weighted Active Inference Agent v1 - GNN Representation.\nDemonstrates attentional modulation via sensory precision \u03c9.\nPolicy precision \u03b3 controls exploitation vs exploration trade-off.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Precision-Weighted Active Inference Agent",
+    "ModelAnnotation": "An Active Inference agent with explicit precision parameters:\n- \u03c9 (omega): sensory precision weighting likelihood confidence\n- \u03b3 (gamma): policy precision controlling action randomness\n- \u03b2 (beta): inverse temperature for policy selection (softmax)\n- 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)\n- Precision parameters enable modeling of attention and confidence",
+    "StateSpaceBlock": "# Core model matrices\nA[3,3,type=float]      # Likelihood matrix (modulated by \u03c9)\nB[3,3,3,type=float]    # Transition matrix\nC[3,type=float]        # Log-preferences over observations\nD[3,type=float]        # Prior over hidden states\nE[3,type=float]        # Habit (prior over actions)\n\n# State and observation\ns[3,1,type=float]      # Hidden state distribution\ns_prime[3,1,type=float] # Next hidden state\no[3,1,type=int]        # Current observation\nF[\u03c0,type=float]        # Variational Free Energy\n\n# Precision parameters\n\u03c9[1,type=float]        # Sensory precision (modulates A matrix confidence)\n\u03b3[1,type=float]        # Policy precision (temperature for action selection)\n\u03b2[1,type=float]        # Inverse temperature (\u03b2 = 1/\u03b3, controls randomness)\n\n# Policy and EFE\n\u03c0[3,type=float]        # Policy distribution\nu[1,type=int]          # Selected action\nG[\u03c0,type=float]        # Expected Free Energy",
+    "Connections": "D>s\ns-A\nA-o\n\u03c9>A\ns>s_prime\nC>G\nG>\u03c0\n\u03b3>\u03c0\n\u03b2>\u03c0\nE>\u03c0\n\u03c0>u\nB>u\nu>s_prime\ns-F\no-F\n\u03c9-F",
+    "InitialParameterization": "A={\n  (0.9, 0.05, 0.05),\n  (0.05, 0.9, 0.05),\n  (0.05, 0.05, 0.9)\n}\n\nB={\n  ( (1.0,0.0,0.0), (0.0,1.0,0.0), (0.0,0.0,1.0) ),\n  ( (0.0,1.0,0.0), (1.0,0.0,0.0), (0.0,0.0,1.0) ),\n  ( (0.0,0.0,1.0), (0.0,1.0,0.0), (1.0,0.0,0.0) )\n}\n\nC={(0.1, 0.1, 1.0)}\nD={(0.333, 0.333, 0.333)}\nE={(0.333, 0.333, 0.333)}\n\n# High sensory precision: agent trusts its observations\n\u03c9={(4.0)}\n\n# Moderate policy precision: neither too random nor too deterministic\n\u03b3={(2.0)}\n\u03b2={(0.5)}",
+    "Equations": "# Precision-weighted likelihood: A_\u03c9 = softmax(\u03c9 * log A)\n# Precision-weighted policy: \u03c0 = softmax(-\u03b2 * G + log E)\n# Standard VFE: F = D_KL[Q(s)||D] - E_Q[\u03c9 * log P(o|s)]",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=Unbounded",
+    "ActInfOntologyAnnotation": "A=LikelihoodMatrix\nB=TransitionMatrix\nC=LogPreferenceVector\nD=PriorOverHiddenStates\nE=Habit\ns=HiddenState\ns_prime=NextHiddenState\no=Observation\n\u03c0=PolicyVector\nu=Action\nG=ExpectedFreeEnergy\nF=VariationalFreeEnergy\n\u03c9=SensoryPrecision\n\u03b3=PolicyPrecision\n\u03b2=InverseTemperature\nt=Time",
+    "ModelParameters": "num_hidden_states: 3\nnum_obs: 3\nnum_actions: 3\nsensory_precision: 4.0\npolicy_precision: 2.0\nnum_timesteps: 30",
+    "Footer": "Precision-Weighted Active Inference Agent v1 - GNN Representation.\nDemonstrates attentional modulation via sensory precision \u03c9.\nPolicy precision \u03b3 controls exploitation vs exploration trade-off.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

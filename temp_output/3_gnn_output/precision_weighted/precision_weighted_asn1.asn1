@@ -1,0 +1,74 @@
+Precision-WeightedActiveInferenceAgent-Schema DEFINITIONS AUTOMATIC TAGS ::= BEGIN
+
+-- GNN Model Schema Definition
+-- Model: Precision-Weighted Active Inference Agent
+-- An Active Inference agent with explicit precision parameters:
+-- - ω (omega): sensory precision weighting likelihood confidence
+-- - γ (gamma): policy precision controlling action randomness
+-- - β (beta): inverse temperature for policy selection (softmax)
+-- - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)
+-- - Precision parameters enable modeling of attention and confidence
+
+GNNModel ::= SEQUENCE {
+    modelName       UTF8String,
+    version         UTF8String,
+    annotation      UTF8String OPTIONAL,
+    variables       SEQUENCE OF Variable OPTIONAL,
+    connections     SEQUENCE OF Connection OPTIONAL,
+    parameters      SEQUENCE OF Parameter OPTIONAL
+}
+
+Variable ::= SEQUENCE {
+    name            UTF8String,
+    varType         UTF8String,
+    dataType        UTF8String,
+    dimensions      SEQUENCE OF INTEGER OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Connection ::= SEQUENCE {
+    sourceVariables SEQUENCE OF UTF8String,
+    targetVariables SEQUENCE OF UTF8String,
+    connectionType  UTF8String,
+    weight          REAL OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+Parameter ::= SEQUENCE {
+    name            UTF8String,
+    value           UTF8String,
+    typeHint        UTF8String OPTIONAL,
+    description     UTF8String OPTIONAL
+}
+
+-- Example Values
+exampleModel GNNModel ::= {
+    modelName "Precision-Weighted Active Inference Agent",
+    version "1.0",
+    annotation "An Active Inference agent with explicit precision parameters: - ω (omega): sensory precision weighting likelihood confidence - γ (gamma): policy precision controlling action randomness - β (beta): inverse temperature for policy selection (softmax) - 3 hidden states, 3 observations, 3 actions (same topology as base POMDP) - Precision parameters enable modeling of attention and confidence",
+    variables {
+        {
+            name "A",
+            varType "likelihood_matrix",
+            dataType "float"
+            dimensions { 3, 3 }
+        },
+        {
+            name "B",
+            varType "transition_matrix",
+            dataType "float"
+            dimensions { 3, 3, 3 }
+        },
+        {
+            name "C",
+            varType "preference_vector",
+            dataType "float"
+            dimensions { 3 }
+        }
+    }
+}
+
+END -- Precision-WeightedActiveInferenceAgent-Schema
+
+
+-- MODEL_DATA: {"model_name":"Precision-Weighted Active Inference Agent","version":"1.0","annotation":"An Active Inference agent with explicit precision parameters:\n- \u03c9 (omega): sensory precision weighting likelihood confidence\n- \u03b3 (gamma): policy precision controlling action randomness\n- \u03b2 (beta): inverse temperature for policy selection (softmax)\n- 3 hidden states, 3 observations, 3 actions (same topology as base POMDP)\n- Precision parameters enable modeling of attention and confidence","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[3,3],"description":"Likelihood matrix (modulated by \u03c9)"},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[3,3,3],"description":"Transition matrix"},{"name":"C","var_type":"preference_vector","data_type":"float","dimensions":[3],"description":"Log-preferences over observations"},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[3],"description":"Prior over hidden states"},{"name":"E","var_type":"policy","data_type":"float","dimensions":[3],"description":"Habit (prior over actions)"},{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[3,1],"description":"Hidden state distribution"},{"name":"s_prime","var_type":"hidden_state","data_type":"float","dimensions":[3,1],"description":"Next hidden state"},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[3,1],"description":"Current observation"},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1],"description":"Variational Free Energy"},{"name":"\u03c9","var_type":"hidden_state","data_type":"float","dimensions":[1],"description":"Sensory precision (modulates A matrix confidence)"},{"name":"\u03b3","var_type":"hidden_state","data_type":"float","dimensions":[1],"description":"Policy precision (temperature for action selection)"},{"name":"\u03b2","var_type":"hidden_state","data_type":"float","dimensions":[1],"description":"Inverse temperature (\u03b2 = 1/\u03b3, controls randomness)"},{"name":"\u03c0","var_type":"policy","data_type":"float","dimensions":[3],"description":"Policy distribution"},{"name":"u","var_type":"action","data_type":"integer","dimensions":[1],"description":"Selected action"},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1],"description":"Expected Free Energy"}],"connections":[{"source_variables":["D"],"target_variables":["s"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["A"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["A"],"target_variables":["o"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["\u03c9"],"target_variables":["A"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["s_prime"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["C"],"target_variables":["G"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["G"],"target_variables":["\u03c0"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["\u03b3"],"target_variables":["\u03c0"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["\u03b2"],"target_variables":["\u03c0"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["E"],"target_variables":["\u03c0"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["\u03c0"],"target_variables":["u"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["B"],"target_variables":["u"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["u"],"target_variables":["s_prime"],"connection_type":"directed","weight":null,"description":null},{"source_variables":["s"],"target_variables":["F"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["o"],"target_variables":["F"],"connection_type":"undirected","weight":null,"description":null},{"source_variables":["\u03c9"],"target_variables":["F"],"connection_type":"undirected","weight":null,"description":null}],"parameters":[{"name":"A","value":[[0.9,0.05,0.05],[0.05,0.9,0.05],[0.05,0.05,0.9]],"type_hint":null,"description":null},{"name":"B","value":[[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]],[[0.0,1.0,0.0],[1.0,0.0,0.0],[0.0,0.0,1.0]],[[0.0,0.0,1.0],[0.0,1.0,0.0],[1.0,0.0,0.0]]],"type_hint":null,"description":null},{"name":"C","value":[[0.1,0.1,1.0]],"type_hint":null,"description":null},{"name":"D","value":[[0.333,0.333,0.333]],"type_hint":null,"description":null},{"name":"E","value":[[0.333,0.333,0.333]],"type_hint":null,"description":null},{"name":"\u03c9","value":[[4.0]],"type_hint":null,"description":null},{"name":"\u03b3","value":[[2.0]],"type_hint":null,"description":null},{"name":"\u03b2","value":[[0.5]],"type_hint":null,"description":null}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"Unbounded","step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"LikelihoodMatrix","description":null},{"variable_name":"B","ontology_term":"TransitionMatrix","description":null},{"variable_name":"C","ontology_term":"LogPreferenceVector","description":null},{"variable_name":"D","ontology_term":"PriorOverHiddenStates","description":null},{"variable_name":"E","ontology_term":"Habit","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"s_prime","ontology_term":"NextHiddenState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"\u03c0","ontology_term":"PolicyVector","description":null},{"variable_name":"u","ontology_term":"Action","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"\u03c9","ontology_term":"SensoryPrecision","description":null},{"variable_name":"\u03b3","ontology_term":"PolicyPrecision","description":null},{"variable_name":"\u03b2","ontology_term":"InverseTemperature","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]}

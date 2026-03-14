@@ -16,11 +16,9 @@ import shutil
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from visualization import (
-    process_visualization_main,
-    generate_combined_analysis,
-    generate_network_visualizations
-)
+from visualization import process_visualization_main
+from visualization.combined_analysis import generate_combined_analysis
+from visualization.network_visualizations import generate_network_visualizations
 
 
 class TestMatplotlibBackendConfiguration:

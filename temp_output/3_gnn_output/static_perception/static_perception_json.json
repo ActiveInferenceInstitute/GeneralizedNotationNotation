@@ -1,0 +1,147 @@
+{
+  "annotation": "The simplest Active Inference model demonstrating pure perception:\n\n- 2 hidden states mapped to 2 observations via a recognition matrix A\n- Prior D encodes initial beliefs over hidden states\n- No temporal dynamics — single-shot inference\n- Demonstrates the core observation model: P(o|s) = A\n- Suitable as a minimal baseline and for testing perception-only inference",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-03-13T18:17:22.445274",
+  "equations": [],
+  "extensions": {
+    "footer": "Static Perception Model v1 - GNN Representation.\nSimplest possible Active Inference model.\nNo temporal dynamics, no action — perception only.",
+    "gnn_section": "ActiveInferencePerception",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Static Perception Model",
+  "modified_at": "2026-03-13T18:17:22.445275",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "RecognitionMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": null,
+      "ontology_term": "Prior",
+      "variable_name": "D"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.1
+        ],
+        [
+          0.2,
+          0.8
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D",
+      "type_hint": null,
+      "value": [
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": null,
+    "step_size": null,
+    "time_type": "Static"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Recognition/likelihood matrix: P(observation | hidden state)",
+      "dimensions": [
+        2,
+        2
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "Prior belief over hidden states",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "Hidden state (posterior belief)",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Observation (one-hot encoded)",
+      "dimensions": [
+        2,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    }
+  ],
+  "version": "1.0"
+}

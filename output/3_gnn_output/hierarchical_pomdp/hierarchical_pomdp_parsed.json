@@ -7,7 +7,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "5cff9fe0-c351-4dea-97f5-388ff1c30f29",
+      "id": "4229e8c3-2477-418e-abc8-32b39aa5bec3",
       "name": "A1",
       "var_type": "action",
       "dimensions": [
@@ -22,7 +22,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "05975df3-ec65-4941-b086-a9af9e32130f",
+      "id": "1d50f2ee-4904-4496-8615-696a4f3cb19a",
       "name": "B1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -38,7 +38,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "831d09de-f072-45ec-85e3-2550d64501da",
+      "id": "92e38bfc-9147-48ef-a4ca-44baf2a76f87",
       "name": "C1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -52,7 +52,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "5a12cb86-72c3-4ba5-9b01-6a688ec237f8",
+      "id": "c833a4bc-e14a-4b57-91e4-a2518231bfaf",
       "name": "D1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -66,7 +66,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "27ea9716-16b6-4ed1-893b-76dfe84a7447",
+      "id": "57d71429-a9a9-4731-84df-f403c067339c",
       "name": "s1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -81,7 +81,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "03991da0-1b3d-4dba-baef-91ed267cb3f3",
+      "id": "66bc44a1-976c-46df-8485-a14d798d6159",
       "name": "s1_prime",
       "var_type": "hidden_state",
       "dimensions": [
@@ -96,7 +96,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "41540c7b-46cf-4a6c-8749-019a12a77194",
+      "id": "f14cb589-3188-47ba-8e72-48545ecdd3b7",
       "name": "o1",
       "var_type": "observation",
       "dimensions": [
@@ -111,7 +111,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "90caf2b5-f0fd-4a61-954b-0ee434caf8cf",
+      "id": "3f58cca5-ccf1-4d6c-904b-2478a27686c7",
       "name": "\u03c01",
       "var_type": "hidden_state",
       "dimensions": [
@@ -125,7 +125,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "3833270a-d538-4b30-83e9-bd031d34bf7b",
+      "id": "7a7c588a-4b74-4cbc-9ae1-ec3fa523f3a3",
       "name": "u1",
       "var_type": "action",
       "dimensions": [
@@ -139,7 +139,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "4be3fc62-03f3-4acb-a315-017010b66191",
+      "id": "e6f9bfc8-7008-4679-a831-6363a86548e4",
       "name": "G1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -153,7 +153,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "2f35e5c4-6cb9-4ddc-a29f-ca42f4f416e3",
+      "id": "55763d3e-1302-4f39-aea8-9fc0ad8363bd",
       "name": "A2",
       "var_type": "action",
       "dimensions": [
@@ -168,7 +168,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "69373ea9-419b-41c9-8a14-25e8f6f050c7",
+      "id": "c857ca41-b3cf-403d-b373-63b4a0a26e0f",
       "name": "B2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -184,7 +184,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "7066da8e-accc-4d0c-8b7d-d8081c70f638",
+      "id": "09f99a91-fc47-473b-87db-a7b984255271",
       "name": "C2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -198,7 +198,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "8984d19e-3de7-46e5-a4ee-00e200a8df26",
+      "id": "b5990e95-0a1d-4eae-9c25-d158715a69f4",
       "name": "D2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -212,7 +212,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "689ed930-2482-4d2b-b5e8-f11f5bdfa3a2",
+      "id": "e19d6b8a-c659-45f1-a229-ffdf680e2404",
       "name": "s2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -227,7 +227,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "a565bc6d-95d0-430d-9816-ee2fc8177e25",
+      "id": "8aabb356-beb1-4a23-8333-d777bbf5493d",
       "name": "o2",
       "var_type": "observation",
       "dimensions": [
@@ -242,7 +242,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "addb7ef0-1536-4bbf-92e3-2f4dd0e99ead",
+      "id": "74b6e5d4-92ca-4a5a-9ac4-e4edbe28a4b9",
       "name": "G2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -256,7 +256,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "ae790d00-6b9f-43c4-8458-4680b1f6295c",
+      "id": "03ab8d4d-b22a-48c2-9574-d8dfcbbf166d",
       "name": "t1",
       "var_type": "hidden_state",
       "dimensions": [
@@ -270,7 +270,7 @@
       "node_type": "Variable",
       "source_location": null,
       "metadata": {},
-      "id": "19091b01-5a23-4eb9-aabc-6f8ceec8c667",
+      "id": "6e5862c5-5203-49b3-8017-1b27dd70d294",
       "name": "t2",
       "var_type": "hidden_state",
       "dimensions": [
@@ -286,7 +286,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "47e86c76-bc18-45f1-9101-1734ed5a0f15",
+      "id": "162fb68d-7286-448f-925b-4f73fdc77d22",
       "source_variables": [
         "D1"
       ],
@@ -301,7 +301,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "d0382338-957f-4866-8013-d9aaabd8f18a",
+      "id": "41ae95f9-0a6d-457c-bce7-a9dd76786dcd",
       "source_variables": [
         "s1"
       ],
@@ -316,7 +316,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "13a61b30-24d3-45b8-b946-21f87d1df5c9",
+      "id": "01c68d8c-66b4-45cf-8d30-9120dd41c979",
       "source_variables": [
         "s1"
       ],
@@ -331,7 +331,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "9fb8014a-5706-40e9-af6c-d887140c830b",
+      "id": "77d8265d-60f6-4cfb-88bc-0aedeb026731",
       "source_variables": [
         "A1"
       ],
@@ -346,7 +346,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "2fe03f30-da4a-4ada-b8b1-ab5e860b0b2e",
+      "id": "7d0d4131-7d3f-467b-ae40-912e711ed8a1",
       "source_variables": [
         "C1"
       ],
@@ -361,7 +361,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "a089ba2f-529c-4482-8461-d3acefdb7f7c",
+      "id": "283c7726-b14a-422e-b732-101e956bed3c",
       "source_variables": [
         "G1"
       ],
@@ -376,7 +376,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "34889ae5-d8eb-4fbb-bda8-8c34e529baa4",
+      "id": "e03436d4-721b-46ad-b83b-a2c53df2f0e1",
       "source_variables": [
         "\u03c01"
       ],
@@ -391,7 +391,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "677b845d-ab91-4d24-91a4-404a3a3edf5e",
+      "id": "89cb006d-a1ff-46db-ac84-00475eb976dd",
       "source_variables": [
         "B1"
       ],
@@ -406,7 +406,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "c4f41b07-610c-4e21-af3e-d9fa11bc4599",
+      "id": "5161c87c-9bca-41f3-a7d8-80bb5d9a7536",
       "source_variables": [
         "u1"
       ],
@@ -421,7 +421,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "2651f430-5016-43ba-98f7-1d1e933971ff",
+      "id": "6b968e0c-d83c-4f8c-986d-d9a4014fd05b",
       "source_variables": [
         "s1"
       ],
@@ -436,7 +436,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "58a15f1d-4751-4df5-b8d2-dfa05857b517",
+      "id": "599b31d4-eb31-4f27-9c79-543927110c97",
       "source_variables": [
         "D2"
       ],
@@ -451,7 +451,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "9339494b-995f-4dc6-a4bd-d904838ccbe7",
+      "id": "f1e135eb-2ae2-4bd2-8af1-964c8f7db2de",
       "source_variables": [
         "s2"
       ],
@@ -466,7 +466,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "606bdd68-1009-4187-b1b2-620b6fa3354c",
+      "id": "afbc6c3f-23d8-42ca-b56c-d2698cbe2901",
       "source_variables": [
         "A2"
       ],
@@ -481,7 +481,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "741dfcd5-b8ca-4110-8f1a-e46b1975ce14",
+      "id": "5520475a-1930-46da-9b8c-27a2811c9cca",
       "source_variables": [
         "s2"
       ],
@@ -496,7 +496,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "ee51bda4-0f60-4b78-b4f4-9892d884b78a",
+      "id": "897dd3e0-f32c-41f4-a7af-a0bdab9215db",
       "source_variables": [
         "C2"
       ],
@@ -511,7 +511,7 @@
       "node_type": "Connection",
       "source_location": null,
       "metadata": {},
-      "id": "cdbd75ff-b85a-4551-a26c-bd2a5bdd403f",
+      "id": "368c0d7d-342d-446c-bfdf-94487d02d341",
       "source_variables": [
         "G2"
       ],
@@ -528,7 +528,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "c321083b-fc0d-4048-a927-e5274b3b549f",
+      "id": "0757995f-051d-43d2-a473-3afa3d48ee1f",
       "name": "A1",
       "value": [
         [
@@ -563,7 +563,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "536ba54f-c1f3-4117-82ac-ec1fc6156277",
+      "id": "5fd66020-6e96-4c2d-842a-326ba2a193cd",
       "name": "B1",
       "value": [
         [
@@ -652,7 +652,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "29c6ef33-a9ca-4d8f-904d-0fa204f43a78",
+      "id": "b95fdbda-9075-4663-9c5d-ca9da17ff1f5",
       "name": "C1",
       "value": [
         [
@@ -669,7 +669,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "aa926406-1a05-49fe-8b30-cda9c2c724bf",
+      "id": "7350a213-0091-498f-abe7-56bcb48306d8",
       "name": "D1",
       "value": [
         [
@@ -686,7 +686,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "053f4129-521d-4269-8a14-fa05b715ab72",
+      "id": "f08c73a2-0c51-4b70-8951-6a6b5201029e",
       "name": "A2",
       "value": [
         [
@@ -721,7 +721,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "2a43b34f-9e7f-4159-8269-6b8bc7cba400",
+      "id": "b240eb56-7ffc-4bb3-9ab4-e5daaebe76ac",
       "name": "B2",
       "value": [
         [
@@ -742,7 +742,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "81d3f6fc-8e95-4da5-9237-abbb1797ec63",
+      "id": "5ef8f73a-7466-480e-9c84-d8f70bb0543b",
       "name": "C2",
       "value": [
         [
@@ -757,7 +757,7 @@
       "node_type": "Parameter",
       "source_location": null,
       "metadata": {},
-      "id": "18828827-cb73-4709-b8f2-e2f571a7f967",
+      "id": "2c4844bd-e44b-4a82-8d38-24504c9e6e9d",
       "name": "D2",
       "value": [
         [
@@ -774,7 +774,7 @@
     "node_type": "TimeSpecification",
     "source_location": null,
     "metadata": {},
-    "id": "a35c95a2-baca-4e0a-a660-8f45eed2c22c",
+    "id": "6b6d3cf7-0d73-445f-931d-41f9eea0e387",
     "time_type": "Dynamic",
     "discretization": null,
     "horizon": "Unbounded",
@@ -785,7 +785,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "af326783-6024-4fa8-80b5-97673a3b9ad2",
+      "id": "20317ba2-7659-449f-85f2-632afb576223",
       "variable_name": "A1",
       "ontology_term": "LikelihoodMatrix",
       "description": null
@@ -794,7 +794,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "2f8d75a1-cd26-4c83-8a8c-ee6ba94d9c02",
+      "id": "fd8aee53-39f8-479e-acf1-931a1727122e",
       "variable_name": "B1",
       "ontology_term": "TransitionMatrix",
       "description": null
@@ -803,7 +803,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "f6c267cc-9601-437d-8c20-e8925784c9aa",
+      "id": "ecaac1b4-7342-4d93-8677-04d308ceecd1",
       "variable_name": "C1",
       "ontology_term": "LogPreferenceVector",
       "description": null
@@ -812,7 +812,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "f038646c-b28f-4265-add1-616d4ab8fec3",
+      "id": "3f8cc36f-d906-466b-a522-56cd7fff47cd",
       "variable_name": "D1",
       "ontology_term": "PriorOverHiddenStates",
       "description": null
@@ -821,7 +821,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "861ab047-7d33-4e89-90d6-59af74e7c9ef",
+      "id": "c0c1668c-2c6f-46d4-b546-4487e82bb4a5",
       "variable_name": "s1",
       "ontology_term": "HiddenState",
       "description": null
@@ -830,7 +830,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "8f2f712d-2041-4acb-a851-a26893e79517",
+      "id": "3c53f452-af5c-42a9-8f29-0cf9048df556",
       "variable_name": "o1",
       "ontology_term": "Observation",
       "description": null
@@ -839,7 +839,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "925be3b0-a70e-4c62-920a-53db298aa1e7",
+      "id": "13d530d6-7e55-41cd-881b-85b67c09d23e",
       "variable_name": "\u03c01",
       "ontology_term": "PolicyVector",
       "description": null
@@ -848,7 +848,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "6013dad1-cf0e-43e6-ad27-f1beb1e83336",
+      "id": "7d6fa665-b34f-4934-82bf-d2cbe841d620",
       "variable_name": "u1",
       "ontology_term": "Action",
       "description": null
@@ -857,7 +857,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "cb2e668c-6fab-462b-bc58-2fe21175a40f",
+      "id": "92238fc5-923c-4af7-b23f-ae97dc1c3fbc",
       "variable_name": "G1",
       "ontology_term": "ExpectedFreeEnergy",
       "description": null
@@ -866,7 +866,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "1138fcbe-936b-4762-9e5a-5add4d4ff21c",
+      "id": "5ebbe10e-6ccf-4a4f-9040-02bf1f6a2493",
       "variable_name": "A2",
       "ontology_term": "HigherLevelLikelihoodMatrix",
       "description": null
@@ -875,7 +875,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "5a2c369a-d7d9-4dea-86d2-0293af08a3c4",
+      "id": "df276dd2-5202-44ae-a2a4-ef26fd07652c",
       "variable_name": "B2",
       "ontology_term": "ContextTransitionMatrix",
       "description": null
@@ -884,7 +884,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "76d4654a-a6a2-43ed-98db-49d95e850e92",
+      "id": "8186f618-fa6c-473c-8562-f96ebdadafba",
       "variable_name": "s2",
       "ontology_term": "ContextualHiddenState",
       "description": null
@@ -893,7 +893,7 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "dad502af-c3cb-4aa6-81d9-054b73ae62f8",
+      "id": "becaebbb-dfba-4a81-b6f3-032c1f5ab73d",
       "variable_name": "o2",
       "ontology_term": "HigherLevelObservation",
       "description": null
@@ -902,15 +902,15 @@
       "node_type": "OntologyMapping",
       "source_location": null,
       "metadata": {},
-      "id": "72d36ea0-b682-44de-801c-44f503f30d1f",
+      "id": "1103ad90-142d-445d-80b9-47791c90014b",
       "variable_name": "G2",
       "ontology_term": "HigherLevelExpectedFreeEnergy",
       "description": null
     }
   ],
   "source_format": null,
-  "created_at": "2026-03-13T14:15:03.082927",
-  "modified_at": "2026-03-13T14:15:03.082928",
+  "created_at": "2026-03-13T18:17:53.366445",
+  "modified_at": "2026-03-13T18:17:53.366446",
   "checksum": null,
   "extensions": {
     "gnn_section": "ActInfPOMDP_Hierarchical",

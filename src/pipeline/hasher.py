@@ -12,7 +12,7 @@ import hashlib
 import json
 import logging
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple, Union
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,8 @@ def compute_run_hash(
     target_dir: Path,
     config: Optional[Dict[str, Any]] = None,
     hash_length: int = 12,
-) -> str:
+    return_file_hashes: bool = False
+) -> Union[str, Tuple[str, Dict[str, str]]]:
     """
     Compute a content-addressable hash for a pipeline run.
 
@@ -33,15 +34,17 @@ def compute_run_hash(
         target_dir: Directory containing input GNN files.
         config: Optional pipeline configuration dict.
         hash_length: Length of the hex prefix to return.
+        return_file_hashes: Whether to return the file hashes alongside the run hash.
 
     Returns:
-        Hex hash string (default 12 chars).
+        Hex hash string (default 12 chars), or (hash, file_hashes_dict) if requested.
     """
     hasher = hashlib.sha256()
 
     # Hash all input files (sorted for determinism)
     target_dir = Path(target_dir)
-    file_hashes = []
+    file_hashes_list = []
+    file_hashes_dict = {}
     if target_dir.exists():
         md_files = list(target_dir.rglob("*.md"))
         gnn_files = list(target_dir.rglob("*.gnn"))
@@ -49,11 +52,14 @@ def compute_run_hash(
             try:
                 content = f.read_bytes()
                 fh = hashlib.sha256(content).hexdigest()
-                file_hashes.append(f"{f.name}:{fh}")
+                file_hashes_list.append(f"{f.name}:{fh}")
+                # Store relative path for better identification
+                rel_path = str(f.relative_to(target_dir)) if target_dir in f.parents else f.name
+                file_hashes_dict[rel_path] = fh
             except OSError:
                 pass
 
-    for fh in file_hashes:
+    for fh in file_hashes_list:
         hasher.update(fh.encode())
 
     # Hash config
@@ -62,7 +68,10 @@ def compute_run_hash(
         hasher.update(config_str.encode())
 
     run_hash = hasher.hexdigest()[:hash_length]
-    logger.debug(f"Run hash: {run_hash} ({len(file_hashes)} input files)")
+    logger.debug(f"Run hash: {run_hash} ({len(file_hashes_list)} input files)")
+    
+    if return_file_hashes:
+        return run_hash, file_hashes_dict
     return run_hash
 
 
@@ -71,6 +80,7 @@ def index_run(
     summary_path: Path,
     history_dir: Optional[Path] = None,
     config: Optional[Dict[str, Any]] = None,
+    file_hashes: Optional[Dict[str, str]] = None,
 ) -> Path:
     """
     Store run metadata in .history/index.json.
@@ -80,6 +90,7 @@ def index_run(
         summary_path: Path to pipeline_execution_summary.json.
         history_dir: Archive dir. Defaults to summary_path.parent / ".history".
         config: Optional config dict for re-running.
+        file_hashes: Optional dict of file hashes.
 
     Returns:
         Path to index.json.
@@ -98,10 +109,14 @@ def index_run(
             pass
 
     # Add/update entry
-    index[run_hash] = {
+    entry = {
         "summary_path": str(summary_path),
         "config": config or {},
     }
+    if file_hashes:
+        entry["file_hashes"] = file_hashes
+        
+    index[run_hash] = entry
 
     with open(index_path, "w") as f:
         json.dump(index, f, indent=2)

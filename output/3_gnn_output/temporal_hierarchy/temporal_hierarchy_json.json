@@ -289,7 +289,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-13T14:15:03.066303",
+  "created_at": "2026-03-13T18:17:53.351688",
   "equations": [],
   "extensions": {
     "footer": "Three-Level Temporal Hierarchy Agent v1 - GNN Representation.\nFast (100ms sensorimotor), Medium (1s tactical), Slow (10s strategic).\nTop-down: strategy → tactics → sensorimotor preferences.\nBottom-up: sensory evidence → tactical summaries → strategic outcomes.",
@@ -297,7 +297,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Three-Level Temporal Hierarchy Agent",
-  "modified_at": "2026-03-13T14:15:03.066304",
+  "modified_at": "2026-03-13T18:17:53.351689",
   "ontology_mappings": [
     {
       "description": null,

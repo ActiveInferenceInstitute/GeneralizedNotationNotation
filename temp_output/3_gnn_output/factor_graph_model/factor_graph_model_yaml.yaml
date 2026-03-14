@@ -1,0 +1,504 @@
+annotation: 'A factor graph decomposition of an Active Inference generative model
+  with:
+
+  - Two independent observation modalities (visual and proprioceptive)
+
+  - Two independent hidden state factors (position and velocity)
+
+  - Factored joint distribution: P(o,s) = P(o_vis|s_pos) * P(o_prop|s_vel) * P(s_pos|s_vel)
+  * P(s_vel)
+
+  - Variable nodes: observation and state variables
+
+  - Factor nodes: likelihood and transition factors
+
+  - Enables modality-specific processing and efficient belief propagation'
+connections:
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A_prop
+  target_variables:
+  - o_prop
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - A_vis
+  target_variables:
+  - o_vis
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B_pos
+  target_variables:
+  - s_pos
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B_pos
+  target_variables:
+  - u
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - B_vel
+  target_variables:
+  - s_vel
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C_prop
+  target_variables:
+  - G
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - C_vis
+  target_variables:
+  - G
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D_pos
+  target_variables:
+  - s_pos
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - D_vel
+  target_variables:
+  - s_vel
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - G
+  target_variables:
+  - π
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - m_pos_to_vis
+  target_variables:
+  - A_vis
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - m_prop_to_vel
+  target_variables:
+  - s_vel
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - m_vel_to_prop
+  target_variables:
+  - A_prop
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - m_vis_to_pos
+  target_variables:
+  - s_pos
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - o_prop
+  target_variables:
+  - F
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - o_prop
+  target_variables:
+  - m_prop_to_vel
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - o_vis
+  target_variables:
+  - F
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - o_vis
+  target_variables:
+  - m_vis_to_pos
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_pos
+  target_variables:
+  - A_vis
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_pos
+  target_variables:
+  - B_pos
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_pos
+  target_variables:
+  - F
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_pos
+  target_variables:
+  - m_pos_to_vis
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_vel
+  target_variables:
+  - A_prop
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_vel
+  target_variables:
+  - B_vel
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_vel
+  target_variables:
+  - F
+  weight: null
+- connection_type: undirected
+  description: null
+  source_variables:
+  - s_vel
+  target_variables:
+  - m_vel_to_prop
+  weight: null
+- connection_type: directed
+  description: null
+  source_variables:
+  - π
+  target_variables:
+  - u
+  weight: null
+created_at: '2026-03-13T18:17:23.213966'
+equations: []
+model_name: Factor Graph Active Inference Model
+modified_at: '2026-03-13T18:17:23.213966'
+ontology_mappings:
+- description: null
+  ontology_term: ProprioceptiveLikelihoodMatrix
+  variable_name: A_prop
+- description: null
+  ontology_term: VisualLikelihoodMatrix
+  variable_name: A_vis
+- description: null
+  ontology_term: PositionTransitionMatrix
+  variable_name: B_pos
+- description: null
+  ontology_term: VelocityTransitionMatrix
+  variable_name: B_vel
+- description: null
+  ontology_term: ProprioceptivePreferenceVector
+  variable_name: C_prop
+- description: null
+  ontology_term: VisualPreferenceVector
+  variable_name: C_vis
+- description: null
+  ontology_term: PositionPrior
+  variable_name: D_pos
+- description: null
+  ontology_term: VelocityPrior
+  variable_name: D_vel
+- description: null
+  ontology_term: VariationalFreeEnergy
+  variable_name: F
+- description: null
+  ontology_term: ExpectedFreeEnergy
+  variable_name: G
+- description: null
+  ontology_term: ProprioceptiveObservation
+  variable_name: o_prop
+- description: null
+  ontology_term: VisualObservation
+  variable_name: o_vis
+- description: null
+  ontology_term: PositionHiddenState
+  variable_name: s_pos
+- description: null
+  ontology_term: VelocityHiddenState
+  variable_name: s_vel
+- description: null
+  ontology_term: Time
+  variable_name: t
+- description: null
+  ontology_term: Action
+  variable_name: u
+- description: null
+  ontology_term: PolicyVector
+  variable_name: π
+parameters:
+- description: null
+  name: A_prop
+  type_hint: null
+  value:
+  - - 0.9
+    - 0.1
+  - - 0.1
+    - 0.9
+  - - 0.5
+    - 0.5
+  - - 0.5
+    - 0.5
+- description: null
+  name: A_vis
+  type_hint: null
+  value:
+  - - 0.8
+    - 0.1
+    - 0.1
+  - - 0.1
+    - 0.8
+    - 0.1
+  - - 0.1
+    - 0.1
+    - 0.8
+  - - 0.05
+    - 0.45
+    - 0.5
+  - - 0.45
+    - 0.05
+    - 0.5
+  - - 0.5
+    - 0.5
+    - 0.0
+- description: null
+  name: B_pos
+  type_hint: null
+  value:
+  - - - 0.9
+      - 0.1
+      - 0.0
+    - - 0.0
+      - 0.9
+      - 0.1
+    - - 0.1
+      - 0.0
+      - 0.9
+  - - - 0.5
+      - 0.5
+      - 0.0
+    - - 0.0
+      - 0.5
+      - 0.5
+    - - 0.5
+      - 0.0
+      - 0.5
+- description: null
+  name: B_vel
+  type_hint: null
+  value:
+  - - - 0.8
+      - 0.2
+    - - 0.2
+      - 0.8
+- description: null
+  name: C_prop
+  type_hint: null
+  value:
+  - - 1.0
+    - -1.0
+    - 0.0
+    - 0.0
+- description: null
+  name: C_vis
+  type_hint: null
+  value:
+  - - 2.0
+    - -0.5
+    - -0.5
+    - -0.5
+    - -0.5
+    - -0.5
+- description: null
+  name: D_pos
+  type_hint: null
+  value:
+  - - 0.333
+    - 0.333
+    - 0.333
+- description: null
+  name: D_vel
+  type_hint: null
+  value:
+  - - 0.5
+    - 0.5
+time_specification:
+  discretization: null
+  horizon: Unbounded
+  step_size: null
+  time_type: Dynamic
+variables:
+- data_type: float
+  description: 'Proprioceptive likelihood: P(o_prop | s_vel)'
+  dimensions:
+  - 4
+  - 2
+  name: A_prop
+  type: action
+- data_type: float
+  description: 'Visual likelihood factor: P(o_vis | s_pos)'
+  dimensions:
+  - 6
+  - 3
+  name: A_vis
+  type: action
+- data_type: float
+  description: Position transition factor
+  dimensions:
+  - 3
+  - 3
+  - 2
+  name: B_pos
+  type: hidden_state
+- data_type: float
+  description: Velocity transition (action-independent)
+  dimensions:
+  - 2
+  - 2
+  - 1
+  name: B_vel
+  type: hidden_state
+- data_type: float
+  description: Proprioceptive preferences (comfort)
+  dimensions:
+  - 4
+  name: C_prop
+  type: hidden_state
+- data_type: float
+  description: Visual preferences (goal location)
+  dimensions:
+  - 6
+  name: C_vis
+  type: hidden_state
+- data_type: float
+  description: Prior over position
+  dimensions:
+  - 3
+  name: D_pos
+  type: hidden_state
+- data_type: float
+  description: Prior over velocity
+  dimensions:
+  - 2
+  name: D_vel
+  type: hidden_state
+- data_type: float
+  description: Total Variational Free Energy (sum of factors)
+  dimensions:
+  - 1
+  name: F
+  type: hidden_state
+- data_type: float
+  description: Expected Free Energy
+  dimensions:
+  - 1
+  name: G
+  type: policy
+- data_type: float
+  description: 'Message: position→visual factor'
+  dimensions:
+  - 3
+  - 1
+  name: m_pos_to_vis
+  type: hidden_state
+- data_type: float
+  description: 'Message: proprioceptive factor→velocity'
+  dimensions:
+  - 2
+  - 1
+  name: m_prop_to_vel
+  type: hidden_state
+- data_type: float
+  description: 'Message: velocity→proprioceptive factor'
+  dimensions:
+  - 2
+  - 1
+  name: m_vel_to_prop
+  type: hidden_state
+- data_type: float
+  description: 'Message: visual factor→position'
+  dimensions:
+  - 3
+  - 1
+  name: m_vis_to_pos
+  type: hidden_state
+- data_type: float
+  description: Proprioceptive observations (4D)
+  dimensions:
+  - 4
+  - 1
+  name: o_prop
+  type: observation
+- data_type: integer
+  description: Visual observations (6 possible)
+  dimensions:
+  - 6
+  - 1
+  name: o_vis
+  type: observation
+- data_type: float
+  description: Position state (3 discrete locations)
+  dimensions:
+  - 3
+  - 1
+  name: s_pos
+  type: hidden_state
+- data_type: float
+  description: 'Velocity state (2 levels: slow/fast)'
+  dimensions:
+  - 2
+  - 1
+  name: s_vel
+  type: hidden_state
+- data_type: integer
+  description: null
+  dimensions:
+  - 1
+  name: t
+  type: hidden_state
+- data_type: integer
+  description: Selected action
+  dimensions:
+  - 1
+  name: u
+  type: action
+- data_type: float
+  description: 'Policy (2 actions: move/stay)'
+  dimensions:
+  - 2
+  name: π
+  type: policy
+version: '1.0'

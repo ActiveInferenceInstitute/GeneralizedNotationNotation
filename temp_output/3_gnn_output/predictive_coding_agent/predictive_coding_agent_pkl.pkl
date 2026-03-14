@@ -1,0 +1,336 @@
+///
+/// GNN Model: Predictive Coding Active Inference Agent
+/// Annotation: A continuous-state Active Inference agent implementing predictive coding:
+
+- Two-level predictive hierarchy: sensory predictions and dynamics predictions
+- Prediction errors drive belief updating via gradient descent on free energy
+- Precision-weighted prediction errors enable attentional modulation
+- Sensory level: predicts observations from hidden causes
+- Dynamics level: predicts state evolution from generative dynamics
+- Action minimizes expected free energy by changing sensory input
+- Uses generalized coordinates of motion (position, velocity, acceleration)
+- Demonstrates the core predictive processing framework underlying Active Inference
+/// Generated: 2026-03-13T18:17:23.583516
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Predictive Coding Active Inference Agent"
+  annotation: String = "A continuous-state Active Inference agent implementing predictive coding:
+
+- Two-level predictive hierarchy: sensory predictions and dynamics predictions
+- Prediction errors drive belief updating via gradient descent on free energy
+- Precision-weighted prediction errors enable attentional modulation
+- Sensory level: predicts observations from hidden causes
+- Dynamics level: predicts state evolution from generative dynamics
+- Action minimizes expected free energy by changing sensory input
+- Uses generalized coordinates of motion (position, velocity, acceleration)
+- Demonstrates the core predictive processing framework underlying Active Inference"
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["F"] = new Variable {
+      name = "F"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["F_d"] = new Variable {
+      name = "F_d"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["F_s"] = new Variable {
+      name = "F_s"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["Pi_d"] = new Variable {
+      name = "Pi_d"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(3, 3)
+    }}
+    ["Pi_s"] = new Variable {
+      name = "Pi_s"
+      varType = "policy"
+      dataType = "float"
+      dimensions = List(4, 4)
+    }}
+    ["Sigma"] = new Variable {
+      name = "Sigma"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 3)
+    }}
+    ["e_d"] = new Variable {
+      name = "e_d"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["e_s"] = new Variable {
+      name = "e_s"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+    ["f_params"] = new Variable {
+      name = "f_params"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(9)
+    }}
+    ["g_params"] = new Variable {
+      name = "g_params"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(12)
+    }}
+    ["mu"] = new Variable {
+      name = "mu"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["mu_dot"] = new Variable {
+      name = "mu_dot"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["mu_star"] = new Variable {
+      name = "mu_star"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["o"] = new Variable {
+      name = "o"
+      varType = "observation"
+      dataType = "float"
+      dimensions = List(4, 1)
+    }}
+    ["t"] = new Variable {
+      name = "t"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(1)
+    }}
+    ["u"] = new Variable {
+      name = "u"
+      varType = "action"
+      dataType = "float"
+      dimensions = List(2, 1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("mu")
+      targetVariables = List("g_params")
+      connectionType = "undirected"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("g_params")
+      targetVariables = List("o")
+      connectionType = "undirected"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("o")
+      targetVariables = List("e_s")
+      connectionType = "undirected"
+    }}
+    ["connection_3"] = new Connection {
+      sourceVariables = List("mu")
+      targetVariables = List("e_s")
+      connectionType = "undirected"
+    }}
+    ["connection_4"] = new Connection {
+      sourceVariables = List("Pi_s")
+      targetVariables = List("e_s")
+      connectionType = "undirected"
+    }}
+    ["connection_5"] = new Connection {
+      sourceVariables = List("e_s")
+      targetVariables = List("F_s")
+      connectionType = "undirected"
+    }}
+    ["connection_6"] = new Connection {
+      sourceVariables = List("mu")
+      targetVariables = List("f_params")
+      connectionType = "undirected"
+    }}
+    ["connection_7"] = new Connection {
+      sourceVariables = List("f_params")
+      targetVariables = List("mu_dot")
+      connectionType = "undirected"
+    }}
+    ["connection_8"] = new Connection {
+      sourceVariables = List("mu_dot")
+      targetVariables = List("e_d")
+      connectionType = "undirected"
+    }}
+    ["connection_9"] = new Connection {
+      sourceVariables = List("Pi_d")
+      targetVariables = List("e_d")
+      connectionType = "undirected"
+    }}
+    ["connection_10"] = new Connection {
+      sourceVariables = List("e_d")
+      targetVariables = List("F_d")
+      connectionType = "undirected"
+    }}
+    ["connection_11"] = new Connection {
+      sourceVariables = List("F_s")
+      targetVariables = List("F")
+      connectionType = "directed"
+    }}
+    ["connection_12"] = new Connection {
+      sourceVariables = List("F_d")
+      targetVariables = List("F")
+      connectionType = "directed"
+    }}
+    ["connection_13"] = new Connection {
+      sourceVariables = List("F")
+      targetVariables = List("mu")
+      connectionType = "directed"
+    }}
+    ["connection_14"] = new Connection {
+      sourceVariables = List("F")
+      targetVariables = List("u")
+      connectionType = "directed"
+    }}
+    ["connection_15"] = new Connection {
+      sourceVariables = List("mu_star")
+      targetVariables = List("F")
+      connectionType = "undirected"
+    }}
+    ["connection_16"] = new Connection {
+      sourceVariables = List("mu")
+      targetVariables = List("Sigma")
+      connectionType = "undirected"
+    }}
+    ["connection_17"] = new Connection {
+      sourceVariables = List("Sigma")
+      targetVariables = List("Pi_s")
+      connectionType = "undirected"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["Pi_d"] = new Parameter {
+      name = "Pi_d"
+      value = List([4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0])
+      paramType = "constant"
+    }}
+    ["Pi_s"] = new Parameter {
+      name = "Pi_s"
+      value = List([8.0, 0.0, 0.0, 0.0], [0.0, 8.0, 0.0, 0.0], [0.0, 0.0, 8.0, 0.0], [0.0, 0.0, 0.0, 8.0])
+      paramType = "constant"
+    }}
+    ["Sigma"] = new Parameter {
+      name = "Sigma"
+      value = List([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0])
+      paramType = "constant"
+    }}
+    ["mu"] = new Parameter {
+      name = "mu"
+      value = List([0.0], [0.0], [0.0])
+      paramType = "constant"
+    }}
+    ["mu_dot"] = new Parameter {
+      name = "mu_dot"
+      value = List([0.0], [0.0], [0.0])
+      paramType = "constant"
+    }}
+    ["mu_star"] = new Parameter {
+      name = "mu_star"
+      value = List([1.0], [1.0], [0.5])
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Predictive Coding Active Inference Agent","annotation":"A continuous-state Active Inference agent implementing predictive coding:\n\n- Two-level predictive hierarchy: sensory predictions and dynamics predictions\n- Prediction errors drive belief updating via gradient descent on free energy\n- Precision-weighted prediction errors enable attentional modulation\n- Sensory level: predicts observations from hidden causes\n- Dynamics level: predicts state evolution from generative dynamics\n- Action minimizes expected free energy by changing sensory input\n- Uses generalized coordinates of motion (position, velocity, acceleration)\n- Demonstrates the core predictive processing framework underlying Active Inference","variables":[{"name":"mu","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"mu_dot","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"Sigma","var_type":"hidden_state","data_type":"float","dimensions":[3,3]},{"name":"e_s","var_type":"hidden_state","data_type":"float","dimensions":[4,1]},{"name":"e_d","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"g_params","var_type":"hidden_state","data_type":"float","dimensions":[12]},{"name":"f_params","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"Pi_s","var_type":"policy","data_type":"float","dimensions":[4,4]},{"name":"Pi_d","var_type":"policy","data_type":"float","dimensions":[3,3]},{"name":"o","var_type":"observation","data_type":"float","dimensions":[4,1]},{"name":"u","var_type":"action","data_type":"float","dimensions":[2,1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"F_s","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"F_d","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"mu_star","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"t","var_type":"hidden_state","data_type":"float","dimensions":[1]}],"connections":[{"source_variables":["mu"],"target_variables":["g_params"],"connection_type":"undirected"},{"source_variables":["g_params"],"target_variables":["o"],"connection_type":"undirected"},{"source_variables":["o"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["Pi_s"],"target_variables":["e_s"],"connection_type":"undirected"},{"source_variables":["e_s"],"target_variables":["F_s"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["f_params"],"connection_type":"undirected"},{"source_variables":["f_params"],"target_variables":["mu_dot"],"connection_type":"undirected"},{"source_variables":["mu_dot"],"target_variables":["e_d"],"connection_type":"undirected"},{"source_variables":["Pi_d"],"target_variables":["e_d"],"connection_type":"undirected"},{"source_variables":["e_d"],"target_variables":["F_d"],"connection_type":"undirected"},{"source_variables":["F_s"],"target_variables":["F"],"connection_type":"directed"},{"source_variables":["F_d"],"target_variables":["F"],"connection_type":"directed"},{"source_variables":["F"],"target_variables":["mu"],"connection_type":"directed"},{"source_variables":["F"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["mu_star"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["mu"],"target_variables":["Sigma"],"connection_type":"undirected"},{"source_variables":["Sigma"],"target_variables":["Pi_s"],"connection_type":"undirected"}],"parameters":[{"name":"mu","value":[[0.0],[0.0],[0.0]],"param_type":"constant"},{"name":"mu_dot","value":[[0.0],[0.0],[0.0]],"param_type":"constant"},{"name":"Sigma","value":[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"Pi_s","value":[[8.0,0.0,0.0,0.0],[0.0,8.0,0.0,0.0],[0.0,0.0,8.0,0.0],[0.0,0.0,0.0,8.0]],"param_type":"constant"},{"name":"Pi_d","value":[[4.0,0.0,0.0],[0.0,4.0,0.0],[0.0,0.0,4.0]],"param_type":"constant"},{"name":"mu_star","value":[[1.0],[1.0],[0.5]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"5.0","step_size":null},"ontology_mappings":[{"variable_name":"mu","ontology_term":"BeliefMean","description":null},{"variable_name":"mu_dot","ontology_term":"BeliefVelocity","description":null},{"variable_name":"Sigma","ontology_term":"BeliefCovariance","description":null},{"variable_name":"e_s","ontology_term":"SensoryPredictionError","description":null},{"variable_name":"e_d","ontology_term":"DynamicPredictionError","description":null},{"variable_name":"g_params","ontology_term":"SensoryMappingParameters","description":null},{"variable_name":"f_params","ontology_term":"DynamicsParameters","description":null},{"variable_name":"Pi_s","ontology_term":"SensoryPrecision","description":null},{"variable_name":"Pi_d","ontology_term":"DynamicPrecision","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"u","ontology_term":"ContinuousAction","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"F_s","ontology_term":"SensoryFreeEnergy","description":null},{"variable_name":"F_d","ontology_term":"DynamicFreeEnergy","description":null},{"variable_name":"mu_star","ontology_term":"PriorExpectation","description":null},{"variable_name":"t","ontology_term":"ContinuousTime","description":null}]} */
+
+// Variables:
+// Variable: mu (hidden_state)
+// Variable: mu_dot (hidden_state)
+// Variable: Sigma (hidden_state)
+// Variable: e_s (hidden_state)
+// Variable: e_d (hidden_state)
+// Variable: g_params (hidden_state)
+// Variable: f_params (hidden_state)
+// Variable: Pi_s (policy)
+// Variable: Pi_d (policy)
+// Variable: o (observation)
+// Variable: u (action)
+// Variable: F (hidden_state)
+// Variable: F_s (hidden_state)
+// Variable: F_d (hidden_state)
+// Variable: mu_star (hidden_state)
+// Variable: t (hidden_state)
+// Connections:
+// Connection: mu --undirected--> g_params
+// Connection: g_params --undirected--> o
+// Connection: o --undirected--> e_s
+// Connection: mu --undirected--> e_s
+// Connection: Pi_s --undirected--> e_s
+// Connection: e_s --undirected--> F_s
+// Connection: mu --undirected--> f_params
+// Connection: f_params --undirected--> mu_dot
+// Connection: mu_dot --undirected--> e_d
+// Connection: Pi_d --undirected--> e_d
+// Connection: e_d --undirected--> F_d
+// Connection: F_s --directed--> F
+// Connection: F_d --directed--> F
+// Connection: F --directed--> mu
+// Connection: F --directed--> u
+// Connection: mu_star --undirected--> F
+// Connection: mu --undirected--> Sigma
+// Connection: Sigma --undirected--> Pi_s
+// Parameters:
+// Parameter: mu = [[0.0], [0.0], [0.0]]
+// Parameter: mu_dot = [[0.0], [0.0], [0.0]]
+// Parameter: Sigma = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+// Parameter: Pi_s = [[8.0, 0.0, 0.0, 0.0], [0.0, 8.0, 0.0, 0.0], [0.0, 0.0, 8.0, 0.0], [0.0, 0.0, 0.0, 8.0]]
+// Parameter: Pi_d = [[4.0, 0.0, 0.0], [0.0, 4.0, 0.0], [0.0, 0.0, 4.0]]
+// Parameter: mu_star = [[1.0], [1.0], [0.5]]

@@ -1,0 +1,177 @@
+///
+/// GNN Model: Simple Markov Chain
+/// Annotation: This model describes a minimal discrete-time Markov Chain:
+
+- 3 states representing weather (sunny, cloudy, rainy).
+- No actions — the system evolves passively.
+- Observations = states directly (identity mapping for monitoring).
+- Stationary transition matrix with realistic weather dynamics.
+- Tests the simplest model structure: passive state evolution with no control.
+/// Generated: 2026-03-13T18:17:23.051232
+/// Enhanced by GNN PKL Serializer
+///
+
+@ModuleInfo { minPklVersion = "0.25.0" }
+
+class GNNModel {{
+  name: String = "Simple Markov Chain"
+  annotation: String = "This model describes a minimal discrete-time Markov Chain:
+
+- 3 states representing weather (sunny, cloudy, rainy).
+- No actions — the system evolves passively.
+- Observations = states directly (identity mapping for monitoring).
+- Stationary transition matrix with realistic weather dynamics.
+- Tests the simplest model structure: passive state evolution with no control."
+
+  variables: Mapping<String, Variable> = new Mapping {{
+    ["A"] = new Variable {
+      name = "A"
+      varType = "likelihood_matrix"
+      dataType = "float"
+      dimensions = List(3, 3)
+    }}
+    ["B"] = new Variable {
+      name = "B"
+      varType = "transition_matrix"
+      dataType = "float"
+      dimensions = List(3, 3)
+    }}
+    ["D"] = new Variable {
+      name = "D"
+      varType = "prior_vector"
+      dataType = "float"
+      dimensions = List(3)
+    }}
+    ["o"] = new Variable {
+      name = "o"
+      varType = "observation"
+      dataType = "integer"
+      dimensions = List(3, 1)
+    }}
+    ["s"] = new Variable {
+      name = "s"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["s_prime"] = new Variable {
+      name = "s_prime"
+      varType = "hidden_state"
+      dataType = "float"
+      dimensions = List(3, 1)
+    }}
+    ["t"] = new Variable {
+      name = "t"
+      varType = "hidden_state"
+      dataType = "integer"
+      dimensions = List(1)
+    }}
+  }}
+
+  connections: Mapping<String, Connection> = new Mapping {{
+    ["connection_0"] = new Connection {
+      sourceVariables = List("D")
+      targetVariables = List("s")
+      connectionType = "directed"
+    }}
+    ["connection_1"] = new Connection {
+      sourceVariables = List("s")
+      targetVariables = List("A")
+      connectionType = "undirected"
+    }}
+    ["connection_2"] = new Connection {
+      sourceVariables = List("A")
+      targetVariables = List("o")
+      connectionType = "undirected"
+    }}
+    ["connection_3"] = new Connection {
+      sourceVariables = List("s")
+      targetVariables = List("s_prime")
+      connectionType = "directed"
+    }}
+    ["connection_4"] = new Connection {
+      sourceVariables = List("B")
+      targetVariables = List("s_prime")
+      connectionType = "directed"
+    }}
+    ["connection_5"] = new Connection {
+      sourceVariables = List("s")
+      targetVariables = List("B")
+      connectionType = "undirected"
+    }}
+  }}
+
+  parameters: Mapping<String, Parameter> = new Mapping {{
+    ["A"] = new Parameter {
+      name = "A"
+      value = List([1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0])
+      paramType = "constant"
+    }}
+    ["B"] = new Parameter {
+      name = "B"
+      value = List([0.7, 0.3, 0.1], [0.2, 0.4, 0.3], [0.1, 0.3, 0.6])
+      paramType = "constant"
+    }}
+    ["D"] = new Parameter {
+      name = "D"
+      value = List([0.5, 0.3, 0.2])
+      paramType = "constant"
+    }}
+  }}
+
+  ontologyMappings: List<OntologyMapping> = new List {{
+  }}
+
+}}
+
+class Variable {{
+  name: String
+  varType: String
+  dataType: String
+  dimensions: List<Int>
+}}
+
+class Connection {{
+  sourceVariables: List<String>
+  targetVariables: List<String>
+  connectionType: String
+}}
+
+class Parameter {{
+  name: String
+  value: Any
+  paramType: String
+}}
+
+class TimeSpec {{
+  timeType: String
+  steps: Int
+  description: String?
+}}
+
+class OntologyMapping {{
+  variableName: String
+  ontologyTerm: String
+}}
+
+/* MODEL_DATA: {"model_name":"Simple Markov Chain","annotation":"This model describes a minimal discrete-time Markov Chain:\n\n- 3 states representing weather (sunny, cloudy, rainy).\n- No actions \u2014 the system evolves passively.\n- Observations = states directly (identity mapping for monitoring).\n- Stationary transition matrix with realistic weather dynamics.\n- Tests the simplest model structure: passive state evolution with no control.","variables":[{"name":"A","var_type":"likelihood_matrix","data_type":"float","dimensions":[3,3]},{"name":"B","var_type":"transition_matrix","data_type":"float","dimensions":[3,3]},{"name":"D","var_type":"prior_vector","data_type":"float","dimensions":[3]},{"name":"s","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"s_prime","var_type":"hidden_state","data_type":"float","dimensions":[3,1]},{"name":"o","var_type":"observation","data_type":"integer","dimensions":[3,1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D"],"target_variables":["s"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["A"],"connection_type":"undirected"},{"source_variables":["A"],"target_variables":["o"],"connection_type":"undirected"},{"source_variables":["s"],"target_variables":["s_prime"],"connection_type":"directed"},{"source_variables":["B"],"target_variables":["s_prime"],"connection_type":"directed"},{"source_variables":["s"],"target_variables":["B"],"connection_type":"undirected"}],"parameters":[{"name":"A","value":[[1.0,0.0,0.0],[0.0,1.0,0.0],[0.0,0.0,1.0]],"param_type":"constant"},{"name":"B","value":[[0.7,0.3,0.1],[0.2,0.4,0.3],[0.1,0.3,0.6]],"param_type":"constant"},{"name":"D","value":[[0.5,0.3,0.2]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"Unbounded","step_size":null},"ontology_mappings":[{"variable_name":"A","ontology_term":"EmissionMatrix","description":null},{"variable_name":"B","ontology_term":"TransitionMatrix","description":null},{"variable_name":"D","ontology_term":"InitialStateDistribution","description":null},{"variable_name":"s","ontology_term":"HiddenState","description":null},{"variable_name":"s_prime","ontology_term":"NextHiddenState","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]} */
+
+// Variables:
+// Variable: A (likelihood_matrix)
+// Variable: B (transition_matrix)
+// Variable: D (prior_vector)
+// Variable: s (hidden_state)
+// Variable: s_prime (hidden_state)
+// Variable: o (observation)
+// Variable: t (hidden_state)
+// Connections:
+// Connection: D --directed--> s
+// Connection: s --undirected--> A
+// Connection: A --undirected--> o
+// Connection: s --directed--> s_prime
+// Connection: B --directed--> s_prime
+// Connection: s --undirected--> B
+// Parameters:
+// Parameter: A = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+// Parameter: B = [[0.7, 0.3, 0.1], [0.2, 0.4, 0.3], [0.1, 0.3, 0.6]]
+// Parameter: D = [[0.5, 0.3, 0.2]]

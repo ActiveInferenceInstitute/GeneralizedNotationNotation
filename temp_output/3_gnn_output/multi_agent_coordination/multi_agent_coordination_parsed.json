@@ -1,0 +1,1222 @@
+{
+  "model_name": "Multi-Agent Cooperative Active Inference",
+  "version": "1.0",
+  "annotation": "Two Active Inference agents cooperating on a joint task:\n\n- Agent 1 and Agent 2 each maintain independent beliefs\n- Shared observation space: agents observe each other's actions\n- Joint task state includes both agents' positions (4x4 = 16 joint states)\n- Cooperative preferences: both agents prefer the same goal configuration\n- Models social cognition and coordination without explicit communication",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cfd0a119-130c-4262-a5af-6c4d55d3ad9a",
+      "name": "A1",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "3faca8a0-9e95-4b31-bc5c-c7e1701e705d",
+      "name": "B1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "data_type": "float",
+      "description": "Agent 1 transitions (3 actions)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d0b7dfd-7f55-4a41-8d60-2e652f6365fd",
+      "name": "C1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "99daff7a-03b7-4e5b-8397-97cdd6fdbc89",
+      "name": "D1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 1 prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "21a56a22-4834-48f9-bef2-631f1866543a",
+      "name": "s1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c4941efa-dab4-4b23-bc3d-9e66e6cdba17",
+      "name": "s1_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 next hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "186faa92-4a73-4744-b57f-07665e260533",
+      "name": "o1",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 observations (includes Agent 2 obs)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "1e3100b3-e4fd-44ad-8eb7-ed3df45bb658",
+      "name": "\u03c01",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Agent 1 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2e665117-9573-4935-bf83-84e13bc30b30",
+      "name": "u1",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 1 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "62f57391-fa5c-4f0d-8934-6cbe93588d90",
+      "name": "G1",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 1 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ee2d56cc-4536-4c98-89a4-e33d0ad193aa",
+      "name": "A2",
+      "var_type": "action",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 likelihood",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "b72c2db3-9b93-4697-9d89-c27c1fe95653",
+      "name": "B2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "data_type": "float",
+      "description": "Agent 2 transitions (3 actions)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "20540bb2-0b8b-411c-a74a-d6b10884294c",
+      "name": "C2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 preferences",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "125e1d95-5b7c-42b5-9c1e-bdf69b5d2904",
+      "name": "D2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4
+      ],
+      "data_type": "float",
+      "description": "Agent 2 prior",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a395e45c-9cb3-4af0-9147-55acb477fc43",
+      "name": "s2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "60835a99-37e6-4ba0-adf4-032e4c1b5085",
+      "name": "s2_prime",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 next hidden state",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d3c55c2b-358c-42c2-af3c-8e99bffa37d0",
+      "name": "o2",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 observations (includes Agent 1 obs)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "067b5b95-7bb8-44c9-a32d-eb7c66533f97",
+      "name": "\u03c02",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3
+      ],
+      "data_type": "float",
+      "description": "Agent 2 policy",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "2b4132c8-4b0f-49c5-aab7-8d873239457a",
+      "name": "u2",
+      "var_type": "action",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": "Agent 2 action",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5274c383-8f41-45b5-9fe3-1c8ee4ca4e53",
+      "name": "G2",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Agent 2 EFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "33daf01e-d84f-4664-8899-65756b9a0f4d",
+      "name": "s_joint",
+      "var_type": "hidden_state",
+      "dimensions": [
+        16,
+        1
+      ],
+      "data_type": "float",
+      "description": "Joint state (Agent1_pos x Agent2_pos)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a3ea0ac7-bfa1-4124-965d-cc2f5eb47e6d",
+      "name": "o_joint",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "integer",
+      "description": "Joint observation (goal achievement)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "5f6a8087-d2bf-4ed2-8e46-8b725856df93",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "integer",
+      "description": null,
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7ef1fb7d-094e-4e1b-a54b-5cff27aa18c1",
+      "source_variables": [
+        "D1"
+      ],
+      "target_variables": [
+        "s1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "67051cc6-3b4a-480f-90a6-93b178f15d14",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "A1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "419266e1-449c-445d-a656-b8dda79ef2f0",
+      "source_variables": [
+        "A1"
+      ],
+      "target_variables": [
+        "o1"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0c8ee703-b609-4ed2-bf94-9dd87ab8e954",
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "s1_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "5a01a05e-cf3f-4c27-b4a9-56992e113ddb",
+      "source_variables": [
+        "C1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "35f3e963-3b1e-4a02-8cd3-d186c5dd58b7",
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "\u03c01"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7935e5bb-2df1-4b31-a5a4-5d40b2f6ec21",
+      "source_variables": [
+        "\u03c01"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "c969a150-5556-4311-9ee5-f01d2b2d948a",
+      "source_variables": [
+        "B1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "97e605f8-c7da-4e36-8a77-f2bdffc3028e",
+      "source_variables": [
+        "D2"
+      ],
+      "target_variables": [
+        "s2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1db593f5-2060-4a83-a657-079dce8de022",
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "A2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "bb24190d-9a29-4594-9a6c-1e91893fc18b",
+      "source_variables": [
+        "A2"
+      ],
+      "target_variables": [
+        "o2"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2fc677ae-72f6-4382-9e0b-f5f78bf43bda",
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "s2_prime"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d7446ad1-b369-44b8-a69f-baf47c326d26",
+      "source_variables": [
+        "C2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "2936bb64-f144-48a1-9493-262b7d324914",
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "\u03c02"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "1c43fd24-ba34-4c45-a350-bffb09356e4d",
+      "source_variables": [
+        "\u03c02"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "ac78fb77-ef6d-4476-9ef1-6613bcc766b3",
+      "source_variables": [
+        "B2"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0a097173-0b26-4f28-a965-9efd5989db59",
+      "source_variables": [
+        "u1"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "d81725f4-0605-486b-85d5-c6482fa46718",
+      "source_variables": [
+        "u2"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4c093baf-a689-4e44-9f5c-ca05626829b5",
+      "source_variables": [
+        "s_joint"
+      ],
+      "target_variables": [
+        "o_joint"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "7e4b6b35-fea9-4502-a626-3ec94fca2bb4",
+      "source_variables": [
+        "o1"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "14164452-ad7e-4b94-8544-b47cdf5c18fd",
+      "source_variables": [
+        "o2"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ecb03ed8-657a-4e9b-a97e-9a2bd70eb9ee",
+      "name": "A1",
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "609f5291-978c-4b73-9f33-2ae98e537523",
+      "name": "A2",
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "48053cc7-a510-41ae-b7f8-adb4ad9dd928",
+      "name": "C1",
+      "value": [
+        [
+          -1.0,
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "21dd433f-7aa6-4f5e-8e87-aaea6c79880b",
+      "name": "C2",
+      "value": [
+        [
+          -1.0,
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "8a6845a3-05a6-4d85-b058-30e9d62c98dd",
+      "name": "D1",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "66aa8d70-1501-43e4-bfb8-9b8de2503066",
+      "name": "D2",
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "a3678cb1-32a6-40a2-8dfa-90ea3ac88296",
+      "name": "B1",
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.8,
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.1,
+            0.1,
+            0.8
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "7c223ad4-7f11-4295-9f2b-9bd0d826f9a5",
+      "name": "B2",
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.8,
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.1,
+            0.1,
+            0.8
+          ]
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "9ccdcea7-6822-48cc-91ba-89c5f4e23c54",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": 20,
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f3d6f5af-ca36-4fca-8dd7-fb70128865b2",
+      "variable_name": "A1",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3a5f6125-6076-4759-acb0-601f3a9df7df",
+      "variable_name": "B1",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3919b339-d01d-421a-b583-485703e07afa",
+      "variable_name": "C1",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3f481669-ecab-4367-95f0-b2d479ed565e",
+      "variable_name": "D1",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "19b28917-d705-4215-94cd-d2068b0a91c3",
+      "variable_name": "s1",
+      "ontology_term": "Agent1HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "bd159471-e145-437e-9f4e-b51673695119",
+      "variable_name": "s1_prime",
+      "ontology_term": "Agent1NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "50e27d8a-83fb-493d-9dd5-e067e3d7c999",
+      "variable_name": "o1",
+      "ontology_term": "Agent1Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "6dcf710c-058b-43d1-9ab8-5475144a16cb",
+      "variable_name": "\u03c01",
+      "ontology_term": "Agent1PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5d5c1c09-dd7c-4af0-ae69-2b8152ef3e55",
+      "variable_name": "u1",
+      "ontology_term": "Agent1Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "414c5fcb-b893-4a72-8894-ae8a05f52273",
+      "variable_name": "G1",
+      "ontology_term": "Agent1ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "03812665-d745-41b0-ad38-599bec435932",
+      "variable_name": "A2",
+      "ontology_term": "LikelihoodMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "ad162ef6-3bc7-462d-88ad-28af2acdda5e",
+      "variable_name": "B2",
+      "ontology_term": "TransitionMatrix",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "5b8a447e-9fc2-4407-8f4d-db15e719d7fb",
+      "variable_name": "C2",
+      "ontology_term": "LogPreferenceVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "e2857a0a-fb82-43a9-8c34-312f2f0f69ae",
+      "variable_name": "D2",
+      "ontology_term": "PriorOverHiddenStates",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f384762a-afac-4a40-838e-f2f31b7a6aab",
+      "variable_name": "s2",
+      "ontology_term": "Agent2HiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "0e149155-5ccb-4d46-a5c0-bb3346d8a739",
+      "variable_name": "s2_prime",
+      "ontology_term": "Agent2NextHiddenState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f74f7e1d-0099-427f-8ea9-e2bc7c719a85",
+      "variable_name": "o2",
+      "ontology_term": "Agent2Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8e9afa79-6718-4c2d-ac3c-e7b62ec4cbbc",
+      "variable_name": "\u03c02",
+      "ontology_term": "Agent2PolicyVector",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "b530208a-3135-4d30-b63e-6a84a5d3b6ab",
+      "variable_name": "u2",
+      "ontology_term": "Agent2Action",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b081032-63f6-45ba-bbb0-f100ceedbf4e",
+      "variable_name": "G2",
+      "ontology_term": "Agent2ExpectedFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "afd60660-d3a3-443d-b552-383095c96a77",
+      "variable_name": "s_joint",
+      "ontology_term": "JointState",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "65f9f5d6-6498-4d72-882a-e86e711d3fd6",
+      "variable_name": "o_joint",
+      "ontology_term": "JointObservation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "48cd2eb9-f4b9-4edd-a45b-111ed3f8c5e5",
+      "variable_name": "t",
+      "ontology_term": "Time",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T18:17:22.808667",
+  "modified_at": "2026-03-13T18:17:22.808667",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfPOMDP_MultiAgent",
+    "footer": "Multi-Agent Cooperative Active Inference v1 - GNN Representation.\nImplicit coordination via shared observation space.\nNo explicit communication \u2014 emergent cooperation from aligned preferences.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfPOMDP_MultiAgent",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Multi-Agent Cooperative Active Inference",
+    "ModelAnnotation": "Two Active Inference agents cooperating on a joint task:\n\n- Agent 1 and Agent 2 each maintain independent beliefs\n- Shared observation space: agents observe each other's actions\n- Joint task state includes both agents' positions (4x4 = 16 joint states)\n- Cooperative preferences: both agents prefer the same goal configuration\n- Models social cognition and coordination without explicit communication",
+    "StateSpaceBlock": "# Agent 1\n\nA1[4,4,type=float]     # Agent 1 likelihood\nB1[4,4,3,type=float]   # Agent 1 transitions (3 actions)\nC1[4,type=float]       # Agent 1 preferences\nD1[4,type=float]       # Agent 1 prior\ns1[4,1,type=float]     # Agent 1 hidden state\ns1_prime[4,1,type=float] # Agent 1 next hidden state\no1[4,1,type=int]       # Agent 1 observations (includes Agent 2 obs)\n\u03c01[3,type=float]       # Agent 1 policy\nu1[1,type=int]         # Agent 1 action\nG1[\u03c01,type=float]      # Agent 1 EFE\n\n# Agent 2\n\nA2[4,4,type=float]     # Agent 2 likelihood\nB2[4,4,3,type=float]   # Agent 2 transitions (3 actions)\nC2[4,type=float]       # Agent 2 preferences\nD2[4,type=float]       # Agent 2 prior\ns2[4,1,type=float]     # Agent 2 hidden state\ns2_prime[4,1,type=float] # Agent 2 next hidden state\no2[4,1,type=int]       # Agent 2 observations (includes Agent 1 obs)\n\u03c02[3,type=float]       # Agent 2 policy\nu2[1,type=int]         # Agent 2 action\nG2[\u03c02,type=float]      # Agent 2 EFE\n\n# Shared environment state\n\ns_joint[16,1,type=float]  # Joint state (Agent1_pos x Agent2_pos)\no_joint[4,1,type=int]     # Joint observation (goal achievement)\n\n# Time\n\nt[1,type=int]",
+    "Connections": "D1>s1\ns1-A1\nA1-o1\ns1>s1_prime\nC1>G1\nG1>\u03c01\n\u03c01>u1\nB1>u1\nD2>s2\ns2-A2\nA2-o2\ns2>s2_prime\nC2>G2\nG2>\u03c02\n\u03c02>u2\nB2>u2\nu1>s_joint\nu2>s_joint\ns_joint-o_joint\no1-s_joint\no2-s_joint",
+    "InitialParameterization": "A1={\n  (0.85, 0.05, 0.05, 0.05),\n  (0.05, 0.85, 0.05, 0.05),\n  (0.05, 0.05, 0.85, 0.05),\n  (0.05, 0.05, 0.05, 0.85)\n}\n\nA2={\n  (0.85, 0.05, 0.05, 0.05),\n  (0.05, 0.85, 0.05, 0.05),\n  (0.05, 0.05, 0.85, 0.05),\n  (0.05, 0.05, 0.05, 0.85)\n}\n\n# Shared cooperative preference: goal = state 4 (index 3)\n\nC1={(-1.0, -1.0, -1.0, 2.0)}\nC2={(-1.0, -1.0, -1.0, 2.0)}\nD1={(0.25, 0.25, 0.25, 0.25)}\nD2={(0.25, 0.25, 0.25, 0.25)}\n\nB1={\n  ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1), (0.1,0.0,0.0,0.9) ),\n  ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) ),\n  ( (0.8,0.1,0.1,0.0), (0.1,0.8,0.0,0.1), (0.1,0.0,0.8,0.1), (0.0,0.1,0.1,0.8) )\n}\n\nB2={\n  ( (0.9,0.1,0.0,0.0), (0.0,0.9,0.1,0.0), (0.0,0.0,0.9,0.1), (0.1,0.0,0.0,0.9) ),\n  ( (0.9,0.0,0.0,0.1), (0.1,0.9,0.0,0.0), (0.0,0.1,0.9,0.0), (0.0,0.0,0.1,0.9) ),\n  ( (0.8,0.1,0.1,0.0), (0.1,0.8,0.0,0.1), (0.1,0.0,0.8,0.1), (0.0,0.1,0.1,0.8) )\n}",
+    "Equations": "# Each agent independently minimizes their own VFE\n\n# Coordination emerges from shared observation space and aligned preferences\n\n# Agent 1 observes both own state and Agent 2's last action\n\n# No explicit communication channel \u2014 implicit coordination only",
+    "Time": "Time=t\nDynamic\nDiscrete\nModelTimeHorizon=20",
+    "ActInfOntologyAnnotation": "A1=LikelihoodMatrix\nB1=TransitionMatrix\nC1=LogPreferenceVector\nD1=PriorOverHiddenStates\ns1=Agent1HiddenState\ns1_prime=Agent1NextHiddenState\no1=Agent1Observation\n\u03c01=Agent1PolicyVector\nu1=Agent1Action\nG1=Agent1ExpectedFreeEnergy\nA2=LikelihoodMatrix\nB2=TransitionMatrix\nC2=LogPreferenceVector\nD2=PriorOverHiddenStates\ns2=Agent2HiddenState\ns2_prime=Agent2NextHiddenState\no2=Agent2Observation\n\u03c02=Agent2PolicyVector\nu2=Agent2Action\nG2=Agent2ExpectedFreeEnergy\ns_joint=JointState\no_joint=JointObservation\nt=Time",
+    "ModelParameters": "num_agents: 2\nnum_hidden_states_per_agent: 4\nnum_obs_per_agent: 4\nnum_actions_per_agent: 3\nnum_timesteps: 20",
+    "Footer": "Multi-Agent Cooperative Active Inference v1 - GNN Representation.\nImplicit coordination via shared observation space.\nNo explicit communication \u2014 emergent cooperation from aligned preferences.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

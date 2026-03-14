@@ -532,9 +532,9 @@ class TestMCPModule:
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
     def test_module_imports(self):
         """Test that all expected functions are available."""
-        assert hasattr(src.mcp, 'MCPServer')
+        assert hasattr(src.mcp, 'MCP')
         assert hasattr(src.mcp, 'register_module_tools')
-        assert hasattr(src.mcp, 'start_mcp_server')
+        assert hasattr(src.mcp, 'initialize')
         assert hasattr(src.mcp, 'get_available_tools')
 
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
@@ -611,7 +611,7 @@ class TestMCPIntegration:
         """Test that MCP availability flags are properly set."""
         modules_with_mcp = [
             src.gnn, src.export, src.render, src.website,
-            src.sapf, src.ontology, src.mcp, src.setup
+            src.audio, src.ontology, src.mcp
         ]
 
         for module in modules_with_mcp:
@@ -624,7 +624,7 @@ class TestMCPIntegration:
     def test_register_tools_functions(self):
         """Test that register_tools functions exist where expected."""
         modules_with_register_tools = [
-            src.export, src.render, src.website, src.sapf, src.ontology
+            src.export, src.render, src.website, src.audio, src.ontology
         ]
 
         for module in modules_with_register_tools:
@@ -641,7 +641,7 @@ class TestModuleConsistency:
         """Test that all modules have version information."""
         modules = [
             src.gnn, src.export, src.render, src.website,
-            src.sapf, src.ontology, src.mcp, src.setup
+            src.audio, src.ontology, src.mcp
         ]
 
         for module in modules:
@@ -654,7 +654,7 @@ class TestModuleConsistency:
         """Test that all modules have consistent feature flag structure."""
         modules_with_features = [
             src.gnn, src.export, src.render, src.website,
-            src.sapf, src.ontology
+            src.audio, src.ontology
         ]
 
         for module in modules_with_features:
@@ -667,7 +667,7 @@ class TestModuleConsistency:
         """Test that all modules have consistent get_module_info structure."""
         modules_with_info = [
             src.gnn, src.export, src.render, src.website,
-            src.sapf, src.ontology
+            src.audio, src.ontology
         ]
 
         for module in modules_with_info:

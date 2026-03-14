@@ -1,0 +1,879 @@
+{
+  "annotation": "Two Active Inference agents cooperating on a joint task:\n\n- Agent 1 and Agent 2 each maintain independent beliefs\n- Shared observation space: agents observe each other's actions\n- Joint task state includes both agents' positions (4x4 = 16 joint states)\n- Cooperative preferences: both agents prefer the same goal configuration\n- Models social cognition and coordination without explicit communication",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D1"
+      ],
+      "target_variables": [
+        "s1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "A1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A1"
+      ],
+      "target_variables": [
+        "o1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s1"
+      ],
+      "target_variables": [
+        "s1_prime"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C1"
+      ],
+      "target_variables": [
+        "G1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G1"
+      ],
+      "target_variables": [
+        "π1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "π1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B1"
+      ],
+      "target_variables": [
+        "u1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D2"
+      ],
+      "target_variables": [
+        "s2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "A2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A2"
+      ],
+      "target_variables": [
+        "o2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s2"
+      ],
+      "target_variables": [
+        "s2_prime"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C2"
+      ],
+      "target_variables": [
+        "G2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G2"
+      ],
+      "target_variables": [
+        "π2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "π2"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B2"
+      ],
+      "target_variables": [
+        "u2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u1"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "u2"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s_joint"
+      ],
+      "target_variables": [
+        "o_joint"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "o1"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "o2"
+      ],
+      "target_variables": [
+        "s_joint"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-03-13T18:17:22.808667",
+  "equations": [],
+  "extensions": {
+    "footer": "Multi-Agent Cooperative Active Inference v1 - GNN Representation.\nImplicit coordination via shared observation space.\nNo explicit communication — emergent cooperation from aligned preferences.",
+    "gnn_section": "ActInfPOMDP_MultiAgent",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Multi-Agent Cooperative Active Inference",
+  "modified_at": "2026-03-13T18:17:22.808667",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A1"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B1"
+    },
+    {
+      "description": null,
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C1"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1HiddenState",
+      "variable_name": "s1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1NextHiddenState",
+      "variable_name": "s1_prime"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1Observation",
+      "variable_name": "o1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1PolicyVector",
+      "variable_name": "π1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1Action",
+      "variable_name": "u1"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent1ExpectedFreeEnergy",
+      "variable_name": "G1"
+    },
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A2"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B2"
+    },
+    {
+      "description": null,
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C2"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2HiddenState",
+      "variable_name": "s2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2NextHiddenState",
+      "variable_name": "s2_prime"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2Observation",
+      "variable_name": "o2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2PolicyVector",
+      "variable_name": "π2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2Action",
+      "variable_name": "u2"
+    },
+    {
+      "description": null,
+      "ontology_term": "Agent2ExpectedFreeEnergy",
+      "variable_name": "G2"
+    },
+    {
+      "description": null,
+      "ontology_term": "JointState",
+      "variable_name": "s_joint"
+    },
+    {
+      "description": null,
+      "ontology_term": "JointObservation",
+      "variable_name": "o_joint"
+    },
+    {
+      "description": null,
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A1",
+      "type_hint": null,
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "A2",
+      "type_hint": null,
+      "value": [
+        [
+          0.85,
+          0.05,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.85,
+          0.05,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.85,
+          0.05
+        ],
+        [
+          0.05,
+          0.05,
+          0.05,
+          0.85
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C1",
+      "type_hint": null,
+      "value": [
+        [
+          -1.0,
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C2",
+      "type_hint": null,
+      "value": [
+        [
+          -1.0,
+          -1.0,
+          -1.0,
+          2.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D1",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D2",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B1",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.8,
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.1,
+            0.1,
+            0.8
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B2",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.8,
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            0.1,
+            0.8,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.8,
+            0.1
+          ],
+          [
+            0.0,
+            0.1,
+            0.1,
+            0.8
+          ]
+        ]
+      ]
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": 20,
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Agent 1 likelihood",
+      "dimensions": [
+        4,
+        4
+      ],
+      "name": "A1",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 transitions (3 actions)",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "name": "B1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 preferences",
+      "dimensions": [
+        4
+      ],
+      "name": "C1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 prior",
+      "dimensions": [
+        4
+      ],
+      "name": "D1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 next hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s1_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Agent 1 observations (includes Agent 2 obs)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o1",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 policy",
+      "dimensions": [
+        3
+      ],
+      "name": "π1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Agent 1 action",
+      "dimensions": [
+        1
+      ],
+      "name": "u1",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 1 EFE",
+      "dimensions": [
+        1
+      ],
+      "name": "G1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 likelihood",
+      "dimensions": [
+        4,
+        4
+      ],
+      "name": "A2",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 transitions (3 actions)",
+      "dimensions": [
+        4,
+        4,
+        3
+      ],
+      "name": "B2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 preferences",
+      "dimensions": [
+        4
+      ],
+      "name": "C2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 prior",
+      "dimensions": [
+        4
+      ],
+      "name": "D2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 next hidden state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s2_prime",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Agent 2 observations (includes Agent 1 obs)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o2",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 policy",
+      "dimensions": [
+        3
+      ],
+      "name": "π2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Agent 2 action",
+      "dimensions": [
+        1
+      ],
+      "name": "u2",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Agent 2 EFE",
+      "dimensions": [
+        1
+      ],
+      "name": "G2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Joint state (Agent1_pos x Agent2_pos)",
+      "dimensions": [
+        16,
+        1
+      ],
+      "name": "s_joint",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Joint observation (goal achievement)",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o_joint",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "integer",
+      "description": null,
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

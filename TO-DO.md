@@ -108,28 +108,28 @@
 
 ### v2.3.0a - Content-Addressable Model Registry (`gnn reproduce`)
 
-- [ ] Update `src/pipeline/hasher.py` to recursively capture `.gnn` file shasums into `index.json`.
-- [ ] Implement `src/cli/__init__.py::_cmd_reproduce` to read `.history/index.json`.
-- [ ] Wire the captured configuration parameters (including `testing_matrix` states) back into `PipelineArguments`.
-- [ ] Trigger execution bypassing normal CLI arg parsing.
+- [x] Update `src/pipeline/hasher.py` to recursively capture `.gnn` file shasums into `index.json`.
+- [x] Implement `src/cli/__init__.py::_cmd_reproduce` to read `.history/index.json`.
+- [x] Wire the captured configuration parameters (including `testing_matrix` states) back into `PipelineArguments`.
+- [x] Trigger execution bypassing normal CLI arg parsing.
 
 ### v2.3.0b - Distributed Parameter Sweeps (Ray/Dask integration)
 
-- [ ] Create `src/execute/distributed.py` module.
-- [ ] Migrate `12_execute.py` to optionally wrap standard grid search with `@ray.remote`.
-- [ ] Create robust retry semantics for node failure in external cloud instances.
+- [x] Create `src/execute/distributed.py` module.
+- [x] Migrate `12_execute.py` to optionally wrap standard grid search with `@ray.remote`.
+- [x] Create robust retry semantics for node failure in external cloud instances.
 
 ### v2.3.0c - GPU-accelerated JAX
 
-- [ ] Create `src/render/jax/gpu_utils.py` to inspect available CUDA/TPU cores.
-- [ ] Automatically modify JAX code generation in `jax_renderer.py` to specify parallel execution contexts (`jax.pmap`, `jax.vmap`).
-- [ ] Adjust Dockerfiles/Setup phase to test for XLA compile compatibility.
+- [x] Create `src/render/jax/gpu_utils.py` to inspect available CUDA/TPU cores.
+- [x] Automatically modify JAX code generation in `jax_renderer.py` to specify parallel execution contexts (`jax.pmap`, `jax.vmap`).
+- [x] Adjust Dockerfiles/Setup phase to test for XLA compile compatibility.
 
 ### v2.3.0d - Visual Studio Code Extension
 
-- [ ] Bootstrapped extension scaffolding via `yo code`.
-- [ ] Integrate existing GNN TextMate syntax file (`package.json/contributes/grammars`).
-- [ ] Write LanguageClient wrapper `extension.ts` connecting via stdin/stdout to `gnn lsp`.
+- [x] Bootstrapped extension scaffolding via `yo code`.
+- [x] Integrate existing GNN TextMate syntax file (`package.json/contributes/grammars`).
+- [x] Write LanguageClient wrapper `extension.ts` connecting via stdin/stdout to `gnn lsp`.
 
 ---
 

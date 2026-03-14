@@ -68,6 +68,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     # ── gnn reproduce ────────────────────────────────────────────────────────
     reproduce_p = subparsers.add_parser("reproduce", help="Re-run from a previous run hash")
     reproduce_p.add_argument("run_hash", help="Run hash (12-char hex prefix)")
+    reproduce_p.add_argument("--history-dir", type=Path, default=Path("output/00_pipeline_summary/.history"), 
+                             help="Directory containing index.json")
 
     # ── gnn preflight ────────────────────────────────────────────────────────
     preflight_p = subparsers.add_parser("preflight", help="Run environment & config checks")
@@ -281,7 +283,7 @@ def _cmd_reproduce(args):
     logger = logging.getLogger(__name__)
     
     from pipeline.hasher import lookup_run
-    history_dir = Path("output/00_pipeline_summary/.history")
+    history_dir = args.history_dir
     
     run_entry = lookup_run(args.run_hash, history_dir)
     if not run_entry:
@@ -290,34 +292,35 @@ def _cmd_reproduce(args):
         
     print(f"🔄 Reproducing run: {args.run_hash}")
     config = run_entry.get("config", {})
-    run_args = config.get("args", {})
+    run_args_dict = config.get("args", {})
+    pipeline_settings = config.get("pipeline", {})
     
     try:
         from main import main as pipeline_main
-        sys.argv = ["gnn"]
+        from utils.argument_utils import PipelineArguments
         
-        target_dir = run_args.get("target_dir", "input/gnn_files")
-        output_dir = run_args.get("output_dir", "output")
+        # Reconstruct PipelineArguments
+        # Some paths might need to be converted back to Path objects
+        if "target_dir" in run_args_dict:
+            run_args_dict["target_dir"] = Path(run_args_dict["target_dir"])
+        if "output_dir" in run_args_dict:
+            run_args_dict["output_dir"] = Path(run_args_dict["output_dir"])
+            
+        reproduced_args = PipelineArguments(**run_args_dict)
         
-        extra_args = ["--target-dir", target_dir, "--output-dir", output_dir]
+        # Trigger execution bypassing normal CLI arg parsing
+        print(f"🚀 Bypassing CLI parser, running with reconstructed config")
         
-        if run_args.get("verbose"):
-            extra_args.append("--verbose")
-            
-        # Add skip steps if they were in the original args
-        skip_steps = run_args.get("skip_steps")
-        if skip_steps:
-            extra_args.extend(["--skip-steps", skip_steps])
-            
-        only_steps = run_args.get("only_steps")
-        if only_steps:
-            extra_args.extend(["--only-steps", only_steps])
-            
-        sys.argv.extend(extra_args)
-        print(f"Reconstructed args: {' '.join(sys.argv)}")
-        return pipeline_main()
+        # Pass the full config structure that main() expects back in override_config
+        full_config_override = {"pipeline": pipeline_settings}
+        
+        return pipeline_main(override_args=reproduced_args, override_config=full_config_override)
+        
     except ImportError as e:
         logger.error(f"Could not import pipeline for reproduction: {e}")
+        return 1
+    except Exception as e:
+        logger.error(f"Failed to reproduce run: {e}")
         return 1
 
 

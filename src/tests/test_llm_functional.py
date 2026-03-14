@@ -145,30 +145,34 @@ class TestModelSelection:
     """Test Ollama model selection logic."""
 
     @pytest.mark.unit
-    def test_select_preferred_model(self):
+    def test_select_preferred_model(self, monkeypatch):
         """Should pick the first matching preferred model."""
+        monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
         available = ["llama2:7b", "gemma3:4b", "phi3"]
         selected = _select_best_ollama_model(available, logger)
         assert selected == "gemma3:4b"
 
     @pytest.mark.unit
-    def test_select_fallback_to_first(self):
+    def test_select_fallback_to_first(self, monkeypatch):
         """Should fall back to first model if none match preferences."""
+        monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
         available = ["custom-model:latest"]
         selected = _select_best_ollama_model(available, logger)
         assert selected == "custom-model:latest"
 
     @pytest.mark.unit
-    def test_select_default_when_empty(self):
+    def test_select_default_when_empty(self, monkeypatch):
         """Should return default model when no models available."""
+        monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
         selected = _select_best_ollama_model([], logger)
         assert selected == "gemma3:4b"
 
-    def test_select_from_env_variable(self):
+    def test_select_from_env_variable(self, monkeypatch):
         """Should honor OLLAMA_MODEL environment variable."""
+        monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
         original_val = os.environ.get("OLLAMA_MODEL")
         os.environ["OLLAMA_MODEL"] = "my-custom:latest"

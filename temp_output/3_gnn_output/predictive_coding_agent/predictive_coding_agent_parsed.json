@@ -1,0 +1,843 @@
+{
+  "model_name": "Predictive Coding Active Inference Agent",
+  "version": "1.0",
+  "annotation": "A continuous-state Active Inference agent implementing predictive coding:\n\n- Two-level predictive hierarchy: sensory predictions and dynamics predictions\n- Prediction errors drive belief updating via gradient descent on free energy\n- Precision-weighted prediction errors enable attentional modulation\n- Sensory level: predicts observations from hidden causes\n- Dynamics level: predicts state evolution from generative dynamics\n- Action minimizes expected free energy by changing sensory input\n- Uses generalized coordinates of motion (position, velocity, acceleration)\n- Demonstrates the core predictive processing framework underlying Active Inference",
+  "variables": [
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d41b4b77-2f86-48b8-92f2-807379f1590a",
+      "name": "mu",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "State belief: mean of hidden cause (3D)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "469e167e-f2c5-4744-a690-6badeed79279",
+      "name": "mu_dot",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Velocity of hidden cause (first temporal derivative)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "46bc06a6-70f4-4abd-a584-0723a3e34db3",
+      "name": "Sigma",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Covariance of hidden cause belief",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "7f521ce0-12f4-40fb-95b7-8be1f561eec3",
+      "name": "e_s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Sensory prediction error: o - g(mu)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "89d45994-2f35-459b-be90-2d30013ad14b",
+      "name": "e_d",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Dynamics prediction error: mu_dot - f(mu)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "cd8e7101-6bbe-4bf3-a62f-c4cda698238f",
+      "name": "g_params",
+      "var_type": "hidden_state",
+      "dimensions": [
+        12
+      ],
+      "data_type": "float",
+      "description": "Sensory mapping parameters: o = g(mu, g_params) + noise",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "8bb2ecb2-d84e-4389-ac2b-646eccf054a8",
+      "name": "f_params",
+      "var_type": "hidden_state",
+      "dimensions": [
+        9
+      ],
+      "data_type": "float",
+      "description": "Dynamics parameters: mu_dot = f(mu, f_params) + noise",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d6b2b56e-5abe-4a8e-a00e-2662cf83251a",
+      "name": "Pi_s",
+      "var_type": "policy",
+      "dimensions": [
+        4,
+        4
+      ],
+      "data_type": "float",
+      "description": "Sensory precision: confidence in observations",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c4723bde-dd38-4593-805d-e225ede1daea",
+      "name": "Pi_d",
+      "var_type": "policy",
+      "dimensions": [
+        3,
+        3
+      ],
+      "data_type": "float",
+      "description": "Dynamics precision: confidence in dynamics model",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "c30c3463-c6be-490e-8dac-5a007d3d8464",
+      "name": "o",
+      "var_type": "observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous observation vector (4D sensory input)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "a17367e5-5d81-45e9-93ea-fb4adc50eef7",
+      "name": "u",
+      "var_type": "action",
+      "dimensions": [
+        2,
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous action (2D motor command)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "ca1aacf9-d5ef-41e8-9c2e-6e258ca18b4f",
+      "name": "F",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Variational Free Energy (scalar)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "00025896-3ac7-476c-8b75-d9fd29eec910",
+      "name": "F_s",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Sensory contribution to VFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "11a20006-cc35-480c-83bd-807c783db653",
+      "name": "F_d",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Dynamics contribution to VFE",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "d779226a-8835-4607-8fb8-adf9adeee52e",
+      "name": "mu_star",
+      "var_type": "hidden_state",
+      "dimensions": [
+        3,
+        1
+      ],
+      "data_type": "float",
+      "description": "Desired state (prior expectation / set-point)",
+      "constraints": {}
+    },
+    {
+      "node_type": "Variable",
+      "source_location": null,
+      "metadata": {},
+      "id": "79b6b632-ca62-4e82-a79a-efbd745a7a64",
+      "name": "t",
+      "var_type": "hidden_state",
+      "dimensions": [
+        1
+      ],
+      "data_type": "float",
+      "description": "Continuous time",
+      "constraints": {}
+    }
+  ],
+  "connections": [
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0efc72f7-b99c-4cb2-ad31-82d7f67a7407",
+      "source_variables": [
+        "mu"
+      ],
+      "target_variables": [
+        "g_params"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "b0f6e323-3b8a-47a9-8649-37399a82a40e",
+      "source_variables": [
+        "g_params"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "fab58e1d-f827-4f16-b1ee-eaf691e12cb5",
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "e_s"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b87f6e7-1245-47fe-856f-2b8978ce13b9",
+      "source_variables": [
+        "mu"
+      ],
+      "target_variables": [
+        "e_s"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "e76ba2ef-d209-415f-a8dc-e55201d02c83",
+      "source_variables": [
+        "Pi_s"
+      ],
+      "target_variables": [
+        "e_s"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "924cb311-4e86-43d3-8597-428bf5b092d4",
+      "source_variables": [
+        "e_s"
+      ],
+      "target_variables": [
+        "F_s"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "58cc439e-0586-4118-b7db-202298ff7bad",
+      "source_variables": [
+        "mu"
+      ],
+      "target_variables": [
+        "f_params"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "0e507db2-352a-40be-8659-c1cadf926a1b",
+      "source_variables": [
+        "f_params"
+      ],
+      "target_variables": [
+        "mu_dot"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "78c81c15-2ddd-47fe-8cb0-151f4d6d221a",
+      "source_variables": [
+        "mu_dot"
+      ],
+      "target_variables": [
+        "e_d"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "4b680cbe-83e9-4656-9a94-6dff5634b33a",
+      "source_variables": [
+        "Pi_d"
+      ],
+      "target_variables": [
+        "e_d"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "930900c5-362c-48ab-816d-a81cdc753ae7",
+      "source_variables": [
+        "e_d"
+      ],
+      "target_variables": [
+        "F_d"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a5d04e53-0501-431c-8554-98e4bb7ba214",
+      "source_variables": [
+        "F_s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "3f8caea9-724d-43d4-a093-186296270b6b",
+      "source_variables": [
+        "F_d"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "faaa7e6a-2d9a-4236-a45b-8e0a3bc88ba4",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "mu"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "251441d1-66d3-4829-a3ba-264b8951b496",
+      "source_variables": [
+        "F"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "connection_type": "directed",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "6a0abaf7-1df9-4d91-9819-107d5104c918",
+      "source_variables": [
+        "mu_star"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "f5ab11da-abab-4700-95d4-b092337fa93c",
+      "source_variables": [
+        "mu"
+      ],
+      "target_variables": [
+        "Sigma"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    },
+    {
+      "node_type": "Connection",
+      "source_location": null,
+      "metadata": {},
+      "id": "a7bd3e75-87b7-4567-a062-d70d617a3665",
+      "source_variables": [
+        "Sigma"
+      ],
+      "target_variables": [
+        "Pi_s"
+      ],
+      "connection_type": "undirected",
+      "weight": null,
+      "description": null
+    }
+  ],
+  "parameters": [
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "d6fb7924-af90-402c-840c-e21636d5fdfe",
+      "name": "mu",
+      "value": [
+        [
+          0.0
+        ],
+        [
+          0.0
+        ],
+        [
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "933c1076-73ae-418f-8cde-f71747317b2a",
+      "name": "mu_dot",
+      "value": [
+        [
+          0.0
+        ],
+        [
+          0.0
+        ],
+        [
+          0.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "b945ddaa-fab6-4762-97fb-cd67798a3877",
+      "name": "Sigma",
+      "value": [
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "3c837b63-1e52-4d5e-8532-629bbba97a36",
+      "name": "Pi_s",
+      "value": [
+        [
+          8.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          8.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          8.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0,
+          8.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "ec2387cd-31bc-44df-b08b-a056c47624b6",
+      "name": "Pi_d",
+      "value": [
+        [
+          4.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          4.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          4.0
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    },
+    {
+      "node_type": "Parameter",
+      "source_location": null,
+      "metadata": {},
+      "id": "418e1165-6487-4771-88d1-50168e62e147",
+      "name": "mu_star",
+      "value": [
+        [
+          1.0
+        ],
+        [
+          1.0
+        ],
+        [
+          0.5
+        ]
+      ],
+      "type_hint": null,
+      "description": null
+    }
+  ],
+  "equations": [],
+  "time_specification": {
+    "node_type": "TimeSpecification",
+    "source_location": null,
+    "metadata": {},
+    "id": "33d6298f-8e37-48d7-9380-88985071bbf5",
+    "time_type": "Dynamic",
+    "discretization": null,
+    "horizon": "5.0",
+    "step_size": null
+  },
+  "ontology_mappings": [
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "1ece5916-1bf1-40d3-ba52-d10e2d9027ba",
+      "variable_name": "mu",
+      "ontology_term": "BeliefMean",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "826ddb72-04b5-4107-a9cd-f2b5ce564047",
+      "variable_name": "mu_dot",
+      "ontology_term": "BeliefVelocity",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "51698b94-467e-419a-b985-3eeaef8b396e",
+      "variable_name": "Sigma",
+      "ontology_term": "BeliefCovariance",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "9d185d78-2944-4dea-890f-9ba715c10a79",
+      "variable_name": "e_s",
+      "ontology_term": "SensoryPredictionError",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "8c43414d-bad8-4e10-ad4a-c2e4d4ba517f",
+      "variable_name": "e_d",
+      "ontology_term": "DynamicPredictionError",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "3ce0a9d3-6b95-46d6-b378-65303df722c2",
+      "variable_name": "g_params",
+      "ontology_term": "SensoryMappingParameters",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "cc73d965-ed64-48eb-a00e-f1ba2cdda97d",
+      "variable_name": "f_params",
+      "ontology_term": "DynamicsParameters",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "d3d7ebab-c846-4521-b9f3-d9198638ed0e",
+      "variable_name": "Pi_s",
+      "ontology_term": "SensoryPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "17bebaf3-92e9-49cd-9fc3-21e720f8815d",
+      "variable_name": "Pi_d",
+      "ontology_term": "DynamicPrecision",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "7fd241db-49ac-4d59-bcc3-0432a559757b",
+      "variable_name": "o",
+      "ontology_term": "Observation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a623e1b6-7313-4c8a-b9f7-e6293305471e",
+      "variable_name": "u",
+      "ontology_term": "ContinuousAction",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "053aafe7-cf45-4dfc-ae86-e915fcc5f7f8",
+      "variable_name": "F",
+      "ontology_term": "VariationalFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "aedcd771-c0b3-4667-90d5-e18d0131a60e",
+      "variable_name": "F_s",
+      "ontology_term": "SensoryFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "38ff46ca-60cf-4881-b3f1-22255865a283",
+      "variable_name": "F_d",
+      "ontology_term": "DynamicFreeEnergy",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "a75385ab-c582-4a48-aafa-4f7efdaf2709",
+      "variable_name": "mu_star",
+      "ontology_term": "PriorExpectation",
+      "description": null
+    },
+    {
+      "node_type": "OntologyMapping",
+      "source_location": null,
+      "metadata": {},
+      "id": "f5e812c7-5877-4d73-8e40-e9b74f0033b1",
+      "variable_name": "t",
+      "ontology_term": "ContinuousTime",
+      "description": null
+    }
+  ],
+  "source_format": null,
+  "created_at": "2026-03-13T18:17:23.573789",
+  "modified_at": "2026-03-13T18:17:23.573790",
+  "checksum": null,
+  "extensions": {
+    "gnn_section": "ActInfContinuous",
+    "footer": "Predictive Coding Active Inference Agent v1 - GNN Representation.\nImplements the core predictive processing architecture:\n  perception = minimizing sensory prediction errors,\n  action = minimizing expected sensory prediction errors.\nPrecision parameters enable attentional modulation.",
+    "signature": "Cryptographic signature goes here"
+  },
+  "raw_sections": {
+    "GNNSection": "ActInfContinuous",
+    "GNNVersionAndFlags": "GNN v1",
+    "ModelName": "Predictive Coding Active Inference Agent",
+    "ModelAnnotation": "A continuous-state Active Inference agent implementing predictive coding:\n\n- Two-level predictive hierarchy: sensory predictions and dynamics predictions\n- Prediction errors drive belief updating via gradient descent on free energy\n- Precision-weighted prediction errors enable attentional modulation\n- Sensory level: predicts observations from hidden causes\n- Dynamics level: predicts state evolution from generative dynamics\n- Action minimizes expected free energy by changing sensory input\n- Uses generalized coordinates of motion (position, velocity, acceleration)\n- Demonstrates the core predictive processing framework underlying Active Inference",
+    "StateSpaceBlock": "# Generalized coordinates of motion (hidden causes)\n\nmu[3,1,type=float]         # State belief: mean of hidden cause (3D)\nmu_dot[3,1,type=float]     # Velocity of hidden cause (first temporal derivative)\nSigma[3,3,type=float]      # Covariance of hidden cause belief\n\n# Sensory prediction error hierarchy\n\ne_s[4,1,type=float]        # Sensory prediction error: o - g(mu)\ne_d[3,1,type=float]        # Dynamics prediction error: mu_dot - f(mu)\n\n# Generative model parameters\n\ng_params[12,type=float]    # Sensory mapping parameters: o = g(mu, g_params) + noise\nf_params[9,type=float]     # Dynamics parameters: mu_dot = f(mu, f_params) + noise\n\n# Precision matrices (inverse covariance of noise)\n\nPi_s[4,4,type=float]       # Sensory precision: confidence in observations\nPi_d[3,3,type=float]       # Dynamics precision: confidence in dynamics model\n\n# Observations\n\no[4,1,type=float]          # Continuous observation vector (4D sensory input)\n\n# Action\n\nu[2,1,type=float]          # Continuous action (2D motor command)\n\n# Free energy quantities\n\nF[1,type=float]            # Variational Free Energy (scalar)\nF_s[1,type=float]          # Sensory contribution to VFE\nF_d[1,type=float]          # Dynamics contribution to VFE\n\n# Preferences (target attractor)\n\nmu_star[3,1,type=float]    # Desired state (prior expectation / set-point)\n\n# Time\n\nt[1,type=float]            # Continuous time",
+    "Connections": "mu-g_params\ng_params-o\no-e_s\nmu-e_s\nPi_s-e_s\ne_s-F_s\nmu-f_params\nf_params-mu_dot\nmu_dot-e_d\nPi_d-e_d\ne_d-F_d\nF_s>F\nF_d>F\nF>mu\nF>u\nmu_star-F\nmu-Sigma\nSigma-Pi_s",
+    "InitialParameterization": "# Initial state belief: centered at origin\n\nmu={(0.0), (0.0), (0.0)}\nmu_dot={(0.0), (0.0), (0.0)}\n\n# Initial covariance: moderate uncertainty\n\nSigma={\n  (1.0, 0.0, 0.0),\n  (0.0, 1.0, 0.0),\n  (0.0, 0.0, 1.0)\n}\n\n# Sensory precision: high (trusts observations)\n\nPi_s={\n  (8.0, 0.0, 0.0, 0.0),\n  (0.0, 8.0, 0.0, 0.0),\n  (0.0, 0.0, 8.0, 0.0),\n  (0.0, 0.0, 0.0, 8.0)\n}\n\n# Dynamics precision: moderate\n\nPi_d={\n  (4.0, 0.0, 0.0),\n  (0.0, 4.0, 0.0),\n  (0.0, 0.0, 4.0)\n}\n\n# Desired state: attractor at (1.0, 1.0, 0.5)\n\nmu_star={(1.0), (1.0), (0.5)}",
+    "Equations": "# Sensory prediction error: e_s = o - g(mu)\n\n# Dynamics prediction error: e_d = mu_dot - f(mu)\n\n# Variational Free Energy\n\n# F = (1/2) *e_s^T Pi_s e_s + (1/2)* e_d^T Pi_d e_d\n\n# Belief update (gradient descent on F)\n\n# d(mu)/dt = mu_dot - kappa_mu * dF/d(mu)\n\n# Action (gradient descent on F w.r.t. action)\n\n# d(u)/dt = -kappa_u *dF/d(u) = -kappa_u* dg/du^T Pi_s e_s\n\n# This implements active inference: action changes sensory input to minimize prediction error",
+    "Time": "Time=t\nDynamic\nContinuous\nModelTimeHorizon=5.0",
+    "ActInfOntologyAnnotation": "mu=BeliefMean\nmu_dot=BeliefVelocity\nSigma=BeliefCovariance\ne_s=SensoryPredictionError\ne_d=DynamicPredictionError\ng_params=SensoryMappingParameters\nf_params=DynamicsParameters\nPi_s=SensoryPrecision\nPi_d=DynamicPrecision\no=Observation\nu=ContinuousAction\nF=VariationalFreeEnergy\nF_s=SensoryFreeEnergy\nF_d=DynamicFreeEnergy\nmu_star=PriorExpectation\nt=ContinuousTime",
+    "ModelParameters": "state_dim: 3\nobs_dim: 4\naction_dim: 2\ndt: 0.01\nsimulation_time: 5.0\nlearning_rate_belief: 1.0\nlearning_rate_action: 0.1",
+    "Footer": "Predictive Coding Active Inference Agent v1 - GNN Representation.\nImplements the core predictive processing architecture:\n  perception = minimizing sensory prediction errors,\n  action = minimizing expected sensory prediction errors.\nPrecision parameters enable attentional modulation.",
+    "Signature": "Cryptographic signature goes here"
+  }
+}

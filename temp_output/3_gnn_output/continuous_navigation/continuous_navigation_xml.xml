@@ -1,0 +1,142 @@
+<?xml version="1.0" ?>
+<gnn_model name="Continuous State Navigation Agent" version="1.0">
+  <metadata>
+    <annotation>A continuous-state Active Inference agent navigating a 2D environment:
+- Hidden states: 2D position (x, y) as Gaussian belief
+- Observations: noisy position measurements with Gaussian noise
+- Actions: 2D velocity commands (dx, dy)
+- Uses Laplace approximation for Gaussian belief updating
+- Generalized coordinates of motion for smooth trajectories</annotation>
+    <created_at>2026-03-13T18:17:23.585088</created_at>
+    <modified_at>2026-03-13T18:17:23.585088</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="2,2" name="A_Σ" type="action" description="Observation noise covariance"/>
+    <variable data_type="float" dimensions="2,2" name="A_μ" type="action" description="Observation mean mapping (identity + noise)"/>
+    <variable data_type="float" dimensions="2,2" name="B_f" type="hidden_state" description="State transition matrix (flow)"/>
+    <variable data_type="float" dimensions="2,2" name="B_u" type="hidden_state" description="Action effect matrix"/>
+    <variable data_type="float" dimensions="2,2" name="C_Σ" type="hidden_state" description="Preference uncertainty"/>
+    <variable data_type="float" dimensions="2,1" name="C_μ" type="hidden_state" description="Target position (preference mean)"/>
+    <variable data_type="float" dimensions="1" name="F" type="hidden_state" description="Variational Free Energy (scalar)"/>
+    <variable data_type="float" dimensions="1" name="G" type="policy" description="Expected Free Energy (scalar)"/>
+    <variable data_type="float" dimensions="2,1" name="o" type="observation" description="Observation (noisy position measurement)"/>
+    <variable data_type="float" dimensions="1" name="t" type="hidden_state" description="Continuous time"/>
+    <variable data_type="float" dimensions="2,1" name="u" type="action" description="Continuous velocity command"/>
+    <variable data_type="float" dimensions="2,2" name="Π_o" type="hidden_state" description="Sensory precision matrix (inverse noise cov)"/>
+    <variable data_type="float" dimensions="2,2" name="Π_x" type="hidden_state" description="Dynamic precision matrix"/>
+    <variable data_type="float" dimensions="2,2" name="Σ" type="hidden_state" description="Covariance of position belief"/>
+    <variable data_type="float" dimensions="2,1" name="ε_o" type="hidden_state" description="Sensory prediction error"/>
+    <variable data_type="float" dimensions="2,1" name="ε_x" type="hidden_state" description="Dynamic prediction error"/>
+    <variable data_type="float" dimensions="2,1" name="μ" type="hidden_state" description="Mean of position belief (x, y)"/>
+    <variable data_type="float" dimensions="2,1" name="μ_ddot" type="hidden_state" description="Acceleration (second motion derivative)"/>
+    <variable data_type="float" dimensions="2,1" name="μ_dot" type="hidden_state" description="Velocity (first motion derivative)"/>
+    <variable data_type="float" dimensions="2,1" name="μ_prime" type="hidden_state" description="Next position mean (predicted)"/>
+  </variables>
+  <connections>
+    <connection type="undirected">
+      <sources>A_Σ</sources>
+      <targets>ε_o</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>A_μ</sources>
+      <targets>o</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>B_f</sources>
+      <targets>μ_prime</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>B_u</sources>
+      <targets>μ_prime</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>C_Σ</sources>
+      <targets>G</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>C_μ</sources>
+      <targets>G</targets>
+    </connection>
+    <connection type="directed">
+      <sources>G</sources>
+      <targets>u</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>o</sources>
+      <targets>ε_o</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>u</sources>
+      <targets>B_u</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>Π_o</sources>
+      <targets>F</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>Π_x</sources>
+      <targets>F</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>Σ</sources>
+      <targets>Π_o</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>ε_o</sources>
+      <targets>F</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>ε_x</sources>
+      <targets>F</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>μ</sources>
+      <targets>A_μ</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>μ</sources>
+      <targets>B_f</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>μ</sources>
+      <targets>Σ</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>μ_prime</sources>
+      <targets>G</targets>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A_Σ">[[0.1, 0.0], [0.0, 0.1]]</parameter>
+    <parameter name="A_μ">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="B_f">[[1.0, 0.0], [0.0, 1.0]]</parameter>
+    <parameter name="B_u">[[0.1, 0.0], [0.0, 0.1]]</parameter>
+    <parameter name="C_Σ">[[0.05, 0.0], [0.0, 0.05]]</parameter>
+    <parameter name="C_μ">[[1.0], [1.0]]</parameter>
+    <parameter name="Π_o">[[10.0, 0.0], [0.0, 10.0]]</parameter>
+    <parameter name="Π_x">[[20.0, 0.0], [0.0, 20.0]]</parameter>
+    <parameter name="Σ">[[0.5, 0.0], [0.0, 0.5]]</parameter>
+    <parameter name="μ">[[0.0], [0.0]]</parameter>
+  </parameters>
+  <time_specification horizon="10.0" type="Dynamic"/>
+  <ontology_mappings>
+    <mapping term="ObservationNoise" variable="A_Σ"/>
+    <mapping term="ObservationMeanMapping" variable="A_μ"/>
+    <mapping term="DynamicsMatrix" variable="B_f"/>
+    <mapping term="ActionEffectMatrix" variable="B_u"/>
+    <mapping term="PreferenceCovariance" variable="C_Σ"/>
+    <mapping term="PreferenceMean" variable="C_μ"/>
+    <mapping term="VariationalFreeEnergy" variable="F"/>
+    <mapping term="ExpectedFreeEnergy" variable="G"/>
+    <mapping term="Observation" variable="o"/>
+    <mapping term="ContinuousTime" variable="t"/>
+    <mapping term="ContinuousAction" variable="u"/>
+    <mapping term="SensoryPrecision" variable="Π_o"/>
+    <mapping term="DynamicPrecision" variable="Π_x"/>
+    <mapping term="BeliefCovariance" variable="Σ"/>
+    <mapping term="SensoryPredictionError" variable="ε_o"/>
+    <mapping term="DynamicPredictionError" variable="ε_x"/>
+    <mapping term="BeliefMean" variable="μ"/>
+  </ontology_mappings>
+<!-- MODEL_DATA: {"model_name":"Continuous State Navigation Agent","annotation":"A continuous-state Active Inference agent navigating a 2D environment:\n- Hidden states: 2D position (x, y) as Gaussian belief\n- Observations: noisy position measurements with Gaussian noise\n- Actions: 2D velocity commands (dx, dy)\n- Uses Laplace approximation for Gaussian belief updating\n- Generalized coordinates of motion for smooth trajectories","variables":[{"name":"\u03bc","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"\u03a3","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"\u03bc_prime","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"\u03bc_dot","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"\u03bc_ddot","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"A_\u03bc","var_type":"action","data_type":"float","dimensions":[2,2]},{"name":"A_\u03a3","var_type":"action","data_type":"float","dimensions":[2,2]},{"name":"o","var_type":"observation","data_type":"float","dimensions":[2,1]},{"name":"B_f","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"B_u","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"C_\u03bc","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"C_\u03a3","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"u","var_type":"action","data_type":"float","dimensions":[2,1]},{"name":"F","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"G","var_type":"policy","data_type":"float","dimensions":[1]},{"name":"\u03b5_o","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"\u03b5_x","var_type":"hidden_state","data_type":"float","dimensions":[2,1]},{"name":"\u03a0_o","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"\u03a0_x","var_type":"hidden_state","data_type":"float","dimensions":[2,2]},{"name":"t","var_type":"hidden_state","data_type":"float","dimensions":[1]}],"connections":[{"source_variables":["\u03bc"],"target_variables":["A_\u03bc"],"connection_type":"undirected"},{"source_variables":["A_\u03bc"],"target_variables":["o"],"connection_type":"undirected"},{"source_variables":["A_\u03a3"],"target_variables":["\u03b5_o"],"connection_type":"undirected"},{"source_variables":["o"],"target_variables":["\u03b5_o"],"connection_type":"undirected"},{"source_variables":["\u03b5_o"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["\u03a0_o"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["\u03bc"],"target_variables":["B_f"],"connection_type":"undirected"},{"source_variables":["B_f"],"target_variables":["\u03bc_prime"],"connection_type":"undirected"},{"source_variables":["B_u"],"target_variables":["\u03bc_prime"],"connection_type":"undirected"},{"source_variables":["u"],"target_variables":["B_u"],"connection_type":"undirected"},{"source_variables":["\u03b5_x"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["\u03a0_x"],"target_variables":["F"],"connection_type":"undirected"},{"source_variables":["C_\u03bc"],"target_variables":["G"],"connection_type":"undirected"},{"source_variables":["C_\u03a3"],"target_variables":["G"],"connection_type":"undirected"},{"source_variables":["\u03bc_prime"],"target_variables":["G"],"connection_type":"undirected"},{"source_variables":["G"],"target_variables":["u"],"connection_type":"directed"},{"source_variables":["\u03bc"],"target_variables":["\u03a3"],"connection_type":"undirected"},{"source_variables":["\u03a3"],"target_variables":["\u03a0_o"],"connection_type":"undirected"}],"parameters":[{"name":"A_\u03bc","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"A_\u03a3","value":[[0.1,0.0],[0.0,0.1]],"param_type":"constant"},{"name":"B_f","value":[[1.0,0.0],[0.0,1.0]],"param_type":"constant"},{"name":"B_u","value":[[0.1,0.0],[0.0,0.1]],"param_type":"constant"},{"name":"C_\u03bc","value":[[1.0],[1.0]],"param_type":"constant"},{"name":"C_\u03a3","value":[[0.05,0.0],[0.0,0.05]],"param_type":"constant"},{"name":"\u03bc","value":[[0.0],[0.0]],"param_type":"constant"},{"name":"\u03a3","value":[[0.5,0.0],[0.0,0.5]],"param_type":"constant"},{"name":"\u03a0_o","value":[[10.0,0.0],[0.0,10.0]],"param_type":"constant"},{"name":"\u03a0_x","value":[[20.0,0.0],[0.0,20.0]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":"10.0","step_size":null},"ontology_mappings":[{"variable_name":"\u03bc","ontology_term":"BeliefMean","description":null},{"variable_name":"\u03a3","ontology_term":"BeliefCovariance","description":null},{"variable_name":"A_\u03bc","ontology_term":"ObservationMeanMapping","description":null},{"variable_name":"A_\u03a3","ontology_term":"ObservationNoise","description":null},{"variable_name":"o","ontology_term":"Observation","description":null},{"variable_name":"B_f","ontology_term":"DynamicsMatrix","description":null},{"variable_name":"B_u","ontology_term":"ActionEffectMatrix","description":null},{"variable_name":"C_\u03bc","ontology_term":"PreferenceMean","description":null},{"variable_name":"C_\u03a3","ontology_term":"PreferenceCovariance","description":null},{"variable_name":"u","ontology_term":"ContinuousAction","description":null},{"variable_name":"F","ontology_term":"VariationalFreeEnergy","description":null},{"variable_name":"G","ontology_term":"ExpectedFreeEnergy","description":null},{"variable_name":"\u03b5_o","ontology_term":"SensoryPredictionError","description":null},{"variable_name":"\u03b5_x","ontology_term":"DynamicPredictionError","description":null},{"variable_name":"\u03a0_o","ontology_term":"SensoryPrecision","description":null},{"variable_name":"\u03a0_x","ontology_term":"DynamicPrecision","description":null},{"variable_name":"t","ontology_term":"ContinuousTime","description":null}]} -->
+</gnn_model>

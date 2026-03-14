@@ -62,6 +62,30 @@ def handle_hover(msg_id, params):
         }
     }
 
+def publish_diagnostics(uri, text):
+    """Run basic validation and publish diagnostics."""
+    diagnostics = []
+    
+    # Simple syntax check: look for missing closing braces
+    if "{" in text and "}" not in text:
+        diagnostics.append({
+            "range": {
+                "start": {"line": 0, "character": 0},
+                "end": {"line": 0, "character": 100}
+            },
+            "severity": 1, # Error
+            "message": "Missing closing brace '}'"
+        })
+        
+    write_message({
+        "jsonrpc": "2.0",
+        "method": "textDocument/publishDiagnostics",
+        "params": {
+            "uri": uri,
+            "diagnostics": diagnostics
+        }
+    })
+
 def start_lsp():
     """Start the Language Server Protocol loop on stdin/stdout."""
     # Setup simple logging to a file to avoid corrupting stdout
@@ -85,6 +109,22 @@ def start_lsp():
                 pass
             elif method == "textDocument/hover":
                 write_message(handle_hover(msg_id, msg.get("params")))
+            elif method == "textDocument/didOpen":
+                params = msg.get("params", {})
+                doc = params.get("textDocument", {})
+                uri = doc.get("uri", "")
+                text = doc.get("text", "")
+                if uri and text:
+                    publish_diagnostics(uri, text)
+            elif method == "textDocument/didChange":
+                params = msg.get("params", {})
+                doc = params.get("textDocument", {})
+                uri = doc.get("uri", "")
+                changes = params.get("contentChanges", [])
+                if uri and changes:
+                    # Sync sends full text
+                    text = changes[0].get("text", "")
+                    publish_diagnostics(uri, text)
             elif method == "shutdown":
                 write_message({
                     "jsonrpc": "2.0",

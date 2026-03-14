@@ -1,0 +1,209 @@
+<?xml version="1.0" ?>
+<gnn_model name="Stigmergic Swarm Active Inference" version="1.0">
+  <metadata>
+    <annotation>Three Active Inference agents coordinating via stigmergy (environmental traces):
+- No direct communication between agents — coordination emerges from environment
+- Agents deposit and sense environmental signals (pheromone analogy)
+- Shared 3x3 grid environment with signal intensity at each cell
+- Each agent navigates independently while responding to accumulated signals
+- Signal deposition: actions leave traces that other agents can observe
+- Signal decay: environmental signals decay over time (volatility)
+- Demonstrates emergent collective behavior from individual free energy minimization
+- Models ant colony foraging, distributed robotics, and decentralized coordination</annotation>
+    <created_at>2026-03-13T18:17:22.792525</created_at>
+    <modified_at>2026-03-13T18:17:22.792525</modified_at>
+  </metadata>
+  <variables>
+    <variable data_type="float" dimensions="4,9" name="A1" type="action" description="Agent 1 likelihood: P(obs | position on 3x3 grid)"/>
+    <variable data_type="float" dimensions="4,9" name="A2" type="action" description="Agent 2 likelihood"/>
+    <variable data_type="float" dimensions="4,9" name="A3" type="action" description="Agent 3 likelihood"/>
+    <variable data_type="float" dimensions="9,9,4" name="B1" type="hidden_state" description="Agent 1 transitions: (9 positions × 4 actions: N/S/E/W)"/>
+    <variable data_type="float" dimensions="9,9,4" name="B2" type="hidden_state" description="Agent 2 transitions"/>
+    <variable data_type="float" dimensions="9,9,4" name="B3" type="hidden_state" description="Agent 3 transitions"/>
+    <variable data_type="float" dimensions="4" name="C1" type="hidden_state" description="Agent 1 preferences over observations"/>
+    <variable data_type="float" dimensions="4" name="C2" type="hidden_state" description="Agent 2 preferences"/>
+    <variable data_type="float" dimensions="4" name="C3" type="hidden_state" description="Agent 3 preferences"/>
+    <variable data_type="float" dimensions="9" name="D1" type="hidden_state" description="Agent 1 position prior"/>
+    <variable data_type="float" dimensions="9" name="D2" type="hidden_state" description="Agent 2 position prior"/>
+    <variable data_type="float" dimensions="9" name="D3" type="hidden_state" description="Agent 3 position prior"/>
+    <variable data_type="float" dimensions="1" name="G1" type="hidden_state" description="Agent 1 EFE"/>
+    <variable data_type="float" dimensions="1" name="G2" type="hidden_state" description="Agent 2 EFE"/>
+    <variable data_type="float" dimensions="1" name="G3" type="hidden_state" description="Agent 3 EFE"/>
+    <variable data_type="float" dimensions="9,1" name="env_signal" type="hidden_state" description="Signal intensity at each grid cell (0.0 to 1.0)"/>
+    <variable data_type="integer" dimensions="4,1" name="o1" type="observation" description="Agent 1 observation: (empty, signal_low, signal_high, goal)"/>
+    <variable data_type="integer" dimensions="4,1" name="o2" type="observation" description="Agent 2 observation"/>
+    <variable data_type="integer" dimensions="4,1" name="o3" type="observation" description="Agent 3 observation"/>
+    <variable data_type="float" dimensions="4" name="pi1" type="policy" description="Agent 1 policy"/>
+    <variable data_type="float" dimensions="4" name="pi2" type="policy" description="Agent 2 policy"/>
+    <variable data_type="float" dimensions="4" name="pi3" type="policy" description="Agent 3 policy"/>
+    <variable data_type="float" dimensions="9,1" name="s1" type="hidden_state" description="Agent 1 position belief (9 grid cells)"/>
+    <variable data_type="float" dimensions="9,1" name="s2" type="hidden_state" description="Agent 2 position belief"/>
+    <variable data_type="float" dimensions="9,1" name="s3" type="hidden_state" description="Agent 3 position belief"/>
+    <variable data_type="float" dimensions="1" name="signal_decay" type="hidden_state" description="Signal decay rate per timestep"/>
+    <variable data_type="integer" dimensions="1" name="t" type="hidden_state" description="Discrete time step"/>
+    <variable data_type="integer" dimensions="1" name="u1" type="action" description="Agent 1 action"/>
+    <variable data_type="integer" dimensions="1" name="u2" type="action" description="Agent 2 action"/>
+    <variable data_type="integer" dimensions="1" name="u3" type="action" description="Agent 3 action"/>
+  </variables>
+  <connections>
+    <connection type="undirected">
+      <sources>A1</sources>
+      <targets>o1</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>A2</sources>
+      <targets>o2</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>A3</sources>
+      <targets>o3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>B1</sources>
+      <targets>u1</targets>
+    </connection>
+    <connection type="directed">
+      <sources>B2</sources>
+      <targets>u2</targets>
+    </connection>
+    <connection type="directed">
+      <sources>B3</sources>
+      <targets>u3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>C1</sources>
+      <targets>G1</targets>
+    </connection>
+    <connection type="directed">
+      <sources>C2</sources>
+      <targets>G2</targets>
+    </connection>
+    <connection type="directed">
+      <sources>C3</sources>
+      <targets>G3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>D1</sources>
+      <targets>s1</targets>
+    </connection>
+    <connection type="directed">
+      <sources>D2</sources>
+      <targets>s2</targets>
+    </connection>
+    <connection type="directed">
+      <sources>D3</sources>
+      <targets>s3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>G1</sources>
+      <targets>pi1</targets>
+    </connection>
+    <connection type="directed">
+      <sources>G2</sources>
+      <targets>pi2</targets>
+    </connection>
+    <connection type="directed">
+      <sources>G3</sources>
+      <targets>pi3</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>env_signal</sources>
+      <targets>A1</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>env_signal</sources>
+      <targets>A2</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>env_signal</sources>
+      <targets>A3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>pi1</sources>
+      <targets>u1</targets>
+    </connection>
+    <connection type="directed">
+      <sources>pi2</sources>
+      <targets>u2</targets>
+    </connection>
+    <connection type="directed">
+      <sources>pi3</sources>
+      <targets>u3</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>s1</sources>
+      <targets>A1</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>s2</sources>
+      <targets>A2</targets>
+    </connection>
+    <connection type="undirected">
+      <sources>s3</sources>
+      <targets>A3</targets>
+    </connection>
+    <connection type="directed">
+      <sources>signal_decay</sources>
+      <targets>env_signal</targets>
+    </connection>
+    <connection type="directed">
+      <sources>u1</sources>
+      <targets>env_signal</targets>
+    </connection>
+    <connection type="directed">
+      <sources>u2</sources>
+      <targets>env_signal</targets>
+    </connection>
+    <connection type="directed">
+      <sources>u3</sources>
+      <targets>env_signal</targets>
+    </connection>
+  </connections>
+  <parameters>
+    <parameter name="A1">[[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]</parameter>
+    <parameter name="A2">[[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]</parameter>
+    <parameter name="A3">[[0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.7, 0.1], [0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.15, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1], [0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.05, 0.7]]</parameter>
+    <parameter name="C1">[[-0.5, 0.5, 1.5, 3.0]]</parameter>
+    <parameter name="C2">[[-0.5, 0.5, 1.5, 3.0]]</parameter>
+    <parameter name="C3">[[-0.5, 0.5, 1.5, 3.0]]</parameter>
+    <parameter name="D1">[[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]</parameter>
+    <parameter name="D2">[[0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]</parameter>
+    <parameter name="D3">[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]]</parameter>
+    <parameter name="env_signal">[[0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]]</parameter>
+    <parameter name="signal_decay">[[0.9]]</parameter>
+  </parameters>
+  <time_specification horizon="30" type="Dynamic"/>
+  <ontology_mappings>
+    <mapping term="Agent1LikelihoodMatrix" variable="A1"/>
+    <mapping term="Agent2LikelihoodMatrix" variable="A2"/>
+    <mapping term="Agent3LikelihoodMatrix" variable="A3"/>
+    <mapping term="Agent1TransitionMatrix" variable="B1"/>
+    <mapping term="Agent2TransitionMatrix" variable="B2"/>
+    <mapping term="Agent3TransitionMatrix" variable="B3"/>
+    <mapping term="Agent1PreferenceVector" variable="C1"/>
+    <mapping term="Agent2PreferenceVector" variable="C2"/>
+    <mapping term="Agent3PreferenceVector" variable="C3"/>
+    <mapping term="Agent1PositionPrior" variable="D1"/>
+    <mapping term="Agent2PositionPrior" variable="D2"/>
+    <mapping term="Agent3PositionPrior" variable="D3"/>
+    <mapping term="Agent1ExpectedFreeEnergy" variable="G1"/>
+    <mapping term="Agent2ExpectedFreeEnergy" variable="G2"/>
+    <mapping term="Agent3ExpectedFreeEnergy" variable="G3"/>
+    <mapping term="EnvironmentalSignal" variable="env_signal"/>
+    <mapping term="Agent1Observation" variable="o1"/>
+    <mapping term="Agent2Observation" variable="o2"/>
+    <mapping term="Agent3Observation" variable="o3"/>
+    <mapping term="Agent1PolicyVector" variable="pi1"/>
+    <mapping term="Agent2PolicyVector" variable="pi2"/>
+    <mapping term="Agent3PolicyVector" variable="pi3"/>
+    <mapping term="Agent1PositionState" variable="s1"/>
+    <mapping term="Agent2PositionState" variable="s2"/>
+    <mapping term="Agent3PositionState" variable="s3"/>
+    <mapping term="SignalDecayRate" variable="signal_decay"/>
+    <mapping term="Time" variable="t"/>
+    <mapping term="Agent1Action" variable="u1"/>
+    <mapping term="Agent2Action" variable="u2"/>
+    <mapping term="Agent3Action" variable="u3"/>
+  </ontology_mappings>
+<!-- MODEL_DATA: {"model_name":"Stigmergic Swarm Active Inference","annotation":"Three Active Inference agents coordinating via stigmergy (environmental traces):\n\n- No direct communication between agents \u2014 coordination emerges from environment\n- Agents deposit and sense environmental signals (pheromone analogy)\n- Shared 3x3 grid environment with signal intensity at each cell\n- Each agent navigates independently while responding to accumulated signals\n- Signal deposition: actions leave traces that other agents can observe\n- Signal decay: environmental signals decay over time (volatility)\n- Demonstrates emergent collective behavior from individual free energy minimization\n- Models ant colony foraging, distributed robotics, and decentralized coordination","variables":[{"name":"A1","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B1","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C1","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D1","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s1","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o1","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi1","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u1","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G1","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A2","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B2","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C2","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D2","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s2","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o2","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi2","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u2","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G2","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"A3","var_type":"action","data_type":"float","dimensions":[4,9]},{"name":"B3","var_type":"hidden_state","data_type":"float","dimensions":[9,9,4]},{"name":"C3","var_type":"hidden_state","data_type":"float","dimensions":[4]},{"name":"D3","var_type":"hidden_state","data_type":"float","dimensions":[9]},{"name":"s3","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"o3","var_type":"observation","data_type":"integer","dimensions":[4,1]},{"name":"pi3","var_type":"policy","data_type":"float","dimensions":[4]},{"name":"u3","var_type":"action","data_type":"integer","dimensions":[1]},{"name":"G3","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"env_signal","var_type":"hidden_state","data_type":"float","dimensions":[9,1]},{"name":"signal_decay","var_type":"hidden_state","data_type":"float","dimensions":[1]},{"name":"t","var_type":"hidden_state","data_type":"integer","dimensions":[1]}],"connections":[{"source_variables":["D1"],"target_variables":["s1"],"connection_type":"directed"},{"source_variables":["s1"],"target_variables":["A1"],"connection_type":"undirected"},{"source_variables":["A1"],"target_variables":["o1"],"connection_type":"undirected"},{"source_variables":["C1"],"target_variables":["G1"],"connection_type":"directed"},{"source_variables":["G1"],"target_variables":["pi1"],"connection_type":"directed"},{"source_variables":["pi1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["B1"],"target_variables":["u1"],"connection_type":"directed"},{"source_variables":["D2"],"target_variables":["s2"],"connection_type":"directed"},{"source_variables":["s2"],"target_variables":["A2"],"connection_type":"undirected"},{"source_variables":["A2"],"target_variables":["o2"],"connection_type":"undirected"},{"source_variables":["C2"],"target_variables":["G2"],"connection_type":"directed"},{"source_variables":["G2"],"target_variables":["pi2"],"connection_type":"directed"},{"source_variables":["pi2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["B2"],"target_variables":["u2"],"connection_type":"directed"},{"source_variables":["D3"],"target_variables":["s3"],"connection_type":"directed"},{"source_variables":["s3"],"target_variables":["A3"],"connection_type":"undirected"},{"source_variables":["A3"],"target_variables":["o3"],"connection_type":"undirected"},{"source_variables":["C3"],"target_variables":["G3"],"connection_type":"directed"},{"source_variables":["G3"],"target_variables":["pi3"],"connection_type":"directed"},{"source_variables":["pi3"],"target_variables":["u3"],"connection_type":"directed"},{"source_variables":["B3"],"target_variables":["u3"],"connection_type":"directed"},{"source_variables":["u1"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["u2"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["u3"],"target_variables":["env_signal"],"connection_type":"directed"},{"source_variables":["env_signal"],"target_variables":["A1"],"connection_type":"undirected"},{"source_variables":["env_signal"],"target_variables":["A2"],"connection_type":"undirected"},{"source_variables":["env_signal"],"target_variables":["A3"],"connection_type":"undirected"},{"source_variables":["signal_decay"],"target_variables":["env_signal"],"connection_type":"directed"}],"parameters":[{"name":"A1","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"A2","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"A3","value":[[0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.7,0.1],[0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.15,0.1],[0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1],[0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.05,0.7]],"param_type":"constant"},{"name":"C1","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"C2","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"C3","value":[[-0.5,0.5,1.5,3.0]],"param_type":"constant"},{"name":"D1","value":[[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"D2","value":[[0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"D3","value":[[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0]],"param_type":"constant"},{"name":"env_signal","value":[[0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0]],"param_type":"constant"},{"name":"signal_decay","value":[[0.9]],"param_type":"constant"}],"equations":[],"time_specification":{"time_type":"Dynamic","discretization":null,"horizon":30,"step_size":null},"ontology_mappings":[{"variable_name":"A1","ontology_term":"Agent1LikelihoodMatrix","description":null},{"variable_name":"B1","ontology_term":"Agent1TransitionMatrix","description":null},{"variable_name":"C1","ontology_term":"Agent1PreferenceVector","description":null},{"variable_name":"D1","ontology_term":"Agent1PositionPrior","description":null},{"variable_name":"s1","ontology_term":"Agent1PositionState","description":null},{"variable_name":"o1","ontology_term":"Agent1Observation","description":null},{"variable_name":"pi1","ontology_term":"Agent1PolicyVector","description":null},{"variable_name":"u1","ontology_term":"Agent1Action","description":null},{"variable_name":"G1","ontology_term":"Agent1ExpectedFreeEnergy","description":null},{"variable_name":"A2","ontology_term":"Agent2LikelihoodMatrix","description":null},{"variable_name":"B2","ontology_term":"Agent2TransitionMatrix","description":null},{"variable_name":"C2","ontology_term":"Agent2PreferenceVector","description":null},{"variable_name":"D2","ontology_term":"Agent2PositionPrior","description":null},{"variable_name":"s2","ontology_term":"Agent2PositionState","description":null},{"variable_name":"o2","ontology_term":"Agent2Observation","description":null},{"variable_name":"pi2","ontology_term":"Agent2PolicyVector","description":null},{"variable_name":"u2","ontology_term":"Agent2Action","description":null},{"variable_name":"G2","ontology_term":"Agent2ExpectedFreeEnergy","description":null},{"variable_name":"A3","ontology_term":"Agent3LikelihoodMatrix","description":null},{"variable_name":"B3","ontology_term":"Agent3TransitionMatrix","description":null},{"variable_name":"C3","ontology_term":"Agent3PreferenceVector","description":null},{"variable_name":"D3","ontology_term":"Agent3PositionPrior","description":null},{"variable_name":"s3","ontology_term":"Agent3PositionState","description":null},{"variable_name":"o3","ontology_term":"Agent3Observation","description":null},{"variable_name":"pi3","ontology_term":"Agent3PolicyVector","description":null},{"variable_name":"u3","ontology_term":"Agent3Action","description":null},{"variable_name":"G3","ontology_term":"Agent3ExpectedFreeEnergy","description":null},{"variable_name":"env_signal","ontology_term":"EnvironmentalSignal","description":null},{"variable_name":"signal_decay","ontology_term":"SignalDecayRate","description":null},{"variable_name":"t","ontology_term":"Time","description":null}]} -->
+</gnn_model>

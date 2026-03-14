@@ -1,0 +1,827 @@
+{
+  "annotation": "An Active Inference POMDP with deep (T=5) planning horizon:\n- Evaluates policies over 5 future timesteps before acting\n- Uses rollout Expected Free Energy accumulation\n- 4 hidden states, 4 observations, 4 actions\n- Each action policy is a sequence of T actions: π = [a_1, a_2, ..., a_T]\n- Enables sophisticated multi-step reasoning and delayed reward attribution",
+  "checksum": null,
+  "connections": [
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "D"
+      ],
+      "target_variables": [
+        "s"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "A"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "o"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "o"
+      ],
+      "target_variables": [
+        "F"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "E"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s"
+      ],
+      "target_variables": [
+        "s_tau1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_tau1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_tau1"
+      ],
+      "target_variables": [
+        "s_tau2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_tau2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_tau2"
+      ],
+      "target_variables": [
+        "s_tau3"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_tau3"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_tau3"
+      ],
+      "target_variables": [
+        "s_tau4"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "B"
+      ],
+      "target_variables": [
+        "s_tau4"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "s_tau4"
+      ],
+      "target_variables": [
+        "s_tau5"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "s_tau1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "s_tau2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "s_tau3"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "s_tau4"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "undirected",
+      "description": null,
+      "source_variables": [
+        "A"
+      ],
+      "target_variables": [
+        "s_tau5"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_tau1"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_tau2"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_tau3"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_tau4"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "C"
+      ],
+      "target_variables": [
+        "G_tau5"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_tau1"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_tau2"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_tau3"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_tau4"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G_tau5"
+      ],
+      "target_variables": [
+        "G"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "G"
+      ],
+      "target_variables": [
+        "π"
+      ],
+      "weight": null
+    },
+    {
+      "connection_type": "directed",
+      "description": null,
+      "source_variables": [
+        "π"
+      ],
+      "target_variables": [
+        "u"
+      ],
+      "weight": null
+    }
+  ],
+  "created_at": "2026-03-13T18:17:22.995212",
+  "equations": [],
+  "extensions": {
+    "footer": "Deep Planning Horizon POMDP v1 - GNN Representation.\nT=5 horizon enables multi-step consequence reasoning.\nPolicy space grows exponentially with T: |actions|^T = 4^3 = 64 policies (pruned).",
+    "gnn_section": "ActInfPOMDP",
+    "signature": "Cryptographic signature goes here"
+  },
+  "model_name": "Deep Planning Horizon POMDP",
+  "modified_at": "2026-03-13T18:17:22.995213",
+  "ontology_mappings": [
+    {
+      "description": null,
+      "ontology_term": "LikelihoodMatrix",
+      "variable_name": "A"
+    },
+    {
+      "description": null,
+      "ontology_term": "TransitionMatrix",
+      "variable_name": "B"
+    },
+    {
+      "description": null,
+      "ontology_term": "LogPreferenceVector",
+      "variable_name": "C"
+    },
+    {
+      "description": null,
+      "ontology_term": "PriorOverHiddenStates",
+      "variable_name": "D"
+    },
+    {
+      "description": null,
+      "ontology_term": "PolicyPrior",
+      "variable_name": "E"
+    },
+    {
+      "description": null,
+      "ontology_term": "HiddenState",
+      "variable_name": "s"
+    },
+    {
+      "description": null,
+      "ontology_term": "Observation",
+      "variable_name": "o"
+    },
+    {
+      "description": null,
+      "ontology_term": "PolicySequenceDistribution",
+      "variable_name": "π"
+    },
+    {
+      "description": null,
+      "ontology_term": "Action",
+      "variable_name": "u"
+    },
+    {
+      "description": null,
+      "ontology_term": "CumulativeExpectedFreeEnergy",
+      "variable_name": "G"
+    },
+    {
+      "description": null,
+      "ontology_term": "VariationalFreeEnergy",
+      "variable_name": "F"
+    },
+    {
+      "description": null,
+      "ontology_term": "Time",
+      "variable_name": "t"
+    }
+  ],
+  "parameters": [
+    {
+      "description": null,
+      "name": "A",
+      "type_hint": null,
+      "value": [
+        [
+          0.9,
+          0.05,
+          0.025,
+          0.025
+        ],
+        [
+          0.05,
+          0.9,
+          0.025,
+          0.025
+        ],
+        [
+          0.025,
+          0.025,
+          0.9,
+          0.05
+        ],
+        [
+          0.025,
+          0.025,
+          0.05,
+          0.9
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "B",
+      "type_hint": null,
+      "value": [
+        [
+          [
+            0.9,
+            0.1,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.9,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.9,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.0,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.9,
+            0.0,
+            0.0,
+            0.1
+          ],
+          [
+            0.1,
+            0.9,
+            0.0,
+            0.0
+          ],
+          [
+            0.0,
+            0.1,
+            0.9,
+            0.0
+          ],
+          [
+            0.0,
+            0.0,
+            0.1,
+            0.9
+          ]
+        ],
+        [
+          [
+            0.8,
+            0.1,
+            0.1,
+            0.0
+          ],
+          [
+            0.0,
+            0.8,
+            0.1,
+            0.1
+          ],
+          [
+            0.1,
+            0.0,
+            0.8,
+            0.1
+          ],
+          [
+            0.1,
+            0.1,
+            0.0,
+            0.8
+          ]
+        ],
+        [
+          [
+            0.7,
+            0.1,
+            0.1,
+            0.1
+          ],
+          [
+            0.1,
+            0.7,
+            0.1,
+            0.1
+          ],
+          [
+            0.1,
+            0.1,
+            0.7,
+            0.1
+          ],
+          [
+            0.1,
+            0.1,
+            0.1,
+            0.7
+          ]
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "C",
+      "type_hint": null,
+      "value": [
+        [
+          -1.0,
+          -0.5,
+          -0.5,
+          2.0
+        ]
+      ]
+    },
+    {
+      "description": null,
+      "name": "D",
+      "type_hint": null,
+      "value": [
+        [
+          0.25,
+          0.25,
+          0.25,
+          0.25
+        ]
+      ]
+    }
+  ],
+  "time_specification": {
+    "discretization": null,
+    "horizon": "Unbounded",
+    "step_size": null,
+    "time_type": "Dynamic"
+  },
+  "variables": [
+    {
+      "data_type": "float",
+      "description": "Likelihood matrix",
+      "dimensions": [
+        4,
+        4
+      ],
+      "name": "A",
+      "var_type": "likelihood_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "Transition matrix (4 actions)",
+      "dimensions": [
+        4,
+        4,
+        4
+      ],
+      "name": "B",
+      "var_type": "transition_matrix"
+    },
+    {
+      "data_type": "float",
+      "description": "Preferences (per observation)",
+      "dimensions": [
+        4
+      ],
+      "name": "C",
+      "var_type": "preference_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "Prior over initial states",
+      "dimensions": [
+        4
+      ],
+      "name": "D",
+      "var_type": "prior_vector"
+    },
+    {
+      "data_type": "float",
+      "description": "Habit prior over policies (4^3 = 64 short policies)",
+      "dimensions": [
+        64
+      ],
+      "name": "E",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "float",
+      "description": "Current hidden state belief",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Current observation",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "o",
+      "var_type": "observation"
+    },
+    {
+      "data_type": "float",
+      "description": "Policy distribution (over T-step action sequences)",
+      "dimensions": [
+        64
+      ],
+      "name": "π",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "integer",
+      "description": "Selected first action from best policy",
+      "dimensions": [
+        1
+      ],
+      "name": "u",
+      "var_type": "action"
+    },
+    {
+      "data_type": "float",
+      "description": "Predicted state at tau=1",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_tau1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Predicted state at tau=2",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_tau2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Predicted state at tau=3",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_tau3",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Predicted state at tau=4",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_tau4",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Predicted state at tau=5",
+      "dimensions": [
+        4,
+        1
+      ],
+      "name": "s_tau5",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "EFE contribution at tau=1",
+      "dimensions": [
+        64
+      ],
+      "name": "G_tau1",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "EFE contribution at tau=2",
+      "dimensions": [
+        64
+      ],
+      "name": "G_tau2",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "EFE contribution at tau=3",
+      "dimensions": [
+        64
+      ],
+      "name": "G_tau3",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "EFE contribution at tau=4",
+      "dimensions": [
+        64
+      ],
+      "name": "G_tau4",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "EFE contribution at tau=5",
+      "dimensions": [
+        64
+      ],
+      "name": "G_tau5",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "float",
+      "description": "Cumulative EFE (sum over horizon)",
+      "dimensions": [
+        64
+      ],
+      "name": "G",
+      "var_type": "policy"
+    },
+    {
+      "data_type": "float",
+      "description": "Variational Free Energy for current state",
+      "dimensions": [
+        1
+      ],
+      "name": "F",
+      "var_type": "hidden_state"
+    },
+    {
+      "data_type": "integer",
+      "description": "Discrete time step (action timestep)",
+      "dimensions": [
+        1
+      ],
+      "name": "t",
+      "var_type": "hidden_state"
+    }
+  ],
+  "version": "1.0"
+}

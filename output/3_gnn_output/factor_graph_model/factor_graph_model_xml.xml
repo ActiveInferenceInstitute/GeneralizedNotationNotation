@@ -8,8 +8,8 @@
 - Variable nodes: observation and state variables
 - Factor nodes: likelihood and transition factors
 - Enables modality-specific processing and efficient belief propagation</annotation>
-    <created_at>2026-03-13T14:15:04.307612</created_at>
-    <modified_at>2026-03-13T14:15:04.307613</modified_at>
+    <created_at>2026-03-13T18:17:53.942013</created_at>
+    <modified_at>2026-03-13T18:17:53.942018</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,2" name="A_prop" type="action" description="Proprioceptive likelihood: P(o_prop | s_vel)"/>
