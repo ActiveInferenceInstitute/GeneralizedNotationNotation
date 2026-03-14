@@ -14,7 +14,6 @@ from typing import Dict, Any, List
 import logging
 import json
 import warnings
-import numpy as np
 import matplotlib
 # Force non-interactive backend to avoid GUI/dpi hangs in headless environments
 matplotlib.use('Agg')

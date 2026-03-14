@@ -15,9 +15,9 @@ import argparse
 import time
 
 # --- Re-export everything from sub-modules for backward compatibility ---
+from .constants import VENV_DIR
 from .uv_management import (
     # Constants
-    VENV_DIR,
     PROJECT_ROOT,
     # Core setup functions
     check_system_requirements,

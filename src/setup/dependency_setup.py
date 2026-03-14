@@ -11,10 +11,12 @@ from pathlib import Path
 import logging
 from typing import List
 
-from .uv_management import (
+from .constants import (
     PROJECT_ROOT,
     VENV_PYTHON,
     OPTIONAL_GROUPS,
+)
+from .uv_management import (
     run_command,
     check_system_requirements,
     create_uv_environment,

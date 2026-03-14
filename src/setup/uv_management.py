@@ -16,7 +16,7 @@ import json
 from typing import Dict, Any, Optional
 
 from .constants import (
-    VENV_DIR, PROJECT_ROOT,
+    PROJECT_ROOT,
     VENV_PATH, PYPROJECT_PATH, LOCK_PATH, VENV_PYTHON,
     MIN_PYTHON_VERSION,
 )
