@@ -41,7 +41,7 @@ class ScriptValidationResult:
 class PipelineScriptValidator:
     """Validator for pipeline scripts."""
 
-    def __init__(self, src_dir: Path = None):
+    def __init__(self, src_dir: Optional[Path] = None):
         self.src_dir = src_dir or Path(__file__).parent.parent
         self.logger = logging.getLogger(__name__)
 
@@ -466,7 +466,7 @@ class PipelineScriptValidator:
 
         return fixes
 
-def validate_pipeline_scripts(src_dir: Path = None) -> Dict[str, Any]:
+def validate_pipeline_scripts(src_dir: Optional[Path] = None) -> Dict[str, Any]:
     """
     Validate all pipeline scripts and return comprehensive results.
     

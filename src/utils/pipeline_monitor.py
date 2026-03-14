@@ -589,8 +589,8 @@ def stop_pipeline_monitoring():
     pipeline_monitor.stop_monitoring()
 
 def record_step_execution(step_name: str, success: bool, duration: float,
-                         error_type: str = None, error_message: str = None,
-                         context: Dict[str, Any] = None) -> str:
+                         error_type: Optional[str] = None, error_message: Optional[str] = None,
+                         context: Optional[Dict[str, Any]] = None) -> str:
     """
     Convenience function to record step execution.
     

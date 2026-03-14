@@ -405,7 +405,7 @@ class ArgumentParser:
         return parser
 
     @classmethod
-    def create_step_parser(cls, step_name: str, description: str = None) -> argparse.ArgumentParser:
+    def create_step_parser(cls, step_name: str, description: Optional[str] = None) -> argparse.ArgumentParser:
         """Create a parser for a specific pipeline step."""
         if description is None:
             description = f"GNN Processing Pipeline - {step_name}"
@@ -843,7 +843,7 @@ class StepAwareArgumentParser:
     """Argument parser with step-specific validation and defaults."""
 
     @classmethod
-    def create_step_parser(cls, step_name: str, description: str = None) -> argparse.ArgumentParser:
+    def create_step_parser(cls, step_name: str, description: Optional[str] = None) -> argparse.ArgumentParser:
         """Create a parser for a specific pipeline step."""
         # Remove .py extension for config lookup if present
         config_key = step_name.replace('.py', '') if step_name.endswith('.py') else step_name
