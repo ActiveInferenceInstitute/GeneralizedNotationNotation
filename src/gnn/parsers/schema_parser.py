@@ -19,7 +19,8 @@ from pathlib import Path
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, VariableType, DataType, ConnectionType
+    Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
+    extract_embedded_json_data,
 )
 
 class XSDParser(BaseGNNParser):
@@ -1000,16 +1001,7 @@ class AlloyParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Alloy comments."""
-        import json
-        # Look for JSON data in /* MODEL_DATA: {...} */ comments
-        pattern = r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/'
-        match = re.search(pattern, content, re.DOTALL)
-        if match:
-            try:
-                return json.loads(match.group(1))
-            except json.JSONDecodeError:
-                pass
-        return None
+        return extract_embedded_json_data(content)
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""

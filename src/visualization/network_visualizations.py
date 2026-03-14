@@ -9,6 +9,8 @@ from pathlib import Path
 from typing import Dict, Any, List
 import logging
 import json
+
+from advanced_visualization._shared import _normalize_connection_format
 # Import visualization libraries with error handling
 try:
     import matplotlib
@@ -209,19 +211,6 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
 
     return visualizations
 
-
-def _normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
-    """Normalize connection format to handle both old and new formats."""
-    if "source_variables" in conn_info and "target_variables" in conn_info:
-        return conn_info
-    elif "source" in conn_info and "target" in conn_info:
-        return {
-            "source_variables": [conn_info["source"]],
-            "target_variables": [conn_info["target"]],
-            **{k: v for k, v in conn_info.items() if k not in ["source", "target"]}
-        }
-    else:
-        return conn_info
 
 
 def _determine_connection_type(source_var: str, target_var: str, source_type: str = None, target_type: str = None) -> str:
