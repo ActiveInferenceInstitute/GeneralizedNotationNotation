@@ -50,7 +50,7 @@ def extract_exports_from_init(init_path: Path) -> Dict[str, Any]:
                 exports['functions'].append(node.name)
             elif isinstance(node, ast.ClassDef):
                 exports['classes'].append(node.name)
-    except Exception:
+    except (SyntaxError, ValueError):
         pass
 
     return exports

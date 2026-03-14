@@ -10,7 +10,7 @@ import sys
 import re
 import json
 from pathlib import Path
-from typing import Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Tuple, Optional
 import ast
 
 # Add src to path (now in src/pipeline/, so go up two levels to project root)
@@ -381,7 +381,7 @@ class FilepathAuditor:
                 return False
         return True
 
-    def scan_file(self, file_path: Path):
+    def scan_file(self, file_path: Path) -> None:
         """Scan a single file for all reference issues"""
         if file_path.suffix == '.md':
             # Read content once for code block detection
@@ -416,10 +416,10 @@ class FilepathAuditor:
                 script_pattern = r'(\d+)_([a-z_]+)\.py'
                 for match in re.finditer(script_pattern, content):
                     self.validate_script_reference(file_path, match.group(0))
-            except Exception:
-                pass
+            except (OSError, UnicodeDecodeError):
+                pass  # Skip unreadable files (binary or encoding issues)
 
-    def verify_numbered_scripts(self):
+    def verify_numbered_scripts(self) -> None:
         """Verify all numbered scripts 0-24 exist"""
         src_dir = self.project_root / "src"
         for script_name, step_num in self.expected_scripts.items():
@@ -432,7 +432,7 @@ class FilepathAuditor:
                     "path": str(script_path.relative_to(self.project_root))
                 })
 
-    def verify_output_directories(self):
+    def verify_output_directories(self) -> None:
         """Verify output directory structure matches expected pattern"""
         output_dir = self.project_root / "output"
         if not output_dir.exists():
@@ -442,7 +442,7 @@ class FilepathAuditor:
             _dir_path = output_dir / dir_name
             # Note: directories might not exist if pipeline hasn't run, so this is just a check
 
-    def scan_all_files(self):
+    def scan_all_files(self) -> None:
         """Scan all relevant files in the project"""
         print("Scanning markdown files...")
         md_files = list(self.project_root.rglob("*.md"))
@@ -465,7 +465,7 @@ class FilepathAuditor:
                 continue
             self.scan_file(file_path)
 
-    def generate_report(self) -> Dict:
+    def generate_report(self) -> Dict[str, Any]:
         """Generate comprehensive audit report with false positive classification"""
         # Count only real issues (excluding false positives)
         total_real_issues = sum(len(issues) for issues in self.issues.values())
@@ -495,13 +495,13 @@ class FilepathAuditor:
             "fixes_applied": self.fixes_applied
         }
 
-    def save_report(self, output_path: Path):
+    def save_report(self, output_path: Path) -> None:
         """Save audit report to file"""
         report = self.generate_report()
         output_path.write_text(json.dumps(report, indent=2), encoding='utf-8')
         print(f"\nAudit report saved to: {output_path}")
 
-def main():
+def main() -> int:
     """Main execution"""
     project_root = Path(__file__).parent.parent.parent
     auditor = FilepathAuditor(project_root)
