@@ -36,7 +36,7 @@ def _safe_tight_layout():
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore', category=UserWarning,
                                   message='.*[Tt]ight.?layout.*')
-            _safe_tight_layout()
+            plt.tight_layout()
     except (ValueError, RuntimeError):
         pass  # Tight layout is not critical
 

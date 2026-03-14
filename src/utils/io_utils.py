@@ -5,6 +5,7 @@ This module provides file I/O utilities for batch operations,
 performance monitoring, and file system operations.
 """
 
+import os
 import time
 import logging
 import json
@@ -36,14 +37,32 @@ def batch_write_files(files_data: List[Dict[str, Any]], output_dir: Path) -> Dic
             # Ensure directory exists
             file_path.parent.mkdir(parents=True, exist_ok=True)
 
-            # Write file
+            # Atomic write: write to temp file first, then rename
             if isinstance(content, str):
-                file_path.write_text(content, encoding='utf-8')
+                with tempfile.NamedTemporaryFile(
+                    mode='w', dir=file_path.parent, delete=False,
+                    suffix='.tmp', encoding='utf-8'
+                ) as tmp:
+                    tmp.write(content)
+                    tmp_name = tmp.name
+                os.replace(tmp_name, file_path)
             elif isinstance(content, bytes):
-                file_path.write_bytes(content)
+                with tempfile.NamedTemporaryFile(
+                    mode='wb', dir=file_path.parent, delete=False,
+                    suffix='.tmp'
+                ) as tmp:
+                    tmp.write(content)
+                    tmp_name = tmp.name
+                os.replace(tmp_name, file_path)
             else:
                 # Assume JSON-serializable
-                file_path.write_text(json.dumps(content, indent=2), encoding='utf-8')
+                with tempfile.NamedTemporaryFile(
+                    mode='w', dir=file_path.parent, delete=False,
+                    suffix='.tmp', encoding='utf-8'
+                ) as tmp:
+                    tmp.write(json.dumps(content, indent=2))
+                    tmp_name = tmp.name
+                os.replace(tmp_name, file_path)
 
             results.append({
                 'path': str(file_path),

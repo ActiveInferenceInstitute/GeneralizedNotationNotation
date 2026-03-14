@@ -183,11 +183,18 @@ def save_processing_report(
     Returns:
         Path to the saved report file
     """
+    import tempfile
+
     output_dir.mkdir(parents=True, exist_ok=True)
     report_path = output_dir / filename
 
-    with open(report_path, 'w', encoding='utf-8') as f:
-        json.dump(report, f, indent=2, ensure_ascii=False)
+    # Atomic write: write to temp file first, then rename
+    with tempfile.NamedTemporaryFile(
+        mode='w', dir=output_dir, delete=False, suffix='.tmp', encoding='utf-8'
+    ) as tmp:
+        json.dump(report, tmp, indent=2, ensure_ascii=False)
+        tmp_name = tmp.name
+    os.replace(tmp_name, report_path)
 
     return report_path
 
