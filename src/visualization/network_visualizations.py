@@ -207,9 +207,7 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
             print(f"Warning: No valid nodes found for network visualization of {model_name}")
 
     except Exception as e:
-        print(f"Error generating network visualizations for {model_name}: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.exception(f"Error generating network visualizations for {model_name}: {e}")
 
     return visualizations
 

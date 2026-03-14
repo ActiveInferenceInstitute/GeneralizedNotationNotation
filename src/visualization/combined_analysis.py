@@ -366,9 +366,7 @@ def _generate_generative_model_diagram(parsed_data: Dict[str, Any], output_dir: 
         visualizations.append(str(plot_file))
 
     except Exception as e:
-        print(f"Error generating generative model diagram: {e}")
-        import traceback
-        traceback.print_exc()
+        logger.exception(f"Error generating generative model diagram: {e}")
 
     return visualizations
 

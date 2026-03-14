@@ -369,9 +369,7 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
                     logger.warning(f"No matrix data found for {model_name} - checked parameters, variables, and matrices sections")
         except Exception as e:
             if verbose:
-                logger.error(f"Matrix visualization failed for {model_name}: {e}")
-                import traceback
-                traceback.print_exc()
+                logger.exception(f"Matrix visualization failed for {model_name}: {e}")
 
         # 3. Combined analysis
         try:

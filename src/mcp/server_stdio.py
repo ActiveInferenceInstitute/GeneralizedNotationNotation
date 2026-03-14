@@ -21,7 +21,6 @@ import threading
 import queue
 import time
 from typing import Dict, Any, Optional
-import traceback
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -313,8 +312,7 @@ class StdioServer:
             logger.error(f"MCPError in method {method}: {mcpe}")
             self._send_error(request_id, mcpe.code, str(mcpe), data=getattr(mcpe, 'data', None))
         except Exception as e:
-            logger.error(f"Unhandled error in method {method}: {e}")
-            traceback.print_exc()
+            logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_error(request_id, -32603, f"Internal error: {str(e)}")
 
     def _send_result(self, request_id: str, result: Any):

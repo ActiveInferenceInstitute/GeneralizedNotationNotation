@@ -391,9 +391,7 @@ class PyMDPSimulation:
             return self.agent, self.model_matrices
 
         except Exception as e:
-            self.logger.error(f"Error creating PyMDP model from GNN matrices: {e}")
-            import traceback
-            traceback.print_exc()
+            self.logger.exception(f"Error creating PyMDP model from GNN matrices: {e}")
             # Fall back to default model creation
             self.logger.info("Falling back to default model creation")
             return self.create_pymdp_model()

@@ -13,7 +13,6 @@ Key Features:
 """
 import json
 import logging
-import traceback
 from typing import Dict, Any, Optional
 from http.server import HTTPServer, BaseHTTPRequestHandler
 import threading
@@ -96,8 +95,7 @@ class MCPHTTPHandler(BaseHTTPRequestHandler):
             logger.error(f"MCPError in method {method}: {mcpe}")
             self._send_jsonrpc_error(request_id, mcpe.code, str(mcpe), data=getattr(mcpe, 'data', None))
         except Exception as e:
-            logger.error(f"Unhandled error in method {method}: {e}")
-            traceback.print_exc()
+            logger.exception(f"Unhandled error in method {method}: {e}")
             self._send_jsonrpc_error(request_id, -32603, f"Internal error: {str(e)}")
 
     def _send_jsonrpc_result(self, request_id: Optional[str], result: Any):
