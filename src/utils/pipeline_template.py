@@ -217,8 +217,8 @@ def create_standard_module_function(
             errors = []
             warnings = []
 
-            # Merge additional parameters with kwargs
-            all_params = additional_params or {}
+            # Merge additional parameters with kwargs (copy to avoid mutating caller's dict)
+            all_params = dict(additional_params or {})
             all_params.update(kwargs)
 
             for file_path in gnn_files:
@@ -348,7 +348,7 @@ def create_standardized_pipeline_script(
 
 def get_standard_function_name(step_name: str) -> str:
     """Get the standard function name for a step."""
-    return f"process_{step_name.replace('_', '_')}_files"
+    return f"process_{step_name.replace('-', '_')}_files"
 
 def validate_module_function_signature(func: Callable) -> bool:
     """Validate that a module function has the correct signature."""

@@ -23,7 +23,7 @@ from utils.pipeline_template import (
 
 
 # Constrained types for step flag severity and execution status.
-FlagType = Literal["none", "yellow", "red"]
+FlagType = Literal["none", "yellow", "red", "green"]
 StepStatus = Literal["SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 

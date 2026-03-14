@@ -91,48 +91,14 @@ except ImportError:
 
 def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools."""
+    import importlib
     tools = {}
-
-    # Check numpy
-    try:
-        import numpy
-        tools['numpy'] = {
-            'available': True,
-            'version': numpy.__version__
-        }
-    except ImportError:
-        tools['numpy'] = {'available': False, 'version': None}
-
-    # Check pandas
-    try:
-        import pandas
-        tools['pandas'] = {
-            'available': True,
-            'version': pandas.__version__
-        }
-    except ImportError:
-        tools['pandas'] = {'available': False, 'version': None}
-
-    # Check scipy
-    try:
-        import scipy
-        tools['scipy'] = {
-            'available': True,
-            'version': scipy.__version__
-        }
-    except ImportError:
-        tools['scipy'] = {'available': False, 'version': None}
-
-    # Check matplotlib
-    try:
-        import matplotlib
-        tools['matplotlib'] = {
-            'available': True,
-            'version': matplotlib.__version__
-        }
-    except ImportError:
-        tools['matplotlib'] = {'available': False, 'version': None}
-
+    for pkg_name in ('numpy', 'pandas', 'scipy', 'matplotlib'):
+        try:
+            m = importlib.import_module(pkg_name)
+            tools[pkg_name] = {'available': True, 'version': m.__version__}
+        except ImportError:
+            tools[pkg_name] = {'available': False, 'version': None}
     return tools
 
 

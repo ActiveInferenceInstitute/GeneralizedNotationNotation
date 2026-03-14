@@ -93,7 +93,7 @@ class MCP:
         self._discovery_cache: Dict[str, Any] = {}
         self._cache_timestamp = 0.0
         self._cache_ttl = 300.0  # 5 minutes
-        self._cache_lock = threading.Lock()
+        self._discovery_cache_lock = threading.Lock()
 
         # Tool execution tracking
         self._active_executions: Dict[str, int] = defaultdict(int)
@@ -105,7 +105,7 @@ class MCP:
 
         # Caching
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
-        self._cache_lock = threading.Lock()
+        self._result_cache_lock = threading.Lock()
 
         # Thread pool for parallel module loading
         try:
@@ -213,7 +213,7 @@ class MCP:
         Returns:
             bool: True if all modules loaded successfully, False otherwise.
         """
-        with self._cache_lock:
+        with self._discovery_cache_lock:
             if self._modules_discovered and not force_refresh:
                 logger.debug("MCP modules already discovered. Skipping redundant discovery.")
                 return True
@@ -1248,10 +1248,11 @@ class MCP:
         Returns:
             Dict containing cache clearing statistics
         """
-        with self._cache_lock:
+        with self._result_cache_lock:
             cache_size_before = len(self._result_cache)
             self._result_cache.clear()
 
+        with self._discovery_cache_lock:
             discovery_cache_size = len(self._discovery_cache)
             self._discovery_cache.clear()
 
