@@ -154,38 +154,6 @@ class BasicPipelineLogger:
                 handler.setLevel(level)
                 break
 
-def setup_step_logging(step_name: str, verbose: bool = False) -> logging.Logger:
-    """
-    Setup streamlined logging for a pipeline step.
-    
-    This is the main entry point for pipeline step logging.
-    All modules should use this function.
-    
-    Args:
-        step_name: Name of the pipeline step
-        verbose: Whether to enable verbose logging
-        
-    Returns:
-        Configured logger for the step
-    """
-    # Initialize pipeline logger
-    PipelineLogger.initialize()
-
-    # Set correlation context
-    correlation_id = PipelineLogger.set_correlation_context(step_name.replace('.py', ''))
-
-    # Configure verbosity
-    PipelineLogger.set_verbosity(verbose)
-
-    # Get logger instance
-    logger = PipelineLogger.get_logger(step_name)
-
-    # Add step-specific attributes
-    logger.step_name = step_name
-    logger.correlation_id = correlation_id
-
-    return logger
-
 def setup_main_logging(log_dir: Optional[Path] = None, verbose: bool = False, log_format: str = "human") -> logging.Logger:
     """
     Setup logging for the main pipeline orchestrator.
