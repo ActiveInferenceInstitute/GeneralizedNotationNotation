@@ -181,7 +181,7 @@ class ReportGenerator:
         error_patterns = {}
         warning_patterns = {}
 
-        for file_path, result in validation_results.items():
+        for _file_path, result in validation_results.items():
             if result.is_valid:
                 valid_count += 1
             else:

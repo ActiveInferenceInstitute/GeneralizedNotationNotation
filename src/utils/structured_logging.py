@@ -337,7 +337,7 @@ class LogAggregator:
         }
 
         # Calculate success rates
-        for step_name, metrics in self.metrics.items():
+        for _step_name, metrics in self.metrics.items():
             if metrics["count"] > 0:
                 metrics["success_rate"] = metrics["successes"] / metrics["count"]
                 metrics["average_duration"] = metrics["total_duration"] / metrics["count"]

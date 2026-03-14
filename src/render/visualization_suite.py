@@ -277,7 +277,7 @@ class VisualizationSuite:
             # Q-Q plots for normality
             ax3 = axes[1, 0]
             from scipy import stats
-            for i, (key, values) in enumerate(numeric_traces.items()):
+            for _i, (_key, values) in enumerate(numeric_traces.items()):
                 stats.probplot(values, dist="norm", plot=ax3)
                 break  # Just show one for space
             ax3.set_title('Normality Check (Q-Q Plot)')
@@ -415,7 +415,7 @@ class VisualizationSuite:
             colors = plt.cm.Set3(np.linspace(0, 1, len(keys)))
 
             for i, key1 in enumerate(keys):
-                for j, key2 in enumerate(keys[i+1:], i+1):
+                for _j, key2 in enumerate(keys[i+1:], i+1):
                     if key1 != key2:
                         values1, values2 = numeric_traces[key1], numeric_traces[key2]
                         if len(values1) == len(values2):

@@ -91,7 +91,7 @@ class SymPyMCPClient:
             await self._start_server()
 
             # Wait for server to start
-            for attempt in range(10):
+            for _attempt in range(10):
                 try:
                     if self._client is not None:  # Type guard
                         response = await self._client.get(f"{self.server_url}/healthcheck")
@@ -153,7 +153,7 @@ class SymPyMCPClient:
                     f"Server failed to start. stdout: {stdout}, stderr: {stderr}"
                 )
         except Exception as e:
-            raise SymPyMCPConnectionError(f"Failed to start server: {e}")
+            raise SymPyMCPConnectionError(f"Failed to start server: {e}") from e
 
     async def call_tool(self, tool_name: str, **kwargs) -> Any:
         """
@@ -194,9 +194,9 @@ class SymPyMCPClient:
                 return content[0].get("text", "")
             return ""
         except httpx.RequestError as e:
-            raise SymPyMCPConnectionError(f"Request failed: {e}")
+            raise SymPyMCPConnectionError(f"Request failed: {e}") from e
         except Exception as e:
-            raise SymPyMCPError(f"Unexpected error: {e}")
+            raise SymPyMCPError(f"Unexpected error: {e}") from e
 
     # Convenience methods for common SymPy operations
 
@@ -313,7 +313,7 @@ class GNNSymPyIntegration:
         variables_to_create = []
 
         # Process state space variables
-        for var_name, var_spec in state_space.items():
+        for var_name, _var_spec in state_space.items():
             if var_name.startswith('s_f'):  # State factor
                 variables_to_create.append({
                     "var_name": var_name,
@@ -322,7 +322,7 @@ class GNNSymPyIntegration:
                 })
 
         # Process observation space variables
-        for var_name, var_spec in observation_space.items():
+        for var_name, _var_spec in observation_space.items():
             if var_name.startswith('o_m'):  # Observation modality
                 variables_to_create.append({
                     "var_name": var_name,

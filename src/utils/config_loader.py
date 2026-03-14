@@ -319,7 +319,7 @@ def validate_config(config: dict) -> bool:
     if not isinstance(config, dict) or not config:
         logger.warning("Config is not a dictionary or is empty.")
         return False
-    for section, section_data in config.items():
+    for _section, section_data in config.items():
         if isinstance(section_data, dict) and section_data:
             return True
     logger.warning("No valid section with keys found in config.")

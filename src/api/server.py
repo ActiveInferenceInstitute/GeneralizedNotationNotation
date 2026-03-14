@@ -22,11 +22,11 @@ try:
     from fastapi import FastAPI, HTTPException, BackgroundTasks
     from fastapi.middleware.cors import CORSMiddleware
     import uvicorn
-except ImportError:
+except ImportError as e:
     raise ImportError(
         "FastAPI and uvicorn are required for the GNN API server. "
         "Install with: uv sync --extra api"
-    )
+    ) from e
 
 from api.models import (
     ProcessRequest, ToolRequest, JobResponse, JobStatusResponse,

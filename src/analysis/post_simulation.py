@@ -286,7 +286,7 @@ def analyze_execution_results(
             results_dir.mkdir(parents=True, exist_ok=True)
 
             for framework, data in analysis_results["framework_results"].items():
-                for i, analysis in enumerate(data.get("analyses", [])):
+                for _i, analysis in enumerate(data.get("analyses", [])):
                     if "beliefs" in analysis or (isinstance(analysis, dict) and "simulation_data" in analysis and "beliefs" in analysis["simulation_data"]):
                         beliefs = analysis.get("beliefs") or analysis["simulation_data"].get("beliefs")
                         if beliefs:

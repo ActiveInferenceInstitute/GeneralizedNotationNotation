@@ -11,11 +11,11 @@ from enum import Enum
 
 try:
     from pydantic import BaseModel, Field
-except ImportError:
+except ImportError as e:
     raise ImportError(
         "pydantic is required for the GNN API module. "
         "Install with: uv sync --extra api"
-    )
+    ) from e
 
 
 class JobStatus(str, Enum):

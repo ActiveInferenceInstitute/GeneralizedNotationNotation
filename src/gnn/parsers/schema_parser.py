@@ -754,7 +754,7 @@ class PKLParser(BaseGNNParser):
 
         # Parse property declarations
         prop_declarations = re.findall(r'(\w+):\s*(\w+)(?:\s*=\s*([^;\n]+))?', content)
-        for name, type_hint, default_value in prop_declarations:
+        for name, type_hint, _default_value in prop_declarations:
             if name in ['name', 'annotation', 'variables', 'connections', 'parameters']:
                 continue  # Skip model metadata fields
 

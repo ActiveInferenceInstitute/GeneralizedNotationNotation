@@ -338,10 +338,10 @@ class UnifiedGNNParser:
 
             except ImportError as e:
                 logger.error(f"Failed to import parser for {format.value}: {e}")
-                raise ValueError(f"Parser for {format.value} is not available. Required module missing: {e}")
+                raise ValueError(f"Parser for {format.value} is not available. Required module missing: {e}") from e
             except Exception as e:
                 logger.error(f"Failed to initialize parser for {format.value}: {e}")
-                raise ValueError(f"Failed to initialize parser for {format.value}: {e}")
+                raise ValueError(f"Failed to initialize parser for {format.value}: {e}") from e
 
         return self.format_parsers[format]
 

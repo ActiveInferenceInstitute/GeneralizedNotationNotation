@@ -398,7 +398,7 @@ class ArgumentParser:
         )
 
         # Add all arguments
-        for arg_name, arg_def in cls.ARGUMENT_DEFINITIONS.items():
+        for _arg_name, arg_def in cls.ARGUMENT_DEFINITIONS.items():
             arg_def.add_to_parser(parser)
 
         return parser

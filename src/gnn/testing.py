@@ -168,7 +168,7 @@ class RoundTripTestStrategy:
         total_success_rate = 0.0
         all_errors = []
 
-        for file_path, result in file_results.items():
+        for _file_path, result in file_results.items():
             if result.get('success', False):
                 summary['successful_files'] += 1
             else:
@@ -370,7 +370,7 @@ class CrossFormatValidationStrategy:
         total_consistency_rate = 0.0
         all_inconsistencies = []
 
-        for file_path, result in file_results.items():
+        for _file_path, result in file_results.items():
             if result.get('success', False):
                 summary['consistent_files'] += 1
             else:

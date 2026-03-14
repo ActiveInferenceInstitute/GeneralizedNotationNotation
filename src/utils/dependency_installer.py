@@ -218,7 +218,7 @@ class DependencyInstaller:
 
         self.logger.info("🔍 Verifying installations...")
 
-        for category, deps in self.install_targets.items():
+        for _category, deps in self.install_targets.items():
             for dep_name in deps.keys():
                 try:
                     importlib.import_module(dep_name)

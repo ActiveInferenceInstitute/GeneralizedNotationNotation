@@ -623,7 +623,7 @@ class WebsiteGenerator:
         if not p_root.exists():
             return
         step_dirs = {d.name: d for d in p_root.iterdir() if d.is_dir()}
-        for step_num, step_name, _ in _PIPELINE_STEPS:
+        for step_num, _step_name, _ in _PIPELINE_STEPS:
             for prefix in [f"{step_num:02d}_", f"{step_num}_"]:
                 matching = [d for n, d in step_dirs.items() if n.startswith(prefix)]
                 if matching:

@@ -35,7 +35,7 @@ def import_mcp():
         # Try to import from path
         mcp_path = Path(__file__).parent / "mcp.py"
         if not mcp_path.exists():
-            raise ImportError("MCP module not found")
+            raise ImportError("MCP module not found") from None
 
         spec = importlib.util.spec_from_file_location("mcp", mcp_path)
         mcp_module = importlib.util.module_from_spec(spec)

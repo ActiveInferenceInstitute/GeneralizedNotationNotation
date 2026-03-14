@@ -661,7 +661,7 @@ class MCP:
                 logger.error(f"Tool {tool_name} execution failed after {execution_time:.3f}s: {e}")
                 logger.debug(f"Tool {tool_name} parameters: {params}")
 
-                raise MCPToolExecutionError(tool_name, e, execution_time)
+                raise MCPToolExecutionError(tool_name, e, execution_time) from e
 
             finally:
                 # Clean up execution tracking
@@ -714,7 +714,7 @@ class MCP:
 
             except Exception as e:
                 logger.error(f"Resource '{uri}' retrieval failed: {e}")
-                raise MCPResourceNotFoundError(uri)
+                raise MCPResourceNotFoundError(uri) from e
 
     def get_capabilities(self) -> Dict[str, Any]:
         """Get server capabilities including all available tools and resources."""
@@ -1072,7 +1072,7 @@ class MCP:
                             f"Array item validation failed: {e}",
                             field=field_name,
                             value=field_value
-                        )
+                        ) from e
 
         elif field_type == "object":
             if not isinstance(field_value, dict):
@@ -1093,7 +1093,7 @@ class MCP:
                                 f"Object property validation failed: {e}",
                                 field=field_name,
                                 value=field_value
-                            )
+                            ) from e
 
             # Check for additional properties
             if "additionalProperties" in field_schema and field_schema["additionalProperties"] is False:

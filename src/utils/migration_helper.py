@@ -18,8 +18,6 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 import logging
 
-# Setup basic logging
-logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
 logger = logging.getLogger(__name__)
 
 class PipelineMigrationHelper:
@@ -291,4 +289,5 @@ def main():
     return 0
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO, format='%(levelname)s: %(message)s')
     sys.exit(main())

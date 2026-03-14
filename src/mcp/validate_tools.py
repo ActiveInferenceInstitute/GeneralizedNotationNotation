@@ -26,10 +26,6 @@ REPO_ROOT = Path(__file__).parent.parent.parent
 SRC_ROOT  = REPO_ROOT / "src"
 sys.path.insert(0, str(SRC_ROOT))
 
-logging.basicConfig(
-    level=logging.WARNING,
-    format="%(levelname)s %(name)s: %(message)s",
-)
 logger = logging.getLogger("mcp_audit")
 
 
@@ -204,4 +200,5 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.WARNING, format="%(levelname)s %(name)s: %(message)s")
     sys.exit(main())

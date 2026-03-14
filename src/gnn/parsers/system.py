@@ -217,7 +217,7 @@ class GNNParsingSystem:
 
         except Exception as e:
             logger.error(f"Parsing failed for format {format}: {e}")
-            raise ParseError(f"Failed to parse {format} content: {e}")
+            raise ParseError(f"Failed to parse {format} content: {e}") from e
 
     def convert(self, model: GNNInternalRepresentation,
                 from_format: GNNFormat,
@@ -256,7 +256,7 @@ class GNNParsingSystem:
             return serializer.serialize(model)
         except Exception as e:
             logger.error(f"Serialization failed for format {format}: {e}")
-            raise ParseError(f"Failed to serialize to {format}: {e}")
+            raise ParseError(f"Failed to serialize to {format}: {e}") from e
 
     def serialize_to_file(self, model: GNNInternalRepresentation,
                           file_path: Union[str, Path],

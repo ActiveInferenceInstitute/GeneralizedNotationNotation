@@ -278,7 +278,7 @@ def launch_oxdraw_editor(
             )
         else:
             # Blocking launch
-            subprocess.run(cmd, check=True)
+            subprocess.run(cmd, check=True, timeout=300)
 
         return True
 

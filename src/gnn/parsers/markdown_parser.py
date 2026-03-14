@@ -62,7 +62,7 @@ class MarkdownGNNParser(BaseGNNParser):
             content = file_path.read_text(encoding='utf-8')
             return self.parse_string(content)
         except Exception as e:
-            raise ParseError(f"Failed to read file {file_path}: {e}")
+            raise ParseError(f"Failed to read file {file_path}: {e}") from e
 
     def parse_string(self, content: str) -> ParseResult:
         """Parse GNN Markdown content from string."""

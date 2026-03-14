@@ -92,7 +92,7 @@ async def _analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> 
         return result
 
     except Exception as e:
-        raise Exception(f"Failed to analyze {file_path}: {e}")
+        raise Exception(f"Failed to analyze {file_path}: {e}") from e
 
 
 def analyze_gnn_file_with_llm(file_path: Path, verbose: bool = False) -> Dict[str, Any] | Coroutine[Any, Any, Dict[str, Any]]:

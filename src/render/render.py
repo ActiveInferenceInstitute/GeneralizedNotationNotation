@@ -61,12 +61,6 @@ except ImportError as e:
 
 logger = logging.getLogger(__name__)
 
-# Configure logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
-)
-
 from .processor import render_gnn_spec
 
 def main(cli_args=None):

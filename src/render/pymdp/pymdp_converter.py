@@ -516,7 +516,7 @@ class GnnToPyMdpConverter:
             lines_to_parse = self.state_space_data
         elif isinstance(self.state_space_data, dict):
             # Handle dictionary format - extract from values or convert to lines
-            for key, value in self.state_space_data.items():
+            for _key, value in self.state_space_data.items():
                 if isinstance(value, str):
                     lines_to_parse.append(value)
                 elif isinstance(value, dict):
@@ -1496,7 +1496,7 @@ class GnnToPyMdpConverter:
             )
             # Convert the dictionary to a string representation
             placeholder_lines = []
-            for matrix_name, lines in placeholder_matrices_dict.items():
+            for _matrix_name, lines in placeholder_matrices_dict.items():
                 placeholder_lines.extend(lines)
             placeholder_matrices = "\n".join(placeholder_lines)
             script_sections.append(placeholder_matrices)

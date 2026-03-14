@@ -305,7 +305,7 @@ def estimate_inference(
     base_time = inference_factors.get(model_type, inference_factors["Static"])
 
     var_time = 0.0
-    for var_name, var_info in variables.items():
+    for _var_name, var_info in variables.items():
         var_type = var_info.get("type", "float")
         dims = var_info.get("dimensions", [1])
 

@@ -187,7 +187,7 @@ def _dict_to_xml(tag: str, d: Union[Dict, List, Any]) -> ET.Element:
             if not safe_key or not safe_key[0].isalpha() and safe_key[0] != '_': safe_key = '_' + safe_key
             elem.append(_dict_to_xml(safe_key, val))
     elif isinstance(d, list):
-        for i, item in enumerate(d):
+        for _i, item in enumerate(d):
             elem.append(_dict_to_xml(f"{tag}_item", item))
     else:
         elem.text = str(d)
