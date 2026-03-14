@@ -42,9 +42,6 @@ FEATURES = {
     "mcp_integration": True,
 }
 
-def process_gnn(*args, **kwargs):
-    return process_gnn_directory(*args, **kwargs)
-
 def validate_gnn_file(content: str):
     """Validate a GNN file's content using the real parser validate_gnn."""
     is_valid, errors = validate_gnn(content)
@@ -76,6 +73,5 @@ __all__ = [
     'validate_gnn',
     '__version__',
     'FEATURES',
-    'process_gnn',
     'validate_gnn_file'
 ]

@@ -136,7 +136,6 @@ __all__ = [
     # Execution functions
     'process_execute',
     'execute_simulation_from_gnn',
-    'execute_gnn_model',
     'run_simulation',
     'execute_script_safely',
 

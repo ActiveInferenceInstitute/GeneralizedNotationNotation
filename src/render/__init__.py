@@ -125,14 +125,16 @@ __all__ = [
     'generate_discopy_code',
     'create_active_inference_diagram',
 
-    # Specific renderer functions (may be None if submodule unavailable)
-    'render_gnn_to_pymdp',
-    'render_gnn_to_rxinfer',
-    'render_gnn_to_rxinfer_toml',
-    'render_gnn_to_discopy',
-    'render_gnn_to_activeinference_jl',
-    'render_gnn_to_pytorch',
-    'render_gnn_to_numpyro',
+    # Specific renderer functions (only included if submodule is available)
+    *[name for name in (
+        'render_gnn_to_pymdp',
+        'render_gnn_to_rxinfer',
+        'render_gnn_to_rxinfer_toml',
+        'render_gnn_to_discopy',
+        'render_gnn_to_activeinference_jl',
+        'render_gnn_to_pytorch',
+        'render_gnn_to_numpyro',
+    ) if globals().get(name) is not None],
 
     # Renderer classes
     'PyMDPRenderer',

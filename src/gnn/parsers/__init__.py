@@ -69,10 +69,10 @@ from typing import Union, Optional as _Optional
 from pathlib import Path as _Path
 
 
-def parse_gnn_file(file_path: Union[str, _Path],
-                   format_hint: _Optional[GNNFormat] = None,
-                   strict_validation: bool = True) -> ParseResult:
-    """Parse a GNN file using the unified parsing system."""
+def parse_gnn_file_structured(file_path: Union[str, _Path],
+                              format_hint: _Optional[GNNFormat] = None,
+                              strict_validation: bool = True) -> ParseResult:
+    """Parse a GNN file using the unified parsing system, returning a structured ParseResult."""
     system = GNNParsingSystem(strict_validation=strict_validation)
     return system.parse_file(file_path, format_hint)
 
@@ -157,7 +157,7 @@ __all__ = [
     'GNNValidator',
     'ValidationError',
     'ValidationWarning',
-    'parse_gnn_file',
+    'parse_gnn_file_structured',
     'convert_gnn_format',
 
     # Registries

@@ -86,7 +86,7 @@ def validate_pipeline_summary(summary: Dict[str, Any]) -> bool:
     return all(field in summary for field in required_fields)
 
 
-def check_analysis_tools() -> Dict[str, Dict[str, Any]]:
+def check_intelligent_analysis_tools() -> Dict[str, Dict[str, Any]]:
     """Check availability of analysis tools and LLM backends."""
     tools = {}
 
@@ -133,7 +133,7 @@ __all__ = [
     'get_module_info',
     'get_supported_analysis_types',
     'validate_pipeline_summary',
-    'check_analysis_tools',
+    'check_intelligent_analysis_tools',
     # Processor functions and classes
     'process_intelligent_analysis',
     'analyze_pipeline_summary',
