@@ -27,9 +27,6 @@ from .uv_management import (
 
 logger = logging.getLogger(__name__)
 
-_jax_install_attempts: int = 0
-
-
 def install_jax_and_test(verbose: bool = False) -> bool:
     """
     Ensure JAX, Optax, and Flax are installed and working using UV.
@@ -41,11 +38,10 @@ def install_jax_and_test(verbose: bool = False) -> bool:
     This function now tests JAX using the venv Python to avoid import issues.
     """
 
-    # Prevent infinite recursion by tracking attempts at module level
-    global _jax_install_attempts
-    _jax_install_attempts += 1
+    # Prevent infinite recursion by tracking attempts via function attribute
+    install_jax_and_test._attempts = getattr(install_jax_and_test, '_attempts', 0) + 1  # type: ignore[attr-defined]
 
-    if _jax_install_attempts > 2:
+    if install_jax_and_test._attempts > 2:  # type: ignore[attr-defined]
         logger.warning("JAX installation attempts exceeded limit, skipping")
         return False
 

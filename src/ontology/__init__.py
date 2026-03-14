@@ -43,7 +43,7 @@ def validate_ontology_terms(terms: List[str] | str = None) -> bool:
     try:
         result = validate_annotations(terms_list)
         return len(result.get("invalid_annotations", [])) == 0
-    except Exception:
+    except (TypeError, ValueError, KeyError):
         return True
 
 # Feature flags expected by tests
