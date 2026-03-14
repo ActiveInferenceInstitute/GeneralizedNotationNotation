@@ -6,7 +6,7 @@ This module provides the main export processing functionality.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Optional
 import logging
 import json
 
@@ -210,7 +210,7 @@ def parse_gnn_content(content: str) -> Dict[str, Any]:
             "raw_content": content
         }
 
-def export_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str] = None) -> Dict[str, Any]:
+def export_model(model_data: Dict[str, Any], output_dir: Path, formats: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Export model data to multiple formats.
     
@@ -321,7 +321,7 @@ def _gnn_model_to_dict(gnn_content: str) -> Dict[str, Any]:
             "raw_content": gnn_content
         }
 
-def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: List[str] = None) -> Dict[str, Any]:
+def export_gnn_model(model_data: Dict[str, Any], output_dir: Path, formats: Optional[List[str]] = None) -> Dict[str, Any]:
     """
     Export GNN model to multiple formats.
     

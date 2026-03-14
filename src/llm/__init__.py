@@ -39,9 +39,9 @@ try:
     )
 except (ImportError, AttributeError):
     # Provide minimal shims during test collection if heavy deps are missing
-    class AnalysisType:  # type: ignore
+    class AnalysisType:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
         SUMMARY = type("E", (), {"value": "summary"})()
-    class UnifiedLLMProcessor:  # type: ignore
+    class UnifiedLLMProcessor:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
         pass
     def load_api_keys_from_env(): return {}
     async def initialize_global_processor(*_, **__): return None
@@ -53,12 +53,12 @@ except (ImportError, AttributeError):
 try:
     from .providers import ProviderType, LLMConfig, LLMMessage, LLMResponse, BaseLLMProvider
 except (ImportError, AttributeError):
-    class ProviderType:  # type: ignore
+    class ProviderType:  # type: ignore[no-redef]  # fallback shim when providers unavailable
         OPENAI = type("E", (), {"value": "openai"})()
-    class LLMConfig: pass  # type: ignore
-    class LLMMessage: pass  # type: ignore
-    class LLMResponse: pass  # type: ignore
-    class BaseLLMProvider: pass  # type: ignore
+    class LLMConfig: pass  # type: ignore[no-redef]  # fallback shim
+    class LLMMessage: pass  # type: ignore[no-redef]  # fallback shim
+    class LLMResponse: pass  # type: ignore[no-redef]  # fallback shim
+    class BaseLLMProvider: pass  # type: ignore[no-redef]  # fallback shim
 
 try:
     from .analyzer import (
