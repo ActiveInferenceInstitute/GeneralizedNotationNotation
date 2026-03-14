@@ -95,7 +95,7 @@ class UnifiedGNNParser:
             # Compute checksum
             try:
                 content = file_path.read_text(encoding='utf-8')
-                result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+                result.model.checksum = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
             except Exception as e:
                 logger.warning(f"Failed to compute checksum: {e}")
 
@@ -154,7 +154,7 @@ class UnifiedGNNParser:
             result.model.source_format = format
 
             try:
-                result.model.checksum = hashlib.md5(content.encode()).hexdigest()
+                result.model.checksum = hashlib.md5(content.encode(), usedforsecurity=False).hexdigest()
             except Exception as e:
                 logger.warning(f"Failed to compute checksum: {e}")
 

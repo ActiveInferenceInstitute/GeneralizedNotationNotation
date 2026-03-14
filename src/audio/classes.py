@@ -94,8 +94,7 @@ class AudioGenerator:
                             channels = f.getnchannels()
                             duration = frames / float(sample_rate)
                     except Exception:
-                        # Recovery if wave fails
-                        pass
+                        pass  # recovery if wave module fails to read audio metadata
                 elif suffix in ['.mp3', '.ogg', '.flac']:
                     # Estimate based on file size if mutagen/ffmpeg not available
                     # Approx 128kbps for MP3

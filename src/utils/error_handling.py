@@ -309,7 +309,7 @@ class ExitCode:
 def generate_correlation_id(prefix: str = "gnn") -> str:
     """Generate a unique correlation ID for error tracking."""
     timestamp = str(int(time.time()))
-    random_suffix = hashlib.md5(f"{prefix}{timestamp}".encode()).hexdigest()[:6]
+    random_suffix = hashlib.md5(f"{prefix}{timestamp}".encode(), usedforsecurity=False).hexdigest()[:6]
     return f"{prefix}_{timestamp}_{random_suffix}"
 
 

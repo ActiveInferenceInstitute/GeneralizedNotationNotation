@@ -14,7 +14,7 @@ try:
     import matplotlib
     matplotlib.use('Agg')
 except Exception:
-    pass
+    pass  # matplotlib backend setting is optional
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -23,7 +23,7 @@ try:
     from .data_extractor import VisualizationDataExtractor
     VIS_PROCESSOR_AVAILABLE = True
 except Exception:
-    VIS_PROCESSOR_AVAILABLE = False
+    VIS_PROCESSOR_AVAILABLE = False  # graceful degradation without data extractor
 
 
 class AdvancedVisualizer:

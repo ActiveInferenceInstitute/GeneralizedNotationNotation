@@ -324,7 +324,7 @@ class GNNParser:
         }
 
         checksum_str = json.dumps(checksum_data, sort_keys=True)
-        return hashlib.md5(checksum_str.encode()).hexdigest()
+        return hashlib.md5(checksum_str.encode(), usedforsecurity=False).hexdigest()
 
     def _parse_markdown_content(self, content: str, source_name: str) -> ParsedGNN:
         """Parse GNN content from string (markdown format)."""

@@ -58,7 +58,7 @@ except ImportError:
             with open(output_dir / "audio_processing_skipped.json", "w") as f:
                 json.dump({"status": "skipped", "reason": str(e)}, f, indent=2)
         except Exception:
-            pass
+            pass  # status file is optional — don't fail pipeline step
 
         return True
 

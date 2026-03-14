@@ -204,7 +204,7 @@ class MCPModuleInfo:
         if self.path.exists():
             try:
                 self.file_size = self.path.stat().st_size
-                self.file_hash = hashlib.md5(self.path.read_bytes()).hexdigest()
+                self.file_hash = hashlib.md5(self.path.read_bytes(), usedforsecurity=False).hexdigest()
             except Exception as e:
                 logger.warning(f"Could not calculate file info for {self.path}: {e}")
 

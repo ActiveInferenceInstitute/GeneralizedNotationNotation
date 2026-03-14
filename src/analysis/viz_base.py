@@ -87,7 +87,7 @@ def safe_savefig(
         try:
             plt.close()
         except Exception:
-            pass
+            pass  # plt.close() failure is non-fatal
         return None
 
 
