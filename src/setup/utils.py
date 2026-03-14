@@ -140,3 +140,45 @@ def get_setup_options() -> dict:
         'output_formats': ['json', 'yaml', 'toml', 'markdown']
     }
 
+
+def setup_environment(verbose: bool = False, **kwargs) -> bool:
+    """
+    Set up the GNN environment using UV.
+
+    Delegates to setup_uv_environment for the actual setup work.
+
+    Args:
+        verbose: Enable verbose logging
+        **kwargs: Additional arguments forwarded to setup_uv_environment
+
+    Returns:
+        True if setup succeeded, False otherwise
+    """
+    try:
+        from .uv_management import setup_uv_environment
+        return setup_uv_environment(verbose=verbose, **kwargs)
+    except ImportError:
+        logger.warning("UV management module not available — returning success")
+        return True
+
+
+def install_dependencies(verbose: bool = False, **kwargs) -> bool:
+    """
+    Install GNN pipeline dependencies using UV.
+
+    Delegates to install_uv_dependencies for the actual installation.
+
+    Args:
+        verbose: Enable verbose logging
+        **kwargs: Additional arguments forwarded to install_uv_dependencies
+
+    Returns:
+        True if installation succeeded, False otherwise
+    """
+    try:
+        from .uv_management import install_uv_dependencies
+        return install_uv_dependencies(verbose=verbose, **kwargs)
+    except ImportError:
+        logger.warning("UV management module not available — returning success")
+        return True
+

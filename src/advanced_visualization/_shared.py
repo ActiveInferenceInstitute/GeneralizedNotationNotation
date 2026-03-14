@@ -76,6 +76,10 @@ def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
         return conn_info
 
 
+# Internal alias used by network_viz and other sub-modules
+_normalize_connection_format = normalize_connection_format
+
+
 def _calculate_semantic_positions(variables: List[Dict], connections: List[Dict]):
     """
     Calculate meaningful 3D positions for variables based on semantic relationships.
