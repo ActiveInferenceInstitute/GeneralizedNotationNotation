@@ -697,6 +697,31 @@ def parse_connection_operator(op: str) -> ConnectionType:
     else:
         return ConnectionType.DIRECTED  # Default
 
+def extract_embedded_json_data(content: str, patterns: List[str]) -> Optional[Dict[str, Any]]:
+    """Extract embedded JSON model data from source file content.
+
+    Tries each pattern in order, returning the first successfully parsed JSON object.
+
+    Args:
+        content: Source file content to search.
+        patterns: List of regex patterns with one capture group for the JSON body.
+
+    Returns:
+        Parsed dict if found, None otherwise.
+    """
+    import json
+    import re
+    for pattern in patterns:
+        match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except json.JSONDecodeError as e:
+                logger.debug("Pattern did not yield valid JSON, trying next: %s", e)
+                continue
+    return None
+
+
 # Export all public classes and functions
 __all__ = [
     'ParseError', 'ValidationError', 'ValidationWarning', 'ConversionError',
@@ -707,5 +732,5 @@ __all__ = [
     'ASTVisitor', 'PrintVisitor',
     'GNNParser', 'GNNSerializer', 'BaseGNNParser',
     'normalize_variable_name', 'parse_dimensions', 'infer_variable_type', 'parse_connection_operator',
-    'safe_enum_convert'
+    'safe_enum_convert', 'extract_embedded_json_data',
 ]

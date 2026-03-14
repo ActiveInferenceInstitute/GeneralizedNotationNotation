@@ -14,7 +14,8 @@ import logging
 from typing import Dict, List, Any, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Parameter, VariableType, DataType
+    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Parameter, VariableType, DataType,
+    extract_embedded_json_data,
 )
 
 logger = logging.getLogger(__name__)
@@ -72,21 +73,9 @@ class CoqGNNParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Coq comments."""
-        import json
-        # Look for JSON data in Coq comments
-        patterns = [
+        return extract_embedded_json_data(content, [
             r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
-            if match:
-                try:
-                    return json.loads(match.group(1))
-                except json.JSONDecodeError as e:
-                    logger.debug("Malformed JSON in Coq embedded data, trying next pattern: %s", e)
-                    continue
-        return None
+        ])
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""

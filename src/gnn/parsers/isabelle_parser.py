@@ -17,7 +17,8 @@ logger = logging.getLogger(__name__)
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
-    Variable, Connection, Parameter, Equation, VariableType, DataType, ConnectionType
+    Variable, Connection, Parameter, Equation, VariableType, DataType, ConnectionType,
+    extract_embedded_json_data,
 )
 
 class IsabelleParser(BaseGNNParser):
@@ -129,21 +130,9 @@ class IsabelleParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Isabelle comments."""
-        import json
-        # Look for JSON data in Isabelle comments
-        patterns = [
+        return extract_embedded_json_data(content, [
             r'\(\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*\)',  # (* MODEL_DATA: {...} *)
-        ]
-
-        for pattern in patterns:
-            match = re.search(pattern, content, re.DOTALL | re.MULTILINE)
-            if match:
-                try:
-                    return json.loads(match.group(1))
-                except json.JSONDecodeError as e:
-                    logger.debug(f"Pattern did not yield valid JSON, trying next: {e}")
-                    continue
-        return None
+        ])
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data."""
