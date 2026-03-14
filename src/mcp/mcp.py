@@ -2,23 +2,9 @@
 """
 Model Context Protocol (MCP) Core Implementation for GNN
 
-This module provides the core MCP server implementation for the GeneralizedNotationNotation (GNN) project.
-It handles tool discovery, registration, and execution across all GNN modules.
-
-The MCP server exposes GNN functionalities as standardized tools that can be accessed by
-MCP-compatible clients such as AI assistants, IDEs, and automated research pipelines.
-
-Key Features:
-- Dynamic module discovery and tool registration
-- JSON-RPC 2.0 compliant request/response handling
-- Comprehensive error handling and logging
-- Support for both stdio and HTTP transport layers
-- Extensible architecture for adding new tools and resources
-- Performance monitoring and metrics collection
-- Advanced module introspection and diagnostics
-- Thread-safe operations with proper locking
-- Enhanced caching and optimization
-- Detailed validation and error reporting
+Core MCP server for the GNN project: discovers modules, registers tools and
+resources, executes them with thread-safe caching and rate limiting, and
+exposes them to MCP-compatible clients via stdio or HTTP transport.
 """
 
 import importlib
@@ -1386,7 +1372,6 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     Raises:
         MCPSDKNotFoundError: If SDK is missing and halt_on_missing_sdk is True
     """
-    # Check SDK status
     sdk_found = _MCP_SDK_STATUS.check_status()
 
     if not sdk_found:
@@ -1403,13 +1388,11 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
                 "MCP SDK optional dependency not available - proceeding with core functionality"
             )
 
-    # Apply performance mode
     try:
         mcp_instance.set_performance_mode(performance_mode)
     except (AttributeError, TypeError):
         pass  # Performance mode is optional
 
-    # Perform module discovery with fast settings
     all_modules_loaded = mcp_instance.discover_modules(
         force_refresh=False,
         modules_allowlist=modules_allowlist,

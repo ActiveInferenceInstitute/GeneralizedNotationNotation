@@ -155,9 +155,6 @@ def process_mcp(
 
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        results_dir = output_dir
-        results_dir.mkdir(parents=True, exist_ok=True)
-
         from .mcp import initialize, mcp_instance
         from . import __version__ as mcp_version
         initialize(halt_on_missing_sdk=False, force_proceed_flag=True)
@@ -178,7 +175,7 @@ def process_mcp(
         report["target_dir"] = str(target_dir)
         report["output_dir"] = str(output_dir)
 
-        results_file = results_dir / "mcp_results.json"
+        results_file = output_dir / "mcp_results.json"
         with open(results_file, 'w') as f:
             json.dump(report, f, indent=2)
         logger.info(f"📋 Detailed MCP report saved to: {results_file}")

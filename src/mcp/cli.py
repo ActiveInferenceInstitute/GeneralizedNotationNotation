@@ -1,19 +1,10 @@
 #!/usr/bin/env python3
 """
-Enhanced MCP Command Line Interface
+MCP Command Line Interface
 
-This module provides a comprehensive command-line interface for the Model Context Protocol (MCP),
-allowing users to interact with GNN tools and resources directly from the command line.
-
-Key Features:
-- List all available tools and resources with detailed metadata
-- Execute tools with JSON parameters and comprehensive error reporting
-- Retrieve resources by URI with validation
-- Start MCP servers (stdio/HTTP) with health monitoring
-- Get server status, performance metrics, and diagnostic information
-- Interactive tool discovery and parameter validation
-- Comprehensive error handling and logging with suggestions
-- Auto-completion and shell integration support
+Command-line access to GNN Model Context Protocol tools and resources.
+Supports listing capabilities, executing tools, retrieving resources,
+querying server status, and starting stdio/HTTP servers.
 """
 import argparse
 import json

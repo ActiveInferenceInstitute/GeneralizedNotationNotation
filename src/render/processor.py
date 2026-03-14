@@ -184,7 +184,6 @@ def process_render(
         True if processing succeeded, False otherwise
     """
     try:
-        logger.info("🚀 Starting POMDP-aware render processing")
         logger.info(f"Processing GNN files in: {target_dir}")
         logger.info(f"Output directory: {output_dir}")
 
@@ -235,7 +234,7 @@ def process_render(
             # Use POMDP-aware processing
             for gnn_file in gnn_files:
                 try:
-                    logger.info(f"📁 Processing: {gnn_file}")
+                    logger.info(f"Processing: {gnn_file}")
 
                     # Extract POMDP state space from GNN file
                     pomdp_space = extract_pomdp_from_file(gnn_file, strict_validation=strict_validation)
@@ -249,7 +248,7 @@ def process_render(
                             success_count += 1
                         continue
 
-                    logger.info(f"✅ Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions")
+                    logger.info(f"Extracted POMDP '{pomdp_space.model_name}' with {pomdp_space.num_states} states, {pomdp_space.num_observations} observations, {pomdp_space.num_actions} actions")
 
                     # Validate POMDP space
                     is_valid, validation_errors = validate_pomdp_for_rendering(pomdp_space)
@@ -276,9 +275,9 @@ def process_render(
 
                     if processing_result['overall_success']:
                         success_count += 1
-                        logger.info(f"✅ Successfully processed {gnn_file.name}")
+                        logger.info(f"Successfully processed {gnn_file.name}")
                     else:
-                        logger.error(f"❌ Failed to process {gnn_file.name}")
+                        logger.error(f"Failed to process {gnn_file.name}")
 
                     # Count framework-level successes
                     for _, result in processing_result['framework_results'].items():
@@ -298,14 +297,14 @@ def process_render(
             # Use basic rendering
             for gnn_file in gnn_files:
                 try:
-                    logger.info(f"📁 Processing (basic): {gnn_file}")
+                    logger.info(f"Processing (basic): {gnn_file}")
                     file_result = _process_single_gnn_file_basic(gnn_file, output_dir, verbose, **kwargs)
                     results[str(gnn_file)] = file_result
                     if file_result['success']:
                         success_count += 1
-                        logger.info(f"✅ Processed {gnn_file.name}")
+                        logger.info(f"Processed {gnn_file.name}")
                     else:
-                        logger.error(f"❌ Failed to process {gnn_file.name}")
+                        logger.error(f"Failed to process {gnn_file.name}")
 
                 except Exception as e:
                     error_msg = f"Error processing {gnn_file}: {e}"
@@ -341,11 +340,11 @@ def process_render(
         # Create overview documentation
         _create_overview_documentation(output_dir, summary)
 
-        logger.info("🎉 Render processing completed!")
-        logger.info(f"📊 Files: {success_count}/{len(gnn_files)} successful")
+        logger.info("Render processing completed")
+        logger.info(f"Files: {success_count}/{len(gnn_files)} successful")
         if pomdp_available:
-            logger.info(f"🧠 Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)")
-        logger.info(f"📄 Summary saved to: {summary_file}")
+            logger.info(f"Framework renderings: {total_framework_successes}/{total_framework_attempts} successful ({summary['framework_success_rate']:.1f}%)")
+        logger.info(f"Summary saved to: {summary_file}")
 
         # Consider rendering successful if:
         # 1. At least one file was processed successfully, OR
@@ -653,57 +652,60 @@ def get_module_info() -> Dict[str, Any]:
         "processing_modes": ["basic", "pomdp_aware"]
     }
 
+AVAILABLE_RENDERERS: Dict[str, Dict[str, Any]] = {
+    "pymdp": {
+        "name": "PyMDP",
+        "description": "Python Markov Decision Process library for Active Inference",
+        "language": "Python",
+        "file_extension": ".py",
+        "supported_features": ["POMDP", "MDP", "Belief State Updates", "Active Inference"],
+        "function": "render_gnn_to_pymdp",
+        "output_format": "python",
+        "pomdp_compatible": True
+    },
+    "rxinfer": {
+        "name": "RxInfer.jl",
+        "description": "Julia reactive message passing inference engine",
+        "language": "Julia",
+        "file_extension": ".jl",
+        "supported_features": ["Message Passing", "Probabilistic Programming", "Bayesian Inference"],
+        "function": "render_gnn_to_rxinfer",
+        "output_format": "julia",
+        "pomdp_compatible": True
+    },
+    "activeinference_jl": {
+        "name": "ActiveInference.jl",
+        "description": "Julia Active Inference library",
+        "language": "Julia",
+        "file_extension": ".jl",
+        "supported_features": ["Free Energy Minimization", "Active Inference", "POMDP"],
+        "function": "render_gnn_to_activeinference_jl",
+        "output_format": "julia",
+        "pomdp_compatible": True
+    },
+    "jax": {
+        "name": "JAX",
+        "description": "High-performance numerical computing with automatic differentiation",
+        "language": "Python",
+        "file_extension": ".py",
+        "supported_features": ["GPU Acceleration", "Automatic Differentiation", "JIT Compilation"],
+        "function": "render_gnn_to_jax",
+        "output_format": "python",
+        "pomdp_compatible": True
+    },
+    "discopy": {
+        "name": "DisCoPy",
+        "description": "Python library for computing with string diagrams",
+        "language": "Python",
+        "file_extension": ".py",
+        "supported_features": ["Categorical Diagrams", "String Diagrams", "Compositional Models"],
+        "function": "render_gnn_to_discopy",
+        "output_format": "python",
+        "pomdp_compatible": True
+    }
+}
+
+
 def get_available_renderers() -> Dict[str, Dict[str, Any]]:
     """Get information about available renderers."""
-    return {
-        "pymdp": {
-            "name": "PyMDP",
-            "description": "Python Markov Decision Process library for Active Inference",
-            "language": "Python",
-            "file_extension": ".py",
-            "supported_features": ["POMDP", "MDP", "Belief State Updates", "Active Inference"],
-            "function": "render_gnn_to_pymdp",
-            "output_format": "python",
-            "pomdp_compatible": True
-        },
-        "rxinfer": {
-            "name": "RxInfer.jl",
-            "description": "Julia reactive message passing inference engine",
-            "language": "Julia",
-            "file_extension": ".jl",
-            "supported_features": ["Message Passing", "Probabilistic Programming", "Bayesian Inference"],
-            "function": "render_gnn_to_rxinfer",
-            "output_format": "julia",
-            "pomdp_compatible": True
-        },
-        "activeinference_jl": {
-            "name": "ActiveInference.jl",
-            "description": "Julia Active Inference library",
-            "language": "Julia",
-            "file_extension": ".jl",
-            "supported_features": ["Free Energy Minimization", "Active Inference", "POMDP"],
-            "function": "render_gnn_to_activeinference_jl",
-            "output_format": "julia",
-            "pomdp_compatible": True
-        },
-        "jax": {
-            "name": "JAX",
-            "description": "High-performance numerical computing with automatic differentiation",
-            "language": "Python",
-            "file_extension": ".py",
-            "supported_features": ["GPU Acceleration", "Automatic Differentiation", "JIT Compilation"],
-            "function": "render_gnn_to_jax",
-            "output_format": "python",
-            "pomdp_compatible": True
-        },
-        "discopy": {
-            "name": "DisCoPy",
-            "description": "Python library for computing with string diagrams",
-            "language": "Python",
-            "file_extension": ".py",
-            "supported_features": ["Categorical Diagrams", "String Diagrams", "Compositional Models"],
-            "function": "render_gnn_to_discopy",
-            "output_format": "python",
-            "pomdp_compatible": True
-        }
-    }
+    return AVAILABLE_RENDERERS
