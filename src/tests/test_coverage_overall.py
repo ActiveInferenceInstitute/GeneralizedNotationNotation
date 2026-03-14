@@ -22,7 +22,7 @@ class TestCoverageOverall:
             if callable(obj):
                 try:
                     sig = inspect.signature(obj)
-                except Exception:
+                except Exception:  # nosec B112 -- intentional continue to skip uninspectable callables in test coverage
                     continue
                 # Call zero-arg functions only to avoid side effects
                 positional_required = [

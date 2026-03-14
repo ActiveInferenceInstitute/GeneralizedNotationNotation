@@ -155,7 +155,8 @@ class ReportGenerator:
                 ext = file_path.suffix.lower()
                 formats[ext] = formats.get(ext, 0) + 1
                 sizes.append(file_path.stat().st_size)
-            except Exception:
+            except Exception as e:
+                logger.debug(f"Could not stat file {file_path}: {e}")
                 continue
 
         return {
