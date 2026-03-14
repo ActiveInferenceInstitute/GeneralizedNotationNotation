@@ -499,7 +499,7 @@ class TestGNNExampleValidation(unittest.TestCase):
             parsed = self.parser.parse_file(example_file)
 
             # Check that ontology mappings are consistent with variables
-            for var_name, ontology_term in parsed.ontology_mappings.items():
+            for var_name, _ontology_term in parsed.ontology_mappings.items():
                 self.assertIn(
                     var_name, parsed.variables,
                     f"Ontology mapping references undefined variable: {var_name}"

@@ -288,7 +288,7 @@ def process_render(
                         logger.error(f"❌ Failed to process {gnn_file.name}")
 
                     # Count framework-level successes
-                    for framework, result in processing_result['framework_results'].items():
+                    for _framework, result in processing_result['framework_results'].items():
                         total_framework_attempts += 1
                         if result['success']:
                             total_framework_successes += 1

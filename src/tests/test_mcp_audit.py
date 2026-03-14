@@ -73,13 +73,13 @@ def all_modules(mcp_initialized) -> Dict[str, Any]:
 class TestMCPModuleDiscovery:
     """Verify that MCP discover_modules loads all expected pipeline modules."""
 
-    EXPECTED_MODULES = [
+    EXPECTED_MODULES = (
         "gnn", "utils", "website", "analysis", "render", "export",
         "validation", "ontology", "visualization", "report", "integration",
         "security", "research", "sapf", "audio", "execute", "llm",
         "advanced_visualization", "ml_integration", "intelligent_analysis",
         "gui", "pipeline",
-    ]
+    )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
     def test_expected_module_loaded(self, mod_name, all_modules, all_tools):
@@ -182,7 +182,7 @@ class TestMCPDomainTools:
     These are real callable functions — not generic wrappers or stubs.
     """
 
-    DOMAIN_TOOLS = [
+    DOMAIN_TOOLS = (
         # analysis
         "process_analysis",
         "get_analysis_results",
@@ -273,7 +273,7 @@ class TestMCPDomainTools:
         # GNN gold-standard spot-check
         "validate_gnn_content",
         "parse_gnn_content",
-    ]
+    )
 
     @pytest.mark.parametrize("tool_name", DOMAIN_TOOLS)
     def test_domain_tool_registered(self, tool_name, all_tools):
@@ -312,7 +312,7 @@ class TestMCPToolExecution:
     Uses mcp_instance.execute_tool() — the same path clients use.
     """
 
-    ZERO_ARG_TOOLS = [
+    ZERO_ARG_TOOLS = (
         "list_analysis_tools",
         "list_render_frameworks",
         "list_export_formats",
@@ -325,7 +325,7 @@ class TestMCPToolExecution:
         "get_visualization_options",
         "get_report_module_info",
         "get_sapf_module_info",
-    ]
+    )
 
     @pytest.mark.parametrize("tool_name", ZERO_ARG_TOOLS)
     def test_zero_arg_tool_executes(self, tool_name, mcp_initialized):

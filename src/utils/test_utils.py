@@ -779,7 +779,7 @@ def assert_valid_json(file_path: Path) -> None:
         with open(file_path, 'r') as f:
             json.load(f)
     except (json.JSONDecodeError, FileNotFoundError) as e:
-        raise AssertionError(f"File does not contain valid JSON: {file_path}. Error: {e}")
+        raise AssertionError(f"File does not contain valid JSON: {file_path}. Error: {e}") from e
 
 def assert_directory_structure(base_dir: Path, expected_structure: Dict[str, Any]) -> None:
     """Assert that a directory has the expected structure."""
