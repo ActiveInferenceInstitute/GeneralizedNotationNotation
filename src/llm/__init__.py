@@ -34,7 +34,7 @@ try:
         get_default_provider_configs,
         get_preferred_providers_from_env,
     )
-except Exception:
+except (ImportError, AttributeError):
     # Provide minimal shims during test collection if heavy deps are missing
     class AnalysisType:  # type: ignore
         SUMMARY = type("E", (), {"value": "summary"})()
@@ -49,7 +49,7 @@ except Exception:
 
 try:
     from .providers import ProviderType, LLMConfig, LLMMessage, LLMResponse, BaseLLMProvider
-except Exception:
+except (ImportError, AttributeError):
     class ProviderType:  # type: ignore
         OPENAI = type("E", (), {"value": "openai"})()
     class LLMConfig: pass  # type: ignore
@@ -67,7 +67,7 @@ try:
         calculate_complexity_metrics,
         identify_patterns
     )
-except Exception:
+except (ImportError, AttributeError):
     # Provide real, direct implementations where possible instead of empty shims.
     # These implementations are lightweight and synchronous where tests expect sync behavior.
     async def analyze_gnn_file_with_llm(content: str, **kwargs):
@@ -114,7 +114,7 @@ try:
         generate_documentation,
         generate_llm_summary
     )
-except Exception:
+except (ImportError, AttributeError):
     def generate_model_insights(*_, **__): return {}
     def generate_code_suggestions(*_, **__): return {}
     def generate_documentation(*_, **__): return ""
@@ -194,13 +194,13 @@ def get_available_providers() -> list:
         # Importing lazily to avoid heavy deps
         from .providers import openai_provider as _openai  # noqa: F401
         providers.append("openai")
-    except Exception:
-        pass
+    except ImportError:
+        pass  # openai provider not installed
     try:
         from .providers import openrouter_provider as _openrouter  # noqa: F401
         providers.append("openrouter")
-    except Exception:
-        pass
+    except ImportError:
+        pass  # openrouter provider not installed
     return providers
 
 

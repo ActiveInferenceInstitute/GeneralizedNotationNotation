@@ -111,8 +111,8 @@ def _generate_statistical_plots(
                         try:
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
-                        except Exception:
-                            pass
+                        except (ValueError, TypeError):
+                            pass  # Skip non-numeric matrix data
 
             if matrix_sizes:
                 axes[1, 1].hist(matrix_sizes, bins=min(15, len(matrix_sizes)), alpha=0.7, color='green')

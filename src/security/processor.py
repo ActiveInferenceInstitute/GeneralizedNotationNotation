@@ -239,8 +239,8 @@ def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[s
                         "context": f"Mode: {oct(mode)}",
                         "severity": "low"
                     })
-            except Exception:
-                pass
+            except OSError:
+                pass  # Permission check may fail on some platforms
 
     except Exception as e:
         vulnerabilities.append({

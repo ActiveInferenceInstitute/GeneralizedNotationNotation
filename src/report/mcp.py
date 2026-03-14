@@ -122,8 +122,8 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
         if rpath.suffix == ".json":
             try:
                 parsed = _json.loads(content)
-            except Exception:
-                pass
+            except (json.JSONDecodeError, ValueError):
+                pass  # Content returned as text if not valid JSON
 
         return {
             "success":   True,

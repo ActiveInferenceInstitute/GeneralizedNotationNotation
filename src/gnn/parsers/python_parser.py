@@ -459,8 +459,8 @@ class PythonGNNParser(BaseGNNParser):
                                     dims.append(elt.value)
                             if dims:
                                 return dims
-                        except Exception:
-                            pass
+                        except (ValueError, TypeError, AttributeError):
+                            pass  # AST dimension extraction is best-effort
 
         return []
 

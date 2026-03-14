@@ -44,7 +44,7 @@ def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True
         logger.debug(f"Running command: '{command_str_list[0]} ...' in {cwd}")
 
     try:
-        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace')
+        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace', timeout=300)
         if verbose:
             if process.stdout:
                 logger.debug(f"Stdout:\n{process.stdout.strip()}")
@@ -266,6 +266,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
             capture_output=True,
             text=True,
             check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -282,7 +283,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
 
         if verbose:
             logger.debug("Verifying environment Python executable")
-        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True)
+        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=30)
         if verify.returncode == 0:
             if verbose:
                 logger.debug(f"Python in venv: {verify.stdout.strip() or verify.stderr.strip()}")
@@ -318,7 +319,8 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=60,
         )
 
         if result.returncode != 0:
@@ -391,7 +393,8 @@ def add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) ->
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -432,7 +435,8 @@ def remove_uv_dependency(package: str, verbose: bool = False) -> bool:
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -476,7 +480,8 @@ def update_uv_dependencies(verbose: bool = False, upgrade: bool = False) -> bool
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -518,7 +523,8 @@ def lock_uv_dependencies(verbose: bool = False) -> bool:
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -629,8 +635,8 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
             versions = get_installed_package_versions()
             if versions:
                 validation_results["dependencies"] = True
-        except Exception:
-            pass
+        except (subprocess.SubprocessError, OSError, json.JSONDecodeError):
+            pass  # Dependencies check is non-critical
 
         try:
             if VENV_PYTHON.exists():

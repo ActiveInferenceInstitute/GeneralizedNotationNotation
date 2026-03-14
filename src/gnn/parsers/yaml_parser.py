@@ -240,8 +240,8 @@ class YAMLGNNParser(BaseGNNParser):
                     model.created_at = datetime.fromisoformat(data['created_at'])
                 else:
                     model.created_at = data['created_at']
-            except Exception:
-                pass
+            except (ValueError, TypeError):
+                pass  # Timestamps are optional metadata
 
         if 'modified_at' in data:
             try:
@@ -249,8 +249,8 @@ class YAMLGNNParser(BaseGNNParser):
                     model.modified_at = datetime.fromisoformat(data['modified_at'])
                 else:
                     model.modified_at = data['modified_at']
-            except Exception:
-                pass
+            except (ValueError, TypeError):
+                pass  # Timestamps are optional metadata
 
         model.checksum = data.get('checksum')
 

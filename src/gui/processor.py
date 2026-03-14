@@ -234,8 +234,8 @@ def generate_html_navigation(
                                 "type": file_path.suffix.lower()
                             })
                             total_files += 1
-                        except Exception:
-                            pass
+                        except OSError:
+                            pass  # Skip unreadable files
 
             if step_files:
                 step_files.sort(key=lambda x: (x["type"], x["name"]))

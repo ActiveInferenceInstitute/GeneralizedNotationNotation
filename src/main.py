@@ -762,8 +762,8 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
                 with open(input_config_path, "r") as f:
                     _cfg = yaml.safe_load(f) or {}
                     config_skip_steps = _cfg.get("pipeline", {}).get("skip_steps", [])
-            except Exception:
-                pass
+            except (ImportError, OSError, ValueError):
+                pass  # Config file parsing is optional
 
         # Validate step prerequisites
         prereq_result = validate_step_prerequisites(script_name, args, logger,

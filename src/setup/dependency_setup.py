@@ -208,7 +208,7 @@ print("POMDP operations test passed")
             if verbose:
                 logger.info(f"Running: {' '.join(install_cmd)}")
 
-            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
+            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)
 
             if result.returncode == 0:
                 logger.info("UV sync completed successfully")
@@ -513,7 +513,7 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "src").mkdir(parents=True, exist_ok=True)
 
         try:
-            subprocess.run(["uv", "init"], cwd=project_path, check=True)
+            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)
             logger.info(f"UV project initialized at {project_path}")
         except Exception as e:
             logger.warning(f"Could not initialize UV project: {e}")

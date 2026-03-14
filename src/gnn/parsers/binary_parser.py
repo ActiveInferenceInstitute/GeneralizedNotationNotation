@@ -120,8 +120,8 @@ class PickleGNNParser(BaseGNNParser):
                 model.created_at = datetime.fromisoformat(data['created_at'])
             if 'modified_at' in data:
                 model.modified_at = datetime.fromisoformat(data['modified_at'])
-        except Exception:
-            pass
+        except (ValueError, TypeError):
+            pass  # Timestamps are optional metadata
 
         # Reconstruct variables
         for var_data in data.get('variables', []):
@@ -210,8 +210,8 @@ class PickleGNNParser(BaseGNNParser):
                             description=f"Object attribute: {type(attr_value).__name__}"
                         )
                         result.model.parameters.append(parameter)
-                except Exception:
-                    pass
+                except (AttributeError, TypeError):
+                    pass  # Skip non-readable attributes
 
     def _parse_variables_list(self, variables: List[Any], result: ParseResult):
         """Parse variables from list."""

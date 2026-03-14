@@ -185,8 +185,8 @@ def _get_hover(content: str, position: Any) -> Optional[Any]:
                 return Hover(
                     contents=MarkupContent(kind=MarkupKind.Markdown, value=info)
                 )
-    except Exception:
-        pass
+    except (ImportError, ValueError, AttributeError):
+        pass  # Hover info is best-effort
 
     return None
 

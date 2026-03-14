@@ -92,11 +92,11 @@ def read_research_results_mcp(output_directory: str,
                 content = f.read_text(encoding="utf-8", errors="replace")
                 try:
                     data = json.loads(content)
-                except Exception:
+                except (json.JSONDecodeError, ValueError):
                     data = content[:1000]
                 results.append({"file": f.name, "content": data})
-            except Exception:
-                pass
+            except OSError:
+                pass  # Skip unreadable files
 
         return {
             "success": True,

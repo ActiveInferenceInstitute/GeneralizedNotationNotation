@@ -67,7 +67,7 @@ except ImportError:
                 with np.errstate(divide='ignore', invalid='ignore'):
                     normed = np.nan_to_num(a / s, nan=0.0, posinf=0.0, neginf=0.0)
                 return normed
-            except Exception:
+            except (ValueError, TypeError):
                 return np.array(arr)
 
         @staticmethod
@@ -109,13 +109,13 @@ except ImportError:
             if self.B is not None and not isinstance(self.B, np.ndarray):
                 try:
                     self.B = np.array(self.B)
-                except Exception:
-                    pass
+                except (ValueError, TypeError):
+                    pass  # Keep original if array conversion fails
             if self.D is not None and not isinstance(self.D, np.ndarray):
                 try:
                     self.D = np.array(self.D)
-                except Exception:
-                    pass
+                except (ValueError, TypeError):
+                    pass  # Keep original if array conversion fails
 
             # Derive num_actions from B if possible
             try:
@@ -125,7 +125,7 @@ except ImportError:
                     self.num_actions = len(policies[0])
                 else:
                     self.num_actions = 1
-            except Exception:
+            except (ValueError, TypeError, IndexError, AttributeError):
                 self.num_actions = 1
 
             self.lr_pB = lr_pB
@@ -137,7 +137,7 @@ except ImportError:
             # Return a simple uniform belief over states
             try:
                 num_states = int(self.D.shape[0]) if self.D is not None and hasattr(self.D, 'shape') else 4
-            except Exception:
+            except (ValueError, TypeError, IndexError, AttributeError):
                 num_states = 4
             qs = np.ones((1, num_states)) / float(max(num_states, 1))
             return [qs]
@@ -202,7 +202,7 @@ class PyMDPSimulation:
         # Immediately create PyMDP model so agent and matrices are available
         try:
             self.create_pymdp_model()
-        except Exception:
+        except (ValueError, TypeError, IndexError, KeyError):
             # If model creation fails, keep agent as None but allow graceful degradation
             self.agent = None
         # Ensure matrices/attributes exist even if model creation failed
@@ -230,11 +230,10 @@ class PyMDPSimulation:
                 if self.agent is None:
                     try:
                         self.agent = Agent(A=A, B=B, C=C, D=D, lr_pB=self.learning_rate, policies=self._generate_policies())
-                    except Exception:
+                    except (ValueError, TypeError, IndexError):
                         self.agent = None
-            except Exception:
-                # leave as-is if any creation fails
-                pass
+            except (ValueError, TypeError, IndexError, KeyError):
+                pass  # Leave as-is if matrix creation fails
 
     def _initialize_parameters(self) -> None:
         """Initialize simulation parameters from GNN config or defaults."""
@@ -363,7 +362,7 @@ class PyMDPSimulation:
                 self.B_np = B[0]
                 self.C_np = C[0]
                 self.D_np = D[0]
-            except Exception:
+            except (IndexError, TypeError):
                 self.A_np = None
                 self.B_np = None
                 self.C_np = None
@@ -647,7 +646,7 @@ class PyMDPSimulation:
                         B_matrix[col, col, action] = 1.0
                     else:
                         B_matrix[:, col, action] = col_vec / s
-        except Exception:
+        except (ValueError, ZeroDivisionError):
             # Recovery to row-wise normalization used previously
             for action in range(self.num_actions):
                 B_matrix[:, :, action] = utils.norm_dist(B_matrix[:, :, action])
@@ -718,8 +717,8 @@ class PyMDPSimulation:
         if num_timesteps is not None:
             try:
                 self.num_timesteps = int(num_timesteps)
-            except Exception:
-                pass
+            except (ValueError, TypeError):
+                pass  # Keep default if conversion fails
 
         if not self.agent:
             self.logger.error("No agent available - create model first")

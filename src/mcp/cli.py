@@ -91,7 +91,7 @@ def list_capabilities(args):
             health = status.get('health', {})
             print(f"  Health: {health.get('status', 'unknown').upper()} (Score: {health.get('score', 0)}/100)")
             print(f"  Uptime: {status.get('server_info', {}).get('uptime_formatted', 'Unknown')}")
-        except Exception:
+        except (AttributeError, KeyError, TypeError):
             print("  Health: Unable to determine")
 
         # Tools section
@@ -144,8 +144,8 @@ def list_capabilities(args):
                 print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
                 print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
                 print(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
-            except Exception:
-                pass
+            except (AttributeError, KeyError, TypeError):
+                pass  # Performance stats are optional
 
     except Exception as e:
         _cli_error("listing capabilities", e, args, suggestions=True)
@@ -215,8 +215,8 @@ def execute_tool(args):
                         print(f"  Uses: {stats.get('use_count', 0)}")
                         print(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
                         print(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
-                except Exception:
-                    pass
+                except (AttributeError, KeyError, TypeError):
+                    pass  # Tool stats are optional
 
     except MCPError as e:
         print(f"\n❌ MCP Error: {e}", file=sys.stderr)
@@ -354,7 +354,7 @@ def get_diagnostics(args):
             result = mcp_instance.execute_tool("get_mcp_diagnostics", {})
             diagnostics = result.get('diagnostics', {})
             overall_health = result.get('overall_health', 'unknown')
-        except Exception:
+        except (AttributeError, KeyError, TypeError):
             # Recovery to basic diagnostics
             diagnostics = {"issues": [], "warnings": [], "recommendations": []}
             overall_health = "unknown"

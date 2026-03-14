@@ -127,14 +127,14 @@ def get_validation_report_mcp(output_directory: str) -> Dict[str, Any]:
         for jf in sorted(out_dir.rglob("*validation*.json"))[:10]:
             try:
                 reports.append({"file": jf.name, "data": json.loads(jf.read_text())})
-            except Exception:
-                pass
+            except (json.JSONDecodeError, OSError):
+                pass  # Skip unreadable report files
         txt_reports = []
         for tf in sorted(out_dir.rglob("*validation*.txt"))[:5]:
             try:
                 txt_reports.append({"file": tf.name, "content": tf.read_text()[:2000]})
-            except Exception:
-                pass
+            except OSError:
+                pass  # Skip unreadable report files
 
         return {
             "success": True,

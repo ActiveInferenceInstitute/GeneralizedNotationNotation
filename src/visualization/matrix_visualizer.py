@@ -37,8 +37,8 @@ def _safe_tight_layout():
             warnings.filterwarnings('ignore', category=UserWarning,
                                   message='.*[Tt]ight.?layout.*')
             _safe_tight_layout()
-    except Exception:
-        pass
+    except (ValueError, RuntimeError):
+        pass  # Tight layout is not critical
 
 class MatrixVisualizer:
     """
@@ -294,8 +294,8 @@ class MatrixVisualizer:
             # Ensure parent directory exists
             try:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
-            except Exception:
-                pass
+            except OSError:
+                pass  # Directory may already exist
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 
@@ -762,8 +762,8 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
             _safe_tight_layout()
             try:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
-            except Exception:
-                pass
+            except OSError:
+                pass  # Directory may already exist
             plt.savefig(output_path, dpi=300, bbox_inches='tight')
             plt.close()
 

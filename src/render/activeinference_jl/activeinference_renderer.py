@@ -100,7 +100,7 @@ def render_gnn_to_activeinference_jl(
         logger.info(success_msg)
         return True, success_msg, [str(output_path.resolve())]
 
-    except Exception as e:
+    except (ValueError, KeyError, TypeError, OSError) as e:
         error_msg = f"Failed to render ActiveInference.jl script: {e}"
         logger.error(error_msg, exc_info=True)
         return False, error_msg, []
@@ -139,20 +139,20 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                 # Hidden state: e.g., '3,1,type=float'
                 try:
                     n_states = int(dims.split(",")[0])
-                except Exception:
-                    pass
+                except (ValueError, TypeError, IndexError):
+                    pass  # Dimension parsing is best-effort
             elif var_id == "o" and n_obs is None:
                 # Observation: e.g., '3,1,type=int'
                 try:
                     n_obs = int(dims.split(",")[0])
-                except Exception:
-                    pass
+                except (ValueError, TypeError, IndexError):
+                    pass  # Dimension parsing is best-effort
             elif var_id == "u" and n_actions is None:
                 # Action: e.g., '1,type=int' (but see B for action count)
                 try:
                     n_actions = int(dims.split(",")[0])
-                except Exception:
-                    pass
+                except (ValueError, TypeError, IndexError):
+                    pass  # Dimension parsing is best-effort
             elif var_id == "A" and (n_obs is None or n_states is None):
                 # A matrix: e.g., '3,3,type=float'
                 try:
@@ -160,8 +160,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_obs = int(dims.split(",")[0])
                     if n_states is None:
                         n_states = int(dims.split(",")[1])
-                except Exception:
-                    pass
+                except (ValueError, TypeError, IndexError):
+                    pass  # Dimension parsing is best-effort
             elif var_id == "B" and (n_states is None or n_actions is None):
                 # B matrix: e.g., '3,3,3,type=float'
                 try:
@@ -169,8 +169,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_states = int(dims.split(",")[0])
                     if n_actions is None:
                         n_actions = int(dims.split(",")[2])
-                except Exception:
-                    pass
+                except (ValueError, TypeError, IndexError):
+                    pass  # Dimension parsing is best-effort
 
     # --- Recovery 2: from raw ModelParameters section ---
     if n_states is None or n_obs is None or n_actions is None:

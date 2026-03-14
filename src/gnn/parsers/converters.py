@@ -44,8 +44,8 @@ class FormatConverter:
 
         try:
             return self.supported_conversions[conversion_key](model)
-        except Exception as e:
-            raise ConversionError(f"Conversion failed: {e}")
+        except Exception as e:  # noqa: BLE001 - converter functions may raise arbitrary exceptions
+            raise ConversionError(f"Conversion failed: {e}") from e
 
     def register_conversion(self, from_format: str, to_format: str, converter_func):
         """

@@ -35,8 +35,8 @@ class VisualizationCache:
             try:
                 with open(self.metadata_file, 'r') as f:
                     self.metadata = json.load(f)
-            except Exception:
-                self.metadata = {}
+            except (json.JSONDecodeError, OSError):
+                self.metadata = {}  # Reset on corrupt or unreadable metadata
         else:
             self.metadata = {}
 
@@ -45,7 +45,7 @@ class VisualizationCache:
         try:
             with open(self.metadata_file, 'w') as f:
                 json.dump(self.metadata, f, indent=2)
-        except Exception:
+        except OSError:
             pass  # Continue if metadata save fails
 
     def get_cache_key(self, content: str, params: Dict[str, Any]) -> str:
@@ -99,8 +99,8 @@ class VisualizationCache:
             for file_path in entry.get('files', []):
                 try:
                     Path(file_path).unlink(missing_ok=True)
-                except Exception:
-                    pass
+                except OSError:
+                    pass  # File may already be deleted
             del self.metadata[cache_key]
             self._save_metadata()
 

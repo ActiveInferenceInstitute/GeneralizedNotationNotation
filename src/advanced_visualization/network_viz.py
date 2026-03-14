@@ -581,8 +581,8 @@ def _generate_network_metrics(
                 try:
                     degree_centrality = nx.degree_centrality(G)
                     metrics["max_degree_centrality"] = max(degree_centrality.values()) if degree_centrality else 0
-                except Exception:
-                    pass
+                except (nx.NetworkXError, ValueError, ZeroDivisionError):
+                    pass  # Centrality metrics may fail on degenerate graphs
 
             fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 

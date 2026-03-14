@@ -46,7 +46,8 @@ def add_uv_dependency(package: str, dev: bool = False, verbose: bool = False) ->
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -87,7 +88,8 @@ def remove_uv_dependency(package: str, verbose: bool = False) -> bool:
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -131,7 +133,8 @@ def update_uv_dependencies(verbose: bool = False, upgrade: bool = False) -> bool
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:
@@ -173,7 +176,8 @@ def lock_uv_dependencies(verbose: bool = False) -> bool:
             cwd=PROJECT_ROOT,
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=300,
         )
 
         if result.returncode != 0:

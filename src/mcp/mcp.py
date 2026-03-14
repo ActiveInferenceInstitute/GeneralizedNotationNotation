@@ -1406,8 +1406,8 @@ def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = Fals
     # Apply performance mode
     try:
         mcp_instance.set_performance_mode(performance_mode)
-    except Exception:
-        pass
+    except (AttributeError, TypeError):
+        pass  # Performance mode is optional
 
     # Perform module discovery with fast settings
     all_modules_loaded = mcp_instance.discover_modules(

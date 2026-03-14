@@ -34,7 +34,8 @@ def install_python_dependencies() -> None:
                 ["uv", "pip", "install", dep],
                 capture_output=True,
                 text=True,
-                check=False
+                check=False,
+                timeout=300,
             )
             if result.returncode == 0:
                 logger.info(f"    ✅ {dep} installed successfully")
@@ -97,7 +98,8 @@ def verify_installations() -> None:
             ["julia", "--version"],
             capture_output=True,
             text=True,
-            check=False
+            check=False,
+            timeout=30,
         )
         if result.returncode == 0:
             logger.info(f"  ✅ Julia: {result.stdout.strip()}")

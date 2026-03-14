@@ -143,7 +143,8 @@ def execute_pymdp_script_with_outputs(
             text=True,
             check=False,
             cwd=abs_script_path.parent,
-            env=env
+            env=env,
+            timeout=600,
         )
 
         # Save execution logs

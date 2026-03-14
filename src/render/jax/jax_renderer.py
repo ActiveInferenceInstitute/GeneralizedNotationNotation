@@ -698,8 +698,8 @@ def _create_improved_default_matrix(param_name: str, default_matrix: np.ndarray,
                         new_vector = np.ones(shape) / shape[0]
 
                 return new_vector
-        except Exception:
-            pass
+        except (ValueError, TypeError, IndexError):
+            pass  # Fall through to return default matrix
 
     # If we can't improve it, return the default
     return default_matrix
@@ -1009,8 +1009,8 @@ try:
     if len(jax.devices()) > 1 and os.environ.get("JAX_ENABLE_PMAP", "1") == "1":
         # Multi-device data parallelism
         parallel_belief_update = jax.pmap(belief_update, in_axes=(None, 0, 0))
-except Exception:
-    pass
+except (RuntimeError, ValueError):
+    pass  # pmap unavailable on single-device setups
 
 
 @jit
