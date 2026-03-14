@@ -1365,7 +1365,7 @@ class _LazyMCP:
         return getattr(_mcp_instance, name)
 
 
-mcp_instance = _LazyMCP()
+mcp_instance: "MCP" = _LazyMCP()  # type: ignore[assignment]  # _LazyMCP proxies all MCP attributes via __getattr__
 
 # --- Initialization Function ---
 def initialize(halt_on_missing_sdk: bool = True, force_proceed_flag: bool = False,

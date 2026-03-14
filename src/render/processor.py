@@ -13,8 +13,11 @@ import json
 import logging
 import sys
 from pathlib import Path
-from typing import Dict, Any, Optional, Union, Tuple, List
+from typing import TYPE_CHECKING, Dict, Any, Optional, Union, Tuple, List
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from gnn.types import GNNInternalRepresentation
 
 try:
     import numpy as np
@@ -532,7 +535,7 @@ Each framework subdirectory contains:
         logger.warning(f"Failed to create overview documentation: {e}")
 
 def render_gnn_spec(
-    gnn_spec: Dict[str, Any],
+    gnn_spec: "Union[GNNInternalRepresentation, Dict[str, Any]]",
     target: str,
     output_directory: Union[str, Path],
     options: Optional[Dict[str, Any]] = None

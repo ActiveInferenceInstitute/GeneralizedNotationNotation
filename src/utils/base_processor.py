@@ -164,8 +164,9 @@ class BaseProcessor(ABC):
             # Ensure output directory exists
             output_dir.mkdir(parents=True, exist_ok=True)
 
-            # Find files to process
-            files = self.find_files(target_dir, recursive=recursive, **kwargs)
+            # Find files to process — extract only recognized find_files kwargs
+            find_files_kwargs = {k: v for k, v in kwargs.items() if k in ('extensions', 'pattern')}
+            files = self.find_files(target_dir, recursive=recursive, **find_files_kwargs)
 
             if not files:
                 log_step_warning(self.logger, f"No files found in {target_dir}")
