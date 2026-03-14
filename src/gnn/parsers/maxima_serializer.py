@@ -35,7 +35,7 @@ class MaximaSerializer(BaseGNNSerializer):
         # Connections as function dependencies
         if model.connections:
             lines.append("/* Connections */")
-            for _i, conn in enumerate(model.connections):
+            for _, conn in enumerate(model.connections):
                 if hasattr(conn, 'source_variables') and hasattr(conn, 'target_variables'):
                     sources = conn.source_variables
                     targets = conn.target_variables

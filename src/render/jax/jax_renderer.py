@@ -152,7 +152,7 @@ def _parse_gnn_matrix_string(matrix_str: str) -> np.ndarray:
 
             # Ensure all rows have the same length
             max_len = max(len(row) for row in matrix)
-            for _i, row in enumerate(matrix):
+            for _, row in enumerate(matrix):
                 while len(row) < max_len:
                     row.append(0.0)
 
@@ -413,7 +413,7 @@ def _extract_gnn_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
 
         # Extract variable dimensions from the variables list
         var_dims = {}
-        for _i, var_data in enumerate(gnn_spec.get("variables", [])):
+        for _, var_data in enumerate(gnn_spec.get("variables", [])):
             var_name = var_data.get("id", "")  # Use 'id' instead of 'name'
             dimensions_str = var_data.get("dimensions", "")  # This is a string like "3,3,type=float"
 
@@ -790,7 +790,7 @@ def _parse_matrix_string(matrix_str: str) -> np.ndarray:
 
     # Ensure all rows have same length
     max_len = max(len(row) for row in rows)
-    for _i, row in enumerate(rows):
+    for _, row in enumerate(rows):
         while len(row) < max_len:
             row.append(0.0)
 

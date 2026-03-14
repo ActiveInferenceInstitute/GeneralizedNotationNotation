@@ -273,7 +273,7 @@ class CrossFormatValidator:
                     checksum_groups[checksum] = []
                 checksum_groups[checksum].append(format_name)
 
-            for _checksum, formats in checksum_groups.items():
+            for _, formats in checksum_groups.items():
                 if len(formats) > 1:
                     result.warnings.append(f"Consistent group: {', '.join(formats)}")
 
@@ -318,7 +318,7 @@ class CrossFormatValidator:
         """Find common error patterns across formats."""
         error_counts = {}
 
-        for _format_name, validation_result in format_results.items():
+        for _, validation_result in format_results.items():
             for error in validation_result.errors:
                 # Normalize error message for pattern matching
                 normalized_error = self._normalize_error_message(error)

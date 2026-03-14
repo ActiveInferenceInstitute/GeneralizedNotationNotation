@@ -26,7 +26,7 @@ def generate_tonal_representation(variables: List[Dict], connections: List[Dict]
     base_freq = 440  # A4
     audio = np.zeros_like(t)
 
-    for i, _var in enumerate(variables):
+    for i, _ in enumerate(variables):
         # Map variable index to frequency
         freq = base_freq * (2 ** (i / 12))  # Chromatic scale
         amplitude = 0.1 / len(variables)  # Normalize amplitude
@@ -46,7 +46,7 @@ def generate_rhythmic_representation(variables: List[Dict], connections: List[Di
     # Create rhythmic pattern based on connections
     audio = np.zeros_like(t)
 
-    for i, _conn in enumerate(connections):
+    for i, _ in enumerate(connections):
         # Create rhythmic pulse for each connection
         pulse_freq = 2.0 + (i % 4)  # Different pulse rates
         pulse = np.sin(2 * np.pi * pulse_freq * t) * 0.1
@@ -74,13 +74,13 @@ def generate_ambient_representation(variables: List[Dict], connections: List[Dic
     audio += drone
 
     # Add variable-based harmonics
-    for i, _var in enumerate(variables):
+    for i, _ in enumerate(variables):
         freq = drone_freq * (i + 2)  # Harmonic series
         harmonic = 0.02 * np.sin(2 * np.pi * freq * t)
         audio += harmonic
 
     # Add connection-based modulation
-    for _conn in connections:
+    for _ in connections:
         mod_freq = 0.5  # Slow modulation
         modulation = 0.01 * np.sin(2 * np.pi * mod_freq * t)
         audio *= (1 + modulation)
@@ -95,7 +95,7 @@ def generate_sonification_audio(dynamics: List[Dict[str, Any]]) -> np.ndarray:
 
     audio = np.zeros_like(t)
 
-    for i, _dynamic in enumerate(dynamics):
+    for i, _ in enumerate(dynamics):
         # Create dynamic sound for each element
         base_freq = 220 + (i * 50)  # Different base frequency for each element
 

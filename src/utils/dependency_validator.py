@@ -447,7 +447,7 @@ def check_optional_dependencies() -> dict:
     validator = DependencyValidator()
     optional_status = {}
     missing_optional = []
-    for _group, deps in validator.dependencies.items():
+    for _, deps in validator.dependencies.items():
         for dep in deps:
             if dep.is_optional:
                 status = validator.validate_python_dependency(dep) if not dep.system_command else validator.validate_system_dependency(dep)
@@ -466,7 +466,7 @@ def get_dependency_status() -> dict:
     validator.validate_all_dependencies()
     required = []
     optional = []
-    for _group, deps in validator.dependencies.items():
+    for _, deps in validator.dependencies.items():
         for dep in deps:
             if dep.is_optional:
                 optional.append(dep.name)

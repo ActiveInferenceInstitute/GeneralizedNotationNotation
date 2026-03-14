@@ -67,7 +67,7 @@ def extract_gnn_features(file_path: Path) -> Dict[str, Any]:
     if dims:
         # Compute dimension-based features
         all_elements = []
-        for _name, var_dims in dims.items():
+        for _, var_dims in dims.items():
             elements = 1
             for d in var_dims:
                 elements *= d

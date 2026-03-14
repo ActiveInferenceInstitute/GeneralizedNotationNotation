@@ -321,7 +321,7 @@ def _generate_generative_model_diagram(parsed_data: Dict[str, Any], output_dir: 
             ('u', 's\'', 'Effect'),
         ]
 
-        for source, target, _label in edges:
+        for source, target, _ in edges:
             if source in positions and target in positions:
                 x1, y1 = positions[source]
                 x2, y2 = positions[target]

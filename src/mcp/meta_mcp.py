@@ -277,7 +277,7 @@ def get_mcp_performance_metrics(mcp_instance_ref) -> Dict[str, Any]:
 
     # Get tool-specific performance data
     tool_performance = {}
-    for tool_name, _tool in mcp_instance_ref.tools.items():
+    for tool_name, _ in mcp_instance_ref.tools.items():
         tool_stats = mcp_instance_ref.get_tool_performance_stats(tool_name)
         if tool_stats:
             tool_performance[tool_name] = tool_stats

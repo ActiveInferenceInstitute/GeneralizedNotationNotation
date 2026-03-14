@@ -149,7 +149,7 @@ class DependencyAuditor:
 
             # Load optional dependencies
             optional_deps = data.get('project', {}).get('optional-dependencies', {})
-            for _group, deps in optional_deps.items():
+            for _, deps in optional_deps.items():
                 for dep_spec in deps:
                     name, version = self._parse_dependency_spec(dep_spec)
                     if name and name not in self.dependencies:

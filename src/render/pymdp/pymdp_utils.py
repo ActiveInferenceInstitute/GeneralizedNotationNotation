@@ -153,7 +153,7 @@ def generate_pymdp_matrix_definition(
             # Comment should reflect the number of actual items being put into the list
             actual_items_count = len(valid_item_strings)
             lines.append(f"{temp_list_name} = [ # Object array for {actual_items_count} modalities/factors")
-            for _i, s_arr in enumerate(valid_item_strings):
+            for _, s_arr in enumerate(valid_item_strings):
                 # Each s_arr is a string like "np.array(...)". Indent this whole string.
                 s_arr_lines = s_arr.split('\n')
                 lines.append(base_indent_str + s_arr_lines[0] + ",") # First line of "np.array(...)"

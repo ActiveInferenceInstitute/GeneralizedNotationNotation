@@ -198,7 +198,7 @@ class OntologyVisualizer:
             table.auto_set_font_size(False)
 
             # Style header cells
-            for _j, cell in enumerate(table._cells[(0, j)] for j in range(2)):
+            for _, cell in enumerate(table._cells[(0, j)] for j in range(2)):
                 cell.set_facecolor(self.colors['header'])
                 cell.set_text_props(weight='bold', size=self.font_size['subtitle'])
                 cell.set_edgecolor(self.colors['border'])

@@ -91,7 +91,7 @@ class SymPyMCPClient:
             await self._start_server()
 
             # Wait for server to start
-            for _attempt in range(10):
+            for _ in range(10):
                 try:
                     if self._client is not None:  # Type guard
                         response = await self._client.get(f"{self.server_url}/healthcheck")
@@ -313,7 +313,7 @@ class GNNSymPyIntegration:
         variables_to_create = []
 
         # Process state space variables
-        for var_name, _var_spec in state_space.items():
+        for var_name, _ in state_space.items():
             if var_name.startswith('s_f'):  # State factor
                 variables_to_create.append({
                     "var_name": var_name,
@@ -322,7 +322,7 @@ class GNNSymPyIntegration:
                 })
 
         # Process observation space variables
-        for var_name, _var_spec in observation_space.items():
+        for var_name, _ in observation_space.items():
             if var_name.startswith('o_m'):  # Observation modality
                 variables_to_create.append({
                     "var_name": var_name,

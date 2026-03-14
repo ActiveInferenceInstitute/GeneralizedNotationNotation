@@ -227,7 +227,7 @@ def create_discopy_visualizations(
 
                 # Draw nodes
                 positions = []
-                for _i, (angle, comp, color) in enumerate(zip(angles, all_comps, colors)):
+                for _, (angle, comp, color) in enumerate(zip(angles, all_comps, colors)):
                     x = center_x + radius * np.cos(angle)
                     y = center_y + radius * np.sin(angle)
                     positions.append((x, y))
@@ -263,7 +263,7 @@ def create_discopy_visualizations(
                     ('Inference', '#FF9800'),
                     ('Selection', '#E91E63'),
                 ]
-                for _i, (label, color) in enumerate(legend_items):
+                for _, (label, color) in enumerate(legend_items):
                     ax.scatter([], [], c=color, s=100, label=label)
                 ax.legend(loc='lower right', fontsize=9)
 

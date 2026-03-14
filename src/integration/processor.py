@@ -197,7 +197,7 @@ def process_integration(
                 cycle_count = 0
                 try:
                     _deadline = _t.monotonic() + MAX_CYCLE_TIME
-                    for _c in nx.simple_cycles(G, length_bound=MAX_CYCLE_LENGTH):
+                    for _ in nx.simple_cycles(G, length_bound=MAX_CYCLE_LENGTH):
                         cycle_count += 1
                         if _t.monotonic() > _deadline or cycle_count >= 500:
                             break
@@ -205,7 +205,7 @@ def process_integration(
                     # Older networkx without length_bound
                     try:
                         _deadline = _t.monotonic() + MAX_CYCLE_TIME
-                        for _c in nx.simple_cycles(G):
+                        for _ in nx.simple_cycles(G):
                             cycle_count += 1
                             if _t.monotonic() > _deadline or cycle_count >= 500:
                                 break

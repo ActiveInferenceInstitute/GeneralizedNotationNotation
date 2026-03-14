@@ -342,7 +342,7 @@ def estimate_file_resources(content: str) -> Dict[str, Any]:
         # Compute total parameter count from actual dimensions
         total_parameters = 0
         max_single_var = 0
-        for _name, dims in variables_with_dims.items():
+        for _, dims in variables_with_dims.items():
             elements = 1
             for d in dims:
                 elements *= d

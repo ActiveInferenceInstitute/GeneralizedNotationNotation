@@ -199,7 +199,7 @@ class PerformanceProfiler:
         dependencies = {name: [] for name in block_names}
 
         # Build dependency graph
-        for _conn_type in connection_types:
+        for _ in connection_types:
             # In a real implementation, we would parse the connections to build the graph
             # For now, just assume some sequential dependencies based on connection count
             pass

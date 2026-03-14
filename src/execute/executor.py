@@ -408,7 +408,7 @@ def execute_rendered_simulators(
         "jax": execution_output_dir / "jax"
     }
 
-    for _framework, framework_dir in framework_dirs.items():
+    for _, framework_dir in framework_dirs.items():
         framework_dir.mkdir(parents=True, exist_ok=True)
         logger.debug(f"Created framework directory: {framework_dir}")
 

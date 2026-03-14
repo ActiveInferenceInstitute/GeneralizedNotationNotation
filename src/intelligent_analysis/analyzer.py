@@ -396,7 +396,7 @@ def generate_optimization_suggestions(summary_data: Dict[str, Any]) -> List[Dict
 
     # Suggestion 1: Parallelization opportunities
     independent_steps = []
-    for _i, step in enumerate(steps):
+    for _, step in enumerate(steps):
         if not step.get("dependency_warnings"):
             independent_steps.append(step.get("script_name"))
 

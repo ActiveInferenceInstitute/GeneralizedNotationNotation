@@ -300,7 +300,7 @@ class ValidationStrategy:
             'warning_summary': {},
         }
 
-        for _file_path, result in results.items():
+        for _, result in results.items():
             if result.is_valid:
                 summary['valid_files'] += 1
             else:
