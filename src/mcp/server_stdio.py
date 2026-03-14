@@ -63,7 +63,7 @@ class StdioServer:
         self._responses_sent = 0
         self._errors_encountered = 0
 
-    def start(self):
+    def start(self) -> None:
         """Start the server with reader, processor, and writer threads."""
         self.running = True
 
