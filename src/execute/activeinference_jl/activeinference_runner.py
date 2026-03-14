@@ -510,7 +510,8 @@ def run_activeinference_analysis(
 
     return len(failed_scripts) == 0
 
-# Alias for backward compatibility
+# Aliases for backward compatibility and naming convention consistency
+run_activeinference_scripts = run_activeinference_analysis
 run_analysis_suite = run_activeinference_analysis
 
 if __name__ == "__main__":
