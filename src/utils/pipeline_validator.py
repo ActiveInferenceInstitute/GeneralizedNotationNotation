@@ -249,7 +249,10 @@ def check_pipeline_readiness(steps_to_execute: List[tuple], args) -> Dict[str, A
     try:
         args.output_dir.mkdir(parents=True, exist_ok=True)
         test_file = args.output_dir / ".pipeline_test"
-        test_file.write_text("test")
+        import os as _os, tempfile as _tempfile
+        with _tempfile.NamedTemporaryFile(mode='w', dir=args.output_dir, delete=False) as _tmp:
+            _tmp.write("test")
+        _os.replace(_tmp.name, str(test_file))
         test_file.unlink()
     except Exception as e:
         readiness_check["blocking_issues"].append(f"Output directory {args.output_dir} is not writable: {e}")

@@ -10,7 +10,7 @@ from typing import Dict, Any, List
 import logging
 import json
 
-from advanced_visualization._shared import _normalize_connection_format
+from advanced_visualization._shared import normalize_connection_format
 # Import visualization libraries with error handling
 try:
     import matplotlib
@@ -101,7 +101,7 @@ def generate_network_visualizations(parsed_data: Dict[str, Any], output_dir: Pat
         # Add edges (connections) - handle both old and new connection formats
         for conn_info in connections:
             if isinstance(conn_info, dict):
-                normalized_conn = _normalize_connection_format(conn_info)
+                normalized_conn = normalize_connection_format(conn_info)
                 source_vars = normalized_conn.get("source_variables", [])
                 target_vars = normalized_conn.get("target_variables", [])
 
@@ -283,7 +283,7 @@ def _generate_network_statistics(variables: list, connections: list) -> Dict[str
 
     for conn_info in connections:
         if isinstance(conn_info, dict):
-            normalized_conn = _normalize_connection_format(conn_info)
+            normalized_conn = normalize_connection_format(conn_info)
             source_vars = normalized_conn.get("source_variables", [])
             target_vars = normalized_conn.get("target_variables", [])
 
@@ -297,7 +297,7 @@ def _generate_network_statistics(variables: list, connections: list) -> Dict[str
         try:
             simple_G = nx.DiGraph()
             for conn_info in connections:
-                normalized_conn = _normalize_connection_format(conn_info)
+                normalized_conn = normalize_connection_format(conn_info)
                 source_vars = normalized_conn.get("source_variables", [])
                 target_vars = normalized_conn.get("target_variables", [])
                 for source_var in source_vars:

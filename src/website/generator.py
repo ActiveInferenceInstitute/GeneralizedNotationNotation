@@ -476,7 +476,11 @@ class WebsiteGenerator:
 
             for filename, html in pages.items():
                 try:
-                    (output_dir / filename).write_text(html, encoding="utf-8")
+                    import os as _os, tempfile as _tempfile
+                    _dest = output_dir / filename
+                    with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_dir, delete=False) as _tmp:
+                        _tmp.write(html)
+                    _os.replace(_tmp.name, str(_dest))
                     result["pages_created"] += 1
                 except Exception as e:
                     result["errors"].append(f"Failed to write {filename}: {e}")

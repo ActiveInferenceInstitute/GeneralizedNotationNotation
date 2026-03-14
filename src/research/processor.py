@@ -441,7 +441,11 @@ def process_research(
                         report_lines.append(f"  - *Rationale*: {h['rationale']}\n")
             report_lines.append("\n")
 
-        (results_dir / "research_report.md").write_text("".join(report_lines))
+        import os as _os, tempfile as _tempfile
+        _report_path = results_dir / "research_report.md"
+        with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=results_dir, delete=False) as _tmp:
+            _tmp.write("".join(report_lines))
+        _os.replace(_tmp.name, str(_report_path))
 
         log_step_success(logger, "Research processing completed successfully")
         return results["success"]

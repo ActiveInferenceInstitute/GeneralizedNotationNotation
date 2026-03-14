@@ -62,7 +62,7 @@ class AdvancedVisualizationResults:
     errors: List[str] = field(default_factory=list)
 
 
-def _normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
+def normalize_connection_format(conn_info: Dict[str, Any]) -> Dict[str, Any]:
     """Normalize connection format to handle both old and new formats."""
     if "source_variables" in conn_info and "target_variables" in conn_info:
         return conn_info
@@ -103,7 +103,7 @@ def _calculate_semantic_positions(variables: List[Dict], connections: List[Dict]
     connection_matrix = np.zeros((n_vars, n_vars))
 
     for conn_info in connections:
-        normalized_conn = _normalize_connection_format(conn_info)
+        normalized_conn = normalize_connection_format(conn_info)
         source_vars = normalized_conn.get("source_variables", [])
         target_vars = normalized_conn.get("target_variables", [])
 

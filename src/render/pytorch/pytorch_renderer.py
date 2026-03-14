@@ -50,7 +50,10 @@ def render_gnn_to_pytorch(
         # Write output
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(code)
+        import os as _os, tempfile as _tempfile
+        with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as _tmp:
+            _tmp.write(code)
+        _os.replace(_tmp.name, str(output_path))
 
         logger.info(f"✅ PyTorch script written to: {output_path}")
         return True, f"PyTorch script generated: {output_path}", str(output_path)

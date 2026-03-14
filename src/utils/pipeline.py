@@ -100,7 +100,10 @@ def validate_output_directory(output_dir: Path, step_name: str) -> bool:
         # Check if directory is writable
         test_file = output_dir / f"{step_name}_test.tmp"
         try:
-            test_file.write_text("test")
+            import os as _os, tempfile as _tempfile
+            with _tempfile.NamedTemporaryFile(mode='w', dir=output_dir, delete=False) as _tmp:
+                _tmp.write("test")
+            _os.replace(_tmp.name, str(test_file))
             test_file.unlink()
         except Exception as e:
             logger.error(f"Output directory {output_dir} is not writable: {e}")
