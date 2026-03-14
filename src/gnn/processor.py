@@ -3,8 +3,6 @@
 GNN processor module for GNN pipeline.
 """
 
-import os
-import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Union
 import logging

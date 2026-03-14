@@ -232,9 +232,12 @@ def ensure_output_directory(output_dir: Path, logger: logging.Logger) -> bool:
     try:
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # Test write access
+        # Test write access via atomic write probe
+        import tempfile as _tempfile
         test_file = output_dir / ".test_write_access"
-        test_file.write_text("test")
+        with _tempfile.NamedTemporaryFile(mode='w', dir=output_dir, delete=False) as _tmp:
+            _tmp.write("test")
+        os.replace(_tmp.name, str(test_file))
         test_file.unlink()
 
         return True
