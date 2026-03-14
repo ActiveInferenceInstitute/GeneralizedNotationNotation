@@ -143,7 +143,7 @@ def process_website(
                     "pages_created": int(result.get("pages_created", 0))
                 }, f)
         except Exception:
-            pass
+            pass  # results file is optional — don't fail website generation
 
         if result["success"]:
             logger.info(f"Website generated successfully with {result['pages_created']} pages")
