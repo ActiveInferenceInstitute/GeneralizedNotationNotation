@@ -511,7 +511,7 @@ observation > state
 def test_specific_pipeline_steps_improvements(step_numbers, temp_directories):
     """Test that specific pipeline steps work with improvements."""
 
-    import subprocess
+    import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
     # Create test GNN file
     test_file = temp_directories["input_dir"] / "step_test.md"
@@ -536,7 +536,7 @@ state > action
             "--verbose"
         ]
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             capture_output=True,
             text=True,

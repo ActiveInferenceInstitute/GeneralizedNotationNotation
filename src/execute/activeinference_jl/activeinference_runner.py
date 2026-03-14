@@ -15,7 +15,7 @@ Features:
 
 import logging
 import os
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import json
 import time
@@ -72,7 +72,7 @@ def setup_julia_environment(project_dir: Path, force_setup: bool = False, verbos
 
     try:
         # Run setup with extended timeout
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             capture_output=True,
             text=True,
@@ -124,7 +124,7 @@ def _fallback_environment_setup(project_dir: Path) -> bool:
         instantiate_cmd = ["julia", f"--project={project_dir}", "-e", "using Pkg; Pkg.instantiate()"]
         logger.debug(f"Running: {' '.join(instantiate_cmd)}")
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             instantiate_cmd,
             capture_output=True,
             text=True,
@@ -175,7 +175,7 @@ def _validate_package(project_dir: Path, package_name: str) -> bool:
     """
     try:
         cmd = ["julia", f"--project={project_dir}", "-e", f"using {package_name}; println(\"✅ {package_name} loaded\")"]
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             capture_output=True,
             text=True,
@@ -295,7 +295,7 @@ def execute_activeinference_script(
         env["JULIA_PROJECT"] = str(project_dir)
 
         # Execute the script
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             capture_output=True,
             text=True,

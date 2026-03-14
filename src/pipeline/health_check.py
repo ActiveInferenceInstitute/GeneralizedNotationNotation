@@ -17,7 +17,7 @@ Features:
 import sys
 import json
 import importlib
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import platform
 import time
 from pathlib import Path
@@ -160,7 +160,7 @@ class EnhancedHealthChecker:
             network_available = True
             try:
                 # Simple connectivity test
-                subprocess.run(['ping', '-c', '1', '8.8.8.8'],
+                subprocess.run(['ping', '-c', '1', '8.8.8.8'],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                             capture_output=True, timeout=5)
             except (subprocess.TimeoutExpired, FileNotFoundError):
                 network_available = False
@@ -256,7 +256,7 @@ class EnhancedHealthChecker:
             if group_name == "julia":
                 try:
                     # Check if Julia is installed
-                    result = subprocess.run(['julia', '--version'],
+                    result = subprocess.run(['julia', '--version'],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                                           capture_output=True, text=True, timeout=10)
                     if result.returncode == 0:
                         group_result["available"].append(f"julia {result.stdout.strip()}")

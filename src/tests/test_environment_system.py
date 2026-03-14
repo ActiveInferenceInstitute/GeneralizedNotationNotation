@@ -134,9 +134,9 @@ class TestSystemProcesses:
     @pytest.mark.fast
     def test_subprocess_execution(self):
         """Test subprocess execution works."""
-        import subprocess
+        import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [sys.executable, "-c", "print('hello')"],
             capture_output=True,
             text=True,

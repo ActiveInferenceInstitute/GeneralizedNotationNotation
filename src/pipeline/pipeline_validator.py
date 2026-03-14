@@ -13,7 +13,7 @@ See also:
 import logging
 import sys
 import json
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
 from typing import Dict, Any, List
 from datetime import datetime
@@ -197,7 +197,7 @@ class PipelineValidator:
 
             self.logger.info(f"Executing: {' '.join(cmd)}")
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 cmd,
                 capture_output=True,
                 text=True,

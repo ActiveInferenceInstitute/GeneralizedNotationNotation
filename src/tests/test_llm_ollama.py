@@ -10,7 +10,7 @@ configurable via OLLAMA_TEST_MODEL, defaulting to 'gemma2:2b'.
 import os
 import sys
 import shutil
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
 import pytest
 
@@ -34,7 +34,7 @@ def _ollama_available() -> bool:
         if shutil.which("ollama") is not None:
             # CLI exists, check if service is running by trying to list models
             try:
-                result = subprocess.run(
+                result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                     ["ollama", "list"],
                     capture_output=True,
                     text=True,

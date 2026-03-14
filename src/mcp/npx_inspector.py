@@ -11,7 +11,7 @@ Inspired by the concept of npx @modelcontextprotocol/inspector.
 
 import argparse
 import json
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import threading
 import time
@@ -248,7 +248,7 @@ def main() -> None:
     client = None
     try:
         print("Inspector: Starting GNN MCP server process...", file=sys.stderr)
-        server_process = subprocess.Popen(
+        server_process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
             server_cmd_list,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,

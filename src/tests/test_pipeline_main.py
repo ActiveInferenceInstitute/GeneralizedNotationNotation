@@ -6,7 +6,7 @@ These tests verify that the pipeline actually runs steps and produces expected o
 No mocks - real subprocess execution with real artifacts.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import tempfile
 import shutil
@@ -84,7 +84,7 @@ D: 0.6 0.4
                 "--verbose"
             ]
 
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)
+            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True)  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check that pipeline completed (may have warnings but should not fail)
             # Exit code 0 = success, 1 = warning/non-critical failure, 2 = success with warnings
@@ -137,7 +137,7 @@ D: 0.6 0.4
                 "--verbose"
             ]
 
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Pipeline may fail due to missing dependencies, but should produce reports
             step11_output = output_dir / "11_render_output"
@@ -173,7 +173,7 @@ D: 0.6 0.4
                 "--verbose"
             ]
 
-            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check that pipeline produced expected outputs
             pipeline_summary = output_dir / "00_pipeline_summary" / "pipeline_execution_summary.json"

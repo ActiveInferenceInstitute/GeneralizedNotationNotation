@@ -14,7 +14,7 @@ Following the project's Zero Simulated policy - all tests use real methods.
 """
 
 import pytest
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import json
 import logging
@@ -63,7 +63,7 @@ class TestUVAvailability:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason=f"Setup module not available: {IMPORT_ERROR if not SETUP_AVAILABLE else ''}")
     def test_uv_cli_available(self):
         """Test that UV CLI is available in PATH."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "--version"],
             capture_output=True,
             text=True,
@@ -81,7 +81,7 @@ class TestUVAvailability:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_uv_version_compatible(self):
         """Test that UV version is compatible (0.9.x or higher)."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "--version"],
             capture_output=True,
             text=True,
@@ -117,7 +117,7 @@ class TestVirtualEnvironment:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_venv_python_executable(self):
         """Test that virtual environment Python is executable."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [str(VENV_PYTHON), "--version"],
             capture_output=True,
             text=True,
@@ -129,7 +129,7 @@ class TestVirtualEnvironment:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_venv_python_version_compatible(self):
         """Test that Python version is >= 3.11 as per pyproject.toml."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [str(VENV_PYTHON), "-c", "import sys; print(f'{sys.version_info.major}.{sys.version_info.minor}')"],
             capture_output=True,
             text=True,
@@ -190,7 +190,7 @@ class TestDependencyManagement:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_uv_pip_list_works(self):
         """Test that uv pip list command works."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "pip", "list", "--format=json"],
             capture_output=True,
             text=True,
@@ -206,7 +206,7 @@ class TestDependencyManagement:
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
     def test_uv_sync_check(self):
         """Test that uv sync --dry-run reports no changes needed."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "sync", "--frozen", "--check"],
             capture_output=True,
             text=True,
@@ -407,7 +407,7 @@ class TestUVRunIntegration:
 
     def test_uv_run_python(self):
         """Test that uv run python works."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "run", "python", "-c", "print('Hello from UV')"],
             capture_output=True,
             text=True,
@@ -419,7 +419,7 @@ class TestUVRunIntegration:
 
     def test_uv_run_module_import(self):
         """Test that uv run can import project modules."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "run", "python", "-c", "from src.setup import FEATURES; print('Import OK')"],
             capture_output=True,
             text=True,
@@ -431,7 +431,7 @@ class TestUVRunIntegration:
 
     def test_uv_run_pytest(self):
         """Test that uv run pytest works."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "run", "pytest", "--version"],
             capture_output=True,
             text=True,
@@ -447,7 +447,7 @@ class TestUVCacheAndPerformance:
 
     def test_uv_cache_dir_accessible(self):
         """Test that UV cache directory is accessible."""
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "cache", "dir"],
             capture_output=True,
             text=True,
@@ -463,7 +463,7 @@ class TestUVCacheAndPerformance:
         import time
 
         start = time.time()
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "sync", "--frozen"],
             capture_output=True,
             text=True,

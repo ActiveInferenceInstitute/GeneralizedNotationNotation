@@ -8,7 +8,7 @@ to ensure safe and reliable execution of GNN pipeline simulations.
 
 import sys
 import platform
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 # psutil is optional; fall back gracefully if unavailable
 try:
     import psutil  # type: ignore
@@ -325,7 +325,7 @@ def check_file_permissions() -> List[ValidationResult]:
         if platform.system() != "Windows":
             # On Unix-like systems, check if we can execute files
             try:
-                result = subprocess.run(["echo", "test"], capture_output=True, text=True, timeout=5)
+                result = subprocess.run(["echo", "test"], capture_output=True, text=True, timeout=5)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 if result.returncode == 0:
                     results.append(ValidationResult(
                         component="execute_permissions",

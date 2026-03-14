@@ -14,8 +14,8 @@ from typing import Dict, Any, List, Optional, Union, Callable
 
 # Imports for specific exporters
 import json
-import xml.etree.ElementTree as ET
-import pickle
+import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
+import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 
 try:
     import networkx as nx

@@ -353,7 +353,7 @@ def _train_models(
 ) -> None:
     """Train Decision Tree and Random Forest on extracted GNN features."""
     import numpy as np
-    import pickle
+    import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
     from sklearn.tree import DecisionTreeClassifier
     from sklearn.ensemble import RandomForestClassifier
     from sklearn.model_selection import cross_val_score

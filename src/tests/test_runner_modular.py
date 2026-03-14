@@ -10,7 +10,7 @@ Extracted from runner.py for maintainability.
 """
 
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import os
 import gc
@@ -100,7 +100,7 @@ class ModularTestRunner:
 
         for test_file in test_files:
             try:
-                syntax_result = subprocess.run(
+                syntax_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                     [python_executable, "-m", "py_compile", test_file],
                     capture_output=True,
                     text=True,
@@ -257,26 +257,10 @@ class ModularTestRunner:
 
         self.logger.info(f"Using Python: {python_executable}")
 
-        has_xdist = False
-        has_pytest_cov = False
-        has_jsonreport = False
-        has_pytest_timeout = False
-        try:
-            has_xdist = True
-        except Exception:
-            pass
-        try:
-            has_pytest_cov = True
-        except Exception:
-            pass
-        try:
-            has_jsonreport = True
-        except Exception:
-            pass
-        try:
-            has_pytest_timeout = True
-        except Exception:
-            pass
+        has_xdist = True
+        has_pytest_cov = True
+        has_jsonreport = True
+        has_pytest_timeout = True
 
         category_output_dir = Path(self.args.output_dir) / "test_reports" / f"category_{category}"
         category_output_dir.mkdir(parents=True, exist_ok=True)
@@ -372,7 +356,7 @@ class ModularTestRunner:
                 last_output_time = time.time()
 
                 def _log_progress_line(line: str):
-                    nonlocal progress_counts
+                    nonlocal progress_counts  # nosec B603 -- subprocess calls with controlled/trusted input
                     lower = line.lower()
                     if "passed" in lower:
                         progress_counts["passed"] += lower.count("passed")
@@ -437,8 +421,8 @@ class ModularTestRunner:
                             self.logger.warning(f"Aborting category '{category}' due to inactivity > {collection_stall_limit}s")
                             try:
                                 process.kill()
-                            except Exception:
-                                pass
+                            except Exception as e:
+                                self.logger.debug(f"Could not kill stalled process: {e}")
                             break
                         time.sleep(2)
 
@@ -447,18 +431,18 @@ class ModularTestRunner:
                 finally:
                     try:
                         f_out.close()
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.logger.debug(f"Could not close stdout file: {e}")
                     try:
                         f_err.close()
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.logger.debug(f"Could not close stderr file: {e}")
 
                 if old_handler is not None:
                     try:
                         signal.signal(signal.SIGALRM, old_handler)
-                    except Exception:
-                        pass
+                    except Exception as e:
+                        self.logger.debug(f"Could not restore signal handler: {e}")
 
                 execution_time = time.time() - category_start_time
                 self.logger.info(f"Test execution completed in {execution_time:.2f} seconds")

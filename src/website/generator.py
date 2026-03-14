@@ -542,8 +542,8 @@ class WebsiteGenerator:
                         try:
                             d = json.loads(jf.read_text())
                             data["analysis"].append(d)
-                        except Exception:
-                            pass  # skip malformed analysis files
+                        except Exception as e:
+                            logger.debug(f"Skipped malformed analysis file {jf.name}: {e}")
 
         # Execution summary
         for ec in [
@@ -553,8 +553,8 @@ class WebsiteGenerator:
             if ec.exists():
                 try:
                     data["exec_summary"] = json.loads(ec.read_text())
-                except Exception:
-                    pass  # skip if summary file is malformed
+                except Exception as e:
+                    logger.debug(f"Skipped malformed execution summary file: {e}")
                 break
 
         # Visualizations — copy assets
@@ -597,8 +597,8 @@ class WebsiteGenerator:
                         "content": content[:2000],
                         "size":    jf.stat().st_size,
                     })
-                except Exception:
-                    pass  # skip unreadable report files
+                except Exception as e:
+                    logger.debug(f"Skipped unreadable report file {jf.name}: {e}")
 
         # MCP tools — try to load live
         try:
@@ -613,8 +613,8 @@ class WebsiteGenerator:
                         "category": getattr(tool, "category", ""),
                         "desc":     getattr(tool, "description", ""),
                     })
-        except Exception:
-            pass  # MCP tools are optional for website generation
+        except Exception as e:
+            logger.debug(f"MCP tools not loaded for website (optional): {e}")
 
         return data
 

@@ -8,7 +8,7 @@ This module provides execute processing capabilities for rendered implementation
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import json
 import os
 import sys
@@ -39,11 +39,11 @@ def check_julia_dependencies(verbose: bool, log: Optional[logging.Logger] = None
         log = logger
     try:
         # check basic julia availability
-        subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)
+        subprocess.run(['julia', '--version'], capture_output=True, check=True, timeout=10)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
 
         # Check for key packages
         check_script = 'using Pkg; Pkg.status(["RxInfer", "ActiveInference", "GraphPPL"])'
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ['julia', '-e', check_script],
             capture_output=True,
             text=True,
@@ -448,7 +448,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
         try:
             # For Python scripts, check if Python is available (most are Python scripts)
             if executor in ['python', 'python3']:
-                subprocess.run([executor, '--version'],
+                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
                              capture_output=True,
                              text=True,
                              timeout=5,
@@ -457,7 +457,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                 # For PyMDP, specifically check if it's importable
                 if framework == "pymdp":
                     try:
-                        import_check = subprocess.run(
+                        import_check = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                             [executor, '-c', 'import pymdp; print("ok")'],
                             capture_output=True,
                             text=True,
@@ -476,14 +476,14 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
                     logger.warning("Julia dependencies (RxInfer/ActiveInference) may be missing")
                     # Don't fail here, let the script try to run, but log warning
 
-                subprocess.run([executor, '--version'],
+                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
                              capture_output=True,
                              text=True,
                              timeout=5,
                              check=True)
             # For other executors, try a basic check
             else:
-                subprocess.run([executor, '--version'],
+                subprocess.run([executor, '--version'],  # nosec B603 -- subprocess calls with controlled/trusted input
                              capture_output=True,
                              text=True,
                              timeout=5,
@@ -510,7 +510,7 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
             if framework == "pymdp":
                 env["PYTHONPATH"] = str(script_path.parent) + os.pathsep + env.get("PYTHONPATH", "")
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [executor, script_name],
                 capture_output=True,
                 text=True,

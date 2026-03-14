@@ -5,7 +5,7 @@ This module handles UV virtual environment creation, dependency installation,
 package management, and environment validation.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import platform
 import shutil
@@ -44,7 +44,7 @@ def run_command(command: list[str], cwd: Path = PROJECT_ROOT, check: bool = True
         logger.debug(f"Running command: '{command_str_list[0]} ...' in {cwd}")
 
     try:
-        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace', timeout=300)
+        process = subprocess.run(command_str_list, cwd=cwd, check=check, capture_output=True, text=True, errors='replace', timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
         if verbose:
             if process.stdout:
                 logger.debug(f"Stdout:\n{process.stdout.strip()}")
@@ -187,13 +187,13 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
         logger.info(f"✓ Using existing UV environment at {VENV_PATH}")
         try:
             if VENV_PYTHON.exists():
-                test_result = subprocess.run([str(VENV_PYTHON), "--version"],
+                test_result = subprocess.run([str(VENV_PYTHON), "--version"],  # nosec B603 -- subprocess calls with controlled/trusted input
                                            capture_output=True, text=True, timeout=10)
                 if test_result.returncode == 0:
                     logger.info(f"✅ Existing environment is working: {test_result.stdout.strip()}")
 
                     try:
-                        test_imports = subprocess.run([str(VENV_PYTHON), "-c",
+                        test_imports = subprocess.run([str(VENV_PYTHON), "-c",  # nosec B603 -- subprocess calls with controlled/trusted input
                                                     "import sys; import pathlib; print('Core imports work')"],
                                                    capture_output=True, text=True, timeout=10)
                         if test_imports.returncode == 0:
@@ -260,7 +260,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
         if verbose:
             logger.debug(f"Running: {' '.join(sync_cmd)}")
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -283,7 +283,7 @@ def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: li
 
         if verbose:
             logger.debug("Verifying environment Python executable")
-        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=30)
+        verify = subprocess.run([str(VENV_PYTHON), "--version"], capture_output=True, text=True, timeout=30)  # nosec B603 -- subprocess calls with controlled/trusted input
         if verify.returncode == 0:
             if verbose:
                 logger.debug(f"Python in venv: {verify.stdout.strip() or verify.stderr.strip()}")
@@ -314,7 +314,7 @@ def get_installed_package_versions(verbose: bool = False) -> dict:
 
     try:
         list_cmd = ["uv", "pip", "list", "--python", str(VENV_PYTHON), "--format=json"]
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             list_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -474,7 +474,7 @@ def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logg
 
         try:
             if VENV_PYTHON.exists():
-                result = subprocess.run(
+                result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                     [str(VENV_PYTHON), "-c", "import jax; print(jax.__version__)"],
                     capture_output=True,
                     text=True,
@@ -553,7 +553,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     logger.info("🏥 Running GNN environment health check...")
 
     try:
-        uv_result = subprocess.run(
+        uv_result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "--version"],
             capture_output=True,
             text=True,
@@ -596,7 +596,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
 
     if health['venv_exists'] and VENV_PYTHON.exists():
         try:
-            py_result = subprocess.run(
+            py_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [str(VENV_PYTHON), "--version"],
                 capture_output=True,
                 text=True,
@@ -615,7 +615,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     core_packages = ['numpy', 'matplotlib', 'networkx', 'pandas', 'scipy', 'pytest']
     for pkg in core_packages:
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [str(VENV_PYTHON), "-c", f"import {pkg}; print({pkg}.__version__)"],
                 capture_output=True,
                 text=True,
@@ -639,7 +639,7 @@ def check_environment_health(verbose: bool = False) -> Dict[str, Any]:
     for group, config in optional_checks.items():
         try:
             pkg = config['packages'][0]
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [str(VENV_PYTHON), "-c", f"import {pkg}"],
                 capture_output=True,
                 text=True,

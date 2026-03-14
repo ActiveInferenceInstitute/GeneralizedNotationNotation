@@ -6,7 +6,7 @@ This module provides automated Julia environment setup and package installation
 for RxInfer.jl and ActiveInference.jl frameworks used in the execution step.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import logging
 import shutil
@@ -43,7 +43,7 @@ def check_julia_version(julia_path: str) -> Optional[str]:
         Version string or None if check fails
     """
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [julia_path, "--version"],
             capture_output=True,
             text=True,
@@ -123,7 +123,7 @@ def run_julia_setup_script(
         cmd.append("--validate-only")
 
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             cwd=setup_script.parent,
             capture_output=True,

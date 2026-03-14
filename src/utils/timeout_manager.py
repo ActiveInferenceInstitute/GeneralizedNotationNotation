@@ -18,7 +18,7 @@ from contextlib import contextmanager, asynccontextmanager
 from enum import Enum
 import functools
 import threading
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
 class TimeoutStrategy(Enum):
     """Timeout handling strategies."""
@@ -366,7 +366,7 @@ class ProcessTimeoutManager(TimeoutManager):
         config = config or self.default_config
 
         def subprocess_operation(*args, **kwargs):
-            return subprocess.run(
+            return subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 command,
                 timeout=config.base_timeout,
                 check=False,

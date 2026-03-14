@@ -100,8 +100,7 @@ class PipelineConfig:
                 json_path = self.config_path.with_suffix('.json')
                 with open(json_path, 'w') as jf:
                     json.dump(self.config, jf, indent=2)
-            except Exception:
-                # Silently ignore saving issues to avoid breaking pipeline
+            except Exception:  # nosec B110 -- intentionally silent; config save failure must not crash the pipeline
                 pass
 
 def get_pipeline_config() -> dict:

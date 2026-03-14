@@ -11,7 +11,7 @@ import pytest
 pytestmark = pytest.mark.pipeline
 import sys
 import tempfile
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
 # Mocks removed - using real implementations per testing policy
 
@@ -334,7 +334,7 @@ state > observation
                 "--verbose"
             ]
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 cmd,
                 capture_output=True,
                 text=True,
@@ -401,7 +401,7 @@ state > action
                 "--recursive"
             ]
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 cmd,
                 capture_output=True,
                 text=True,

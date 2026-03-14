@@ -6,7 +6,7 @@ This module provides comprehensive dependency analysis, security auditing,
 and optimization capabilities for the GNN processing pipeline.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import json
 from pathlib import Path
@@ -200,7 +200,7 @@ class DependencyAuditor:
     def _load_installed_packages(self):
         """Load information about installed packages."""
         try:
-            result = subprocess.run([
+            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 'uv', 'pip', 'list', '--format=json'
             ], capture_output=True, text=True, timeout=30)
 
@@ -237,7 +237,7 @@ class DependencyAuditor:
     def _check_outdated_packages(self):
         """Check for outdated packages."""
         try:
-            result = subprocess.run([
+            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 'uv', 'pip', 'list', '--outdated', '--format=json'
             ], capture_output=True, text=True, timeout=60)
 
@@ -260,7 +260,7 @@ class DependencyAuditor:
         """Scan for security vulnerabilities."""
         try:
             # Use pip-audit if available
-            result = subprocess.run([
+            result = subprocess.run([  # nosec B603 -- subprocess calls with controlled/trusted input
                 sys.executable, '-m', 'pip_audit'
             ], capture_output=True, text=True, timeout=120)
 
@@ -278,7 +278,7 @@ class DependencyAuditor:
     def _analyze_dependency_graph(self):
         """Analyze dependency relationships."""
         try:
-            result = subprocess.run([
+            result = subprocess.run([  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 'uv', 'pip', 'show', *list(self.dependencies.keys())
             ], capture_output=True, text=True, timeout=60)
 

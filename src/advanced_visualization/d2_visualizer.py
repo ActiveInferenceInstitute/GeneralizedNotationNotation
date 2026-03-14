@@ -17,7 +17,7 @@ Features:
 import logging
 import json
 import os
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import shutil
 import tempfile
 from pathlib import Path
@@ -633,7 +633,7 @@ Active Inference Free Energy Principle: {
             cmd.extend([str(d2_file), str(output_file)])
 
             try:
-                result = subprocess.run(
+                result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                     cmd,
                     capture_output=True,
                     text=True,

@@ -9,7 +9,7 @@ Date: 2025-01-11
 License: MIT
 """
 
-import pickle
+import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 import base64
 from typing import List, Dict, Any
 

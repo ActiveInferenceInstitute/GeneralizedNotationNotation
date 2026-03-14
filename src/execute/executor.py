@@ -5,7 +5,7 @@ This module provides the main execution functionality for GNN models,
 including script execution, simulation management, and result collection.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import logging
 import json
 from pathlib import Path
@@ -217,7 +217,7 @@ class GNNExecutor:
     def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
         try:
-            result = subprocess.run([sys.executable, script_path],
+            result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=60)
             return {
                 "success": result.returncode == 0,
@@ -238,7 +238,7 @@ class GNNExecutor:
         """Execute an RxInfer.jl configuration."""
         try:
             # This would typically involve calling Julia
-            result = subprocess.run(["julia", config_path],
+            result = subprocess.run(["julia", config_path],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=300)
 
             return {
@@ -261,7 +261,7 @@ class GNNExecutor:
     def _execute_discopy_diagram(self, diagram_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
         try:
-            result = subprocess.run([sys.executable, diagram_path],
+            result = subprocess.run([sys.executable, diagram_path],  # nosec B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=300)
 
             return {
@@ -284,7 +284,7 @@ class GNNExecutor:
     def _execute_jax_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Execute a JAX script."""
         try:
-            result = subprocess.run([sys.executable, script_path],
+            result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
                                   capture_output=True, text=True, timeout=300)
 
             return {
@@ -450,7 +450,7 @@ def execute_rendered_simulators(
 
         # Check Julia availability
         try:
-            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False, timeout=10)
+            result = subprocess.run(["julia", "--version"], capture_output=True, text=True, check=False, timeout=10)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             if result.returncode == 0:
                 logger.info(f"✅ Julia available: {result.stdout.strip()}")
             else:

@@ -411,8 +411,8 @@ class XMLGNNParser(BaseGNNParser):
                 try:
                     if horizon.isdigit():
                         horizon = int(horizon)
-                except Exception:
-                    pass  # Keep as string
+                except Exception as e:
+                    logger.debug(f"Could not convert horizon to int, keeping as string: {e}")
 
             model.time_specification = TimeSpecification(
                 time_type=time_type,

@@ -288,8 +288,8 @@ def process_mcp(
             summary_file = output_dir / "mcp_processing_summary.json"
             with open(summary_file, 'w') as f:
                 json.dump(summary, f, indent=2)
-        except Exception:
-            pass  # If we can't even save the error summary, just log it
+        except Exception as save_err:
+            logger.debug(f"Could not save error summary file (non-fatal): {save_err}")
         return False
 
 def get_available_tools() -> list:

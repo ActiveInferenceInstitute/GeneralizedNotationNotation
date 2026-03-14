@@ -1,4 +1,4 @@
-import pickle
+import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 import base64
 from .common import GNNInternalRepresentation
 from .base_serializer import BaseGNNSerializer

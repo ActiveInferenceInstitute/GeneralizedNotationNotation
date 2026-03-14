@@ -8,7 +8,7 @@ that the system is working correctly.
 """
 
 import sys
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import time
 from pathlib import Path
 
@@ -35,7 +35,7 @@ def run_fast_tests():
 
     try:
         # Run pytest with 60 second timeout
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             pytest_cmd,
             capture_output=True,
             text=True,

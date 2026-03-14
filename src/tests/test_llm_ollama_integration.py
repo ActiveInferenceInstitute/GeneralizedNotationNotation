@@ -12,7 +12,7 @@ from pathlib import Path
 import json
 import tempfile
 import shutil
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -451,7 +451,7 @@ class TestOllamaIntegrationEnd2End:
     def test_ollama_service_running(self):
         """Test if Ollama service is actually running."""
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 ['ollama', 'list'],
                 capture_output=True,
                 text=True,

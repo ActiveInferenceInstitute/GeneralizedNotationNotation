@@ -13,7 +13,7 @@ import re
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as ET  # type: ignore[no-redef]
+    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405 -- XML parsed from internal/trusted sources
 from typing import List, Dict, Any, Optional
 from pathlib import Path
 

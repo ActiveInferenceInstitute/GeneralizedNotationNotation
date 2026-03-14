@@ -7,7 +7,7 @@ It distinguishes between the correct package (inferactively-pymdp) and wrong var
 """
 
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from typing import Dict, Any, Tuple
 
 logger = logging.getLogger(__name__)
@@ -166,7 +166,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
 
         # Preferred method: use uv sync with the pymdp extra
         # This ensures proper lockfile integration
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "sync", "--extra", "active-inference"],
             capture_output=True,
             text=True,
@@ -179,7 +179,7 @@ def attempt_pymdp_auto_install(use_uv: bool = True) -> Tuple[bool, str]:
 
         # Recovery: try uv pip install directly
         logger.info("UV sync failed, trying uv pip install...")
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["uv", "pip", "install", package_name],
             capture_output=True,
             text=True,

@@ -328,9 +328,9 @@ class PipelineScriptValidator:
                                 message=f"Function '{function_name}' not found in {module_name}",
                                 suggestion=f"Implement {function_name} function in src/{module_name}/__init__.py"
                             ))
-                except Exception:
+                except Exception as e:
                     # Can't validate function - that's ok
-                    pass
+                    logging.getLogger(__name__).debug(f"Could not validate function '{function_name}' in {module_name}: {e}")
 
     def _check_safe_fail_patterns(self, content: str, result: ScriptValidationResult):
         """Check for safe-to-fail patterns."""

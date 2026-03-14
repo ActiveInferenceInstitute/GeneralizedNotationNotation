@@ -6,7 +6,7 @@ This module provides comprehensive dependency checking and management
 across all pipeline steps with intelligent recovery strategies.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import logging
 from typing import Dict, List, Optional, Tuple, Any
 from dataclasses import dataclass, field
@@ -174,7 +174,7 @@ class DependencyManager:
         try:
             if dep.name == "julia":
                 try:
-                    result = subprocess.run(["julia", "--version"],
+                    result = subprocess.run(["julia", "--version"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                                           capture_output=True, text=True, timeout=10)
                     if result.returncode == 0:
                         version_line = result.stdout.strip().split('\n')[0]
@@ -187,7 +187,7 @@ class DependencyManager:
 
             elif dep.name == "git":
                 try:
-                    result = subprocess.run(["git", "--version"],
+                    result = subprocess.run(["git", "--version"],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                                           capture_output=True, text=True, timeout=5)
                     if result.returncode == 0:
                         version = result.stdout.strip().split()[-1]

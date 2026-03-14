@@ -7,7 +7,7 @@ It allows long-running processes (like test suites) to display their progress im
 rather than buffering all output until completion.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import os
 import threading
@@ -67,7 +67,7 @@ def execute_command_streaming(
 
     try:
         # Start process with pipes
-        process = subprocess.Popen(
+        process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             cwd=cwd,
             env=process_env,

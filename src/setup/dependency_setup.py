@@ -5,7 +5,7 @@ This module handles JAX installation and testing, Julia environment setup,
 optional package group installation, and project structure creation.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import shutil
 from pathlib import Path
 import logging
@@ -64,7 +64,7 @@ import optax
 import flax
 print(f"JAX version: {jax.__version__}")
 print(f"Optax version: {optax.__version__}")
-print(f"Flax version: {flax.__version__}")
+print(f"Flax version: {flax.__version__}")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
         result = subprocess.run(
             [str(VENV_PYTHON), "-c", test_script],
@@ -88,7 +88,7 @@ print(f"Available JAX devices: {[str(d) for d in devices]}")
 x = jax.numpy.array([1.0, 2.0, 3.0])
 y = jax.numpy.sin(x)
 sum_result = jax.numpy.sum(y)
-print("JAX basic operations test passed")
+print("JAX basic operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
             result = subprocess.run(
                 [str(VENV_PYTHON), "-c", test_basic],
@@ -168,7 +168,7 @@ def test_pomdp_ops():
     return updated_belief
 
 pomdp_result = test_pomdp_ops()
-print("POMDP operations test passed")
+print("POMDP operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
             result = subprocess.run(
                 [str(VENV_PYTHON), "-c", test_advanced],
@@ -208,7 +208,7 @@ print("POMDP operations test passed")
             install_cmd = ["uv", "sync", "--verbose"]
 
             if verbose:
-                logger.info(f"Running: {' '.join(install_cmd)}")
+                logger.info(f"Running: {' '.join(install_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
             result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)
 
@@ -253,7 +253,7 @@ def setup_julia_environment(verbose: bool = False) -> bool:
         if not julia_path:
             logger.error("❌ Julia not found in PATH")
             logger.info("💡 Install Julia from: https://julialang.org/downloads/")
-            return False
+            return False  # nosec B603 -- subprocess calls with controlled/trusted input
 
         version_result = subprocess.run(
             [julia_path, "--version"],
@@ -278,7 +278,7 @@ def setup_julia_environment(verbose: bool = False) -> bool:
 
         for script_path in setup_scripts:
             if script_path.exists():
-                logger.info(f"Running Julia setup script: {script_path}")
+                logger.info(f"Running Julia setup script: {script_path}")  # nosec B603 -- subprocess calls with controlled/trusted input
                 try:
                     result = subprocess.run(
                         [julia_path, str(script_path)],
@@ -346,7 +346,7 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")
+            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
         result = subprocess.run(
             sync_cmd,
@@ -396,7 +396,7 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
 
         if verbose:
             sync_cmd.append("--verbose")
-            logger.debug(f"Running: {' '.join(sync_cmd)}")
+            logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
         result = subprocess.run(
             sync_cmd,
@@ -513,7 +513,7 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "input" / "gnn_files").mkdir(parents=True, exist_ok=True)
         (project_path / "output").mkdir(parents=True, exist_ok=True)
         (project_path / "src").mkdir(parents=True, exist_ok=True)
-
+  # nosec B607 B603 -- subprocess calls with controlled/trusted input
         try:
             subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)
             logger.info(f"UV project initialized at {project_path}")

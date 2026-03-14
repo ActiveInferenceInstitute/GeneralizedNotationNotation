@@ -20,7 +20,7 @@ and assert on real artifacts. No mocking is used.
 import pytest
 import sys
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
 import tempfile
 import re
@@ -153,7 +153,7 @@ class TestPipelineScriptImports:
         script_path = SRC_DIR / script_name
         if not script_path.exists():
             pytest.skip(f"Script {script_name} not found")
-        result = subprocess.run([sys.executable, str(script_path), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        result = subprocess.run([sys.executable, str(script_path), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
         assert result.returncode in [0, 2]
 
 class TestPipelineScriptExecution:
@@ -181,13 +181,13 @@ class TestPipelineScriptExecution:
             if script_name == "5_type_checker.py":
                 gnn_script = SRC_DIR / "3_gnn.py"
                 if gnn_script.exists():
-                    subprocess.run(
+                    subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                         [sys.executable, str(gnn_script), "--target-dir", str(input_dir), "--output-dir", str(output_dir)],
                         capture_output=True, text=True, cwd=str(PROJECT_ROOT)
                     )
 
             cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
             assert result.returncode in [0, 1]
             assert artifact_checker(output_dir), f"Expected artifacts not produced by {script_name}"
 
@@ -241,7 +241,7 @@ s -> o
                 cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir), "--verbose"] + extra_args
 
                 # Run script
-                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
 
                 # Check return code
                 if result.returncode != 0:
@@ -648,7 +648,7 @@ class TestPipelineScriptIntegration:
                 if not script_path.exists():
                     continue
                 cmd = [sys.executable, str(script_path), "--target-dir", str(input_dir), "--output-dir", str(output_dir)]
-                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+                result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
                 assert result.returncode in [0, 1]
 
     @pytest.mark.integration

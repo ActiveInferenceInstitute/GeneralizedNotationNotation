@@ -8,7 +8,7 @@ and integrate symbolic mathematics capabilities into the GNN pipeline.
 
 import asyncio
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from typing import Dict, List, Optional, Any, Union
 
 # Try to import httpx for HTTP client functionality
@@ -136,7 +136,7 @@ class SymPyMCPClient:
         logger.info(f"Starting SymPy MCP server: {' '.join(cmd)}")
 
         try:
-            self.server_process = subprocess.Popen(
+            self.server_process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
                 cmd,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,

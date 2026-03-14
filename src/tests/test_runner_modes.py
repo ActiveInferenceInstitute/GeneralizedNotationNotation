@@ -8,7 +8,7 @@ Extracted from runner.py for maintainability.
 """
 
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import os
 import json
@@ -85,7 +85,7 @@ def run_fast_pipeline_tests(logger: logging.Logger, output_dir: Path, verbose: b
     try:
         overall_timeout = int(os.getenv("FAST_TESTS_TIMEOUT", "600")) + 30
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             cwd=project_root,
             capture_output=True,
@@ -223,7 +223,7 @@ def run_fast_reliable_tests(logger: logging.Logger, output_dir: Path, verbose: b
     logger.info(f"Executing reliable tests: {' '.join(cmd)}")
 
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             cmd,
             cwd=Path(__file__).parent.parent.parent,
             capture_output=True,

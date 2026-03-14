@@ -81,7 +81,7 @@ def load_api_keys_from_env() -> Dict[str, str]:
     if os.getenv('OLLAMA_DISABLED', '0') not in ('1', 'true', 'True'):
         api_keys['ollama'] = 'local'
 
-    logger.info(f"Initialized providers: {list(api_keys.keys())}")
+    logger.info(f"Initialized {len(api_keys)} provider(s)")
     if 'ollama' in api_keys and all(k not in api_keys for k in ('openai','openrouter','perplexity')):
         logger.info("No cloud API keys detected. Defaulting to local Ollama for LLM operations.")
     return api_keys

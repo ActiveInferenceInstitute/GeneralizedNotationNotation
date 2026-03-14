@@ -241,8 +241,8 @@ class TestDependencyDiscovery:
             assert len(packages) > 0
         except ImportError:
             # Recovery to uv pip list for uv-managed environments
-            import subprocess
-            result = subprocess.run(
+            import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 ['uv', 'pip', 'list', '--format=freeze'],
                 capture_output=True,
                 text=True,

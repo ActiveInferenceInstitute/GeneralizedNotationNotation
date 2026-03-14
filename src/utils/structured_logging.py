@@ -197,9 +197,9 @@ class StructuredLogger:
 
             self.performance_metrics[operation_name] = metrics
 
-        except Exception:
+        except Exception as e:
             # If performance tracking fails, continue without it
-            pass
+            self.base_logger.debug(f"Performance tracking start failed (non-fatal): {e}")
 
     def _end_performance_tracking(self, operation_name: str):
         """End tracking performance metrics for an operation."""
@@ -220,9 +220,9 @@ class StructuredLogger:
                      duration_seconds=round(metrics.duration_seconds, 3),
                      memory_delta_mb=round(metrics.memory_delta_mb, 2))
 
-        except Exception:
+        except Exception as e:
             # If performance tracking fails, continue without it
-            pass
+            self.base_logger.debug(f"Performance tracking end failed (non-fatal): {e}")
 
     def log_pipeline_step(self, step_name: str, status: str, duration: float = None, **extra_data):
         """Log pipeline step completion with structured data."""

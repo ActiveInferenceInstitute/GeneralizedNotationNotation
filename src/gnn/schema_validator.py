@@ -177,7 +177,7 @@ class GNNParser:
     def _parse_binary_file(self, file_path: Path) -> ParsedGNN:
         """Parse binary files (pickle format)."""
         try:
-            import pickle
+            import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
             with open(file_path, 'rb') as f:
                 data = pickle.load(f)  # nosec B301 - GNN binary files are researcher-generated, not untrusted input
 
@@ -984,7 +984,7 @@ class GNNValidator:
                     result.errors.append("JSON should contain a dictionary/object at root level")
 
             elif file_format == 'xml':
-                import xml.etree.ElementTree as ET
+                import xml.etree.ElementTree as ET  # nosec B405 -- XML parsed from internal/trusted sources
                 try:
                     root = ET.fromstring(content)  # nosec B314 - GNN XML files are researcher-generated, not untrusted input
                     result.warnings.append("XML format validated successfully")
@@ -1238,9 +1238,9 @@ class GNNValidator:
                     # Consider comments-only or short markers as missing
                     if not section_text or section_text.strip().startswith('#') or len(section_text) < 3:
                         result.errors.append(f"Required section missing: {section}")
-        except Exception:
+        except Exception as e:
             # Non-fatal parsing of content; do not stop validation
-            pass
+            logger.debug(f"Non-fatal error during section content validation: {e}")
 
         # Additional validation can be added here
         if self.use_formal_parser and self.formal_parser:

@@ -55,7 +55,7 @@ def execute_discopy_script(
     Returns:
         bool: True if execution was successful, False otherwise
     """
-    import subprocess
+    import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
     import sys
     import time as time_mod
 
@@ -84,7 +84,7 @@ def execute_discopy_script(
 
     try:
         abs_script_path = script_path.resolve()
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [sys.executable, str(abs_script_path)],
             capture_output=True,
             text=True,

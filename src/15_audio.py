@@ -57,8 +57,8 @@ except ImportError:
             output_dir.mkdir(parents=True, exist_ok=True)
             with open(output_dir / "audio_processing_skipped.json", "w") as f:
                 json.dump({"status": "skipped", "reason": str(e)}, f, indent=2)
-        except OSError:
-            pass  # status file is optional -- don't fail pipeline step
+        except OSError as os_err:
+            logger.debug(f"Could not write audio_processing_skipped.json (non-fatal): {os_err}")
 
         return True
 

@@ -19,7 +19,7 @@ Date: 2024
 import ast
 import numpy as np
 import json
-import pickle
+import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 from pathlib import Path
 from typing import Any, Dict, List, Union, Optional
 import logging

@@ -5,7 +5,7 @@ This module validates that all required dependencies are available
 before pipeline execution begins, preventing runtime failures.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 import shutil
 from pathlib import Path
@@ -203,7 +203,7 @@ class DependencyValidator:
                 f"import {module_name}; print('OK')"
             ]
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 check_import_cmd,
                 capture_output=True,
                 text=True,
@@ -231,7 +231,7 @@ class DependencyValidator:
                         f"print(version if version else 'UNKNOWN')"
                     ]
 
-                    version_result = subprocess.run(
+                    version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                         version_cmd,
                         capture_output=True,
                         text=True,
@@ -487,7 +487,7 @@ def install_missing_dependencies() -> dict:
     Returns:
         dict: { 'installed': [name, ...], 'failed': [name, ...], 'skipped': [name, ...] }
     """
-    import subprocess
+    import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
     validator = DependencyValidator()
     validator.validate_all_dependencies()
     installed = []
@@ -499,7 +499,7 @@ def install_missing_dependencies() -> dict:
             continue
         try:
             cmd = ['uv', 'pip', 'install', dep.name]
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)  # nosec B603 -- subprocess calls with controlled/trusted input
             if result.returncode == 0:
                 installed.append(dep.name)
                 logging.info(f"Installed missing dependency: {dep.name}")

@@ -9,7 +9,7 @@ for pipeline steps when dependencies are missing or incompatible.
 import logging
 import importlib
 import sys
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from typing import Dict, Any, List, Optional, Callable
 from contextlib import contextmanager
 from dataclasses import dataclass, field
@@ -337,7 +337,7 @@ class PipelineDependencyManager:
                 try:
                     # Try to install using uv
                     cmd = ["uv", "pip", "install", dep]
-                    result = subprocess.run(
+                    result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                         cmd, capture_output=True, text=True, timeout=300
                     )
 

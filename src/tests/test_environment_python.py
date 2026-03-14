@@ -182,9 +182,9 @@ class TestPythonModules:
     @pytest.mark.fast
     def test_subprocess_module(self):
         """Test subprocess module works."""
-        import subprocess
+        import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [sys.executable, "--version"],
             capture_output=True,
             text=True

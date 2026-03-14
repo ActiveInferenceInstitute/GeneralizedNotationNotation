@@ -13,7 +13,7 @@ from __future__ import annotations
 from typing import List, Dict, Any, Optional, AsyncGenerator
 import logging
 import shutil
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import json
 
 from .base_provider import (
@@ -141,7 +141,7 @@ class OllamaProvider(BaseLLMProvider):
                     try:
                         logger.debug(f"Ollama CLI chat: model={model}, timeout={self.default_timeout}s")
                         t0 = _t.monotonic()
-                        completed = subprocess.run(
+                        completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                             ["ollama", "chat", model, "--json"],
                             input=json.dumps({
                                 "messages": [{"role": m.role, "content": m.content} for m in messages],
@@ -166,7 +166,7 @@ class OllamaProvider(BaseLLMProvider):
                     # Recovery to `ollama run`
                     logger.debug(f"Falling back to CLI 'ollama run' with timeout {self.default_timeout}s")
                     t0 = _t.monotonic()
-                    completed = subprocess.run(
+                    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                         ["ollama", "run", model, prompt],
                         capture_output=True,
                         text=True,
@@ -250,7 +250,7 @@ class OllamaProvider(BaseLLMProvider):
                     model = config.model or self.default_model
                     logger.debug(f"Ollama CLI stream: model={model}, timeout={self.default_timeout}s")
                     t0 = _t.monotonic()
-                    completed = subprocess.run(
+                    completed = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                         ["ollama", "run", model, prompt],
                         capture_output=True,
                         text=True,

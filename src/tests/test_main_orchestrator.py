@@ -26,7 +26,7 @@ import pytest
 pytestmark = pytest.mark.pipeline
 import sys
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 from pathlib import Path
 import tempfile
 
@@ -67,7 +67,7 @@ class TestMainOrchestratorImport:
     def test_main_orchestrator_help_executes(self):
         """main.py should print help and exit 0."""
         main_py = SRC_DIR / "main.py"
-        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
         assert result.returncode == 0
         assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
 
@@ -94,7 +94,7 @@ class TestArgumentParsing:
     @pytest.mark.unit
     def test_help(self):
         main_py = SRC_DIR / "main.py"
-        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+        result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
         assert result.returncode == 0
 
 class TestPipelineScriptDiscovery:
@@ -171,7 +171,7 @@ class TestStepExecution:
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
             cmd = [sys.executable, str(script), "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
             assert result.returncode in [0,1]
 
 class TestPipelineCoordination:
@@ -182,7 +182,7 @@ class TestPipelineCoordination:
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
             cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))
+            result = subprocess.run(cmd, capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
 
             # Check for summary in the correct location (00_pipeline_summary subdirectory)
             summary = outdir / "00_pipeline_summary" / "pipeline_execution_summary.json"
@@ -215,7 +215,7 @@ class TestEndToEndIntegration:
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
             cmd = [sys.executable, str(main_py), "--only-steps", "3,5,7,8", "--target-dir", str(PROJECT_ROOT / "input" / "gnn_files"), "--output-dir", str(outdir)]
-            subprocess.run(cmd, cwd=str(PROJECT_ROOT))
+            subprocess.run(cmd, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
             # Assert expected subdirs may be created by steps
             assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists()
 

@@ -10,10 +10,13 @@ import seaborn as sns
 import pandas as pd
 import json
 import csv
+import logging
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any
 import h5py
+
+logger = logging.getLogger(__name__)
 
 # Set style for consistent, professional plots
 plt.style.use('seaborn-v0_8')
@@ -329,8 +332,8 @@ class VisualizationSuite:
             for key, values in list(numeric_traces.items())[:4]:
                 try:
                     density = sns.kdeplot(data=values, ax=ax2, label=key, alpha=0.8)
-                except Exception:
-                    pass  # Skip if KDE fails
+                except Exception as e:
+                    logger.debug(f"KDE plot skipped for {key}: {e}")
             ax2.set_title('Kernel Density Estimation')
             ax2.set_xlabel('Value')
             ax2.set_ylabel('Density')

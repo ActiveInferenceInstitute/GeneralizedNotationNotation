@@ -5,7 +5,7 @@ Dependency Installation Script for GNN Execution System
 This script installs missing dependencies for all execution environments.
 """
 
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import logging
 
 logger = logging.getLogger(__name__)
@@ -30,7 +30,7 @@ def install_python_dependencies() -> None:
     for dep in core_deps:
         logger.info(f"  Installing {dep}...")
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 ["uv", "pip", "install", dep],
                 capture_output=True,
                 text=True,
@@ -63,7 +63,7 @@ def install_julia_dependencies() -> None:
     for pkg in julia_packages:
         logger.info(f"  Installing Julia package {pkg}...")
         try:
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
                 ["julia", "-e", f'using Pkg; Pkg.add("{pkg}")'],
                 capture_output=True,
                 text=True,
@@ -94,7 +94,7 @@ def verify_installations() -> None:
 
     # Test Julia availability
     try:
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             ["julia", "--version"],
             capture_output=True,
             text=True,

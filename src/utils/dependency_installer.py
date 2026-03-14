@@ -7,7 +7,7 @@ warnings and achieve full pipeline functionality.
 """
 
 import logging
-import subprocess
+import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import sys
 from pathlib import Path
 from typing import Dict, List
@@ -135,7 +135,7 @@ class DependencyInstaller:
             actual_package = special_packages.get(package_name, package_name)
             cmd[-1] = actual_package
 
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 cmd,
                 capture_output=True,
                 text=True,

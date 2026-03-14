@@ -62,6 +62,8 @@ except ImportError:
     OntologyVisualizer = None
     ONTOLOGY_VISUALIZER_AVAILABLE = False
 
+logger = logging.getLogger(__name__)
+
 
 class GNNVisualizer:
     """
@@ -190,8 +192,8 @@ class GNNVisualizer:
                     matrix_output = file_output_dir / "matrix_analysis.png"
                     if self.matrix_visualizer.generate_matrix_analysis(parsed_data['parameters'], matrix_output):
                         visualization_count += 1
-                except Exception:
-                    pass  # Continue with other visualizations
+                except Exception as e:
+                    logger.debug(f"Matrix visualization skipped (non-fatal): {e}")
 
             # Generate basic text summary even if visualizations fail
             summary_file = file_output_dir / "visualization_summary.txt"
