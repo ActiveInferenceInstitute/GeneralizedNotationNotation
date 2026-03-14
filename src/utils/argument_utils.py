@@ -7,6 +7,7 @@ all pipeline steps with centralized configuration and type safety.
 
 import argparse
 from pathlib import Path
+from types import MappingProxyType
 from typing import Dict, Any, List, Optional, Type
 from dataclasses import dataclass, field
 import logging
@@ -189,7 +190,7 @@ class ArgumentParser:
     """Centralized argument parser for the GNN pipeline."""
 
     # Define all available arguments
-    ARGUMENT_DEFINITIONS = {
+    ARGUMENT_DEFINITIONS = MappingProxyType({
         'target_dir': ArgumentDefinition(
             flag='--target-dir',
             arg_type=Path,
@@ -357,10 +358,10 @@ class ArgumentParser:
             action='store_true',
             help_text='Include advanced statistical analysis'
         )
-    }
+    })
 
     # Define which arguments each step supports
-    STEP_ARGUMENTS = {
+    STEP_ARGUMENTS = MappingProxyType({
         "0_template.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "1_setup.py": ["target_dir", "output_dir", "recursive", "verbose", "recreate_venv", "dev", "install_optional"],
         "2_tests.py": ["target_dir", "output_dir", "verbose", "fast_only", "include_slow", "include_performance", "comprehensive"],
@@ -387,7 +388,7 @@ class ArgumentParser:
         "23_report.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "24_intelligent_analysis.py": ["target_dir", "output_dir", "verbose"],
         "main.py": list(ARGUMENT_DEFINITIONS.keys())
-    }
+    })
 
     @classmethod
     def create_main_parser(cls) -> argparse.ArgumentParser:
@@ -625,7 +626,7 @@ class StepConfiguration:
     """Configuration for individual pipeline steps."""
 
     # Define step-specific requirements and defaults
-    STEP_CONFIGS = {
+    STEP_CONFIGS = MappingProxyType({
         "0_template": {
             "required_args": ["target_dir", "output_dir"],
             "optional_args": ["verbose"],
@@ -784,7 +785,7 @@ class StepConfiguration:
             "defaults": {"verbose": False},
             "description": "AI-powered Pipeline Analysis and Optimization Recommendations"
         }
-    }
+    })
 
     @classmethod
     def get_step_config(cls, step_name: str) -> Dict[str, Any]:
