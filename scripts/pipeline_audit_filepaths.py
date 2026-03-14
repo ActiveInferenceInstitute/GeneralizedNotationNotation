@@ -216,9 +216,9 @@ class FilepathAuditor:
         # Extract file path from anchor link (file.md#section -> file.md)
         file_path_part, anchor_part = self.extract_file_from_link(link_path)
 
-        # Resolve relative path
-        if file_path_part.startswith('/'):
-            target = self.project_root / file_path_part.lstrip('/')
+        # Resolve relative path (handle both Unix '/' and Windows '\' absolute paths)
+        if file_path_part.startswith(('/', '\\')):
+            target = self.project_root / file_path_part.lstrip('/\\')
         else:
             target = (source_file.parent / file_path_part).resolve()
 
