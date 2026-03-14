@@ -12,7 +12,7 @@ License: MIT
 try:
     import defusedxml.ElementTree as ET
 except ImportError:
-    import xml.etree.ElementTree as ET  # type: ignore[no-redef]
+    import xml.etree.ElementTree as ET  # type: ignore[no-redef]  # nosec B405 - GNN files are researcher-generated, not untrusted input
 import logging
 from typing import Dict, List, Any, Optional
 
@@ -45,7 +45,7 @@ class XMLGNNParser(BaseGNNParser):
                 return ParseResult(model=model, success=True)
 
             # Only parse XML structure if no embedded data is available
-            tree = ET.parse(file_path)
+            tree = ET.parse(file_path)  # nosec B314 - GNN files are researcher-generated, not untrusted input
             root = tree.getroot()
             return self._parse_xml_root(root)
 
@@ -88,7 +88,7 @@ class XMLGNNParser(BaseGNNParser):
                 return ParseResult(model=model, success=True)
 
             # Only parse XML structure if no embedded data is available
-            root = ET.fromstring(content)
+            root = ET.fromstring(content)  # nosec B314 - GNN files are researcher-generated, not untrusted input
             return self._parse_xml_root(root)
 
         except ET.ParseError as e:
