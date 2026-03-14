@@ -202,8 +202,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_obs = len(A_matrix)  # rows = observations
                     if n_states is None and isinstance(A_matrix[0], list):
                         n_states = len(A_matrix[0])  # cols = states
-            except (KeyError, TypeError, IndexError):
-                pass  # A matrix dimension extraction is best-effort
+            except (KeyError, TypeError, IndexError) as e:
+                logger.debug("A matrix dimension extraction skipped (best-effort): %s", e)
 
         # Try B matrix for n_states, n_actions
         if "B" in init_params and (n_states is None or n_actions is None):
@@ -214,8 +214,8 @@ def extract_model_info(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
                         n_actions = len(B_matrix)  # depth = actions
                     if n_states is None and isinstance(B_matrix[0], list):
                         n_states = len(B_matrix[0])  # rows = states
-            except (KeyError, TypeError, IndexError):
-                pass  # B matrix dimension extraction is best-effort
+            except (KeyError, TypeError, IndexError) as e:
+                logger.debug("B matrix dimension extraction skipped (best-effort): %s", e)
 
     # --- Final validation ---
     if n_states is None or n_obs is None or n_actions is None:

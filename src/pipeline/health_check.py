@@ -47,8 +47,9 @@ except ImportError:
     # Attempting silent recovery since the user reported print spam
     # print(f"Warning: Limited pipeline integration in health_check")
     PIPELINE_INTEGRATION = False
-    # Recovery logging
-    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    # Recovery logging — only configure if no handlers are set up yet
+    if not logging.root.handlers:
+        logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
     logger = logging.getLogger(__name__)
 
     try:

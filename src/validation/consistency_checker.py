@@ -12,10 +12,6 @@ from pathlib import Path
 class ConsistencyChecker:
     """Checker for consistency aspects of GNN models."""
 
-    def __init__(self):
-        """Initialize the consistency checker."""
-        pass
-
     def check(self, content: str) -> Dict[str, Any]:
         """
         Check the consistency of a GNN model.

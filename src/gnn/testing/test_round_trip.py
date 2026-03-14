@@ -1167,9 +1167,13 @@ class GNNRoundTripTester:
                         temp_file.write_bytes(binary_data)
                     except Exception:
                         # Recovery to text if decode fails
-                        temp_file.write_text(converted_content, encoding='utf-8')
+                        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=temp_file.parent, delete=False) as tmp_f:
+                            tmp_f.write(converted_content)
+                        os.replace(tmp_f.name, str(temp_file))
                 else:
-                    temp_file.write_text(converted_content, encoding='utf-8')
+                    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=temp_file.parent, delete=False) as tmp_f:
+                        tmp_f.write(converted_content)
+                    os.replace(tmp_f.name, str(temp_file))
 
                 if LOGGING_CONFIG['enable_detailed_output']:
                     print(f"         ✓ Saved to {temp_file.name}")
@@ -1631,7 +1635,9 @@ class GNNRoundTripTester:
         report_content = "\n".join(lines)
 
         if output_file:
-            output_file.write_text(report_content)
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_file.parent, delete=False) as tmp_f:
+                tmp_f.write(report_content)
+            os.replace(tmp_f.name, str(output_file))
             logger.info(f"Report saved to {output_file}")
 
         return report_content

@@ -13,10 +13,6 @@ from pathlib import Path
 class PerformanceProfiler:
     """Profiler for performance aspects of GNN models."""
 
-    def __init__(self):
-        """Initialize the performance profiler."""
-        pass
-
     def profile(self, content: str) -> Dict[str, Any]:
         """
         Profile the performance characteristics of a GNN model.

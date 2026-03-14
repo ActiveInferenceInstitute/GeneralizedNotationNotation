@@ -15,10 +15,6 @@ class HTMLVisualizationGenerator:
     Generates rich HTML visualizations from GNN model data.
     """
 
-    def __init__(self):
-        """Initialize the HTML generator."""
-        pass
-
     def generate_advanced_visualization(self, extracted_data: Dict[str, Any], model_name: str) -> str:
         """
         Generate a comprehensive HTML visualization for a GNN model.

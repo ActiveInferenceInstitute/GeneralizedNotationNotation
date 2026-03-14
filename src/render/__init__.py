@@ -70,7 +70,6 @@ except ImportError:
     # Provide a minimal placeholder for tests
     class PyMDPRenderer:
         """Recovery PyMDPRenderer when module unavailable."""
-        def __init__(self): pass
         def render(self, spec): return ""
 
 try:
@@ -78,7 +77,6 @@ try:
 except ImportError:
     class JAXRenderer:
         """Recovery JAXRenderer when module unavailable."""
-        def __init__(self): pass
         def render(self, spec): return ""
 
 

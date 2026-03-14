@@ -50,10 +50,6 @@ class MatrixVisualizer:
     POMDP transition matrices (B matrix).
     """
 
-    def __init__(self):
-        """Initialize the MatrixVisualizer."""
-        pass
-
     def export_matrix_to_csv(self, matrix: np.ndarray, matrix_name: str, output_path: Path) -> bool:
         """
         Export matrix data to CSV format for accessibility.

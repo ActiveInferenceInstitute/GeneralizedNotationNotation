@@ -3,6 +3,8 @@
 GNN processor module for GNN pipeline.
 """
 
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Union
 import logging
@@ -340,7 +342,11 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         _p = _P(output_dir)
         try:
             _p.mkdir(parents=True, exist_ok=True)
-            (_p / "gnn_processing_results.json").write_text(_json.dumps(result, indent=2))
+            _result_path = _p / "gnn_processing_results.json"
+            import tempfile as _tempfile, os as _os
+            with _tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=_result_path.parent, delete=False) as _tmp_f:
+                _tmp_f.write(_json.dumps(result, indent=2))
+            _os.replace(_tmp_f.name, str(_result_path))
         except Exception as e:
             logging.getLogger(__name__).debug(f"Error writing GNN processing results: {e}")
     return result

@@ -12,6 +12,7 @@ import logging
 import os
 import subprocess
 import sys
+import tempfile
 import time as time_mod
 from pathlib import Path
 from typing import List, Optional, Union
@@ -121,8 +122,14 @@ def execute_numpyro_script(
         log_dir = output_dir if output_dir else abs_path.parent
         try:
             log_dir.mkdir(parents=True, exist_ok=True)
-            (log_dir / "stdout.txt").write_text(result.stdout or "")
-            (log_dir / "stderr.txt").write_text(result.stderr or "")
+            stdout_path = log_dir / "stdout.txt"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=stdout_path.parent, delete=False) as tmp_f:
+                tmp_f.write(result.stdout or "")
+            os.replace(tmp_f.name, str(stdout_path))
+            stderr_path = log_dir / "stderr.txt"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=stderr_path.parent, delete=False) as tmp_f:
+                tmp_f.write(result.stderr or "")
+            os.replace(tmp_f.name, str(stderr_path))
             execution_log = {
                 "script": str(abs_path),
                 "return_code": result.returncode,
@@ -131,9 +138,10 @@ def execute_numpyro_script(
                 "timeout": timeout,
                 "timestamp": time_mod.strftime("%Y-%m-%d %H:%M:%S"),
             }
-            (log_dir / "execution_log.json").write_text(
-                json_mod.dumps(execution_log, indent=2)
-            )
+            exec_log_path = log_dir / "execution_log.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=exec_log_path.parent, delete=False) as tmp_f:
+                tmp_f.write(json_mod.dumps(execution_log, indent=2))
+            os.replace(tmp_f.name, str(exec_log_path))
             logger.debug(f"Execution logs saved to: {log_dir}")
         except Exception as log_err:
             logger.warning(f"Could not save execution logs: {log_err}")

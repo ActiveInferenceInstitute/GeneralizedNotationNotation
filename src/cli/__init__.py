@@ -18,7 +18,9 @@ Provides:
 import argparse
 import json
 import logging
+import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import List, Optional
 
@@ -272,7 +274,9 @@ def _cmd_report(args):
     from report.pipeline_report import generate_pipeline_report
     report = generate_pipeline_report(output_dir)
     report_path = output_dir / "PIPELINE_REPORT.md"
-    report_path.write_text(report, encoding="utf-8")
+    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=report_path.parent, delete=False) as tmp_f:
+        tmp_f.write(report)
+    os.replace(tmp_f.name, str(report_path))
     print(f"📄 Report written to: {report_path}")
     return 0
 

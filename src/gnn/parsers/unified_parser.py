@@ -33,12 +33,6 @@ class UnifiedGNNParser:
     def __init__(self):
         """Initialize the unified parser."""
         self.format_parsers: Dict[GNNFormat, BaseGNNParser] = {}
-        self._initialize_parsers()
-
-    def _initialize_parsers(self):
-        """Initialize all format-specific parsers on demand."""
-        # Parsers will be initialized lazily when needed
-        pass
 
     def parse_file(self, file_path: Union[str, Path],
                    format_hint: Optional[GNNFormat] = None) -> ParseResult:

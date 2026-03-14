@@ -438,7 +438,7 @@ class FilepathAuditor:
         if not output_dir.exists():
             return
 
-        for dir_name, step_num in self.expected_output_dirs.items():
+        for dir_name, _ in self.expected_output_dirs.items():
             _dir_path = output_dir / dir_name
             # Note: directories might not exist if pipeline hasn't run, so this is just a check
 

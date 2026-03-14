@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -54,7 +56,9 @@ def run_gui(
             starter_md = """# GNN Model\n\ncomponents:\n  - name: example_component\n    type: observation\n    states: [s1, s2]\n\n"""
 
         starter_path = output_root / export_filename
-        starter_path.write_text(starter_md)
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=starter_path.parent, delete=False) as tmp_f:
+            tmp_f.write(starter_md)
+        os.replace(tmp_f.name, str(starter_path))
 
         if headless or _GUI_BACKEND is None:
             # Enhanced recovery handling for missing GUI backend

@@ -8,8 +8,10 @@ Fixes common path issues identified in the audit:
 - Missing file references that should be removed or updated
 """
 
+import os
 import sys
 import re
+import tempfile
 from pathlib import Path
 from typing import List, Tuple
 
@@ -53,7 +55,10 @@ def fix_file_paths(file_path: Path) -> Tuple[int, List[str]]:
         # This would require more careful handling
 
         if fixes_applied and content != original_content:
-            file_path.write_text(content, encoding='utf-8')
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8',
+                                             dir=file_path.parent, delete=False) as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_f.name, str(file_path))
             return len(fixes_applied), fixes_applied
     except Exception as e:
         print(f"Error fixing {file_path}: {e}")

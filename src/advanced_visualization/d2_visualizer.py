@@ -16,8 +16,10 @@ Features:
 
 import logging
 import json
+import os
 import subprocess
 import shutil
+import tempfile
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass, field
@@ -598,7 +600,9 @@ Active Inference Free Energy Principle: {
         # Write D2 source file
         d2_file = output_dir / f"{spec.name}.d2"
         try:
-            d2_file.write_text(spec.d2_content, encoding='utf-8')
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=d2_file.parent, delete=False) as tmp_f:
+                tmp_f.write(spec.d2_content)
+            os.replace(tmp_f.name, str(d2_file))
         except Exception as e:
             return D2GenerationResult(
                 success=False,
