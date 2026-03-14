@@ -76,7 +76,7 @@ class GNNWatcher:
             while self._running:
                 time.sleep(0.5)
         except KeyboardInterrupt:
-            pass
+            logger.debug("Watcher stopped by user (KeyboardInterrupt)")
         finally:
             observer.stop()
             observer.join()
@@ -97,7 +97,7 @@ class GNNWatcher:
                             self._debounced_fire(f)
                 time.sleep(interval)
         except KeyboardInterrupt:
-            pass
+            logger.debug("Polling watcher stopped by user (KeyboardInterrupt)")
 
     def _debounced_fire(self, path: Path):
         """Fire callback with debouncing."""

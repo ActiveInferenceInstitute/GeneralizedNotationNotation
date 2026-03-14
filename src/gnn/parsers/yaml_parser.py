@@ -162,7 +162,6 @@ class YAMLGNNParser(BaseGNNParser):
                 return int(value)
         except ValueError:
             logger.debug("Value is not numeric, treating as string: %s", value[:80] if value else value)
-            pass
 
         # Handle lists
         if value.startswith('[') and value.endswith(']'):
@@ -243,7 +242,6 @@ class YAMLGNNParser(BaseGNNParser):
                     model.created_at = data['created_at']
             except (ValueError, TypeError) as e:
                 logger.debug(f"Could not parse created_at timestamp: {e}")
-                pass  # Timestamps are optional metadata
 
         if 'modified_at' in data:
             try:
@@ -253,7 +251,6 @@ class YAMLGNNParser(BaseGNNParser):
                     model.modified_at = data['modified_at']
             except (ValueError, TypeError) as e:
                 logger.debug(f"Could not parse modified_at timestamp: {e}")
-                pass  # Timestamps are optional metadata
 
         model.checksum = data.get('checksum')
 

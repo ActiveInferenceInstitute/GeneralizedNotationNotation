@@ -103,12 +103,6 @@ def main(cli_args=None):
     else:
         base_filename = gnn_spec.get("name", gnn_file_path.stem)
 
-    # Determine output file path based on target and base filename
-    if args.target == "pymdp":
-        output_path = output_dir / f"{base_filename}_pymdp.py"
-    elif args.target == "rxinfer_toml":
-        output_path = output_dir / f"{base_filename}_config.toml"
-
     # Render the specification
     success, message, artifacts = render_gnn_spec(
         gnn_spec,

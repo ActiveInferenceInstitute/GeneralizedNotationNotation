@@ -81,6 +81,8 @@ except ImportError:
     class _RecoveryAgent:
         """Minimal agent providing required inference/sampling methods."""
         def __init__(self, A=None, B=None, C=None, D=None, lr_pB: float = 0.5, policy_len: int = 3, control_fac_idx=None, policies=None):
+            import logging as _logging
+            self.logger = _logging.getLogger(__name__)
             # Normalize object-array inputs (pymdp uses object arrays) to numpy arrays for internal use
             self.A_obj = A
             self.B_obj = B

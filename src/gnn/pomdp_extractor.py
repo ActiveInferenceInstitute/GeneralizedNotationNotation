@@ -355,7 +355,7 @@ class POMDPExtractor:
                         elif key in ['num_timesteps', 'n_timesteps', 'timesteps']:
                             num_timesteps = value
                     except (ValueError, IndexError):
-                        pass
+                        self.logger.debug("Could not parse POMDP parameter '%s' from metadata", key)
 
         # Priority 2: Infer from B matrix dimensions if still None
         if num_actions is None and initial_params:
@@ -465,7 +465,7 @@ class POMDPExtractor:
             if re.match(r'^[-+]?\d+$', value_str):
                 return int(value_str)
         except ValueError:
-            pass
+            self.logger.debug("Value '%s' is not a simple numeric, trying structured formats", value_str[:40])
 
         # Handle structured data (tuples/nested lists)
         if '(' in value_str or '[' in value_str:

@@ -281,7 +281,6 @@ def validate_matrix_dimensions(
                             ))
                     except (ValueError, IndexError) as e:
                         logger.debug(f"Symbolic dimensions for '{current_var}', skipping numeric check: {e}")
-                        pass  # symbolic dims — skip numeric check
                 else:
                     errors.append(GNNParseError(
                         code="GNN-W003",

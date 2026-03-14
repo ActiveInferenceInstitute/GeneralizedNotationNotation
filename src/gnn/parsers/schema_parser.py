@@ -1009,7 +1009,9 @@ class AlloyParser(BaseGNNParser):
 
     def _extract_embedded_json_data(self, content: str) -> Optional[Dict[str, Any]]:
         """Extract embedded JSON model data from Alloy comments."""
-        return extract_embedded_json_data(content)
+        return extract_embedded_json_data(content, [
+            r'/\*\s*MODEL_DATA:\s*(\{.+?\})\s*\*/',  # /* MODEL_DATA: {...} */
+        ])
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""

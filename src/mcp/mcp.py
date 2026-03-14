@@ -70,37 +70,30 @@ class MCP:
         self._error_count = 0
         self._lock = threading.RLock()
 
-        # Enhanced performance tracking
         self._performance_metrics = MCPPerformanceMetrics()
         self._tool_execution_times: Dict[str, List[float]] = defaultdict(list)
         self._last_activity = time.time()
 
-        # Enhanced module discovery cache
         self._discovery_cache: Dict[str, Any] = {}
         self._cache_timestamp = 0.0
         self._cache_ttl = 300.0  # 5 minutes
         self._discovery_cache_lock = threading.Lock()
 
-        # Tool execution tracking
         self._active_executions: Dict[str, int] = defaultdict(int)
         self._execution_lock = threading.Lock()
 
-        # Rate limiting
         self._rate_limit_timestamps: Dict[str, List[float]] = defaultdict(list)
         self._rate_limit_lock = threading.Lock()
 
-        # Caching
         self._result_cache: Dict[str, Tuple[Any, float]] = {}
         self._result_cache_lock = threading.Lock()
 
-        # Thread pool for parallel module loading
         try:
             self._executor = ThreadPoolExecutor(max_workers=max_workers, thread_name_prefix="MCP")
         except Exception as e:
             logger.warning(f"Failed to create thread pool executor: {e}")
             self._executor = None
 
-        # Feature flags
         self._enable_caching = enable_caching
         self._enable_rate_limiting = enable_rate_limiting
         self._strict_validation = strict_validation
@@ -341,7 +334,6 @@ class MCP:
             module_name = directory.name
 
         module_start = time.time()
-        import_start = time.time()
 
         try:
             # Add parent directory to path if needed
@@ -352,7 +344,7 @@ class MCP:
             # Import the module
             full_module_name = f"src.{module_name}.mcp"
             module = importlib.import_module(full_module_name)
-            import_time = time.time() - import_start
+            import_time = time.time() - module_start
 
             logger.debug(f"Loaded MCP module: {full_module_name} (import: {import_time:.3f}s)")
 

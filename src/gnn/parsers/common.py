@@ -516,31 +516,6 @@ class BaseGNNParser(ABC):
 # UTILITY FUNCTIONS
 # ================================
 
-def extract_embedded_json_data(content: str, comment_style: str = "block") -> Optional[Dict[str, Any]]:
-    """Extract embedded JSON model data from source comments.
-
-    Looks for ``/* MODEL_DATA: {...} */`` patterns (block-comment style)
-    inside *content* and returns the parsed JSON dict, or ``None``.
-
-    Args:
-        content: The raw file content to search.
-        comment_style: Currently only ``"block"`` (``/* ... */``) is supported.
-
-    Returns:
-        Parsed dict from the embedded JSON, or ``None`` if not found / invalid.
-    """
-    import re
-    import json
-
-    pattern = r'/\*\s*MODEL_DATA:\s*(\{.*?\})\s*\*/'
-    match = re.search(pattern, content, re.DOTALL)
-    if match:
-        try:
-            return json.loads(match.group(1))
-        except json.JSONDecodeError as e:
-            logger.debug("Malformed embedded JSON: %s", e)
-    return None
-
 
 def normalize_variable_name(name: str) -> str:
     """
