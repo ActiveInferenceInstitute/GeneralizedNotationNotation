@@ -155,9 +155,6 @@ class OntologyVisualizer:
 
         return mappings
 
-    def extract_ontology_mappings(self, ontology_content: str) -> List[Tuple[str, str]]:
-        return self._extract_ontology_mappings(ontology_content)
-
     def _create_ontology_table(self, mappings: List[Tuple[str, str]], output_dir: Path) -> Optional[str]:
         """
         Create a table visualization of ontology mappings.

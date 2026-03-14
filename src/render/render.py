@@ -84,9 +84,7 @@ def main(cli_args=None):
         logger.error(f"GNN file not found: {gnn_file_path}")
         return 1
 
-    # Parse the GNN file using proper parsing
     try:
-        # Try to import and use the GNN parser
         from gnn.parser import parse_gnn_file
         gnn_spec = parse_gnn_file(gnn_file_path)
         logger.info(f"Successfully parsed GNN file using parser: {gnn_file_path}")
@@ -97,13 +95,11 @@ def main(cli_args=None):
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    # Use custom filename if provided, otherwise use model name from spec
     if args.output_filename:
         base_filename = args.output_filename
     else:
         base_filename = gnn_spec.get("name", gnn_file_path.stem)
 
-    # Render the specification
     success, message, artifacts = render_gnn_spec(
         gnn_spec,
         args.target,

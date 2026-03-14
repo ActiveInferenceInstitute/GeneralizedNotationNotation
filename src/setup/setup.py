@@ -13,6 +13,7 @@ import sys
 import logging
 import argparse
 import time
+from typing import List, Optional
 
 # --- Re-export everything from sub-modules for backward compatibility ---
 from .constants import VENV_DIR
@@ -58,7 +59,7 @@ logger = logging.getLogger(__name__)
 
 # --- Callable Main Function ---
 def perform_full_setup(verbose: bool = False, recreate_venv: bool = False, dev: bool = False,
-                      extras: list = None, skip_jax_test: bool = False):
+                      extras: Optional[List[str]] = None, skip_jax_test: bool = False):
     """
     Performs the full setup using UV: creates environment and installs dependencies.
     This function is intended to be called by other scripts.

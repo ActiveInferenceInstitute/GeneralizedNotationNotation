@@ -46,7 +46,7 @@ _CONNECTION_RE = re.compile(
 
 
 @dataclass
-class GNNConnection:
+class GNNConnectionEdge:
     """A parsed connection/edge between two state-space variables."""
     source: str
     target: str
@@ -60,7 +60,7 @@ def parse_connections(
     *,
     known_variables: Optional[set] = None,
     file_path: Optional[str] = None,
-) -> Tuple[List[GNNConnection], List[GNNParseError]]:
+) -> Tuple[List[GNNConnectionEdge], List[GNNParseError]]:
     """
     Parse the Connections section of a GNN file.
 
@@ -72,7 +72,7 @@ def parse_connections(
     Returns:
         (connections, errors) tuple.
     """
-    connections: List[GNNConnection] = []
+    connections: List[GNNConnectionEdge] = []
     errors: List[GNNParseError] = []
 
     # Find the ## Connections section
@@ -93,7 +93,7 @@ def parse_connections(
 
         m = _CONNECTION_RE.match(line)
         if m:
-            conn = GNNConnection(
+            conn = GNNConnectionEdge(
                 source=m.group("source"),
                 target=m.group("target"),
                 directed=(m.group("op") == ">"),

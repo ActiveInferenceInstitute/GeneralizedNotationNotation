@@ -302,10 +302,10 @@ def _parse_metadata(gnn_text: str) -> Dict[str, str]:
     return metadata
 
 
-def validate_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
+def validate_visual_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
     """
-    Validate matrix dimensions for consistency.
-    
+    Validate visual matrix dimensions for consistency.
+
     Returns:
         List of validation error messages (empty if valid)
     """

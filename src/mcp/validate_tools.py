@@ -78,10 +78,6 @@ def main() -> int:
 
         is_documented = bool(desc)
 
-        _has_module = bool(mod)  # noqa: F841 - computed for potential future diagnostics
-
-        _has_docstring = bool(func and getattr(func, "__doc__", ""))  # noqa: F841 - computed for potential future diagnostics
-
         status = "OK"
         if not is_real:
             status = "NOT_CALLABLE"

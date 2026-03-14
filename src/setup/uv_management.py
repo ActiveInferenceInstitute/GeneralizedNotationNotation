@@ -13,7 +13,7 @@ from pathlib import Path
 import logging
 import time
 import json
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 
 from .constants import (
     PROJECT_ROOT,
@@ -217,7 +217,7 @@ def create_uv_environment(verbose: bool = False, recreate: bool = False) -> bool
     return True
 
 
-def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: list = None) -> bool:
+def install_uv_dependencies(verbose: bool = False, dev: bool = False, extras: Optional[List[str]] = None) -> bool:
     """
     Installs dependencies using native UV sync command from pyproject.toml.
 
@@ -378,9 +378,9 @@ def setup_uv_environment(
     verbose: bool = False,
     recreate: bool = False,
     dev: bool = False,
-    extras: list = None,
+    extras: Optional[List[str]] = None,
     skip_jax_test: bool = False,
-    output_dir: Path = None,
+    output_dir: Optional[Path] = None,
 ) -> bool:
     """
     Set up the complete GNN environment using UV.
@@ -689,7 +689,7 @@ def cleanup_uv_setup() -> bool:
         return False
 
 
-def save_setup_results(output_dir: Path, validation_results: Dict, extras: list = None, dev: bool = False):
+def save_setup_results(output_dir: Path, validation_results: Dict, extras: Optional[List[str]] = None, dev: bool = False):
     """
     Save setup results to output directory.
 

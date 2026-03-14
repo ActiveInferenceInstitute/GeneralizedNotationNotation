@@ -102,7 +102,7 @@ class ParsedGNN:
 
 
 # Single authoritative definition lives in parsers/common.py.
-from .parsers.common import GNNFormat  # re-export for types module consumers  # noqa: E402
+from .parsers.common import GNNFormat, GNNInternalRepresentation  # re-export for types module consumers  # noqa: E402
 
 @dataclass
 class ParseResult:
@@ -118,17 +118,6 @@ class ParseResult:
 
     def add_warning(self, warning: str):
         self.warnings.append(warning)
-
-@dataclass
-class GNNInternalRepresentation:
-    model_name: str = ""
-    annotation: str = ""
-    variables: List[Any] = field(default_factory=list)
-    connections: List[Any] = field(default_factory=list)
-    parameters: List[Any] = field(default_factory=list)
-    equations: List[Any] = field(default_factory=list)
-    time_specification: Any = None
-    ontology_mappings: List[Any] = field(default_factory=list)
 
 @dataclass
 class RoundTripResult:
