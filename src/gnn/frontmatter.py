@@ -77,7 +77,7 @@ def _parse_yaml_simple(yaml_text: str) -> Dict[str, Any]:
         if isinstance(parsed, dict):
             return parsed
     except ImportError:
-        pass
+        pass  # yaml not installed, use manual parser
     except Exception as e:
         logger.debug(f"yaml.safe_load failed, falling back to manual parser: {e}")
 

@@ -125,7 +125,7 @@ class HaskellGNNParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError:
-                    continue
+                    continue  # malformed JSON, try next pattern
         return None
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -228,7 +228,7 @@ class HaskellGNNParser(BaseGNNParser):
         else:
             try:
                 return float(func_body)
-            except Exception:
+            except (ValueError, TypeError):
                 return func_body
 
     def _infer_variable_type(self, name: str) -> VariableType:

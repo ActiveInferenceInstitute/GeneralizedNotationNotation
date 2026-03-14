@@ -230,7 +230,7 @@ def extract_activeinference_jl_data(execution_result: Dict[str, Any]) -> Dict[st
                                             "action": float(row[2])
                                         })
                                     except ValueError:
-                                        continue
+                                        continue  # skip non-numeric CSV row
 
                     if traces:
                         simulation_data["traces"] = traces

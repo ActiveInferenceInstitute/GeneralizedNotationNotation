@@ -41,13 +41,13 @@ try:
     import matplotlib.patches as _patches
     patches = _patches
 except (ImportError, AttributeError):
-    pass
+    pass  # optional dependency
 
 try:
     import seaborn as _sns
     sns = _sns
 except ImportError:
-    pass
+    pass  # optional dependency
 
 
 def safe_savefig(
@@ -86,7 +86,7 @@ def safe_savefig(
         _log.warning(f"Failed to save figure to {output_path}: {e}")
         try:
             plt.close()
-        except Exception:
+        except (OSError, ValueError):
             pass  # plt.close() failure is non-fatal
         return None
 

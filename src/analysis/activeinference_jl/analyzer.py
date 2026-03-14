@@ -166,7 +166,7 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
                         actions.append(int(parts[2]))
                         belief_s1.append(float(parts[3]))
                     except (ValueError, IndexError):
-                        continue
+                        continue  # skip malformed CSV row
     except Exception as e:
         logger.warning(f"Failed to parse CSV {csv_path}: {e}")
         return []
@@ -266,8 +266,8 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
             rows = [r.strip() for r in s.split(';') if r.strip()]
             mat = [[float(x) for x in row.split()] for row in rows]
             return np.array(mat)
-        except Exception:
-            return None
+        except (ValueError, TypeError, IndexError):
+            return None  # malformed Julia matrix string
 
     def parse_julia_vector(s: str) -> Optional[np.ndarray]:
         """Parse Julia vector string: [a, b, c]"""
@@ -276,8 +276,8 @@ def create_model_matrix_heatmaps(param_path: Path, output_dir: Path) -> List[str
         try:
             s = s.strip().strip('[]')
             return np.array([float(x) for x in s.split(',')])
-        except Exception:
-            return None
+        except (ValueError, TypeError):
+            return None  # malformed Julia vector string
 
     # Parse matrices
     A = parse_julia_matrix(params.get('A_matrix', ''))

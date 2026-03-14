@@ -69,7 +69,7 @@ class Dispatcher:
                     self.client.close()
                 self._initialized = False
             except ImportError:
-                pass
+                pass  # ray/dask not installed, already shut down
                 
     def run_scripts_parallel(self, script_infos: List[Dict[str, Any]], execute_fn: Callable, **kwargs) -> List[Dict[str, Any]]:
         """

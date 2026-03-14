@@ -46,7 +46,7 @@ class XSDParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError:
-                    continue
+                    continue  # malformed JSON, try next pattern
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -228,7 +228,7 @@ class ASN1Parser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError:
-                    continue
+                    continue  # malformed JSON, try next pattern
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -416,7 +416,7 @@ class PKLParser(BaseGNNParser):
                 try:
                     return json.loads(match.group(1))
                 except json.JSONDecodeError:
-                    continue
+                    continue  # malformed JSON, try next pattern
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -892,7 +892,7 @@ class PKLParser(BaseGNNParser):
             try:
                 return json.loads(json_str)
             except json.JSONDecodeError:
-                continue
+                continue  # malformed JSON, try next pattern
 
         # Look for MODEL_DATA in block comments
         data_matches = re.findall(r'/\*\s*MODEL_DATA:\s*({.+?})\s*\*/', content, re.DOTALL)
@@ -900,7 +900,7 @@ class PKLParser(BaseGNNParser):
             try:
                 return json.loads(data_str)
             except json.JSONDecodeError:
-                continue
+                continue  # malformed JSON, try next pattern
 
         return None
 
@@ -967,7 +967,7 @@ class PKLParser(BaseGNNParser):
             else:
                 return int(value_str)
         except ValueError:
-            pass
+            pass  # not numeric, fall through to boolean/string check
 
         # Try to parse as boolean
         if value_str.lower() in ['true', 'false']:

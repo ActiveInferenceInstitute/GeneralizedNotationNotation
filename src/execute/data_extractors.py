@@ -194,7 +194,7 @@ def collect_execution_outputs(
                             collected[category].append(str(dest_file))
                             continue
                     except OSError:
-                        pass
+                        pass  # stat failed, treat as new file
 
                     parent_name = source_file.parent.name
                     if not source_file.name.startswith(f"{parent_name}_"):

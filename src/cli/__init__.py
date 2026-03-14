@@ -225,7 +225,7 @@ def _cmd_parse(args):
         from gnn.frontmatter import parse_frontmatter
         metadata, _ = parse_frontmatter(content)
     except ImportError:
-        pass
+        pass  # frontmatter parsing is optional
 
     result = {
         "file": str(args.file),

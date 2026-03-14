@@ -535,7 +535,7 @@ def extract_embedded_json_data(content: str, comment_style: str = "block") -> Op
         try:
             return json.loads(match.group(1))
         except json.JSONDecodeError:
-            pass
+            pass  # malformed JSON, return None
     return None
 
 
@@ -586,7 +586,7 @@ def parse_dimensions(dim_str: str) -> List[int]:
                 dimensions.append(1)
 
         return dimensions
-    except Exception:
+    except (ValueError, TypeError, AttributeError):
         return [1]  # Default dimension
 
 def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = None) -> T:
@@ -599,19 +599,19 @@ def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = No
         try:
             return enum_class(value)
         except ValueError:
-            pass
+            pass  # exact match failed, try lowercase
 
         # Try lowercase
         try:
             return enum_class(value.lower())
         except ValueError:
-            pass
+            pass  # lowercase failed, try uppercase
 
         # Try uppercase
         try:
             return enum_class(value.upper())
         except ValueError:
-            pass
+            pass  # all conversions failed, fall through to default
 
     # Return default if provided, otherwise first enum value
     if default is not None:

@@ -336,7 +336,7 @@ class ProtobufGNNParser(BaseGNNParser):
             try:
                 return json.loads(json_str)
             except json.JSONDecodeError:
-                continue
+                continue  # malformed JSON, try next pattern
 
         # Look for embedded data structure in comments
         data_matches = re.findall(r'/\*\s*MODEL_DATA:\s*({.+?})\s*\*/', content, re.DOTALL)
@@ -344,7 +344,7 @@ class ProtobufGNNParser(BaseGNNParser):
             try:
                 return json.loads(data_str)
             except json.JSONDecodeError:
-                continue
+                continue  # malformed JSON, try next pattern
 
         return None
 
@@ -447,7 +447,7 @@ class ProtobufGNNParser(BaseGNNParser):
             else:
                 return int(value_str)
         except ValueError:
-            pass
+            pass  # not numeric, fall through to boolean/string check
 
         # Try to parse as boolean
         if value_str.lower() in ['true', 'false']:

@@ -93,7 +93,7 @@ class AudioGenerator:
                             sample_rate = f.getframerate()
                             channels = f.getnchannels()
                             duration = frames / float(sample_rate)
-                    except Exception:
+                    except (wave.Error, OSError, ValueError):
                         pass  # recovery if wave module fails to read audio metadata
                 elif suffix in ['.mp3', '.ogg', '.flac']:
                     # Estimate based on file size if mutagen/ffmpeg not available

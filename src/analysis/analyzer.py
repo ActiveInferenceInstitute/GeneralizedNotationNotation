@@ -963,7 +963,7 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                                             belief = [float(x) for x in row[3:]]
                                             beliefs.append(belief)
                                     except ValueError:
-                                        continue
+                                        continue  # skip non-numeric CSV row
 
                         if beliefs or actions or observations:
                             metrics["data_source"] = str(csv_file)

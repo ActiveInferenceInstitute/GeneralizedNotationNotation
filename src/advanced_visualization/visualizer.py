@@ -18,7 +18,7 @@ from datetime import datetime
 try:
     import matplotlib
     matplotlib.use('Agg')
-except Exception:
+except ImportError:
     pass  # matplotlib backend setting is optional
 import matplotlib.pyplot as plt
 import numpy as np
@@ -27,7 +27,7 @@ import numpy as np
 try:
     from .data_extractor import VisualizationDataExtractor
     VIS_PROCESSOR_AVAILABLE = True
-except Exception:
+except ImportError:
     VIS_PROCESSOR_AVAILABLE = False  # graceful degradation without data extractor
 
 
@@ -157,8 +157,8 @@ class AdvancedVisualizer:
             with open(out, 'w', encoding='utf-8') as f:
                 f.write(html)
             return out
-        except Exception:
-            return None
+        except (OSError, ValueError, TypeError) as _e:
+            return None  # HTML summary generation is best-effort
 
     def _generate_fallback_visualizations(self, content: str, model_name: str, output_dir: Path) -> List[str]:
         """Generate recovery visualizations when advanced libraries aren't available"""
@@ -376,8 +376,8 @@ def create_visualization_from_data(data: Dict[str, Any]) -> Optional[Dict[str, A
         else:
             return create_default_visualization(data)
 
-    except Exception:
-        return None
+    except (KeyError, ValueError, TypeError):
+        return None  # visualization creation is best-effort
 
 def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
     """Create a dashboard section from data."""
@@ -391,8 +391,8 @@ def create_dashboard_section(data: Dict[str, Any]) -> Optional[Dict[str, Any]]:
 
         return section
 
-    except Exception:
-        return None
+    except (KeyError, TypeError):
+        return None  # malformed data, skip section
 
 def create_network_visualization(data: Dict[str, Any]) -> Dict[str, Any]:
     """Create a network visualization."""

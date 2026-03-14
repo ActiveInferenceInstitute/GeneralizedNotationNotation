@@ -66,7 +66,7 @@ def detect_pymdp_installation() -> Dict[str, Any]:
                 agent_found = True
                 logger.info("Detected correct PyMDP package (inferactively-pymdp) with Agent in agent submodule")
             except ImportError:
-                pass
+                pass  # pymdp.agent not available
 
         # Check for previous/wrong package indicators ONLY if Agent was not found
         # Or just note it as a warning but don't fail if Agent is present

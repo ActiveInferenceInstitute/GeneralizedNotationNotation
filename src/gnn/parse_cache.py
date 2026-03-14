@@ -51,7 +51,7 @@ class ParseCache:
                 logger.debug(f"Cache hit: {section_name} ({key[:8]})")
                 return data
             except (json.JSONDecodeError, OSError):
-                pass
+                pass  # corrupted cache entry, treat as miss
 
         self._stats["misses"] += 1
         return None

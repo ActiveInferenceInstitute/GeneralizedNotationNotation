@@ -262,7 +262,7 @@ def visualize_all_framework_outputs(
                                     file_data = json.load(f)
                                 if isinstance(file_data, dict):
                                     sim_data.update(file_data)
-                            except Exception:
+                            except (json.JSONDecodeError, OSError):
                                 pass  # skip malformed simulation data files
 
                 # For ActiveInference.jl: read CSV simulation data directly
@@ -293,7 +293,7 @@ def visualize_all_framework_outputs(
                                                     if len(row) > 3:
                                                         beliefs.append([float(x) for x in row[3:]])
                                                 except ValueError:
-                                                    continue
+                                                    continue  # skip non-numeric CSV row
                                     if beliefs:
                                         sim_data["beliefs"] = beliefs
                                     if actions:

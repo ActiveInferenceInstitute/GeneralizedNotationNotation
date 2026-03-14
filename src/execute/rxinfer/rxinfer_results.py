@@ -101,7 +101,7 @@ def _extract_posteriors(raw: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
             try:
                 result[var_name] = {"type": "scalar", "value": float(dist_data)}
             except (TypeError, ValueError):
-                pass
+                pass  # non-numeric scalar, skip
             continue
 
         dist_type = dist_data.get("type") or dist_data.get("distribution", "unknown")

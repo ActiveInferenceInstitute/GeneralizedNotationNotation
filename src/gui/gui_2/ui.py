@@ -271,7 +271,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                 fig.update_yaxes(showgrid=True, gridwidth=1, gridcolor='lightgray')
 
                 return fig
-            except Exception as e:
+            except (ValueError, TypeError, IndexError) as e:
                 logger.error(f"Error creating heatmap: {e}")
                 return go.Figure().add_annotation(text=f"Error: {str(e)}", x=0.5, y=0.5)
 
@@ -353,7 +353,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                 fig.update_layout(yaxis2=dict(overlaying='y', side='right', showticklabels=False))
 
                 return fig
-            except Exception as e:
+            except (ValueError, TypeError, IndexError) as e:
                 logger.error(f"Error creating vector plot: {e}")
                 return go.Figure().add_annotation(text=f"Error: {str(e)}", x=0.5, y=0.5)
 
@@ -453,7 +453,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     stats_text += f"- {key}: `{value}`\n"
 
                 return stats_text
-            except Exception as e:
+            except (ValueError, TypeError, ZeroDivisionError) as e:
                 return f"**{name}**: Error calculating stats - {e}"
 
         def generate_gnn_from_matrices(a_data, b_data, c_data, d_data, b_slice):
@@ -528,7 +528,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                 visual_data = {"visual_matrices": visual_matrices}
                 updated_gnn = update_gnn_from_matrix(visual_data, markdown_text)
                 return updated_gnn
-            except Exception as e:
+            except (ValueError, TypeError, KeyError) as e:
                 logger.error(f"Failed to generate GNN: {e}")
                 return markdown_text
 
@@ -542,7 +542,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                     tmp_f.write(gnn_text)
                 os.replace(tmp_f.name, str(export_path))
                 return f"✅ Saved to {export_path.name}"
-            except Exception as e:
+            except OSError as e:
                 return f"❌ Save failed: {e}"
 
         def validate_gnn(a_data, b_data, c_data, d_data):
@@ -592,7 +592,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
                 else:
                     return "✅ **Validation Passed:** All matrix dimensions are consistent"
 
-            except Exception as e:
+            except (ValueError, TypeError, KeyError) as e:
                 return f"❌ Validation failed: {e}"
 
         # === ENHANCED INTERACTIVE EVENT HANDLERS ===
@@ -715,7 +715,7 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
 
                 return a_plot, b_plot, c_plot, d_plot, stats_text, gnn_text
 
-            except Exception as e:
+            except (ValueError, TypeError, KeyError, IndexError) as e:
                 logger.error(f"Error in update_all_with_state: {e}")
                 return (gr.update(), gr.update(), gr.update(), gr.update(),
                        f"Error updating: {e}", gr.update())
