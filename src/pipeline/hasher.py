@@ -17,28 +17,12 @@ from typing import Any, Dict, Optional, Tuple, Union
 logger = logging.getLogger(__name__)
 
 
-def compute_run_hash(
+def _compute_run_hash_impl(
     target_dir: Path,
     config: Optional[Dict[str, Any]] = None,
     hash_length: int = 12,
-    return_file_hashes: bool = False
-) -> Union[str, Tuple[str, Dict[str, str]]]:
-    """
-    Compute a content-addressable hash for a pipeline run.
-
-    The hash is derived from:
-      1. Sorted SHA256 hashes of all input files
-      2. SHA256 of the serialized config dict
-
-    Args:
-        target_dir: Directory containing input GNN files.
-        config: Optional pipeline configuration dict.
-        hash_length: Length of the hex prefix to return.
-        return_file_hashes: Whether to return the file hashes alongside the run hash.
-
-    Returns:
-        Hex hash string (default 12 chars), or (hash, file_hashes_dict) if requested.
-    """
+) -> Tuple[str, Dict[str, str]]:
+    """Core implementation — returns (run_hash, file_hashes_dict)."""
     hasher = hashlib.sha256()
 
     # Hash all input files (sorted for determinism)
@@ -70,9 +54,26 @@ def compute_run_hash(
     run_hash = hasher.hexdigest()[:hash_length]
     logger.debug(f"Run hash: {run_hash} ({len(file_hashes_list)} input files)")
     
-    if return_file_hashes:
-        return run_hash, file_hashes_dict
+    return run_hash, file_hashes_dict
+
+
+def compute_run_hash(
+    target_dir: Path,
+    config: Optional[Dict[str, Any]] = None,
+    hash_length: int = 12,
+) -> str:
+    """Compute a content-addressable hash for a pipeline run. Returns hex string."""
+    run_hash, _ = _compute_run_hash_impl(target_dir, config, hash_length)
     return run_hash
+
+
+def compute_run_hash_with_files(
+    target_dir: Path,
+    config: Optional[Dict[str, Any]] = None,
+    hash_length: int = 12,
+) -> Tuple[str, Dict[str, str]]:
+    """Compute a content-addressable hash and return (hash, file_hashes_dict)."""
+    return _compute_run_hash_impl(target_dir, config, hash_length)
 
 
 def index_run(

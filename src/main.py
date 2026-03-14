@@ -341,11 +341,10 @@ def main(override_args=None, override_config: Optional[Dict[str, Any]] = None):
         logger.info(f"Skipping steps: {[pipeline_steps[i][0] for i in skip_numbers if 0 <= i < len(pipeline_steps)]}")
 
     # Calculate run hash for content addressability
-    from pipeline.hasher import compute_run_hash, index_run
-    run_hash, file_hashes = compute_run_hash(
-        args.target_dir, 
-        config=config_pipeline_settings, 
-        return_file_hashes=True
+    from pipeline.hasher import compute_run_hash_with_files, index_run
+    run_hash, file_hashes = compute_run_hash_with_files(
+        args.target_dir,
+        config=config_pipeline_settings,
     )
 
     # Initialize pipeline execution summary
