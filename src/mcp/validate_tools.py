@@ -74,18 +74,14 @@ def main() -> int:
         fn   = getattr(func, "__name__", "NONE") if func else "NONE"
         mod  = getattr(tool, "module", "") or ""
 
-        # Check 1: Real callable (not None, not lambda)
         is_callable  = callable(func)
         is_lambda    = (fn == "<lambda>")
         is_real      = is_callable and not is_lambda
 
-        # Check 2: Documented
         is_documented = bool(desc)
 
-        # Check 3: Has a source module
         has_module = bool(mod)
 
-        # Check 4: Function has a proper docstring
         has_docstring = bool(func and getattr(func, "__doc__", ""))
 
         status = "OK"

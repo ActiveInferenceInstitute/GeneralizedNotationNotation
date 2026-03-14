@@ -155,7 +155,6 @@ def execute_tool(args):
     try:
         mcp_instance, MCPError = _get_mcp()
 
-        # Validate tool exists
         if args.tool_name not in mcp_instance.tools:
             available_tools = list(mcp_instance.tools.keys())
             print(f"\n❌ Error: Tool '{args.tool_name}' not found", file=sys.stderr)
@@ -164,10 +163,8 @@ def execute_tool(args):
                 print(f"  • {tool}", file=sys.stderr)
             sys.exit(1)
 
-        # Get tool info for validation
         tool = mcp_instance.tools[args.tool_name]
 
-        # Parse and validate parameters
         params = {}
         if args.params:
             try:
@@ -181,10 +178,8 @@ def execute_tool(args):
             print(f"\n❌ Error: Parameters must be a JSON object, got {type(params)}", file=sys.stderr)
             sys.exit(1)
 
-        # Validate against schema if available
         if tool.schema and args.validate:
             try:
-                # Basic schema validation
                 required = tool.schema.get('required', [])
                 for req in required:
                     if req not in params:
@@ -194,7 +189,6 @@ def execute_tool(args):
             except Exception as e:
                 logger.warning(f"Schema validation failed: {e}")
 
-        # Show execution info
         print(f"🔧 Executing tool: {args.tool_name}")
         if args.verbose:
             print(f"📝 Parameters: {json.dumps(params, indent=2)}")
@@ -202,12 +196,10 @@ def execute_tool(args):
             print(f"📂 Category: {tool.category}")
             print(f"📋 Description: {tool.description}")
 
-        # Execute the tool
         start_time = time.time()
         result = mcp_instance.execute_tool(args.tool_name, params)
         execution_time = time.time() - start_time
 
-        # Show results
         if args.format == "json":
             print(json.dumps(result, indent=2))
         else:
@@ -216,7 +208,6 @@ def execute_tool(args):
             print(json.dumps(result, indent=2))
 
             if args.verbose:
-                # Show tool usage stats
                 try:
                     stats = mcp_instance.get_tool_performance_stats(args.tool_name)
                     if stats:

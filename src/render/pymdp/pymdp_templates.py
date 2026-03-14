@@ -43,7 +43,6 @@ try:
     from pymdp.agent import Agent
     from pymdp import utils
     from pymdp import maths
-    logger.info("Successfully imported pymdp.agent.Agent")
 except ImportError:
     try:
         # Try direct import if package structure is flat
@@ -52,7 +51,6 @@ except ImportError:
             from pymdp import Agent
             from pymdp import utils
             from pymdp import maths
-            logger.info("Successfully imported Agent from pymdp root")
         else:
             raise ImportError("Agent class not found in pymdp")
     except ImportError as e:
