@@ -9,6 +9,8 @@ identified by the audit.
 import sys
 import re
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict
 
@@ -60,7 +62,11 @@ def fix_script_references(file_path: Path) -> bool:
                 fixed = True
 
         if fixed and content != original_content:
-            file_path.write_text(content, encoding='utf-8')
+            with tempfile.NamedTemporaryFile(
+                mode='w', suffix='.tmp', dir=file_path.parent, delete=False
+            ) as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_f.name, str(file_path))
             return True
     except Exception as e:
         print(f"Error fixing {file_path}: {e}")
@@ -85,7 +91,11 @@ def fix_markdown_paths(file_path: Path) -> bool:
                 fixed = True
 
         if fixed and content != original_content:
-            file_path.write_text(content, encoding='utf-8')
+            with tempfile.NamedTemporaryFile(
+                mode='w', suffix='.tmp', dir=file_path.parent, delete=False
+            ) as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_f.name, str(file_path))
             return True
     except Exception as e:
         print(f"Error fixing markdown paths in {file_path}: {e}")

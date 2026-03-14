@@ -496,9 +496,16 @@ class FilepathAuditor:
         }
 
     def save_report(self, output_path: Path) -> None:
-        """Save audit report to file"""
+        """Save audit report to file (atomic write via temp file + os.replace)"""
+        import tempfile
+        import os
         report = self.generate_report()
-        output_path.write_text(json.dumps(report, indent=2), encoding='utf-8')
+        content = json.dumps(report, indent=2)
+        with tempfile.NamedTemporaryFile(
+            mode='w', suffix='.tmp', dir=output_path.parent, delete=False
+        ) as tmp_f:
+            tmp_f.write(content)
+        os.replace(tmp_f.name, str(output_path))
         print(f"\nAudit report saved to: {output_path}")
 
 def main() -> int:

@@ -8,6 +8,7 @@ and real-time GNN markdown generation.
 from __future__ import annotations
 
 import logging
+import os
 from pathlib import Path
 from typing import List
 
@@ -534,7 +535,12 @@ def build_visual_gui(markdown_text: str, export_path: Path, logger: logging.Logg
         def save_gnn(gnn_text):
             """Save GNN markdown to file"""
             try:
-                export_path.write_text(gnn_text)
+                import tempfile
+                with tempfile.NamedTemporaryFile(
+                    mode='w', suffix='.tmp', dir=export_path.parent, delete=False
+                ) as tmp_f:
+                    tmp_f.write(gnn_text)
+                os.replace(tmp_f.name, str(export_path))
                 return f"✅ Saved to {export_path.name}"
             except Exception as e:
                 return f"❌ Save failed: {e}"
