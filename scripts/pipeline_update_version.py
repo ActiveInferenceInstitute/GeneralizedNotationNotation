@@ -5,9 +5,11 @@ Version Update Script for GeneralizedNotationNotation (GNN)
 This script updates version numbers consistently across all project files.
 """
 
+import os
 import re
 import sys
 import argparse
+import tempfile
 from pathlib import Path
 from typing import List
 from datetime import datetime
@@ -54,7 +56,9 @@ class VersionUpdater:
                 content
             )
 
-            file_path.write_text(content)
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=file_path.parent, delete=False) as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_f.name, str(file_path))
             self.updated_files.append(str(file_path))
             return True
 
@@ -91,7 +95,9 @@ class VersionUpdater:
                     content
                 )
 
-                file_path.write_text(content)
+                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=file_path.parent, delete=False) as tmp_f:
+                    tmp_f.write(content)
+                os.replace(tmp_f.name, str(file_path))
                 self.updated_files.append(str(file_path))
 
             except Exception as e:
@@ -114,7 +120,9 @@ class VersionUpdater:
                 content
             )
 
-            julia_file.write_text(content)
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=julia_file.parent, delete=False) as tmp_f:
+                tmp_f.write(content)
+            os.replace(tmp_f.name, str(julia_file))
             self.updated_files.append(str(julia_file))
             return True
 
@@ -149,7 +157,9 @@ class VersionUpdater:
                         content
                     )
 
-                changelog_path.write_text(content)
+                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=changelog_path.parent, delete=False) as tmp_f:
+                    tmp_f.write(content)
+                os.replace(tmp_f.name, str(changelog_path))
                 self.updated_files.append(str(changelog_path))
 
             return True

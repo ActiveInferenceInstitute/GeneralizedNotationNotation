@@ -8,6 +8,8 @@ Enforces the standard:
 **Test Count**: 1,127 Tests Passing
 """
 
+import os
+import tempfile
 from pathlib import Path
 
 STANDARD_HEADER = """**Version**: v1.1.0  
@@ -63,7 +65,9 @@ def unify_headers(doc_dir: Path):
         new_content = h1_line + "\n" + STANDARD_HEADER + "".join(lines[start_idx:])
 
         if content != new_content:
-            md_file.write_text(new_content, encoding="utf-8")
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=md_file.parent, delete=False) as tmp_f:
+                tmp_f.write(new_content)
+            os.replace(tmp_f.name, str(md_file))
             print(f"Updated header in: {md_file.name}")
             unified_count += 1
 

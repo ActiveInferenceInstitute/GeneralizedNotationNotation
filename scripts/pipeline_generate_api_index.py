@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 import ast
 import json
+import os
 import sys
+import tempfile
 from pathlib import Path
 from typing import Dict, List, Any
 
@@ -98,7 +100,9 @@ def build_index() -> Dict[str, Any]:
 def main() -> int:
     index = build_index()
     OUTPUT_JSON.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_JSON.write_text(json.dumps(index, indent=2), encoding="utf-8")
+    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=OUTPUT_JSON.parent, delete=False) as tmp_f:
+        tmp_f.write(json.dumps(index, indent=2))
+    os.replace(tmp_f.name, str(OUTPUT_JSON))
     print(f"Wrote API index: {OUTPUT_JSON}")
     return 0
 
