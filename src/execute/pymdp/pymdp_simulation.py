@@ -38,8 +38,10 @@ try:
     from pymdp import utils
     from pymdp.agent import Agent
     PYMDP_AVAILABLE = True
+    PYMDP_REAL = True  # True only when the real inferactively-pymdp package is present
 except ImportError:
     PYMDP_AVAILABLE = False
+    PYMDP_REAL = False  # False in recovery/fallback mode
     logging.warning(
         "PyMDP not available - this is normal if not installed. "
         "To enable PyMDP simulations, install with: uv pip install inferactively-pymdp. "
@@ -153,7 +155,8 @@ except ImportError:
     # Expose recovery names used later in the module
     utils = _RecoveryUtils()
     Agent = _RecoveryAgent
-    # Mark as available since we provided functional fallbacks to allow tests to run
+    # PYMDP_AVAILABLE=True: functional fallbacks provided so tests/callers can run.
+    # PYMDP_REAL stays False to distinguish fallback from real library.
     PYMDP_AVAILABLE = True
 
 
@@ -257,13 +260,8 @@ class PyMDPSimulation:
                 self.observations = list(observations)
             self.model_name = self.gnn_config.get('model_name', 'GNN_POMDP')
 
-            # Convert to numerical parameters
-            self.num_states = len(self.states)
-            self.num_actions = len(self.actions)
-            self.num_observations = len(self.observations)
-
-            self.logger.info(f"Initialized from GNN config: {self.num_states} states, "
-                           f"{self.num_actions} actions, {self.num_observations} observations")
+            self.logger.info(f"Initialized from GNN config: {len(self.states)} states, "
+                           f"{len(self.actions)} actions, {len(self.observations)} observations")
         else:
             # Default gridworld configuration
             self.num_states = 4
@@ -922,5 +920,4 @@ def run_pymdp_simulation_from_gnn(gnn_config: Dict[str, Any],
         Simulation results dictionary
     """
     simulation = create_pymdp_simulation_from_gnn(gnn_config)
-    simulation.create_pymdp_model()
     return simulation.run_simulation(output_dir)

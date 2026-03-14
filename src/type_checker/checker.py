@@ -249,7 +249,7 @@ class GNNTypeChecker:
             self.errors.append(f"Failed to parse or check file: {str(e)}")
 
         # Enhanced validation logic: fail on errors OR critical structural issues
-        has_errors = len(self.errors) > 0
+        has_errors = bool(self.errors)
 
         # Define critical warnings that should fail validation
         critical_warning_patterns = [

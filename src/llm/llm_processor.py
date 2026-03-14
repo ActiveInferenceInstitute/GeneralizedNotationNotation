@@ -130,19 +130,13 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
     """
     default_provider = os.getenv('DEFAULT_PROVIDER', 'ollama').lower()
 
-    # Map string names to provider types
-    provider_map = {
-        'openai': ProviderType.OPENAI,
-        'openrouter': ProviderType.OPENROUTER,
-        'perplexity': ProviderType.PERPLEXITY,
-        'ollama': ProviderType.OLLAMA
-    }
+    known_providers = {'openai', 'openrouter', 'perplexity', 'ollama'}
 
     # Prioritize Ollama as the default since it doesn't require API keys
     preferred = []
 
     # Always put Ollama first if available, then others
-    if default_provider == 'ollama' or default_provider not in provider_map:
+    if default_provider == 'ollama' or default_provider not in known_providers:
         preferred.append(ProviderType.OLLAMA)
 
     # Add other providers in order

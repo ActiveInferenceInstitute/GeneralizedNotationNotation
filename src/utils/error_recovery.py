@@ -270,7 +270,7 @@ class ErrorReporter:
 
     def has_errors(self) -> bool:
         """Check if any errors have been collected."""
-        return len(self.errors) > 0
+        return bool(self.errors)
 
     def clear_errors(self):
         """Clear all collected errors."""

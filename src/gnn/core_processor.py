@@ -238,17 +238,20 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
     logger = logging.getLogger('gnn.core_processor.wrapper')
     context = ProcessingContext(target_dir=Path(target_dir), output_dir=Path(output_dir) if output_dir else Path.cwd(), recursive=recursive)
     processor = GNNProcessor(logger)
+    full_success = False
     try:
-        success = processor.process(context)
+        full_success = processor.process(context)
+    except Exception:
+        full_success = False
+
+    if full_success:
         result = {
-            "status": "SUCCESS" if success else "FAILED",
+            "status": "SUCCESS",
             "processed_files": [str(p) for p in context.discovered_files],
             "valid_files": [str(p) for p in context.valid_files],
             "processing_mode": "full"
         }
-        if not success:
-            raise RuntimeError("Full processing failed; invoking lightweight recovery")
-    except Exception:
+    else:
         # Recovery to lightweight processing expected by recovery tests
         light = process_gnn_directory_lightweight(Path(target_dir))
         result = {

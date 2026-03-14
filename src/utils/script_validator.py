@@ -235,7 +235,7 @@ class PipelineScriptValidator:
                 if node.func.id in logging_functions:
                     found_logging.add(node.func.id)
 
-        result.has_logging = len(found_logging) > 0
+        result.has_logging = bool(found_logging)
 
         # Check for required logging functions
         required_logging = ["setup_step_logging", "log_step_start"]

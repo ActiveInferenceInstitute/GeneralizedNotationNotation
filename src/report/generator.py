@@ -107,7 +107,7 @@ def generate_comprehensive_report(
         logger.info(f"Pipeline health score: {health_score}/100")
         logger.info(f"Report files: {', '.join(generated_files)}")
 
-        return len(generated_files) > 0
+        return bool(generated_files)
 
     except Exception as e:
         logger.error(f"Failed to generate comprehensive report: {e}")
