@@ -5,6 +5,8 @@ Converts parsed GNN Active Inference models to Mermaid flowchart format
 compatible with oxdraw editor, with embedded metadata for bidirectional sync.
 """
 
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import json
@@ -358,7 +360,9 @@ def convert_gnn_file_to_mermaid(
     # Save if output path provided
     if output_path:
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(mermaid_content, encoding='utf-8')
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as tmp_f:
+            tmp_f.write(mermaid_content)
+        os.replace(tmp_f.name, str(output_path))
 
     return mermaid_content
 

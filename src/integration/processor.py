@@ -5,6 +5,8 @@ Integration Processor module for GNN Processing Pipeline.
 This module provides integration processing capabilities.
 """
 
+import os
+import tempfile
 from pathlib import Path
 import logging
 
@@ -281,7 +283,10 @@ def process_integration(
         else:
             summary += "\nNo issues detected.\n"
 
-        (results_dir / "integration_summary.md").write_text(summary)
+        summary_path = results_dir / "integration_summary.md"
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=summary_path.parent, delete=False) as tmp_f:
+            tmp_f.write(summary)
+        os.replace(tmp_f.name, str(summary_path))
 
         if results["success"]:
             log_step_success(logger, f"Integration processing completed: {node_count} nodes, {edge_count} edges")

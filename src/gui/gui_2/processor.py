@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Optional
 
@@ -63,7 +65,9 @@ def run_gui(
             starter_md = get_pomdp_template()
 
         starter_path = output_root / export_filename
-        starter_path.write_text(starter_md)
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=starter_path.parent, delete=False) as tmp_f:
+            tmp_f.write(starter_md)
+        os.replace(tmp_f.name, str(starter_path))
 
         if headless or _GUI_BACKEND is None:
             # Generate headless artifacts for GUI 2
@@ -80,12 +84,15 @@ def run_gui(
             visual_data = create_matrix_from_gnn(starter_md)
 
             # Save visual data as JSON for potential future loading
-            (gui_output_dir / "visual_matrices.json").write_text(
-                json.dumps(visual_data, indent=2)
-            )
+            vis_matrices_path = gui_output_dir / "visual_matrices.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=vis_matrices_path.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps(visual_data, indent=2))
+            os.replace(tmp_f.name, str(vis_matrices_path))
 
             # Generate status artifact
-            (gui_output_dir / "gui_status.json").write_text(json.dumps({
+            gui_status_path = gui_output_dir / "gui_status.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=gui_status_path.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps({
                 "backend": _GUI_BACKEND or "none",
                 "launched": False,
                 "export_file": str(starter_path),
@@ -105,6 +112,7 @@ def run_gui(
                     "Run with --interactive for full GUI experience"
                 ]
             }, indent=2))
+            os.replace(tmp_f.name, str(gui_status_path))
 
             log_step_success(logger, f"GUI 2 artifacts generated ({'recovery' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
@@ -145,20 +153,23 @@ def run_gui(
         # Record launch status
         gui_output_dir = output_root
         gui_output_dir.mkdir(parents=True, exist_ok=True)
-        (gui_output_dir / "gui_status.json").write_text(json.dumps({
-            "backend": _GUI_BACKEND,
-            "launched": True,
-            "export_file": str(starter_path),
-            "gui_type": "visual_matrix_editor",
-            "port": 7861,
-            "url": "http://localhost:7861",
-            "features": [
-                "Visual matrix editing",
-                "Drag-and-drop interface",
-                "Real-time GNN generation",
-                "POMDP template-based"
-            ]
-        }, indent=2))
+        gui_status_path2 = gui_output_dir / "gui_status.json"
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=gui_status_path2.parent, delete=False) as tmp_f:
+            tmp_f.write(json.dumps({
+                "backend": _GUI_BACKEND,
+                "launched": True,
+                "export_file": str(starter_path),
+                "gui_type": "visual_matrix_editor",
+                "port": 7861,
+                "url": "http://localhost:7861",
+                "features": [
+                    "Visual matrix editing",
+                    "Drag-and-drop interface",
+                    "Real-time GNN generation",
+                    "POMDP template-based"
+                ]
+            }, indent=2))
+        os.replace(tmp_f.name, str(gui_status_path2))
 
         log_step_success(logger, "GUI 2 (Visual Matrix Editor) launched successfully")
         return True

@@ -5,6 +5,8 @@ Extracts GNN model structure from Mermaid flowcharts with embedded metadata,
 enabling bidirectional synchronization with oxdraw editor.
 """
 
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict, Any, List, Optional
 import json
@@ -347,7 +349,9 @@ def convert_mermaid_file_to_gnn(
     if output_path:
         gnn_content = _gnn_model_to_markdown(parsed_model)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(gnn_content, encoding='utf-8')
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as tmp_f:
+            tmp_f.write(gnn_content)
+        os.replace(tmp_f.name, str(output_path))
 
     return parsed_model
 

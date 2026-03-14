@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import logging
+import os
+import tempfile
 from datetime import datetime
 from pathlib import Path
 from typing import Optional
@@ -145,7 +147,9 @@ def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Lo
             return remove_component_from_markdown(md, name)
 
         def save_md(md: str):
-            export_path.write_text(md)
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=export_path.parent, delete=False) as tmp_f:
+                tmp_f.write(md)
+            os.replace(tmp_f.name, str(export_path))
             if logger:
                 logger.info(f"📄 Model saved to {export_path}")
             save_message = f"✅ **Saved Successfully**\n\nFile: `{export_path}`\nSize: {len(md)} characters"

@@ -7,6 +7,8 @@ Low-dependency visual design interface for Active Inference models
 
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Dict
 
@@ -62,11 +64,14 @@ def run_gui(
             design_analysis = _analyze_gnn_design(starter_md)
 
             # Write starter model to file
-            starter_path.write_text(starter_md)
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=starter_path.parent, delete=False) as tmp_f:
+                tmp_f.write(starter_md)
+            os.replace(tmp_f.name, str(starter_path))
 
             # Save design analysis
             analysis_file = output_root / "design_analysis.json"
-            analysis_file.write_text(json.dumps({
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=analysis_file.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps({
                 "gui_type": "design_studio",
                 "backend": _GUI_BACKEND or "none",
                 "status": "headless_mode" if _GUI_BACKEND else "fallback_mode",
@@ -80,6 +85,7 @@ def run_gui(
                     "Run with --interactive for full GUI experience"
                 ]
             }, indent=2))
+            os.replace(tmp_f.name, str(analysis_file))
 
             logger.info(f"🎨 Design analysis saved to: {analysis_file}")
             return True
@@ -120,20 +126,22 @@ def run_gui(
 
         # Save launch status
         status_file = output_root / "design_studio_status.json"
-        status_file.write_text(json.dumps({
-            "gui_type": "design_studio",
-            "backend": "gradio",
-            "launched": True,
-            "export_file": str(starter_path),
-            "port": 7862,
-            "url": "http://localhost:7862",
-            "features": [
-                "State space visual designer",
-                "Ontology term editor",
-                "Connection graph interface",
-                "Parameter tuning controls"
-            ]
-        }, indent=2))
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=status_file.parent, delete=False) as tmp_f:
+            tmp_f.write(json.dumps({
+                "gui_type": "design_studio",
+                "backend": "gradio",
+                "launched": True,
+                "export_file": str(starter_path),
+                "port": 7862,
+                "url": "http://localhost:7862",
+                "features": [
+                    "State space visual designer",
+                    "Ontology term editor",
+                    "Connection graph interface",
+                    "Parameter tuning controls"
+                ]
+            }, indent=2))
+        os.replace(tmp_f.name, str(status_file))
 
         return True
 

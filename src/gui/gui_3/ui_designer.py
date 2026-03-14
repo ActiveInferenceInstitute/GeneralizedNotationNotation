@@ -5,6 +5,8 @@ Low-dependency visual design experience for Active Inference models
 """
 
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -134,7 +136,9 @@ def build_design_studio(markdown_text: str, export_path: Path, logger: logging.L
                     spaces, ontology, connections, states, obs, actions, horizon, time_h
                 )
 
-                export_path.write_text(gnn_content)
+                with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=export_path.parent, delete=False) as tmp_f:
+                    tmp_f.write(gnn_content)
+                os.replace(tmp_f.name, str(export_path))
                 return f"✅ Model exported to {export_path.name}"
 
             except Exception as e:

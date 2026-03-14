@@ -15,9 +15,11 @@ Usage:
 """
 
 from __future__ import annotations
+import os
 import sys
 import logging
 import json
+import tempfile
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -193,7 +195,9 @@ def main() -> int:
         "issues":           issues,
     }
     out_path = SRC_ROOT / "mcp" / "audit_report.json"
-    out_path.write_text(json.dumps(report, indent=2))
+    with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=out_path.parent, delete=False) as tmp_f:
+        tmp_f.write(json.dumps(report, indent=2))
+    os.replace(tmp_f.name, str(out_path))
     print(f"\n  Full report saved → {out_path}")
 
     return 0 if not issues else 1

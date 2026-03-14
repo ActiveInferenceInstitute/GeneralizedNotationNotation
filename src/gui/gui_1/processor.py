@@ -90,7 +90,10 @@ def run_gui(
                 ]
             }
 
-            (gui_output_dir / "gui_status.json").write_text(json.dumps(fallback_status, indent=2))
+            gui_status_path = gui_output_dir / "gui_status.json"
+            with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=gui_status_path.parent, delete=False) as tmp_f:
+                tmp_f.write(json.dumps(fallback_status, indent=2))
+            os.replace(tmp_f.name, str(gui_status_path))
 
             log_step_success(logger, f"GUI 1 artifacts generated ({'recovery' if _GUI_BACKEND is None else 'headless'}). Export: {starter_path}")
             return True
@@ -130,14 +133,17 @@ def run_gui(
         # Record availability artifact
         gui_output_dir = output_root
         gui_output_dir.mkdir(parents=True, exist_ok=True)
-        (gui_output_dir / "gui_status.json").write_text(json.dumps({
-            "backend": _GUI_BACKEND,
-            "launched": True,
-            "export_file": str(starter_path),
-            "gui_type": "form_based_constructor",
-            "port": 7860,
-            "url": "http://localhost:7860"
-        }, indent=2))
+        gui_status_path = gui_output_dir / "gui_status.json"
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=gui_status_path.parent, delete=False) as tmp_f:
+            tmp_f.write(json.dumps({
+                "backend": _GUI_BACKEND,
+                "launched": True,
+                "export_file": str(starter_path),
+                "gui_type": "form_based_constructor",
+                "port": 7860,
+                "url": "http://localhost:7860"
+            }, indent=2))
+        os.replace(tmp_f.name, str(gui_status_path))
 
         log_step_success(logger, "GUI 1 launched successfully")
         return True

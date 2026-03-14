@@ -7,6 +7,8 @@ extracted from __init__.py to follow the thin orchestrator pattern.
 
 import json
 import logging
+import os
+import tempfile
 from pathlib import Path
 from typing import Dict, Any, List
 
@@ -137,12 +139,14 @@ def _save_processing_summary(
     try:
         output_path = Path(output_dir)
         summary_file = output_path / "gui_processing_summary.json"
-        summary_file.write_text(json.dumps({
-            "mode": "interactive" if not kwargs.get('headless', True) else "headless",
-            "gui_types": gui_types,
-            "results": results,
-            "overall_success": overall_success
-        }, indent=2))
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path, delete=False) as tmp_f:
+            tmp_f.write(json.dumps({
+                "mode": "interactive" if not kwargs.get('headless', True) else "headless",
+                "gui_types": gui_types,
+                "results": results,
+                "overall_success": overall_success
+            }, indent=2))
+        os.replace(tmp_f.name, str(summary_file))
         logger.info(f"📊 GUI processing summary saved to: {summary_file}")
     except Exception as e:
         logger.warning(f"Failed to save GUI processing summary: {e}")
@@ -251,8 +255,9 @@ def generate_html_navigation(
 
         # Write HTML file
         nav_file = output_dir / "navigation.html"
-        with open(nav_file, 'w', encoding='utf-8') as f:
-            f.write(html_content)
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=nav_file.parent, delete=False) as tmp_f:
+            tmp_f.write(html_content)
+        os.replace(tmp_f.name, str(nav_file))
 
         logger.info(f"✅ HTML navigation page generated: {nav_file}")
         return True

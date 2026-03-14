@@ -10,6 +10,8 @@ within the standard Active Inference generative loop.
 @Web: https://github.com/pyro-ppl/numpyro
 """
 import logging
+import os
+import tempfile
 import numpy as np
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple
@@ -48,7 +50,9 @@ def render_gnn_to_numpyro(
 
         output_path = Path(output_path)
         output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_text(code)
+        with tempfile.NamedTemporaryFile(mode='w', encoding='utf-8', dir=output_path.parent, delete=False) as tmp_f:
+            tmp_f.write(code)
+        os.replace(tmp_f.name, str(output_path))
 
         logger.info(f"✅ NumPyro script written to: {output_path}")
         return True, f"NumPyro script generated: {output_path}", str(output_path)
