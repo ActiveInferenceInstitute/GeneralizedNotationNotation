@@ -9,7 +9,7 @@ memory, inference, storage, FLOPS, and complexity estimates for GNN models.
 import logging
 import math
 import re
-from typing import Dict, List, Any, TypedDict
+from typing import Dict, List, Any, TypedDict, Union
 
 logger = logging.getLogger(__name__)
 
@@ -497,7 +497,7 @@ def _parse_single_dim(d: Any) -> int:
     return 1
 
 
-def _parse_dimensions(dims: list) -> list:
+def _parse_dimensions(dims: List[Union[int, str]]) -> List[int]:
     """Parse a list of dimension values to ints."""
     return [_parse_single_dim(d) for d in dims]
 

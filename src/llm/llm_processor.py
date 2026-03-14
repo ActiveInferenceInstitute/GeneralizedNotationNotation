@@ -827,7 +827,7 @@ def analyze_gnn_model(gnn_content: str, analysis_type: Union[AnalysisType, str] 
             "error_type": type(e).__name__
         }
 
-def generate_explanation(gnn_content: str) -> dict:
+def generate_explanation(gnn_content: str) -> Dict[str, Any]:
     """
     Generate a natural language explanation for a GNN model.
     
@@ -844,7 +844,7 @@ def generate_explanation(gnn_content: str) -> dict:
     except Exception as e:
         return {"success": False, "error": str(e), "error_type": type(e).__name__}
 
-def enhance_model(gnn_content: str) -> dict:
+def enhance_model(gnn_content: str) -> Dict[str, Any]:
     """
     Suggest enhancements for a GNN model using LLM.
     

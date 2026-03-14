@@ -28,7 +28,7 @@ def initialize_jax_devices() -> List[Any]:
             return jax.devices()
         except Exception:
             # Recovery to CPU-like placeholder
-            return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore
+            return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore[return-value]  # dynamic placeholder class cannot satisfy jax.Device protocol
     except Exception:
         return [type("Device", (), {"platform": "cpu", "__str__": lambda self: "cpu"})()]  # type: ignore
 
