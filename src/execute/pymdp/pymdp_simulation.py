@@ -109,13 +109,13 @@ except ImportError:
             if self.B is not None and not isinstance(self.B, np.ndarray):
                 try:
                     self.B = np.array(self.B)
-                except (ValueError, TypeError):
-                    pass  # Keep original if array conversion fails
+                except (ValueError, TypeError) as e:
+                    self.logger.debug("B matrix array conversion failed, keeping original: %s", e)
             if self.D is not None and not isinstance(self.D, np.ndarray):
                 try:
                     self.D = np.array(self.D)
-                except (ValueError, TypeError):
-                    pass  # Keep original if array conversion fails
+                except (ValueError, TypeError) as e:
+                    self.logger.debug("D matrix array conversion failed, keeping original: %s", e)
 
             # Derive num_actions from B if possible
             try:
@@ -232,8 +232,8 @@ class PyMDPSimulation:
                         self.agent = Agent(A=A, B=B, C=C, D=D, lr_pB=self.learning_rate, policies=self._generate_policies())
                     except (ValueError, TypeError, IndexError):
                         self.agent = None
-            except (ValueError, TypeError, IndexError, KeyError):
-                pass  # Leave as-is if matrix creation fails
+            except (ValueError, TypeError, IndexError, KeyError) as e:
+                self.logger.debug("Matrix creation failed, leaving as-is: %s", e)
 
     def _initialize_parameters(self) -> None:
         """Initialize simulation parameters from GNN config or defaults."""
@@ -717,8 +717,8 @@ class PyMDPSimulation:
         if num_timesteps is not None:
             try:
                 self.num_timesteps = int(num_timesteps)
-            except (ValueError, TypeError):
-                pass  # Keep default if conversion fails
+            except (ValueError, TypeError) as e:
+                self.logger.debug("Timestep conversion failed, keeping default: %s", e)
 
         if not self.agent:
             self.logger.error("No agent available - create model first")

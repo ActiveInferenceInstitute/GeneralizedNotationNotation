@@ -12,6 +12,8 @@ import time
 from pathlib import Path
 from typing import Dict, List, Any
 
+_module_logger = logging.getLogger(__name__)
+
 from ._shared import (
     AdvancedVisualizationAttempt,
     MATPLOTLIB_AVAILABLE,
@@ -581,8 +583,8 @@ def _generate_network_metrics(
                 try:
                     degree_centrality = nx.degree_centrality(G)
                     metrics["max_degree_centrality"] = max(degree_centrality.values()) if degree_centrality else 0
-                except (nx.NetworkXError, ValueError, ZeroDivisionError):
-                    pass  # Centrality metrics may fail on degenerate graphs
+                except (nx.NetworkXError, ValueError, ZeroDivisionError) as e:
+                    logger.debug("Centrality metrics failed on degenerate graph: %s", e)
 
             fig, axes = plt.subplots(1, 2, figsize=(16, 6))
 

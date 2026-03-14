@@ -13,8 +13,11 @@ from typing import Dict, Any, List, Optional, Type, Union, TypeVar, Protocol
 from dataclasses import dataclass, field
 from abc import ABC, abstractmethod
 from enum import Enum
+import logging
 import uuid
 from datetime import datetime
+
+logger = logging.getLogger(__name__)
 
 # Type variables for generic types
 T = TypeVar('T')
@@ -534,8 +537,8 @@ def extract_embedded_json_data(content: str, comment_style: str = "block") -> Op
     if match:
         try:
             return json.loads(match.group(1))
-        except json.JSONDecodeError:
-            pass  # malformed JSON, return None
+        except json.JSONDecodeError as e:
+            logger.debug("Malformed embedded JSON: %s", e)
     return None
 
 
@@ -598,20 +601,20 @@ def safe_enum_convert(enum_class: Type[T], value: Any, default: Optional[T] = No
         # Try exact match first
         try:
             return enum_class(value)
-        except ValueError:
-            pass  # exact match failed, try lowercase
+        except ValueError as e:
+            logger.debug("Exact enum match failed, trying lowercase: %s", e)
 
         # Try lowercase
         try:
             return enum_class(value.lower())
-        except ValueError:
-            pass  # lowercase failed, try uppercase
+        except ValueError as e:
+            logger.debug("Lowercase enum match failed, trying uppercase: %s", e)
 
         # Try uppercase
         try:
             return enum_class(value.upper())
-        except ValueError:
-            pass  # all conversions failed, fall through to default
+        except ValueError as e:
+            logger.debug("All enum conversions failed, falling through to default: %s", e)
 
     # Return default if provided, otherwise first enum value
     if default is not None:

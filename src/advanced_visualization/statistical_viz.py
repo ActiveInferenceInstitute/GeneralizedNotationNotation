@@ -12,6 +12,8 @@ import time
 from pathlib import Path
 from typing import Dict, List
 
+_module_logger = logging.getLogger(__name__)
+
 from ._shared import (
     AdvancedVisualizationAttempt,
     MATPLOTLIB_AVAILABLE,
@@ -111,8 +113,8 @@ def _generate_statistical_plots(
                         try:
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
-                        except (ValueError, TypeError):
-                            pass  # Skip non-numeric matrix data
+                        except (ValueError, TypeError) as e:
+                            logger.debug("Skipping non-numeric matrix data: %s", e)
 
             if matrix_sizes:
                 axes[1, 1].hist(matrix_sizes, bins=min(15, len(matrix_sizes)), alpha=0.7, color='green')

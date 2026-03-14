@@ -165,8 +165,9 @@ def create_trace_reconstruction(csv_path: Path, output_dir: Path) -> List[str]:
                         observations.append(int(parts[1]))
                         actions.append(int(parts[2]))
                         belief_s1.append(float(parts[3]))
-                    except (ValueError, IndexError):
-                        continue  # skip malformed CSV row
+                    except (ValueError, IndexError) as e:
+                        logger.debug("Skipping malformed CSV row: %s", e)
+                        continue
     except Exception as e:
         logger.warning(f"Failed to parse CSV {csv_path}: {e}")
         return []

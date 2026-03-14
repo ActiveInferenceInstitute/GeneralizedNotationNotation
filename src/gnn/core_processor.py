@@ -266,8 +266,8 @@ def process_gnn_directory(target_dir: Path, output_dir: Path | None = None, recu
             with open(Path(output_dir) / "gnn_core_results.json", "w") as f:
                 import json as _json
                 _json.dump(result, f, indent=2)
-        except OSError:
-            pass  # Results file write is non-critical
+        except OSError as e:
+            logger.debug("Results file write failed (non-critical): %s", e)
     return result
 
 

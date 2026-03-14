@@ -106,8 +106,9 @@ def analyze_free_energy(
             try:
                 arr = np.asarray(val, dtype=float)
                 raw.append(float(np.mean(arr)))  # reduce to scalar
-            except (TypeError, ValueError):
-                continue  # skip non-numeric entries
+            except (TypeError, ValueError) as e:
+                logger.debug("Skipping non-numeric free energy entry: %s", e)
+                continue
         if not raw:
             return analysis
 

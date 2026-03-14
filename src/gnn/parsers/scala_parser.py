@@ -117,8 +117,9 @@ class ScalaGNNParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    continue  # malformed JSON, try next pattern
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in Scala embedded data, trying next pattern: %s", e)
+                    continue
         return None
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:

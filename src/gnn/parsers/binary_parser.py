@@ -9,9 +9,12 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import pickle  # nosec B403 -- pickle used for internal model serialization with trusted data sources
 import base64
 from typing import List, Dict, Any
+
+logger = logging.getLogger(__name__)
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
@@ -120,8 +123,8 @@ class PickleGNNParser(BaseGNNParser):
                 model.created_at = datetime.fromisoformat(data['created_at'])
             if 'modified_at' in data:
                 model.modified_at = datetime.fromisoformat(data['modified_at'])
-        except (ValueError, TypeError):
-            pass  # Timestamps are optional metadata
+        except (ValueError, TypeError) as e:
+            logger.debug("Timestamp parsing failed, skipping optional metadata: %s", e)
 
         # Reconstruct variables
         for var_data in data.get('variables', []):
@@ -210,8 +213,8 @@ class PickleGNNParser(BaseGNNParser):
                             description=f"Object attribute: {type(attr_value).__name__}"
                         )
                         result.model.parameters.append(parameter)
-                except (AttributeError, TypeError):
-                    pass  # Skip non-readable attributes
+                except (AttributeError, TypeError) as e:
+                    logger.debug("Skipping non-readable attribute: %s", e)
 
     def _parse_variables_list(self, variables: List[Any], result: ParseResult):
         """Parse variables from list."""

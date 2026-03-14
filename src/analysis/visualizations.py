@@ -292,8 +292,9 @@ def visualize_all_framework_outputs(
                                                     actions.append(int(float(row[2])))
                                                     if len(row) > 3:
                                                         beliefs.append([float(x) for x in row[3:]])
-                                                except ValueError:
-                                                    continue  # skip non-numeric CSV row
+                                                except ValueError as e:
+                                                    log.debug("Skipping non-numeric CSV row: %s", e)
+                                                    continue
                                     if beliefs:
                                         sim_data["beliefs"] = beliefs
                                     if actions:

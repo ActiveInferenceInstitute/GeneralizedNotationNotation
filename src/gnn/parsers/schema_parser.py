@@ -9,6 +9,7 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import re
 try:
     import defusedxml.ElementTree as ET
@@ -22,6 +23,8 @@ from .common import (
     Variable, Connection, Parameter, VariableType, DataType, ConnectionType,
     extract_embedded_json_data,
 )
+
+logger = logging.getLogger(__name__)
 
 class XSDParser(BaseGNNParser):
     """Parser for XML Schema Definition (XSD) files."""
@@ -45,8 +48,9 @@ class XSDParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    continue  # malformed JSON, try next pattern
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    continue
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -227,8 +231,9 @@ class ASN1Parser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    continue  # malformed JSON, try next pattern
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    continue
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -415,8 +420,9 @@ class PKLParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    continue  # malformed JSON, try next pattern
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in embedded data, trying next pattern: %s", e)
+                    continue
         return None
 
     def _parse_from_embedded_data(self, data: Dict[str, Any], result: ParseResult) -> ParseResult:
@@ -891,16 +897,18 @@ class PKLParser(BaseGNNParser):
         for json_str in json_matches:
             try:
                 return json.loads(json_str)
-            except json.JSONDecodeError:
-                continue  # malformed JSON, try next pattern
+            except json.JSONDecodeError as e:
+                logger.debug("Malformed JSON in embedded data, trying next: %s", e)
+                continue
 
         # Look for MODEL_DATA in block comments
         data_matches = re.findall(r'/\*\s*MODEL_DATA:\s*({.+?})\s*\*/', content, re.DOTALL)
         for data_str in data_matches:
             try:
                 return json.loads(data_str)
-            except json.JSONDecodeError:
-                continue  # malformed JSON, try next pattern
+            except json.JSONDecodeError as e:
+                logger.debug("Malformed JSON in embedded data, trying next: %s", e)
+                continue
 
         return None
 
@@ -966,8 +974,8 @@ class PKLParser(BaseGNNParser):
                 return float(value_str)
             else:
                 return int(value_str)
-        except ValueError:
-            pass  # not numeric, fall through to boolean/string check
+        except ValueError as e:
+            logger.debug("Value not numeric, falling through to boolean/string check: %s", e)
 
         # Try to parse as boolean
         if value_str.lower() in ['true', 'false']:

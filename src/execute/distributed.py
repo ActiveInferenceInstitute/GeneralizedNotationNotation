@@ -68,8 +68,8 @@ class Dispatcher:
                 elif self.backend == "dask" and self.client:
                     self.client.close()
                 self._initialized = False
-            except ImportError:
-                pass  # ray/dask not installed, already shut down
+            except ImportError as e:
+                logger.debug("ray/dask not installed during shutdown: %s", e)
                 
     def run_scripts_parallel(self, script_infos: List[Dict[str, Any]], execute_fn: Callable, **kwargs) -> List[Dict[str, Any]]:
         """

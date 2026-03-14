@@ -192,8 +192,9 @@ class SAPFGNNProcessor:
             for val_str in row_str.split():
                 try:
                     row_values.append(float(val_str))
-                except ValueError:
-                    continue  # skip non-numeric token
+                except ValueError as e:
+                    logger.debug("Skipping non-numeric token: %s", e)
+                    continue
 
             if row_values:
                 matrix.append(row_values)

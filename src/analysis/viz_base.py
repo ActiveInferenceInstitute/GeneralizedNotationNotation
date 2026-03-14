@@ -40,14 +40,14 @@ except (ImportError, RecursionError):
 try:
     import matplotlib.patches as _patches
     patches = _patches
-except (ImportError, AttributeError):
-    pass  # optional dependency
+except (ImportError, AttributeError) as e:
+    logger.debug("matplotlib.patches not available: %s", e)
 
 try:
     import seaborn as _sns
     sns = _sns
-except ImportError:
-    pass  # optional dependency
+except ImportError as e:
+    logger.debug("seaborn not available: %s", e)
 
 
 def safe_savefig(

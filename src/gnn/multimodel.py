@@ -39,8 +39,8 @@ def split_models(content: str) -> List[str]:
         from .frontmatter import parse_frontmatter, has_frontmatter
         if has_frontmatter(content):
             _, stripped = parse_frontmatter(content)
-    except ImportError:
-        pass  # frontmatter module not available
+    except ImportError as e:
+        logger.debug("Frontmatter module not available: %s", e)
 
     # Split on horizontal rules
     blocks = _MODEL_SEPARATOR.split(stripped)

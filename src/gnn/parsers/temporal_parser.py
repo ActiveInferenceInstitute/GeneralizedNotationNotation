@@ -10,8 +10,11 @@ Date: 2025-01-11
 License: MIT
 """
 
+import logging
 import re
 from typing import List, Dict, Any, Optional
+
+logger = logging.getLogger(__name__)
 
 from .common import (
     BaseGNNParser, ParseResult, GNNInternalRepresentation,
@@ -146,7 +149,8 @@ class TLAParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in TLA+ embedded data, trying next pattern: %s", e)
                     continue
         return None
 
@@ -364,7 +368,8 @@ class AgdaParser(BaseGNNParser):
             if match:
                 try:
                     return json.loads(match.group(1))
-                except json.JSONDecodeError:
+                except json.JSONDecodeError as e:
+                    logger.debug("Malformed JSON in Agda embedded data, trying next pattern: %s", e)
                     continue
         return None
 

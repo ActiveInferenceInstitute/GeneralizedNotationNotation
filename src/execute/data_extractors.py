@@ -13,6 +13,8 @@ from pathlib import Path
 from typing import Dict, Any, List, TYPE_CHECKING
 from shutil import copy2
 
+_module_logger = logging.getLogger(__name__)
+
 if TYPE_CHECKING:
     from execute import FrameworkName
 
@@ -193,8 +195,8 @@ def collect_execution_outputs(
                             logger.debug(f"Skipping duplicate: {dest_file.name} already exists")
                             collected[category].append(str(dest_file))
                             continue
-                    except OSError:
-                        pass  # stat failed, treat as new file
+                    except OSError as e:
+                        logger.debug("Stat failed, treating as new file: %s", e)
 
                     parent_name = source_file.parent.name
                     if not source_file.name.startswith(f"{parent_name}_"):

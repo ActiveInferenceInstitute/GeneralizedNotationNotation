@@ -962,8 +962,9 @@ def _extract_simulation_metrics(framework: str, details: List[Dict[str, Any]], e
                                         if len(row) > 3:
                                             belief = [float(x) for x in row[3:]]
                                             beliefs.append(belief)
-                                    except ValueError:
-                                        continue  # skip non-numeric CSV row
+                                    except ValueError as e:
+                                        logger.debug("Skipping non-numeric CSV row: %s", e)
+                                        continue
 
                         if beliefs or actions or observations:
                             metrics["data_source"] = str(csv_file)

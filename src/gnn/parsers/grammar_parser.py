@@ -40,8 +40,8 @@ class BNFParser(BaseGNNParser):
             try:
                 json_data = match.group(1)
                 return json.loads(json_data)
-            except json.JSONDecodeError:
-                pass  # malformed embedded JSON
+            except json.JSONDecodeError as e:
+                logger.debug("Malformed embedded JSON: %s", e)
         return None
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:

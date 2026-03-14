@@ -226,8 +226,8 @@ def _cmd_parse(args):
     try:
         from gnn.frontmatter import parse_frontmatter
         metadata, _ = parse_frontmatter(content)
-    except ImportError:
-        pass  # frontmatter parsing is optional
+    except ImportError as e:
+        logger.debug("Frontmatter parsing not available: %s", e)
 
     result = {
         "file": str(args.file),
