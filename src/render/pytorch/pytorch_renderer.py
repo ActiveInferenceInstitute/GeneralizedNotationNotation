@@ -11,7 +11,7 @@ using torch.tensor operations.
 import logging
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple, List
 
 logger = logging.getLogger(__name__)
 
@@ -20,7 +20,7 @@ def render_gnn_to_pytorch(
     gnn_spec: Dict[str, Any],
     output_path: Path,
     options: Optional[Dict[str, Any]] = None
-) -> Tuple[bool, str, str]:
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a PyTorch POMDP simulation script.
 
     Args:
@@ -29,7 +29,7 @@ def render_gnn_to_pytorch(
         options: Optional rendering options.
 
     Returns:
-        Tuple of (success: bool, message: str, output_file_path: str)
+        Tuple of (success: bool, message: str, artifact_paths: List[str])
     """
     try:
         model_name = gnn_spec.get("modelName", "pytorch_pomdp")
@@ -56,11 +56,11 @@ def render_gnn_to_pytorch(
         _os.replace(_tmp.name, str(output_path))
 
         logger.info(f"✅ PyTorch script written to: {output_path}")
-        return True, f"PyTorch script generated: {output_path}", str(output_path)
+        return True, f"PyTorch script generated: {output_path}", [str(output_path)]
 
     except Exception as e:
         logger.error(f"❌ PyTorch rendering failed: {e}")
-        return False, f"PyTorch rendering failed: {e}", ""
+        return False, f"PyTorch rendering failed: {e}", []
 
 
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:

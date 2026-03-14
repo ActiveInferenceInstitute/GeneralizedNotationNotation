@@ -391,20 +391,18 @@ def run_activeinference_analysis(
     execution_output_dir: Optional[Union[str, Path]] = None,
     recursive_search: bool = True,
     verbose: bool = False,
-    analysis_type: str = "comprehensive",
     force_setup: bool = False
 ) -> bool:
     """
     Find and run ActiveInference.jl analysis scripts on rendered models with robust environment setup.
-    
+
     Args:
         rendered_simulators_dir: Directory containing rendered simulators (target_dir from executor)
         execution_output_dir: Specific directory for ActiveInference.jl execution outputs (optional)
         recursive_search: Whether to search recursively for scripts
         verbose: Whether to enable verbose output
-        analysis_type: Type of analysis to run ('basic', 'comprehensive', 'all')
         force_setup: Whether to force environment reinstallation
-        
+
     Returns:
         bool: True if analysis completed successfully, False if any failed
     """
@@ -484,7 +482,6 @@ def run_activeinference_analysis(
     # Save execution report
     execution_report = {
         "timestamp": time.strftime("%Y-%m-%d %H:%M:%S"),
-        "analysis_type": analysis_type,
         "environment_setup": {
             "force_setup": force_setup,
             "setup_successful": True  # We got this far
@@ -531,8 +528,6 @@ if __name__ == "__main__":
                        help="Recursively search for scripts in the output directory")
     parser.add_argument("--verbose", action=argparse.BooleanOptionalAction, default=False,
                        help="Enable verbose output")
-    parser.add_argument("--analysis-type", choices=["basic", "comprehensive", "all"], default="comprehensive",
-                       help="Type of analysis to run")
     parser.add_argument("--force-setup", action=argparse.BooleanOptionalAction, default=False,
                        help="Force environment reinstallation before execution")
 
@@ -547,7 +542,6 @@ if __name__ == "__main__":
         rendered_simulators_dir=args.output_dir,
         recursive_search=args.recursive,
         verbose=args.verbose,
-        analysis_type=args.analysis_type,
         force_setup=args.force_setup
     )
 

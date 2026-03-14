@@ -686,12 +686,12 @@ class POMDPRenderProcessor:
             if 'num_timesteps' in model_params:
                 options['num_timesteps'] = model_params['num_timesteps']
 
-            success, message, artifact_path = render_gnn_to_pytorch(gnn_spec, output_file, options or None)
+            success, message, artifacts = render_gnn_to_pytorch(gnn_spec, output_file, options or None)
 
             return {
                 'success': success,
                 'message': message,
-                'artifacts': [artifact_path] if success and artifact_path else [],
+                'artifacts': artifacts,
                 'warnings': []
             }
 
@@ -716,12 +716,12 @@ class POMDPRenderProcessor:
             if 'num_timesteps' in model_params:
                 options['num_timesteps'] = model_params['num_timesteps']
 
-            success, message, artifact_path = render_gnn_to_numpyro(gnn_spec, output_file, options or None)
+            success, message, artifacts = render_gnn_to_numpyro(gnn_spec, output_file, options or None)
 
             return {
                 'success': success,
                 'message': message,
-                'artifacts': [artifact_path] if success and artifact_path else [],
+                'artifacts': artifacts,
                 'warnings': []
             }
 

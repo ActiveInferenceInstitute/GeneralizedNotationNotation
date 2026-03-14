@@ -14,7 +14,7 @@ import os
 import tempfile
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple, List
 
 logger = logging.getLogger(__name__)
 
@@ -23,7 +23,7 @@ def render_gnn_to_numpyro(
     gnn_spec: Dict[str, Any],
     output_path: Path,
     options: Optional[Dict[str, Any]] = None,
-) -> Tuple[bool, str, str]:
+) -> Tuple[bool, str, List[str]]:
     """Render a GNN specification to a NumPyro POMDP simulation script.
 
     Args:
@@ -32,7 +32,7 @@ def render_gnn_to_numpyro(
         options: Optional rendering options.
 
     Returns:
-        Tuple of (success: bool, message: str, output_file_path: str)
+        Tuple of (success: bool, message: str, artifact_paths: List[str])
     """
     try:
         model_name = gnn_spec.get("modelName", "numpyro_pomdp")
@@ -55,11 +55,11 @@ def render_gnn_to_numpyro(
         os.replace(tmp_f.name, str(output_path))
 
         logger.info(f"✅ NumPyro script written to: {output_path}")
-        return True, f"NumPyro script generated: {output_path}", str(output_path)
+        return True, f"NumPyro script generated: {output_path}", [str(output_path)]
 
     except Exception as e:
         logger.error(f"❌ NumPyro rendering failed: {e}")
-        return False, f"NumPyro rendering failed: {e}", ""
+        return False, f"NumPyro rendering failed: {e}", []
 
 
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
