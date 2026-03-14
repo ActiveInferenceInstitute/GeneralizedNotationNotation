@@ -45,7 +45,7 @@ def process_file(filepath):
         print(f"Error processing {filepath}: {e}")
     return False
 
-def main():
+def main() -> int:
     updated_files = 0
     for root, _, files in os.walk(TARGET_DIR):
         for file in files:
@@ -53,8 +53,10 @@ def main():
                 filepath = Path(root) / file
                 if process_file(filepath):
                     updated_files += 1
-                    
+
     print(f"\nCompleted! Modified {updated_files} files.")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())

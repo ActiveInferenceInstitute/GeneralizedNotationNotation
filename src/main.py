@@ -750,18 +750,19 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
     }
 
     try:
-        # Load skip_steps from config so the validator knows which steps are
-        # intentionally skipped and can suppress false prerequisite warnings.
+        # Load config.yaml once — used for both skip_steps (prereq validation) and testing_matrix
         config_skip_steps = []
+        testing_matrix = {}
         input_config_path = Path("input/config.yaml")
         if input_config_path.exists():
             try:
                 import yaml
                 with open(input_config_path, "r") as f:
-                    _cfg = yaml.safe_load(f) or {}
-                    config_skip_steps = _cfg.get("pipeline", {}).get("skip_steps", [])
-            except (ImportError, OSError, ValueError):
-                logger.debug("Could not parse input/config.yaml for skip_steps, continuing with defaults")
+                    _full_cfg = yaml.safe_load(f) or {}
+                config_skip_steps = _full_cfg.get("pipeline", {}).get("skip_steps", [])
+                testing_matrix = _full_cfg.get("testing_matrix", {})
+            except (ImportError, OSError, ValueError, Exception) as e:
+                logger.debug(f"Could not parse input/config.yaml: {e}")
 
         # Validate step prerequisites
         prereq_result = validate_step_prerequisites(script_name, args, logger,
@@ -783,18 +784,6 @@ def execute_pipeline_step(script_name: str, args: PipelineArguments, logger) -> 
 
         # Use virtual environment Python if available, otherwise fall back to system Python
         python_executable = str(venv_python) if venv_python.exists() else sys.executable
-
-        # Retrieve testing matrix configuration from input/config.yaml
-        testing_matrix = {}
-        input_config_path = Path("input/config.yaml")
-        if input_config_path.exists():
-            import yaml
-            try:
-                with open(input_config_path, "r") as f:
-                    full_config = yaml.safe_load(f) or {}
-                    testing_matrix = full_config.get("testing_matrix", {})
-            except Exception as e:
-                logger.warning(f"Could not load testing_matrix from input/config.yaml: {e}")
 
         # Extract step number
         step_num_match = re.match(r"^(\d+)_", script_name)

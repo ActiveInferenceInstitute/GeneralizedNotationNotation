@@ -312,21 +312,24 @@ def validate_visual_matrix_dimensions(visual_data: Dict[str, Any]) -> List[str]:
     errors = []
     matrices = visual_data.get("visual_matrices", {})
 
-    # Check A matrix dimensions
+    # Check A matrix dimensions: A should be [n_obs, n_states]
     if "A" in matrices and "s" in matrices:
         A = matrices["A"]
-        if A["type"] == "matrix":
-            # A should be [n_obs, n_states]
-            # This is a simplified check
-            pass
+        s = matrices["s"]
+        if A.get("type") == "matrix" and "rows" in A and "cols" in A:
+            n_states = s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            if n_states and A["cols"] != n_states:
+                errors.append(f"A matrix cols ({A['cols']}) must match s rows ({n_states})")
 
-    # Check B matrix dimensions
-    if "B" in matrices:
+    # Check B matrix dimensions: B should be [n_states, n_states, n_actions]
+    if "B" in matrices and "s" in matrices:
         B = matrices["B"]
-        if B["type"] == "tensor":
-            # B should be [n_states, n_states, n_actions]
-            pass
-
-    # Add more validation as needed
+        s = matrices["s"]
+        if B.get("type") == "tensor" and "rows" in B and "cols" in B:
+            n_states = s.get("rows", 0) if s.get("type") == "vector" else s.get("rows", 0)
+            if n_states and B["rows"] != n_states:
+                errors.append(f"B matrix rows ({B['rows']}) must match s rows ({n_states})")
+            if n_states and B["cols"] != n_states:
+                errors.append(f"B matrix cols ({B['cols']}) must match s rows ({n_states})")
 
     return errors

@@ -72,15 +72,17 @@ def append_to_agents(agent_path, missing_funcs):
     with open(agent_path, "w") as f:
         f.write(content)
 
-def main():
+def main() -> int:
     report = "function_signature_verification_report.txt"
     if not os.path.exists(report):
         print("Report not found.")
-        return
+        return 1
 
     missing_data = process_verification_report(report)
     for path, funcs in missing_data.items():
         append_to_agents(path, funcs)
+    return 0
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())

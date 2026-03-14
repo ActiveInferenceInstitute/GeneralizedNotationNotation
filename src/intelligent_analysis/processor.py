@@ -20,11 +20,11 @@ from utils.pipeline_template import (
     log_step_success,
     log_step_error
 )
+from pipeline.context import StepStatus  # single authoritative definition
 
 
-# Constrained types for step flag severity and execution status.
+# Constrained type for step flag severity.
 FlagType = Literal["none", "yellow", "red", "green"]
-StepStatus = Literal["SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 
 @dataclass

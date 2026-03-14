@@ -103,9 +103,8 @@ class PipelineConfig:
                 json_path = self.config_path.with_suffix('.json')
                 with open(json_path, 'w') as jf:
                     json.dump(self.config, jf, indent=2)
-            except Exception as e:  # nosec B110 -- intentionally silent; config save failure must not crash the pipeline
-                logger.debug(f"JSON recovery config save also failed: {e}")
-                pass
+            except (OSError, TypeError, ValueError) as e:
+                logger.debug("JSON recovery config save also failed: %s", e)
 
 def get_pipeline_config() -> dict:
     """Get pipeline configuration as a plain dict for compatibility with tests."""

@@ -54,7 +54,7 @@ def analyze_orchestrators():
 
     return issues
 
-if __name__ == "__main__":
+def main() -> int:
     issues = analyze_orchestrators()
     print("Orchestrator Analysis:")
     if issues:
@@ -62,5 +62,11 @@ if __name__ == "__main__":
             print(f"[{f}]")
             for e in errs:
                 print(f"  - {e}")
+        return 1
     else:
         print("All python files passed base orchestrator heuristics.")
+        return 0
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())

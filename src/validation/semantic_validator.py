@@ -5,9 +5,12 @@ This module provides semantic validation for GNN models, including
 structure validation, type checking, and consistency verification.
 """
 
+import logging
 import re
 from typing import Dict, Any, List, Union
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 class SemanticValidator:
     """Validator for semantic aspects of GNN models."""
@@ -233,7 +236,7 @@ class SemanticValidator:
                     dims = [int(d.strip()) for d in dim_match.group(1).strip().split(',')]
                     block_dims[name] = dims
                 except ValueError:
-                    pass  # Already caught in state space validation
+                    logger.debug("Non-integer dimensions for '%s', skipping compatibility check", name)
 
         # Check connection dimension compatibility
         for i, conn in enumerate(connections):

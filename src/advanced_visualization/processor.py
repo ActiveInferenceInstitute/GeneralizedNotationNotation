@@ -299,10 +299,12 @@ def _save_results(output_dir: Path, results: AdvancedVisualizationResults, logge
     }
 
     output_file = output_dir / "advanced_viz_summary.json"
-    with open(output_file, "w") as f:
-        json.dump(summary, f, indent=2)
-
-    logger.info(f"Saved advanced visualization summary: {output_file}")
+    try:
+        with open(output_file, "w") as f:
+            json.dump(summary, f, indent=2)
+        logger.info(f"Saved advanced visualization summary: {output_file}")
+    except OSError as e:
+        logger.warning(f"Failed to save advanced visualization summary: {e}")
 
     # Log detailed skipped feature report if there are skipped items
     if skipped_by_reason:

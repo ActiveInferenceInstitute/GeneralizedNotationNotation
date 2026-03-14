@@ -1,7 +1,10 @@
 from __future__ import annotations
 
+import logging
 from typing import Optional
 import re
+
+logger = logging.getLogger(__name__)
 
 
 # ------------------------------
@@ -170,7 +173,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                         try:
                             dims.append(int(p))
                         except ValueError:
-                            pass
+                            logger.debug("Skipping non-integer dimension token: %s", p)
                 entry: dict[str, object] = {"name": name, "dims": dims, "type": typ or ""}
                 if comment:
                     entry["comment"] = comment
@@ -194,7 +197,7 @@ def parse_state_space_from_markdown(md_text: str) -> list[dict[str, object]]:
                         try:
                             dims.append(int(p))
                         except ValueError:
-                            pass
+                            logger.debug("Skipping non-integer dimension token: %s", p)
                 entry: dict[str, object] = {"name": name, "dims": dims, "type": typ or ""}
                 if comment:
                     entry["comment"] = comment

@@ -225,6 +225,7 @@ def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
         }
 
         return {
+            "success": True,
             "file_path": str(file_path),
             "file_name": file_path.name,
             "file_size": file_path.stat().st_size,
@@ -236,9 +237,11 @@ def parse_gnn_file(file_path: Union[str, Path]) -> Dict[str, Any]:
 
     except Exception as e:
         return {
+            "success": False,
             "file_path": str(file_path),
             "file_name": file_path.name,
             "error": str(e),
+            "errors": [str(e)],
             "parse_timestamp": datetime.now().isoformat()
         }
 

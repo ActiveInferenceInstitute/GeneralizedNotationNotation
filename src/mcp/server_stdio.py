@@ -184,7 +184,7 @@ class StdioServer:
                     self._process_message(message)
                     self.request_queue.task_done()
                 except queue.Empty:
-                    continue
+                    continue  # intentional: poll loop, no data available yet
                 except Exception as e:
                     logger.error(f"Error in processor thread: {str(e)}")
                     self._errors_encountered += 1
@@ -193,7 +193,6 @@ class StdioServer:
                         self.request_queue.task_done()
                     except ValueError as e:
                         logger.debug(f"Task done notification failed (already completed): {e}")
-                        pass  # Task already done or never queued
         except Exception as e:
             logger.error(f"Fatal error in processor thread: {str(e)}")
             self.running = False
@@ -225,7 +224,7 @@ class StdioServer:
                     self.response_queue.task_done()
 
                 except queue.Empty:
-                    continue
+                    continue  # intentional: poll loop, no data available yet
                 except Exception as e:
                     logger.error(f"Unexpected error in writer thread: {str(e)}")
                     self._errors_encountered += 1

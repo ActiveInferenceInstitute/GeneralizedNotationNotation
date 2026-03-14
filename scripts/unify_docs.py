@@ -73,12 +73,14 @@ def unify_headers(doc_dir: Path):
 
     print(f"Total files updated: {unified_count}")
 
-def main():
+def main() -> int:
     docs_dir = Path(__file__).parent.parent.parent / "doc" / "gnn"
     if docs_dir.exists():
         unify_headers(docs_dir)
     else:
         print(f"Docs directory not found: {docs_dir}")
+    return 0
 
 if __name__ == "__main__":
-    main()
+    import sys
+    sys.exit(main())

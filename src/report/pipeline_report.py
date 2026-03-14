@@ -251,8 +251,8 @@ def _section_statistics(output_dir: Path) -> str:
                 for fi in data.get("file_results", data.get("results", []))
                 if isinstance(fi, dict)
             )
-        except (json.JSONDecodeError, OSError):
-            pass
+        except (json.JSONDecodeError, OSError) as e:
+            logger.debug("Could not load GNN results from %s: %s", gnn_results, e)
 
     # Export results
     export_dir = output_dir / "7_export_output"

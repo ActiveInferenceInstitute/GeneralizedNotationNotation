@@ -6,9 +6,12 @@ computational complexity estimation, memory usage prediction, and
 identification of potential performance bottlenecks.
 """
 
+import logging
 import re
 from typing import Dict, Any, List, Union
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 class PerformanceProfiler:
     """Profiler for performance aspects of GNN models."""
@@ -57,8 +60,7 @@ class PerformanceProfiler:
                     dims = [int(d.strip()) for d in dim_match.group(1).strip().split(',')]
                     block_dims[name] = dims
                 except ValueError:
-                    # Skip invalid dimensions
-                    pass
+                    logger.debug("Skipping invalid dimensions for '%s'", name)
 
         return block_dims
 

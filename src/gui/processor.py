@@ -241,7 +241,6 @@ def generate_html_navigation(
                             total_files += 1
                         except OSError as e:
                             logger.debug(f"Could not read file {file_path}: {e}")
-                            pass  # Skip unreadable files
 
             if step_files:
                 step_files.sort(key=lambda x: (x["type"], x["name"]))

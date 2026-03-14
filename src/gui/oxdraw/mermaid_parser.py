@@ -59,7 +59,6 @@ def mermaid_to_gnn(
         except ImportError as e:
             # Ontology module not available, skip validation
             logger.debug(f"Ontology module not available for validation: {e}")
-            pass
 
     # Construct GNN model dictionary
     gnn_model = {
@@ -99,7 +98,6 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
             return json.loads(metadata_json)
         except json.JSONDecodeError as e:
             logger.debug(f"Failed to parse GNN metadata JSON (multi-line format): {e}")
-            pass
 
     # Try previous single-line format
     legacy_pattern = r'%%\s*GNN_METADATA:\s*(\{.*?\})'
@@ -110,7 +108,6 @@ def extract_gnn_metadata(mermaid_content: str) -> Dict[str, Any]:
             return json.loads(match.group(1))
         except json.JSONDecodeError as e:
             logger.debug(f"Failed to parse GNN metadata JSON (legacy format): {e}")
-            pass
 
     return {}
 

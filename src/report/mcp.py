@@ -123,7 +123,7 @@ def read_report_mcp(report_file_path: str) -> Dict[str, Any]:
             try:
                 parsed = _json.loads(content)
             except (json.JSONDecodeError, ValueError):
-                pass  # Content returned as text if not valid JSON
+                logger.debug("Report file %s is not valid JSON, returning as text", rpath.name)
 
         return {
             "success":   True,

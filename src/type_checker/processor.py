@@ -10,6 +10,8 @@ import json
 import re
 from datetime import datetime
 
+_module_logger = logging.getLogger(__name__)
+
 from utils.pipeline_template import (
     log_step_start,
     log_step_success,
@@ -541,7 +543,7 @@ def extract_gnn_dimensions(content: str) -> Dict[str, Any]:
                     try:
                         dims.append(int(part))
                     except ValueError:
-                        pass  # Skip non-integer dimensions (e.g., π)
+                        _module_logger.debug("Skipping non-integer dimension token: %s", part)
                 if dims:
                     variables[var_name] = dims
 

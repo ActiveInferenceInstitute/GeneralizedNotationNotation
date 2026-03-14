@@ -13,7 +13,7 @@ import logging
 from pathlib import Path
 from typing import Dict, Any
 
-from src.api.processor import create_job, get_job, cancel_job, list_jobs, PIPELINE_STEPS
+from .processor import create_job, get_job, cancel_job, list_jobs, PIPELINE_STEPS
 
 logger = logging.getLogger(__name__)
 
