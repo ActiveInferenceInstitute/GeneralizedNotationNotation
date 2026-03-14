@@ -27,8 +27,8 @@ from .processor import (
     generate_sapf_report
 )
 
-# Import utility functions
-from .utils import (
+# Import module introspection helpers
+from .module_info import (
     get_module_info,
     get_audio_generation_options,
     register_tools

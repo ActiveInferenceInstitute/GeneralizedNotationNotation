@@ -1,6 +1,11 @@
 #!/usr/bin/env python3
 """
 Advanced visualization module for GNN pipeline (real implementations).
+
+Naming convention: module-level functions use ``create_*`` to signal they
+assemble and return data-structure dictionaries (not files/figures), while
+class methods that produce output files or matplotlib figures use
+``generate_*``.
 """
 
 from pathlib import Path

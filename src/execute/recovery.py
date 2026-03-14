@@ -2,7 +2,10 @@
 """
 Execute Recovery module for GNN Processing Pipeline.
 
-This module provides recovery implementations when core modules are not available.
+ALL FUNCTIONS AND CLASSES IN THIS MODULE ARE STUBS that return minimal safe
+defaults when the core execute module is unavailable. None of these functions
+perform real validation, checking, or execution — they exist only to satisfy
+import contracts and prevent hard crashes during degraded operation.
 """
 
 from typing import Any, Dict, List, Optional
