@@ -159,6 +159,7 @@ def process_render(
     verbose: bool = False,
     frameworks=None,
     strict_validation: bool = True,
+    **kwargs: Any,
 ) -> bool:
     """
     Process render for GNN specifications with POMDP-aware processing.

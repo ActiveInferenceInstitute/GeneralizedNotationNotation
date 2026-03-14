@@ -98,6 +98,10 @@ def process_gnn_multi_format(
 
         logger.info(f"Found {len(gnn_files)} potential GNN files")
 
+        if not gnn_files:
+            logger.warning("No GNN files found for multi-format processing")
+            return True
+
         processing_results: Dict[str, Any] = {
             "timestamp": datetime.now().isoformat(),
             "source_directory": str(target_path),

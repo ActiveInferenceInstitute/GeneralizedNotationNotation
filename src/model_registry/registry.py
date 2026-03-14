@@ -448,6 +448,7 @@ def process_model_registry(target_dir: Path, output_dir: Path, **kwargs) -> Dict
 
     # Create summary
     results = {
+        "success": True,
         "processed_files": processed_files,
         "successful_registrations": successful_registrations,
         "registry_path": str(registry_path),
