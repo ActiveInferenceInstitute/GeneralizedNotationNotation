@@ -16,7 +16,6 @@ Author: GNN PyMDP Integration
 Date: 2024
 """
 
-import re
 from pathlib import Path
 from typing import Dict, Any, Optional, Tuple, List
 import logging
@@ -70,109 +69,6 @@ def parse_gnn_markdown(content: str, file_path: Path) -> Optional[Dict[str, Any]
     except Exception as e:
         logging.error(f"Exception parsing GNN file {file_path}: {e}")
         return None
-
-
-def parse_state_space_block(content: str) -> Dict[str, Any]:
-    """Parse StateSpaceBlock section from GNN content."""
-    variables = {}
-
-    # Find StateSpaceBlock section
-    state_space_pattern = r'## StateSpaceBlock\s*\n(.*?)(?=\n##|\Z)'
-    match = re.search(state_space_pattern, content, re.DOTALL)
-
-    if match:
-        block_content = match.group(1)
-
-        # Parse variable definitions
-        var_pattern = r'^([A-Za-z_][A-Za-z0-9_]*)\[([0-9,]+)(?:,type=(\w+))?\]'
-
-        for line in block_content.split('\n'):
-            line = line.strip()
-            if line and not line.startswith('#'):
-                var_match = re.match(var_pattern, line)
-                if var_match:
-                    var_name = var_match.group(1)
-                    dimensions_str = var_match.group(2)
-                    var_type = var_match.group(3) or 'float'
-
-                    dimensions = [int(d.strip()) for d in dimensions_str.split(',')]
-
-                    variables[var_name] = {
-                        'name': var_name,
-                        'dimensions': dimensions,
-                        'type': var_type
-                    }
-
-    return variables
-
-
-def parse_initial_parameterization(content: str) -> dict:
-    """Parse InitialParameterization section from GNN content."""
-    params = {}
-
-    # Find InitialParameterization section
-    params_pattern = r'## InitialParameterization\s*\n(.*?)(?=\n##|\Z)'
-    match = re.search(params_pattern, content, re.DOTALL)
-
-    if match:
-        block_content = match.group(1)
-
-        # Parse parameter assignments
-        current_param = None
-        current_value = []
-
-        for line in block_content.split('\n'):
-            line = line.strip()
-            if line and not line.startswith('#'):
-                # Check if this is a parameter assignment
-                if '=' in line and not line.startswith('{'):
-                    # Save previous parameter if exists
-                    if current_param and current_value:
-                        params[current_param] = ''.join(current_value)
-
-                    # Start new parameter
-                    param_name, param_start = line.split('=', 1)
-                    current_param = param_name.strip()
-                    current_value = [param_start.strip()]
-                elif current_param and (line.startswith('{') or line.startswith('(') or current_value):
-                    # Continue current parameter value
-                    current_value.append(' ' + line)
-
-        # Save last parameter
-        if current_param and current_value:
-            params[current_param] = ''.join(current_value)
-
-    return params
-
-
-def parse_model_parameters(content: str) -> Dict[str, Any]:
-    """Parse ModelParameters section from GNN content."""
-    params = {}
-
-    # Find ModelParameters section
-    params_pattern = r'## ModelParameters\s*\n(.*?)(?=\n##|\Z)'
-    match = re.search(params_pattern, content, re.DOTALL)
-
-    if match:
-        block_content = match.group(1)
-
-        for line in block_content.split('\n'):
-            line = line.strip()
-            if line and not line.startswith('#') and ':' in line:
-                key, value = line.split(':', 1)
-                key = key.strip()
-                value = value.strip()
-
-                # Try to parse as number
-                try:
-                    if '.' in value:
-                        params[key] = float(value)
-                    else:
-                        params[key] = int(value)
-                except ValueError:
-                    params[key] = value
-
-    return params
 
 
 class PyMDPRenderer:
