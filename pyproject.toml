@@ -228,9 +228,14 @@ all = [
     "scipy>=1.7.0",
     "scikit-learn>=1.0.0",
 
+    # API server
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+
     # LLM integration
     "openai>=1.0.0",
     "ollama>=0.1.0",
+    "python-dotenv>=1.0.0",
     "aiohttp>=3.9.0",
 
     # Visualization and graphics
@@ -270,6 +275,7 @@ all = [
     "lru-dict>=1.2.0",
     "fsspec>=2023.0.0",
     "s3fs>=2024.10.0",
+    "ray>=2.0.0",
 
     # Database connectivity
     "sqlalchemy>=2.0.0",

@@ -54,9 +54,9 @@ try:
         check_file_permissions,
         check_network_connectivity
     )
-    # Alias for backwards compatibility
+    # Backwards-compatibility aliases — PyMdpExecutor is deprecated, use PyMDPSimulation
     execute_simulation_from_gnn = execute_gnn_model
-    PyMdpExecutor = PyMDPSimulation
+    PyMdpExecutor = PyMDPSimulation  # deprecated alias
     VALIDATION_AVAILABLE = True
     ERROR_RECOVERY_AVAILABLE = True
 except ImportError as e:
@@ -84,7 +84,7 @@ except ImportError as e:
     # Stubs for missing items
     execute_gnn_model = execute_simulation_from_gnn
     GNNExecutor = ExecutionEngine
-    PyMDPSimulation = PyMdpExecutor
+    PyMDPSimulation = PyMdpExecutor  # deprecated alias; PyMdpExecutor is canonical in recovery path
     execute_pymdp_simulation = execute_pymdp_simulation_from_gnn
     validate_pymdp_environment = lambda: {"valid": False, "issues": ["PyMDP validation not available"]}
     get_pymdp_health_status = lambda: {"status": "unknown"}

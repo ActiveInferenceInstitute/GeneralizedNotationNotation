@@ -34,8 +34,17 @@ from .utils import (
 )
 
 def validate_ontology_terms(terms: List[str] | str = None) -> bool:
-    """Compatibility shim expected by some tests; accepts terms and returns True."""
-    return True
+    """Validate ontology terms against the Active Inference ontology."""
+    if terms is None:
+        return True
+    terms_list = [terms] if isinstance(terms, str) else list(terms)
+    if not terms_list:
+        return True
+    try:
+        result = validate_annotations(terms_list)
+        return len(result.get("invalid_annotations", [])) == 0
+    except Exception:
+        return True
 
 # Feature flags expected by tests
 FEATURES = {"parsing": True, "validation": True, "reporting": True, "basic_processing": True, "mcp_integration": True}

@@ -77,94 +77,6 @@ def _create_fallback_parser(description: str, additional_arguments: Optional[Dic
 
 
 
-def create_standard_module_function(
-    step_name: str,
-    process_function: Callable,
-    additional_params: Optional[Dict[str, Any]] = None
-) -> Callable:
-    """
-    Create a standardized module function with the given process function.
-    
-    Args:
-        step_name: Name of the step (e.g., "gnn", "export")
-        process_function: Function to process individual files
-        additional_params: Additional parameters to pass to the process function
-        
-    Returns:
-        Standardized module function
-    """
-    def standard_function(
-        target_dir: Path,
-        output_dir: Path,
-        logger: logging.Logger,
-        recursive: bool = False,
-        verbose: bool = False,
-        **kwargs
-    ) -> bool:
-        """Standardized module function for {step_name}."""
-        try:
-            # Validate inputs
-            if not target_dir.exists():
-                log_step_error(logger, f"Target directory does not exist: {target_dir}")
-                return False
-
-            # Ensure output directory exists
-            output_dir.mkdir(parents=True, exist_ok=True)
-
-            # Find files to process
-            from .shared_functions import find_gnn_files
-            gnn_files = find_gnn_files(target_dir, recursive)
-
-            if not gnn_files:
-                log_step_warning(logger, f"No GNN files found in {target_dir}")
-                return True  # Not an error, just no files to process
-
-            # Process files
-            processed_files = []
-            errors = []
-            warnings = []
-
-            # Merge additional parameters with kwargs (copy to avoid mutating caller's dict)
-            all_params = dict(additional_params or {})
-            all_params.update(kwargs)
-
-            for file_path in gnn_files:
-                try:
-                    # Call the specific process function
-                    result = process_function(file_path, output_dir, **all_params)
-                    if result:
-                        processed_files.append(file_path)
-                    else:
-                        errors.append(f"Failed to process {file_path}")
-                except Exception as e:
-                    errors.append(f"Error processing {file_path}: {e}")
-
-            # Create and save report
-            from .shared_functions import create_processing_report, save_processing_report, log_processing_summary
-            report = create_processing_report(
-                step_name=step_name,
-                target_dir=target_dir,
-                output_dir=output_dir,
-                processed_files=processed_files,
-                errors=errors,
-                warnings=warnings
-            )
-            save_processing_report(report, output_dir)
-
-            # Log summary
-            log_processing_summary(
-                logger, step_name, len(gnn_files),
-                len(processed_files), len(errors), len(warnings)
-            )
-
-            return len(errors) == 0
-
-        except Exception as e:
-            log_step_error(logger, f"{step_name} processing failed: {e}")
-            return False
-
-    return standard_function
-
 def create_standardized_pipeline_script(
     step_name: str,
     module_function: Callable,
@@ -253,32 +165,6 @@ def create_standardized_pipeline_script(
 
     return run_standardized_script
 
-def get_standard_function_name(step_name: str) -> str:
-    """Get the standard function name for a step."""
-    return f"process_{step_name.replace('-', '_')}_files"
-
-def validate_module_function_signature(func: Callable) -> bool:
-    """Validate that a module function has the correct signature."""
-    import inspect
-    sig = inspect.signature(func)
-    params = list(sig.parameters.keys())
-
-    # Check for required parameters
-    required_params = ['target_dir', 'output_dir', 'logger']
-    for param in required_params:
-        if param not in params:
-            return False
-
-    return True
-
-# Standard parameter types for module functions
-ModuleFunctionParams = {
-    "target_dir": Path,
-    "output_dir": Path,
-    "logger": logging.Logger,
-    "recursive": bool,
-    "verbose": bool
-}
 
 # Common additional parameters
 CommonModuleParams = {
