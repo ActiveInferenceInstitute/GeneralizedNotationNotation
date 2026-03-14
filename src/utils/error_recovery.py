@@ -244,7 +244,7 @@ class ErrorReporter:
         self.errors: List[Dict[str, Any]] = []
         self.logger = logging.getLogger(__name__)
 
-    def collect_error(self, error_type: str, message: str, details: Optional[Dict[str, Any]] = None, severity: str = "error"):
+    def collect_error(self, error_type: str, message: str, details: Optional[Dict[str, Any]] = None, severity: ErrorSeverity = ErrorSeverity.ERROR):
         """
         Collect an error for reporting.
         

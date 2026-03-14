@@ -8,7 +8,7 @@ This ensures consistent behavior across different provider implementations.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional, AsyncGenerator
+from typing import List, Dict, Any, Optional, AsyncGenerator, Literal
 from dataclasses import dataclass
 from enum import Enum
 import logging
@@ -35,7 +35,7 @@ class LLMResponse:
 @dataclass
 class LLMMessage:
     """Standardized message format for LLM conversations."""
-    role: str  # 'system', 'user', 'assistant'
+    role: Literal['system', 'user', 'assistant']
     content: str
     name: Optional[str] = None
 

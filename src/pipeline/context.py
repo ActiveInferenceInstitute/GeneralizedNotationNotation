@@ -17,7 +17,10 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Literal, Optional
+from typing import TYPE_CHECKING, Any, Callable, Dict, List, Literal, Optional
+
+if TYPE_CHECKING:
+    from gnn.parsers.common import GNNInternalRepresentation
 
 StepStatus = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
@@ -67,7 +70,7 @@ class PipelineContext:
         self._steps: Dict[str, StepRecord] = {}
         self._step_order: List[str] = []
         self._timings: Dict[str, float] = {}
-        self._models: List[Any] = []
+        self._models: List["GNNInternalRepresentation"] = []
         self._artifacts: Dict[str, Path] = {}
 
         # Event callbacks (optional, for SSE / observability)
@@ -95,12 +98,12 @@ class PipelineContext:
     # ── Model Store ──────────────────────────────────────────────────────────
 
     @property
-    def models(self) -> List[Any]:
+    def models(self) -> List["GNNInternalRepresentation"]:
         """Parsed GNN models (populated by Step 3)."""
         return self._models
 
     @models.setter
-    def models(self, value: List[Any]) -> None:
+    def models(self, value: List["GNNInternalRepresentation"]) -> None:
         self._models = value
         logger.debug(f"Context: stored {len(value)} models")
 
@@ -130,7 +133,7 @@ class PipelineContext:
         name: str,
         *,
         step_num: int = -1,
-        status: str = "SUCCESS",
+        status: StepStatus = "SUCCESS",
         duration: float = 0.0,
         output_dir: str = "",
         artifacts: Optional[List[str]] = None,

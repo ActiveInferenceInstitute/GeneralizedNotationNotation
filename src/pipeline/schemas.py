@@ -10,6 +10,12 @@ import logging
 from datetime import datetime
 from typing import List, Optional
 
+try:
+    from pipeline.context import StepStatus
+except ImportError:
+    from typing import Literal
+    StepStatus = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]  # type: ignore[misc]
+
 logger = logging.getLogger(__name__)
 
 try:
@@ -53,7 +59,7 @@ if PYDANTIC_AVAILABLE:
         """Result of a single pipeline step."""
         step_name: str
         step_num: int = -1
-        status: str = "PENDING"
+        status: StepStatus = "PENDING"
         duration: float = 0.0
         artifacts: List[str] = Field(default_factory=list)
         errors: List[str] = Field(default_factory=list)
@@ -104,7 +110,7 @@ else:
     class ExecutionResult:
         step_name: str = ""
         step_num: int = -1
-        status: str = "PENDING"
+        status: StepStatus = "PENDING"
         duration: float = 0.0
         artifacts: List = field(default_factory=list)
         errors: List = field(default_factory=list)
