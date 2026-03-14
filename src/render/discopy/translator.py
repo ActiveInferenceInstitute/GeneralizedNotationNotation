@@ -510,54 +510,6 @@ def parse_gnn_content(gnn_content: str) -> dict:
     #logger.debug(f"Final parsed_data before return: {json.dumps(parsed_data, indent=2)[:1000]}")
     return parsed_data
 
-def _get_discopy_dim_from_gnn_spec(dim_spec_str: str, logger: logging.Logger) -> Optional[Dim]:
-    """
-    Parses a GNN dimension specification string (e.g., "2", "2,3", or even an empty string for Dim())
-    and returns a DisCoPy Dim object.
-    Returns None if Dim is not available or parsing fails critically.
-    """
-    if not TENSOR_COMPONENTS_AVAILABLE or Dim is None:
-        logger.error("DisCoPy Dim component is not available. Cannot create Dim objects from spec.")
-        logger.info("Run generate_setup_report() for installation instructions")
-        return None
-
-    if not dim_spec_str: # Empty string or None implies Dim() or Dim(1) depending on convention
-        logger.debug("Empty dim_spec_str provided, creating Dim().")
-        try:
-            return Dim() # DisCoPy's Dim() is the unit for tensor product, effectively Dim(1) in some contexts
-        except Exception as e:
-            logger.error(f"Error creating Dim() for empty dim_spec_str: {e}")
-            return None
-
-    # Remove any type annotations like "type=A" or extra spaces before splitting
-    # Focus on numeric parts. e.g. "2, type=A, 3" -> "2, 3"
-    cleaned_spec = re.sub(r"type=[^,]+", "", dim_spec_str) # Remove type=...
-    cleaned_spec = re.sub(r"[^0-9,]", "", cleaned_spec)   # Remove non-numeric, non-comma chars
-
-    dim_values_str = [s.strip() for s in cleaned_spec.split(',') if s.strip()]
-
-    if not dim_values_str: # If after cleaning, no numbers remain (e.g. "type=A")
-        logger.debug(f"No numeric dimensions found in '{dim_spec_str}' after cleaning. Creating Dim().")
-        try:
-            return Dim()
-        except Exception as e:
-            logger.error(f"Error creating Dim() for cleaned non-numeric spec '{dim_spec_str}': {e}")
-            return None
-
-    try:
-        # Convert valid string numbers to integers
-        dims_as_ints = [int(val) for val in dim_values_str] # Renamed to avoid conflict
-        if not dims_as_ints: # Should be caught by 'if not dim_values_str' earlier, but as a safeguard
-             logger.debug(f"No dimensions to create Dim object from '{dim_spec_str}'. Defaulting to Dim().")
-             return Dim()
-        return Dim(*dims_as_ints)
-    except ValueError as ve:
-        logger.error(f"Invalid character in dimension specification '{dim_spec_str}' (cleaned: '{cleaned_spec}'). Error: {ve}")
-        return None
-    except Exception as e:
-        logger.error(f"Error creating Dim from spec '{dim_spec_str}' (parsed as {dims_as_ints if 'dims_as_ints' in locals() else 'unknown'}): {e}")
-        return None
-
 def gnn_statespace_to_discopy_dims_map(parsed_gnn: dict) -> dict[str, Dim]:
     """
     Converts GNN StateSpaceBlock entries into a dictionary mapping variable names to DisCoPy Dim objects.

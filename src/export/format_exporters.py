@@ -101,16 +101,6 @@ def _parse_matrix_string(matrix_str: str) -> Any:
 def _parse_free_text_section(section_content: str) -> str:
     return section_content.strip()
 
-def _parse_key_value_section(section_content: str) -> Dict[str, Any]:
-    data = {}
-    for line in section_content.strip().split('\n'):
-        if not line or line.startswith('#'): continue
-        if '=' in line: key, value = line.split('=', 1)
-        elif ':' in line: key, value = line.split(':', 1)
-        else: continue
-        data[key.strip()] = value.strip()
-    return data
-
 def _parse_state_line(line: str) -> Optional[Dict[str, Any]]:
     match = re.match(r"^\s*([a-zA-Z0-9_']+)\s*(?:\[(.*?)\])?\s*(.*)$", line.split('#')[0].strip())
     if not match: return None

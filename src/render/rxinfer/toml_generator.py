@@ -840,13 +840,6 @@ def _create_toml_config_structure(
 
     return toml_config
 
-def _get_agent_count(gnn_spec: Dict[str, Any]) -> int:
-    """Extract the number of agents from the GNN specification."""
-    params = gnn_spec.get("initialparameterization", {})
-    if "agents" in gnn_spec and isinstance(gnn_spec["agents"], list):
-        return len(gnn_spec["agents"])
-    return params.get("nr_agents", 4)  # Default to 4 agents
-
 def _extract_matrices(gnn_spec: Dict[str, Any]) -> Dict[str, Any]:
     """Extract state space matrices from the GNN specification."""
     matrices = {}
