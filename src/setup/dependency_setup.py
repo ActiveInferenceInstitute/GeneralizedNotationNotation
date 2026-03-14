@@ -66,7 +66,7 @@ print(f"JAX version: {jax.__version__}")
 print(f"Optax version: {optax.__version__}")
 print(f"Flax version: {flax.__version__}")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [str(VENV_PYTHON), "-c", test_script],
             capture_output=True,
             text=True,
@@ -90,7 +90,7 @@ y = jax.numpy.sin(x)
 sum_result = jax.numpy.sum(y)
 print("JAX basic operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [str(VENV_PYTHON), "-c", test_basic],
                 capture_output=True,
                 text=True,
@@ -170,7 +170,7 @@ def test_pomdp_ops():
 pomdp_result = test_pomdp_ops()
 print("POMDP operations test passed")  # nosec B603 -- subprocess calls with controlled/trusted input
 """
-            result = subprocess.run(
+            result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                 [str(VENV_PYTHON), "-c", test_advanced],
                 capture_output=True,
                 text=True,
@@ -210,7 +210,7 @@ print("POMDP operations test passed")  # nosec B603 -- subprocess calls with con
             if verbose:
                 logger.info(f"Running: {' '.join(install_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
-            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(install_cmd, cwd=PROJECT_ROOT, capture_output=True, text=True, timeout=300)  # nosec B603 -- subprocess calls with controlled/trusted input
 
             if result.returncode == 0:
                 logger.info("UV sync completed successfully")
@@ -255,7 +255,7 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             logger.info("💡 Install Julia from: https://julialang.org/downloads/")
             return False  # nosec B603 -- subprocess calls with controlled/trusted input
 
-        version_result = subprocess.run(
+        version_result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             [julia_path, "--version"],
             capture_output=True,
             text=True,
@@ -280,7 +280,7 @@ def setup_julia_environment(verbose: bool = False) -> bool:
             if script_path.exists():
                 logger.info(f"Running Julia setup script: {script_path}")  # nosec B603 -- subprocess calls with controlled/trusted input
                 try:
-                    result = subprocess.run(
+                    result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
                         [julia_path, str(script_path)],
                         cwd=script_path.parent,
                         capture_output=True,
@@ -348,7 +348,7 @@ def install_optional_package_group(group_name: str, verbose: bool = False) -> bo
             sync_cmd.append("--verbose")
             logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -398,7 +398,7 @@ def install_all_optional_packages(verbose: bool = False) -> dict:
             sync_cmd.append("--verbose")
             logger.debug(f"Running: {' '.join(sync_cmd)}")  # nosec B603 -- subprocess calls with controlled/trusted input
 
-        result = subprocess.run(
+        result = subprocess.run(  # nosec B603 -- subprocess calls with controlled/trusted input
             sync_cmd,
             cwd=PROJECT_ROOT,
             capture_output=True,
@@ -515,7 +515,7 @@ def setup_gnn_project(project_path: str, verbose: bool = False) -> bool:
         (project_path / "src").mkdir(parents=True, exist_ok=True)
   # nosec B607 B603 -- subprocess calls with controlled/trusted input
         try:
-            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)
+            subprocess.run(["uv", "init"], cwd=project_path, check=True, timeout=30)  # nosec B607 B603 -- subprocess calls with controlled/trusted input
             logger.info(f"UV project initialized at {project_path}")
         except Exception as e:
             logger.warning(f"Could not initialize UV project: {e}")

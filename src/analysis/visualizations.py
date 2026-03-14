@@ -263,7 +263,7 @@ def visualize_all_framework_outputs(
                                 if isinstance(file_data, dict):
                                     sim_data.update(file_data)
                             except (json.JSONDecodeError, OSError):
-                                pass  # skip malformed simulation data files
+                                pass  # nosec B110 -- intentional: skip malformed simulation data files
 
                 # For ActiveInference.jl: read CSV simulation data directly
                 if framework == "activeinference_jl" and not sim_data.get("beliefs"):

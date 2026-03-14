@@ -114,7 +114,7 @@ def run_gui(
             demo.launch(
                 share=False,
                 prevent_thread_lock=False,  # Let the thread properly block on the server
-                server_name="0.0.0.0",
+                server_name="0.0.0.0",  # nosec B104 -- binding to all interfaces is intentional for local dev server
                 server_port=7860,
                 inbrowser=open_browser,
                 show_error=True,

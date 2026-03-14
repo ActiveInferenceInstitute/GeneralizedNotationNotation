@@ -629,8 +629,8 @@ class GNNVisualizer:
                         "name": matrix_name,
                         "value": matrix_list
                     })
-                except Exception:
-                    # Skip if parsing fails
+                except Exception as e:
+                    logger.debug(f"Skipping matrix {matrix_name} due to parse error: {e}")
                     continue
 
         return parameters

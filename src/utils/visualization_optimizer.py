@@ -156,7 +156,7 @@ class DataSampler:
         if len(nodes) > self.max_nodes:
             if self.sampling_strategy == "random":
                 import random
-                sampled_nodes = random.sample(nodes, self.max_nodes)
+                sampled_nodes = random.sample(nodes, self.max_nodes)  # nosec B311 -- random used for non-security sampling, not cryptography
             else:
                 # Keep first N nodes (may be more important)
                 sampled_nodes = nodes[:self.max_nodes]

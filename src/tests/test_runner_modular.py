@@ -340,7 +340,7 @@ class ModularTestRunner:
                 stdout_path = category_output_dir / "pytest_stdout.txt"
                 stderr_path = category_output_dir / "pytest_stderr.txt"
 
-                process = subprocess.Popen(
+                process = subprocess.Popen(  # nosec B603 -- subprocess calls with controlled/trusted input
                     cmd,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,

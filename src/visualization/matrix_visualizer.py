@@ -10,6 +10,9 @@ Specialized support for 3D tensors like POMDP transition matrices.
 
 from analysis.viz_base import plt, np, sns, MATPLOTLIB_AVAILABLE
 import csv
+import logging
+
+logger = logging.getLogger(__name__)
 
 try:
     from matplotlib import cm
@@ -1095,8 +1098,8 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
                         "name": matrix_name,
                         "value": matrix_list
                     })
-                except Exception:
-                    # Skip if parsing fails
+                except Exception as e:
+                    logger.debug(f"Skipping matrix {matrix_name} due to parse error: {e}")
                     continue
 
         return parsed_data

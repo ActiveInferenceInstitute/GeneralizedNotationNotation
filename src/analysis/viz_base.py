@@ -87,7 +87,7 @@ def safe_savefig(
         try:
             plt.close()
         except (OSError, ValueError):
-            pass  # plt.close() failure is non-fatal
+            pass  # nosec B110 -- intentional: plt.close() failure is non-fatal
         return None
 
 

@@ -150,7 +150,7 @@ except ImportError:
             return q_pi, G
 
         def sample_action(self):
-            return int(random.randrange(max(1, self.num_actions)))
+            return int(random.randrange(max(1, self.num_actions)))  # nosec B311 -- random used for non-security sampling, not cryptography
 
     # Expose recovery names used later in the module
     utils = _RecoveryUtils()

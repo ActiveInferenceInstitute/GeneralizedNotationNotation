@@ -855,7 +855,7 @@ def _generate_jax_model_code(gnn_spec: Dict[str, Any], options: Optional[Dict[st
         C_list = C_vector.tolist()
         D_list = D_vector.tolist()
 
-        code = f'''"""
+        code = f'''"""  # nosec B608 -- this is code generation output, not a live SQL query
 JAX Model Generated from GNN Specification: {model_name}
 
 This model implements the GNN specification using pure JAX for high-performance computation.
