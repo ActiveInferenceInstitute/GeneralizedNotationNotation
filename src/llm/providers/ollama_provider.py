@@ -285,6 +285,35 @@ class OllamaProvider(BaseLLMProvider):
             logger.error(f"Ollama streaming failed: {e}")
             raise
 
+    def analyze(self, content: str, task: str) -> str:
+        """Perform analysis on GNN content."""
+        import asyncio
+        import concurrent.futures
+
+        prompt = f"Analyze this GNN model for {task}: {content}"
+
+        async def _run():
+            return await self.generate_response(
+                [LLMMessage(role="user", content=prompt)]
+            )
+
+        def _extract(result):
+            return result.content if hasattr(result, 'content') else str(result)
+
+        try:
+            result = asyncio.run(_run())
+            return _extract(result)
+        except RuntimeError:
+            def _thread_run():
+                return asyncio.run(_run())
+
+            with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+                future = pool.submit(_thread_run)
+                return _extract(future.result(timeout=30))
+        except Exception as e:
+            logger.error(f"Ollama analysis failed: {e}")
+            return f"Analysis failed: {e}"
+
     async def close(self):
         # No persistent connection to close for Ollama
         self._is_initialized = False

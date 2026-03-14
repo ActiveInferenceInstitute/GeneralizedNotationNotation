@@ -13,7 +13,7 @@ from pathlib import Path
 import logging
 import time
 import json
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 
 from .constants import (
     VENV_DIR, PYPROJECT_FILE, LOCK_FILE, PROJECT_ROOT,
@@ -599,7 +599,7 @@ def setup_uv_environment(
         return False
 
 
-def validate_uv_setup(project_root: Path = None, logger: logging.Logger = None) -> Dict[str, Any]:
+def validate_uv_setup(project_root: Optional[Path] = None, logger: Optional[logging.Logger] = None) -> Dict[str, Any]:
     """
     Validate the current UV setup and return status information.
 

@@ -24,7 +24,7 @@ from utils.pipeline_template import (
 
 # Constrained types for step flag severity and execution status.
 FlagType = Literal["none", "yellow", "red"]
-StepStatus = Literal["success", "failed", "warning", "skipped", "unknown"]
+StepStatus = Literal["SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 
 @dataclass
@@ -33,7 +33,7 @@ class StepAnalysis:
     step_number: int
     script_name: str
     description: str
-    status: str          # StepStatus — kept str for JSON round-trip compatibility
+    status: StepStatus
     duration_seconds: float
     memory_mb: float
     exit_code: int

@@ -22,7 +22,7 @@ SEABORN_AVAILABLE = sns is not None
 import ast
 import warnings
 from pathlib import Path
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Union
 
 
 def _safe_tight_layout():
@@ -103,7 +103,7 @@ class MatrixVisualizer:
             print(f"Failed to export matrix to CSV: {e}")
             return False
 
-    def extract_matrix_data_from_parameters(self, parameters: List[Dict]) -> Dict[str, np.ndarray]:
+    def extract_matrix_data_from_parameters(self, parameters: Union[List[Dict], Dict]) -> Dict[str, np.ndarray]:
         """
         Extract matrix data from parameters section.
         

@@ -52,7 +52,7 @@ class ErrorContext:
 class ErrorRecoveryManager:
     """Manages error handling and recovery strategies."""
 
-    def __init__(self, logger: logging.Logger = None):
+    def __init__(self, logger: Optional[logging.Logger] = None):
         """Initialize error recovery manager."""
         self.logger = logger or logging.getLogger(__name__)
         self.error_handlers: Dict[str, Callable] = {}

@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 from datetime import datetime
 from pathlib import Path
+from typing import Optional
 
 try:
     import gradio as gr
@@ -20,7 +21,7 @@ from .markdown import (
 )
 
 
-def build_gui(markdown_text: str, export_path: Path, logger: logging.Logger = None) -> "gr.Blocks":  # type: ignore[name-defined]
+def build_gui(markdown_text: str, export_path: Path, logger: Optional[logging.Logger] = None) -> "gr.Blocks":  # type: ignore[name-defined]
     if gr is None:
         raise RuntimeError("Gradio not available")
 

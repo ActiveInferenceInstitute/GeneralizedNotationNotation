@@ -41,7 +41,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from audio import process_audio
 except ImportError:
-    def process_audio(target_dir: str, output_dir: str, logger: object = None, **kwargs: object) -> bool:
+    def process_audio(target_dir: str, output_dir: str, logger: "logging.Logger | None" = None, **kwargs: object) -> bool:
         """Recovery audio processing when module unavailable."""
         import logging
         if logger is None:
