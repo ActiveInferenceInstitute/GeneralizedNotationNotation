@@ -29,7 +29,7 @@ GNN ontology processing is integrated into the 25-step processing pipeline:
 
 - Ontology term extraction and validation
 - Semantic mapping and analysis
-- See: [src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)
+- See: [src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)
 
 **Quick Start:**
 
@@ -201,15 +201,15 @@ Ontology processing integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Ontology Module](../../src/ontology/AGENTS.md)**: Implementation details
+- **[Ontology Module](../../../src/ontology/AGENTS.md)**: Implementation details
 - **[Active Inference Ontology](https://activeinference.org/ontology)**: Official ontology documentation
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 - **[GNN Standards](../reference/gnn_standards.md)**: GNN domain knowledge and standards
 
 ## See Also
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
-- **[GNN Overview](gnn_overview.md)**: Core GNN concepts
+- **[Pipeline Documentation](../operations/gnn_tools.md)**: Complete pipeline guide
+- **[GNN Overview](../gnn_overview.md)**: Core GNN concepts
 - **[Advanced Modeling Patterns](advanced_modeling_patterns.md)**: Advanced modeling techniques
 
 ---

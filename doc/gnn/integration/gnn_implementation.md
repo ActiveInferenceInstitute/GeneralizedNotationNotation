@@ -14,13 +14,13 @@ GNN models are implemented through the processing pipeline's code generation and
 **Code Generation (Step 11)**
 
 - **`src/11_render.py`** → Generate executable code for multiple frameworks
-  - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)** for rendering details
+  - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering details
   - Supports: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
 
 **Execution (Step 12)**
 
 - **`src/12_execute.py`** → Execute rendered simulation scripts
-  - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution details
+  - See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)** for execution details
 
 **Quick Start:**
 
@@ -32,7 +32,7 @@ python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 ---
 

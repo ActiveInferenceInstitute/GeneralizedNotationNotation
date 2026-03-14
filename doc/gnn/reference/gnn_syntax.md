@@ -12,7 +12,7 @@ Quick reference for GNN syntax with working examples.
 GNN syntax is validated through the pipeline type checker:
 
 - **`src/5_type_checker.py`** → Syntax validation and type checking
-  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)** for validation details
+  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for validation details
 - **`src/6_validation.py`** → Advanced consistency checking
 
 **Quick Start:**
@@ -22,7 +22,7 @@ GNN syntax is validated through the pipeline type checker:
 python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 ---
 

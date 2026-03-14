@@ -14,9 +14,9 @@ GNN files are processed and validated through the GNN processing pipeline:
 **Parsing and Validation (Steps 3, 5, 6)**
 
 - **`src/3_gnn.py`** → GNN file discovery and multi-format parsing
-  - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)** for parser implementation
+  - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for parser implementation
 - **`src/5_type_checker.py`** → Type checking and dimensional validation
-  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)** for type validation
+  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for type validation
 - **`src/6_validation.py`** → Advanced consistency checking
 
 **Quick Start:**
@@ -26,7 +26,7 @@ GNN files are processed and validated through the GNN processing pipeline:
 python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 ---
 

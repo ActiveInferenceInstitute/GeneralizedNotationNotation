@@ -10,9 +10,9 @@
 GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
 
 - **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro
-  - See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)** for rendering module details
+  - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering module details
 - **`src/12_execute.py`** → Execution of rendered simulation scripts
-  - See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)** for execution module details
+  - See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)** for execution module details
 
 **Quick Start:**
 
@@ -24,7 +24,7 @@ python src/main.py --only-steps "11,12" --target-dir input/gnn_files --verbose
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 ## Overview
 
@@ -791,7 +791,7 @@ class IntegrationTestSuite:
 - **[PyMDP Integration Guide](../pymdp/gnn_pymdp.md)**: Detailed PyMDP-specific documentation
 - **[RxInfer Integration Guide](../rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
 - **[DisCoPy Integration Guide](../discopy/gnn_discopy.md)**: Categorical diagram processing
-- **[Performance Guide](../performance/README.md)**: Performance optimization strategies
+- **[Performance Guide](../README.md)**: Performance optimization strategies
 - **[Error Handling Guide](../troubleshooting/error_taxonomy.md)**: Comprehensive error management
 
 ---

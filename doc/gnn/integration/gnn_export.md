@@ -26,7 +26,7 @@ GNN export is integrated into the 25-step processing pipeline:
 
 - Multi-format export generation
 - Export validation
-- See: [src/export/AGENTS.md](../../src/export/AGENTS.md)
+- See: [src/export/AGENTS.md](../../../src/export/AGENTS.md)
 
 **Quick Start:**
 
@@ -210,15 +210,15 @@ Export integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Export Module](../../src/export/AGENTS.md)**: Implementation details
-- **[Export Documentation](../export/README.md)**: Export documentation overview
+- **[Export Module](../../../src/export/AGENTS.md)**: Implementation details
+- **[Export Documentation](../README.md)**: Export documentation overview
 - **[Pkl Integration](../pkl/pkl_gnn.md)**: Configuration-as-code export
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 
 ## See Also
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
-- **[GNN Overview](gnn_overview.md)**: Core GNN concepts
+- **[Pipeline Documentation](../operations/gnn_tools.md)**: Complete pipeline guide
+- **[GNN Overview](../gnn_overview.md)**: Core GNN concepts
 - **[GNN Implementation Guide](gnn_implementation.md)**: Implementation guidance
 
 ---

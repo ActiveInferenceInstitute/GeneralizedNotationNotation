@@ -24,14 +24,14 @@ GNN visualization is integrated into the 25-step processing pipeline:
 
 - Basic graph and matrix visualization
 - Static visualization generation
-- See: [src/visualization/AGENTS.md](../../src/visualization/AGENTS.md)
+- See: [src/visualization/AGENTS.md](../../../src/visualization/AGENTS.md)
 
 **Step 9: Advanced Visualization** (`9_advanced_viz.py`)
 
 - Interactive dashboards
 - 3D visualizations
 - Real-time visualization updates
-- See: [src/advanced_visualization/AGENTS.md](../../src/advanced_visualization/AGENTS.md)
+- See: [src/advanced_visualization/AGENTS.md](../../../src/advanced_visualization/AGENTS.md)
 
 **Quick Start:**
 
@@ -300,15 +300,15 @@ Visualization results are integrated throughout the pipeline:
 
 ## Related Documentation
 
-- **[Visualization Module](../../src/visualization/README.md)**: Implementation details
-- **[Advanced Visualization Module](../../src/advanced_visualization/README.md)**: Advanced visualization implementation
-- **[Visualization Documentation](../visualization/README.md)**: Visualization documentation overview
+- **[Visualization Module](../README.md)**: Implementation details
+- **[Advanced Visualization Module](../README.md)**: Advanced visualization implementation
+- **[Visualization Documentation](../README.md)**: Visualization documentation overview
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 
 ## See Also
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
-- **[GNN Overview](gnn_overview.md)**: Core GNN concepts
+- **[Pipeline Documentation](../operations/gnn_tools.md)**: Complete pipeline guide
+- **[GNN Overview](../gnn_overview.md)**: Core GNN concepts
 - **[Framework Integration](framework_integration_guide.md)**: Framework-specific visualization
 
 ---

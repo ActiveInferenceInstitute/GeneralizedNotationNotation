@@ -290,7 +290,7 @@ For more detailed information about specific aspects of GNN, refer to:
 
 ### Pipeline and Tools
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
+- **[Pipeline Documentation](operations/gnn_tools.md)**: Complete 25-step pipeline guide
 - **[GNN Tools](operations/gnn_tools.md)**: Available software and utilities
 - **[Implementation Guide](integration/gnn_implementation.md)**: Guidelines for implementing GNN in practice
 

@@ -47,8 +47,8 @@ All pipeline steps follow the thin orchestrator pattern. Each step is documented
 
 ### Main Documentation
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
+- **[src/AGENTS.md](../../../README.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../README.md)**: Pipeline architecture and safety patterns
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation
 
 ---

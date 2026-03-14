@@ -12,22 +12,22 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 ### Parsing (Step 3)
 
 - Multi-agent structure parsing and validation
-- See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**
+- See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**
 
 ### Rendering (Step 11)
 
 - Multi-agent code generation for PyMDP and other frameworks
-- See: **[src/render/AGENTS.md](../../src/render/AGENTS.md)**
+- See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**
 
 ### Execution (Step 12)
 
 - Multi-agent simulation execution with inter-agent communication
-- See: **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**
+- See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)**
 
 ### Analysis (Steps 13, 16)
 
 - Multi-agent behavior analysis and emergent dynamics
-- See: **[src/llm/AGENTS.md](../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../src/analysis/AGENTS.md)**
+- See: **[src/llm/AGENTS.md](../../../src/llm/AGENTS.md)**, **[src/analysis/AGENTS.md](../../../src/analysis/AGENTS.md)**
 
 **Quick Start:**
 
@@ -36,7 +36,7 @@ Multi-agent GNN models are processed through the standard pipeline with addition
 python src/main.py --only-steps "3,11,12,16" --target-dir input/multiagent_models/
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 ---
 

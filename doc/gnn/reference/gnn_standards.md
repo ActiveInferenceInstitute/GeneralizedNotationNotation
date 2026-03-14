@@ -10,16 +10,16 @@
 The GNN pipeline follows strict architectural patterns and standards:
 
 - **Thin Orchestrator Pattern**: All 25 pipeline steps delegate to modular implementations
-  - See: **[src/README.md](../../src/README.md)** for thin orchestrator pattern details
+  - See: **[src/README.md](../README.md)** for thin orchestrator pattern details
 - **Module Architecture**: Each module follows consistent structure with public APIs
-  - See: **[src/AGENTS.md](../../src/AGENTS.md)** for complete module registry
+  - See: **[src/AGENTS.md](../../../README.md)** for complete module registry
 - **Testing Standards**: No substitutions, real data validation, >90% test coverage
   - See: **[doc/gnn/REPO_COHERENCE_CHECK.md](../operations/REPO_COHERENCE_CHECK.md)** for quality standards
 
 **Architecture Documentation:**
 
 - [architecture_reference.md](architecture_reference.md): Implementation patterns and data flow
-- [src/README.md](../../src/README.md): Pipeline safety and reliability
+- [src/README.md](../README.md): Pipeline safety and reliability
 
 ---
 

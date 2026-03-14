@@ -220,7 +220,7 @@ python src/5_type_checker.py --target-dir my_first_gnn_model/ --verbose
 
 **If you see errors**: Check the [Common Errors Guide](../troubleshooting/common_errors.md) or compare with the template above.
 
-For more information on the type checker, see **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)**.
+For more information on the type checker, see **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)**.
 
 ## 🚀 Step 5: Generate Runnable Code (3 minutes)
 
@@ -238,8 +238,8 @@ python src/main.py --only-steps "3,11,12" --target-dir my_first_gnn_model/ --out
 
 For more details on code generation, see:
 
-- **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code rendering module documentation  
-- **[src/execute/AGENTS.md](../../src/execute/AGENTS.md)**: Execution module documentation
+- **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**: Code rendering module documentation  
+- **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)**: Execution module documentation
 
 ### Test the generated code
 
@@ -285,12 +285,12 @@ Your agent:
 
 ### Deeper Learning
 
-1. **Understand the math**: Read [Active Inference basics](about_gnn.md)
+1. **Understand the math**: Read [Active Inference basics](../about_gnn.md)
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
 4. **Advanced features**: Multi-agent, learning, hierarchical models
-5. **Pipeline architecture**: See **[src/AGENTS.md](../../src/AGENTS.md)** for complete module documentation
-6. **Pipeline safety**: Read **[src/README.md](../../src/README.md)** for architecture patterns
+5. **Pipeline architecture**: See **[src/AGENTS.md](../../../README.md)** for complete module documentation
+6. **Pipeline safety**: Read **[src/README.md](../README.md)** for architecture patterns
 
 ### Build Your Own Model
 
@@ -337,12 +337,12 @@ Your agent:
 ## 📚 Resources
 
 - **Pipeline Documentation**:
-  - [src/AGENTS.md](../../src/AGENTS.md): Complete module registry
-  - [src/README.md](../../src/README.md): Pipeline architecture and safety
-- **Documentation**: [Full GNN guide](about_gnn.md) and [GNN Overview](gnn_overview.md)
+  - [src/AGENTS.md](../../../README.md): Complete module registry
+  - [src/README.md](../README.md): Pipeline architecture and safety
+- **Documentation**: [Full GNN guide](../about_gnn.md) and [GNN Overview](../gnn_overview.md)
 - **Examples**: [Model gallery](gnn_examples_doc.md)
 - **Help**:
-  - [FAQ](../troubleshooting/README.md)
+  - [FAQ](../README.md)
   - [Error guide](../troubleshooting/api_error_reference.md)
   - [Support](../SUPPORT.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)

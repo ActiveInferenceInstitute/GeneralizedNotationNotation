@@ -27,7 +27,7 @@ GNN type checking is integrated into the 25-step processing pipeline:
 
 - Type checking and validation
 - Resource estimation
-- See: [src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)
+- See: [src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)
 
 **Quick Start:**
 
@@ -185,15 +185,15 @@ Type checking integrates throughout the pipeline:
 
 ## Related Documentation
 
-- **[Type Checker Module](../../src/type_checker/AGENTS.md)**: Implementation details
+- **[Type Checker Module](../../../src/type_checker/AGENTS.md)**: Implementation details
 - **[GNN Syntax](gnn_syntax.md)**: Complete syntax reference
 - **[GNN Tools](../operations/gnn_tools.md)**: Complete GNN tools reference
 - **[GNN Standards](gnn_standards.md)**: GNN domain knowledge and standards
 
 ## See Also
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete pipeline guide
-- **[GNN Overview](gnn_overview.md)**: Core GNN concepts
+- **[Pipeline Documentation](../operations/gnn_tools.md)**: Complete pipeline guide
+- **[GNN Overview](../gnn_overview.md)**: Core GNN concepts
 - **[GNN Implementation Guide](../integration/gnn_implementation.md)**: Implementation guidance
 
 ---

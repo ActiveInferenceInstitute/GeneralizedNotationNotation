@@ -411,8 +411,8 @@ The GNN project includes a comprehensive 25-step pipeline orchestrated by `src/m
 
 For detailed architecture information, see:
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete module registry and architectural patterns
-- **[src/README.md](../../src/README.md)**: Pipeline safety and reliability documentation
+- **[src/AGENTS.md](../../../README.md)**: Complete module registry and architectural patterns
+- **[src/README.md](../README.md)**: Pipeline safety and reliability documentation
 - **[Quickstart Tutorial](../tutorials/quickstart_tutorial.md)**: Step-by-step tutorial for using the pipeline
 
 ### Overview
@@ -459,7 +459,7 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 3. **`3_gnn.py` (GNN Core Processing)** → `src/gnn/`
     - Purpose: GNN file discovery, multi-format parsing, and validation
-    - See: [src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)
+    - See: [src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)
 
 4. **`4_model_registry.py` (Model Registry)** → `src/model_registry/`
     - Purpose: Model registry management and versioning
@@ -476,26 +476,26 @@ The GNN processing pipeline consists of exactly 25 steps (0-24), executed in ord
 
 8. **`8_visualization.py` (Visualization)** → `src/visualization/`
     - Purpose: Graph and matrix visualization generation
-    - See: [src/visualization/AGENTS.md](../../src/visualization/AGENTS.md)
+    - See: [src/visualization/AGENTS.md](../../../src/visualization/AGENTS.md)
 
 9. **`9_advanced_viz.py` (Advanced Visualization)** → `src/advanced_visualization/`
     - Purpose: Advanced visualization and interactive plots
 
 10. **`10_ontology.py` (Ontology Processing)** → `src/ontology/`
     - Purpose: Active Inference Ontology processing and validation
-    - See: [src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)
+    - See: [src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)
 
 11. **`11_render.py` (Code Rendering)** → `src/render/`
     - Purpose: Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX
-    - See: [src/render/AGENTS.md](../../src/render/AGENTS.md)
+    - See: [src/render/AGENTS.md](../../../src/render/AGENTS.md)
 
 12. **`12_execute.py` (Execution)** → `src/execute/`
     - Purpose: Execute rendered simulation scripts with result capture
-    - See: [src/execute/AGENTS.md](../../src/execute/AGENTS.md)
+    - See: [src/execute/AGENTS.md](../../../src/execute/AGENTS.md)
 
 13. **`13_llm.py` (LLM Integration)** → `src/llm/`
     - Purpose: LLM-enhanced analysis, model interpretation, and AI assistance
-    - See: [src/llm/AGENTS.md](../../src/llm/AGENTS.md)
+    - See: [src/llm/AGENTS.md](../../../src/llm/AGENTS.md)
 
 14. **`14_ml_integration.py` (ML Integration)** → `src/ml_integration/`
     - Purpose: Machine learning integration and model training
@@ -554,7 +554,7 @@ Key tool groups:
 | render | `render_gnn_to_format`, `list_render_frameworks` |
 | gnn | `parse_gnn_content`, `validate_gnn_content` |
 
-For the complete tool inventory, see **[modules/21_mcp.md](modules/21_mcp.md)**.
+For the complete tool inventory, see **[modules/21_mcp.md](../modules/21_mcp.md)**.
 
 #### GNN Parser and Type Checker (Steps 3 & 5)
 
@@ -640,6 +640,6 @@ python src/main.py --only-steps "11,12"
 python src/12_execute.py --frameworks "lite" --verbose  # PyMDP, JAX, DisCoPy only
 ```
 
-For more detailed information on each module, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For more detailed information on each module, see **[src/AGENTS.md](../../../README.md)**.
 
 ---

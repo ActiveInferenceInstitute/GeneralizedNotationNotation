@@ -9,8 +9,8 @@ This document describes the ontology system used in conjunction with GNN files, 
 
 For implementation details and usage, see:
 
-- **[src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)**: Ontology processing module documentation
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete pipeline module registry
+- **[src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)**: Ontology processing module documentation
+- **[src/AGENTS.md](../../../README.md)**: Complete pipeline module registry
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
 
 ## 1. Ontology Terms Definition File
@@ -60,7 +60,7 @@ In this example, `A`, `B`, `D`, `s`, and `o` are variables defined elsewhere in 
 
 The GNN processing pipeline includes Step 10 (`src/10_ontology.py`) that validates these annotations.
 
-For detailed implementation, see **[src/ontology/AGENTS.md](../../src/ontology/AGENTS.md)**.
+For detailed implementation, see **[src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)**.
 
 - **Parsing:** The `ActInfOntologyAnnotation` section is parsed to extract all `VariableName=OntologyTerm` mappings.
 - **Validation:** Each `OntologyTerm` used in the GNN file is checked for its existence as a key in the loaded `act_inf_ontology_terms.json` file.

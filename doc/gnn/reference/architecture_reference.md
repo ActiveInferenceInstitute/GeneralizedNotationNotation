@@ -15,8 +15,8 @@ Implementation details of the thin orchestrator pattern and cross-module integra
 
 For complete pipeline documentation:
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and module registry
-- **[src/README.md](../../src/README.md)**: Pipeline architecture and safety patterns
+- **[src/AGENTS.md](../../../README.md)**: Master agent scaffolding and module registry
+- **[src/README.md](../README.md)**: Pipeline architecture and safety patterns
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator script
 
 ## Complete 25-Step Pipeline Mapping

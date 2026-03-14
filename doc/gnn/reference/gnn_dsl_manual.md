@@ -12,11 +12,11 @@ This document provides a comprehensive guide to the GNN Domain Specific Language
 GNN DSL files are processed and validated through the pipeline:
 
 - **`src/3_gnn.py`** → GNN file parsing and multi-format processing
-  - See: **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)** for parser implementation details
+  - See: **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)** for parser implementation details
 - **`src/5_type_checker.py`** → DSL syntax and type validation
-  - See: **[src/type_checker/AGENTS.md](../../src/type_checker/AGENTS.md)** for validation details
+  - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for validation details
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../src/AGENTS.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
 
 **Quick Start:**
 

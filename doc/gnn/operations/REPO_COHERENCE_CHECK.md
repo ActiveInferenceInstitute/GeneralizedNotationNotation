@@ -9,8 +9,8 @@
 
 This document validates the complete GNN pipeline architecture. For current implementation:
 
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
-- **[src/README.md](../../src/README.md)**: Pipeline architecture and thin orchestrator pattern
+- **[src/AGENTS.md](../../../README.md)**: Master agent scaffolding and complete 25-step pipeline registry
+- **[src/README.md](../README.md)**: Pipeline architecture and thin orchestrator pattern
 - **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation (25 steps: 0-24)
 - [Architecture Reference](../reference/architecture_reference.md): Implementation patterns and cross-module data flow
 - [Technical Reference](../reference/technical_reference.md): Complete entry points and round-trip data flow

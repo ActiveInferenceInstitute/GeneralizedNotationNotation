@@ -21,9 +21,9 @@ python src/main.py --only-steps "3,5,8,11,12" --target-dir doc/gnn/examples/
 
 For module-specific documentation:
 
-- **[src/gnn/AGENTS.md](../../src/gnn/AGENTS.md)**: GNN parsing module
-- **[src/render/AGENTS.md](../../src/render/AGENTS.md)**: Code generation module
-- **[src/AGENTS.md](../../src/AGENTS.md)**: Complete pipeline registry
+- **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: GNN parsing module
+- **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**: Code generation module
+- **[src/AGENTS.md](../../../README.md)**: Complete pipeline registry
 
 ---
 

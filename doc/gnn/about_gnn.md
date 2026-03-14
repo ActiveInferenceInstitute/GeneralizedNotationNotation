@@ -322,7 +322,7 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 
 ### Pipeline and Tools
 
-- **[Pipeline Documentation](../gnn/gnn_tools.md)**: Complete 25-step pipeline guide
+- **[Pipeline Documentation](operations/gnn_tools.md)**: Complete 25-step pipeline guide
 - **[GNN Tools](operations/gnn_tools.md)**: Available software and utilities
 - **[Ontology System](advanced/ontology_system.md)**: Active Inference ontology processing
 
