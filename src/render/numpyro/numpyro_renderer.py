@@ -12,7 +12,7 @@ within the standard Active Inference generative loop.
 import logging
 import numpy as np
 from pathlib import Path
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +21,7 @@ def render_gnn_to_numpyro(
     gnn_spec: Dict[str, Any],
     output_path: Path,
     options: Optional[Dict[str, Any]] = None,
-) -> Tuple[bool, str, List[str]]:
+) -> Tuple[bool, str, str]:
     """Render a GNN specification to a NumPyro POMDP simulation script.
 
     Args:

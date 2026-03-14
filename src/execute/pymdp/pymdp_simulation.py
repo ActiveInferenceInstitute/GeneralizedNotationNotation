@@ -303,10 +303,6 @@ class PyMDPSimulation:
         Returns:
             tuple: (agent, model_matrices) with PyMDP Agent and matrix dict
         """
-        if not PYMDP_AVAILABLE:
-            self.logger.error("PyMDP not available - cannot create model")
-            return None, {}
-
         try:
             # Check if we have extracted GNN matrices
             if not hasattr(self, 'gnn_matrices') or not self.gnn_matrices:
@@ -459,14 +455,7 @@ class PyMDPSimulation:
             if B_matrix.shape != expected_shape:
                 self.logger.warning(f"B matrix shape mismatch: got {B_matrix.shape}, expected {expected_shape}")
                 # Try to handle different organizations
-                if B_matrix.ndim == 3 and B_matrix.shape[2] == self.num_actions:
-                    # Assume [states, states, actions] format
-                    if B_matrix.shape[:2] == (self.num_states, self.num_states):
-                        pass  # Already correct
-                    else:
-                        return self._create_transition_model()
-                else:
-                    return self._create_transition_model()
+                return self._create_transition_model()
 
             # Normalize transition probabilities for each action
             for action in range(self.num_actions):
@@ -560,10 +549,6 @@ class PyMDPSimulation:
         Returns:
             tuple: (agent, model_matrices) with PyMDP Agent and matrix dict
         """
-        if not PYMDP_AVAILABLE:
-            self.logger.error("PyMDP not available - cannot create model")
-            return None, {}
-
         try:
             # A matrix: P(observation | hidden_state) [NUM_OBS, NUM_STATES]
             A = utils.obj_array(1)
@@ -742,7 +727,7 @@ class PyMDPSimulation:
 
         if not self.agent:
             self.logger.error("No agent available - create model first")
-            return {}
+            return {'success': False, 'error': 'No agent available'}
 
         start_time = time.time()
         self.logger.info(f"Starting PyMDP simulation: {self.model_name}")
@@ -794,7 +779,7 @@ class PyMDPSimulation:
 
         except Exception as e:
             self.logger.error(f"Simulation error at timestep {t}: {e}")
-            return {}
+            return {'success': False, 'error': str(e)}
 
         # Calculate results
         duration = time.time() - start_time

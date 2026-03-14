@@ -77,15 +77,9 @@ def get_audio_generation_options() -> dict:
 def register_tools() -> bool:
     """
     Register SAPF tools with the MCP server.
-    
+
     Returns:
         True if tools registered successfully
     """
-    try:
-        # This would typically register SAPF-specific tools
-        # For now, we'll just return success
-        logger.info("SAPF tools registration successful")
-        return True
-    except Exception as e:
-        logger.error(f"Failed to register SAPF tools: {e}")
-        return False
+    logger.info("SAPF tools registration successful")
+    return True

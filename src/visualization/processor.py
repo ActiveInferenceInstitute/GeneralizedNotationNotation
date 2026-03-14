@@ -398,7 +398,7 @@ def process_single_gnn_file(gnn_file: Path, results_dir: Path, verbose: bool = F
         return visualizations
 
     except Exception as e:
-        raise Exception(f"Failed to process visualization for {gnn_file}: {e}")
+        raise Exception(f"Failed to process visualization for {gnn_file}: {e}") from e
 
 def parse_gnn_content(content: str) -> Dict[str, Any]:
     """

@@ -669,8 +669,9 @@ class GnnToPyMdpConverter:
         if "parameters" in self.gnn_spec:
             self._parse_parameters_from_gnn_data()
         else:
-            # Handle older raw text format
-            self._infer_from_initial_parameterization_legacy()
+            # Older raw text format — dimension inference falls through to
+            # _extract_initial_parameterization_matrices() below.
+            self._add_log("No 'parameters' key found; skipping legacy parameterization inference.")
 
         # NEW: Extract InitialParameterization matrices if available
         self._extract_initial_parameterization_matrices()

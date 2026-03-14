@@ -153,7 +153,7 @@ def perform_security_check(file_path: Path, verbose: bool = False) -> Dict[str, 
         }
 
     except Exception as e:
-        raise Exception(f"Failed to perform security check on {file_path}: {e}")
+        raise Exception(f"Failed to perform security check on {file_path}: {e}") from e
 
 def check_vulnerabilities(file_path: Path, verbose: bool = False) -> List[Dict[str, Any]]:
     """
