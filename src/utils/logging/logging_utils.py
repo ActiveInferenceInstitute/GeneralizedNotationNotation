@@ -646,7 +646,7 @@ class PipelineProgressTracker:
             step_num, self.total_steps, step_name, "RUNNING"
         )
 
-    def complete_step(self, step_num: int, status: str, duration: float = None) -> str:
+    def complete_step(self, step_num: int, status: str, duration: Optional[float] = None) -> str:
         """Mark step as completed and return summary."""
         self.step_status[step_num] = status
         if duration:
@@ -748,8 +748,8 @@ class VisualFormatter(StructuredFormatter):
 _global_progress_tracker = None
 
 # Enhanced logging functions with visual improvements
-def log_step_start(logger_or_step_name, message: str = None, step_number: int = None,
-                  total_steps: int = None, **metadata):
+def log_step_start(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None,
+                  total_steps: Optional[int] = None, **metadata):
     """Enhanced step start logging with visual progress indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -777,8 +777,8 @@ def log_step_start(logger_or_step_name, message: str = None, step_number: int = 
         **metadata
     )
 
-def log_step_success(logger_or_step_name, message: str = None, step_number: int = None,
-                    duration: float = None, **metadata):
+def log_step_success(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None,
+                    duration: Optional[float] = None, **metadata):
     """Enhanced step success logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -816,7 +816,7 @@ def log_step_success(logger_or_step_name, message: str = None, step_number: int 
     record.performance_context = performance_context
     logger.handle(record)
 
-def log_step_warning(logger_or_step_name, message: str = None, step_number: int = None, **metadata):
+def log_step_warning(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None, **metadata):
     """Enhanced step warning logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name
@@ -840,7 +840,7 @@ def log_step_warning(logger_or_step_name, message: str = None, step_number: int 
         **metadata
     )
 
-def log_step_error(logger_or_step_name, message: str = None, step_number: int = None, **metadata):
+def log_step_error(logger_or_step_name, message: Optional[str] = None, step_number: Optional[int] = None, **metadata):
     """Enhanced step error logging with visual indicators."""
     if isinstance(logger_or_step_name, str):
         step_name = logger_or_step_name

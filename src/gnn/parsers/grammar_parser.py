@@ -14,7 +14,8 @@ import logging
 from typing import Dict, List, Any, Optional
 
 from .common import (
-    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection, VariableType, DataType, ConnectionType
+    BaseGNNParser, ParseResult, GNNInternalRepresentation, Variable, Connection,
+    Parameter, VariableType, DataType, ConnectionType, TimeSpecification, OntologyMapping,
 )
 
 logger = logging.getLogger(__name__)
@@ -46,8 +47,6 @@ class BNFParser(BaseGNNParser):
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
-
         try:
             result.model.model_name = embedded_data.get('model_name', 'BNFGNNModel')
             result.model.annotation = embedded_data.get('annotation', '')
@@ -81,7 +80,6 @@ class BNFParser(BaseGNNParser):
 
             # Restore time specification
             if embedded_data.get('time_specification'):
-                from .common import TimeSpecification
                 time_data = embedded_data['time_specification']
                 result.model.time_specification = TimeSpecification(
                     time_type=time_data.get('time_type', 'dynamic'),
@@ -92,7 +90,6 @@ class BNFParser(BaseGNNParser):
 
             # Restore ontology mappings
             for mapping_data in embedded_data.get('ontology_mappings', []):
-                from .common import OntologyMapping
                 mapping = OntologyMapping(
                     variable_name=mapping_data.get('variable_name', ''),
                     ontology_term=mapping_data.get('ontology_term', ''),
@@ -285,8 +282,6 @@ class EBNFParser(BNFParser):
 
     def _parse_from_embedded_data(self, embedded_data: Dict[str, Any], result: ParseResult) -> ParseResult:
         """Parse model from embedded JSON data for perfect round-trip fidelity (EBNF version)."""
-        from .common import Variable, Connection, Parameter, VariableType, DataType, ConnectionType
-
         try:
             result.model.model_name = embedded_data.get('model_name', 'EBNFGNNModel')
             result.model.annotation = embedded_data.get('annotation', '')
@@ -320,7 +315,6 @@ class EBNFParser(BNFParser):
 
             # Restore time specification
             if embedded_data.get('time_specification'):
-                from .common import TimeSpecification
                 time_data = embedded_data['time_specification']
                 result.model.time_specification = TimeSpecification(
                     time_type=time_data.get('time_type', 'dynamic'),
@@ -331,7 +325,6 @@ class EBNFParser(BNFParser):
 
             # Restore ontology mappings
             for mapping_data in embedded_data.get('ontology_mappings', []):
-                from .common import OntologyMapping
                 mapping = OntologyMapping(
                     variable_name=mapping_data.get('variable_name', ''),
                     ontology_term=mapping_data.get('ontology_term', ''),

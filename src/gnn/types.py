@@ -15,7 +15,7 @@ class ValidationLevel(Enum):
     ROUND_TRIP = "round_trip"
 
 class GNNSyntaxError(Exception):
-    def __init__(self, message: str, line: int = None, column: int = None, format_context: str = None):
+    def __init__(self, message: str, line: Optional[int] = None, column: Optional[int] = None, format_context: Optional[str] = None):
         super().__init__(message)
         self.line = line
         self.column = column

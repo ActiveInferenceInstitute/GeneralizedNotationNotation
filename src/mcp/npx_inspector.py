@@ -18,6 +18,7 @@ import time
 import queue
 from pathlib import Path
 import shlex
+from typing import Optional, Dict, Any
 
 # --- Configuration ---
 # Adjust these paths if your project structure is different
@@ -67,7 +68,7 @@ class StdioMCPClient:
         self.stdout_thread.start()
         self.stderr_thread.start()
 
-    def _send_request(self, method: str, params: dict = None) -> dict:
+    def _send_request(self, method: str, params: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         if not self.process.stdin:
             raise IOError("Server stdin is not available.")
 

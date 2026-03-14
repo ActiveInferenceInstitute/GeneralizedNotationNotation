@@ -17,7 +17,9 @@ import logging
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Literal, Optional
+
+StepStatus = Literal["PENDING", "SUCCESS", "FAILED", "WARNING", "SKIPPED", "UNKNOWN"]
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,7 @@ class StepRecord:
     """Record of a single pipeline step execution."""
     name: str
     step_num: int
-    status: str = "PENDING"
+    status: StepStatus = "PENDING"
     duration_seconds: float = 0.0
     output_dir: str = ""
     artifacts: List[str] = field(default_factory=list)
