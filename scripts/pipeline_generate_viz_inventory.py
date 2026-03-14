@@ -36,14 +36,14 @@ def get_image_metadata(image_path: Path) -> Dict[str, Any]:
             "file_size_bytes": image_path.stat().st_size,
             "file_size_kb": round(image_path.stat().st_size / 1024, 2)
         }
-    except Exception as e:
+    except OSError as e:
         return {"error": str(e)}
 
 def get_file_hash(file_path: Path) -> str:
     """Calculate SHA256 hash of file."""
     try:
         return hashlib.sha256(file_path.read_bytes()).hexdigest()[:16]
-    except Exception:
+    except OSError:
         return "error"
 
 def scan_visualizations(root_dir: Path) -> List[Dict[str, Any]]:

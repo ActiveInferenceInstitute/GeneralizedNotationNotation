@@ -41,7 +41,7 @@ def process_file(filepath):
                 f.write(new_content)
             print(f"Updated: {filepath}")
             return True
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         print(f"Error processing {filepath}: {e}")
     return False
 

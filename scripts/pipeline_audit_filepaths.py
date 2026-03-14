@@ -166,7 +166,7 @@ class FilepathAuditor:
                 line_num = content[:match.start()].count('\n') + 1
                 position = match.start()
                 links.append((link_text, link_path, line_num, position))
-        except Exception as e:
+        except (OSError, UnicodeDecodeError) as e:
             self.issues["broken_links"].append(f"Error reading {file_path}: {e}")
         return links
 
@@ -318,7 +318,7 @@ class FilepathAuditor:
                     module = node.module or ""
                     for alias in node.names:
                         imports.append((f"{module}.{alias.name}", node.lineno, "from"))
-        except Exception as e:
+        except (SyntaxError, UnicodeDecodeError, OSError) as e:
             self.issues["import_errors"].append(f"Error parsing {file_path}: {e}")
         return imports
 
@@ -387,7 +387,7 @@ class FilepathAuditor:
             # Read content once for code block detection
             try:
                 content = file_path.read_text(encoding='utf-8')
-            except Exception:
+            except (OSError, UnicodeDecodeError):
                 content = ""
 
             # Scan markdown links

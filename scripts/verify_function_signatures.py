@@ -39,7 +39,7 @@ def extract_exports_from_init(init_path: Path) -> Dict[str, Any]:
                                     exports['all_exports'].append(item.s)
                                 elif isinstance(item, ast.Constant):
                                     exports['all_exports'].append(item.value)
-    except Exception as e:
+    except (SyntaxError, ValueError) as e:
         print(f"Warning: Could not parse {init_path}: {e}")
 
     # Extract function definitions

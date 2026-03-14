@@ -32,19 +32,19 @@ def discover_python_files(base: Path) -> List[Path]:
 def safe_unparse(node: Any) -> str:
     try:
         return ast.unparse(node)
-    except Exception:
+    except (ValueError, TypeError):
         return ""
 
 
 def ast_to_api(path: Path) -> Dict[str, Any]:
     try:
         source = path.read_text(encoding="utf-8")
-    except Exception:
+    except (OSError, UnicodeDecodeError):
         return {"file": str(path.relative_to(PROJECT_ROOT)), "error": "read_error"}
 
     try:
         tree = ast.parse(source)
-    except Exception as e:
+    except (SyntaxError, ValueError) as e:
         return {"file": str(path.relative_to(PROJECT_ROOT)), "error": f"parse_error: {e}"}
 
     functions: List[Dict[str, Any]] = []

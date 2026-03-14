@@ -226,7 +226,7 @@ def _load_gnn_models(target_dir: Path, logger: logging.Logger, base_output_dir: 
                         # The JSON contains "output_directory" which is the root for these files usually
                         json_out_dir = processing_results.get("output_directory")
                         if json_out_dir and str(parsed_model_file).startswith(str(json_out_dir)):
-                            rel_path = str(parsed_model_file)[len(str(json_out_dir)):].lstrip("/")
+                            rel_path = str(parsed_model_file)[len(str(json_out_dir)):].lstrip("/\\")
                             parsed_file = gnn_output_dir / rel_path
 
                         if parsed_file.exists():

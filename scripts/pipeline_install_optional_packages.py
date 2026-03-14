@@ -139,7 +139,7 @@ Available groups: jax, pymdp, visualization, audio, llm, ml
     except KeyboardInterrupt:
         print("\n\n⚠️  Installation cancelled by user")
         return 1
-    except Exception as e:
+    except (RuntimeError, OSError, ImportError) as e:
         logger.error(f"❌ Installation failed: {e}")
         return 1
 

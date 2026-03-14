@@ -68,7 +68,7 @@ def fix_script_references(file_path: Path) -> bool:
                 tmp_f.write(content)
             os.replace(tmp_f.name, str(file_path))
             return True
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         print(f"Error fixing {file_path}: {e}")
     return False
 
@@ -97,7 +97,7 @@ def fix_markdown_paths(file_path: Path) -> bool:
                 tmp_f.write(content)
             os.replace(tmp_f.name, str(file_path))
             return True
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         print(f"Error fixing markdown paths in {file_path}: {e}")
     return False
 

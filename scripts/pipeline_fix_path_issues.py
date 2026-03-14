@@ -60,7 +60,7 @@ def fix_file_paths(file_path: Path) -> Tuple[int, List[str]]:
                 tmp_f.write(content)
             os.replace(tmp_f.name, str(file_path))
             return len(fixes_applied), fixes_applied
-    except Exception as e:
+    except (OSError, UnicodeDecodeError) as e:
         print(f"Error fixing {file_path}: {e}")
     return 0, []
 

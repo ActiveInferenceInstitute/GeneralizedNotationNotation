@@ -62,7 +62,7 @@ class VersionUpdater:
             self.updated_files.append(str(file_path))
             return True
 
-        except Exception as e:
+        except (OSError, UnicodeDecodeError) as e:
             self.errors.append(f"Error updating {file_path}: {e}")
             return False
 
@@ -100,7 +100,7 @@ class VersionUpdater:
                 os.replace(tmp_f.name, str(file_path))
                 self.updated_files.append(str(file_path))
 
-            except Exception as e:
+            except (OSError, UnicodeDecodeError) as e:
                 self.errors.append(f"Error updating {file_path}: {e}")
                 success = False
 
@@ -126,7 +126,7 @@ class VersionUpdater:
             self.updated_files.append(str(julia_file))
             return True
 
-        except Exception as e:
+        except (OSError, UnicodeDecodeError) as e:
             self.errors.append(f"Error updating Julia script: {e}")
             return False
 
@@ -164,7 +164,7 @@ class VersionUpdater:
 
             return True
 
-        except Exception as e:
+        except (OSError, UnicodeDecodeError) as e:
             self.errors.append(f"Error updating changelog: {e}")
             return False
 
