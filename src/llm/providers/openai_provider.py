@@ -320,7 +320,11 @@ class OpenAIProvider(BaseLLMProvider):
         logger.info("OpenAI provider connection closed")
 
     def analyze(self, content: str, task: str) -> str:
-        """Perform analysis on GNN content."""
+        """Perform analysis on GNN content.
+
+        Intentionally sync: bridges to async generate_response() via asyncio.run()
+        so callers without an event loop can use this without await.
+        """
         import concurrent.futures
 
         prompt = f"Analyze this GNN model for {task}: {content}"

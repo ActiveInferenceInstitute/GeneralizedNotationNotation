@@ -315,8 +315,7 @@ def process_gnn_directory(directory: Union[str, Path], output_dir: Union[str, Pa
         output_dir: Optional directory to save processing results as JSON.
             If provided, creates 'gnn_processing_results.json' in this location.
         recursive: Whether to search subdirectories for GNN files.
-        parallel: Whether to use parallel processing. Currently not implemented
-            in the lightweight version; reserved for future optimization.
+        parallel: Accepted for API compatibility but not used; processing is always sequential.
 
     Returns:
         Dictionary containing:

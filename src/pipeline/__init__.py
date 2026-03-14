@@ -3,6 +3,7 @@ from __future__ import annotations
 """
 Pipeline module for centralized configuration and utilities.
 """
+from typing import Literal
 
 from .config import (
     get_pipeline_config,
@@ -49,7 +50,7 @@ FEATURES = {
 class PipelineOrchestrator:
     def __init__(self):
         self.steps = []
-    def run(self) -> bool:
+    def run(self) -> Literal[True]:
         """Placeholder — always returns True. Use execute_pipeline() for actual pipeline execution."""
         return True
     def get_pipeline_steps(self) -> list[str]:
@@ -66,10 +67,10 @@ class PipelineStep:
     """Placeholder step class — always returns True. Not wired to actual step execution."""
     def __init__(self, name: str):
         self.name = name
-    def execute(self) -> bool:
+    def execute(self) -> Literal[True]:
         """Placeholder — always returns True."""
         return True
-    def validate(self) -> bool:
+    def validate(self) -> Literal[True]:
         """Placeholder — always returns True."""
         return True
 

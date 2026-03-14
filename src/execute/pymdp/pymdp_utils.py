@@ -1,20 +1,5 @@
 #!/usr/bin/env python3
-"""
-PyMDP Utilities Module
-
-Utility functions for PyMDP simulations including JSON serialization,
-numpy array handling, and data conversion utilities.
-
-Features:
-- Comprehensive numpy type serialization for JSON
-- Recursive data structure conversion
-- Safe file operations
-- Data validation utilities
-- Pipeline integration support
-
-Author: GNN PyMDP Integration
-Date: 2024
-"""
+"""Utility functions for PyMDP simulations: JSON serialization, numpy array handling, data conversion."""
 
 import ast
 import numpy as np
