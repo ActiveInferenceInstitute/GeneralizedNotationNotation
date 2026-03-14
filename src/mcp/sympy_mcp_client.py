@@ -70,7 +70,7 @@ class SymPyMCPClient:
         """Async context manager exit"""
         await self.disconnect()
 
-    async def connect(self):
+    async def connect(self) -> None:
         """Connect to SymPy MCP server, starting it if necessary"""
         if not HTTPX_AVAILABLE:
             raise SymPyMCPConnectionError("httpx not available for HTTP client functionality")
@@ -105,7 +105,7 @@ class SymPyMCPClient:
         else:
             raise SymPyMCPConnectionError("SymPy MCP server not running and auto-start disabled")
 
-    async def disconnect(self):
+    async def disconnect(self) -> None:
         """Disconnect from SymPy MCP server"""
         if self._client:
             await self._client.aclose()

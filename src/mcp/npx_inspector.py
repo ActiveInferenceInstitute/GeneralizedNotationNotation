@@ -182,7 +182,7 @@ def handle_get_resource(client: StdioMCPClient, args):
 
 
 # --- Main ---
-def main():
+def main() -> None:
     # This is the primary parser for the inspector tool itself.
     parser = argparse.ArgumentParser(
         description="GNN MCP Inspector. Launches and interacts with a GNN MCP server.",

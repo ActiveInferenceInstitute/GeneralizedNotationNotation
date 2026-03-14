@@ -12,10 +12,10 @@ from typing import Dict, Any, List
 # Set up logging
 logger = logging.getLogger(__name__)
 
-def register_tools(registry):
+def register_tools(registry: Any) -> None:
     """
     Register all model registry tools with the MCP registry.
-    
+
     Args:
         registry: The MCP tool registry
     """

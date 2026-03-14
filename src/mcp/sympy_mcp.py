@@ -16,10 +16,10 @@ logger = logging.getLogger(__name__)
 # Global SymPy integration instance
 sympy_integration_instance = None
 
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> None:
     """
     Register SymPy MCP tools with the main MCP instance.
-    
+
     Args:
         mcp_instance: The main MCP instance to register tools with
     """
@@ -171,7 +171,7 @@ def register_tools(mcp_instance):
     logger.info("Successfully registered SymPy MCP tools")
 
 
-async def get_sympy_integration():
+async def get_sympy_integration() -> Any:
     """Get or create the SymPy integration instance"""
     global sympy_integration_instance
 

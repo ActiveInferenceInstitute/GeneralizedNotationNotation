@@ -5,7 +5,7 @@ This module provides ontology capabilities with recovery implementations.
 """
 
 from pathlib import Path
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Union
 import logging
 
 from utils.pipeline_template import (
@@ -50,7 +50,7 @@ class OntologyProcessor:
     def run(self, *args, **kwargs) -> bool:
         return True
 
-    def process_ontology(self, data: dict | str) -> dict:
+    def process_ontology(self, data: Union[Dict[str, Any], str]) -> Dict[str, Any]:
         """Process ontology data or content and return a normalized result."""
         if isinstance(data, dict):
             content = data.get('content', '')

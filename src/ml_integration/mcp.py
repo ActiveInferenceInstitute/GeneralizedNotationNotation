@@ -5,7 +5,7 @@ This module exposes ML integration processing tools via MCP.
 """
 
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional
 import logging
 
 logger = logging.getLogger(__name__)
@@ -133,7 +133,7 @@ def get_ml_module_info_mcp() -> Dict[str, Any]:
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> None:
     """Register ML integration domain tools with the MCP."""
 
     mcp_instance.register_tool(
