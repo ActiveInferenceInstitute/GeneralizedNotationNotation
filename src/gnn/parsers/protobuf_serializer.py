@@ -156,19 +156,3 @@ class ProtobufSerializer(BaseGNNSerializer):
             'step_size': getattr(time_spec, 'step_size', None)
         }
 
-    def _serialize_ontology_mappings(self, mappings) -> List[Dict[str, Any]]:
-        """Serialize ontology mappings to list of dicts."""
-        if not mappings:
-            return []
-
-        result = []
-        for mapping in mappings:
-            if hasattr(mapping, '__dict__'):
-                result.append({
-                    'variable_name': getattr(mapping, 'variable_name', ''),
-                    'ontology_term': getattr(mapping, 'ontology_term', ''),
-                    'description': getattr(mapping, 'description', None)
-                })
-            else:
-                result.append(str(mapping))
-        return result

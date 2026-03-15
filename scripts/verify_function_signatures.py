@@ -9,7 +9,6 @@ import ast
 import re
 from pathlib import Path
 from typing import Dict, List, Any
-import sys
 
 def extract_exports_from_init(init_path: Path) -> Dict[str, Any]:
     """Extract exported functions and classes from __init__.py."""

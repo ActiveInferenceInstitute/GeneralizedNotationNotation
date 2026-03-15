@@ -17,7 +17,6 @@ Usage:
 
 import os
 import re
-import sys
 import argparse
 from pathlib import Path
 from typing import List
@@ -267,16 +266,16 @@ class DocumentationValidator:
             r'\bstep[_\s]+14\b': 'step 23',
             r'\b14\s+steps?\b': '24 steps',
             r'\bfourteen\s+steps?\b': 'twenty-four steps',
-            r'\bsteps?\s+1[-\s]*14\b': 'steps 0-23',
-            r'\b1[-\s]*14\s+steps?\b': '0-23 steps',
+            r'\bsteps?\s+1[-\s]*14\b': 'steps 0-24',
+            r'\b1[-\s]*14\s+steps?\b': '0-24 steps',
 
             # Old 13-step references -> 24-step
             r'\b13[_-]step\b': '24-step',
             r'\bstep[_\s]+13\b': 'step 23',
             r'\b13\s+steps?\b': '24 steps',
             r'\bthirteen\s+steps?\b': 'twenty-four steps',
-            r'\bsteps?\s+1[-\s]*13\b': 'steps 0-23',
-            r'\b1[-\s]*13\s+steps?\b': '0-23 steps',
+            r'\bsteps?\s+1[-\s]*13\b': 'steps 0-24',
+            r'\b1[-\s]*13\s+steps?\b': '0-24 steps',
 
             # Incorrect script references (old pipeline)
             r'\b12_discopy\.py\b': '15_audio.py',

@@ -7,7 +7,6 @@ This script updates version numbers consistently across all project files.
 
 import os
 import re
-import sys
 import argparse
 import tempfile
 from pathlib import Path

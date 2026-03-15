@@ -5,7 +5,6 @@ Scans all output directories and catalogs all visualization files with metadata
 """
 
 import json
-import sys
 from pathlib import Path
 from datetime import datetime
 from typing import Dict, List, Any

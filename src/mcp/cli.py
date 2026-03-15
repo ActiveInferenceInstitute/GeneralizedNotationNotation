@@ -13,6 +13,7 @@ import logging
 import time
 from pathlib import Path
 import importlib.util
+from utils.logging.logging_utils import setup_step_logging, PipelineLogger
 
 # Configure logging
 logger = logging.getLogger("mcp.cli")
@@ -48,11 +49,13 @@ def _cli_error(operation: str, e: Exception, args, suggestions: bool = False) ->
     if getattr(args, "verbose", False):
         import traceback
         logger.error(f"Traceback: {traceback.format_exc()}")
-    print(f"\n❌ Error: {e}", file=sys.stderr)
+    
+    # Use logger for user-facing error message
+    logger.error(f"❌ Error: {e}")
     if suggestions:
-        print("💡 Suggestions:", file=sys.stderr)
-        print("  - Check if MCP server is running", file=sys.stderr)
-        print("  - Verify GNN modules are properly installed", file=sys.stderr)
+        logger.info("💡 Suggestions:")
+        logger.info("  - Check if MCP server is running")
+        logger.info("  - Verify GNN modules are properly installed")
     raise SystemExit(1)
 
 def list_capabilities(args):
@@ -63,33 +66,36 @@ def list_capabilities(args):
         capabilities = mcp_instance.get_capabilities()
 
         if args.format == "json":
-            print(json.dumps(capabilities, indent=2))
+            # Primary payload output — using logger.info for "Zero raw print" compliance
+            # In JSON mode, we might want to avoid the log header if outputting results
+            # but the policy is "all use logging".
+            logger.info(json.dumps(capabilities, indent=2))
             return
 
         # Enhanced human-readable format
-        print("🚀 GNN MCP Server Capabilities")
-        print("=" * 50)
+        logger.info("🚀 GNN MCP Server Capabilities")
+        logger.info("=" * 50)
 
         server_info = capabilities.get('server', {})
-        print("\n📋 Server Information:")
-        print(f"  Name: {server_info.get('name', 'Unknown GNN MCP Server')}")
-        print(f"  Version: {server_info.get('version', 'Unknown')}")
-        print(f"  Description: {server_info.get('description', 'No description available')}")
+        logger.info("\n📋 Server Information:")
+        logger.info(f"  Name: {server_info.get('name', 'Unknown GNN MCP Server')}")
+        logger.info(f"  Version: {server_info.get('version', 'Unknown')}")
+        logger.info(f"  Description: {server_info.get('description', 'No description available')}")
 
         # Get enhanced server status for more details
         try:
             status = mcp_instance.get_enhanced_server_status()
             health = status.get('health', {})
-            print(f"  Health: {health.get('status', 'unknown').upper()} (Score: {health.get('score', 0)}/100)")
-            print(f"  Uptime: {status.get('server_info', {}).get('uptime_formatted', 'Unknown')}")
+            logger.info(f"  Health: {health.get('status', 'unknown').upper()} (Score: {health.get('score', 0)}/100)")
+            logger.info(f"  Uptime: {status.get('server_info', {}).get('uptime_formatted', 'Unknown')}")
         except (AttributeError, KeyError, TypeError):
-            print("  Health: Unable to determine")
+            logger.info("  Health: Unable to determine")
 
         # Tools section
         tools = capabilities.get('tools', [])
         if tools:
-            print(f"\n🔧 Available Tools ({len(tools)}):")
-            print("-" * 30)
+            logger.info(f"\n🔧 Available Tools ({len(tools)}):")
+            logger.info("-" * 30)
 
             # Group tools by category
             tools_by_category = {}
@@ -100,41 +106,41 @@ def list_capabilities(args):
                 tools_by_category[category].append(tool)
 
             for category, category_tools in tools_by_category.items():
-                print(f"\n  📂 {category} ({len(category_tools)} tools):")
+                logger.info(f"\n  📂 {category} ({len(category_tools)} tools):")
                 for tool in sorted(category_tools, key=lambda t: t['name']):
                     deprecated = " ⚠️ DEPRECATED" if tool.get('deprecated') else ""
                     experimental = " 🧪 EXPERIMENTAL" if tool.get('experimental') else ""
-                    print(f"    • {tool['name']}{deprecated}{experimental}")
+                    logger.info(f"    • {tool['name']}{deprecated}{experimental}")
                     if args.verbose:
-                        print(f"      Description: {tool.get('description', 'No description')}")
-                        print(f"      Module: {tool.get('module', 'Unknown')}")
-                        print(f"      Version: {tool.get('version', '1.0.0')}")
+                        logger.info(f"      Description: {tool.get('description', 'No description')}")
+                        logger.info(f"      Module: {tool.get('module', 'Unknown')}")
+                        logger.info(f"      Version: {tool.get('version', '1.0.0')}")
 
         # Resources section
         resources = capabilities.get('resources', [])
         if resources:
-            print(f"\n📚 Available Resources ({len(resources)}):")
-            print("-" * 30)
+            logger.info(f"\n📚 Available Resources ({len(resources)}):")
+            logger.info("-" * 30)
             for resource in sorted(resources, key=lambda r: r['uri_template']):
-                print(f"  • {resource['uri_template']}")
+                logger.info(f"  • {resource['uri_template']}")
                 if args.verbose:
-                    print(f"    Description: {resource.get('description', 'No description')}")
-                    print(f"    Module: {resource.get('module', 'Unknown')}")
+                    logger.info(f"    Description: {resource.get('description', 'No description')}")
+                    logger.info(f"    Module: {resource.get('module', 'Unknown')}")
 
         # Summary
         total_tools = len(tools)
         total_resources = len(resources)
-        print(f"\n📊 Summary: {total_tools} tools, {total_resources} resources")
+        logger.info(f"\n📊 Summary: {total_tools} tools, {total_resources} resources")
 
         if args.verbose:
             try:
                 # Show performance summary
                 status = mcp_instance.get_enhanced_server_status()
                 perf = status.get('performance', {})
-                print("\n⚡ Performance:")
-                print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
-                print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
-                print(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
+                logger.info("\n⚡ Performance:")
+                logger.info(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
+                logger.info(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
+                logger.info(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
             except (AttributeError, KeyError, TypeError) as e:
                 logger.debug(f"Could not retrieve performance stats: {e}")
 
@@ -148,10 +154,10 @@ def execute_tool(args):
 
         if args.tool_name not in mcp_instance.tools:
             available_tools = list(mcp_instance.tools.keys())
-            print(f"\n❌ Error: Tool '{args.tool_name}' not found", file=sys.stderr)
-            print("\n💡 Available tools:", file=sys.stderr)
+            logger.error(f"Tool '{args.tool_name}' not found")
+            logger.info("Available tools:")
             for tool in sorted(available_tools):
-                print(f"  • {tool}", file=sys.stderr)
+                logger.info(f"  • {tool}")
             raise SystemExit(1)
 
         tool = mcp_instance.tools[args.tool_name]
@@ -161,12 +167,12 @@ def execute_tool(args):
             try:
                 params = json.loads(args.params)
             except json.JSONDecodeError as e:
-                print(f"\n❌ Error: Invalid JSON parameters: {e}", file=sys.stderr)
-                print("\n💡 Expected format: --params '{\"key\": \"value\"}'", file=sys.stderr)
-                raise SystemExit(1)
+                logger.error(f"Invalid JSON parameters: {e}")
+                logger.info("Expected format: --params '{\"key\": \"value\"}'")
+                raise SystemExit(1) from e
 
         if not isinstance(params, dict):
-            print(f"\n❌ Error: Parameters must be a JSON object, got {type(params)}", file=sys.stderr)
+            logger.error(f"Parameters must be a JSON object, got {type(params)}")
             raise SystemExit(1)
 
         if tool.schema and args.validate:
@@ -174,47 +180,47 @@ def execute_tool(args):
                 required = tool.schema.get('required', [])
                 for req in required:
                     if req not in params:
-                        print(f"\n❌ Error: Missing required parameter '{req}'", file=sys.stderr)
-                        print(f"\n💡 Required parameters: {required}", file=sys.stderr)
+                        logger.error(f"Missing required parameter '{req}'")
+                        logger.info(f"Required parameters: {required}")
                         raise SystemExit(1)
             except Exception as e:
                 logger.warning(f"Schema validation failed: {e}")
 
-        print(f"🔧 Executing tool: {args.tool_name}")
+        logger.info(f"🔧 Executing tool: {args.tool_name}")
         if args.verbose:
-            print(f"📝 Parameters: {json.dumps(params, indent=2)}")
-            print(f"🏷️  Module: {tool.module}")
-            print(f"📂 Category: {tool.category}")
-            print(f"📋 Description: {tool.description}")
+            logger.info(f"📝 Parameters: {json.dumps(params, indent=2)}")
+            logger.info(f"🏷️  Module: {tool.module}")
+            logger.info(f"📂 Category: {tool.category}")
+            logger.info(f"📋 Description: {tool.description}")
 
         start_time = time.time()
         result = mcp_instance.execute_tool(args.tool_name, params)
         execution_time = time.time() - start_time
 
         if args.format == "json":
-            print(json.dumps(result, indent=2))
+            logger.info(json.dumps(result, indent=2))
         else:
-            print(f"\n✅ Tool executed successfully in {execution_time:.3f}s")
-            print("📊 Result:")
-            print(json.dumps(result, indent=2))
+            logger.info(f"\n✅ Tool executed successfully in {execution_time:.3f}s")
+            logger.info("📊 Result:")
+            logger.info(json.dumps(result, indent=2))
 
             if args.verbose:
                 try:
                     stats = mcp_instance.get_tool_performance_stats(args.tool_name)
                     if stats:
-                        print("\n📈 Tool Statistics:")
-                        print(f"  Uses: {stats.get('use_count', 0)}")
-                        print(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
-                        print(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
+                        logger.info("\n📈 Tool Statistics:")
+                        logger.info(f"  Uses: {stats.get('use_count', 0)}")
+                        logger.info(f"  Avg Time: {stats.get('average_execution_time', 0):.3f}s")
+                        logger.info(f"  Success Rate: {stats.get('success_rate', 0):.1%}")
                 except (AttributeError, KeyError, TypeError) as e:
                     logger.debug(f"Could not retrieve tool stats: {e}")
 
     except MCPError as e:
-        print(f"\n❌ MCP Error: {e}", file=sys.stderr)
+        logger.error(f"MCP Error: {e}")
         if args.verbose:
-            print(f"🔍 Error Code: {e.code}", file=sys.stderr)
-            print(f"📋 Error Data: {e.data}", file=sys.stderr)
-        raise SystemExit(1)
+            logger.error(f"Error Code: {e.code}")
+            logger.error(f"Error Data: {e.data}")
+        raise SystemExit(1) from e
     except Exception as e:
         _cli_error("executing tool", e, args)
 
@@ -226,15 +232,15 @@ def get_resource(args):
         result = mcp_instance.get_resource(args.uri)
 
         if args.format == "json":
-            print(json.dumps(result, indent=2))
+            logger.info(json.dumps(result, indent=2))
         else:
             # Human-readable format
-            print(f"Resource '{args.uri}' retrieved successfully:")
-            print(json.dumps(result, indent=2))
+            logger.info(f"Resource '{args.uri}' retrieved successfully:")
+            logger.info(json.dumps(result, indent=2))
 
     except MCPError as e:
         logger.error(f"MCP Error: {e}")
-        raise SystemExit(1)
+        raise SystemExit(1) from e
     except Exception as e:
         _cli_error("retrieving resource", e, args)
 
@@ -246,25 +252,25 @@ def get_server_status(args):
         status = mcp_instance.get_server_status()
 
         if args.format == "json":
-            print(json.dumps(status, indent=2))
+            logger.info(json.dumps(status, indent=2))
         else:
             # Human-readable format
-            print("=== GNN MCP Server Status ===\n")
-            print(f"Status: {status.get('status', 'Unknown')}")
-            print(f"Uptime: {status.get('uptime_formatted', 'Unknown')}")
-            print(f"Request Count: {status.get('request_count', 0)}")
-            print(f"Error Count: {status.get('error_count', 0)}")
-            print(f"Error Rate: {status.get('error_rate', 0):.2%}")
-            print(f"Tools: {status.get('tools_count', 0)}")
-            print(f"Resources: {status.get('resources_count', 0)}")
-            print(f"Modules: {status.get('modules_count', 0)} loaded, {status.get('modules_failed', 0)} failed")
+            logger.info("=== GNN MCP Server Status ===\n")
+            logger.info(f"Status: {status.get('status', 'Unknown')}")
+            logger.info(f"Uptime: {status.get('uptime_formatted', 'Unknown')}")
+            logger.info(f"Request Count: {status.get('request_count', 0)}")
+            logger.info(f"Error Count: {status.get('error_count', 0)}")
+            logger.info(f"Error Rate: {status.get('error_rate', 0):.2%}")
+            logger.info(f"Tools: {status.get('tools_count', 0)}")
+            logger.info(f"Resources: {status.get('resources_count', 0)}")
+            logger.info(f"Modules: {status.get('modules_count', 0)} loaded, {status.get('modules_failed', 0)} failed")
 
             # Average execution times
             avg_times = status.get('avg_execution_times', {})
             if avg_times:
-                print("\nAverage Execution Times:")
+                logger.info("\nAverage Execution Times:")
                 for tool, time_avg in avg_times.items():
-                    print(f"  {tool}: {time_avg:.3f}s")
+                    logger.info(f"  {tool}: {time_avg:.3f}s")
 
     except Exception as e:
         _cli_error("getting server status", e, args)
@@ -277,10 +283,10 @@ def get_tool_info(args):
         tool_info = mcp_instance.tools.get(args.tool_name)
         if not tool_info:
             available_tools = list(mcp_instance.tools.keys())
-            print(f"\n❌ Error: Tool '{args.tool_name}' not found", file=sys.stderr)
-            print("\n💡 Available tools:", file=sys.stderr)
+            logger.error(f"Tool '{args.tool_name}' not found")
+            logger.info("Available tools:")
             for tool in sorted(available_tools):
-                print(f"  • {tool}", file=sys.stderr)
+                logger.info(f"  • {tool}")
             raise SystemExit(1)
 
         # Get enhanced tool information
@@ -298,39 +304,39 @@ def get_tool_info(args):
             }
 
         if args.format == "json":
-            print(json.dumps(detailed_info, indent=2))
+            logger.info(json.dumps(detailed_info, indent=2))
         else:
             # Enhanced human-readable format
-            print(f"🔍 Tool Information: {detailed_info['name']}")
-            print("=" * 50)
+            logger.info(f"🔍 Tool Information: {detailed_info['name']}")
+            logger.info("=" * 50)
 
-            print("\n📋 Basic Info:")
-            print(f"  Description: {detailed_info['description']}")
-            print(f"  Module: {detailed_info['module']}")
-            print(f"  Category: {detailed_info['category']}")
-            print(f"  Version: {detailed_info['version']}")
+            logger.info("\n📋 Basic Info:")
+            logger.info(f"  Description: {detailed_info['description']}")
+            logger.info(f"  Module: {detailed_info['module']}")
+            logger.info(f"  Category: {detailed_info['category']}")
+            logger.info(f"  Version: {detailed_info['version']}")
 
             if detailed_info.get('use_count', 0) > 0:
-                print("\n📈 Usage Statistics:")
-                print(f"  Times Used: {detailed_info.get('use_count', 0)}")
-                print(f"  Avg Execution Time: {detailed_info.get('average_execution_time', 0):.3f}s")
-                print(f"  Success Rate: {detailed_info.get('success_rate', 0):.1%}")
+                logger.info("\n📈 Usage Statistics:")
+                logger.info(f"  Times Used: {detailed_info.get('use_count', 0)}")
+                logger.info(f"  Avg Execution Time: {detailed_info.get('average_execution_time', 0):.3f}s")
+                logger.info(f"  Success Rate: {detailed_info.get('success_rate', 0):.1%}")
 
-            print("\n⚙️ Configuration:")
-            print(f"  Input Validation: {'Enabled' if detailed_info.get('input_validation', True) else 'Disabled'}")
-            print(f"  Output Validation: {'Enabled' if detailed_info.get('output_validation', True) else 'Disabled'}")
-            print(f"  Timeout: {detailed_info.get('timeout', 'None')}s")
-            print(f"  Max Concurrent: {detailed_info.get('max_concurrent', 1)}")
-            print(f"  Rate Limit: {detailed_info.get('rate_limit', 'None')} req/s")
-            print(f"  Cache TTL: {detailed_info.get('cache_ttl', 'None')}s")
+            logger.info("\n⚙️ Configuration:")
+            logger.info(f"  Input Validation: {'Enabled' if detailed_info.get('input_validation', True) else 'Disabled'}")
+            logger.info(f"  Output Validation: {'Enabled' if detailed_info.get('output_validation', True) else 'Disabled'}")
+            logger.info(f"  Timeout: {detailed_info.get('timeout', 'None')}s")
+            logger.info(f"  Max Concurrent: {detailed_info.get('max_concurrent', 1)}")
+            logger.info(f"  Rate Limit: {detailed_info.get('rate_limit', 'None')} req/s")
+            logger.info(f"  Cache TTL: {detailed_info.get('cache_ttl', 'None')}s")
 
             if detailed_info.get('deprecated'):
-                print("\n⚠️  Status: DEPRECATED")
+                logger.info("\n⚠️  Status: DEPRECATED")
             if detailed_info.get('experimental'):
-                print("\n🧪 Status: EXPERIMENTAL")
+                logger.info("\n🧪 Status: EXPERIMENTAL")
 
-            print("\n📋 Schema:")
-            print(json.dumps(detailed_info['schema'], indent=2))
+            logger.info("\n📋 Schema:")
+            logger.info(json.dumps(detailed_info['schema'], indent=2))
 
     except Exception as e:
         _cli_error("getting tool info", e, args)
@@ -351,45 +357,45 @@ def get_diagnostics(args):
             overall_health = "unknown"
 
         if args.format == "json":
-            print(json.dumps(result, indent=2))
+            logger.info(json.dumps(result, indent=2))
             return
 
         # Enhanced human-readable format
-        print("🔍 GNN MCP Server Diagnostics")
-        print("=" * 50)
+        logger.info("🔍 GNN MCP Server Diagnostics")
+        logger.info("=" * 50)
 
-        print(f"\n🏥 Overall Health: {overall_health.upper()}")
+        logger.info(f"\n🏥 Overall Health: {overall_health.upper()}")
 
         # Show issues
         issues = diagnostics.get('issues', [])
         if issues:
-            print(f"\n❌ Issues Found ({len(issues)}):")
+            logger.info(f"\n❌ Issues Found ({len(issues)}):")
             for issue in issues:
-                print(f"  • {issue}")
+                logger.info(f"  • {issue}")
         else:
-            print("\n✅ No critical issues found")
+            logger.info("\n✅ No critical issues found")
 
         # Show warnings
         warnings = diagnostics.get('warnings', [])
         if warnings:
-            print(f"\n⚠️  Warnings ({len(warnings)}):")
+            logger.info(f"\n⚠️  Warnings ({len(warnings)}):")
             for warning in warnings:
-                print(f"  • {warning}")
+                logger.info(f"  • {warning}")
 
         # Show recommendations
         recommendations = diagnostics.get('recommendations', [])
         if recommendations:
-            print(f"\n💡 Recommendations ({len(recommendations)}):")
+            logger.info(f"\n💡 Recommendations ({len(recommendations)}):")
             for rec in recommendations:
-                print(f"  • {rec}")
+                logger.info(f"  • {rec}")
 
         # Show health checks
         health_checks = diagnostics.get('health_checks', {})
         if health_checks:
-            print("\n🔍 Health Checks:")
+            logger.info("\n🔍 Health Checks:")
             for check_name, check_result in health_checks.items():
                 status = "✅ PASS" if check_result else "❌ FAIL"
-                print(f"  • {check_name}: {status}")
+                logger.info(f"  • {check_name}: {status}")
 
         if args.verbose:
             # Show additional server stats
@@ -397,20 +403,20 @@ def get_diagnostics(args):
                 status = mcp_instance.get_enhanced_server_status()
                 perf = status.get('performance', {})
 
-                print("\n📊 Detailed Performance:")
-                print(f"  Total Requests: {perf.get('total_requests', 0)}")
-                print(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
-                print(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
-                print(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
-                print(f"  Active Connections: {perf.get('concurrent_requests', 0)}")
+                logger.info("\n📊 Detailed Performance:")
+                logger.info(f"  Total Requests: {perf.get('total_requests', 0)}")
+                logger.info(f"  Success Rate: {perf.get('success_rate', 0):.1%}")
+                logger.info(f"  Avg Execution Time: {perf.get('average_execution_time', 0):.3f}s")
+                logger.info(f"  Cache Hit Ratio: {perf.get('cache_hit_ratio', 0):.1%}")
+                logger.info(f"  Active Connections: {perf.get('concurrent_requests', 0)}")
 
                 # Show module status
                 modules = status.get('modules', {})
                 if modules:
-                    print("\n📦 Module Status:")
+                    logger.info("\n📦 Module Status:")
                     for name, info in modules.items():
                         status_icon = "✅" if info.get('status') == 'loaded' else "❌"
-                        print(f"  {status_icon} {name}: {info.get('status', 'unknown')}")
+                        logger.info(f"  {status_icon} {name}: {info.get('status', 'unknown')}")
 
             except Exception as e:
                 logger.warning(f"Could not get detailed status: {e}")
@@ -485,13 +491,11 @@ def main():
 
     args = parser.parse_args()
 
-    # Configure logging based on verbosity
-    if args.verbose:
-        logging.basicConfig(level=logging.DEBUG,
-                           format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    else:
-        logging.basicConfig(level=logging.INFO,
-                           format='%(asctime)s - %(levelname)s - %(message)s')
+    # Configure logging using GNN pipeline infrastructure
+    log_format = "json" if args.format == "json" else "human"
+    # Note: we might need a dedicated --log-format flag if they should be independent
+    global logger
+    logger = setup_step_logging("mcp.cli", verbose=args.verbose, log_format=log_format)
 
     if not hasattr(args, "func"):
         parser.print_help()

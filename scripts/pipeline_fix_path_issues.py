@@ -9,7 +9,6 @@ Fixes common path issues identified in the audit:
 """
 
 import os
-import sys
 import re
 import tempfile
 from pathlib import Path

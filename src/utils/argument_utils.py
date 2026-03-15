@@ -30,7 +30,7 @@ class ArgumentDefinition:
     choices: Optional[List[str]] = None
     action: Optional[str] = None
 
-    def add_to_parser(self, parser: argparse.ArgumentParser):
+    def add_to_parser(self, parser: argparse.ArgumentParser) -> None:
         """Add this argument to an ArgumentParser."""
         kwargs = {
             'help': self.help_text,
@@ -123,7 +123,7 @@ class PipelineArguments:
     timeout: int = 300
     advanced_stats: bool = False
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         """Post-initialization validation and path resolution."""
         # Ensure Path objects
         if isinstance(self.target_dir, str):
@@ -1260,11 +1260,13 @@ def validate_and_convert_paths(args: PipelineArguments, logger: logging.Logger):
                     "This could be due to an unsuitable value for a path."
                 )
                 if arg_name in ['output_dir', 'target_dir']:
-                    logger.critical(f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path. Exiting.")
-                    sys.exit(1)
+                    msg = f"Critical path argument --{arg_name.replace('_', '-')} could not be converted to Path."
+                    logger.critical(msg)
+                    raise ValueError(msg)
         elif arg_value is None and arg_name in ['output_dir', 'target_dir']:
-             logger.critical(
+             msg = (
                 f"Critical path argument --{arg_name.replace('_', '-')} is None after parsing. "
-                "This indicates a problem with default value setup in argparse. Exiting."
+                "This indicates a problem with default value setup in argparse."
              )
-             sys.exit(1)
+             logger.critical(msg)
+             raise ValueError(msg)

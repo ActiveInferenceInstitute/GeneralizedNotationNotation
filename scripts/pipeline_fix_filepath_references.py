@@ -6,7 +6,6 @@ This script fixes broken links, outdated script references, and path issues
 identified by the audit.
 """
 
-import sys
 import re
 import json
 import os
