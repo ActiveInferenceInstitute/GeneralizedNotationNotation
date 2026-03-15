@@ -42,7 +42,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from template import process_template_standardized
 except ImportError:
-    def process_template_standardized(target_dir, output_dir, logger, **kwargs):
+    def process_template_standardized(target_dir, output_dir, logger, **kwargs) -> bool:
         """Recovery template processing when module unavailable."""
         logger.warning("Template module not available - using recovery")
         return True
@@ -61,4 +61,4 @@ def main() -> int:
     return run_script()
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

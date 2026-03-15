@@ -34,7 +34,7 @@ except ImportError:
 
 # Enhanced imports with fallbacks
 try:
-    from .config import get_pipeline_config, STEP_METADATA
+    from .config import get_pipeline_config
     from .pipeline_validator import PipelineValidator
     from .diagnostic_enhancer import PipelineDiagnosticEnhancer
     import sys

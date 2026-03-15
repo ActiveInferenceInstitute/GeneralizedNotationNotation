@@ -548,71 +548,54 @@ def render_gnn_spec(
         output_dir = Path(output_directory)
         output_dir.mkdir(parents=True, exist_ok=True)
 
-        # TODO: Future POMDP-based extraction via POMDPExtractor when implemented
+        pass
 
-        # For now, create basic model data and use generators
+        # Generator-based renderers: target → (generator_name, file_suffix)
+        _GENERATOR_TARGETS = {
+            "pymdp": ("generate_pymdp_code", "_pymdp.py"),
+            "rxinfer": ("generate_rxinfer_code", "_rxinfer.jl"),
+            "activeinference_jl": ("generate_activeinference_jl_code", "_activeinference.jl"),
+            "discopy": ("generate_discopy_code", "_discopy.py"),
+        }
+
+        target_lower = target.lower()
+        model_name = gnn_spec.get('model_name', 'model')
         files = []
-        if target.lower() == "pymdp":
-            from .generators import generate_pymdp_code
-            code = generate_pymdp_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_pymdp.py"
+
+        if target_lower in _GENERATOR_TARGETS:
+            gen_name, suffix = _GENERATOR_TARGETS[target_lower]
+            from . import generators
+            generate_fn = getattr(generators, gen_name)
+            code = generate_fn(gnn_spec)
+            output_file = output_dir / f"{model_name}{suffix}"
             if code:
                 output_file.write_text(code)
                 files.append(str(output_file))
 
-        elif target.lower() == "rxinfer":
-            from .generators import generate_rxinfer_code
-            code = generate_rxinfer_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_rxinfer.jl"
-            if code:
-                output_file.write_text(code)
-                files.append(str(output_file))
-
-        elif target.lower() == "rxinfer_toml":
+        elif target_lower == "rxinfer_toml":
             try:
                 from .rxinfer import render_gnn_to_rxinfer_toml
                 success, msg, art = render_gnn_to_rxinfer_toml(gnn_spec, output_dir)
                 if success:
-                    files.extend(art)
                     return True, msg, art
             except ImportError:
                 return False, "RxInfer TOML renderer not available", []
 
-        elif target.lower() == "activeinference_jl":
-            from .generators import generate_activeinference_jl_code
-            code = generate_activeinference_jl_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_activeinference.jl"
-            if code:
-                output_file.write_text(code)
-                files.append(str(output_file))
-
-        elif target.lower() == "discopy":
-            from .generators import generate_discopy_code
-            code = generate_discopy_code(gnn_spec)
-            output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
-            if code:
-                output_file.write_text(code)
-                files.append(str(output_file))
-
-        elif target.lower() == "discopy_combined":
+        elif target_lower == "discopy_combined":
             try:
                 from .discopy import render_gnn_to_discopy
-                output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_discopy.py"
-                success, msg, warnings = render_gnn_to_discopy(gnn_spec, output_file)
-                if success:
-                    return True, msg, [str(output_file)]
-                else:
-                    return False, msg, []
+                output_file = output_dir / f"{model_name}_discopy.py"
+                success, msg, _warnings = render_gnn_to_discopy(gnn_spec, output_file)
+                return (True, msg, [str(output_file)]) if success else (False, msg, [])
             except ImportError:
                 return False, "DisCoPy renderer not available", []
 
-        elif target.lower() in ["jax", "jax_pomdp"]:
+        elif target_lower in ("jax", "jax_pomdp"):
             try:
                 from .jax.jax_renderer import render_gnn_to_jax
-                output_file = output_dir / f"{gnn_spec.get('model_name', 'model')}_jax.py"
+                output_file = output_dir / f"{model_name}_jax.py"
                 success, msg, art = render_gnn_to_jax(gnn_spec, output_file)
                 if success:
-                    files.extend(art)
                     return True, msg, art
             except ImportError:
                 return False, "JAX renderer not available", []

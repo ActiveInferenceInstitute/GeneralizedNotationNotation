@@ -102,4 +102,4 @@ def main() -> int:
     return run_script()
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

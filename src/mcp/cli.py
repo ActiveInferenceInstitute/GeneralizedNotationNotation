@@ -53,7 +53,7 @@ def _cli_error(operation: str, e: Exception, args, suggestions: bool = False) ->
         print("💡 Suggestions:", file=sys.stderr)
         print("  - Check if MCP server is running", file=sys.stderr)
         print("  - Verify GNN modules are properly installed", file=sys.stderr)
-    sys.exit(1)
+    raise SystemExit(1)
 
 def list_capabilities(args):
     """Enhanced listing of all available MCP capabilities with better formatting."""
@@ -152,7 +152,7 @@ def execute_tool(args):
             print("\n💡 Available tools:", file=sys.stderr)
             for tool in sorted(available_tools):
                 print(f"  • {tool}", file=sys.stderr)
-            sys.exit(1)
+            raise SystemExit(1)
 
         tool = mcp_instance.tools[args.tool_name]
 
@@ -163,11 +163,11 @@ def execute_tool(args):
             except json.JSONDecodeError as e:
                 print(f"\n❌ Error: Invalid JSON parameters: {e}", file=sys.stderr)
                 print("\n💡 Expected format: --params '{\"key\": \"value\"}'", file=sys.stderr)
-                sys.exit(1)
+                raise SystemExit(1)
 
         if not isinstance(params, dict):
             print(f"\n❌ Error: Parameters must be a JSON object, got {type(params)}", file=sys.stderr)
-            sys.exit(1)
+            raise SystemExit(1)
 
         if tool.schema and args.validate:
             try:
@@ -176,7 +176,7 @@ def execute_tool(args):
                     if req not in params:
                         print(f"\n❌ Error: Missing required parameter '{req}'", file=sys.stderr)
                         print(f"\n💡 Required parameters: {required}", file=sys.stderr)
-                        sys.exit(1)
+                        raise SystemExit(1)
             except Exception as e:
                 logger.warning(f"Schema validation failed: {e}")
 
@@ -214,7 +214,7 @@ def execute_tool(args):
         if args.verbose:
             print(f"🔍 Error Code: {e.code}", file=sys.stderr)
             print(f"📋 Error Data: {e.data}", file=sys.stderr)
-        sys.exit(1)
+        raise SystemExit(1)
     except Exception as e:
         _cli_error("executing tool", e, args)
 
@@ -234,7 +234,7 @@ def get_resource(args):
 
     except MCPError as e:
         logger.error(f"MCP Error: {e}")
-        sys.exit(1)
+        raise SystemExit(1)
     except Exception as e:
         _cli_error("retrieving resource", e, args)
 
@@ -281,7 +281,7 @@ def get_tool_info(args):
             print("\n💡 Available tools:", file=sys.stderr)
             for tool in sorted(available_tools):
                 print(f"  • {tool}", file=sys.stderr)
-            sys.exit(1)
+            raise SystemExit(1)
 
         # Get enhanced tool information
         detailed_info = mcp_instance.get_tool_info(args.tool_name)
@@ -432,7 +432,7 @@ def start_server(args):
             start_http_server(args.host, args.port)
         else:
             logger.error(f"Unsupported transport: {args.transport}")
-            sys.exit(1)
+            raise SystemExit(1)
     except ImportError as e:
         _cli_error("importing server implementation", e, args)
     except Exception as e:
@@ -495,7 +495,7 @@ def main():
 
     if not hasattr(args, "func"):
         parser.print_help()
-        sys.exit(1)
+        raise SystemExit(1)
 
     args.func(args)
 

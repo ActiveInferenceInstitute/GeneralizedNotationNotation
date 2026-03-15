@@ -113,7 +113,6 @@ def main():
     return 0
 
 if __name__ == "__main__":
-    import sys
-    sys.exit(main())
+    raise SystemExit(main())
 
 

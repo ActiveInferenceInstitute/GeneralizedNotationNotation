@@ -1085,4 +1085,4 @@ def validate_pipeline_summary(summary: dict, logger) -> None:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

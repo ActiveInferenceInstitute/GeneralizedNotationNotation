@@ -264,14 +264,10 @@ def process_ml_integration(
             "extracted_features": []
         }
 
-        # Check for sklearn
+        # Check for sklearn availability
         try:
-            from sklearn.tree import DecisionTreeClassifier
-            from sklearn.ensemble import RandomForestClassifier
-            from sklearn.model_selection import train_test_split, cross_val_score
-            from sklearn.metrics import classification_report
-            from sklearn.preprocessing import LabelEncoder
-            import numpy as np
+            import sklearn  # noqa: F401
+            import numpy  # noqa: F401
             has_sklearn = True
             ml_results["framework_status"]["sklearn"] = "available"
         except ImportError:

@@ -185,7 +185,8 @@ class DocumentationValidator:
                                 f"Invalid pipeline step in {rel_file_path}:{line_no}: "
                                 f"Step {step_num} is outside valid range 0-24: '{line.strip()}'"
                             )
-                    except ValueError:
+                    except ValueError as e:
+                        print(f"Warning: Could not parse step reference in {file_path}:{line_no}: {e}")
                         continue
 
             # Check for specific incorrect references (old pipeline references)
@@ -390,7 +391,7 @@ def main():
     project_root = Path(args.project_root).resolve()
     if not (project_root / "doc").exists():
         print(f"Error: doc directory not found in {project_root}")
-        sys.exit(1)
+        raise SystemExit(1)
 
     validator = DocumentationValidator(project_root, verbose=args.verbose)
 
@@ -409,9 +410,7 @@ def main():
 
     # Exit with error code if issues found
     if results.has_issues and not args.fix_issues:
-        sys.exit(1)
-    else:
-        sys.exit(0)
+        raise SystemExit(1)
 
 if __name__ == "__main__":
     main()

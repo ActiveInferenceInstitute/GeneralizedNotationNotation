@@ -335,7 +335,9 @@ class PipelineScriptValidator:
                              "create_standardized_pipeline_script(" in content)
         has_exit_codes = ("return 0" in content and "return 1" in content) or "run_script()" in content
         has_sys_exit = ("sys.exit(main())" in content or
-                       "sys.exit(run_script())" in content)
+                       "sys.exit(run_script())" in content or
+                       "raise SystemExit(main())" in content or
+                       "raise SystemExit(run_script())" in content)
 
         if not has_main_function:
             result.issues.append(ValidationIssue(

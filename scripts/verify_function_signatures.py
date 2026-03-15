@@ -50,8 +50,8 @@ def extract_exports_from_init(init_path: Path) -> Dict[str, Any]:
                 exports['functions'].append(node.name)
             elif isinstance(node, ast.ClassDef):
                 exports['classes'].append(node.name)
-    except (SyntaxError, ValueError):
-        pass
+    except (SyntaxError, ValueError) as e:
+        print(f"Warning: Could not extract definitions from {init_path}: {e}")
 
     return exports
 
@@ -216,6 +216,6 @@ def main():
     return 0
 
 if __name__ == '__main__':
-    sys.exit(main())
+    raise SystemExit(main())
 
 

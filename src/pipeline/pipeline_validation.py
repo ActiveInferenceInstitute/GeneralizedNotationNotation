@@ -377,7 +377,7 @@ def validate_argument_consistency() -> Dict[str, List[str]]:
     issues = {"errors": [], "warnings": [], "inconsistencies": []}
 
     try:
-        from utils.argument_utils import ArgumentParser, STEP_ARGUMENTS
+        from utils.argument_utils import STEP_ARGUMENTS
 
         # Check that all steps define their supported arguments
         expected_steps = [f"{i}_{name}.py" for i, name in enumerate([

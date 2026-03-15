@@ -15,11 +15,7 @@ try:
     from .pymdp import render_gnn_to_pymdp
     PYMDP_AVAILABLE = True
 except ImportError as e:
-    logging.warning(
-        f"PyMDP renderer not available - this is normal if PyMDP is not installed. "
-        f"Details: {e}. To enable PyMDP rendering: uv pip install inferactively-pymdp. "
-        f"Alternative frameworks available: RxInfer.jl, ActiveInference.jl, DisCoPy, JAX."
-    )
+    logging.warning(f"PyMDP renderer not available: {e}")
     render_gnn_to_pymdp = None
     PYMDP_AVAILABLE = False
 

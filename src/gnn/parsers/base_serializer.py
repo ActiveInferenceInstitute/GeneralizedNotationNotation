@@ -26,10 +26,10 @@ class BaseGNNSerializer(ABC):
             return {}
 
         return {
-            'time_type': getattr(time_spec, 'time_type', 'Static'),
-            'discretization': getattr(time_spec, 'discretization', None),
-            'horizon': getattr(time_spec, 'horizon', None),
-            'step_size': getattr(time_spec, 'step_size', None)
+            'time_type': time_spec.time_type,
+            'discretization': time_spec.discretization,
+            'horizon': time_spec.horizon,
+            'step_size': time_spec.step_size
         }
 
     def _serialize_ontology_mappings(self, mappings) -> List[Dict[str, Any]]:
@@ -39,11 +39,11 @@ class BaseGNNSerializer(ABC):
 
         result = []
         for mapping in mappings:
-            if hasattr(mapping, '__dict__'):
+            if hasattr(mapping, 'variable_name'):
                 result.append({
-                    'variable_name': getattr(mapping, 'variable_name', ''),
-                    'ontology_term': getattr(mapping, 'ontology_term', ''),
-                    'description': getattr(mapping, 'description', None)
+                    'variable_name': mapping.variable_name,
+                    'ontology_term': mapping.ontology_term,
+                    'description': mapping.description
                 })
             else:
                 result.append(str(mapping))
@@ -53,48 +53,48 @@ class BaseGNNSerializer(ABC):
         """Create complete model data dict for embedding in format-specific comments."""
         return {
             'model_name': model.model_name,
-            'version': getattr(model, 'version', '1.0'),
+            'version': model.version,
             'annotation': model.annotation,
             'variables': [
                 {
                     'name': var.name,
-                    'var_type': var.var_type.value if hasattr(var, 'var_type') and hasattr(var.var_type, 'value') else 'hidden_state',
-                    'data_type': var.data_type.value if hasattr(var, 'data_type') and hasattr(var.data_type, 'value') else 'categorical',
-                    'dimensions': getattr(var, 'dimensions', []),
-                    'description': getattr(var, 'description', None)
+                    'var_type': var.var_type.value if hasattr(var.var_type, 'value') else 'hidden_state',
+                    'data_type': var.data_type.value if hasattr(var.data_type, 'value') else 'categorical',
+                    'dimensions': var.dimensions,
+                    'description': var.description
                 }
                 for var in model.variables
             ],
             'connections': [
                 {
-                    'source_variables': getattr(conn, 'source_variables', []),
-                    'target_variables': getattr(conn, 'target_variables', []),
-                    'connection_type': conn.connection_type.value if hasattr(conn, 'connection_type') and hasattr(conn.connection_type, 'value') else 'directed',
-                    'weight': getattr(conn, 'weight', None),
-                    'description': getattr(conn, 'description', None)
+                    'source_variables': conn.source_variables,
+                    'target_variables': conn.target_variables,
+                    'connection_type': conn.connection_type.value if hasattr(conn.connection_type, 'value') else 'directed',
+                    'weight': conn.weight,
+                    'description': conn.description
                 }
                 for conn in model.connections
             ],
             'parameters': [
                 {
                     'name': param.name,
-                    'value': getattr(param, 'value', None),
-                    'type_hint': getattr(param, 'type_hint', None),
-                    'description': getattr(param, 'description', None)
+                    'value': param.value,
+                    'type_hint': param.type_hint,
+                    'description': param.description
                 }
                 for param in model.parameters
             ],
             'equations': [
                 {
-                    'label': getattr(eq, 'label', None),
-                    'content': getattr(eq, 'content', str(eq)),
-                    'format': getattr(eq, 'format', 'latex'),
-                    'description': getattr(eq, 'description', None)
+                    'label': eq.label,
+                    'content': eq.content,
+                    'format': eq.format,
+                    'description': eq.description
                 }
-                for eq in getattr(model, 'equations', [])
+                for eq in model.equations
             ],
-            'time_specification': self._serialize_time_spec(getattr(model, 'time_specification', None)),
-            'ontology_mappings': self._serialize_ontology_mappings(getattr(model, 'ontology_mappings', []))
+            'time_specification': self._serialize_time_spec(model.time_specification),
+            'ontology_mappings': self._serialize_ontology_mappings(model.ontology_mappings)
         }
 
     def _get_embedded_comment_prefix(self, format_name: str) -> str:

@@ -387,7 +387,8 @@ class FilepathAuditor:
             # Read content once for code block detection
             try:
                 content = file_path.read_text(encoding='utf-8')
-            except (OSError, UnicodeDecodeError):
+            except (OSError, UnicodeDecodeError) as e:
+                print(f"Warning: Could not read {file_path}: {e}")
                 content = ""
 
             # Scan markdown links
@@ -416,8 +417,8 @@ class FilepathAuditor:
                 script_pattern = r'(\d+)_([a-z_]+)\.py'
                 for match in re.finditer(script_pattern, content):
                     self.validate_script_reference(file_path, match.group(0))
-            except (OSError, UnicodeDecodeError):
-                pass  # Skip unreadable files (binary or encoding issues)
+            except (OSError, UnicodeDecodeError) as e:
+                print(f"Warning: Skipping unreadable file {file_path}: {e}")
 
     def verify_numbered_scripts(self) -> None:
         """Verify all numbered scripts 0-24 exist"""
@@ -548,5 +549,5 @@ def main() -> int:
     return 0 if report['summary']['total_real_issues'] == 0 else 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())
 
