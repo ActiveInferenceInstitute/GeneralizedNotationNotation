@@ -5,7 +5,7 @@ Setup Utils module for GNN Processing Pipeline.
 This module provides setup utility functions.
 """
 
-from typing import Dict, List
+from typing import Dict, List, Any
 import logging
 from pathlib import Path
 
@@ -69,7 +69,7 @@ def get_output_paths(base_output_dir: Path) -> Dict[str, Path]:
         "mcp": base_output_dir / "mcp_results"
     }
 
-def get_module_info():
+def get_module_info() -> Dict[str, Any]:
     """
     Get comprehensive information about the setup module and its UV capabilities.
     

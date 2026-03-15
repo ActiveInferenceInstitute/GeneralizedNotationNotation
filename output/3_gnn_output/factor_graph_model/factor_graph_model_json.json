@@ -300,7 +300,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-13T18:17:53.942013",
+  "created_at": "2026-03-15T13:53:24.247311",
   "equations": [],
   "extensions": {
     "footer": "Factor Graph Active Inference Model v1 - GNN Representation.\nFactored model enables modality-specific processing.\nBelief propagation on factor graph is more efficient than joint inference.",
@@ -308,7 +308,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Factor Graph Active Inference Model",
-  "modified_at": "2026-03-13T18:17:53.942018",
+  "modified_at": "2026-03-15T13:53:24.247311",
   "ontology_mappings": [
     {
       "description": null,

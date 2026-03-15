@@ -1,11 +1,12 @@
 import pytest
+from typing import Any, Dict, List, Optional
 from validation.semantic_validator import SemanticValidator, process_semantic_validation
 
 class TestValidationOverall:
     """Test suite for Validation module."""
 
     @pytest.fixture
-    def valid_gnn_content(self):
+    def valid_gnn_content(self) -> str:
         return """
 # Valid Model
 ModelName: TestModel
@@ -27,13 +28,13 @@ Connection {
 """
 
     @pytest.fixture
-    def invalid_gnn_content(self):
+    def invalid_gnn_content(self) -> str:
         return """
 # Invalid Model missing the required block keyword
 ModelName: Invalid
 """
 
-    def test_semantic_validator_valid_model(self, valid_gnn_content):
+    def test_semantic_validator_valid_model(self, valid_gnn_content: str) -> None:
         """Test validation of a syntactically correct model."""
         validator = SemanticValidator(validation_level="standard")
         result = validator.validate(valid_gnn_content)
@@ -41,7 +42,7 @@ ModelName: Invalid
         assert result["is_valid"] is True
         assert len(result["errors"]) == 0
 
-    def test_semantic_validator_invalid_model(self, invalid_gnn_content):
+    def test_semantic_validator_invalid_model(self, invalid_gnn_content: str) -> None:
         """Test validation of a broken model."""
         validator = SemanticValidator(validation_level="standard")
         result = validator.validate(invalid_gnn_content)
@@ -49,7 +50,7 @@ ModelName: Invalid
         assert result["is_valid"] is False
         assert any("Missing StateSpaceBlock" in e for e in result["errors"])
 
-    def test_process_semantic_validation_wrapper(self, safe_filesystem, valid_gnn_content):
+    def test_process_semantic_validation_wrapper(self, safe_filesystem: Any, valid_gnn_content: str) -> None:
         """Test the top-level processing wrapper."""
         file_path = safe_filesystem.create_file("model.md", valid_gnn_content)
 
@@ -59,7 +60,7 @@ ModelName: Invalid
         assert result["valid"] is True
         assert result["semantic_score"] > 0.9  # Should be high for valid model
 
-    def test_validation_levels(self, valid_gnn_content):
+    def test_validation_levels(self, valid_gnn_content: str) -> None:
         """Ensure strict mode catches subtle issues (missing active inference components)."""
         # The valid content above is missing 'Observation', 'Transition', 'Prior' keywords required by "strict"
         # validation for Active Inference principles.

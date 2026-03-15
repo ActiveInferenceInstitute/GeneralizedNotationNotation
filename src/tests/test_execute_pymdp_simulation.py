@@ -19,6 +19,7 @@ import unittest
 import numpy as np
 import json
 import tempfile
+from typing import Any
 from pathlib import Path
 
 # Pipeline imports
@@ -46,7 +47,7 @@ except ImportError:
 class TestPyMDPSimulation(unittest.TestCase):
     """Test PyMDP simulation functionality with GNN integration."""
 
-    def setUp(self):
+    def setUp(self) -> None:
         """Set up test environment."""
         self.test_dir = create_test_temp_dir("pymdp_simulation_test")
 
@@ -78,7 +79,7 @@ class TestPyMDPSimulation(unittest.TestCase):
             "model_type": "discrete_pomdp"
         }
 
-    def test_simulation_creation_with_gnn_config(self):
+    def test_simulation_creation_with_gnn_config(self) -> None:
         """Test creating PyMDP simulation from GNN configuration."""
         simulation = PyMDPSimulation(
             gnn_config=self.gnn_config,
@@ -90,7 +91,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertEqual(simulation.num_actions, 4)
         self.assertIsNotNone(simulation.agent)
 
-    def test_simulation_creation_with_minimal_config(self):
+    def test_simulation_creation_with_minimal_config(self) -> None:
         """Test creating PyMDP simulation with minimal configuration."""
         simulation = PyMDPSimulation(
             gnn_config=self.minimal_config,
@@ -102,7 +103,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertEqual(simulation.num_actions, 4)
         self.assertIsNotNone(simulation.agent)
 
-    def test_simulation_run(self):
+    def test_simulation_run(self) -> None:
         """Test running a complete simulation."""
         simulation = PyMDPSimulation(
             gnn_config=self.gnn_config,
@@ -118,7 +119,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertEqual(len(results['observations']), 10)
         self.assertEqual(len(results['actions']), 10)
 
-    def test_matrix_construction(self):
+    def test_matrix_construction(self) -> None:
         """Test that PyMDP matrices are properly constructed."""
         simulation = PyMDPSimulation(
             gnn_config=self.gnn_config,
@@ -145,7 +146,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertEqual(len(D), 4)  # number of states
         self.assertTrue(np.allclose(D.sum(), 1.0))  # sums to 1
 
-    def test_serialization(self):
+    def test_serialization(self) -> None:
         """Test that simulation results can be serialized."""
         simulation = PyMDPSimulation(
             gnn_config=self.gnn_config,
@@ -166,7 +167,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertIn('observations', loaded_results)
         self.assertIn('actions', loaded_results)
 
-    def test_visualization_creation(self):
+    def test_visualization_creation(self) -> None:
         """Test that visualizations can be created."""
         simulation = PyMDPSimulation(
             gnn_config=self.gnn_config,
@@ -192,7 +193,7 @@ class TestPyMDPSimulation(unittest.TestCase):
 
         self.assertTrue(viz_success)
 
-    def test_gnn_parameter_integration(self):
+    def test_gnn_parameter_integration(self) -> None:
         """Test that GNN parameters are properly integrated."""
         # Test with explicit state names
         config_with_names = {
@@ -219,7 +220,7 @@ class TestPyMDPSimulation(unittest.TestCase):
         self.assertEqual(simulation.observation_names, config_with_names["observations"])
         self.assertEqual(simulation.action_names, config_with_names["actions"])
 
-    def tearDown(self):
+    def tearDown(self) -> None:
         """Clean up test environment."""
         cleanup_test_temp_dir(self.test_dir)
 
@@ -227,7 +228,7 @@ class TestPyMDPSimulation(unittest.TestCase):
 class TestPyMDPUtils(unittest.TestCase):
     """Test PyMDP utility functions."""
 
-    def test_numpy_conversion(self):
+    def test_numpy_conversion(self) -> None:
         """Test numpy to JSON conversion utilities."""
         # Test various numpy types
         test_data = {

@@ -33,4 +33,4 @@ python src/6_validation.py --strict --profile --verbose
 
 ## Source
 
-- **Script**: [src/6_validation.py](#placeholder)
+- **Script**: [src/6_validation.py](../../src/6_validation.py)

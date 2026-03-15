@@ -4,6 +4,7 @@ Test suite for MCP (Model Context Protocol) module.
 Tests MCP tool registration, execution, and server functionality.
 """
 
+from typing import Any, List, Dict
 import pytest
 
 pytestmark = pytest.mark.mcp
@@ -13,7 +14,7 @@ import json
 class TestMCPModule:
     """Test suite for MCP module functionality."""
 
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that MCP module can be imported."""
         from mcp import (
             FEATURES,
@@ -22,7 +23,7 @@ class TestMCPModule:
         assert __version__ is not None
         assert isinstance(FEATURES, dict)
 
-    def test_features_available(self):
+    def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
         from mcp import FEATURES
 
@@ -39,7 +40,7 @@ class TestMCPModule:
         for feature in expected_features:
             assert feature in FEATURES, f"Missing feature: {feature}"
 
-    def test_version_format(self):
+    def test_version_format(self) -> None:
         """Test version string format."""
         from mcp import __version__
 
@@ -47,7 +48,7 @@ class TestMCPModule:
         parts = __version__.split('.')
         assert len(parts) >= 2, "Version should have at least major.minor"
 
-    def test_process_mcp_function(self):
+    def test_process_mcp_function(self) -> None:
         """Test main process_mcp function exists."""
         from mcp import process_mcp
 
@@ -57,11 +58,11 @@ class TestMCPModule:
 class TestMCPTool:
     """Test MCPTool class."""
 
-    def test_mcp_tool_creation(self):
+    def test_mcp_tool_creation(self) -> None:
         """Test creating an MCP tool."""
         from mcp import MCPTool
 
-        def sample_func(params):
+        def sample_func(params: Any) -> Any:
             return {"result": "success"}
 
         # MCPTool uses dataclass with func parameter
@@ -76,11 +77,11 @@ class TestMCPTool:
         assert tool.description == "A test tool"
         assert callable(tool.func)
 
-    def test_mcp_tool_execution(self):
+    def test_mcp_tool_execution(self) -> None:
         """Test executing an MCP tool."""
         from mcp import MCPTool
 
-        def echo_func(message="default"):
+        def echo_func(message: str = "default") -> Any:
             return {"echo": message}
 
         tool = MCPTool(
@@ -98,11 +99,11 @@ class TestMCPTool:
 class TestMCPResource:
     """Test MCPResource class."""
 
-    def test_mcp_resource_creation(self):
+    def test_mcp_resource_creation(self) -> None:
         """Test creating an MCP resource."""
         from mcp import MCPResource
 
-        def retriever(uri):
+        def retriever(uri: str) -> Any:
             return {"content": "test data"}
 
         # MCPResource uses uri_template and retriever
@@ -119,14 +120,14 @@ class TestMCPResource:
 class TestMCPServer:
     """Test MCPServer class."""
 
-    def test_mcp_server_instantiation(self):
+    def test_mcp_server_instantiation(self) -> None:
         """Test that MCPServer can be instantiated."""
         from mcp import MCPServer
 
         server = MCPServer()
         assert server is not None
 
-    def test_mcp_server_has_methods(self):
+    def test_mcp_server_has_methods(self) -> None:
         """Test MCPServer has expected methods."""
         from mcp import MCPServer
 
@@ -139,7 +140,7 @@ class TestMCPServer:
 class TestMCPErrors:
     """Test MCP error classes."""
 
-    def test_mcp_error(self):
+    def test_mcp_error(self) -> None:
         """Test MCPError class."""
         from mcp import MCPError
 
@@ -147,7 +148,7 @@ class TestMCPErrors:
         assert "Test error message" in str(error)
         assert isinstance(error, Exception)
 
-    def test_mcp_tool_execution_error(self):
+    def test_mcp_tool_execution_error(self) -> None:
         """Test MCPToolExecutionError class."""
         from mcp import MCPToolExecutionError
 
@@ -156,7 +157,7 @@ class TestMCPErrors:
         assert "test_tool" in str(error)
         assert isinstance(error, Exception)
 
-    def test_mcp_validation_error(self):
+    def test_mcp_validation_error(self) -> None:
         """Test MCPValidationError class."""
         from mcp import MCPValidationError
 
@@ -168,7 +169,7 @@ class TestMCPErrors:
 class TestMCPProcessing:
     """Test MCP processing functionality."""
 
-    def test_process_mcp(self, safe_filesystem):
+    def test_process_mcp(self, safe_filesystem: Any) -> None:
         """Test main MCP processing function."""
         from mcp import process_mcp
 
@@ -188,7 +189,7 @@ class TestMCPProcessing:
         # Should return success
         assert result is True or (isinstance(result, dict) and result.get('success', False))
 
-    def test_mcp_output_files(self, safe_filesystem):
+    def test_mcp_output_files(self, safe_filesystem: Any) -> None:
         """Test that MCP processing creates expected output files."""
         from mcp import process_mcp
 
@@ -218,21 +219,21 @@ class TestMCPProcessing:
 class TestMCPUtilities:
     """Test MCP utility functions."""
 
-    def test_list_available_tools(self):
+    def test_list_available_tools(self) -> None:
         """Test listing available tools."""
         from mcp import list_available_tools
 
         tools = list_available_tools()
         assert isinstance(tools, (list, dict))
 
-    def test_get_available_tools(self):
+    def test_get_available_tools(self) -> None:
         """Test getting available tools via processor."""
         from mcp import get_available_tools
 
         tools = get_available_tools()
         assert isinstance(tools, (list, dict))
 
-    def test_initialize_function(self):
+    def test_initialize_function(self) -> None:
         """Test MCP initialization function."""
         from mcp import initialize, MCPSDKNotFoundError
 
@@ -248,13 +249,13 @@ class TestMCPUtilities:
 class TestMCPCaching:
     """Test MCP caching functionality."""
 
-    def test_cache_feature_enabled(self):
+    def test_cache_feature_enabled(self) -> None:
         """Test that caching feature is enabled."""
         from mcp import FEATURES
 
         assert FEATURES.get('caching', False) is True
 
-    def test_rate_limiting_feature_enabled(self):
+    def test_rate_limiting_feature_enabled(self) -> None:
         """Test that rate limiting feature is enabled."""
         from mcp import FEATURES
 
@@ -264,12 +265,12 @@ class TestMCPCaching:
 class TestMCPIntegration:
     """Integration tests for MCP module."""
 
-    def test_full_mcp_workflow(self, safe_filesystem):
+    def test_full_mcp_workflow(self, safe_filesystem: Any) -> None:
         """Test complete MCP workflow: register, execute, cleanup."""
         from mcp import MCPTool
 
         # Create tool with correct signature
-        def add_func(a=0, b=0):
+        def add_func(a: int = 0, b: int = 0) -> Any:
             return {"result": a + b}
 
         tool = MCPTool(
@@ -289,7 +290,7 @@ class TestMCPIntegration:
         result = tool.func(a=5, b=3)
         assert result['result'] == 8
 
-    def test_mcp_with_gnn_files(self, safe_filesystem):
+    def test_mcp_with_gnn_files(self, safe_filesystem: Any) -> None:
         """Test MCP processing with actual GNN files."""
         from mcp import process_mcp
 

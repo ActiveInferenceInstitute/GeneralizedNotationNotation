@@ -8,6 +8,7 @@ Tests the integration between report generation and pipeline execution.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,7 +18,7 @@ class TestReportPipelineIntegration:
     """Tests for report integration with pipeline execution."""
 
     @pytest.mark.integration
-    def test_report_receives_pipeline_data(self, tmp_path):
+    def test_report_receives_pipeline_data(self, tmp_path: Any) -> None:
         """Test that report module correctly receives pipeline data."""
         from report import get_module_info
         import logging
@@ -29,7 +30,7 @@ class TestReportPipelineIntegration:
         assert info is not None
 
     @pytest.mark.integration
-    def test_report_processes_pipeline_outputs(self, tmp_path):
+    def test_report_processes_pipeline_outputs(self, tmp_path: Any) -> None:
         """Test report generation from pipeline output directories."""
         from report import process_report
         import logging
@@ -58,7 +59,7 @@ class TestReportPipelineIntegration:
         assert result is True or result is False
 
     @pytest.mark.integration
-    def test_report_with_visualization_outputs(self, tmp_path):
+    def test_report_with_visualization_outputs(self, tmp_path: Any) -> None:
         """Test report includes visualization outputs."""
         from report import process_report
         import logging
@@ -101,7 +102,7 @@ class TestReportGNNIntegration:
     """Tests for report integration with GNN processing."""
 
     @pytest.mark.integration
-    def test_report_analyzes_gnn_files(self, sample_gnn_files, tmp_path):
+    def test_report_analyzes_gnn_files(self, sample_gnn_files: Any, tmp_path: Any) -> None:
         """Test report analysis of GNN files."""
         from report import analyze_gnn_file
 
@@ -114,7 +115,7 @@ class TestReportGNNIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_report_includes_gnn_metrics(self, sample_gnn_files, tmp_path):
+    def test_report_includes_gnn_metrics(self, sample_gnn_files: Any, tmp_path: Any) -> None:
         """Test that reports include GNN-specific metrics."""
         from report import process_report
         import logging
@@ -141,7 +142,7 @@ class TestReportAnalysisIntegration:
     """Tests for report integration with analysis module."""
 
     @pytest.mark.integration
-    def test_analyze_pipeline_data(self):
+    def test_analyze_pipeline_data(self) -> None:
         """Test pipeline data analysis for reporting."""
         from report import analyze_pipeline_data
 
@@ -160,7 +161,7 @@ class TestReportAnalysisIntegration:
         assert isinstance(result, dict)
 
     @pytest.mark.integration
-    def test_analyze_empty_pipeline_data(self):
+    def test_analyze_empty_pipeline_data(self) -> None:
         """Test analysis handles empty pipeline data gracefully."""
         from report import analyze_pipeline_data
 
@@ -174,7 +175,7 @@ class TestReportExportIntegration:
     """Tests for report integration with export functionality."""
 
     @pytest.mark.integration
-    def test_report_exports_multiple_formats(self, tmp_path):
+    def test_report_exports_multiple_formats(self, tmp_path: Any) -> None:
         """Test report exports to multiple formats simultaneously."""
         from report import generate_comprehensive_report
         import logging
@@ -205,7 +206,7 @@ class TestReportExportIntegration:
         assert isinstance(result, bool)
 
     @pytest.mark.integration
-    def test_report_respects_output_directory(self, tmp_path):
+    def test_report_respects_output_directory(self, tmp_path: Any) -> None:
         """Test report outputs go to specified directory."""
         from report import process_report
         import logging
@@ -231,7 +232,7 @@ class TestReportModuleIntegration:
     """Tests for report module integration with MCP."""
 
     @pytest.mark.integration
-    def test_report_module_exports(self):
+    def test_report_module_exports(self) -> None:
         """Test that report module exports expected functions."""
         from report import (
             process_report,

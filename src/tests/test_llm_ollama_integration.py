@@ -130,8 +130,9 @@ class TestOllamaDetection:
 class TestOllamaModelSelection:
     """Test Ollama model selection logic."""
 
-    def test_model_selection_with_empty_list(self, caplog):
+    def test_model_selection_with_empty_list(self, caplog, monkeypatch):
         """Test model selection when no models are available."""
+        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
         import logging
         logger = logging.getLogger("test_model_selection")
 
@@ -141,8 +142,9 @@ class TestOllamaModelSelection:
         assert isinstance(model, str)
         assert len(model) > 0
 
-    def test_model_selection_prefers_small_models(self, caplog):
+    def test_model_selection_prefers_small_models(self, caplog, monkeypatch):
         """Test that model selection prefers small, fast models."""
+        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
         import logging
         logger = logging.getLogger("test_model_selection")
 
@@ -165,6 +167,7 @@ class TestOllamaModelSelection:
         logger = logging.getLogger("test_model_selection")
 
         # Set environment variable
+        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
         test_model = "my-custom-model:latest"
         monkeypatch.setenv('OLLAMA_MODEL', test_model)
 
@@ -174,8 +177,9 @@ class TestOllamaModelSelection:
         # Should use environment variable
         assert selected == test_model
 
-    def test_model_selection_logging(self, caplog):
+    def test_model_selection_logging(self, caplog, monkeypatch):
         """Test that model selection provides clear logging."""
+        monkeypatch.setenv('GNN_TESTING_NO_LLM_CONFIG', '1')
         import logging
         caplog.set_level(logging.INFO)
 

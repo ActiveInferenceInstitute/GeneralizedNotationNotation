@@ -46,4 +46,4 @@ python src/11_render.py --target-dir input/gnn_files --output-dir output --verbo
 
 ## Source
 
-- **Script**: [src/11_render.py](#placeholder)
+- **Script**: [src/11_render.py](../../src/11_render.py)

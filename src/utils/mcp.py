@@ -288,24 +288,39 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering utils MCP tools")
 
+    def get_system_info_mcp() -> Dict[str, Any]:
+        return get_system_info(mcp_instance)
+
+    def get_environment_info_mcp() -> Dict[str, Any]:
+        return get_environment_info(mcp_instance)
+
+    def get_file_info_mcp(file_path: str) -> Dict[str, Any]:
+        return get_file_info(mcp_instance, file_path)
+
+    def get_logging_info_mcp() -> Dict[str, Any]:
+        return get_logging_info(mcp_instance)
+
+    def validate_dependencies_mcp() -> Dict[str, Any]:
+        return validate_dependencies(mcp_instance)
+
     # Register tools
     mcp_instance.register_tool(
         name="get_system_info",
-        function=functools.partial(get_system_info, mcp_instance),
+        function=get_system_info_mcp,
         schema={},
         description="Get comprehensive system information including CPU, memory, disk, and platform details."
     )
 
     mcp_instance.register_tool(
         name="get_environment_info",
-        function=functools.partial(get_environment_info, mcp_instance),
+        function=get_environment_info_mcp,
         schema={},
         description="Get environment information including Python packages, environment variables, and paths."
     )
 
     mcp_instance.register_tool(
         name="get_file_info",
-        function=functools.partial(get_file_info, mcp_instance),
+        function=get_file_info_mcp,
         schema={
             "type": "object",
             "properties": {
@@ -321,14 +336,14 @@ def register_tools(mcp_instance):
 
     mcp_instance.register_tool(
         name="get_logging_info",
-        function=functools.partial(get_logging_info, mcp_instance),
+        function=get_logging_info_mcp,
         schema={},
         description="Get current logging configuration and status for all loggers."
     )
 
     mcp_instance.register_tool(
         name="validate_dependencies",
-        function=functools.partial(validate_dependencies, mcp_instance),
+        function=validate_dependencies_mcp,
         schema={},
         description="Validate system dependencies and required packages for the GNN pipeline."
     )

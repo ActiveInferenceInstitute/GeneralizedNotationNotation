@@ -263,7 +263,7 @@ class OllamaProvider(BaseLLMProvider):
                 text = await asyncio.to_thread(_call_cli_once)
                 yield text
             else:
-                def _iter():
+                def _iter() -> Any:
                     return self._ollama.generate(
                         model=config.model or self.default_model,
                         prompt="\n\n".join(m.content for m in messages if m.role in ("system", "user")),
@@ -292,19 +292,19 @@ class OllamaProvider(BaseLLMProvider):
 
         prompt = f"Analyze this GNN model for {task}: {content}"
 
-        async def _run():
+        async def _run() -> LLMResponse:
             return await self.generate_response(
                 [LLMMessage(role="user", content=prompt)]
             )
 
-        def _extract(result):
+        def _extract(result: Any) -> str:
             return result.content if hasattr(result, 'content') else str(result)
 
         try:
             result = asyncio.run(_run())
             return _extract(result)
         except RuntimeError:
-            def _thread_run():
+            def _thread_run() -> LLMResponse:
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
@@ -314,7 +314,7 @@ class OllamaProvider(BaseLLMProvider):
             logger.error(f"Ollama analysis failed: {e}")
             return f"Analysis failed: {e}"
 
-    async def close(self):
+    async def close(self) -> None:
         # No persistent connection to close for Ollama
         self._is_initialized = False
         logger.info("Ollama provider closed")

@@ -47,18 +47,24 @@ Open a [GitHub Discussion](https://github.com/ActiveInferenceInstitute/Generaliz
 ### Submitting Code Changes
 
 1. **Fork** the repository and create a feature branch:
+
    ```bash
    git checkout -b feature/your-feature-name
    ```
+
 2. **Make your changes** following the conventions below.
 3. **Run the tests** to ensure nothing is broken:
+
    ```bash
    uv run pytest src/tests/ -v
    ```
+
 4. **Commit** with clear, descriptive messages:
+
    ```bash
    git commit -m "Add support for new matrix type in GNN parser"
    ```
+
 5. **Push** to your fork and **open a Pull Request** against `main`.
 
 ## Code Conventions
@@ -79,7 +85,8 @@ All pipeline modules follow the **thin orchestrator pattern**:
 ### Module Structure
 
 Every module must include:
-```
+
+```text
 src/module_name/
   __init__.py      # Public API
   processor.py     # Core logic
@@ -125,7 +132,7 @@ Please review and follow our [Code of Conduct](CODE_OF_CONDUCT.md). We are commi
 
 ## Recognition
 
-Contributors are recognized in [release notes](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases) and the [contributors graph](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors).
+Contributors are recognized in [release notes](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/releases), the [CHANGELOG](CHANGELOG.md), and the [contributors graph](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/graphs/contributors).
 
 ## Questions?
 

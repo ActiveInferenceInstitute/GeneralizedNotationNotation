@@ -43,7 +43,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from model_registry import process_model_registry
 except ImportError:
-    def process_model_registry(target_dir, output_dir, logger, **kwargs):
+    def process_model_registry(target_dir, output_dir, logger, **kwargs) -> bool:
         """Recovery model registry when module unavailable."""
         logger.warning("Model registry module not available - using recovery")
         return True

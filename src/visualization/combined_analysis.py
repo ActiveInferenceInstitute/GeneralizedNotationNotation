@@ -104,7 +104,7 @@ def generate_combined_analysis(parsed_data: Dict[str, Any], output_dir: Path, mo
                             arr = np.array(value)
                             matrix_sizes.append(arr.size)
                         except Exception:
-                            def count_elements(obj):
+                            def count_elements(obj: Any) -> int:
                                 if isinstance(obj, (int, float)):
                                     return 1
                                 elif isinstance(obj, (list, tuple)):

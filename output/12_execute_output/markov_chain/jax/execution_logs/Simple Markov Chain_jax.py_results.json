@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/markov_chain/jax/Simple Markov Chain_jax.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 0.897852,
-  "timestamp": "2026-03-13T14:15:45.775330",
+  "execution_time": 0.884861,
+  "timestamp": "2026-03-15T13:54:39.083082",
   "simulation_data": {
     "traces": [],
     "free_energy": [
@@ -134,12 +134,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 1234,
     "stderr_length": 0,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/jax"
+    "output_directory": "output/12_execute_output/markov_chain/jax"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/markov_chain/jax/simulation_data/jax_outputs_simulation_results.json"
+      "output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

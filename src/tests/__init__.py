@@ -97,19 +97,19 @@ except Exception:
     TEST_CATEGORIES = {}
     TEST_STAGES = {}
     COVERAGE_TARGETS = {}
-    def is_safe_mode(): return True
-    def validate_test_environment(): return True
-    def get_test_args(): return {}
-    def get_sample_pipeline_arguments(): return {}
-    def create_test_gnn_files(_): return []
-    def create_test_files(_, __=3): return []
-    def create_sample_gnn_content(): return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
-    def get_test_filesystem_structure(): return {}
-    def run_all_tests(*_, **__): return True
+    def is_safe_mode() -> bool: return True
+    def validate_test_environment() -> bool: return True
+    def get_test_args() -> Dict[str, Any]: return {}
+    def get_sample_pipeline_arguments() -> Dict[str, Any]: return {}
+    def create_test_gnn_files(_: Path) -> List[Path]: return []
+    def create_test_files(_: Path, __: int = 3) -> List[Path]: return []
+    def create_sample_gnn_content() -> Dict[str, str]: return {"valid_basic": "## ModelName\nTestModel\n\n## StateSpaceBlock\ns[3,1]\n\n## Connections\ns -> o"}
+    def get_test_filesystem_structure() -> Dict[str, Any]: return {}
+    def run_all_tests(*_: Any, **__: Any) -> bool: return True
     from contextlib import contextmanager
     import time as _time
     @contextmanager
-    def performance_tracker():
+    def performance_tracker() -> Generator[Any, None, None]:
         class T:
             duration = 0.0
             max_memory_mb = 0.0
@@ -118,15 +118,15 @@ except Exception:
         start = _time.time()
         yield t
         t.duration = _time.time() - start
-    def get_memory_usage(): return 0.0
-    def track_peak_memory(f): return f
-    def with_resource_limits(*_, **__):
+    def get_memory_usage() -> float: return 0.0
+    def track_peak_memory(f: Any) -> Any: return f
+    def with_resource_limits(*_: Any, **__: Any) -> Any:
         from contextlib import contextmanager
         @contextmanager
-        def _cm():
+        def _cm() -> Generator[None, None, None]:
             yield
         return _cm()
-    def assert_file_exists(path, msg=None):
+    def assert_file_exists(path: Any, msg: Optional[str] = None) -> None:
         """Assert that a file exists at the given path.
 
         Args:
@@ -143,7 +143,7 @@ except Exception:
         if not p.is_file():
             raise AssertionError(msg or f"Path exists but is not a file: {path}")
 
-    def assert_valid_json(path, msg=None):
+    def assert_valid_json(path: Any, msg: Optional[str] = None) -> None:
         """Assert that file contains valid JSON.
 
         Args:
@@ -164,7 +164,7 @@ except Exception:
         except json.JSONDecodeError as e:
             raise AssertionError(msg or f"Invalid JSON in {path}: {e}")
 
-    def assert_directory_structure(base_path, expected_structure, msg=None):
+    def assert_directory_structure(base_path: Any, expected_structure: List[str], msg: Optional[str] = None) -> None:
         """Assert that a directory contains expected structure.
 
         Args:
@@ -186,23 +186,23 @@ except Exception:
             item_path = base / item
             if not item_path.exists():
                 raise AssertionError(msg or f"Expected item missing: {item_path}")
-    def validate_report_data(d): return {"is_valid": True}
-    def generate_html_report_file(*_, **__): return True
-    def generate_markdown_report_file(*_, **__): return True
-    def generate_json_report_file(*_, **__): return True
-    def generate_comprehensive_report(*_, **__): return True
+    def validate_report_data(d: Dict[str, Any]) -> Dict[str, Any]: return {"is_valid": True}
+    def generate_html_report_file(*_: Any, **__: Any) -> bool: return True
+    def generate_markdown_report_file(*_: Any, **__: Any) -> bool: return True
+    def generate_json_report_file(*_: Any, **__: Any) -> bool: return True
+    def generate_comprehensive_report(*_: Any, **__: Any) -> bool: return True
 
 # Import runner function
 try:
     from .runner import run_tests, create_test_runner
 except ImportError:
     # Recovery implementation if runner import fails
-    def run_tests(logger, output_dir, verbose=False, **kwargs):
+    def run_tests(logger: Any, output_dir: Any, verbose: bool = False, **kwargs: Any) -> bool:
         """Recovery test function when module unavailable."""
         logger.warning("Tests module not available - using recovery")
         return True
 
-    def create_test_runner(args, logger):
+    def create_test_runner(args: Any, logger: Any) -> Optional[Any]:
         """Recovery test runner creation."""
         logger.warning("Test runner not available - using recovery")
         return None

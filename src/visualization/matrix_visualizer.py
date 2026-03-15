@@ -28,9 +28,9 @@ from pathlib import Path
 from typing import Dict, List, Any, Optional, Union
 
 
-def _safe_tight_layout():
+def _safe_tight_layout() -> None:
     """Apply tight_layout with warning suppression.
-    
+ 
     Tight layout may fail for complex figures - this is not critical.
     """
     if not MATPLOTLIB_AVAILABLE or plt is None:
@@ -420,12 +420,12 @@ class MatrixVisualizer:
     def _generate_tensor_statistics(self, tensor: np.ndarray, tensor_name: str, tensor_type: str) -> str:
         """
         Generate statistical summary for a 3D tensor.
-        
+ 
         Args:
             tensor: 3D numpy array
             tensor_name: Name of the tensor
             tensor_type: Type of tensor
-            
+ 
         Returns:
             Formatted statistics string
         """
@@ -620,7 +620,7 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
 
             try:
                 # Use safe DPI handling similar to processor.py
-                def _safe_dpi_value(dpi_input):
+                def _safe_dpi_value(dpi_input: Any) -> int:
                     """Validate and sanitize DPI value."""
                     try:
                         dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 96
@@ -789,11 +789,11 @@ Range: [{min_val:.3f}, {max_val:.3f}]"""
     def generate_combined_matrix_overview(self, matrices: Dict[str, np.ndarray], output_path: Path) -> bool:
         """
         Generate a combined overview of all matrices.
-        
+ 
         Args:
             matrices: Dictionary of matrix name to numpy array mappings
             output_path: Output file path
-            
+ 
         Returns:
             True if successful, False otherwise
         """

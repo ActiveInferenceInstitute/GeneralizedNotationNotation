@@ -57,6 +57,6 @@ Saved to `output/00_pipeline_summary/pipeline_execution_summary.json` with:
 
 ## Source
 
-- **Script**: [src/main.py](#placeholder)
+- **Script**: [src/main.py](../../src/main.py)
 - **Lines**: 902
 - **Key functions**: `main()`, `execute_pipeline_step()`, `parse_step_list()`, `get_environment_info()`

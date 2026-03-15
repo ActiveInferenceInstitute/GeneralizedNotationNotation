@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-13T11:37:34.321446",
-  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline",
+  "timestamp": "2026-03-15T13:59:25.369780",
+  "execution_results_dir": "output/12_execute_output/hmm_baseline",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -79,17 +79,17 @@
         "mean_fe": 1.6736
       },
       "execution_time": {
-        "rxinfer": 23.895907,
-        "numpyro": 1.421924,
-        "activeinference_jl": 39.387876,
-        "pymdp": 2.215413,
-        "pytorch": 1.296222,
-        "jax": 1.455899,
-        "discopy": 0.433545
+        "rxinfer": 18.416741,
+        "numpyro": 1.098889,
+        "activeinference_jl": 14.338091,
+        "pymdp": 1.586944,
+        "pytorch": 0.646018,
+        "jax": 1.032737,
+        "discopy": 0.333697
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.433545
+        "time": 0.333697
       },
       "success_rates": {
         "rxinfer": true,

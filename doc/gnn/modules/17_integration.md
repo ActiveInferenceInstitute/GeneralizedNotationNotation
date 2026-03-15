@@ -26,4 +26,4 @@ python src/17_integration.py --target-dir input/gnn_files --output-dir output --
 
 ## Source
 
-- **Script**: [src/17_integration.py](#placeholder)
+- **Script**: [src/17_integration.py](../../src/17_integration.py)

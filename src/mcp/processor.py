@@ -13,14 +13,57 @@ from utils.pipeline_template import (
 
 logger = logging.getLogger(__name__)
 
-def register_module_tools(module_name: str) -> bool:
-    """Register tools for a specific module."""
+def register_module_tools(module_name: str = None):
+    """Register tools for a specific module, or all modules if no name given.
+
+    Args:
+        module_name: Name of the module whose MCP tools to register (e.g. ``"gnn"``).
+            When *None* all available pipeline modules are auto-discovered and
+            registered, and the full list of registered tool dicts is returned.
+
+    Returns:
+        *bool* when registering a single named module (True = success).
+        *list* of tool dicts when called with no arguments (auto-discover mode).
+    """
+    from .mcp import mcp_instance
+    import importlib
+
+    # --- Auto-discover mode (no module_name given) ---
+    if module_name is None:
+        # Known pipeline modules that expose an mcp sub-module
+        pipeline_modules = [
+            "template", "setup", "tests", "gnn", "model_registry", "type_checker",
+            "validation", "export", "visualization", "advanced_visualization",
+            "ontology", "render", "execute", "llm", "ml_integration", "audio",
+            "analysis", "integration", "security", "research", "website", "mcp",
+            "gui", "report", "intelligent_analysis",
+        ]
+        registered: list = []
+        for mod_name in pipeline_modules:
+            for module_path in (f"src.{mod_name}.mcp", f"{mod_name}.mcp"):
+                try:
+                    mod = importlib.import_module(module_path)
+                    if hasattr(mod, "register_tools") and callable(mod.register_tools):
+                        mod.register_tools(mcp_instance)
+                        logger.debug(f"Auto-registered tools for module: {mod_name}")
+                    break
+                except (ImportError, ModuleNotFoundError):
+                    continue
+                except Exception as e:
+                    logger.debug(f"register_tools failed for {mod_name}: {e}")
+                    break
+        # Return the current tool list so callers can inspect what was registered
+        try:
+            registered = mcp_instance.list_available_tools()
+        except Exception:
+            registered = []
+        logger.info(f"Auto-discovered registration complete: {len(registered)} tool(s) available")
+        return registered
+
+    # --- Single-module mode ---
     try:
         logger.info(f"Registering tools for module: {module_name}")
 
-        from .mcp import mcp_instance
-
-        import importlib
         module_paths = [f"{module_name}.mcp", f"src.{module_name}.mcp"]
         module = None
 

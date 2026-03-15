@@ -26,10 +26,10 @@ class BaseGNNSerializer(ABC):
             return {}
 
         return {
-            'time_type': time_spec.time_type,
-            'discretization': time_spec.discretization,
-            'horizon': time_spec.horizon,
-            'step_size': time_spec.step_size
+            'time_type': getattr(time_spec, 'time_type', 'Static'),
+            'discretization': getattr(time_spec, 'discretization', None),
+            'horizon': getattr(time_spec, 'horizon', None),
+            'step_size': getattr(time_spec, 'step_size', None)
         }
 
     def _serialize_ontology_mappings(self, mappings) -> List[Dict[str, Any]]:

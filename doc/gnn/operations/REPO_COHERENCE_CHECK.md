@@ -25,13 +25,13 @@ This document validates the complete GNN pipeline architecture. For current impl
 
 ## Executive Summary
 
-This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 28 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
+This document serves as a comprehensive checklist and analysis framework for validating the entire GNN (Generalized Notation Notation) codebase against established standards, patterns, and best practices. It covers all 25 pipeline steps (0-24) and 29 specialized modules, ensuring architectural compliance, code quality, documentation completeness, and integration consistency.
 
 ### High-Level Coherence Metrics
 
 - **Total Pipeline Steps**: 25 (0_template.py through 23_report.py, steps 0-24)
 
-- **Total Modules**: 28 specialized agent modules
+- **Total Modules**: 29 specialized agent modules
 - **AGENTS.md Files**: 41 documentation files (including sub-modules)
 - **Architecture Pattern**: Thin orchestrator with modular implementation
 - **Testing Policy**: No substitutions - real data and real code paths only (some previous tests still use substitutions - see Section 16.1)
@@ -1441,7 +1441,7 @@ def test_processing(patched_process):
 
 ## 15. Conclusion
 
-This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 28 specialized modules. Use it systematically to:
+This mega-prompt provides a comprehensive framework for validating repo-wide coherence across all 25 pipeline steps and 29 specialized modules. Use it systematically to:
 
 1. **Identify Issues**: Find architectural, code quality, and documentation issues
 2. **Score Compliance**: Calculate compliance scores for each validation area
@@ -1462,7 +1462,7 @@ This mega-prompt provides a comprehensive framework for validating repo-wide coh
 
 **Status**: Production Ready
 **Version**: v2.0.0
-**Coverage**: 25 pipeline steps, 28 modules, 41 AGENTS.md files
+**Coverage**: 25 pipeline steps, 29 modules, 41 AGENTS.md files
 
 ---
 

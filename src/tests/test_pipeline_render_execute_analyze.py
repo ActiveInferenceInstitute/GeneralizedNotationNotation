@@ -18,6 +18,7 @@ import pytest
 
 pytestmark = pytest.mark.pipeline
 import json
+from typing import Dict, Any
 from pathlib import Path
 
 # Add src to path for imports
@@ -51,7 +52,7 @@ class TestPipelineIntegration:
     """End-to-end pipeline integration tests."""
 
     @pytest.fixture
-    def sample_gnn_content(self):
+    def sample_gnn_content(self) -> str:
         """Create sample GNN markdown content."""
         return """
 # Active Inference Test Agent
@@ -76,7 +77,7 @@ D = [0.33, 0.33, 0.34]
 """
 
     @pytest.fixture
-    def pipeline_directories(self, safe_filesystem, sample_gnn_content):
+    def pipeline_directories(self, safe_filesystem: Any, sample_gnn_content: str) -> Dict[str, Any]:
         """Create complete pipeline directory structure."""
         # Create input with GNN file
         input_dir = safe_filesystem.create_dir("input/gnn_files")
@@ -101,7 +102,7 @@ D = [0.33, 0.33, 0.34]
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_execute_analyze_flow(self, pipeline_directories):
+    def test_render_execute_analyze_flow(self, pipeline_directories: Dict[str, Any]) -> None:
         """Test full render -> execute -> analyze pipeline flow."""
         dirs = pipeline_directories
 
@@ -143,7 +144,7 @@ D = [0.33, 0.33, 0.34]
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_step_output_handoffs(self, pipeline_directories):
+    def test_step_output_handoffs(self, pipeline_directories: Dict[str, Any]) -> None:
         """Test that each step's output structure is correct for next step."""
         dirs = pipeline_directories
 
@@ -190,7 +191,7 @@ class TestExecuteAnalyzeIntegration:
     """Tests for execute to analysis handoff."""
 
     @pytest.fixture
-    def simulated_execute_output(self, safe_filesystem):
+    def simulated_execute_output(self, safe_filesystem: Any) -> Any:
         """Create simulated execution output for analysis testing."""
         execute_dir = safe_filesystem.create_dir("output/12_execute_output")
 
@@ -231,7 +232,7 @@ class TestExecuteAnalyzeIntegration:
         return execute_dir
 
     @pytest.mark.integration
-    def test_execution_results_analyzable(self, simulated_execute_output, safe_filesystem):
+    def test_execution_results_analyzable(self, simulated_execute_output: Any, safe_filesystem: Any) -> None:
         """Test that execution results can be analyzed."""
         if not ANALYSIS_AVAILABLE:
             pytest.skip("Analysis module not available")
@@ -259,7 +260,7 @@ class TestRenderExecuteIntegration:
     """Tests for render to execute handoff."""
 
     @pytest.fixture
-    def sample_gnn_spec(self):
+    def sample_gnn_spec(self) -> Dict[str, Any]:
         """Create a minimal GNN spec dictionary."""
         return {
             "name": "integration_test_model",
@@ -272,7 +273,7 @@ class TestRenderExecuteIntegration:
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_output_executable(self, safe_filesystem, sample_gnn_spec):
+    def test_render_output_executable(self, safe_filesystem: Any, sample_gnn_spec: Dict[str, Any]) -> None:
         """Test that render output can be executed."""
         # Create pipeline structure
         render_output = safe_filesystem.create_dir("output/11_render_output/test_model/pymdp")

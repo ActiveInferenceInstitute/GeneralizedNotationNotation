@@ -80,12 +80,12 @@ def animate_belief_evolution(
     ax.legend()
     ax.grid(True, alpha=0.3)
 
-    def init():
+    def init() -> Any:
         for line in lines:
             line.set_data([], [])
         return lines
 
-    def update(frame):
+    def update(frame: int) -> Any:
         for i in range(n_states):
             lines[i].set_data(range(frame + 1), belief_array[:frame+1, i])
         return lines

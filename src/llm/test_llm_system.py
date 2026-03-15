@@ -10,6 +10,7 @@ import asyncio
 import sys
 from pathlib import Path
 import logging
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 # Add the project root to the path
 project_root = Path(__file__).parent.parent.parent
@@ -92,7 +93,7 @@ DiscreteTime: True
 ModelTimeHorizon: 10
 """
 
-def test_environment_setup():
+def test_environment_setup() -> None:
     """Test that environment variables are properly loaded."""
     print("🔧 Testing Environment Setup...")
 
@@ -113,7 +114,7 @@ def test_environment_setup():
     assert isinstance(configs, dict)
     return api_keys, configs
 
-def test_provider_initialization():
+def test_provider_initialization() -> Any:
     """Test individual provider initialization."""
     print("\n🚀 Testing Provider Initialization...")
 
@@ -135,7 +136,7 @@ def test_provider_initialization():
     assert processor is not None
     return processor
 
-def test_basic_analysis():
+def test_basic_analysis() -> None:
     """Test basic GNN analysis functionality."""
     print("\n📊 Testing Basic Analysis...")
 
@@ -143,7 +144,7 @@ def test_basic_analysis():
     try:
         # Don't actually initialize external providers; simulate a response object
         class _Resp:
-            def __init__(self):
+            def __init__(self) -> None:
                 self.content = "summary"
                 self.model_used = "placeholder"
                 self.provider = None
@@ -163,7 +164,7 @@ def test_basic_analysis():
         print(f"❌ Summary Analysis Failed: {e}")
         return None
 
-def test_different_analysis_types():
+def test_different_analysis_types() -> None:
     """Test different analysis types."""
     print("\n🔍 Testing Different Analysis Types...")
 
@@ -181,7 +182,7 @@ def test_different_analysis_types():
         except Exception as e:
             print(f"❌ {analysis_type.value.upper()} Analysis Failed: {e}")
 
-def test_provider_specific_calls():
+def test_provider_specific_calls() -> None:
     """Test calling specific providers."""
     print("\n🎯 Testing Provider-Specific Calls...")
 
@@ -198,7 +199,7 @@ def test_provider_specific_calls():
         except Exception as e:
             print(f"❌ {provider_type.value.upper()} Provider Failed: {e}")
 
-def test_custom_configurations():
+def test_custom_configurations() -> None:
     """Test custom LLM configurations."""
     print("\n⚙️ Testing Custom Configurations...")
 
@@ -234,7 +235,7 @@ def test_custom_configurations():
         except Exception as e:
             print(f"❌ Config {i+1} Failed: {e}")
 
-def test_streaming_responses():
+def test_streaming_responses() -> None:
     """Test streaming response functionality."""
     print("\n🌊 Testing Streaming Responses...")
 
@@ -263,7 +264,7 @@ def test_streaming_responses():
     except Exception as e:
         print(f"❌ Streaming Failed: {e}")
 
-def test_provider_comparison():
+def test_provider_comparison() -> None:
     """Test comparing responses from multiple providers."""
     print("\n🔄 Testing Provider Comparison...")
 
@@ -284,7 +285,7 @@ def test_provider_comparison():
     except Exception as e:
         print(f"❌ Provider Comparison Failed: {e}")
 
-def test_error_handling():
+def test_error_handling() -> None:
     """Test error handling and recovery mechanisms."""
     print("\n🛡️ Testing Error Handling...")
 
@@ -298,7 +299,7 @@ def test_error_handling():
     except Exception as e:
         print(f"⚠️ Error handling test: {e}")
 
-def test_global_processor():
+def test_global_processor() -> None:
     """Test global processor initialization and configuration."""
     print("\n🌐 Testing Global Processor...")
     try:
@@ -324,7 +325,7 @@ def test_global_processor():
     except Exception as e:
         print(f"   ⚠️ Processor test skipped: {e}")
 
-def main():
+def main() -> None:
     """Run all tests."""
     print("🧪 LLM System Comprehensive Test Suite")
     print("=" * 50)

@@ -59,7 +59,7 @@ class BaseLLMProvider(ABC):
     the required abstract methods to ensure consistent behavior.
     """
 
-    def __init__(self, api_key: Optional[str] = None, **kwargs):
+    def __init__(self, api_key: Optional[str] = None, **kwargs: Any) -> None:
         """
         Initialize the provider.
         
@@ -248,3 +248,6 @@ class BaseLLMProvider(ABC):
             "available_models": self.available_models,
             "is_initialized": self.is_initialized()
         }
+    async def close(self) -> None:
+        """Close the provider connection and cleanup resources."""
+        self._is_initialized = False

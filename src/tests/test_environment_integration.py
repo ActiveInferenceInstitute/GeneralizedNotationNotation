@@ -8,6 +8,7 @@ Tests the integration between environment validation and pipeline components.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,7 +18,7 @@ class TestEnvironmentSetupIntegration:
     """Tests for environment setup integration with pipeline."""
 
     @pytest.mark.integration
-    def test_environment_validates_before_pipeline(self):
+    def test_environment_validates_before_pipeline(self) -> None:
         """Test environment validation runs before pipeline."""
         from utils.test_utils import validate_test_environment
 
@@ -29,7 +30,7 @@ class TestEnvironmentSetupIntegration:
             assert result is True or result is None
 
     @pytest.mark.integration
-    def test_environment_paths_accessible(self):
+    def test_environment_paths_accessible(self) -> None:
         """Test all required paths are accessible."""
         from pathlib import Path
 
@@ -43,7 +44,7 @@ class TestEnvironmentSetupIntegration:
         assert project_root.exists()
 
     @pytest.mark.integration
-    def test_environment_imports_work(self):
+    def test_environment_imports_work(self) -> None:
         """Test core imports work from environment."""
         # These should all import without error
         from gnn import get_module_info
@@ -59,7 +60,7 @@ class TestEnvironmentModuleIntegration:
     """Tests for environment integration with modules."""
 
     @pytest.mark.integration
-    def test_all_modules_have_info(self):
+    def test_all_modules_have_info(self) -> None:
         """Test all modules provide info."""
         modules_with_info = [
             'gnn',
@@ -79,7 +80,7 @@ class TestEnvironmentModuleIntegration:
                 pass  # Module may have optional deps
 
     @pytest.mark.integration
-    def test_module_features_accessible(self):
+    def test_module_features_accessible(self) -> None:
         """Test module features are accessible."""
         from audio import FEATURES
         from report import FEATURES as REPORT_FEATURES
@@ -92,7 +93,7 @@ class TestEnvironmentPipelineIntegration:
     """Tests for environment integration with pipeline execution."""
 
     @pytest.mark.integration
-    def test_pipeline_finds_scripts(self):
+    def test_pipeline_finds_scripts(self) -> None:
         """Test pipeline can find step scripts."""
         from pathlib import Path
 
@@ -105,7 +106,7 @@ class TestEnvironmentPipelineIntegration:
         assert len(scripts) >= 0
 
     @pytest.mark.integration
-    def test_output_directory_creation(self, tmp_path):
+    def test_output_directory_creation(self, tmp_path: Any) -> None:
         """Test output directory can be created."""
         output_dir = tmp_path / "output"
         output_dir.mkdir(parents=True, exist_ok=True)
@@ -114,7 +115,7 @@ class TestEnvironmentPipelineIntegration:
         assert output_dir.is_dir()
 
     @pytest.mark.integration
-    def test_temp_directory_creation(self, tmp_path):
+    def test_temp_directory_creation(self, tmp_path: Any) -> None:
         """Test temporary directories can be created."""
         temp_dir = tmp_path / "temp"
         temp_dir.mkdir(parents=True, exist_ok=True)
@@ -130,7 +131,7 @@ class TestEnvironmentLoggingIntegration:
     """Tests for environment logging integration."""
 
     @pytest.mark.integration
-    def test_logging_configuration(self):
+    def test_logging_configuration(self) -> None:
         """Test logging can be configured."""
         import logging
 
@@ -143,7 +144,7 @@ class TestEnvironmentLoggingIntegration:
         logger.warning("Warning message")
 
     @pytest.mark.integration
-    def test_log_file_creation(self, tmp_path):
+    def test_log_file_creation(self, tmp_path: Any) -> None:
         """Test log files can be created."""
         import logging
 
@@ -165,7 +166,7 @@ class TestEnvironmentResourceIntegration:
     """Tests for environment resource access."""
 
     @pytest.mark.integration
-    def test_input_directory_access(self, sample_gnn_files):
+    def test_input_directory_access(self, sample_gnn_files: Any) -> None:
         """Test input directories are accessible."""
         if sample_gnn_files:
             for gnn_file in sample_gnn_files.values():
@@ -173,7 +174,7 @@ class TestEnvironmentResourceIntegration:
                 assert gnn_file.is_file()
 
     @pytest.mark.integration
-    def test_memory_availability(self):
+    def test_memory_availability(self) -> None:
         """Test sufficient memory is available."""
         import numpy as np
 
@@ -185,7 +186,7 @@ class TestEnvironmentResourceIntegration:
             pytest.fail("Insufficient memory")
 
     @pytest.mark.integration
-    def test_disk_space_available(self, tmp_path):
+    def test_disk_space_available(self, tmp_path: Any) -> None:
         """Test sufficient disk space is available."""
 
         # Write some test data

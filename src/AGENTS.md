@@ -66,6 +66,10 @@ See **[doc/gnn/AGENTS.md](../doc/gnn/AGENTS.md)** for the registry of all 25 doc
 
 - **[utils/](utils/AGENTS.md)** - Shared utilities and helper functions
 - **[pipeline/](pipeline/AGENTS.md)** - Pipeline orchestration and configuration
+- **[api/](api/AGENTS.md)** - REST API server (FastAPI)
+- **[cli/](cli/)** - CLI entry point
+- **[lsp/](lsp/)** - Language Server Protocol support
+- **[sapf/](sapf/AGENTS.md)** - SAPF compatibility shim (re-exports from `audio/sapf/`)
 
 ---
 
@@ -174,8 +178,8 @@ graph TD
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **MCP Integration**: ✅ 131 distinct tools successfully registered across 38+ modules
-- **AGENTS.md Coverage**: ✅ 100% (all 38+ modules + all subdirectories documented)
+- **MCP Integration**: ✅ 131 distinct tools successfully registered across 31 modules
+- **AGENTS.md Coverage**: ✅ 100% (all 31 modules + all subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready
@@ -361,11 +365,11 @@ pytest --cov=src --cov-report=term-missing
 
 ---
 
-**Last Updated**: 2026-03-06
-**Pipeline Version**: 2.0.0
-**Total Modules**: 38+
+**Last Updated**: 2026-03-15
+**Pipeline Version**: 1.3.0
+**Total Modules**: 31
 **Total Steps**: 25 (0-24)
 **Test Status**: ✅ 1,522+ tests passed
-**MCP Integration**: ✅ 131 tools registered across 38+ modules
+**MCP Integration**: ✅ 131 tools registered across 31 modules
 **Documentation Coverage**: ✅ 100% Complete (AGENTS.md + README.md + SPEC.md for all modules and subdirectories)
 **Status**: ✅ Production Ready

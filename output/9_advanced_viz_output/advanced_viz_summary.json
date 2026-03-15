@@ -1,35 +1,35 @@
 {
-  "timestamp": "2026-03-13T11:35:42.012498",
+  "timestamp": "2026-03-15T13:54:00.243539",
   "total_attempts": 19,
   "successful": 17,
   "failed": 0,
   "skipped": 2,
   "total_duration_ms": 0.0,
   "output_files": [
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-    "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+    "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png",
+    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+    "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png",
+    "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png",
+    "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png",
+    "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png",
+    "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png",
+    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+    "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+    "output/9_advanced_viz_output/continuous_navigation_network_metrics.png",
+    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
+    "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+    "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
   ],
   "warnings": [],
   "errors": [],
@@ -59,9 +59,9 @@
       "viz_type": "3d",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 214.55788612365723,
+      "duration_ms": 205.25693893432617,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_3d_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -70,9 +70,9 @@
       "viz_type": "statistical",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 244.5230484008789,
+      "duration_ms": 223.29235076904297,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -81,9 +81,9 @@
       "viz_type": "matrix_correlations",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 268.7652111053467,
+      "duration_ms": 126.66702270507812,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -92,7 +92,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "predictive_coding_agent",
       "status": "skipped",
-      "duration_ms": 0.02002716064453125,
+      "duration_ms": 0.009298324584960938,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -101,9 +101,9 @@
       "viz_type": "policy",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 121.23227119445801,
+      "duration_ms": 110.9611988067627,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_policy_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -112,9 +112,9 @@
       "viz_type": "interactive_dashboard",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 60.65106391906738,
+      "duration_ms": 52.232980728149414,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
+        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
@@ -123,9 +123,9 @@
       "viz_type": "dashboard",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 142.93289184570312,
+      "duration_ms": 165.5752658843994,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
+        "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
@@ -134,9 +134,9 @@
       "viz_type": "network_metrics",
       "model_name": "predictive_coding_agent",
       "status": "success",
-      "duration_ms": 279.9828052520752,
+      "duration_ms": 188.40694427490234,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png"
+        "output/9_advanced_viz_output/predictive_coding_agent_network_metrics.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -145,10 +145,10 @@
       "viz_type": "d2_diagrams",
       "model_name": "Predictive Coding Active Inference Agent",
       "status": "success",
-      "duration_ms": 2325.063943862915,
+      "duration_ms": 1868.7143325805664,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png"
+        "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.svg",
+        "output/9_advanced_viz_output/d2_diagrams/Predictive Coding Active Inference Agent/predictive_coding_active_inference_agent_structure.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -157,9 +157,9 @@
       "viz_type": "3d",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 225.29172897338867,
+      "duration_ms": 207.7157497406006,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_3d_visualization.png"
+        "output/9_advanced_viz_output/continuous_navigation_3d_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -168,9 +168,9 @@
       "viz_type": "statistical",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 234.87186431884766,
+      "duration_ms": 217.0271873474121,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png"
+        "output/9_advanced_viz_output/continuous_navigation_statistical_analysis.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -179,9 +179,9 @@
       "viz_type": "matrix_correlations",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 172.84727096557617,
+      "duration_ms": 160.44020652770996,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png"
+        "output/9_advanced_viz_output/continuous_navigation_matrix_correlations.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -190,7 +190,7 @@
       "viz_type": "pomdp_transitions",
       "model_name": "continuous_navigation",
       "status": "skipped",
-      "duration_ms": 0.011920928955078125,
+      "duration_ms": 0.014781951904296875,
       "output_files": [],
       "error_message": "Not applicable to this model type (B matrix not found)",
       "fallback_used": false
@@ -199,9 +199,9 @@
       "viz_type": "policy",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 72.8139877319336,
+      "duration_ms": 64.09692764282227,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_policy_visualization.png"
+        "output/9_advanced_viz_output/continuous_navigation_policy_visualization.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -210,9 +210,9 @@
       "viz_type": "interactive_dashboard",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 18.314123153686523,
+      "duration_ms": 13.643980026245117,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
+        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
@@ -221,9 +221,9 @@
       "viz_type": "dashboard",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 75.07014274597168,
+      "duration_ms": 70.89900970458984,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
+        "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html"
       ],
       "error_message": null,
       "fallback_used": false
@@ -232,9 +232,9 @@
       "viz_type": "network_metrics",
       "model_name": "continuous_navigation",
       "status": "success",
-      "duration_ms": 203.63116264343262,
+      "duration_ms": 191.44511222839355,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
+        "output/9_advanced_viz_output/continuous_navigation_network_metrics.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -243,10 +243,10 @@
       "viz_type": "d2_diagrams",
       "model_name": "Continuous State Navigation Agent",
       "status": "success",
-      "duration_ms": 1682.5101375579834,
+      "duration_ms": 1094.9490070343018,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png"
+        "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.svg",
+        "output/9_advanced_viz_output/d2_diagrams/Continuous State Navigation Agent/continuous_state_navigation_agent_structure.png"
       ],
       "error_message": null,
       "fallback_used": false
@@ -255,14 +255,14 @@
       "viz_type": "d2_pipeline_diagrams",
       "model_name": "gnn_pipeline",
       "status": "success",
-      "duration_ms": 5627.806901931763,
+      "duration_ms": 3890.6090259552,
       "output_files": [
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
-        "/Users/4d/Documents/GitHub/generalizednotationnotation/output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/gnn_pipeline_flow.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/framework_integration.png",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.svg",
+        "output/9_advanced_viz_output/d2_diagrams/pipeline/active_inference_concepts.png"
       ],
       "error_message": null,
       "fallback_used": false

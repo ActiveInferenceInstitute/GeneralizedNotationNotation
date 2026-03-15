@@ -19,10 +19,11 @@ FEATURES = {
 
 import logging
 import os
+from typing import Any, Dict, List, Optional, Union, Tuple
 
 logger = logging.getLogger(__name__)
 
-def process_llm(*args, **kwargs):
+def process_llm(*args: Any, **kwargs: Any) -> Any:
     from .processor import process_llm as _impl
     return _impl(*args, **kwargs)
 
@@ -43,12 +44,12 @@ except (ImportError, AttributeError):
         SUMMARY = type("E", (), {"value": "summary"})()
     class UnifiedLLMProcessor:  # type: ignore[no-redef]  # fallback shim when llm_processor unavailable
         pass
-    def load_api_keys_from_env(): return {}
-    async def initialize_global_processor(*_, **__): return None
-    def get_global_processor(): return None
-    async def create_processor_from_env(): return None
-    def get_default_provider_configs(): return {}
-    def get_preferred_providers_from_env(): return []
+    def load_api_keys_from_env() -> Dict[str, str]: return {}
+    async def initialize_global_processor(*_: Any, **__: Any) -> None: return None
+    def get_global_processor() -> Optional[UnifiedLLMProcessor]: return None
+    async def create_processor_from_env() -> Optional[UnifiedLLMProcessor]: return None
+    def get_default_provider_configs() -> Dict[str, Any]: return {}
+    def get_preferred_providers_from_env() -> List[str]: return []
 
 try:
     from .providers import ProviderType, LLMConfig, LLMMessage, LLMResponse, BaseLLMProvider
@@ -73,7 +74,7 @@ try:
 except (ImportError, AttributeError):
     # Provide real, direct implementations where possible instead of empty shims.
     # These implementations are lightweight and synchronous where tests expect sync behavior.
-    async def analyze_gnn_file_with_llm(content: str, **kwargs):
+    async def analyze_gnn_file_with_llm(content: str, **kwargs: Any) -> Dict[str, Any]:
         # Basic analysis pipeline using available extractors
         vars_ = extract_variables(content) if 'extract_variables' in globals() else []
         conns = extract_connections(content) if 'extract_connections' in globals() else []
@@ -85,7 +86,7 @@ except (ImportError, AttributeError):
             "sections": sections
         }
 
-    def extract_variables(content: str) -> list:
+    def extract_variables(content: str) -> List[Dict[str, Any]]:
         # Very small heuristic: look for lines with ':' or '[' indicating variables
         out = []
         for i, line in enumerate(str(content).splitlines()):
@@ -93,22 +94,22 @@ except (ImportError, AttributeError):
                 out.append({'name': f'var_{i}', 'line': line.strip()})
         return out
 
-    def extract_connections(content: str) -> list:
+    def extract_connections(content: str) -> List[Dict[str, Any]]:
         out = []
         for i, line in enumerate(str(content).splitlines()):
             if '>' in line or '-' in line:
                 out.append({'source': f'src_{i}', 'target': f'tgt_{i}'})
         return out
 
-    def extract_sections(content: str) -> list:
+    def extract_sections(content: str) -> List[str]:
         # Sections identified by '##' headings
         return [ln.strip().lstrip('#').strip() for ln in str(content).splitlines() if ln.strip().startswith('##')]
 
-    def perform_semantic_analysis(content: str, vars_, conns):
+    def perform_semantic_analysis(content: str, vars_: Any, conns: Any) -> Dict[str, Any]:
         return {"variables_count": len(vars_), "connections_count": len(conns)}
 
-    def calculate_complexity_metrics(*_, **__): return {}
-    def identify_patterns(*_, **__): return []
+    def calculate_complexity_metrics(*_: Any, **__: Any) -> Dict[str, Any]: return {}
+    def identify_patterns(*_: Any, **__: Any) -> List[Any]: return []
 
 try:
     from .generator import (
@@ -118,16 +119,16 @@ try:
         generate_llm_summary
     )
 except (ImportError, AttributeError):
-    def generate_model_insights(*_, **__): return {}
-    def generate_code_suggestions(*_, **__): return {}
-    def generate_documentation(*_, **__): return ""
-    def generate_llm_summary(*_, **__): return ""
+    def generate_model_insights(*_: Any, **__: Any) -> Dict[str, Any]: return {}
+    def generate_code_suggestions(*_: Any, **__: Any) -> Dict[str, Any]: return {}
+    def generate_documentation(*_: Any, **__: Any) -> str: return ""
+    def generate_llm_summary(*_: Any, **__: Any) -> str: return ""
 
 
 class LLMProcessor:
     """Minimal processor facade exposing methods expected by tests."""
 
-    def analyze(self, content: str) -> dict:
+    def analyze(self, content: str) -> Dict[str, Any]:
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
@@ -135,7 +136,7 @@ class LLMProcessor:
         }
 
     # Methods expected by tests
-    def analyze_model(self, model_data: dict) -> dict:
+    def analyze_model(self, model_data: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
         text = ""
         if isinstance(model_data, dict):
             text = model_data.get("content", "")
@@ -151,7 +152,7 @@ class LLMProcessor:
 class LLMAnalyzer:
     """Simple analyzer class exposing analysis helpers expected by tests."""
 
-    def analyze_content(self, content: str) -> dict:
+    def analyze_content(self, content: str) -> Dict[str, Any]:
         return {
             "variables": extract_variables(content),
             "connections": extract_connections(content),
@@ -159,11 +160,11 @@ class LLMAnalyzer:
             "patterns": identify_patterns(content, extract_variables(content), extract_connections(content)),
         }
 
-    def extract_insights(self, content: str) -> dict:
+    def extract_insights(self, content: str) -> Dict[str, Any]:
         return perform_semantic_analysis(content, extract_variables(content), extract_connections(content))
 
 
-def get_module_info() -> dict:
+def get_module_info() -> Dict[str, Any]:
     """Return basic module info required by tests."""
     return {
         "version": __version__,
@@ -172,7 +173,7 @@ def get_module_info() -> dict:
     }
 
 
-def analyze_gnn_model(model_content: str) -> dict:
+def analyze_gnn_model(model_content: Union[str, Dict[str, Any]]) -> Dict[str, Any]:
     """Compatibility helper exposing synchronous analysis expected by tests."""
     # Prefer analyzer class if available
     try:

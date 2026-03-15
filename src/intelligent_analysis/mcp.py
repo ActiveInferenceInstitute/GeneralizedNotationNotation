@@ -15,7 +15,7 @@ from . import (
     process_intelligent_analysis,
     get_module_info,
     get_supported_analysis_types,
-    check_analysis_tools,
+    check_intelligent_analysis_tools,
     FEATURES
 )
 
@@ -80,7 +80,7 @@ def get_analysis_capabilities_mcp() -> Dict[str, Any]:
             "success":                True,
             "module_info":            get_module_info(),
             "supported_analysis_types": get_supported_analysis_types(),
-            "available_tools":        check_analysis_tools(),
+            "available_tools":        check_intelligent_analysis_tools(),
             "features":               FEATURES,
         }
     except Exception as e:
@@ -118,7 +118,7 @@ def get_intelligent_analysis_module_info_mcp() -> Dict[str, Any]:
 
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> None:
     """Register intelligent analysis domain tools with the MCP."""
 
     mcp_instance.register_tool(

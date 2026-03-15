@@ -2,11 +2,11 @@
 
 This guide details the architecture of the Generalized Notation Notation (GNN) system. It complements `DOCS.md` and `doc/pipeline/README.md` with an implementation-oriented perspective for developers.
 
-**Last Updated**: 2026-03-05
-**Version**: 2.3.0
+**Last Updated**: 2026-03-15
+**Version**: 1.3.0
 **Status**: ✅ Production Ready
 **Pipeline Steps**: 25 (0-24) - 100% Implemented
-**Agent Modules**: 29 - 100% Documented
+**Agent Modules**: 27 - 100% Documented
 **Latest Run**: 100% Success (25/25 steps)
 
 ## Principles
@@ -43,7 +43,7 @@ The GNN system implements a comprehensive 25-step pipeline that transforms GNN m
 graph TB
   A["User/Researcher"] --> B["src/main.py<br/>Pipeline Orchestrator"]
   B --> C["25 Numbered Scripts<br/>(0_template.py → 24_intelligent_analysis.py)"]
-  C --> D["28 Agent Modules<br/>(src/template/ → src/report/)"]
+  C --> D["27 Agent Modules<br/>(src/template/ → src/intelligent_analysis/)"]
   D --> E["Structured Outputs<br/>(output/step_N_output/)"]
 
   B --> F["Infrastructure Layer<br/>(utils/, pipeline/)"]
@@ -101,26 +101,37 @@ graph LR
 The GNN pipeline implements a sophisticated dependency graph that ensures proper execution order and data flow between modules.
 
 ```mermaid
-graph LR
+graph TD
   GNN[gnn] --> TYPE[type_checker]
-  TYPE --> VAL[validation]
-  VAL --> EXP[export]
+  GNN --> REG[model_registry]
+  GNN --> VAL[validation]
+  GNN --> EXP[export]
+  GNN --> ONT[ontology]
+  GNN --> RENDER[render]
+  GNN --> LLM[llm]
+  GNN --> AUDIO[audio]
+  GNN --> RES[research]
+  GNN --> GUI[gui]
+
+  TYPE --> VAL
+  VAL --> EXP
   EXP --> VIS[visualization]
-  VIS --> AV[advanced_visualization]
-  AV --> ONT[ontology]
-  ONT --> RENDER[render]
+  EXP --> AV[advanced_visualization]
+
   RENDER --> EXEC[execute]
-  EXEC --> LLM[llm]
-  LLM --> ML[ml_integration]
-  ML --> AUDIO[audio]
-  AUDIO --> ANA[analysis]
-  ANA --> INT[integration]
-  INT --> SEC[security]
-  SEC --> RES[research]
-  RES --> WEB[website]
-  WEB --> MCP[mcp]
-  MCP --> GUI[gui]
-  GUI --> REP[report]
+  RENDER --> SEC[security]
+
+  EXEC --> ANA[analysis]
+  VIS --> ANA
+  LLM --> ANA
+  ML[ml_integration] --> ANA
+
+  ANA --> REP[report]
+  REP --> IA[intelligent_analysis]
+
+  GNN --> INT[integration]
+  GNN --> WEB[website]
+  GNN --> MCP[mcp]
 
   style GNN fill:#e1f5fe,stroke:#0277bd
   style RENDER fill:#fff3e0,stroke:#f57c00
@@ -142,7 +153,7 @@ graph LR
 **Agent Modules (100% Complete):**
 
 - All 25 pipeline steps (0-24) implemented with thin orchestrator pattern
-- All 29 agent modules documented with comprehensive AGENTS.md files
+- All 27 agent modules documented with comprehensive AGENTS.md files
 - Complete MCP integration across all applicable modules
 - Full test coverage with >95% coverage for all modules
 
@@ -154,7 +165,7 @@ graph LR
 - `.env` - Complete environment configuration template
 - `.gitignore` - Comprehensive ignore patterns for scientific computing
 
-### Latest Status (2026-03-02)
+### Latest Status (2026-03-15)
 
 - **Total Steps**: 25 (all steps 0-24)
 - **Execution Time**: ~5 minutes (with LLM step)
@@ -164,7 +175,7 @@ graph LR
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (30/30 modules + all subdirectories documented)
+- **AGENTS.md Coverage**: ✅ 100% (27/27 modules + all subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready
@@ -321,15 +332,15 @@ Each agent implements comprehensive performance monitoring:
 ## References
 
 - **Main Documentation**: [README.md](README.md) — Project overview and quick start
-- **Pipeline Documentation**: [doc/pipeline/README.md](#placeholder) — Detailed step-by-step descriptions
+- **Pipeline Documentation**: [doc/PIPELINE_SCRIPTS.md](doc/PIPELINE_SCRIPTS.md) — Detailed step-by-step descriptions
 - **Development Rules**: [.cursorrules](.cursorrules) — Canonical rules for scripts and modules
 - **Agent Registry**: [AGENTS.md](AGENTS.md) — Master agent scaffolding and module registry
 - **Template Guide**: [AGENTS_TEMPLATE.md](AGENTS_TEMPLATE.md) — Enhanced template for new modules
 
 ---
 
-**Architecture Version**: 2.3.0
-**Last Updated**: 2026-03-05
+**Architecture Version**: 1.3.0
+**Last Updated**: 2026-03-15
 **Status**: ✅ Production Ready
 **Compliance**: 100% Thin Orchestrator Pattern
 **Documentation**: 100% AGENTS.md Coverage

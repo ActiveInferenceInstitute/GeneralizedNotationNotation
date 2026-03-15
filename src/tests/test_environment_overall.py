@@ -8,6 +8,7 @@ This file contains comprehensive tests for the environment module functionality.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -20,7 +21,7 @@ class TestEnvironmentModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_environment_module_imports(self):
+    def test_environment_module_imports(self) -> None:
         """Test that environment module can be imported."""
         try:
             import setup
@@ -33,7 +34,7 @@ class TestEnvironmentModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_environment_manager_instantiation(self):
+    def test_environment_manager_instantiation(self) -> None:
         """Test EnvironmentManager class instantiation."""
         try:
             from setup import EnvironmentManager
@@ -46,7 +47,7 @@ class TestEnvironmentModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_virtual_environment_instantiation(self):
+    def test_virtual_environment_instantiation(self) -> None:
         """Test VirtualEnvironment class instantiation."""
         try:
             from setup import VirtualEnvironment
@@ -59,7 +60,7 @@ class TestEnvironmentModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_environment_module_info(self):
+    def test_environment_module_info(self) -> None:
         """Test environment module information retrieval."""
         try:
             from setup import get_module_info
@@ -73,7 +74,7 @@ class TestEnvironmentModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_environment_validation(self):
+    def test_environment_validation(self) -> None:
         """Test environment validation functionality."""
         try:
             from setup import validate_environment
@@ -90,7 +91,7 @@ class TestEnvironmentFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_environment_setup(self, isolated_temp_dir):
+    def test_environment_setup(self, isolated_temp_dir: Any) -> None:
         """Test environment setup functionality."""
         try:
             from setup import EnvironmentManager
@@ -105,7 +106,7 @@ class TestEnvironmentFunctionality:
     @pytest.mark.slow  # Makes subprocess calls to install packages
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_dependency_installation(self):
+    def test_dependency_installation(self) -> None:
         """Test dependency installation functionality."""
         try:
             from setup import install_dependencies
@@ -116,7 +117,7 @@ class TestEnvironmentFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_python_version_check(self):
+    def test_python_version_check(self) -> None:
         """Test Python version checking."""
         try:
             from setup import check_python_version
@@ -131,7 +132,7 @@ class TestEnvironmentIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_environment_pipeline_integration(self, isolated_temp_dir):
+    def test_environment_pipeline_integration(self, isolated_temp_dir: Any) -> None:
         """Test environment module integration with pipeline."""
         try:
             from setup import EnvironmentManager
@@ -147,7 +148,7 @@ class TestEnvironmentIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_environment_mcp_integration(self):
+    def test_environment_mcp_integration(self) -> None:
         """Test environment MCP integration."""
         try:
             from setup.mcp import register_tools
@@ -157,7 +158,7 @@ class TestEnvironmentIntegration:
             pytest.skip("Environment MCP not available")
 
 
-def test_environment_module_completeness():
+def test_environment_module_completeness() -> None:
     """Test that environment module has all required components."""
     required_components = [
         'EnvironmentManager',
@@ -177,7 +178,7 @@ def test_environment_module_completeness():
 
 
 @pytest.mark.slow
-def test_environment_module_performance():
+def test_environment_module_performance() -> None:
     """Test environment module performance characteristics."""
     try:
         from setup import EnvironmentManager

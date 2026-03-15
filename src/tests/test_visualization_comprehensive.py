@@ -9,6 +9,7 @@ ensuring proper matplotlib backend handling, progress tracking, and error recove
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional, Generator
 import json
 import tempfile
 import shutil
@@ -25,14 +26,14 @@ class TestMatplotlibBackendConfiguration:
     """Test matplotlib backend configuration for headless environments."""
 
     @pytest.mark.skip(reason="Testing internal implementation - backend auto-configured")
-    def test_backend_configuration_with_display(self, caplog):
+    def test_backend_configuration_with_display(self, caplog: Any) -> None:
         """Test backend configuration when DISPLAY is available."""
         # This test was checking internal _configure_matplotlib_backend function
         # which is not part of the public API. Backend is now auto-configured.
         pass
 
     @pytest.mark.skip(reason="Testing internal implementation - backend auto-configured")
-    def test_backend_configuration_headless(self, caplog, monkeypatch):
+    def test_backend_configuration_headless(self, caplog: Any, monkeypatch: Any) -> None:
         """Test backend configuration in headless environment."""
         # This test was checking internal _configure_matplotlib_backend function
         # which is not part of the public API. Backend is now auto-configured.
@@ -43,7 +44,7 @@ class TestVisualizationProcessing:
     """Test actual visualization processing with real data."""
 
     @pytest.fixture
-    def test_gnn_dir(self):
+    def test_gnn_dir(self) -> Any:
         """Create temporary directory with test GNN files."""
         test_dir = tempfile.mkdtemp()
         test_gnn_dir = Path(test_dir) / "gnn_files"
@@ -74,7 +75,7 @@ B -> C: "preferences"
         shutil.rmtree(test_dir)
 
     @pytest.fixture
-    def test_output_dir(self):
+    def test_output_dir(self) -> Any:
         """Create temporary output directory."""
         test_dir = tempfile.mkdtemp()
         output_dir = Path(test_dir) / "output"
@@ -127,7 +128,7 @@ B -> C: "preferences"
         shutil.rmtree(test_dir)
 
     @pytest.mark.safe_to_fail
-    def test_visualization_main_success(self, test_gnn_dir, test_output_dir, caplog):
+    def test_visualization_main_success(self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any) -> None:
         """Test complete visualization processing with real data."""
         import logging
         caplog.set_level(logging.DEBUG)
@@ -149,7 +150,7 @@ B -> C: "preferences"
         assert "visualization" in caplog.text.lower() or "processing" in caplog.text.lower()
 
     @pytest.mark.safe_to_fail
-    def test_visualization_with_missing_gnn_data(self, test_gnn_dir, caplog):
+    def test_visualization_with_missing_gnn_data(self, test_gnn_dir: Any, caplog: Any) -> None:
         """Test visualization when GNN processing results are missing."""
         import logging
         caplog.set_level(logging.INFO)
@@ -171,7 +172,7 @@ B -> C: "preferences"
         finally:
             shutil.rmtree(output_dir, ignore_errors=True)
 
-    def test_matrix_visualizer_with_real_parameters(self):
+    def test_matrix_visualizer_with_real_parameters(self) -> None:
         """Test MatrixVisualizer with real parameter data."""
         try:
             from visualization.matrix_visualizer import MatrixVisualizer
@@ -195,7 +196,7 @@ B -> C: "preferences"
             pytest.skip("MatrixVisualizer not available (missing dependencies)")
 
     @pytest.mark.safe_to_fail
-    def test_visualization_progress_tracking(self, test_gnn_dir, test_output_dir, caplog):
+    def test_visualization_progress_tracking(self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any) -> None:
         """Test that visualization provides progress tracking."""
         import logging
         caplog.set_level(logging.INFO)
@@ -221,7 +222,7 @@ B -> C: "preferences"
 
         assert has_progress, "Should provide some progress information"
 
-    def test_visualization_error_recovery(self, test_gnn_dir, test_output_dir, caplog):
+    def test_visualization_error_recovery(self, test_gnn_dir: Any, test_output_dir: Any, caplog: Any) -> None:
         """Test visualization error recovery and graceful degradation."""
         import logging
         caplog.set_level(logging.WARNING)
@@ -259,7 +260,7 @@ B -> C: "preferences"
 class TestVisualizationComponents:
     """Test individual visualization components."""
 
-    def test_network_visualization_generation(self):
+    def test_network_visualization_generation(self) -> None:
         """Test network visualization with real data."""
         try:
             test_data = {
@@ -286,7 +287,7 @@ class TestVisualizationComponents:
         except ImportError:
             pytest.skip("Network visualization dependencies not available")
 
-    def test_combined_analysis_generation(self):
+    def test_combined_analysis_generation(self) -> None:
         """Test combined analysis with real data."""
         try:
             test_data = {

@@ -18,7 +18,7 @@ from tests.conftest import *
 class TestOntologyVisualizer:
     """Test cases for the OntologyVisualizer class."""
 
-    def test_extract_ontology_mappings(self, sample_gnn_file):
+    def test_extract_ontology_mappings(self, sample_gnn_file: Path) -> None:
         """Test ontology mapping extraction from GNN file."""
         # Read test file
         with open(sample_gnn_file, 'r') as f:
@@ -53,7 +53,7 @@ class TestOntologyVisualizer:
         assert ('u', 'Action') in mappings  # Chosen action
         assert ('t', 'Time') in mappings
 
-    def test_create_ontology_table(self, temp_output_dir):
+    def test_create_ontology_table(self, temp_output_dir: Path) -> None:
         """Test creation of ontology visualization table."""
         visualizer = OntologyVisualizer()
         mappings = [
@@ -72,7 +72,7 @@ class TestOntologyVisualizer:
         assert Path(output_path).is_file()
         assert Path(output_path).suffix == '.png'
 
-    def test_visualize_directory(self, test_data_dir, temp_output_dir):
+    def test_visualize_directory(self, test_data_dir: Path, temp_output_dir: Path) -> None:
         """Test visualization of all ontology annotations in a directory."""
         visualizer = OntologyVisualizer()
         output_files = visualizer.visualize_directory(test_data_dir, temp_output_dir)

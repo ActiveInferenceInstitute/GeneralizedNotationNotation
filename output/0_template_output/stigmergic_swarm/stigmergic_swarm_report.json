@@ -1,11 +1,11 @@
 {
-  "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/multiagent/stigmergic_swarm.md",
-  "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/stigmergic_swarm/stigmergic_swarm_processed.md",
-  "timestamp": "2026-03-13T11:27:59.213789",
+  "input_file": "input/gnn_files/multiagent/stigmergic_swarm.md",
+  "output_file": "output/0_template_output/stigmergic_swarm/stigmergic_swarm_processed.md",
+  "timestamp": "2026-03-15T13:52:34.412410",
   "file_size_bytes": 6064,
   "file_size_lines": 245,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   }

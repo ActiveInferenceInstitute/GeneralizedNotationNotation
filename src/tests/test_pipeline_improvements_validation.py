@@ -7,6 +7,7 @@ This module validates that the specific improvements made to the pipeline
 """
 
 import pytest
+from typing import Any, Dict, List, Optional
 
 pytestmark = pytest.mark.pipeline
 import sys
@@ -30,7 +31,7 @@ class TestDiScoPyModuleCreation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_discopy_translator_module_import(self):
+    def test_discopy_translator_module_import(self) -> None:
         """Test that the DisCoPy translator module can be imported."""
 
         try:
@@ -52,7 +53,7 @@ class TestDiScoPyModuleCreation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_discopy_diagram_creation_graceful_degradation(self):
+    def test_discopy_diagram_creation_graceful_degradation(self) -> None:
         """Test DisCoPy diagram creation with graceful degradation."""
 
         try:
@@ -85,7 +86,7 @@ class TestDiScoPyModuleCreation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_visualize_jax_output_module_import(self):
+    def test_visualize_jax_output_module_import(self) -> None:
         """Test that the JAX visualization module can be imported."""
 
         try:
@@ -109,7 +110,7 @@ class TestVisualizationBugFixes:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_visualization_parser_type_safety(self):
+    def test_visualization_parser_type_safety(self) -> None:
         """Test that visualization parser handles type fields safely."""
 
         try:
@@ -150,7 +151,7 @@ var2 > var3
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_matplotlib_dpi_corruption_fix(self):
+    def test_matplotlib_dpi_corruption_fix(self) -> None:
         """Test that matplotlib DPI corruption is handled safely."""
 
         try:
@@ -183,7 +184,7 @@ var2 > var3
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_visualization_data_structure_compatibility(self):
+    def test_visualization_data_structure_compatibility(self) -> None:
         """Test that visualization functions work with actual parsed data structure."""
 
         try:
@@ -220,7 +221,7 @@ class TestErrorHandlingImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_standardized_error_handler_functionality(self):
+    def test_standardized_error_handler_functionality(self) -> None:
         """Test standardized error handler functionality."""
 
         try:
@@ -253,7 +254,7 @@ class TestErrorHandlingImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_error_context_manager(self):
+    def test_error_context_manager(self) -> None:
         """Test error context manager functionality."""
 
         try:
@@ -289,7 +290,7 @@ class TestDependencyValidationImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_discopy_dependency_group(self):
+    def test_discopy_dependency_group(self) -> None:
         """Test that DisCoPy dependency group is properly defined."""
 
         try:
@@ -316,7 +317,7 @@ class TestDependencyValidationImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_pymdp_dependency_group(self):
+    def test_pymdp_dependency_group(self) -> None:
         """Test that PyMDP dependency group is properly defined."""
 
         try:
@@ -345,7 +346,7 @@ class TestDependencyValidationImprovements:
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
     @pytest.mark.timeout(30)  # Add explicit timeout
-    def test_improved_installation_instructions(self):
+    def test_improved_installation_instructions(self) -> None:
         """Test that installation instructions are provided for missing dependencies."""
 
         try:
@@ -379,7 +380,7 @@ class TestLoggingImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_diagnostic_logger_functionality(self):
+    def test_diagnostic_logger_functionality(self) -> None:
         """Test diagnostic logger functionality."""
 
         try:
@@ -423,7 +424,7 @@ class TestLoggingImprovements:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_correlation_context(self):
+    def test_correlation_context(self) -> None:
         """Test correlation context functionality."""
 
         try:
@@ -453,7 +454,7 @@ class TestIntegrationValidation:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_end_to_end_pipeline_with_improvements(self, temp_directories):
+    def test_end_to_end_pipeline_with_improvements(self, temp_directories: Any) -> None:
         """Test that the pipeline runs with all improvements integrated."""
 
         # Create test GNN file that exercises the improvements
@@ -508,7 +509,7 @@ observation > state
 @pytest.mark.slow  # This test runs subprocess for actual pipeline steps, skip in fast mode
 @pytest.mark.integration
 @pytest.mark.safe_to_fail
-def test_specific_pipeline_steps_improvements(step_numbers, temp_directories):
+def test_specific_pipeline_steps_improvements(step_numbers: Any, temp_directories: Any) -> None:
     """Test that specific pipeline steps work with improvements."""
 
     import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input

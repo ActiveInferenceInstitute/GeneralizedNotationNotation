@@ -56,4 +56,4 @@ Registered by `src/execute/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/12_execute.py](#placeholder)
+- **Script**: [src/12_execute.py](../../src/12_execute.py)

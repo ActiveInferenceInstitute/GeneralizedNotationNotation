@@ -1,5 +1,0 @@
-Category: advanced_visualization
-Success: False
-Duration: 2.00s
-Peak Memory: 24.41 MB
-CPU Usage: 0.0%

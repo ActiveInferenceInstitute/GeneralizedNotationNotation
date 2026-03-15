@@ -3,7 +3,7 @@
 **Version**: v2.0.0  
 **Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **MCP Tools**: 131 · **Tests**: 1,522+
+**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 9/9 · **MCP Tools**: 131 · **Tests**: 1,522+
 
 Complete navigation guide for all GNN (Generalized Notation Notation) documentation.
 
@@ -213,7 +213,7 @@ All GNN documentation follows these principles:
 
 - ✅ All 25 pipeline steps documented
 - ✅ Complete module AGENTS.md coverage (38+ modules)
-- ✅ 8/8 renderers available (pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy)
+- ✅ 9/9 renderers available (pymdp, rxinfer, jax, numpyro, stan, pytorch, activeinference_jl, discopy, catcolab)
 - ✅ 100% pipeline success rate (~5 minutes execution time (with LLM step))
 - ✅ 1,522+ tests passing
 - ✅ 10 CLI subcommands (run, validate, parse, render, report, reproduce, preflight, health, serve, lsp)
@@ -257,7 +257,7 @@ All GNN documentation follows these principles:
 **Pipeline Version**: 2.0.0  
 **Total Pipeline Steps**: 25 (0–24)  
 **Modules**: 38+  
-**Renderers**: 8/8  
+**Renderers**: 9/9
 **Last Updated**: 2026-03-06  
 
 **Status**: ✅ All Documentation Complete

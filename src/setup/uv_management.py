@@ -689,7 +689,7 @@ def cleanup_uv_setup() -> bool:
         return False
 
 
-def save_setup_results(output_dir: Path, validation_results: Dict, extras: Optional[List[str]] = None, dev: bool = False):
+def save_setup_results(output_dir: Path, validation_results: Dict[str, Any], extras: Optional[List[str]] = None, dev: bool = False) -> None:
     """
     Save setup results to output directory.
 

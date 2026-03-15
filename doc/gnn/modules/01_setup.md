@@ -45,4 +45,4 @@ This step uses a `setup_orchestrator()` wrapper (not direct delegation) to parse
 
 ## Source
 
-- **Script**: [src/1_setup.py](#placeholder)
+- **Script**: [src/1_setup.py](../../src/1_setup.py)

@@ -16,6 +16,7 @@ from .mcp import (
     get_tool_info,
     get_resource_info,
 )
+from .server import MCPServer
 
 # Import data structures from models
 from .models import (
@@ -83,6 +84,7 @@ __all__ = [
     'mcp_instance',
     'initialize',
     'MCP',
+    'MCPServer',
     'MCPTool',
     'MCPResource',
     'MCPError',

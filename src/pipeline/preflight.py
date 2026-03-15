@@ -37,11 +37,11 @@ class PreflightReport:
     def is_ok(self) -> bool:
         return self.checks_failed == 0
 
-    def add_pass(self, msg: str):
+    def add_pass(self, msg: str) -> None:
         self.checks_passed += 1
         logger.debug(f"✅ {msg}")
 
-    def add_issue(self, category: str, severity: str, msg: str, fix: str = None):
+    def add_issue(self, category: str, severity: str, msg: str, fix: str = None) -> None:
         self.issues.append(PreflightIssue(category=category, severity=severity, message=msg, fix=fix))
         if severity == "error":
             self.checks_failed += 1

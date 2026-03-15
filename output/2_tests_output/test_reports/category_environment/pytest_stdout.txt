@@ -1,1 +1,0 @@
-Recovery execution: 5/5 files passed syntax check

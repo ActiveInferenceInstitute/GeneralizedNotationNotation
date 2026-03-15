@@ -140,7 +140,7 @@ def get_preferred_providers_from_env() -> List[ProviderType]:
         preferred.append(ProviderType.OLLAMA)
 
     # Add other providers in order
-    for provider_type in [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY]:
+    for provider_type in [ProviderType.OPENAI, ProviderType.OPENROUTER, ProviderType.PERPLEXITY, ProviderType.OLLAMA]:
         if provider_type not in preferred:
             preferred.append(provider_type)
 
@@ -466,14 +466,14 @@ class LLMProcessor:
             for provider_type, provider in self.providers.items()
         }
 
-    async def close(self):
+    async def close(self) -> None:
         """Close all provider connections."""
         for provider in self.providers.values():
             try:
                 await provider.close()
             except Exception as e:
                 logger.error(f"Error closing provider: {e}")
-
+ 
         self.providers.clear()
         self._initialized = False
         logger.info("LLM Processor closed")
@@ -587,7 +587,7 @@ async def create_processor_from_env() -> LLMProcessor:
     """
     return await initialize_global_processor()
 
-async def close_global_processor():
+async def close_global_processor() -> None:
     """Close the global LLM processor instance."""
     global _global_processor
 
@@ -755,7 +755,7 @@ class GNNLLMProcessor:
                 "error_type": type(e).__name__
             }
 
-    async def close(self):
+    async def close(self) -> None:
         """Close the GNN LLM processor."""
         await self.base_processor.close()
         self.initialized = False
@@ -858,7 +858,7 @@ def enhance_model(gnn_content: str) -> Dict[str, Any]:
     import asyncio
     try:
         processor = GNNLLMProcessor()
-        async def _run():
+        async def _run() -> Dict[str, Any]:
             await processor.initialize()
             result = await processor.suggest_enhancements(gnn_content)
             await processor.close()

@@ -8,7 +8,7 @@ This guide helps you diagnose and resolve common warnings in the GNN pipeline ex
 
 ## Overview
 
-The GNN pipeline executes 24 steps sequentially. Some steps may complete with warnings while still producing valid output. This guide explains each warning type and how to resolve them.
+The GNN pipeline executes 25 steps sequentially. Some steps may complete with warnings while still producing valid output. This guide explains each warning type and how to resolve them.
 
 ---
 

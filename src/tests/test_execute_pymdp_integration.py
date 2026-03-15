@@ -10,6 +10,7 @@ import pytest
 from pathlib import Path
 import sys
 import numpy as np
+from typing import Any
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -40,7 +41,7 @@ except ImportError as e:
 class TestPyMDPRealExecution:
     """Test real PyMDP execution with actual simulations."""
 
-    def test_pymdp_agent_import(self):
+    def test_pymdp_agent_import(self) -> None:
         """Test that PyMDP Agent can be imported using modern API."""
         from pymdp.agent import Agent
         from pymdp import utils
@@ -49,7 +50,7 @@ class TestPyMDPRealExecution:
         assert utils is not None
         assert callable(Agent)
 
-    def test_pymdp_agent_creation(self):
+    def test_pymdp_agent_creation(self) -> None:
         """Test creating a PyMDP Agent with minimal matrices."""
         from pymdp.agent import Agent
         from pymdp import utils
@@ -88,7 +89,7 @@ class TestPyMDPRealExecution:
         assert hasattr(agent, 'infer_policies')
         assert hasattr(agent, 'sample_action')
 
-    def test_pymdp_simple_simulation_execution(self, tmp_path):
+    def test_pymdp_simple_simulation_execution(self, tmp_path: Any) -> None:
         """Test running a simple PyMDP simulation."""
         # Create minimal GNN spec
         gnn_spec = {
@@ -118,7 +119,7 @@ class TestPyMDPRealExecution:
         assert "actions" in results
         assert "beliefs" in results
 
-    def test_pymdp_package_detection_with_real_installation(self):
+    def test_pymdp_package_detection_with_real_installation(self) -> None:
         """Test that package detector correctly identifies installed PyMDP."""
         detection = detect_pymdp_installation()
 
@@ -127,12 +128,12 @@ class TestPyMDPRealExecution:
         assert detection["has_agent"] is True
         assert detection["wrong_package"] is False
 
-    def test_is_correct_pymdp_package_with_real_installation(self):
+    def test_is_correct_pymdp_package_with_real_installation(self) -> None:
         """Test correct package detection with real installation."""
         result = is_correct_pymdp_package()
         assert result is True
 
-    def test_validate_pymdp_for_execution_with_real_installation(self):
+    def test_validate_pymdp_for_execution_with_real_installation(self) -> None:
         """Test validation with real PyMDP installation."""
         validation = validate_pymdp_for_execution()
 
@@ -145,7 +146,7 @@ class TestPyMDPRealExecution:
 class TestPyMDPErrorHandling:
     """Test PyMDP error handling when package is wrong or missing."""
 
-    def test_package_detection_structure(self):
+    def test_package_detection_structure(self) -> None:
         """Test that package detection returns expected structure even when not installed."""
         detection = detect_pymdp_installation()
 
@@ -155,7 +156,7 @@ class TestPyMDPErrorHandling:
         assert "wrong_package" in detection
         assert isinstance(detection["installed"], bool)
 
-    def test_validation_structure(self):
+    def test_validation_structure(self) -> None:
         """Test that validation returns expected structure."""
         validation = validate_pymdp_for_execution()
 
@@ -171,7 +172,7 @@ class TestPyMDPErrorHandling:
 class TestPyMDPModernAPI:
     """Test that we're using the modern PyMDP API correctly."""
 
-    def test_modern_import_works(self):
+    def test_modern_import_works(self) -> None:
         """Test that modern import pattern works."""
         # This should work with inferactively-pymdp
         from pymdp.agent import Agent
@@ -180,7 +181,7 @@ class TestPyMDPModernAPI:
         assert Agent is not None
         assert utils is not None
 
-    def test_agent_has_required_methods(self):
+    def test_agent_has_required_methods(self) -> None:
         """Test that Agent has all required methods for simulation."""
         from pymdp.agent import Agent
         from pymdp import utils
@@ -213,7 +214,7 @@ class TestPyMDPModernAPI:
         assert callable(agent.infer_policies)
         assert callable(agent.sample_action)
 
-    def test_simulation_step_execution(self):
+    def test_simulation_step_execution(self) -> None:
         """Test executing a single simulation step."""
         from pymdp.agent import Agent
         from pymdp import utils

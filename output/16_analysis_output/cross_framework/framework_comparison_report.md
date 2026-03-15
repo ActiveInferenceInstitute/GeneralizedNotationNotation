@@ -1,6 +1,6 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-03-13T11:38:11.867604
+Generated: 2026-03-15T13:59:55.036966
 
 ## Summary
 
@@ -14,7 +14,7 @@ Generated: 2026-03-13T11:38:11.867604
 ### NUMPYRO
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.34s
+- Execution Time: 1.14s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -23,7 +23,7 @@ Generated: 2026-03-13T11:38:11.867604
 ### PYMDP
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 2.79s
+- Execution Time: 1.57s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -32,7 +32,7 @@ Generated: 2026-03-13T11:38:11.867604
 ### PYTORCH
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 5.37s
+- Execution Time: 1.00s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
@@ -41,7 +41,7 @@ Generated: 2026-03-13T11:38:11.867604
 ### JAX
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.28s
+- Execution Time: 0.96s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -50,13 +50,13 @@ Generated: 2026-03-13T11:38:11.867604
 ### DISCOPY
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 0.44s
+- Execution Time: 0.34s
 - Data Source: `output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json`
 
 ### RXINFER
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 32.32s
+- Execution Time: 19.21s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, actions_in_range=✅, beliefs_sum_to_one=✅)
@@ -65,7 +65,7 @@ Generated: 2026-03-13T11:38:11.867604
 ### ACTIVEINFERENCE_JL
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 25.89s
+- Execution Time: 16.72s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, actions_in_range=✅, all_valid=✅, beliefs_sum_to_one=✅)
@@ -76,7 +76,7 @@ Generated: 2026-03-13T11:38:11.867604
 | Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |
 |-----------|-----------|-----------------|----------|---------|
 | numpyro | 15 | 1.0000 | 1.0986 | 0.0000 |
-| pymdp | 15 | 1.0000 | -0.1881 | 0.0980 |
+| pymdp | 15 | 1.0000 | -0.2073 | 0.1075 |
 | pytorch | 15 | 1.0000 | 1.0986 | 0.0000 |
 | jax | 15 | 1.0000 | 0.0693 | 0.0000 |
 | rxinfer | 15 | 1.0000 | 0.1309 | 0.1329 |
@@ -101,9 +101,9 @@ Generated: 2026-03-13T11:38:11.867604
 - **numpyro_vs_jax**: confidence correlation = 0.0000
 - **numpyro_vs_rxinfer**: confidence correlation = 0.0000
 - **numpyro_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
-- **pymdp_vs_pytorch**: confidence correlation = -0.0917
+- **pymdp_vs_pytorch**: confidence correlation = -0.1796
 - **pymdp_vs_jax**: confidence correlation = 0.0000
-- **pymdp_vs_rxinfer**: confidence correlation = -0.0924
+- **pymdp_vs_rxinfer**: confidence correlation = -0.2688
 - **pymdp_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
 - **pytorch_vs_jax**: confidence correlation = 0.0000
 - **pytorch_vs_rxinfer**: confidence correlation = 0.1148
@@ -116,10 +116,10 @@ Generated: 2026-03-13T11:38:11.867604
 
 | Framework | Mean Time (s) | Std Dev | Min | Max |
 |-----------|---------------|---------|-----|-----|
-| numpyro | 1.283 | 0.108 | 1.034 | 1.422 |
-| pymdp | 2.141 | 0.270 | 1.905 | 2.795 |
-| pytorch | 1.559 | 1.445 | 0.849 | 5.366 |
-| jax | 1.168 | 0.136 | 1.033 | 1.456 |
-| discopy | 0.424 | 0.018 | 0.399 | 0.454 |
-| rxinfer | 26.734 | 5.859 | 21.527 | 38.379 |
-| activeinference_jl | 36.301 | 24.995 | 18.815 | 99.663 |
+| numpyro | 1.025 | 0.081 | 0.853 | 1.144 |
+| pymdp | 1.607 | 0.051 | 1.559 | 1.724 |
+| pytorch | 0.701 | 0.117 | 0.626 | 1.004 |
+| jax | 0.933 | 0.051 | 0.885 | 1.033 |
+| discopy | 0.342 | 0.009 | 0.332 | 0.361 |
+| rxinfer | 17.887 | 2.306 | 15.074 | 21.773 |
+| activeinference_jl | 16.378 | 2.884 | 12.127 | 22.311 |

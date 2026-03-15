@@ -7,6 +7,7 @@ This module contains implementations for different LLM providers:
 - Perplexity: AI-powered search and reasoning
 """
 
+from typing import Type
 from .base_provider import (
     BaseLLMProvider,
     ProviderType,
@@ -16,19 +17,19 @@ from .base_provider import (
 )
 
 # Lazy accessors to avoid importing heavy/optional dependencies at module import time
-def get_openai_provider_class():
+def get_openai_provider_class() -> Type['OpenAIProvider']:
     from .openai_provider import OpenAIProvider
     return OpenAIProvider
 
-def get_openrouter_provider_class():
+def get_openrouter_provider_class() -> Type['OpenRouterProvider']:
     from .openrouter_provider import OpenRouterProvider
     return OpenRouterProvider
 
-def get_perplexity_provider_class():
+def get_perplexity_provider_class() -> Type['PerplexityProvider']:
     from .perplexity_provider import PerplexityProvider
     return PerplexityProvider
 
-def get_ollama_provider_class():
+def get_ollama_provider_class() -> Type['OllamaProvider']:
     from .ollama_provider import OllamaProvider
     return OllamaProvider
 

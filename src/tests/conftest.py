@@ -6,7 +6,7 @@ This module provides pytest fixtures and configuration for testing the GNN pipel
 
 import sys
 from pathlib import Path
-from typing import Dict, Any, Generator
+from typing import Dict, Any, Generator, List
 import tempfile
 # Mocks removed - using real implementations per testing policy
 
@@ -49,7 +49,7 @@ PYTEST_MARKERS = {
 }
 
 # Configure pytest markers
-def pytest_configure(config):
+def pytest_configure(config: Any) -> None:
     """Configure pytest with custom markers and safety checks."""
     # Register all markers
     for marker_name, marker_description in PYTEST_MARKERS.items():
@@ -66,12 +66,12 @@ def pytest_configure(config):
     except Exception:
         globals()['OntologyVisualizer'] = None
 
-def pytest_unconfigure(config):
+def pytest_unconfigure(config: Any) -> None:
     """Clean up test environment after all tests complete."""
     pass
 
 # Ensure certain optional attributes exist for compatibility with patches used in tests
-def pytest_sessionstart(session):
+def pytest_sessionstart(session: Any) -> None:
     """Session start hook to prepare environment quirks required by tests."""
     # NOTE: Avoid pre-importing `numpy.typing` here. Some recovery tests patch
     # `numpy.typing` to raise RecursionError during import; pre-importing it
@@ -96,7 +96,7 @@ def pytest_sessionstart(session):
             try:
                 original_parse = getattr(_local.PurePosixPath, '_parse_path', None)
 
-                def _patched_tail(self):
+                def _patched_tail(self: Any) -> Any:
                     try:
                         if not hasattr(self, '_tail_cached'):
                             try:
@@ -147,7 +147,7 @@ def pytest_sessionstart(session):
             import types as _types
             shim = _types.ModuleType('jax')
             shim.__version__ = '0.0.0'
-            def _devices():
+            def _devices() -> List[Any]:
                 return [type('Device', (), {'platform': 'cpu', '__str__': lambda self: 'cpu'})()]
             shim.devices = _devices
             sys.modules['jax'] = shim
@@ -162,7 +162,7 @@ def pytest_sessionstart(session):
     # RecursionError during import. Installing a placeholder prevents those
     # patches from exercising the intended failure modes.
 
-def pytest_collection_modifyitems(config, items):
+def pytest_collection_modifyitems(config: Any, items: List[Any]) -> None:
     """Modify test collection to add automatic markers and safety checks."""
     for item in items:
         # Applied to all non-destructive tests by default — allows optional dependencies
@@ -212,7 +212,7 @@ def test_dir() -> Path:
 # =============================================================================
 
 @pytest.fixture
-def safe_filesystem():
+def safe_filesystem() -> Generator[Any, None, None]:
     """Provide a safe filesystem for testing."""
     temp_dir = Path(tempfile.mkdtemp())
 
@@ -235,7 +235,7 @@ def safe_filesystem():
             self.created_dirs.append(full_path)
             return full_path
 
-        def cleanup(self):
+        def cleanup(self) -> None:
             for file_path in self.created_files:
                 if file_path.exists():
                     file_path.unlink()
@@ -296,7 +296,7 @@ def simulate_failures() -> Dict[str, Any]:
     return {"simulate": True, "failed_steps": ["render", "execute"]}
 
 @pytest.fixture
-def capture_logs(caplog):
+def capture_logs(caplog: Any) -> Any:
     """Alias fixture to expose pytest's caplog as capture_logs expected by some tests."""
     return caplog
 
@@ -384,7 +384,7 @@ def temp_output_dir() -> Generator[Path, None, None]:
     except Exception:
         pass
 
-def _write_sample_gnn_markdown(target: Path):
+def _write_sample_gnn_markdown(target: Path) -> None:
     """Write a sample GNN markdown with ontology annotations to target path."""
     content = """
 # Active Inference Model
@@ -448,7 +448,7 @@ def sample_gnn_spec() -> Dict[str, Any]:
 
 class RealRenderModule:
     """Real render module for testing - avoids mocking."""
-    def render_gnn_spec(self, spec, target, outdir):
+    def render_gnn_spec(self, spec: Any, target: str, outdir: Any) -> Any:
         """Render GNN spec to target format using real processor."""
         # Import real render function inside method to avoid circular imports
         try:
@@ -468,12 +468,12 @@ class RealRenderModule:
                  return True, "Recovery Success", [artifact_name]
 
 @pytest.fixture
-def test_render_module():
+def test_render_module() -> 'RealRenderModule':
     """Real render module exposing render_gnn_spec(spec, target, outdir)."""
     return RealRenderModule()
 
 @pytest.fixture
-def test_mcp_tools():
+def test_mcp_tools() -> Any:
     """Simple MCP tools registry used by MCP tests.
 
     Supports both positional and keyword-based registration styles used across modules
@@ -485,7 +485,7 @@ def test_mcp_tools():
             self.resources: Dict[str, Any] = {}
 
         # Accept both previous (name, func, schema, description) and modern keyword style
-        def register_tool(self, name: str, *args, **kwargs):
+        def register_tool(self, name: str, *args: Any, **kwargs: Any) -> None:
             # Parse inputs
             function = kwargs.get("function")
             schema = kwargs.get("schema")
@@ -507,13 +507,13 @@ def test_mcp_tools():
                 "description": description,
             }
 
-        def register_resource(self, pattern: str, handler, description: str = ""):
+        def register_resource(self, pattern: str, handler: Any, description: str = "") -> None:
             self.resources[pattern] = {
                 "handler": handler,
                 "description": description,
             }
 
-        def execute_tool(self, name: str, **kwargs):
+        def execute_tool(self, name: str, **kwargs: Any) -> Any:
             if name not in self.tools:
                 return {"error": "tool_not_found", "name": name}
             func = self.tools[name].get("function") or self.tools[name].get("func")

@@ -134,10 +134,10 @@ class GNNVisualizer:
     def visualize_file(self, file_path: str) -> str:
         """
         Generate visualizations for a GNN file.
-        
+ 
         Args:
             file_path: Path to the GNN file to visualize
-            
+ 
         Returns:
             Path to the directory containing generated visualizations
         """
@@ -261,10 +261,10 @@ class GNNVisualizer:
     def visualize_directory(self, dir_path: str) -> str:
         """
         Generate visualizations for all GNN files in a directory.
-        
+ 
         Args:
             dir_path: Path to directory containing GNN files
-            
+ 
         Returns:
             Path to the directory containing all generated visualizations
         """
@@ -795,11 +795,11 @@ def generate_visualizations(
         from utils import performance_tracker
         from pipeline import get_output_dir_for_script
     except ImportError:
-        def get_output_dir_for_script(script, output_dir): return output_dir / "visualization"
+        def get_output_dir_for_script(script: str, output_dir: Path) -> Path: return output_dir / "visualization"
         performance_tracker = None
     from contextlib import contextmanager
     @contextmanager
-    def _noop_context():
+    def _noop_context() -> Any:
         yield
 
     log_step_start(logger, f"Generating visualizations for GNN files in: {target_dir}")

@@ -1,11 +1,13 @@
 import pytest
+from pathlib import Path
+from typing import Any, Dict, List, Optional
 from type_checker.checker import GNNTypeChecker
 
 class TestTypeCheckerOverall:
     """Test suite for Type Checker module."""
 
     @pytest.fixture
-    def valid_gnn_file(self, safe_filesystem):
+    def valid_gnn_file(self, safe_filesystem: Any) -> Path:
         content = """
 # Valid GNN Example: MyModel
 
@@ -31,7 +33,7 @@ Static
         return safe_filesystem.create_file("valid_model.md", content)
 
     @pytest.fixture
-    def type_error_gnn_file(self, safe_filesystem):
+    def type_error_gnn_file(self, safe_filesystem: Any) -> Path:
         content = """
 # Invalid GNN Example: ErrorModel
 
@@ -49,7 +51,7 @@ x->s  # x is undefined
 """
         return safe_filesystem.create_file("error_model.md", content)
 
-    def test_check_file_valid(self, valid_gnn_file):
+    def test_check_file_valid(self, valid_gnn_file: Path) -> None:
         """Test checking a valid file."""
         checker = GNNTypeChecker(strict_mode=False)
         is_valid, errors, warnings, details = checker.check_file(str(valid_gnn_file))
@@ -57,7 +59,7 @@ x->s  # x is undefined
         assert is_valid is True
         assert len(errors) == 0
 
-    def test_check_file_strict_mode(self, valid_gnn_file):
+    def test_check_file_strict_mode(self, valid_gnn_file: Path) -> None:
         """Test strict mode."""
         checker = GNNTypeChecker(strict_mode=True)
         is_valid, errors, warnings, details = checker.check_file(str(valid_gnn_file))
@@ -66,7 +68,7 @@ x->s  # x is undefined
         # Based on my read of checking logic, 'valid_model.md' should be mostly fine.
         assert is_valid is True
 
-    def test_check_file_with_errors(self, type_error_gnn_file):
+    def test_check_file_with_errors(self, type_error_gnn_file: Path) -> None:
         """Test detecting undefined variables."""
         checker = GNNTypeChecker(strict_mode=True)
         is_valid, errors, warnings, details = checker.check_file(str(type_error_gnn_file))
@@ -79,7 +81,7 @@ x->s  # x is undefined
         assert is_valid is False
         assert any("undefined variable" in e for e in errors)
 
-    def test_check_directory(self, safe_filesystem, valid_gnn_file):
+    def test_check_directory(self, safe_filesystem: Any, valid_gnn_file: Path) -> None:
         """Test directory scanning."""
         checker = GNNTypeChecker()
         results = checker.check_directory(str(safe_filesystem.temp_dir))

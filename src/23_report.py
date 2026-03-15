@@ -41,7 +41,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from report import process_report
 except ImportError:
-    def process_report(target_dir, output_dir, logger=None, **kwargs):
+    def process_report(target_dir, output_dir, logger=None, **kwargs) -> bool:
         """Recovery report processing when module unavailable."""
         import logging
         if logger is None:

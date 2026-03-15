@@ -88,10 +88,10 @@ connections:
   target_variables:
   - u
   weight: null
-created_at: '2026-03-13T18:17:53.756050'
+created_at: '2026-03-15T13:53:23.907461'
 equations: []
 model_name: Two State Bistable POMDP
-modified_at: '2026-03-13T18:17:53.756051'
+modified_at: '2026-03-15T13:53:23.907461'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

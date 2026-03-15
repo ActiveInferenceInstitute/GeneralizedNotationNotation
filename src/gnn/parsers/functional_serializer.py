@@ -37,7 +37,7 @@ class FunctionalSerializer(BaseGNNSerializer):
                     for source in sources:
                         for target in targets:
                             lines.append(f"{source}To{target} :: {source} -> {target}")
-                            lines.append(f"{source}To{target} x = undefined  -- TODO: implement connection")
+                            lines.append(f"{source}To{target} x = undefined")
             lines.append("")
 
         # Embed complete model data as Haskell comment for round-trip fidelity

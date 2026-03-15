@@ -15,6 +15,7 @@ Tests the GNN parsing functionality including:
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -31,14 +32,14 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discovery_imports(self):
+    def test_discovery_imports(self) -> None:
         """Test that discovery function can be imported from gnn package."""
         from gnn import discover_gnn_files
         assert callable(discover_gnn_files)
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_basic(self, isolated_temp_dir):
+    def test_discover_gnn_files_basic(self, isolated_temp_dir: Any) -> None:
         """Test basic GNN file discovery."""
         from gnn import discover_gnn_files
 
@@ -56,7 +57,7 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_empty_directory(self, isolated_temp_dir):
+    def test_discover_gnn_files_empty_directory(self, isolated_temp_dir: Any) -> None:
         """Test discovery in empty directory."""
         from gnn import discover_gnn_files
 
@@ -70,7 +71,7 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_nested(self, isolated_temp_dir):
+    def test_discover_gnn_files_nested(self, isolated_temp_dir: Any) -> None:
         """Test discovery in nested directories."""
         from gnn import discover_gnn_files
 
@@ -91,7 +92,7 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_nonexistent_directory(self, isolated_temp_dir):
+    def test_discover_gnn_files_nonexistent_directory(self, isolated_temp_dir: Any) -> None:
         """Test discovery with nonexistent directory."""
         from gnn import discover_gnn_files
 
@@ -106,7 +107,7 @@ class TestGNNDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_discover_gnn_files_returns_paths(self, isolated_temp_dir):
+    def test_discover_gnn_files_returns_paths(self, isolated_temp_dir: Any) -> None:
         """Test that discovered files are Path objects or strings."""
         from gnn import discover_gnn_files
 
@@ -125,7 +126,7 @@ class TestMarkdownParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_valid_parsing(self, sample_markdown):
+    def test_valid_parsing(self, sample_markdown: str) -> None:
         """Test parsing valid markdown GNN content."""
         parser = MarkdownGNNParser()
         result = parser.parse_string(sample_markdown)
@@ -134,7 +135,7 @@ class TestMarkdownParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_invalid_parsing(self):
+    def test_invalid_parsing(self) -> None:
         """Test parsing invalid content returns failure."""
         parser = MarkdownGNNParser()
         result = parser.parse_string('Invalid content without sections')
@@ -151,7 +152,7 @@ class TestMarkdownParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_whitespace_only(self):
+    def test_whitespace_only(self) -> None:
         """Test parsing whitespace-only content."""
         parser = MarkdownGNNParser()
         result = parser.parse_string('   \n\n\t\t  ')
@@ -159,7 +160,7 @@ class TestMarkdownParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_with_state_space_block(self):
+    def test_parse_with_state_space_block(self) -> None:
         """Test parsing markdown with StateSpaceBlock."""
         content = """## GNNSection
 ActInfPOMDP
@@ -177,7 +178,7 @@ B[3,3,3,type=float]
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_with_connections(self):
+    def test_parse_with_connections(self) -> None:
         """Test parsing markdown with Connections block."""
         content = """## GNNSection
 ActInfPOMDP
@@ -200,7 +201,7 @@ B-A
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_with_unicode(self):
+    def test_parse_with_unicode(self) -> None:
         """Test parsing content with unicode characters."""
         content = """## GNNSection
 ActInfPOMDP
@@ -218,7 +219,7 @@ Model with unicode: αβγδ ∑∏∫
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_with_special_characters(self):
+    def test_parse_with_special_characters(self) -> None:
         """Test parsing content with special characters."""
         content = """## GNNSection
 ActInfPOMDP
@@ -235,7 +236,7 @@ Model with special chars: !@#$%^&*()
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_file(self, isolated_temp_dir, sample_markdown):
+    def test_parse_file(self, isolated_temp_dir: Any, sample_markdown: str) -> None:
         """Test parsing from file."""
         parser = MarkdownGNNParser()
 
@@ -248,7 +249,7 @@ Model with special chars: !@#$%^&*()
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_nonexistent_file(self, isolated_temp_dir):
+    def test_parse_nonexistent_file(self, isolated_temp_dir: Any) -> None:
         """Test parsing nonexistent file."""
         parser = MarkdownGNNParser()
 
@@ -266,7 +267,7 @@ class TestScalaParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_valid_parsing(self, sample_scala):
+    def test_valid_parsing(self, sample_scala: str) -> None:
         """Test parsing valid Scala GNN content."""
         parser = ScalaGNNParser()
         result = parser.parse_string(sample_scala)
@@ -283,7 +284,7 @@ class TestScalaParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_simple_scala(self):
+    def test_simple_scala(self) -> None:
         """Test parsing simple Scala content."""
         content = """
 object TestModel {
@@ -297,7 +298,7 @@ object TestModel {
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_scala_with_imports(self):
+    def test_scala_with_imports(self) -> None:
         """Test parsing Scala with imports."""
         content = """
 import scala.collection.mutable
@@ -316,12 +317,12 @@ class TestLeanParser:
     """Tests for Lean GNN parser."""
 
     @pytest.fixture
-    def sample_lean(self):
+    def sample_lean(self) -> str:
         return 'def test := 42'
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_valid_parsing(self, sample_lean):
+    def test_valid_parsing(self, sample_lean: str) -> None:
         """Test parsing valid Lean content."""
         parser = LeanGNNParser()
         result = parser.parse_string(sample_lean)
@@ -337,7 +338,7 @@ class TestLeanParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_lean_definition(self):
+    def test_lean_definition(self) -> None:
         """Test parsing Lean definition."""
         content = """
 def GNNModel : Type :=
@@ -351,7 +352,7 @@ def GNNModel : Type :=
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_lean_with_types(self):
+    def test_lean_with_types(self) -> None:
         """Test parsing Lean with type annotations."""
         content = """
 def stateSpace : Type := Fin 3
@@ -368,12 +369,12 @@ class TestCoqParser:
     """Tests for Coq GNN parser."""
 
     @pytest.fixture
-    def sample_coq(self):
+    def sample_coq(self) -> str:
         return 'Definition test := 42.'
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_valid_parsing(self, sample_coq):
+    def test_valid_parsing(self, sample_coq: str) -> None:
         """Test parsing valid Coq content."""
         from gnn.parsers.coq_parser import CoqGNNParser
         parser = CoqGNNParser()
@@ -391,7 +392,7 @@ class TestCoqParser:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_coq_inductive(self):
+    def test_coq_inductive(self) -> None:
         """Test parsing Coq inductive definition."""
         content = """
 Inductive State : Type :=
@@ -410,7 +411,7 @@ class TestParserEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_malformed_brackets(self):
+    def test_malformed_brackets(self) -> None:
         """Test handling malformed bracket content."""
         content = "## StateSpaceBlock\nA[3,3,type=float\nB[2,2"  # Missing closing brackets
         parser = MarkdownGNNParser()
@@ -424,7 +425,7 @@ class TestParserEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_very_long_content(self):
+    def test_very_long_content(self) -> None:
         """Test handling very long content."""
         content = "## ModelName\nLongModel\n\n## StateSpaceBlock\n"
         content += "A" * 10000  # Very long variable name
@@ -439,7 +440,7 @@ class TestParserEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_binary_content(self):
+    def test_binary_content(self) -> None:
         """Test handling binary content."""
         binary_content = b'\x00\x01\x02\x03\xff\xfe'
 
@@ -452,7 +453,7 @@ class TestParserEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_null_bytes(self):
+    def test_null_bytes(self) -> None:
         """Test handling content with null bytes."""
         content = "## ModelName\nTest\x00Model\n"
 
@@ -465,7 +466,7 @@ class TestParserEdgeCases:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_deeply_nested_sections(self):
+    def test_deeply_nested_sections(self) -> None:
         """Test handling deeply nested markdown sections."""
         content = "# Level 1\n## Level 2\n### Level 3\n#### Level 4\n##### Level 5\n###### Level 6\n"
         content += "## ModelName\nDeepModel"
@@ -480,28 +481,28 @@ class TestParserInstantiation:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_markdown_parser_instantiation(self):
+    def test_markdown_parser_instantiation(self) -> None:
         """Test MarkdownGNNParser can be instantiated."""
         parser = MarkdownGNNParser()
         assert parser is not None
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_scala_parser_instantiation(self):
+    def test_scala_parser_instantiation(self) -> None:
         """Test ScalaGNNParser can be instantiated."""
         parser = ScalaGNNParser()
         assert parser is not None
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_lean_parser_instantiation(self):
+    def test_lean_parser_instantiation(self) -> None:
         """Test LeanGNNParser can be instantiated."""
         parser = LeanGNNParser()
         assert parser is not None
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_coq_parser_instantiation(self):
+    def test_coq_parser_instantiation(self) -> None:
         """Test CoqGNNParser can be instantiated."""
         from gnn.parsers.coq_parser import CoqGNNParser
         parser = CoqGNNParser()

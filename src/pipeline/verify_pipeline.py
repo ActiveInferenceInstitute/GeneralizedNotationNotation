@@ -5,7 +5,7 @@ Pipeline Verification Script
 This script verifies that the complete GNN Processing Pipeline is working correctly.
 """
 
-import sys
+
 from pathlib import Path
 from typing import Dict, Any
 
@@ -212,7 +212,7 @@ def verify_test_modules() -> Dict[str, Any]:
         "existing_files": existing_files
     }
 
-def main():
+def main() -> int:
     """Main verification function."""
     print("🔍 GNN Processing Pipeline Verification")
     print("=" * 50)
@@ -268,4 +268,4 @@ def main():
         return 1
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

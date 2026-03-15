@@ -1,4 +1,4 @@
-"""
+"""  # nosec B608 -- this is code generation output, not a live SQL query
 JAX Model Generated from GNN Specification: GNNModel
 
 This model implements the GNN specification using pure JAX for high-performance computation.
@@ -140,6 +140,20 @@ def select_action(params: Dict[str, jnp.ndarray], belief: jnp.ndarray) -> Tuple[
     selected_action = jnp.argmin(efe_values)
     
     return selected_action, efe_values
+
+# Batched operations for parallel execution across multiple agents or parallel rollouts
+# JAX's vmap allows automatic vectorization of functions
+batched_belief_update = jax.vmap(belief_update, in_axes=(None, 0, 0))
+batched_compute_expected_free_energy = jax.vmap(compute_expected_free_energy, in_axes=(None, 0, None))
+
+# Optional pmap for multiple devices if available
+import os
+try:
+    if len(jax.devices()) > 1 and os.environ.get("JAX_ENABLE_PMAP", "1") == "1":
+        # Multi-device data parallelism
+        parallel_belief_update = jax.pmap(belief_update, in_axes=(None, 0, 0))
+except (RuntimeError, ValueError):
+    logger.debug("pmap unavailable (single-device setup or runtime error)")
 
 
 @jit

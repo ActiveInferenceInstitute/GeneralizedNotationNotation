@@ -30,7 +30,9 @@ If you encounter errors:
 """
 
 import sys
+import logging
 from pathlib import Path
+from typing import Any
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -41,7 +43,7 @@ from utils.pipeline_template import create_standardized_pipeline_script
 # ImportError here means the module is broken or missing — fail loudly.
 from type_checker import GNNTypeChecker
 
-def _type_check_dispatch(target_dir, output_dir, logger, **kwargs):
+def _type_check_dispatch(target_dir: Path, output_dir: Path, logger: logging.Logger, **kwargs: Any) -> bool:
     """Dispatch to GNNTypeChecker."""
     return GNNTypeChecker().validate_gnn_files(target_dir, output_dir, **kwargs)
 

@@ -67,7 +67,7 @@ except ImportError:
 try:
     from .pymdp.pymdp_renderer import PyMDPRenderer
 except ImportError:
-    # Provide a minimal placeholder for tests
+    # Recovery implementation for robustness
     class PyMDPRenderer:
         """Recovery PyMDPRenderer when module unavailable."""
         def render(self, spec): return ""

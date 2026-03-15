@@ -12,7 +12,7 @@ import subprocess  # nosec B404 -- subprocess calls with controlled/trusted inpu
 import time
 from pathlib import Path
 
-def run_fast_tests():
+def run_fast_tests() -> bool:
     """Run only the fast tests."""
     print("Running fast test suite...")
     start_time = time.time()

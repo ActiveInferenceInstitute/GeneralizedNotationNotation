@@ -1,6 +1,6 @@
 # GeneralizedNotationNotation (GNN)
 
-**Last Updated**: 2026-03-05
+**Last Updated**: 2026-03-15
 
 <div align="center">
 
@@ -51,7 +51,7 @@
 ### 📚 Initial Publication
 
 **Smékal, J., & Friedman, D. A. (2023)**. *Generalized Notation Notation for Active Inference Models*. Active Inference Journal.  
-**Last Updated**: 2026-03-05  
+**Last Updated**: 2026-03-15  
 **Version**: 1.3.0  
 **Status**: ✅ Production Ready (Active Inference Institute)  
 **Test Suite**: ✅ 1,522+ tests passing (v1.3.0)  
@@ -78,7 +78,7 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | File | Purpose | Start Here If... |
 |------|---------|------------------|
 | **[README.md](./README.md)** | Main entry point and overview | You're new to GNN |
-| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 24 modules documented | You want to understand the pipeline architecture |
+| **[AGENTS.md](./AGENTS.md)** | Master agent scaffolding - all 25 modules documented | You want to understand the pipeline architecture |
 | **[DOCS.md](./DOCS.md)** | Comprehensive documentation with all diagrams | You need the complete system overview |
 | **[ARCHITECTURE.md](./ARCHITECTURE.md)** | Implementation patterns and extension guides | You're developing or extending GNN |
 | **[doc/quickstart.md](./doc/quickstart.md)** | Step-by-step getting started guide | You want to run your first pipeline |
@@ -88,10 +88,11 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 | **[SECURITY.md](./SECURITY.md)** | Security policy and vulnerability reporting | You found a security issue |
 | **[SUPPORT.md](./SUPPORT.md)** | Getting help and community resources | You need assistance |
 | **[CITATION.cff](./CITATION.cff)** | Citation information for academic use | You're citing GNN in research |
+| **[CHANGELOG.md](./CHANGELOG.md)** | Release history and version changes | You want to see what changed |
 
 ### 📂 Directory Overview
 
-```
+```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
 ├── 📁 src/                    # 25-step pipeline + 27 modules
@@ -216,7 +217,7 @@ GNN defines a specific file structure, typically using Markdown, to organize mod
 
 ### 📝 GNN Syntax Preview
 
-Here's a glimpse of what a GNN model file looks like (from [`input/gnn_files/actinf_pomdp_agent.md`](./input/gnn_files/actinf_pomdp_agent.md)):
+Here's a glimpse of what a GNN model file looks like (from [`input/gnn_files/discrete/actinf_pomdp_agent.md`](./input/gnn_files/discrete/actinf_pomdp_agent.md)):
 
 <details>
 <summary><strong>📄 View GNN File Example</strong></summary>
@@ -440,7 +441,7 @@ graph TB
 
 The `src/` directory contains the 25-step pipeline scripts (`0_template.py` → `24_intelligent_analysis.py`), their corresponding modules, and shared infrastructure. See `DOCS.md` and `doc/pipeline/README.md` for the full step-by-step mapping.
 
-```
+```text
 src/
 ├── 📜 Pipeline Scripts (0-24)
 │   ├── 0_template.py … 24_intelligent_analysis.py   # Thin orchestrators (0–24)
@@ -458,7 +459,7 @@ src/
 
 The `doc/` directory contains all supplementary documentation, including conceptual explanations, syntax guides, and examples.
 
-```
+```text
 doc/
 ├── 📖 Core Documentation
 │   ├── gnn/                       # GNN specifications
@@ -677,7 +678,7 @@ All 25 pipeline scripts now follow the thin orchestrator pattern with complete d
 
 #### 📁 Example Structure
 
-```
+```text
 src/
 ├── main.py                          # Main pipeline orchestrator
 ├── 0_template.py                    # Thin orchestrator - imports from template/
@@ -773,7 +774,7 @@ python src/main.py --target-dir path/to/gnn_files
 
 When executed, the type checker writes to `output/5_type_checker_output/`:
 
-```
+```text
 output/5_type_checker_output/
 ├── type_check_results.json
 ├── type_check_summary.json
@@ -852,7 +853,7 @@ python src/main.py --only-steps 22 --verbose
 
 #### 📁 GUI Output Structure
 
-```
+```text
 output/22_gui_output/
 ├── gui_1_output/           # Form-based constructor outputs
 │   ├── constructed_model_gui_1.md
@@ -1031,8 +1032,8 @@ Comprehensive documentation is organized in the `doc/` directory.
 | [**DOCS.md**](./DOCS.md) | High-level system architecture and comprehensive documentation index. |
 | [**GNN Overview**](./doc/gnn/gnn_overview.md) | High-level introduction to the GNN language. |
 | [**Syntax Guide**](./doc/gnn/gnn_syntax.md) | Detailed GNN syntax specification. |
-| [**File Structure**](./doc/gnn/gnn_file_structure_doc.md) | Guide to GNN file organization. |
-| [**Quick Start Tutorial**](./doc/gnn/quickstart_tutorial.md) | Step-by-step beginner guide. |
+| [**File Structure**](./doc/gnn/reference/gnn_file_structure_doc.md) | Guide to GNN file organization. |
+| [**Quick Start Tutorial**](./doc/gnn/tutorials/quickstart_tutorial.md) | Step-by-step beginner guide. |
 | [**Architecture Guide**](./ARCHITECTURE.md) | Implementation, extension patterns, and system design. |
 | [**Machine-Readable Indices**](./doc/api/README.md) | API index and generator. |
 
@@ -1041,9 +1042,9 @@ Comprehensive documentation is organized in the `doc/` directory.
 | Topic | Documentation |
 |-------|---------------|
 | **🧠 Active Inference** | [About GNN](./doc/gnn/about_gnn.md) |
-| **🤖 LLM Integration** | [LLM & Neurosymbolic AI](./doc/gnn/gnn_llm_neurosymbolic_active_inference.md) |
-| **📊 Implementation** | [Implementation Guide](./doc/gnn/gnn_implementation.md) |
-| **🛠️ Tools** | [Tools & Resources](./doc/gnn/gnn_tools.md) |
+| **🤖 LLM Integration** | [LLM & Neurosymbolic AI](./doc/gnn/advanced/gnn_llm_neurosymbolic_active_inference.md) |
+| **📊 Implementation** | [Implementation Guide](./doc/gnn/integration/gnn_implementation.md) |
+| **🛠️ Tools** | [Tools & Resources](./doc/gnn/operations/gnn_tools.md) |
 | **📄 Research Paper** | [Academic Paper Details](./doc/gnn/gnn_paper.md) |
 
 ### 🎯 Integration Guides
@@ -1161,7 +1162,7 @@ python src/main.py -o "output/run_$(date +%Y%m%d_%H%M%S)"
 
 The GNN project maintains high standards for code quality, testing, and documentation.
 
-### 📊 Current Metrics (2026-03-05)
+### 📊 Current Metrics (2026-03-15)
 
 - **Total Steps**: 25 (0-24)
 - **Execution Time**: ~5 minutes (with LLM step)

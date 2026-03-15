@@ -41,7 +41,7 @@ class TestMainOrchestratorImport:
     """Test main orchestrator import validation and component checking."""
 
     @pytest.mark.unit
-    def test_main_orchestrator_file_exists(self):
+    def test_main_orchestrator_file_exists(self) -> None:
         """Test that main.py exists and is readable."""
         main_script = SRC_DIR / "main.py"
 
@@ -64,7 +64,7 @@ class TestMainOrchestratorImport:
             pytest.fail(f"Failed to read main orchestrator script: {e}")
 
     @pytest.mark.unit
-    def test_main_orchestrator_help_executes(self):
+    def test_main_orchestrator_help_executes(self) -> None:
         """main.py should print help and exit 0."""
         main_py = SRC_DIR / "main.py"
         result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
@@ -72,7 +72,7 @@ class TestMainOrchestratorImport:
         assert "usage" in result.stdout.lower() or "usage" in result.stderr.lower()
 
     @pytest.mark.unit
-    def test_main_orchestrator_component_availability(self):
+    def test_main_orchestrator_component_availability(self) -> None:
         """Test that main orchestrator components are available."""
         # Test that main components exist
         components = {
@@ -92,7 +92,7 @@ class TestMainOrchestratorImport:
 class TestArgumentParsing:
     """Smoke-check argument parser via main --help only (no mocks)."""
     @pytest.mark.unit
-    def test_help(self):
+    def test_help(self) -> None:
         main_py = SRC_DIR / "main.py"
         result = subprocess.run([sys.executable, str(main_py), "--help"], capture_output=True, text=True, cwd=str(PROJECT_ROOT))  # nosec B603 -- subprocess calls with controlled/trusted input
         assert result.returncode == 0
@@ -101,7 +101,7 @@ class TestPipelineScriptDiscovery:
     """Test pipeline script discovery and metadata extraction."""
 
     @pytest.mark.unit
-    def test_pipeline_script_discovery_logic(self):
+    def test_pipeline_script_discovery_logic(self) -> None:
         """Test pipeline script discovery logic."""
         # Test script discovery pattern
         expected_pattern = r"^(\d+)_.*\.py$"
@@ -133,7 +133,7 @@ class TestPipelineScriptDiscovery:
         logging.info("Pipeline script discovery logic validated")
 
     @pytest.mark.unit
-    def test_pipeline_script_sorting(self):
+    def test_pipeline_script_sorting(self) -> None:
         """Test pipeline script sorting logic."""
         # Test script sorting by number and name
         sample_scripts = [
@@ -156,7 +156,7 @@ class TestPipelineScriptDiscovery:
 
 class TestVirtualEnvironmentHandling:
     @pytest.mark.unit
-    def test_python_executable_detection(self):
+    def test_python_executable_detection(self) -> None:
         python_executable = sys.executable
         assert python_executable
 
@@ -164,7 +164,7 @@ class TestStepExecution:
     """Execute a core step for real."""
 
     @pytest.mark.integration
-    def test_run_core_step(self):
+    def test_run_core_step(self) -> None:
         script = SRC_DIR / "3_gnn.py"
         if not script.exists():
             pytest.skip("3_gnn.py missing")
@@ -177,7 +177,7 @@ class TestStepExecution:
 class TestPipelineCoordination:
     @pytest.mark.slow
     @pytest.mark.integration
-    def test_minimal_pipeline_execution(self):
+    def test_minimal_pipeline_execution(self) -> None:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
@@ -201,7 +201,7 @@ class TestPipelineCoordination:
                     f"Return code: {result.returncode}, stderr: {result.stderr[:500] if result.stderr else 'None'}"
 
     @pytest.mark.unit
-    def test_environment_info_function(self):
+    def test_environment_info_function(self) -> None:
         from src.main import get_environment_info
         info = get_environment_info()
         assert isinstance(info, dict)
@@ -210,7 +210,7 @@ class TestPipelineCoordination:
 class TestEndToEndIntegration:
     @pytest.mark.slow
     @pytest.mark.integration
-    def test_run_pipeline_subset(self):
+    def test_run_pipeline_subset(self) -> None:
         main_py = SRC_DIR / "main.py"
         with tempfile.TemporaryDirectory() as td:
             outdir = Path(td) / "output"
@@ -219,7 +219,7 @@ class TestEndToEndIntegration:
             # Assert expected subdirs may be created by steps
             assert (outdir / "3_gnn_output").exists() or (outdir / "gnn_processing_step").exists()
 
-    def test_pipeline_summary_validation(self):
+    def test_pipeline_summary_validation(self) -> None:
         """Test pipeline summary structure validation."""
         from main import validate_pipeline_summary
         import logging
@@ -266,7 +266,7 @@ class TestEndToEndIntegration:
         # Should log warnings/errors but not raise exceptions
         validate_pipeline_summary(invalid_summary, logger)
 
-    def test_enhanced_warning_detection(self):
+    def test_enhanced_warning_detection(self) -> None:
         """Test improved warning detection logic."""
         # Test the warning detection logic from main.py
         combined_output = "INFO: Processing completed\nWARNING: Optional feature not available\n⚠️ Warning symbol detected"
@@ -284,7 +284,7 @@ class TestEndToEndIntegration:
         # Should not detect warnings
         assert has_warning == False
 
-    def test_pipeline_summary_step_numbering(self):
+    def test_pipeline_summary_step_numbering(self) -> None:
         """Test that pipeline summary uses correct step numbering."""
         # Test that step numbers reflect execution order, not script names
         summary = {
@@ -316,7 +316,7 @@ class TestEndToEndIntegration:
         assert summary["steps"][2]["step_number"] == 3
         assert summary["performance_summary"]["total_steps"] == 3
 
-    def test_pipeline_summary_validation_comprehensive(self):
+    def test_pipeline_summary_validation_comprehensive(self) -> None:
         """Test comprehensive pipeline summary validation."""
         from main import validate_pipeline_summary
         import logging
@@ -364,7 +364,7 @@ class TestEndToEndIntegration:
         # Should log warnings but not raise exceptions
         validate_pipeline_summary(invalid_summary, logger)
 
-    def test_pipeline_step_execution_order(self):
+    def test_pipeline_step_execution_order(self) -> None:
         """Test that steps execute in the correct dependency order."""
         # Test that pipeline steps execute in dependency order
         # GNN processing should run before type checking
@@ -405,7 +405,7 @@ class TestEndToEndIntegration:
         for step_num, deps in expected_dependencies.items():
             assert 3 in deps, f"Step {step_num} should depend on step 3 (GNN processing)"
 
-    def test_pipeline_summary_metadata_completeness(self):
+    def test_pipeline_summary_metadata_completeness(self) -> None:
         """Test that pipeline summary includes all required metadata."""
         summary = {
             "start_time": "2025-01-01T00:00:00",
@@ -459,7 +459,7 @@ class TestEndToEndIntegration:
         for field in required_perf_fields:
             assert field in perf, f"Performance summary missing field: {field}"
 
-    def test_enhanced_pipeline_summary_structure(self):
+    def test_enhanced_pipeline_summary_structure(self) -> None:
         """Test that pipeline summary has enhanced structure with correct step numbering."""
         # Test the pipeline summary structure improvements
         summary = {

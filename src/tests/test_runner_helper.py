@@ -13,6 +13,7 @@ Usage:
     python src/tests/test_runner_helper.py debug
 """
 
+from typing import Any, Dict, List, Optional
 import sys
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import argparse
@@ -22,7 +23,7 @@ import time
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files", output_dir: str = "output", verbose: bool = False):
+def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files", output_dir: str = "output", verbose: bool = False) -> bool:
     """Run a predefined test configuration."""
 
     # Define test configurations
@@ -116,7 +117,7 @@ def run_test_configuration(config_name: str, target_dir: str = "input/gnn_files"
         print(f"❌ Test execution failed after {duration:.1f}s: {e}")
         return False
 
-def list_configurations():
+def list_configurations() -> None:
     """List all available test configurations."""
     configurations = {
         "fast": "Quick validation tests (< 3 minutes)",
@@ -138,7 +139,7 @@ def list_configurations():
     print("  python src/tests/test_runner_helper.py full --verbose")
     print("  python src/tests/test_runner_helper.py debug --target-dir custom/path")
 
-def run_custom_tests(markers: str = None, timeout: int = None, **kwargs):
+def run_custom_tests(markers: Optional[str] = None, timeout: Optional[int] = None, **kwargs: Any) -> bool:
     """Run tests with custom configuration."""
     test_script = Path(__file__).parent.parent / "2_tests.py"
     cmd = [sys.executable, str(test_script)]
@@ -167,7 +168,7 @@ def run_custom_tests(markers: str = None, timeout: int = None, **kwargs):
         print(f"❌ Custom test execution failed: {e}")
         return False
 
-def main():
+def main() -> int:
     """Main entry point for test runner helper."""
     parser = argparse.ArgumentParser(
         description="GNN Test Runner Helper - Easy access to different test configurations",

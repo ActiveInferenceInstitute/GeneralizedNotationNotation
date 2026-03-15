@@ -9,12 +9,13 @@ import pytest
 import logging
 from pathlib import Path
 import tempfile
+from typing import Any, Dict, List, Optional
 
 
 class TestStepLogging:
     """Tests for step_logging module."""
 
-    def test_step_logging_imports(self):
+    def test_step_logging_imports(self) -> None:
         """Test that step_logging module imports correctly."""
         from utils.logging.logging_utils import (
             log_step_start,
@@ -29,20 +30,20 @@ class TestStepLogging:
         assert callable(log_step_error)
         assert callable(setup_step_logging)
 
-    def test_setup_step_logging_returns_logger(self):
+    def test_setup_step_logging_returns_logger(self) -> None:
         """Test that setup_step_logging returns a logger."""
         from utils.logging.logging_utils import setup_step_logging
         logger = setup_step_logging("test_step")
         assert isinstance(logger, logging.Logger)
         assert logger.name == "test_step"
 
-    def test_setup_step_logging_verbose(self):
+    def test_setup_step_logging_verbose(self) -> None:
         """Test verbose mode sets DEBUG level."""
         from utils.logging.logging_utils import setup_step_logging
         logger = setup_step_logging("test_verbose", verbose=True)
         assert logger.getEffectiveLevel() <= logging.DEBUG
 
-    def test_log_step_functions_no_exception(self):
+    def test_log_step_functions_no_exception(self) -> None:
         """Test that log functions don't raise exceptions."""
         from utils.logging.logging_utils import (
             log_step_start,
@@ -63,7 +64,7 @@ class TestStepLogging:
 class TestBaseProcessor:
     """Tests for base_processor module."""
 
-    def test_base_processor_imports(self):
+    def test_base_processor_imports(self) -> None:
         """Test that base_processor module imports correctly."""
         from utils.base_processor import (
             BaseProcessor,
@@ -74,7 +75,7 @@ class TestBaseProcessor:
         assert ProcessingResult is not None
         assert callable(create_processor)
 
-    def test_processing_result_dataclass(self):
+    def test_processing_result_dataclass(self) -> None:
         """Test ProcessingResult dataclass."""
         from utils.base_processor import ProcessingResult
 
@@ -85,7 +86,7 @@ class TestBaseProcessor:
         assert result.errors == []
         assert result.warnings == []
 
-    def test_processing_result_to_dict(self):
+    def test_processing_result_to_dict(self) -> None:
         """Test ProcessingResult to_dict method."""
         from utils.base_processor import ProcessingResult
 
@@ -101,7 +102,7 @@ class TestBaseProcessor:
         assert d["files_processed"] == 5
         assert d["files_failed"] == 1
 
-    def test_processing_result_save_to_json(self):
+    def test_processing_result_save_to_json(self) -> None:
         """Test ProcessingResult save_to_json method."""
         from utils.base_processor import ProcessingResult
         import json
@@ -122,22 +123,22 @@ class TestBaseProcessor:
         finally:
             temp_path.unlink(missing_ok=True)
 
-    def test_create_processor_function(self):
+    def test_create_processor_function(self) -> None:
         """Test create_processor factory function."""
         from utils.base_processor import create_processor, BaseProcessor
 
-        def simple_process(file_path, output_dir):
+        def simple_process(file_path: Any, output_dir: Any) -> bool:
             return True
 
         processor = create_processor("test_step", simple_process)
         assert isinstance(processor, BaseProcessor)
         assert processor.step_name == "test_step"
 
-    def test_base_processor_find_files(self):
+    def test_base_processor_find_files(self) -> None:
         """Test BaseProcessor.find_files method."""
         from utils.base_processor import create_processor
 
-        def dummy_process(file_path, output_dir):
+        def dummy_process(file_path: Any, output_dir: Any) -> bool:
             return True
 
         processor = create_processor("test", dummy_process)
@@ -160,7 +161,7 @@ class TestBaseProcessor:
 class TestModuleIntegration:
     """Integration tests for new modules."""
 
-    def test_utils_package_exports_new_modules(self):
+    def test_utils_package_exports_new_modules(self) -> None:
         """Test that utils package exports new modules."""
         # This test may fail until __init__.py is updated
         try:

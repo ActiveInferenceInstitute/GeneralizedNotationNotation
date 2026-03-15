@@ -26,4 +26,4 @@ python src/18_security.py --target-dir input/gnn_files --output-dir output --ver
 
 ## Source
 
-- **Script**: [src/18_security.py](#placeholder)
+- **Script**: [src/18_security.py](../../src/18_security.py)

@@ -10,19 +10,22 @@ from datetime import datetime
 import os
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 import shutil
+from typing import Dict, Any, Tuple, List, Optional
 
 _logger = logging.getLogger(__name__)
 
 try:
     from pipeline.config import get_pipeline_config
 except ImportError:
-    def get_pipeline_config():
+    def get_pipeline_config() -> Dict[str, Any]:
         return {}
 
 def _get_llm_config() -> dict:
     """Read LLM configuration from input/config.yaml, with pipeline config recovery."""
-    import yaml
     try:
+        if os.getenv('GNN_TESTING_NO_LLM_CONFIG'):
+            return {}
+        
         # Resolve input/config.yaml relative to project root (src/../input/config.yaml)
         config_path = Path(__file__).resolve().parent.parent.parent / "input" / "config.yaml"
         if config_path.exists():
@@ -39,7 +42,7 @@ def _get_llm_config() -> dict:
         _logger.debug("LLM pipeline config recovery failed: %s", e)
         return {}
 
-def _model_is_cached(model_name: str, logger) -> bool:
+def _model_is_cached(model_name: str, logger: logging.Logger) -> bool:
     """Check if an Ollama model is already cached locally using 'ollama show'."""
     try:
         result = subprocess.run(  # nosec B607 B603 -- subprocess calls with controlled/trusted input
@@ -59,7 +62,7 @@ import asyncio
 
 from utils.logging.logging_utils import log_step_start, log_step_success, log_step_error, log_step_warning
 
-def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
+def _check_and_start_ollama(logger: logging.Logger) -> Tuple[bool, List[str]]:
     """
     Check if Ollama is available and running with enhanced detection.
 
@@ -212,7 +215,7 @@ def _check_and_start_ollama(logger) -> tuple[bool, list[str]]:
         logger.debug(f"Error checking Ollama availability: {e}")
         return False, []
 
-def _select_best_ollama_model(available_models: list[str], logger) -> str:
+def _select_best_ollama_model(available_models: List[str], logger: logging.Logger) -> str:
     """
     Select the best available Ollama model for GNN analysis.
     

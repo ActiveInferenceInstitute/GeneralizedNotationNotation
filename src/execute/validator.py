@@ -415,21 +415,45 @@ def validate_execution_environment() -> Dict[str, Any]:
     else:
         validation.overall_status = "healthy"
 
+    # Build the results list
+    results_list = [
+        {
+            "component": r.component,
+            "status": r.status,
+            "message": r.message,
+            "details": r.details,
+            "suggestion": r.suggestion
+        }
+        for r in validation.results
+    ]
+
+    # Extract convenience top-level keys expected by tests and callers
+    python_version_details: Dict[str, Any] = {}
+    dependencies: Dict[str, Any] = {}
+    for r in validation.results:
+        if r.component == "python_version":
+            python_version_details = {
+                "version": r.details.get("version", "unknown"),
+                "status": r.status,
+                "message": r.message,
+            }
+        elif r.component.startswith("dependency_"):
+            dep_name = r.component.replace("dependency_optional_", "").replace("dependency_", "")
+            dependencies[dep_name] = {
+                "status": r.status,
+                "message": r.message,
+                "details": r.details,
+            }
+
     # Convert to dict for JSON serialization
     return {
         "timestamp": validation.timestamp.isoformat(),
         "overall_status": validation.overall_status,
         "summary": validation.summary,
-        "results": [
-            {
-                "component": r.component,
-                "status": r.status,
-                "message": r.message,
-                "details": r.details,
-                "suggestion": r.suggestion
-            }
-            for r in validation.results
-        ]
+        "results": results_list,
+        # Convenience top-level keys (used by tests and callers)
+        "python_version": python_version_details,
+        "dependencies": dependencies,
     }
 
 def log_validation_results(validation_results: Dict[str, Any], logger: logging.Logger):

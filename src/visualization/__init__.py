@@ -43,7 +43,7 @@ except Exception:
             self.config = config or {}
             self.output_dir = Path(output_dir) if output_dir is not None else None
 
-        def generate(self, *a, **k):
+        def generate(self, *a, **k) -> bool:
             return False
 
         def generate_graph_visualization(self, graph_data: dict) -> list:
@@ -52,15 +52,15 @@ except Exception:
         def generate_matrix_visualization(self, matrix_data: dict) -> list:
             return []
 
-    def generate_graph_visualization(graph_data: dict, output_dir: Optional[Union[str, Path]] = None):
+    def generate_graph_visualization(graph_data: dict, output_dir: Optional[Union[str, Path]] = None) -> list:
         gv = GNNVisualizer(output_dir=output_dir)
         return gv.generate_graph_visualization(graph_data)
 
-    def generate_matrix_visualization(matrix_data: dict, output_dir: Optional[Union[str, Path]] = None):
+    def generate_matrix_visualization(matrix_data: dict, output_dir: Optional[Union[str, Path]] = None) -> list:
         mv = GNNVisualizer(output_dir=output_dir)
         return mv.generate_matrix_visualization(matrix_data)
 
-    def generate_visualizations(logger, target_dir, output_dir, **kwargs):
+    def generate_visualizations(logger, target_dir, output_dir, **kwargs) -> bool:
         """Recovery for generate_visualizations."""
         return True
 

@@ -19,6 +19,7 @@ Tests use temporary directories for isolation and automatic cleanup.
 import pytest
 
 pytestmark = pytest.mark.pipeline
+from typing import Any
 import sys
 import logging
 from pathlib import Path
@@ -42,7 +43,7 @@ class PipelineArgs:
 class TestPipelineWarningsFix:
     """Test suite for pipeline warning fixes."""
 
-    def test_prerequisite_validation_correct_directories(self, tmp_path):
+    def test_prerequisite_validation_correct_directories(self, tmp_path: Any) -> None:
         """Test that prerequisite validation uses correct output directory names."""
         # Setup
         output_dir = tmp_path / "output"
@@ -74,7 +75,7 @@ class TestPipelineWarningsFix:
         assert result["passed"], "Prerequisite validation should pass"
         assert len(result["warnings"]) == 0, f"Should have no warnings, got: {result['warnings']}"
 
-    def test_prerequisite_validation_with_nested_directories(self, tmp_path):
+    def test_prerequisite_validation_with_nested_directories(self, tmp_path: Any) -> None:
         """Test that prerequisite validation detects and warns about nested directories."""
         # Setup
         output_dir = tmp_path / "output"
@@ -106,7 +107,7 @@ class TestPipelineWarningsFix:
         assert any("nested" in w.lower() for w in result["warnings"]), \
             f"Should warn about nested directory, got warnings: {result['warnings']}"
 
-    def test_prerequisite_validation_missing_directory(self, tmp_path):
+    def test_prerequisite_validation_missing_directory(self, tmp_path: Any) -> None:
         """Test that prerequisite validation warns about missing directories."""
         # Setup
         output_dir = tmp_path / "output"
@@ -128,7 +129,7 @@ class TestPipelineWarningsFix:
         assert any("missing" in w.lower() for w in result["warnings"]), \
             "Should warn about missing prerequisite directory"
 
-    def test_get_output_dir_prevents_nesting(self, tmp_path):
+    def test_get_output_dir_prevents_nesting(self, tmp_path: Any) -> None:
         """Test that get_output_dir_for_script prevents nested directories."""
         base_output_dir = tmp_path / "output"
         base_output_dir.mkdir()
@@ -143,7 +144,7 @@ class TestPipelineWarningsFix:
         # Should return the same directory, not result1 / "10_ontology_output"
         assert result2 == expected, f"Should prevent nesting, expected {expected}, got {result2}"
 
-    def test_get_output_dir_all_steps(self, tmp_path):
+    def test_get_output_dir_all_steps(self, tmp_path: Any) -> None:
         """Test that all pipeline steps get correct output directories."""
         base_output_dir = tmp_path / "output"
         base_output_dir.mkdir()
@@ -182,7 +183,7 @@ class TestPipelineWarningsFix:
             assert result == expected, \
                 f"Script {script_name} should map to {expected_dir_name}, got {result.name}"
 
-    def test_prerequisite_chain_validation(self, tmp_path):
+    def test_prerequisite_chain_validation(self, tmp_path: Any) -> None:
         """Test validation of prerequisite chains."""
         # Setup
         output_dir = tmp_path / "output"
@@ -206,7 +207,7 @@ class TestPipelineWarningsFix:
         # Note: If checking for transitive dependencies is not implemented,
         # there may still be a warning about 3_gnn.py not being a direct prerequisite
 
-    def test_get_output_dir_with_path_object(self, tmp_path):
+    def test_get_output_dir_with_path_object(self, tmp_path: Any) -> None:
         """Test get_output_dir_for_script with Path object."""
         base_output_dir = Path(tmp_path) / "output"
         base_output_dir.mkdir(parents=True)
@@ -217,7 +218,7 @@ class TestPipelineWarningsFix:
         assert result == expected
         assert isinstance(result, Path)
 
-    def test_get_output_dir_without_py_extension(self, tmp_path):
+    def test_get_output_dir_without_py_extension(self, tmp_path: Any) -> None:
         """Test get_output_dir_for_script without .py extension."""
         base_output_dir = tmp_path / "output"
         base_output_dir.mkdir()

@@ -1,15 +1,12 @@
-"""
-Test suite for Template module.
-
-Tests the reference implementation for GNN pipeline's architectural pattern.
-"""
+import pytest
+from typing import Any, Dict, List
 
 
 
 class TestTemplateModule:
     """Test suite for Template module functionality."""
 
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that template module can be imported."""
         from template import (
             process_template_standardized,
@@ -26,7 +23,7 @@ class TestTemplateModule:
         assert callable(validate_file)
         assert callable(generate_correlation_id)
 
-    def test_features_available(self):
+    def test_features_available(self) -> None:
         """Test that FEATURES dict is properly populated."""
         from template import FEATURES
 
@@ -42,7 +39,7 @@ class TestTemplateModule:
             assert feature in FEATURES, f"Missing feature: {feature}"
             assert FEATURES[feature] is True
 
-    def test_version_format(self):
+    def test_version_format(self) -> None:
         """Test version string format."""
         from template import __version__
 
@@ -51,7 +48,7 @@ class TestTemplateModule:
         assert len(parts) >= 2, "Version should have at least major.minor"
         assert all(p.isdigit() for p in parts[:2]), "Major and minor should be numeric"
 
-    def test_version_info_dict(self):
+    def test_version_info_dict(self) -> None:
         """Test VERSION_INFO dictionary."""
         from template import VERSION_INFO
 
@@ -64,7 +61,7 @@ class TestTemplateModule:
 class TestCorrelationIdGeneration:
     """Test correlation ID generation functionality."""
 
-    def test_generate_correlation_id(self):
+    def test_generate_correlation_id(self) -> None:
         """Test correlation ID generation."""
         from template import generate_correlation_id
 
@@ -72,7 +69,7 @@ class TestCorrelationIdGeneration:
         assert isinstance(corr_id, str)
         assert len(corr_id) > 0
 
-    def test_correlation_ids_unique(self):
+    def test_correlation_ids_unique(self) -> None:
         """Test that correlation IDs are unique."""
         from template import generate_correlation_id
 
@@ -83,7 +80,7 @@ class TestCorrelationIdGeneration:
 class TestFileValidation:
     """Test file validation functionality."""
 
-    def test_validate_file_valid(self, safe_filesystem):
+    def test_validate_file_valid(self, safe_filesystem: Any) -> None:
         """Test validation of a valid GNN file."""
         from template import validate_file
 
@@ -101,7 +98,7 @@ s->s
         # Should return validation result (dict or bool)
         assert result is not None
 
-    def test_validate_file_nonexistent(self, safe_filesystem):
+    def test_validate_file_nonexistent(self, safe_filesystem: Any) -> None:
         """Test validation of non-existent file."""
         from template import validate_file
 
@@ -119,7 +116,7 @@ s->s
 class TestProcessing:
     """Test processing functionality."""
 
-    def test_process_single_file(self, safe_filesystem):
+    def test_process_single_file(self, safe_filesystem: Any) -> None:
         """Test processing a single GNN file."""
         from template import process_single_file
 
@@ -139,7 +136,7 @@ Static
         result = process_single_file(test_file, output_dir, options)
         assert result is not None
 
-    def test_process_template_standardized(self, safe_filesystem):
+    def test_process_template_standardized(self, safe_filesystem: Any) -> None:
         """Test standardized template processing."""
         from template import process_template_standardized
         import logging
@@ -178,7 +175,7 @@ alpha = 0.5
 class TestSafeExecution:
     """Test safe execution wrapper."""
 
-    def test_safe_template_execution_success(self, safe_filesystem):
+    def test_safe_template_execution_success(self, safe_filesystem: Any) -> None:
         """Test safe execution context manager."""
         from template import safe_template_execution, generate_correlation_id
         import logging
@@ -192,7 +189,7 @@ class TestSafeExecution:
             assert 'correlation_id' in ctx
             assert ctx['correlation_id'] == correlation_id
 
-    def test_safe_template_execution_with_error(self, safe_filesystem):
+    def test_safe_template_execution_with_error(self, safe_filesystem: Any) -> None:
         """Test safe execution handles errors gracefully."""
         from template import safe_template_execution, generate_correlation_id
         import logging
@@ -212,7 +209,7 @@ class TestSafeExecution:
 class TestUtilityPatterns:
     """Test utility pattern demonstrations."""
 
-    def test_demonstrate_utility_patterns(self):
+    def test_demonstrate_utility_patterns(self) -> None:
         """Test utility pattern demonstration function."""
         from template import demonstrate_utility_patterns
         import logging
@@ -227,7 +224,7 @@ class TestUtilityPatterns:
         # Returns demonstration results dict
         assert isinstance(result, dict)
 
-    def test_get_version_info(self):
+    def test_get_version_info(self) -> None:
         """Test version info utility."""
         from template import get_version_info
 

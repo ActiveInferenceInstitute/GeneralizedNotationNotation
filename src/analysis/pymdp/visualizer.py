@@ -92,7 +92,7 @@ class PyMDPVisualizer:
         self.plot_count = 0
 
     # Backwards-compatible wrappers expected by tests
-    def plot_discrete_states(self, state_sequence: List[int], num_states: int, title: str = "Discrete State Sequence", save_path: Optional[Union[Path, str]] = None):
+    def plot_discrete_states(self, state_sequence: List[int], num_states: int, title: str = "Discrete State Sequence", save_path: Optional[Union[Path, str]] = None) -> Any:
         fig = self.visualize_discrete_states(state_sequence, num_states, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -100,7 +100,7 @@ class PyMDPVisualizer:
             return fig
         return fig
 
-    def plot_belief_evolution(self, belief_traces: List[np.ndarray], title: str = "Belief Evolution", save_path: Optional[Union[Path, str]] = None):
+    def plot_belief_evolution(self, belief_traces: List[np.ndarray], title: str = "Belief Evolution", save_path: Optional[Union[Path, str]] = None) -> Any:
         fig = self.visualize_belief_evolution(belief_traces, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -108,7 +108,7 @@ class PyMDPVisualizer:
             return fig
         return fig
 
-    def plot_performance_metrics(self, metrics: Dict[str, Any], title: str = "Performance Metrics", save_path: Optional[Union[Path, str]] = None):
+    def plot_performance_metrics(self, metrics: Dict[str, Any], title: str = "Performance Metrics", save_path: Optional[Union[Path, str]] = None) -> Any:
         fig = self.visualize_performance_metrics(metrics, title)
         if fig and save_path:
             Path(save_path).parent.mkdir(parents=True, exist_ok=True)
@@ -116,7 +116,7 @@ class PyMDPVisualizer:
             return fig
         return fig
 
-    def plot_action_sequence(self, action_sequence: List[int], num_actions: Optional[int] = None, title: str = "Action Sequence", save_path: Optional[Union[Path, str]] = None):
+    def plot_action_sequence(self, action_sequence: List[int], num_actions: Optional[int] = None, title: str = "Action Sequence", save_path: Optional[Union[Path, str]] = None) -> Any:
         # Infer number of actions if not provided
         if num_actions is None:
             try:
@@ -126,10 +126,10 @@ class PyMDPVisualizer:
         # Use discrete states plot as proxy for actions
         return self.plot_discrete_states(action_sequence, num_actions, title, save_path)
 
-    def plot_observation_sequence(self, observation_sequence: List[int], num_observations: int, title: str = "Observation Sequence", save_path: Optional[Union[Path, str]] = None):
+    def plot_observation_sequence(self, observation_sequence: List[int], num_observations: int, title: str = "Observation Sequence", save_path: Optional[Union[Path, str]] = None) -> Any:
         return self.plot_discrete_states(observation_sequence, num_observations, title, save_path)
 
-    def plot_episode_summary(self, episode_trace: Dict[str, Any], episode_num: int = 0, save_path: Optional[Union[Path, str]] = None):
+    def plot_episode_summary(self, episode_trace: Dict[str, Any], episode_num: int = 0, save_path: Optional[Union[Path, str]] = None) -> Any:
         # Create a combined visualization: states + belief + performance
         metrics = {
             'actions': episode_trace.get('actions', []),

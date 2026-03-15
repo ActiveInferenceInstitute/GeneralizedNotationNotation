@@ -78,7 +78,7 @@ def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool
 
     Returns True on success, False on failure.
     """
-    def _safe_dpi_value(dpi_input):
+    def _safe_dpi_value(dpi_input: Any) -> int:
         """Validate and sanitize DPI value."""
         try:
             dpi_val = int(dpi_input) if isinstance(dpi_input, (int, float)) else 150
@@ -113,7 +113,7 @@ def _save_plot_safely(plot_path: Path, dpi: int = 300, **savefig_kwargs) -> bool
                 return False
 
 
-def _safe_tight_layout():
+def _safe_tight_layout() -> None:
     """Apply tight_layout with warning suppression.
 
     Tight layout may fail for complex figures - this is not critical.

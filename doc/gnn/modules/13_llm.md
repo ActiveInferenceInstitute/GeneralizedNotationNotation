@@ -47,4 +47,4 @@ Registered by `src/llm/mcp.py` via `register_tools()`:
 
 ## Source
 
-- **Script**: [src/13_llm.py](#placeholder)
+- **Script**: [src/13_llm.py](../../src/13_llm.py)

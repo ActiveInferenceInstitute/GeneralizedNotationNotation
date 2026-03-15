@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Multi Armed Bandit Agent
 Description: 
-Generated: 2026-03-13 14:15:10
+Generated: 2026-03-15 13:54:01
 
 State Space:
 - Hidden States: 3

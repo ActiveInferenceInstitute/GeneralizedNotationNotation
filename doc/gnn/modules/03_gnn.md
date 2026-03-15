@@ -36,4 +36,4 @@ Steps 4, 5, 7, 8, 10, 11, 13, 15, and 16 all depend on Step 3's output.
 
 ## Source
 
-- **Script**: [src/3_gnn.py](#placeholder)
+- **Script**: [src/3_gnn.py](../../src/3_gnn.py)

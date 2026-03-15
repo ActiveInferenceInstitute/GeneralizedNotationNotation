@@ -1,15 +1,15 @@
 # 🎯 GNN Pipeline Comprehensive Analysis Report
 
-**Generated:** 2026-03-13T11:36:49.709961  
-**Pipeline Output Directory:** /Users/4d/Documents/GitHub/generalizednotationnotation/output  
-**Health Score:** 95.0/100
+**Generated:** 2026-03-15T14:00:09.287464  
+**Pipeline Output Directory:** output  
+**Health Score:** 92.1/100
 
 ## 📊 Pipeline Overview
 
 - **Total Steps Analyzed:** 24
-- **Total Files Processed:** 1904
-- **Total Size:** 123.28000000000002 MB
-- **Success Rate:** 100.0%
+- **Total Files Processed:** 1539
+- **Total Size:** 87.35000000000001 MB
+- **Success Rate:** 95.8%
 
 ## ⚡ Performance Metrics
 
@@ -21,7 +21,7 @@
 
 - **Files:** 39
 - **Size:** 0.08 MB
-- **Last Modified:** 2026-03-13T11:28:21.188342
+- **Last Modified:** 2026-03-15T13:52:34.415789
 - **Status:** success
 
 - **File Types:** .json: 20, .md: 19
@@ -32,7 +32,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-03-13T11:28:02.120364
+- **Last Modified:** 2026-03-15T13:52:37.235526
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -41,20 +41,20 @@
 ### ✅ 2 Tests Output
 
 - **Files:** 2
-- **Size:** 0.01 MB
-- **Last Modified:** 2026-03-13T11:35:17.836166
+- **Size:** 0.05 MB
+- **Last Modified:** 2026-03-15T13:53:22.458710
 - **Status:** success
 
 - **File Types:** .log: 1, .txt: 1
 - **Key Files:**
-  - pytest_reliable_output.txt (0.01 MB)
+  - pytest_reliable_output.txt (0.02 MB)
 - **Dependencies:** Complete
 
 ### ✅ 3 Gnn Output
 
 - **Files:** 440
-- **Size:** 3.45 MB
-- **Last Modified:** 2026-03-13T11:35:20.772710
+- **Size:** 3.44 MB
+- **Last Modified:** 2026-03-15T13:53:24.861217
 - **Status:** success
 
 - **File Types:** .json: 41, .bnf: 19, .lean: 19, .scala: 19, .pkl: 38, .z: 19, .xsd: 19, .v: 19, .xml: 19, .als: 19, .proto: 19, .hs: 19, .ebnf: 19, .agda: 19, .asn1: 19, .thy: 19, .md: 19, .tla: 19, .max: 19, .yaml: 19, .py: 19
@@ -66,7 +66,7 @@
 
 - **Files:** 1
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-03-13T11:35:21.146300
+- **Last Modified:** 2026-03-15T13:53:25.191247
 - **Status:** success
 
 - **File Types:** .json: 1
@@ -78,7 +78,7 @@
 
 - **Files:** 2
 - **Size:** 0.06 MB
-- **Last Modified:** 2026-03-13T11:35:23.618037
+- **Last Modified:** 2026-03-15T13:53:27.209651
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -88,7 +88,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-03-13T11:35:26.020642
+- **Last Modified:** 2026-03-15T13:53:29.248495
 - **Status:** success
 
 - **File Types:** .json: 2
@@ -98,12 +98,12 @@
 
 ### ✅ 7 Export Output
 
-- **Files:** 22
-- **Size:** 0.12 MB
-- **Last Modified:** 2026-03-13T11:35:26.368596
+- **Files:** 12
+- **Size:** 0.09 MB
+- **Last Modified:** 2026-03-15T13:53:29.551546
 - **Status:** success
 
-- **File Types:** .json: 6, .gexf: 4, .graphml: 4, .xml: 4, .pkl: 4
+- **File Types:** .json: 4, .gexf: 2, .graphml: 2, .xml: 2, .pkl: 2
 - **Key Files:**
   - export_results.json (0.0 MB)
   - export_summary.json (0.0 MB)
@@ -112,12 +112,12 @@
 
 ### ✅ 8 Visualization Output
 
-- **Files:** 202
-- **Size:** 25.48 MB
-- **Last Modified:** 2026-03-13T11:35:28.522603
+- **Files:** 128
+- **Size:** 19.46 MB
+- **Last Modified:** 2026-03-15T13:53:49.453049
 - **Status:** success
 
-- **File Types:** .png: 165, .json: 9, .csv: 28
+- **File Types:** .png: 91, .json: 9, .csv: 28
 - **Key Files:**
   - combined_analysis.png (0.38 MB)
   - simple_mdp_matrix_size_distribution.png (0.07 MB)
@@ -126,23 +126,23 @@
 
 ### ✅ 9 Advanced Viz Output
 
-- **Files:** 45
-- **Size:** 4.47 MB
-- **Last Modified:** 2026-03-13T11:35:42.013118
+- **Files:** 28
+- **Size:** 2.85 MB
+- **Last Modified:** 2026-03-15T13:54:00.244138
 - **Status:** success
 
-- **File Types:** .png: 26, .html: 4, .json: 1, .d2: 7, .svg: 7
+- **File Types:** .png: 15, .html: 2, .json: 1, .d2: 5, .svg: 5
 - **Key Files:**
-  - dynamic_perception_network_metrics.png (0.22 MB)
-  - dynamic_perception_interactive_dashboard.html (0.03 MB)
-  - dynamic_perception_pomdp_transitions.png (0.1 MB)
+  - continuous_navigation_network_metrics.png (0.28 MB)
+  - predictive_coding_agent_interactive_dashboard.html (0.03 MB)
+  - predictive_coding_agent_policy_visualization.png (0.08 MB)
 - **Dependencies:** Complete
 
 ### ✅ 10 Ontology Output
 
 - **Files:** 11
 - **Size:** 0.04 MB
-- **Last Modified:** 2026-03-13T11:35:43.037519
+- **Last Modified:** 2026-03-15T13:54:01.171910
 - **Status:** success
 
 - **File Types:** .json: 11
@@ -150,47 +150,37 @@
 
 ### ✅ 11 Render Output
 
-- **Files:** 276
-- **Size:** 1.12 MB
-- **Last Modified:** 2026-03-13T11:35:43.440619
+- **Files:** 198
+- **Size:** 0.95 MB
+- **Last Modified:** 2026-03-15T13:58:59.010415
 - **Status:** success
 
-- **File Types:** .md: 65, .json: 107, .jl: 18, .py: 46, .csv: 20, .txt: 20
+- **File Types:** .md: 57, .json: 75, .jl: 16, .py: 40, .csv: 5, .txt: 5
 - **Key Files:**
-  - render_processing_summary.json (0.05 MB)
+  - render_processing_summary.json (0.04 MB)
   - Simple MDP Agent_rxinfer.jl (0.01 MB)
   - Simple MDP Agent_numpyro.py (0.01 MB)
 - **Dependencies:** Complete
 
 ### ✅ 12 Execute Output
 
-- **Files:** 271
-- **Size:** 1.12 MB
-- **Last Modified:** 2026-03-13T10:54:35.170744
+- **Files:** 185
+- **Size:** 0.89 MB
+- **Last Modified:** 2026-03-15T13:59:14.479031
 - **Status:** success
 
-- **File Types:** .json: 199, .md: 1, .log: 56, .csv: 15
+- **File Types:** .json: 123, .md: 1, .log: 56, .csv: 5
 - **Dependencies:** Complete
 
-### ✅ 13 Llm Output
+### ❌ 13 Llm Output
 
-- **Files:** 38
-- **Size:** 0.35 MB
-- **Last Modified:** 2026-03-13T10:54:35.175297
-- **Status:** success
-
-- **File Types:** .json: 1, .md: 37
-- **Key Files:**
-  - llm_summary.md (0.0 MB)
-  - summarize_content.md (0.0 MB)
-  - explain_model.md (0.0 MB)
-- **Dependencies:** Complete
+*Step directory not found or empty*
 
 ### ✅ 14 Ml Integration Output
 
 - **Files:** 3
-- **Size:** 0.01 MB
-- **Last Modified:** 2026-03-13T11:35:45.299659
+- **Size:** 0.02 MB
+- **Last Modified:** 2026-03-15T13:59:16.982868
 - **Status:** success
 
 - **File Types:** .pkl: 2, .json: 1
@@ -198,28 +188,28 @@
 
 ### ✅ 15 Audio Output
 
-- **Files:** 78
-- **Size:** 44.77 MB
-- **Last Modified:** 2026-03-13T11:35:47.843753
+- **Files:** 34
+- **Size:** 18.86 MB
+- **Last Modified:** 2026-03-15T13:59:19.480144
 - **Status:** success
 
-- **File Types:** .wav: 76, .json: 1, .md: 1
+- **File Types:** .wav: 32, .json: 1, .md: 1
 - **Key Files:**
-  - dynamic_perception_ambient.wav (0.84 MB)
-  - factor_graph_model_tonal.wav (0.42 MB)
-  - stigmergic_swarm_ambient.wav (0.84 MB)
+  - hmm_baseline_tonal.wav (0.42 MB)
+  - two_state_bistable_rhythmic.wav (0.42 MB)
+  - multi_armed_bandit_ambient.wav (0.84 MB)
 - **Dependencies:** Complete
 
 ### ✅ 16 Analysis Output
 
 - **Files:** 412
-- **Size:** 36.88 MB
-- **Last Modified:** 2026-03-13T11:36:42.644681
+- **Size:** 37.35 MB
+- **Last Modified:** 2026-03-15T14:00:02.455131
 - **Status:** success
 
 - **File Types:** .json: 26, .md: 3, .png: 383
 - **Key Files:**
-  - analysis_results.json (0.28 MB)
+  - analysis_results.json (0.23 MB)
   - analysis_summary.md (0.0 MB)
 - **Dependencies:** Complete
 
@@ -227,7 +217,7 @@
 
 - **Files:** 2
 - **Size:** 0.0 MB
-- **Last Modified:** 2026-03-13T11:36:43.372723
+- **Last Modified:** 2026-03-15T14:00:03.134711
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -237,7 +227,7 @@
 
 - **Files:** 2
 - **Size:** 0.01 MB
-- **Last Modified:** 2026-03-13T11:36:43.757886
+- **Last Modified:** 2026-03-15T14:00:03.442368
 - **Status:** success
 
 - **File Types:** .json: 1, .md: 1
@@ -247,7 +237,7 @@
 
 - **Files:** 2
 - **Size:** 0.02 MB
-- **Last Modified:** 2026-03-13T11:36:44.108042
+- **Last Modified:** 2026-03-15T14:00:03.743220
 - **Status:** success
 
 - **File Types:** .md: 1, .json: 1
@@ -255,12 +245,12 @@
 
 ### ✅ 20 Website Output
 
-- **Files:** 38
-- **Size:** 4.68 MB
-- **Last Modified:** 2026-03-13T11:36:44.504742
+- **Files:** 25
+- **Size:** 3.01 MB
+- **Last Modified:** 2026-03-15T14:00:04.075779
 - **Status:** success
 
-- **File Types:** .html: 11, .json: 1, .png: 26
+- **File Types:** .html: 9, .json: 1, .png: 15
 - **Key Files:**
   - mcp.html (0.01 MB)
   - pipeline.html (0.02 MB)
@@ -270,40 +260,36 @@
 ### ✅ 21 Mcp Output
 
 - **Files:** 3
-- **Size:** 0.05 MB
-- **Last Modified:** 2026-03-13T11:36:47.551867
+- **Size:** 0.06 MB
+- **Last Modified:** 2026-03-15T14:00:07.280548
 - **Status:** success
 
 - **File Types:** .json: 3
 - **Key Files:**
   - mcp_processing_summary.json (0.0 MB)
-  - registered_tools.json (0.02 MB)
+  - registered_tools.json (0.03 MB)
 - **Dependencies:** Complete
 
 ### ✅ 22 Gui Output
 
 - **Files:** 6
-- **Size:** 0.09 MB
-- **Last Modified:** 2026-03-13T11:35:03.430141
+- **Size:** 0.08 MB
+- **Last Modified:** 2026-03-15T14:00:08.884310
 - **Status:** success
 
 - **File Types:** .json: 3, .md: 2, .html: 1
 - **Key Files:**
   - gui_processing_summary.json (0.0 MB)
-  - navigation.html (0.08 MB)
+  - navigation.html (0.06 MB)
 - **Dependencies:** Complete
 
-### ✅ 23 Report Output
+### ❌ 23 Report Output
 
-- **Files:** 5
-- **Size:** 0.44 MB
-- **Last Modified:** 2026-03-13T11:35:04.124009
-- **Status:** success
+- **Files:** 0
+- **Size:** 0.0 MB
+- **Last Modified:** None
+- **Status:** generating
 
-- **File Types:** .json: 3, .html: 1, .md: 1
-- **Key Files:**
-  - report_summary.json (0.39 MB)
-  - comprehensive_analysis_report.html (0.03 MB)
 - **Dependencies:** Complete
 
 
@@ -311,21 +297,21 @@
 
 | File Type | Count | Total Size (MB) |
 |-----------|-------|-----------------|
-| .json | 442 | 3.41 |
-| .md | 152 | 0.36 |
-| .log | 57 | 0.1 |
-| .txt | 21 | 0.03 |
+| .json | 328 | 2.31 |
+| .md | 106 | 0.25 |
+| .log | 57 | 0.14 |
+| .txt | 6 | 0.02 |
 | .bnf | 19 | 0.12 |
 | .lean | 19 | 0.12 |
 | .scala | 19 | 0.11 |
-| .pkl | 44 | 0.39 |
+| .pkl | 42 | 0.38 |
 | .z | 19 | 0.12 |
 | .xsd | 19 | 0.13 |
 | .v | 19 | 0.11 |
-| .xml | 23 | 0.21 |
+| .xml | 21 | 0.21 |
 | .als | 19 | 0.18 |
 | .proto | 19 | 0.15 |
-| .hs | 19 | 0.13 |
+| .hs | 19 | 0.12 |
 | .ebnf | 19 | 0.12 |
 | .agda | 19 | 0.1 |
 | .asn1 | 19 | 0.17 |
@@ -333,24 +319,24 @@
 | .tla | 19 | 0.1 |
 | .max | 19 | 0.12 |
 | .yaml | 19 | 0.13 |
-| .py | 65 | 0.62 |
-| .gexf | 4 | 0.0 |
-| .graphml | 4 | 0.01 |
-| .png | 600 | 70.29 |
-| .csv | 63 | 0.02 |
-| .html | 17 | 0.72 |
-| .d2 | 7 | 0.0 |
-| .svg | 7 | 0.15 |
-| .jl | 18 | 0.22 |
-| .wav | 76 | 44.75 |
+| .py | 59 | 0.57 |
+| .gexf | 2 | 0.0 |
+| .graphml | 2 | 0.0 |
+| .png | 504 | 61.76 |
+| .csv | 38 | 0.01 |
+| .html | 12 | 0.49 |
+| .d2 | 5 | 0.0 |
+| .svg | 5 | 0.13 |
+| .jl | 16 | 0.2 |
+| .wav | 32 | 18.84 |
 
 ## 🎨 Visualizations
 
-**Total Visualizations:** 213
+**Total Visualizations:** 122
 
 ### 8 Visualization
 
-**Count:** 165
+**Count:** 91
 
 **Files:**
 - [combined_analysis.png](../8_visualization_output/combined_analysis.png) (0.38 MB)
@@ -362,40 +348,38 @@
 - [simple_mdp_A_heatmap.png](../8_visualization_output/simple_mdp/simple_mdp_A_heatmap.png) (0.09 MB)
 - [simple_mdp_B_analysis.png](../8_visualization_output/simple_mdp/simple_mdp_B_analysis.png) (0.08 MB)
 - [simple_mdp_variable_type_distribution.png](../8_visualization_output/simple_mdp/simple_mdp_variable_type_distribution.png) (0.26 MB)
-- [simple_mdp_C_heatmap.png](../8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png) (0.07 MB)
-- ... and 155 more
+- [simple_mdp_C_heatmap.png](../8_visualization_output/simple_mdp/simple_mdp_C_heatmap.png) (0.08 MB)
+- ... and 81 more
 
 ### 9 Advanced Viz
 
-**Count:** 37
+**Count:** 22
 
 **Files:**
-- [dynamic_perception_network_metrics.png](../9_advanced_viz_output/dynamic_perception_network_metrics.png) (0.22 MB)
-- [dynamic_perception_pomdp_transitions.png](../9_advanced_viz_output/dynamic_perception_pomdp_transitions.png) (0.1 MB)
 - [continuous_navigation_network_metrics.png](../9_advanced_viz_output/continuous_navigation_network_metrics.png) (0.28 MB)
-- [static_perception_3d_visualization.png](../9_advanced_viz_output/static_perception_3d_visualization.png) (0.17 MB)
 - [predictive_coding_agent_policy_visualization.png](../9_advanced_viz_output/predictive_coding_agent_policy_visualization.png) (0.08 MB)
-- [dynamic_perception_3d_visualization.png](../9_advanced_viz_output/dynamic_perception_3d_visualization.png) (0.18 MB)
 - [predictive_coding_agent_network_metrics.png](../9_advanced_viz_output/predictive_coding_agent_network_metrics.png) (0.29 MB)
-- [static_perception_network_metrics.png](../9_advanced_viz_output/static_perception_network_metrics.png) (0.19 MB)
 - [continuous_navigation_policy_visualization.png](../9_advanced_viz_output/continuous_navigation_policy_visualization.png) (0.06 MB)
 - [continuous_navigation_matrix_correlations.png](../9_advanced_viz_output/continuous_navigation_matrix_correlations.png) (0.15 MB)
-- ... and 27 more
+- [predictive_coding_agent_matrix_correlations.png](../9_advanced_viz_output/predictive_coding_agent_matrix_correlations.png) (0.15 MB)
+- [predictive_coding_agent_statistical_analysis.png](../9_advanced_viz_output/predictive_coding_agent_statistical_analysis.png) (0.23 MB)
+- [predictive_coding_agent_3d_visualization.png](../9_advanced_viz_output/predictive_coding_agent_3d_visualization.png) (0.2 MB)
+- [continuous_navigation_3d_visualization.png](../9_advanced_viz_output/continuous_navigation_3d_visualization.png) (0.18 MB)
+- [continuous_navigation_statistical_analysis.png](../9_advanced_viz_output/continuous_navigation_statistical_analysis.png) (0.22 MB)
+- ... and 12 more
 
 ### 20 Website
 
-**Count:** 11
+**Count:** 9
 
 **Files:**
 - [mcp.html](../20_website_output/mcp.html) (0.01 MB)
 - [pipeline.html](../20_website_output/pipeline.html) (0.02 MB)
 - [index.html](../20_website_output/index.html) (0.02 MB)
-- [analysis.html](../20_website_output/analysis.html) (0.22 MB)
+- [analysis.html](../20_website_output/analysis.html) (0.16 MB)
 - [gnn_files.html](../20_website_output/gnn_files.html) (0.01 MB)
-- [visualization.html](../20_website_output/visualization.html) (0.02 MB)
-- [reports.html](../20_website_output/reports.html) (0.1 MB)
-- [dynamic_perception_interactive_dashboard.html](../20_website_output/assets/dynamic_perception_interactive_dashboard.html) (0.03 MB)
+- [visualization.html](../20_website_output/visualization.html) (0.01 MB)
+- [reports.html](../20_website_output/reports.html) (0.07 MB)
 - [predictive_coding_agent_interactive_dashboard.html](../20_website_output/assets/predictive_coding_agent_interactive_dashboard.html) (0.03 MB)
-- [static_perception_interactive_dashboard.html](../20_website_output/assets/static_perception_interactive_dashboard.html) (0.02 MB)
-- ... and 1 more
+- [continuous_navigation_interactive_dashboard.html](../20_website_output/assets/continuous_navigation_interactive_dashboard.html) (0.03 MB)
 

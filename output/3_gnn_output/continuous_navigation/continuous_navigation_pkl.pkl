@@ -6,7 +6,7 @@
 - Actions: 2D velocity commands (dx, dy)
 - Uses Laplace approximation for Gaussian belief updating
 - Generalized coordinates of motion for smooth trajectories
-/// Generated: 2026-03-13T18:17:54.330315
+/// Generated: 2026-03-15T13:53:24.859357
 /// Enhanced by GNN PKL Serializer
 ///
 

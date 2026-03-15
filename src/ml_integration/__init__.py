@@ -3,6 +3,7 @@ ML Integration module for GNN Processing Pipeline.
 
 This module provides machine learning model integration capabilities.
 """
+from typing import Dict, Any
 
 __version__ = "1.1.3"
 FEATURES = {
@@ -16,7 +17,7 @@ FEATURES = {
 from .processor import process_ml_integration
 
 
-def check_ml_frameworks():
+def check_ml_frameworks() -> Dict[str, Any]:
     """Check availability of ML frameworks."""
     import logging
     frameworks = {}

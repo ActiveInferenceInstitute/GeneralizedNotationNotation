@@ -39,7 +39,7 @@ class StepInfo:
     phase: str = "core"
     module_path: str = ""
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         if self.depends_on is None:
             self.depends_on = []
 
@@ -49,7 +49,7 @@ def pipeline_step(
     step_num: int,
     depends_on: List[int] = None,
     phase: str = "core",
-):
+) -> Callable:
     """
     Decorator to register a function as a pipeline step.
 

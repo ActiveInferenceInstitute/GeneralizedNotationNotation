@@ -15,6 +15,7 @@ This module provides comprehensive testing for:
 
 import pytest
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Test markers
 pytestmark = [pytest.mark.pipeline, pytest.mark.safe_to_fail, pytest.mark.fast]
@@ -24,7 +25,7 @@ class TestPipelineDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_discovery_imports(self):
+    def test_discovery_imports(self) -> None:
         """Test that pipeline discovery can be imported."""
         try:
             from src.pipeline import discovery
@@ -36,7 +37,7 @@ class TestPipelineDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_get_pipeline_scripts(self, project_root):
+    def test_get_pipeline_scripts(self, project_root: Any) -> None:
         """Test pipeline script discovery."""
         try:
             from src.pipeline.discovery import get_pipeline_scripts
@@ -63,7 +64,7 @@ class TestPipelineDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_discover_steps(self, project_root):
+    def test_discover_steps(self, project_root: Any) -> None:
         """Test step discovery using available function."""
         try:
             from src.pipeline.discovery import get_pipeline_scripts
@@ -92,7 +93,7 @@ class TestPipelineStepTemplate:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step_template_imports(self):
+    def test_step_template_imports(self) -> None:
         """Test that step template can be imported."""
         from src.pipeline import pipeline_step_template
         assert hasattr(pipeline_step_template, 'validate_step_requirements')
@@ -105,7 +106,7 @@ class TestPipelineStepTemplate:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_step_requirements(self):
+    def test_validate_step_requirements(self) -> None:
         """Test validate_step_requirements function."""
         from src.pipeline.pipeline_step_template import validate_step_requirements
 
@@ -115,7 +116,7 @@ class TestPipelineStepTemplate:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_process_single_file(self, isolated_temp_dir):
+    def test_process_single_file(self, isolated_temp_dir: Any) -> None:
         """Test process_single_file function."""
         from src.pipeline.pipeline_step_template import process_single_file
 
@@ -136,7 +137,7 @@ class TestPipelineValidation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validation_imports(self):
+    def test_validation_imports(self) -> None:
         """Test that pipeline validation can be imported."""
         from src.pipeline import pipeline_validation
         assert hasattr(pipeline_validation, 'validate_module_imports')
@@ -149,7 +150,7 @@ class TestPipelineValidation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_module_imports(self, project_root):
+    def test_validate_module_imports(self, project_root: Any) -> None:
         """Test validate_module_imports function."""
         from src.pipeline.pipeline_validation import validate_module_imports
 
@@ -161,7 +162,7 @@ class TestPipelineValidation:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_dependency_cycles(self):
+    def test_validate_dependency_cycles(self) -> None:
         """Test validate_dependency_cycles function."""
         from src.pipeline.pipeline_validation import validate_dependency_cycles
 
@@ -175,7 +176,7 @@ class TestVerifyPipeline:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_verify_imports(self):
+    def test_verify_imports(self) -> None:
         """Test that verify pipeline can be imported."""
         from src.pipeline import verify_pipeline
         # Check for actual functions in verify_pipeline
@@ -187,7 +188,7 @@ class TestVerifyPipeline:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_verify_module_imports(self):
+    def test_verify_module_imports(self) -> None:
         """Test verify_module_imports function."""
         from src.pipeline.verify_pipeline import verify_module_imports
 
@@ -197,7 +198,7 @@ class TestVerifyPipeline:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_verify_step_files(self):
+    def test_verify_step_files(self) -> None:
         """Test verify_step_files function."""
         from src.pipeline.verify_pipeline import verify_step_files
 
@@ -210,7 +211,7 @@ class TestUtilsMigrationHelper:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_migration_imports(self):
+    def test_migration_imports(self) -> None:
         """Test that migration helper can be imported."""
         from src.utils import migration_helper
         assert hasattr(migration_helper, 'PipelineMigrationHelper')
@@ -220,7 +221,7 @@ class TestUtilsMigrationHelper:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_migration_helper_class(self, project_root):
+    def test_migration_helper_class(self, project_root: Any) -> None:
         """Test PipelineMigrationHelper class functionality."""
         from src.utils.migration_helper import PipelineMigrationHelper
 
@@ -233,7 +234,7 @@ class TestUtilsMigrationHelper:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_analyze_module(self, project_root):
+    def test_analyze_module(self, project_root: Any) -> None:
         """Test analyze_module function."""
         from src.utils.migration_helper import PipelineMigrationHelper
 
@@ -251,7 +252,7 @@ class TestUtilsPipelineMonitor:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_monitor_imports(self):
+    def test_monitor_imports(self) -> None:
         """Test that pipeline monitor can be imported."""
         from src.utils import pipeline_monitor
         assert hasattr(pipeline_monitor, 'PipelineMonitor')
@@ -260,7 +261,7 @@ class TestUtilsPipelineMonitor:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_pipeline_monitor_class(self):
+    def test_pipeline_monitor_class(self) -> None:
         """Test PipelineMonitor class functionality."""
         from src.utils.pipeline_monitor import PipelineMonitor
 
@@ -275,7 +276,7 @@ class TestUtilsPipelineMonitor:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_monitor_step_execution(self):
+    def test_monitor_step_execution(self) -> None:
         """Test step monitoring functionality."""
         from src.utils.pipeline_monitor import PipelineMonitor
 
@@ -296,7 +297,7 @@ class TestUtilsResourceManager:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_resource_manager_imports(self):
+    def test_resource_manager_imports(self) -> None:
         """Test that resource manager can be imported."""
         try:
             from src.utils import resource_manager
@@ -314,7 +315,7 @@ class TestUtilsResourceManager:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_resource_manager_class(self):
+    def test_resource_manager_class(self) -> None:
         """Test resource management functions."""
         try:
             from src.utils.resource_manager import get_system_info, get_current_memory_usage
@@ -335,7 +336,7 @@ class TestUtilsResourceManager:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_resource_tracker(self):
+    def test_resource_tracker(self) -> None:
         """Test ResourceTracker class functionality."""
         from src.utils.resource_manager import ResourceTracker
 
@@ -358,7 +359,7 @@ class TestUtilsScriptValidator:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_script_validator_imports(self):
+    def test_script_validator_imports(self) -> None:
         """Test that script validator can be imported."""
         from src.utils import script_validator
         assert hasattr(script_validator, 'PipelineScriptValidator')
@@ -369,7 +370,7 @@ class TestUtilsScriptValidator:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_pipeline_script_validator_class(self, project_root):
+    def test_pipeline_script_validator_class(self, project_root: Any) -> None:
         """Test PipelineScriptValidator class functionality."""
         from src.utils.script_validator import PipelineScriptValidator
 
@@ -382,7 +383,7 @@ class TestUtilsScriptValidator:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_validate_pipeline_scripts(self, project_root):
+    def test_validate_pipeline_scripts(self, project_root: Any) -> None:
         """Test validate_pipeline_scripts function."""
         from src.utils.script_validator import validate_pipeline_scripts
 
@@ -399,7 +400,7 @@ class TestPipelineInfrastructureIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_discovery_and_validation_integration(self, project_root):
+    def test_discovery_and_validation_integration(self, project_root: Any) -> None:
         """Test integration between discovery and validation."""
         from src.pipeline.discovery import get_pipeline_scripts
         from src.pipeline.pipeline_validation import validate_module_imports
@@ -420,7 +421,7 @@ class TestPipelineInfrastructureIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_monitoring_and_resource_management_integration(self):
+    def test_monitoring_and_resource_management_integration(self) -> None:
         """Test integration between monitoring and resource management."""
         from src.utils.pipeline_monitor import PipelineMonitor
         from src.utils.resource_manager import ResourceTracker
@@ -445,7 +446,7 @@ class TestPipelineInfrastructureIntegration:
 
 # Performance and completeness tests
 @pytest.mark.slow
-def test_pipeline_infrastructure_performance():
+def test_pipeline_infrastructure_performance() -> None:
     """Test performance characteristics of pipeline infrastructure."""
     import time
 
@@ -457,7 +458,7 @@ def test_pipeline_infrastructure_performance():
     # Should import reasonably quickly
     assert import_time < 10.0, f"Infrastructure modules took {import_time:.2f}s to import"
 
-def test_pipeline_infrastructure_completeness():
+def test_pipeline_infrastructure_completeness() -> None:
     """Test that pipeline infrastructure modules have expected functionality."""
     expected_modules = [
         ('pipeline', ['discovery', 'pipeline_validation', 'verify_pipeline']),

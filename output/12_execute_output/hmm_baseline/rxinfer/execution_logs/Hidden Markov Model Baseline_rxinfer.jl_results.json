@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/hmm_baseline/rxinfer/Hidden Markov Model Baseline_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 22.867767,
-  "timestamp": "2026-03-13T14:18:47.935087",
+  "execution_time": 18.416741,
+  "timestamp": "2026-03-15T13:57:22.379354",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1547,
     "stderr_length": 220,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/rxinfer"
+    "output_directory": "output/12_execute_output/hmm_baseline/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/hmm_baseline/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "output/12_execute_output/hmm_baseline/rxinfer/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

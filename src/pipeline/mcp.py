@@ -186,7 +186,7 @@ def get_pipeline_config_info(mcp_instance_ref) -> Dict[str, Any]:
             "error": str(e)
         }
 
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> None:
     """
     Register pipeline management tools with the MCP server.
     
@@ -195,31 +195,43 @@ def register_tools(mcp_instance):
     """
     logger.info("Registering pipeline MCP tools")
 
+    def get_pipeline_steps_mcp() -> Dict[str, Any]:
+        return get_pipeline_steps(mcp_instance)
+
+    def get_pipeline_status_mcp() -> Dict[str, Any]:
+        return get_pipeline_status(mcp_instance)
+
+    def validate_pipeline_dependencies_mcp() -> Dict[str, Any]:
+        return validate_pipeline_dependencies(mcp_instance)
+
+    def get_pipeline_config_info_mcp() -> Dict[str, Any]:
+        return get_pipeline_config_info(mcp_instance)
+
     # Register tools
     mcp_instance.register_tool(
         name="get_pipeline_steps",
-        function=functools.partial(get_pipeline_steps, mcp_instance),
+        function=get_pipeline_steps_mcp,
         schema={},
         description="Get information about all available pipeline steps, their metadata, and dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_status",
-        function=functools.partial(get_pipeline_status, mcp_instance),
+        function=get_pipeline_status_mcp,
         schema={},
         description="Get current pipeline execution status, recent logs, and execution statistics."
     )
 
     mcp_instance.register_tool(
         name="validate_pipeline_dependencies",
-        function=functools.partial(validate_pipeline_dependencies, mcp_instance),
+        function=validate_pipeline_dependencies_mcp,
         schema={},
         description="Validate pipeline step dependencies and identify missing or circular dependencies."
     )
 
     mcp_instance.register_tool(
         name="get_pipeline_config_info",
-        function=functools.partial(get_pipeline_config_info, mcp_instance),
+        function=get_pipeline_config_info_mcp,
         schema={},
         description="Get detailed pipeline configuration information and settings."
     )

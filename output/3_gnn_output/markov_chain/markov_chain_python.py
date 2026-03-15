@@ -7,7 +7,7 @@ This model describes a minimal discrete-time Markov Chain:
 - Observations = states directly (identity mapping for monitoring).
 - Stationary transition matrix with realistic weather dynamics.
 - Tests the simplest model structure: passive state evolution with no control.
-Generated: 2026-03-13T18:17:53.763672
+Generated: 2026-03-15T13:53:23.916186
 """
 
 import numpy as np

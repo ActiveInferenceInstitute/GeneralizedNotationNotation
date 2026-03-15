@@ -8,6 +8,7 @@ This file contains comprehensive tests for the report module functionality.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -20,7 +21,7 @@ class TestReportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_module_imports(self):
+    def test_report_module_imports(self) -> None:
         """Test that report module can be imported."""
         try:
             import report
@@ -33,7 +34,7 @@ class TestReportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_generator_instantiation(self):
+    def test_report_generator_instantiation(self) -> None:
         """Test ReportGenerator class instantiation."""
         try:
             from report import ReportGenerator
@@ -46,7 +47,7 @@ class TestReportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_formatter_instantiation(self):
+    def test_report_formatter_instantiation(self) -> None:
         """Test ReportFormatter class instantiation."""
         try:
             from report import ReportFormatter
@@ -59,7 +60,7 @@ class TestReportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_module_info(self):
+    def test_report_module_info(self) -> None:
         """Test report module information retrieval."""
         try:
             from report import get_module_info
@@ -73,7 +74,7 @@ class TestReportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_formats(self):
+    def test_report_formats(self) -> None:
         """Test report formats retrieval."""
         try:
             from report import get_supported_formats
@@ -93,7 +94,7 @@ class TestReportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_generation(self, comprehensive_test_data):
+    def test_report_generation(self, comprehensive_test_data: Any) -> None:
         """Test report generation functionality."""
         try:
             from report import ReportGenerator
@@ -108,7 +109,7 @@ class TestReportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_formatting(self):
+    def test_report_formatting(self) -> None:
         """Test report formatting functionality."""
         try:
             from report import ReportFormatter
@@ -124,7 +125,7 @@ class TestReportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_report_validation(self):
+    def test_report_validation(self) -> None:
         """Test report validation functionality."""
         try:
             from report import validate_report
@@ -139,7 +140,7 @@ class TestReportIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_report_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
+    def test_report_pipeline_integration(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test report module integration with pipeline."""
         try:
             from report import ReportGenerator
@@ -158,7 +159,7 @@ class TestReportIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_report_mcp_integration(self):
+    def test_report_mcp_integration(self) -> None:
         """Test report MCP integration."""
         try:
             from report.mcp import register_tools
@@ -168,7 +169,7 @@ class TestReportIntegration:
             pytest.skip("Report MCP not available")
 
 
-def test_report_module_completeness():
+def test_report_module_completeness() -> None:
     """Test that report module has all required components."""
     required_components = [
         'ReportGenerator',
@@ -187,7 +188,7 @@ def test_report_module_completeness():
 
 
 @pytest.mark.slow
-def test_report_module_performance():
+def test_report_module_performance() -> None:
     """Test report module performance characteristics."""
     try:
         from report import ReportGenerator

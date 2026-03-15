@@ -96,7 +96,8 @@ class GNNExecutor:
         self.execution_log = []
 
     def execute_gnn_model(self, model_path: str, execution_type: str = "pymdp",
-                         options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+                         options: Optional[Dict[str, Any]] = None,
+                         timeout: Optional[int] = None) -> Dict[str, Any]:
         """
         Execute a GNN model with the specified execution type.
         
@@ -112,13 +113,13 @@ class GNNExecutor:
             start_time = time.time()
 
             if execution_type == "pymdp":
-                result = self._execute_pymdp_script(model_path, options)
+                result = self._execute_pymdp_script(model_path, options, timeout=timeout)
             elif execution_type == "rxinfer":
-                result = self._execute_rxinfer_config(model_path, options)
+                result = self._execute_rxinfer_config(model_path, options, timeout=timeout)
             elif execution_type == "discopy":
-                result = self._execute_discopy_diagram(model_path, options)
+                result = self._execute_discopy_diagram(model_path, options, timeout=timeout)
             elif execution_type == "jax":
-                result = self._execute_jax_script(model_path, options)
+                result = self._execute_jax_script(model_path, options, timeout=timeout)
             else:
                 result = {
                     "success": False,
@@ -214,11 +215,11 @@ class GNNExecutor:
 
         return str(output_file)
 
-    def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def _execute_pymdp_script(self, script_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
         """Execute a PyMDP script with graceful recovery for tests."""
         try:
             result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=60)
+                                  capture_output=True, text=True, timeout=timeout or 60)
             return {
                 "success": result.returncode == 0,
                 "stdout": result.stdout,
@@ -234,12 +235,12 @@ class GNNExecutor:
                 "return_code": 0
             }
 
-    def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def _execute_rxinfer_config(self, config_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
         """Execute an RxInfer.jl configuration."""
         try:
             # This would typically involve calling Julia
             result = subprocess.run(["julia", config_path],  # nosec B607 B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=300)
+                                  capture_output=True, text=True, timeout=timeout or 300)
 
             return {
                 "success": result.returncode == 0,
@@ -258,11 +259,11 @@ class GNNExecutor:
                 "error": str(e)
             }
 
-    def _execute_discopy_diagram(self, diagram_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def _execute_discopy_diagram(self, diagram_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
         """Execute a DisCoPy diagram."""
         try:
             result = subprocess.run([sys.executable, diagram_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=300)
+                                  capture_output=True, text=True, timeout=timeout or 300)
 
             return {
                 "success": result.returncode == 0,
@@ -281,11 +282,11 @@ class GNNExecutor:
                 "error": str(e)
             }
 
-    def _execute_jax_script(self, script_path: str, options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def _execute_jax_script(self, script_path: str, options: Optional[Dict[str, Any]] = None, timeout: Optional[int] = None) -> Dict[str, Any]:
         """Execute a JAX script."""
         try:
             result = subprocess.run([sys.executable, script_path],  # nosec B603 -- subprocess calls with controlled/trusted input
-                                  capture_output=True, text=True, timeout=300)
+                                  capture_output=True, text=True, timeout=timeout or 300)
 
             return {
                 "success": result.returncode == 0,
@@ -321,7 +322,8 @@ ExecutionEngine = GNNExecutor
 
 
 def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
-                     options: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+                     options: Optional[Dict[str, Any]] = None,
+                     timeout: Optional[int] = None) -> Dict[str, Any]:
     """
     Convenience function to execute a GNN model.
     
@@ -334,7 +336,7 @@ def execute_gnn_model(model_path: str, execution_type: str = "pymdp",
         Dictionary with execution results
     """
     executor = GNNExecutor()
-    result = executor.execute_gnn_model(model_path, execution_type, options)
+    result = executor.execute_gnn_model(model_path, execution_type, options, timeout=timeout)
     result.setdefault("status", "SUCCESS" if result.get("success") else "FAILED")
     return result
 

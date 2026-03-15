@@ -10,7 +10,7 @@ Extracted from mcp.py for maintainability.
 import json
 import sys
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, Callable
 
 logger = logging.getLogger("mcp")
 
@@ -61,6 +61,21 @@ class MCPServer:
         self.running = True
         logger.info("MCP server started")
         return True
+
+    def register_tool(self, name: str, func: Callable, schema: Dict[str, Any], description: str) -> bool:
+        """
+        Register a tool with the server.
+        
+        Args:
+            name: Name of the tool
+            func: Function to execute
+            schema: JSON schema for arguments
+            description: Description of the tool
+            
+        Returns:
+            True if registration succeeded
+        """
+        return self.mcp.register_tool(name, func, schema, description)
 
     def stop(self) -> bool:
         """Stop the MCP server."""

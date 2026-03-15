@@ -10,13 +10,13 @@
     "all_valid": true
   },
   "metrics": {
-    "mean_belief_entropy": 7.401486830834375e-18,
+    "mean_belief_entropy": 1.4802973661668754e-17,
     "final_belief_entropy": -0.0,
     "mean_confidence": 0.9999999999999999,
     "final_confidence": 0.9999999999999999,
     "action_distribution": {
-      "0": 11,
-      "1": 4
+      "0": 6,
+      "1": 9
     },
     "mean_efe": 1.0986122886681087
   },

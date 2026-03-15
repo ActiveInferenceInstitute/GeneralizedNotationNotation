@@ -1,8 +1,8 @@
 
 # Processed by GNN Pipeline Template
-# Original file: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md
-# Processed on: 2026-03-13T11:27:59.215160
-# Options: {'verbose': True, 'recursive': True, 'example_param': 'default_value'}
+# Original file: input/gnn_files/discrete/two_state_bistable.md
+# Processed on: 2026-03-15T13:52:34.413846
+# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Two-State Bistable POMDP
 

@@ -35,24 +35,27 @@ For full functionality including Active Inference, machine learning, and visuali
 
 ```bash
 # Install all optional packages
-python3 src/pipeline/install_optional_packages.py --all --verbose
+uv sync --all-extras
 ```
 
 Or install specific groups:
 
 ```bash
-# Install just JAX and PyMDP for Active Inference
-python3 src/pipeline/install_optional_packages.py --groups jax,pymdp --verbose
+# Install just Active Inference (JAX + PyMDP)
+uv sync --extra active-inference
 
 # Install visualization libraries
-python3 src/pipeline/install_optional_packages.py --groups visualization --verbose
+uv sync --extra visualization
+
+# Install LLM integration
+uv sync --extra llm
 ```
 
 ## Optional Package Groups
 
 The GNN pipeline supports the following optional package groups:
 
-### 1. **jax** - High-Performance Computing
+### 1. **active-inference** - High-Performance Computing
 
 - **Packages**: `jax[cpu]`, `jaxlib`, `optax`, `flax`
 - **Use case**: Fast numerical computing, automatic differentiation, JIT compilation
@@ -60,7 +63,7 @@ The GNN pipeline supports the following optional package groups:
 - **Installation**:
 
   ```bash
-  python3 src/pipeline/install_optional_packages.py --groups jax
+  uv sync --extra active-inference
   ```
 
 ### 2. **pymdp** - Active Inference Framework
@@ -68,11 +71,7 @@ The GNN pipeline supports the following optional package groups:
 - **Packages**: `inferactively-pymdp`
 - **Use case**: Active Inference agents, POMDP modeling, free energy principle
 - **Size**: ~50MB
-- **Installation**:
-
-  ```bash
-  python3 src/pipeline/install_optional_packages.py --groups pymdp
-  ```
+- **Note**: Already included in core dependencies (`pyproject.toml`)
 
 - **PyMDP Example**:
 
@@ -96,88 +95,80 @@ The GNN pipeline supports the following optional package groups:
 
 ### 3. **visualization** - Data Visualization
 
-- **Packages**: `plotly`, `altair`, `seaborn`
+- **Packages**: `plotly`, `seaborn`, `bokeh`, `h5py`
 - **Use case**: Interactive plots, statistical graphics, dashboards
 - **Size**: ~100MB
 - **Installation**:
 
   ```bash
-  python3 src/pipeline/install_optional_packages.py --groups visualization
+  uv sync --extra visualization
   ```
 
 ### 4. **audio** - Audio Processing & Sonification
 
-- **Packages**: `librosa`, `soundfile`, `pedalboard`
+- **Packages**: `librosa`, `soundfile`, `pedalboard`, `pydub`, `pyaudio`
 - **Use case**: Audio analysis, sonification of model dynamics
 - **Size**: ~150MB
 - **Installation**:
 
   ```bash
-  python3 src/pipeline/install_optional_packages.py --groups audio
+  uv sync --extra audio
   ```
 
 ### 5. **llm** - LLM Integration
 
-- **Packages**: `openai`, `anthropic`
+- **Packages**: `openai`, `ollama`, `python-dotenv`, `aiohttp`
 - **Use case**: AI-enhanced analysis, model interpretation
 - **Size**: ~50MB
 - **Installation**:
 
   ```bash
-  python3 src/pipeline/install_optional_packages.py --groups llm
+  uv sync --extra llm
   ```
 
-### 6. **ml** - Machine Learning
+### 6. **ml-ai** - Machine Learning
 
-- **Packages**: `torch`, `torchvision`, `transformers`
+- **Packages**: `torch`, `torchvision`, `torchaudio`, `transformers`, `scipy`, `scikit-learn`
 - **Use case**: Deep learning, neural networks, model training
 - **Size**: ~2GB
 - **Installation**:
 
   ```bash
-  python3 src/pipeline/install_optional_packages.py --groups ml
+  uv sync --extra ml-ai
   ```
 
 ## Installation Methods
 
-**Note**: The optional package installation script is located in `src/pipeline/` for better organization with other pipeline utilities.
+**Note**: The recommended installation method uses UV's built-in extras system via `pyproject.toml`.
 
-### Method 1: Using Standalone Script (Recommended)
+### Method 1: Using UV Extras (Recommended)
 
 ```bash
-# List available groups
-python3 src/pipeline/install_optional_packages.py --list
+# List available groups (shown in pyproject.toml [project.optional-dependencies])
+# Groups: dev, api, active-inference, probabilistic-programming, ml-ai, llm,
+#         visualization, audio, gui, graphs, research, scaling, database, all
 
 # Install all optional packages
-python3 src/pipeline/install_optional_packages.py --all
+uv sync --all-extras
 
 # Install specific groups
-python3 src/pipeline/install_optional_packages.py --groups jax,pymdp,visualization
+uv sync --extra active-inference --extra visualization --extra llm
 ```
 
-### Method 2: Using Setup Module Directly
+### Method 2: Using Setup Module
 
-```python
-import sys
-sys.path.insert(0, 'src')
-
-from setup.setup import install_optional_package_group
-
-# Install a specific group
-install_optional_package_group('pymdp', verbose=True)
-install_optional_package_group('jax', verbose=True)
+```bash
+# Install via the setup step
+python3 src/1_setup.py --verbose
 ```
 
 ### Method 3: Using UV Directly
 
 ```bash
-# Activate the virtual environment first
-source .venv/bin/activate
-
 # Install packages using UV
 uv pip install inferactively-pymdp
-uv pip install jax[cpu] optax flax
-uv pip install plotly altair seaborn
+uv pip install "jax[cpu]" optax flax
+uv pip install plotly seaborn bokeh
 ```
 
 ## Platform-Specific Notes
@@ -297,13 +288,13 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ### Core Dependencies
 
-- Python: 3.11.2
-- numpy: 1.26.4
+- Python: 3.11+
+- numpy: 2.4.2
 - scipy: 1.16.2
-- matplotlib: 3.10.7
-- pandas: 2.3.3
+- matplotlib: 3.10.3
+- pandas: 2.3.0
 - networkx: 3.5
-- pytest: 7.4.4
+- pytest: 8.4.2
 
 ### Optional Dependencies
 
@@ -324,7 +315,7 @@ uv pip install inferactively-pymdp --python .venv/bin/python
 
 ---
 
-**Last Updated**: March 3, 2026
+**Last Updated**: 2026-03-15
 **Pipeline Version**: 1.3.0
 **Status**: ✅ Production Ready (Linux & macOS)
 **Latest Validation**: 100% Success (25/25 steps)

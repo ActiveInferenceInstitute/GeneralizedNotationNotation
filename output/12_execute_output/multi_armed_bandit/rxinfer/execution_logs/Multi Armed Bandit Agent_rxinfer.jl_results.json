@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/multi_armed_bandit/rxinfer/Multi Armed Bandit Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 16.883468,
-  "timestamp": "2026-03-13T14:17:31.796969",
+  "execution_time": 15.257683,
+  "timestamp": "2026-03-15T13:56:14.553846",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1626,
     "stderr_length": 220,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/rxinfer"
+    "output_directory": "output/12_execute_output/multi_armed_bandit/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/multi_armed_bandit/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "output/12_execute_output/multi_armed_bandit/rxinfer/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

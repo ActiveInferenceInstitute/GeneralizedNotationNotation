@@ -3,7 +3,7 @@
 **Version**: v2.0.0  
 **Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Pipeline Steps**: 25 · **Renderers**: 9/9 · **Tests**: 1,522+  
 
 Generalized Notation Notation (GNN) is a text-based language designed to standardize the representation of Active Inference generative models, improving clarity, reproducibility, and interoperability across domains. It defines a concise ASCII syntax for model components, a structured file format, and supports multiple modalities—textual, graphical, and executable—facilitating seamless communication among researchers and tools.
 
@@ -319,6 +319,8 @@ By providing a rigorous yet flexible notation, GNN fosters reproducible, accessi
 - **[NumPyro Integration](implementations/numpyro.md)**: Continuous probabilistic programming via MCMC
 - **[JAX Integration](implementations/jax.md)**: High-performance vector-space compilation
 - **[ActiveInference.jl](implementations/activeinference_jl.md)**: Discrete-state Julia POMDP simulation
+- **[Stan Integration](implementations/stan.md)**: Statistical modeling and probabilistic programming
+- **[CatColab Integration](../catcolab/catcolab_gnn.md)**: Categorical compositional modeling
 
 ### Pipeline and Tools
 

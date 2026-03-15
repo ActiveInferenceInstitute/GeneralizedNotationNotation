@@ -1,8 +1,8 @@
 
 # Processed by GNN Pipeline Template
-# Original file: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/precision/precision_weighted.md
-# Processed on: 2026-03-13T11:27:59.216049
-# Options: {'verbose': True, 'recursive': True, 'example_param': 'default_value'}
+# Original file: input/gnn_files/precision/precision_weighted.md
+# Processed on: 2026-03-15T13:52:34.414890
+# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Precision-Weighted Active Inference Agent
 # GNN Version: 1.0

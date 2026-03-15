@@ -47,4 +47,4 @@ Depends on Step 23 (Report) for pipeline summary data received as input.
 
 ## Source
 
-- **Script**: [src/24_intelligent_analysis.py](#placeholder)
+- **Script**: [src/24_intelligent_analysis.py](../../src/24_intelligent_analysis.py)

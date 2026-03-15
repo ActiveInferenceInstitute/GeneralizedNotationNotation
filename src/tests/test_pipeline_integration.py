@@ -8,6 +8,7 @@ Tests the integration between pipeline steps and external dependencies.
 import pytest
 
 pytestmark = pytest.mark.pipeline
+from typing import Any
 import sys
 from pathlib import Path
 
@@ -19,7 +20,7 @@ class TestPipelineStepIntegration:
     """Tests for integration between pipeline steps."""
 
     @pytest.mark.integration
-    def test_gnn_to_render_data_flow(self, sample_gnn_files, tmp_path):
+    def test_gnn_to_render_data_flow(self, sample_gnn_files: Any, tmp_path: Any) -> None:
         """Test data flows correctly from GNN to render step."""
         if not sample_gnn_files:
             pytest.skip("No sample GNN files available")
@@ -40,7 +41,7 @@ class TestPipelineStepIntegration:
         assert render_result is not None
 
     @pytest.mark.integration
-    def test_render_to_execute_data_flow(self, tmp_path):
+    def test_render_to_execute_data_flow(self, tmp_path: Any) -> None:
         """Test data flows correctly from render to execute step."""
         from render import generate_pymdp_code
 
@@ -61,7 +62,7 @@ class TestPipelineStepIntegration:
             assert "import" in code or "def" in code or len(code) > 0
 
     @pytest.mark.integration
-    def test_visualization_to_report_data_flow(self, tmp_path):
+    def test_visualization_to_report_data_flow(self, tmp_path: Any) -> None:
         """Test visualization outputs are available to report."""
         from report import process_report
         import logging
@@ -89,7 +90,7 @@ class TestPipelineExternalIntegration:
     """Tests for pipeline integration with external systems."""
 
     @pytest.mark.integration
-    def test_pipeline_filesystem_integration(self, tmp_path):
+    def test_pipeline_filesystem_integration(self, tmp_path: Any) -> None:
         """Test pipeline correctly interacts with filesystem."""
         from pipeline import get_output_dir_for_script
 
@@ -102,7 +103,7 @@ class TestPipelineExternalIntegration:
         assert result is not None or output_dir.exists()
 
     @pytest.mark.integration
-    def test_pipeline_logging_integration(self, tmp_path):
+    def test_pipeline_logging_integration(self, tmp_path: Any) -> None:
         """Test pipeline logging integration."""
         import logging
         from pipeline import get_pipeline_config
@@ -126,7 +127,7 @@ class TestPipelineExternalIntegration:
         logger.removeHandler(handler)
 
     @pytest.mark.integration
-    def test_pipeline_config_loading(self):
+    def test_pipeline_config_loading(self) -> None:
         """Test pipeline configuration loading."""
         from pipeline import get_pipeline_config
 
@@ -140,7 +141,7 @@ class TestPipelineModuleIntegration:
     """Tests for integration between pipeline and modules."""
 
     @pytest.mark.integration
-    def test_all_modules_importable(self):
+    def test_all_modules_importable(self) -> None:
         """Test that all pipeline modules can be imported."""
         modules = [
             'gnn',
@@ -161,7 +162,7 @@ class TestPipelineModuleIntegration:
                 pass
 
     @pytest.mark.integration
-    def test_module_info_consistency(self):
+    def test_module_info_consistency(self) -> None:
         """Test that all modules provide consistent info."""
         from gnn import get_module_info as gnn_info
         from render import get_module_info as render_info
@@ -173,7 +174,7 @@ class TestPipelineModuleIntegration:
             assert isinstance(info, dict)
 
     @pytest.mark.integration
-    def test_pipeline_step_order(self):
+    def test_pipeline_step_order(self) -> None:
         """Test pipeline steps are in correct order."""
         from pipeline import PipelineOrchestrator
 
@@ -191,7 +192,7 @@ class TestPipelineOutputIntegration:
     """Tests for pipeline output integration."""
 
     @pytest.mark.integration
-    def test_output_directory_structure(self, tmp_path):
+    def test_output_directory_structure(self, tmp_path: Any) -> None:
         """Test pipeline creates correct output structure."""
         from pipeline import get_output_dir_for_script
 
@@ -205,7 +206,7 @@ class TestPipelineOutputIntegration:
         assert result is not None or output_dir.exists()
 
     @pytest.mark.integration
-    def test_summary_file_creation(self, tmp_path):
+    def test_summary_file_creation(self, tmp_path: Any) -> None:
         """Test pipeline creates summary files."""
         import json
 
@@ -228,7 +229,7 @@ class TestPipelineErrorIntegration:
     """Tests for pipeline error handling integration."""
 
     @pytest.mark.integration
-    def test_graceful_module_failure(self, tmp_path):
+    def test_graceful_module_failure(self, tmp_path: Any) -> None:
         """Test pipeline handles module failures gracefully."""
         from pipeline import execute_pipeline_step
         import logging
@@ -248,7 +249,7 @@ class TestPipelineErrorIntegration:
         assert result is not None
 
     @pytest.mark.integration
-    def test_recovery_from_step_failure(self, tmp_path):
+    def test_recovery_from_step_failure(self, tmp_path: Any) -> None:
         """Test pipeline can recover from step failures."""
         from pipeline import PipelineOrchestrator
         import logging

@@ -19,5 +19,5 @@ The `_discover_top_level_modules()` function scans `src/` for subdirectories con
 
 ## Source
 
-- **Script**: [src/\_\_init\_\_.py](#placeholder)
+- **Script**: [src/\_\_init\_\_.py](../../src/__init__.py)
 - **Lines**: 74

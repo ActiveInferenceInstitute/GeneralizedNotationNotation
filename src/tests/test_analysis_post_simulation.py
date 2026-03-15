@@ -11,6 +11,7 @@ comparison.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -49,7 +50,7 @@ class TestShannonEntropy:
     """Test compute_shannon_entropy."""
 
     @pytest.mark.unit
-    def test_uniform_distribution(self):
+    def test_uniform_distribution(self) -> None:
         """Uniform distribution should have maximum entropy for its size."""
         p = np.array([0.25, 0.25, 0.25, 0.25])
         entropy = compute_shannon_entropy(p)
@@ -57,21 +58,21 @@ class TestShannonEntropy:
         assert abs(entropy - expected) < 1e-6
 
     @pytest.mark.unit
-    def test_deterministic_distribution(self):
+    def test_deterministic_distribution(self) -> None:
         """A near-deterministic distribution should have near-zero entropy."""
         p = np.array([1.0, 0.0, 0.0])
         entropy = compute_shannon_entropy(p)
         assert entropy < 0.01  # close to 0
 
     @pytest.mark.unit
-    def test_binary_half(self):
+    def test_binary_half(self) -> None:
         """Binary fair coin should have entropy ln(2)."""
         p = np.array([0.5, 0.5])
         entropy = compute_shannon_entropy(p)
         assert abs(entropy - np.log(2)) < 1e-4
 
     @pytest.mark.unit
-    def test_non_normalized_input(self):
+    def test_non_normalized_input(self) -> None:
         """Function should normalize input before computing."""
         p = np.array([2.0, 2.0, 2.0])
         entropy = compute_shannon_entropy(p)
@@ -79,7 +80,7 @@ class TestShannonEntropy:
         assert abs(entropy - expected) < 1e-4
 
     @pytest.mark.unit
-    def test_single_element(self):
+    def test_single_element(self) -> None:
         """Single-element distribution should have zero entropy."""
         p = np.array([1.0])
         entropy = compute_shannon_entropy(p)
@@ -90,14 +91,14 @@ class TestKLDivergence:
     """Test compute_kl_divergence."""
 
     @pytest.mark.unit
-    def test_identical_distributions(self):
+    def test_identical_distributions(self) -> None:
         """KL divergence of identical distributions should be near zero."""
         p = np.array([0.3, 0.3, 0.4])
         kl = compute_kl_divergence(p, p)
         assert abs(kl) < 1e-6
 
     @pytest.mark.unit
-    def test_asymmetry(self):
+    def test_asymmetry(self) -> None:
         """KL(P||Q) should differ from KL(Q||P)."""
         p = np.array([0.9, 0.1])
         q = np.array([0.5, 0.5])
@@ -106,7 +107,7 @@ class TestKLDivergence:
         assert kl_pq != kl_qp
 
     @pytest.mark.unit
-    def test_kl_non_negative(self):
+    def test_kl_non_negative(self) -> None:
         """KL divergence should always be non-negative."""
         p = np.array([0.7, 0.2, 0.1])
         q = np.array([0.1, 0.3, 0.6])
@@ -114,7 +115,7 @@ class TestKLDivergence:
         assert kl >= -1e-10  # allow small numerical error
 
     @pytest.mark.unit
-    def test_kl_with_zero_elements(self):
+    def test_kl_with_zero_elements(self) -> None:
         """Should handle distributions with zero elements gracefully."""
         p = np.array([1.0, 0.0])
         q = np.array([0.5, 0.5])
@@ -126,7 +127,7 @@ class TestVariationalFreeEnergy:
     """Test compute_variational_free_energy."""
 
     @pytest.mark.unit
-    def test_basic_computation(self):
+    def test_basic_computation(self) -> None:
         """Should return a finite float for valid inputs."""
         obs = np.array([1.0, 0.0, 0.0])
         beliefs = np.array([0.5, 0.3, 0.2])
@@ -140,7 +141,7 @@ class TestVariationalFreeEnergy:
         assert np.isfinite(fe)
 
     @pytest.mark.unit
-    def test_with_explicit_prior(self):
+    def test_with_explicit_prior(self) -> None:
         """Should accept an explicit prior distribution."""
         obs = np.array([1.0, 0.0, 0.0])
         beliefs = np.array([0.8, 0.1, 0.1])
@@ -151,7 +152,7 @@ class TestVariationalFreeEnergy:
         assert np.isfinite(fe)
 
     @pytest.mark.unit
-    def test_uniform_prior_default(self):
+    def test_uniform_prior_default(self) -> None:
         """With no prior supplied, a uniform prior should be used."""
         obs = np.array([1.0, 0.0])
         beliefs = np.array([0.6, 0.4])
@@ -161,7 +162,7 @@ class TestVariationalFreeEnergy:
         assert np.isfinite(fe)
 
     @pytest.mark.unit
-    def test_free_energy_changes_with_beliefs(self):
+    def test_free_energy_changes_with_beliefs(self) -> None:
         """Different beliefs should yield different free energy values."""
         obs = np.array([1.0, 0.0, 0.0])
         A = np.eye(3)
@@ -174,7 +175,7 @@ class TestExpectedFreeEnergy:
     """Test compute_expected_free_energy."""
 
     @pytest.mark.unit
-    def test_basic_efe(self):
+    def test_basic_efe(self) -> None:
         """Should return a finite float for valid inputs."""
         beliefs = np.array([0.5, 0.3, 0.2])
         A = np.eye(3)
@@ -185,7 +186,7 @@ class TestExpectedFreeEnergy:
         assert np.isfinite(efe)
 
     @pytest.mark.unit
-    def test_different_policies_different_efe(self):
+    def test_different_policies_different_efe(self) -> None:
         """Different policy indices should generally give different EFE."""
         beliefs = np.array([0.5, 0.3, 0.2])
         A = np.eye(3)
@@ -200,7 +201,7 @@ class TestExpectedFreeEnergy:
         assert efe0 != efe1
 
     @pytest.mark.unit
-    def test_efe_with_2d_B(self):
+    def test_efe_with_2d_B(self) -> None:
         """Should handle a 2D B matrix (single action)."""
         beliefs = np.array([0.5, 0.5])
         A = np.eye(2)
@@ -215,14 +216,14 @@ class TestInformationGain:
     """Test compute_information_gain."""
 
     @pytest.mark.unit
-    def test_no_update(self):
+    def test_no_update(self) -> None:
         """Same prior and posterior should give near-zero information gain."""
         p = np.array([0.5, 0.3, 0.2])
         ig = compute_information_gain(p, p)
         assert abs(ig) < 1e-6
 
     @pytest.mark.unit
-    def test_positive_gain(self):
+    def test_positive_gain(self) -> None:
         """Information gain should be non-negative."""
         prior = np.array([0.33, 0.33, 0.34])
         posterior = np.array([0.9, 0.05, 0.05])
@@ -237,7 +238,7 @@ class TestExtractPymdpData:
     """Test extract_pymdp_data."""
 
     @pytest.mark.unit
-    def test_empty_result(self):
+    def test_empty_result(self) -> None:
         """Should return empty lists for an empty execution result."""
         data = extract_pymdp_data({})
         assert data["traces"] == []
@@ -245,7 +246,7 @@ class TestExtractPymdpData:
         assert data["beliefs"] == []
 
     @pytest.mark.unit
-    def test_with_simulation_data(self):
+    def test_with_simulation_data(self) -> None:
         """Should extract simulation data when present."""
         result = {
             "simulation_data": {
@@ -267,14 +268,14 @@ class TestExtractRxinferData:
     """Test extract_rxinfer_data."""
 
     @pytest.mark.unit
-    def test_empty_result(self):
+    def test_empty_result(self) -> None:
         """Should return empty lists for an empty execution result."""
         data = extract_rxinfer_data({})
         assert data["beliefs"] == []
         assert data["observations"] == []
 
     @pytest.mark.unit
-    def test_with_simulation_data(self):
+    def test_with_simulation_data(self) -> None:
         """Should extract RxInfer-specific fields."""
         result = {
             "simulation_data": {
@@ -294,7 +295,7 @@ class TestExtractJaxData:
     """Test extract_jax_data."""
 
     @pytest.mark.unit
-    def test_empty_result(self):
+    def test_empty_result(self) -> None:
         """Should handle empty execution result without error."""
         data = extract_jax_data({})
         assert isinstance(data, dict)
@@ -304,7 +305,7 @@ class TestExtractDiscopyData:
     """Test extract_discopy_data."""
 
     @pytest.mark.unit
-    def test_empty_result(self):
+    def test_empty_result(self) -> None:
         """Should handle empty execution result without error."""
         data = extract_discopy_data({})
         assert isinstance(data, dict)
@@ -314,7 +315,7 @@ class TestExtractActiveInferenceJlData:
     """Test extract_activeinference_jl_data."""
 
     @pytest.mark.unit
-    def test_empty_result(self):
+    def test_empty_result(self) -> None:
         """Should handle empty execution result without error."""
         data = extract_activeinference_jl_data({})
         assert isinstance(data, dict)
@@ -327,14 +328,14 @@ class TestAnalyzeSimulationTraces:
     """Test analyze_simulation_traces."""
 
     @pytest.mark.unit
-    def test_empty_traces(self):
+    def test_empty_traces(self) -> None:
         """Should handle empty trace list."""
         result = analyze_simulation_traces([], "pymdp", "test_model")
         assert result["trace_count"] == 0
         assert result["framework"] == "pymdp"
 
     @pytest.mark.unit
-    def test_list_traces(self):
+    def test_list_traces(self) -> None:
         """Should calculate trace lengths for list-based traces."""
         traces = [[1, 2, 3], [4, 5]]
         result = analyze_simulation_traces(traces, "pymdp", "test_model")
@@ -343,7 +344,7 @@ class TestAnalyzeSimulationTraces:
         assert result["avg_trace_length"] == 2.5
 
     @pytest.mark.unit
-    def test_dict_traces(self):
+    def test_dict_traces(self) -> None:
         """Should handle dict-based traces with states key."""
         traces = [
             {"states": [0, 1, 2]},
@@ -354,7 +355,7 @@ class TestAnalyzeSimulationTraces:
         assert result["trace_lengths"] == [3, 2]
 
     @pytest.mark.unit
-    def test_model_name_preserved(self):
+    def test_model_name_preserved(self) -> None:
         """Should preserve model name and framework in result."""
         result = analyze_simulation_traces([], "jax", "my_model")
         assert result["model_name"] == "my_model"
@@ -365,13 +366,13 @@ class TestAnalyzeFreeEnergy:
     """Test analyze_free_energy."""
 
     @pytest.mark.unit
-    def test_empty_values(self):
+    def test_empty_values(self) -> None:
         """Should handle empty free energy list."""
         result = analyze_free_energy([], "pymdp", "test")
         assert result["free_energy_count"] == 0
 
     @pytest.mark.unit
-    def test_basic_statistics(self):
+    def test_basic_statistics(self) -> None:
         """Should compute mean, std, min, max of free energy."""
         values = [5.0, 4.0, 3.0, 2.0, 1.0]
         result = analyze_free_energy(values, "pymdp", "test")
@@ -380,7 +381,7 @@ class TestAnalyzeFreeEnergy:
         assert result["max_free_energy"] == 5.0
 
     @pytest.mark.unit
-    def test_decreasing_trend(self):
+    def test_decreasing_trend(self) -> None:
         """Should detect a decreasing free energy trend."""
         values = [10.0, 8.0, 6.0, 4.0, 2.0, 1.0]
         result = analyze_free_energy(values, "pymdp", "test")
@@ -388,7 +389,7 @@ class TestAnalyzeFreeEnergy:
         assert result["free_energy_trend"] < 0
 
     @pytest.mark.unit
-    def test_convergence_detection(self):
+    def test_convergence_detection(self) -> None:
         """Should detect convergence when late values have low variance."""
         values = [10.0, 5.0, 2.5, 1.2, 1.1, 1.05, 1.02, 1.01, 1.005, 1.001]
         result = analyze_free_energy(values, "pymdp", "test")
@@ -399,14 +400,14 @@ class TestAnalyzePolicyConvergence:
     """Test analyze_policy_convergence."""
 
     @pytest.mark.unit
-    def test_empty_policies(self):
+    def test_empty_policies(self) -> None:
         """Should handle empty policy list."""
         result = analyze_policy_convergence([], "pymdp", "test")
         assert result["policy_count"] == 0
         assert result["policy_entropy"] == []
 
     @pytest.mark.unit
-    def test_deterministic_policies(self):
+    def test_deterministic_policies(self) -> None:
         """Near-deterministic policies should have low entropy."""
         policies = [
             [0.99, 0.005, 0.005],
@@ -418,7 +419,7 @@ class TestAnalyzePolicyConvergence:
             assert e < 0.5  # low entropy
 
     @pytest.mark.unit
-    def test_uniform_policies(self):
+    def test_uniform_policies(self) -> None:
         """Uniform policies should have high entropy."""
         policies = [
             [1.0 / 3, 1.0 / 3, 1.0 / 3],
@@ -433,14 +434,14 @@ class TestAnalyzeStateDistributions:
     """Test analyze_state_distributions."""
 
     @pytest.mark.unit
-    def test_empty_states(self):
+    def test_empty_states(self) -> None:
         """Should handle empty state list."""
         result = analyze_state_distributions([], "pymdp", "test")
         assert result["state_count"] == 0
         assert result["state_entropy"] == []
 
     @pytest.mark.unit
-    def test_state_entropy_calculation(self):
+    def test_state_entropy_calculation(self) -> None:
         """Should compute entropy for each state distribution."""
         states = [
             [0.5, 0.5],
@@ -452,7 +453,7 @@ class TestAnalyzeStateDistributions:
         assert result["state_entropy"][0] > result["state_entropy"][1]
 
     @pytest.mark.unit
-    def test_diversity_metrics(self):
+    def test_diversity_metrics(self) -> None:
         """Should compute mean and std of state entropy."""
         states = [[0.5, 0.5], [0.5, 0.5], [0.5, 0.5]]
         result = analyze_state_distributions(states, "pymdp", "test")
@@ -465,14 +466,14 @@ class TestCompareFrameworkResults:
     """Test compare_framework_results."""
 
     @pytest.mark.unit
-    def test_single_framework(self):
+    def test_single_framework(self) -> None:
         """Should note that comparison needs at least 2 frameworks."""
         results = {"pymdp": {"success": True}}
         comparison = compare_framework_results(results, "test_model")
         assert "Need at least 2 frameworks" in comparison.get("message", "")
 
     @pytest.mark.unit
-    def test_two_frameworks(self):
+    def test_two_frameworks(self) -> None:
         """Should compare two frameworks and identify fastest."""
         results = {
             "pymdp": {"success": True, "execution_time": 1.5},
@@ -485,7 +486,7 @@ class TestCompareFrameworkResults:
         assert comparison["comparisons"]["fastest_execution"]["framework"] == "jax"
 
     @pytest.mark.unit
-    def test_success_rates_comparison(self):
+    def test_success_rates_comparison(self) -> None:
         """Should compare success rates across frameworks."""
         results = {
             "pymdp": {"success": True, "execution_time": 1.0},
@@ -496,7 +497,7 @@ class TestCompareFrameworkResults:
         assert comparison["comparisons"]["success_rates"]["rxinfer"] is False
 
     @pytest.mark.unit
-    def test_empty_results(self):
+    def test_empty_results(self) -> None:
         """Should handle empty results dict."""
         comparison = compare_framework_results({}, "test_model")
         assert comparison["framework_count"] == 0

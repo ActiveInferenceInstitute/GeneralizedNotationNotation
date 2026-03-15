@@ -1,142 +1,106 @@
 # TO-DO — GNN Pipeline Roadmap
 
-**Last Updated**: 2026-03-13  
-**Current Version**: 2.2.0  
-**Pipeline Steps**: 25 (0–24) · **Modules**: 38 · **MCP Tools**: 131 · **Tests**: 1,522+ · **Renderers**: 8/8
+**Last Updated**: 2026-03-15
+**Current Version**: 1.3.0
+**Next Target**: v1.4.0
 
 ---
 
-<details>
-<summary><strong>Changelog</strong> (completed releases)</summary>
+## v1.4.0 — Test Coverage Milestone
 
-- **v2.2.0** (2026-03-13) — `src/gnn/watcher.py` (Live re-validation Watcher mode), `src/gnn/dep_graph.py` (Model Dependency Graph & Dashboard integration).
-- **v2.1.0** (2026-03-13) — `src/cli/__init__.py` (CLI Polish: health, preflight, lsp, serve), `src/pipeline/context.py` (Pipeline Event Hooks + SSE), `src/utils/logging/logging_utils.py` (Structured JSON Logging).
-- **v2.0.0** (2026-03-06) — `src/api/app.py` (FastAPI, 6 endpoints, SSE streaming), `src/render/health.py` (8/8 renderer health check), `src/gnn/parse_cache.py` (section-level incremental cache), `src/pipeline/preflight.py` (config + environment validation).
-- **v1.9.0** (2026-03-06) — `src/gnn/multimodel.py` (multi-model file support), `src/render/stan/stan_renderer.py` (Stan code generation), `src/lsp/__init__.py` (LSP diagnostics + hover).
-- **v1.8.0** (2026-03-06) — `src/cli/__init__.py` (6 subcommands), `src/pipeline/hasher.py` (content-addressable hashing), `src/gnn/frontmatter.py` (YAML front-matter with fallback).
-- **v1.7.0** (2026-03-06) — `src/pipeline/schemas.py` (Pydantic models), `src/gnn/contracts.py` (framework validation), `src/intelligent_analysis/remediation.py` (auto-fix suggestions).
-- **v1.6.0** (2026-03-06) — `src/pipeline/context.py` (PipelineContext), `src/pipeline/dag.py` (Kahn topological sort), `src/pipeline/step_registry.py` (`@pipeline_step` decorator, 25-step auto-discovery).
-- **v1.5.0** (2026-03-06) — `src/report/pipeline_report.py` (6-section report), `src/website/dashboard.py` (self-contained HTML SPA), `src/report/diff_report.py` (run comparison + archival).
-- **v1.4.0** (2026-03-06) — GNN v1.1 syntax spec, `src/gnn/schema.py`, TextMate grammar.
-- **v1.3.2** (2026-03-06) — Test markers, `--durations=20`, CI workflow.
-- **v1.3.1** (2026-03-06) — LLM pre-pull guard, timeouts, `--skip-llm`, content-hash caching.
-- **v1.3.0** (2026-03-02) — MCP deadlock fix, LLM recursive glob, ML class-imbalance cap.
-- **v1.2.0** (2026-02-23) — ActiveInference.jl renderer bugs, unified test counts.
+> **Scope**: Achieve ≥ 85% line coverage across all 31 modules. This is a minor release milestone.
 
-</details>
+- [x] **Coverage baseline** — Run `uv run pytest --cov=src --cov-report=term-missing` and record per-module coverage
+- [x] **Identify gaps** — List all modules below 80% coverage with specific uncovered functions
+- [ ] **Core modules** — Ensure `gnn/`, `render/`, `execute/`, `validation/`, `type_checker/` each exceed 85%
+- [ ] **Infrastructure modules** — Ensure `pipeline/`, `utils/`, `cli/`, `api/`, `lsp/` each exceed 80%
+- [ ] **CI enforcement** — Add `--cov-fail-under=80` to CI workflow (`ci.yml`)
+
+### v1.4.0 Acceptance
+
+- [ ] `uv run pytest --cov=src --cov-fail-under=80` passes
+- [ ] CI pipeline enforces coverage floor
 
 ---
 
-## v2.1.0a — CLI Polish & `gnn preflight`
+## v1.5.0 — Pipeline Observability & Structured Logging
 
-> **Scope**: Add preflight check subcommand and wire lsp/api subcommands into CLI.
+> **Scope**: Replace raw `print()` calls with structured logging and add pipeline metrics dashboard.
 
-- [x] **`gnn preflight`** subcommand — Runs `run_preflight()` from `src/pipeline/preflight.py`. Outputs Markdown report.
-- [x] **`gnn lsp`** subcommand — Launches `start_server()` from `src/lsp/__init__.py` on stdio.
-- [x] **`gnn serve`** subcommand — Starts `start_server()` from `src/api/app.py` with `--host` and `--port`.
-- [x] **`gnn health`** subcommand — Runs `check_renderers()` + `check_environment()` and prints summary.
-- [x] **pyproject.toml** — Update entrypoint to `gnn = "src.cli:main"`.
+- [ ] **Structured logging** — Audit and replace raw `print()` calls in non-test production code with `logger.info()` / `logger.debug()`
+- [ ] **JSON log format** — Ensure `--log-format json` produces valid JSON-lines output from all 25 steps
+- [ ] **Performance dashboard** — Generate `output/00_pipeline_summary/performance_dashboard.html` with step timing, memory, and throughput charts
+- [ ] **Memory profiling** — Add optional `--profile-memory` flag that records peak RSS per step
+- [ ] **Step dependency graph** — Generate live Mermaid diagram of step DAG execution in pipeline summary
 
-### v2.1.0a Acceptance
+### v1.5.0 Acceptance
 
-- [x] `gnn preflight` produces Markdown report with 🟢/🔴 status
-- [x] `gnn health` shows 8/8 renderers
-
----
-
-## v2.1.0b — Pipeline Event Hooks
-
-> **Scope**: Wire PipelineContext event callbacks for SSE integration.
-
-- [x] **`PipelineContext.on_step_start`** callback — Optional callable invoked at step start.
-- [x] **`PipelineContext.on_step_complete`** callback — Optional callable invoked at step end.
-- [x] **`PipelineContext.on_error`** callback — Optional callable invoked on step failure.
-- [x] **API integration** — Wire callbacks to SSE event broadcasting in `api/app.py`.
-
-### v2.1.0b Acceptance
-
-- [x] SSE stream emits `step_start` / `step_complete` events during run
+- [ ] Zero raw `print()` calls in non-test `src/` files (all use `logging`)
+- [ ] `gnn run --log-format json` produces valid JSONL
+- [ ] Pipeline summary includes HTML performance dashboard
 
 ---
 
-## v2.1.0c — Structured Logging & JSON Log Output
+## v1.6.0 — Renderer Parity & Execution Coverage
 
-> **Scope**: Machine-readable logs for pipeline observability.
+> **Scope**: Ensure all 8 renderers produce runnable code and execute module has matching runners.
 
-- [x] **`src/pipeline/logging_config.py`** [NEW] — Configures structured JSON logging (stdlib `logging`). Fields: timestamp, level, step, message, duration.
-- [x] **`--log-format json`** CLI flag — Switches to JSON line output for piping to log aggregators.
-- [x] **Log rotation** — Configured via `logging.handlers.RotatingFileHandler`, 10 MB per file, 5 backups.
+- [ ] **Stan renderer** — Verify `render/stan/` produces valid `.stan` files; add smoke test
+- [ ] **DisCoPy renderer** — Verify `render/discopy/` produces valid DisCoPy circuits; add smoke test
+- [ ] **Execute parity** — Create `execute/stan/` runner (or document as render-only with rationale)
+- [ ] **Execute parity** — Create `execute/discopy/` runner (or document as render-only with rationale)
+- [ ] **Cross-framework test** — Add integration test that renders + executes the same GNN model across PyMDP, JAX, and PyTorch
+- [ ] **Renderer benchmarks** — Generate timing comparison table across all 8 renderers for `actinf_pomdp_agent.md`
 
-### v2.1.0c Acceptance
+### v1.6.0 Acceptance
 
-- [x] `gnn run --log-format json 2>&1 | python -m json.tool` parses each line
-
----
-
-## v2.2.0a — Watcher Mode & Auto-Reparse
-
-> **Scope**: File-watching for live re-validation during development.
-
-- [x] **`src/gnn/watcher.py`** [NEW] — Uses `watchdog` (or `inotify` fallback) to monitor GNN files.
-- [x] **`gnn watch <dir>`** subcommand — Monitors `input/gnn_files/` and re-runs validate on change.
-- [x] **Debouncing** — 250ms debounce to avoid rapid-fire re-validation.
-- [x] **Integration** — On change, runs `validate_required_sections()` + `parse_state_space()` and prints results.
-
-### v2.2.0a Acceptance
-
-- [x] Editing a `.md` file triggers re-validation within 500ms
+- [ ] All 8 renderers pass smoke tests
+- [ ] `execute/` has runners for ≥ 6 of 8 frameworks (remaining 2 documented as render-only)
+- [ ] Cross-framework integration test passes
 
 ---
 
-## v2.2.0b — Model Dependency Graph Visualization
+## v1.7.0 — Documentation Quality & Discoverability
 
-> **Scope**: Generate visual dependency graph from multi-model files.
+> **Scope**: Raise all module documentation to comprehensive quality and improve cross-linking.
 
-- [x] **`src/gnn/dep_graph.py`** [NEW] — Builds networkx/mermaid graph from inter-model connections.
-- [x] **`gnn graph <file.md>`** subcommand — Outputs Mermaid diagram to stdout or `.svg` file.
-- [x] **Dashboard integration** — Embed dependency graph in `dashboard.html`.
+- [ ] **Docstring coverage** — Increase from current level to ≥ 80% of all public functions having docstrings
+- [ ] **`doc/` index** — Create `doc/INDEX.md` that lists all 580+ documentation files with one-line descriptions
+- [ ] **Module READMEs** — Ensure all 31 module README.md files have ≥ 50 lines with usage examples
+- [ ] **API reference** — Auto-generate API docs from docstrings using `pdoc` or `sphinx-autodoc` for top 10 modules
+- [ ] **Search index** — Add `doc/search_index.json` for documentation search tooling
+- [ ] **Broken link audit** — Run link checker across all `doc/` files and fix any broken references
 
-### v2.2.0b Acceptance
+### v1.7.0 Acceptance
 
-- [x] `gnn graph multi_model.md` outputs valid Mermaid diagram
+- [ ] Docstring coverage ≥ 80%
+- [ ] `doc/INDEX.md` exists with ≥ 500 entries
+- [ ] Zero broken internal links in `doc/`
 
 ---
 
-## v2.3.0 — Deep Roadmap (Unscheduled)
+## v1.8.0 — Developer Experience & Tooling
 
-> Major computational scale-out and developer experience features. Scoped and ready for unblocking.
+> **Scope**: Improve the development workflow with pre-commit hooks, linting, and automation.
 
-### v2.3.0a - Content-Addressable Model Registry (`gnn reproduce`)
+- [ ] **Pre-commit hooks** — Add `.pre-commit-config.yaml` with ruff, black, mypy, and markdownlint
+- [ ] **Ruff configuration** — Add `[tool.ruff]` section to `pyproject.toml` with project-specific rules
+- [ ] **Mypy configuration** — Add `[tool.mypy]` section to `pyproject.toml` with gradual typing config
+- [ ] **Makefile / justfile** — Create `justfile` with common developer commands (`just test`, `just lint`, `just run`, `just docs`)
+- [ ] **VS Code settings** — Add `.vscode/settings.json` + `.vscode/extensions.json` for recommended dev environment
+- [ ] **Dev containers** — Add `.devcontainer/devcontainer.json` for GitHub Codespaces / VS Code remote containers
 
-- [x] Update `src/pipeline/hasher.py` to recursively capture `.gnn` file shasums into `index.json`.
-- [x] Implement `src/cli/__init__.py::_cmd_reproduce` to read `.history/index.json`.
-- [x] Wire the captured configuration parameters (including `testing_matrix` states) back into `PipelineArguments`.
-- [x] Trigger execution bypassing normal CLI arg parsing.
+### v1.8.0 Acceptance
 
-### v2.3.0b - Distributed Parameter Sweeps (Ray/Dask integration)
-
-- [x] Create `src/execute/distributed.py` module.
-- [x] Migrate `12_execute.py` to optionally wrap standard grid search with `@ray.remote`.
-- [x] Create robust retry semantics for node failure in external cloud instances.
-
-### v2.3.0c - GPU-accelerated JAX
-
-- [x] Create `src/render/jax/gpu_utils.py` to inspect available CUDA/TPU cores.
-- [x] Automatically modify JAX code generation in `jax_renderer.py` to specify parallel execution contexts (`jax.pmap`, `jax.vmap`).
-- [x] Adjust Dockerfiles/Setup phase to test for XLA compile compatibility.
-
-### v2.3.0d - Visual Studio Code Extension
-
-- [x] Bootstrapped extension scaffolding via `yo code`.
-- [x] Integrate existing GNN TextMate syntax file (`package.json/contributes/grammars`).
-- [x] Write LanguageClient wrapper `extension.ts` connecting via stdin/stdout to `gnn lsp`.
+- [ ] `pre-commit run --all-files` passes
+- [ ] `just test` runs test suite
+- [ ] `.devcontainer/` works in GitHub Codespaces
 
 ---
 
 ## Conventions
 
 - Versions follow [SemVer](https://semver.org/) — `MAJOR.MINOR.PATCH`
-- Sub-patches (`x.y.za`, `x.y.zb`) denote incremental shipments within a patch
-- Patch releases completable in 1 focused session
-- Minor releases completable in 1–3 focused sessions
-- Deep roadmap items tracked for visibility but not scheduled
+- Patch releases (1.3.x) target a single file or narrow focus area, completable in 1 session
+- Minor releases (1.x.0) are milestone releases requiring multiple sessions
+- Each release has concrete acceptance criteria with verifiable commands

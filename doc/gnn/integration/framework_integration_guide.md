@@ -3,13 +3,13 @@
 **Version**: v2.0.0  
 **Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
+**Modules**: 38+ · **Renderers**: 9/9 · **Tests**: 1,522+  
 
 ## Pipeline Integration
 
 GNN framework integration is handled by **Steps 11 and 12** of the processing pipeline:
 
-- **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro
+- **`src/11_render.py`** → Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, CatColab
   - See: **[src/render/AGENTS.md](../../../src/render/AGENTS.md)** for rendering module details
 - **`src/12_execute.py`** → Execution of rendered simulation scripts
   - See: **[src/execute/AGENTS.md](../../../src/execute/AGENTS.md)** for execution module details
@@ -797,5 +797,5 @@ class IntegrationTestSuite:
 ---
 
 **Integration Guide Version**: v2.0.0  
-**Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro  
+**Framework Coverage**: PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, PyTorch, NumPyro, Stan, CatColab  
 **Status**: Production-Ready

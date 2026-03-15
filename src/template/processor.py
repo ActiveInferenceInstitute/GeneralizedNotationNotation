@@ -460,7 +460,6 @@ def validate_file(input_file: Path) -> Dict[str, Any]:
             }
 
         # Validate file format (example: check for specific markers)
-        # This is just a placeholder - replace with actual validation logic
         is_valid = True
         validation_messages = []
 

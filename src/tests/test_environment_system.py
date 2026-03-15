@@ -18,7 +18,7 @@ class TestSystemPlatform:
     """Tests for system platform requirements."""
 
     @pytest.mark.fast
-    def test_platform_identified(self):
+    def test_platform_identified(self) -> None:
         """Test platform can be identified."""
         import platform
 
@@ -26,7 +26,7 @@ class TestSystemPlatform:
         assert system in ('Darwin', 'Linux', 'Windows')
 
     @pytest.mark.fast
-    def test_architecture_identified(self):
+    def test_architecture_identified(self) -> None:
         """Test architecture can be identified."""
         import platform
 
@@ -35,7 +35,7 @@ class TestSystemPlatform:
         assert len(arch) > 0
 
     @pytest.mark.fast
-    def test_os_name_available(self):
+    def test_os_name_available(self) -> None:
         """Test OS name is available."""
         assert os.name in ('posix', 'nt')
 
@@ -44,7 +44,7 @@ class TestFilesystem:
     """Tests for filesystem requirements."""
 
     @pytest.mark.fast
-    def test_temp_directory_available(self):
+    def test_temp_directory_available(self) -> None:
         """Test temporary directory is available."""
         import tempfile
 
@@ -53,7 +53,7 @@ class TestFilesystem:
         assert Path(temp_dir).is_dir()
 
     @pytest.mark.fast
-    def test_temp_file_creation(self):
+    def test_temp_file_creation(self) -> None:
         """Test temporary files can be created."""
         import tempfile
 
@@ -62,7 +62,7 @@ class TestFilesystem:
             assert Path(f.name).exists()
 
     @pytest.mark.fast
-    def test_directory_creation(self, tmp_path):
+    def test_directory_creation(self, tmp_path: Path) -> None:
         """Test directories can be created."""
         new_dir = tmp_path / "test_dir" / "nested"
         new_dir.mkdir(parents=True, exist_ok=True)
@@ -71,7 +71,7 @@ class TestFilesystem:
         assert new_dir.is_dir()
 
     @pytest.mark.fast
-    def test_file_read_write(self, tmp_path):
+    def test_file_read_write(self, tmp_path: Path) -> None:
         """Test files can be read and written."""
         test_file = tmp_path / "test.txt"
 
@@ -83,7 +83,7 @@ class TestFilesystem:
         assert content == "Hello, World!"
 
     @pytest.mark.fast
-    def test_binary_file_operations(self, tmp_path):
+    def test_binary_file_operations(self, tmp_path: Path) -> None:
         """Test binary file operations work."""
         test_file = tmp_path / "test.bin"
 
@@ -98,14 +98,14 @@ class TestSystemResources:
     """Tests for system resource availability."""
 
     @pytest.mark.fast
-    def test_memory_available(self):
+    def test_memory_available(self) -> None:
         """Test memory allocation works."""
         # Allocate 1MB
         data = bytearray(1024 * 1024)
         assert len(data) == 1024 * 1024
 
     @pytest.mark.fast
-    def test_file_descriptors_available(self, tmp_path):
+    def test_file_descriptors_available(self, tmp_path: Path) -> None:
         """Test file descriptors can be opened."""
         files = []
         try:
@@ -120,7 +120,7 @@ class TestSystemResources:
                 f.close()
 
     @pytest.mark.fast
-    def test_cpu_count_available(self):
+    def test_cpu_count_available(self) -> None:
         """Test CPU count can be determined."""
         cpu_count = os.cpu_count()
 
@@ -132,7 +132,7 @@ class TestSystemProcesses:
     """Tests for process management."""
 
     @pytest.mark.fast
-    def test_subprocess_execution(self):
+    def test_subprocess_execution(self) -> None:
         """Test subprocess execution works."""
         import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
 
@@ -147,7 +147,7 @@ class TestSystemProcesses:
         assert "hello" in result.stdout
 
     @pytest.mark.fast
-    def test_process_id_available(self):
+    def test_process_id_available(self) -> None:
         """Test process ID is available."""
         pid = os.getpid()
 
@@ -155,7 +155,7 @@ class TestSystemProcesses:
         assert pid > 0
 
     @pytest.mark.fast
-    def test_environment_variables(self):
+    def test_environment_variables(self) -> None:
         """Test environment variables work."""
         # Set and get
         os.environ["GNN_TEST_VAR"] = "test_value"
@@ -169,7 +169,7 @@ class TestSystemTime:
     """Tests for time and date functionality."""
 
     @pytest.mark.fast
-    def test_time_available(self):
+    def test_time_available(self) -> None:
         """Test time functions work."""
         import time
 
@@ -177,7 +177,7 @@ class TestSystemTime:
         assert now > 0
 
     @pytest.mark.fast
-    def test_datetime_available(self):
+    def test_datetime_available(self) -> None:
         """Test datetime functions work."""
         from datetime import datetime
 
@@ -185,7 +185,7 @@ class TestSystemTime:
         assert now.year >= 2024
 
     @pytest.mark.fast
-    def test_timezone_available(self):
+    def test_timezone_available(self) -> None:
         """Test timezone functionality works."""
         from datetime import datetime, timezone
 
@@ -197,7 +197,7 @@ class TestSystemPath:
     """Tests for path operations."""
 
     @pytest.mark.fast
-    def test_path_separator(self):
+    def test_path_separator(self) -> None:
         """Test path separator is correct."""
         sep = os.sep
 
@@ -207,7 +207,7 @@ class TestSystemPath:
             assert sep == '/'
 
     @pytest.mark.fast
-    def test_absolute_path_works(self):
+    def test_absolute_path_works(self) -> None:
         """Test absolute path resolution works."""
         relative = Path(".")
         absolute = relative.resolve()
@@ -215,7 +215,7 @@ class TestSystemPath:
         assert absolute.is_absolute()
 
     @pytest.mark.fast
-    def test_path_normalization(self):
+    def test_path_normalization(self) -> None:
         """Test path normalization works."""
         messy_path = Path("a/b/../c/./d")
         clean_parts = [p for p in messy_path.parts if p not in ('.', '..')]
@@ -228,7 +228,7 @@ class TestSystemLocale:
     """Tests for locale and encoding."""
 
     @pytest.mark.fast
-    def test_utf8_encoding(self):
+    def test_utf8_encoding(self) -> None:
         """Test UTF-8 encoding works."""
         text = "Hello, 世界! 🌍"
         encoded = text.encode('utf-8')
@@ -237,7 +237,7 @@ class TestSystemLocale:
         assert decoded == text
 
     @pytest.mark.fast
-    def test_filesystem_encoding(self):
+    def test_filesystem_encoding(self) -> None:
         """Test filesystem encoding is accessible."""
         encoding = sys.getfilesystemencoding()
 
@@ -249,7 +249,7 @@ class TestSystemNetwork:
     """Tests for basic network functionality."""
 
     @pytest.mark.fast
-    def test_socket_module_available(self):
+    def test_socket_module_available(self) -> None:
         """Test socket module is available."""
         import socket
 
@@ -259,7 +259,7 @@ class TestSystemNetwork:
         assert len(hostname) > 0
 
     @pytest.mark.fast
-    def test_localhost_resolvable(self):
+    def test_localhost_resolvable(self) -> None:
         """Test localhost is resolvable."""
         import socket
 

@@ -1,6 +1,6 @@
 # Generalized Notation Notation (GNN) — Comprehensive Documentation
 
-**Last Updated**: 2026-03-05
+**Last Updated**: 2026-03-15
 
 This document provides a complete, machine-parsable and human-accessible overview of GNN: the what, why, and how. It consolidates architecture, pipeline, data flows, artifacts, and integration points with multiple Mermaid diagrams.
 
@@ -139,27 +139,36 @@ flowchart TD
 ## Module Interaction Map
 
 ```mermaid
-graph LR
+graph TD
   GNN[gnn/] --> TC[type_checker/]
-  TC --> VAL[validation/]
-  VAL --> EXP[export/]
+  GNN --> REG[model_registry/]
+  GNN --> VAL[validation/]
+  GNN --> EXP[export/]
+  GNN --> ONT[ontology/]
+  GNN --> RENDER[render/]
+  GNN --> LLM[llm/]
+
+  TC --> VAL
+  VAL --> EXP
   EXP --> VIS[visualization/]
-  VIS --> AV[advanced_visualization/]
-  AV --> ONT[ontology/]
-  ONT --> RENDER[render/]
+  EXP --> AV[advanced_visualization/]
+
   RENDER --> EXEC[execute/]
-  EXEC --> LLM[llm/]
-  LLM --> ML[ml_integration/]
-  ML --> AUD[audio/]
-  AUD --> ANA[analysis/]
-  ANA --> INT[integration/]
-  INT --> SEC[security/]
-  SEC --> RES[research/]
-  RES --> WEB[website/]
-  WEB --> MCP[mcp/]
-  MCP --> GUI[gui/]
-  GUI --> REP[report/]
+  EXEC --> ANA[analysis/]
+  VIS --> ANA
+  LLM --> ANA
+  ML[ml_integration/] --> ANA
+
+  ANA --> REP[report/]
   REP --> IA[intelligent_analysis/]
+
+  GNN --> INT[integration/]
+  GNN --> WEB[website/]
+  GNN --> MCP[mcp/]
+  GNN --> GUI[gui/]
+  GNN --> AUD[audio/]
+  GNN --> RES[research/]
+  RENDER --> SEC[security/]
 ```
 
 ## Error Handling and Continuation
@@ -197,9 +206,9 @@ flowchart LR
 
 - `.cursorrules` — canonical pipeline description (0–24)
 - `src/main.py` — orchestrator implementation
-- `doc/pipeline/README.md` — step details and flow
+- `doc/PIPELINE_SCRIPTS.md` — step details and flow
 - `ARCHITECTURE.md` — implementation-oriented architecture
-- `doc/pipeline/steps_index.json` — machine-readable step index (0–24)
+- `src/STEP_INDEX.md` — machine-readable step index (0–24)
 - `doc/api/api_index.json` — machine-generated API index
 
 ## Machine-Readable Step Index

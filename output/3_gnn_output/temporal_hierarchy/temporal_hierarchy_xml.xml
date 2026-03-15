@@ -10,8 +10,8 @@
 - Each level maintains its own generative model with A, B, C, D matrices
 - Timescale separation encoded via update ratios (Level 2 updates every 10 Level 0 steps)
 - Demonstrates deep temporal models from Friston et al. hierarchical Active Inference</annotation>
-    <created_at>2026-03-13T18:17:53.351688</created_at>
-    <modified_at>2026-03-13T18:17:53.351689</modified_at>
+    <created_at>2026-03-15T13:53:23.197218</created_at>
+    <modified_at>2026-03-15T13:53:23.197219</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,4" name="A0" type="action" description="Level 0 likelihood: P(fast_obs | fast_state)"/>

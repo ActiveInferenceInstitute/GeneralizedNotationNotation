@@ -5,12 +5,13 @@ Tests D2 diagram generation, dashboards, and interactive visualizations.
 """
 
 import pytest
+from typing import Any
 
 
 class TestAdvancedVisualizationModule:
     """Test suite for Advanced Visualization module functionality."""
 
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that advanced_visualization module can be imported."""
         from advanced_visualization import (
             AdvancedVisualizer,
@@ -25,7 +26,7 @@ class TestAdvancedVisualizationModule:
         assert callable(process_advanced_viz)
         assert isinstance(D2_AVAILABLE, bool)
 
-    def test_visualization_functions(self):
+    def test_visualization_functions(self) -> None:
         """Test visualization creation functions."""
         from advanced_visualization import (
             create_visualization_from_data,
@@ -47,14 +48,14 @@ class TestAdvancedVisualizationModule:
 class TestAdvancedVisualizer:
     """Test AdvancedVisualizer class."""
 
-    def test_visualizer_instantiation(self):
+    def test_visualizer_instantiation(self) -> None:
         """Test that AdvancedVisualizer can be instantiated."""
         from advanced_visualization import AdvancedVisualizer
 
         visualizer = AdvancedVisualizer()
         assert visualizer is not None
 
-    def test_visualizer_methods(self):
+    def test_visualizer_methods(self) -> None:
         """Test visualizer has expected methods."""
         from advanced_visualization import AdvancedVisualizer
 
@@ -67,14 +68,14 @@ class TestAdvancedVisualizer:
 class TestDashboardGenerator:
     """Test DashboardGenerator class."""
 
-    def test_dashboard_generator_instantiation(self):
+    def test_dashboard_generator_instantiation(self) -> None:
         """Test that DashboardGenerator can be instantiated."""
         from advanced_visualization import DashboardGenerator
 
         generator = DashboardGenerator()
         assert generator is not None
 
-    def test_generate_dashboard_function(self, safe_filesystem):
+    def test_generate_dashboard_function(self, safe_filesystem: Any) -> None:
         """Test dashboard generation function."""
         from advanced_visualization import generate_dashboard
 
@@ -107,14 +108,14 @@ learning_rate = 0.01
 class TestVisualizationDataExtractor:
     """Test VisualizationDataExtractor class."""
 
-    def test_extractor_instantiation(self):
+    def test_extractor_instantiation(self) -> None:
         """Test that VisualizationDataExtractor can be instantiated."""
         from advanced_visualization import VisualizationDataExtractor
 
         extractor = VisualizationDataExtractor()
         assert extractor is not None
 
-    def test_extract_visualization_data(self, safe_filesystem):
+    def test_extract_visualization_data(self, safe_filesystem: Any) -> None:
         """Test data extraction function."""
         from advanced_visualization import extract_visualization_data
 
@@ -147,7 +148,7 @@ learning_rate = 0.01
 class TestD2Visualization:
     """Test D2 diagram visualization."""
 
-    def test_d2_availability_flag(self):
+    def test_d2_availability_flag(self) -> None:
         """Test D2_AVAILABLE flag is set."""
         from advanced_visualization import D2_AVAILABLE
 
@@ -157,14 +158,14 @@ class TestD2Visualization:
         not pytest.importorskip("advanced_visualization").D2_AVAILABLE,
         reason="D2 not available"
     )
-    def test_d2_visualizer_import(self):
+    def test_d2_visualizer_import(self) -> None:
         """Test D2Visualizer can be imported when available."""
         from advanced_visualization import D2Visualizer
 
         if D2Visualizer is not None:
             assert callable(D2Visualizer)
 
-    def test_process_gnn_file_with_d2(self, safe_filesystem):
+    def test_process_gnn_file_with_d2(self, safe_filesystem: Any) -> None:
         """Test GNN file processing with D2."""
         from advanced_visualization import process_gnn_file_with_d2, D2_AVAILABLE
 
@@ -192,7 +193,7 @@ state -> state
 class TestProcessAdvancedViz:
     """Test main processing function."""
 
-    def test_process_advanced_viz(self, safe_filesystem):
+    def test_process_advanced_viz(self, safe_filesystem: Any) -> None:
         """Test standardized advanced visualization processing."""
         from advanced_visualization import process_advanced_viz
 
@@ -228,7 +229,7 @@ Dynamic
         except ImportError as e:
             pytest.skip(f"Advanced visualization requires additional dependencies: {e}")
 
-    def test_process_with_viz_types(self, safe_filesystem):
+    def test_process_with_viz_types(self, safe_filesystem: Any) -> None:
         """Test processing with different visualization types."""
         from advanced_visualization import process_advanced_viz
 
@@ -265,7 +266,7 @@ s[3]
 class TestVisualizationCreation:
     """Test individual visualization creation functions."""
 
-    def test_create_default_visualization(self):
+    def test_create_default_visualization(self) -> None:
         """Test default visualization creation."""
         from advanced_visualization import create_default_visualization
 
@@ -278,7 +279,7 @@ class TestVisualizationCreation:
             # May require specific data format
             pass
 
-    def test_create_network_visualization(self):
+    def test_create_network_visualization(self) -> None:
         """Test network visualization creation."""
         from advanced_visualization import create_network_visualization
 

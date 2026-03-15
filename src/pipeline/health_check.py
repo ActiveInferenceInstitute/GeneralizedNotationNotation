@@ -55,10 +55,10 @@ except ImportError:
     try:
         from utils.logging.logging_utils import setup_step_logging, log_step_success, log_step_warning, log_step_error
     except ImportError:
-        def setup_step_logging(name, verbose=False): return logging.getLogger(name)
-        def log_step_success(logger, msg): logger.info(msg)
-        def log_step_warning(logger, msg): logger.warning(msg)
-        def log_step_error(logger, msg): logger.error(msg)
+        def setup_step_logging(name: str, verbose: bool = False) -> logging.Logger: return logging.getLogger(name)
+        def log_step_success(logger: logging.Logger, msg: str) -> None: logger.info(msg)
+        def log_step_warning(logger: logging.Logger, msg: str) -> None: logger.warning(msg)
+        def log_step_error(logger: logging.Logger, msg: str) -> None: logger.error(msg)
 
 
 class EnhancedHealthChecker:
@@ -66,7 +66,7 @@ class EnhancedHealthChecker:
     Enhanced health checker with comprehensive system validation.
     """
 
-    def __init__(self, verbose: bool = False):
+    def __init__(self, verbose: bool = False) -> None:
         self.verbose = verbose
         self.logger = setup_step_logging("enhanced_health_check", verbose)
         self.results: Dict[str, Any] = {}
@@ -516,7 +516,7 @@ class EnhancedHealthChecker:
 
         return recommendations
 
-    def print_enhanced_report(self):
+    def print_enhanced_report(self) -> None:
         """Print comprehensive health report."""
         print("\n" + "="*80)
         print("🚀 GNN PIPELINE ENHANCED HEALTH CHECK")
@@ -606,7 +606,7 @@ def run_enhanced_health_check(verbose: bool = False) -> Dict[str, Any]:
     return results
 
 
-def main():
+def main() -> int:
     """Main entry point for enhanced health check."""
     import argparse
 
@@ -654,4 +654,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

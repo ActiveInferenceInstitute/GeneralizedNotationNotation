@@ -121,9 +121,9 @@ __all__ = [
 
 # Minimal classes/APIs expected by tests
 class EnvironmentManager:
-    def setup_environment(self, *args, **kwargs):
+    def setup_environment(self, *args: Any, **kwargs: Any) -> bool:
         return True
-    def validate_environment(self, *args, **kwargs):
+    def validate_environment(self, *args: Any, **kwargs: Any) -> Dict[str, Any]:
         try:
             from .setup import validate_uv_setup
             return validate_uv_setup()
@@ -133,9 +133,9 @@ class EnvironmentManager:
 class VirtualEnvironment:
     def __init__(self, name: str):
         self.name = name
-    def create(self):
+    def create(self) -> bool:
         return True
-    def activate(self):
+    def activate(self) -> bool:
         return True
 
 def validate_environment() -> dict:

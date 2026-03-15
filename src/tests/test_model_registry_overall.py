@@ -1,15 +1,16 @@
 import pytest
+from typing import Any, Dict, List
 from model_registry.registry import ModelRegistry
 
 class TestModelRegistryOverall:
     """Test suite for Model Registry module."""
 
     @pytest.fixture
-    def registry_file(self, safe_filesystem):
+    def registry_file(self, safe_filesystem: Any) -> Any:
         return safe_filesystem.temp_dir / "registry.json"
 
     @pytest.fixture
-    def sample_model_file(self, safe_filesystem):
+    def sample_model_file(self, safe_filesystem: Any) -> Any:
         content = """
 # Test Model
 ModelName: MyRegistryModel
@@ -20,13 +21,13 @@ Author: Me
 """
         return safe_filesystem.create_file("my_model.md", content)
 
-    def test_registry_initialization(self, registry_file):
+    def test_registry_initialization(self, registry_file: Any) -> None:
         """Test registry creation."""
         registry = ModelRegistry(registry_file)
         assert registry.registry_path == registry_file
         assert len(registry.models) == 0
 
-    def test_register_model_flow(self, registry_file, sample_model_file):
+    def test_register_model_flow(self, registry_file: Any, sample_model_file: Any) -> None:
         """Test registering a new model."""
         registry = ModelRegistry(registry_file)
 
@@ -54,7 +55,7 @@ Author: Me
         assert model_id in registry2.models
         assert registry2.models[model_id].name == "MyRegistryModel"
 
-    def test_search_models(self, registry_file, sample_model_file):
+    def test_search_models(self, registry_file: Any, sample_model_file: Any) -> None:
         """Test searching functionality."""
         registry = ModelRegistry(registry_file)
         registry.register_model(sample_model_file)
@@ -68,7 +69,7 @@ Author: Me
         results = registry.search_models("tag2")
         assert len(results) == 1
 
-    def test_delete_model(self, registry_file, sample_model_file):
+    def test_delete_model(self, registry_file: Any, sample_model_file: Any) -> None:
         """Test deletion."""
         registry = ModelRegistry(registry_file)
         registry.register_model(sample_model_file)

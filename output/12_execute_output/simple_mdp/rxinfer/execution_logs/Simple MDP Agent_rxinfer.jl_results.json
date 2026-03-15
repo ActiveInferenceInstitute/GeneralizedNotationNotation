@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/simple_mdp/rxinfer/Simple MDP Agent_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 18.760573,
-  "timestamp": "2026-03-13T14:15:47.040677",
+  "execution_time": 19.20774,
+  "timestamp": "2026-03-15T13:54:40.303588",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -21,12 +21,12 @@
     "executor": "julia",
     "stdout_length": 1729,
     "stderr_length": 220,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/rxinfer"
+    "output_directory": "output/12_execute_output/simple_mdp/rxinfer"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/simple_mdp/rxinfer/simulation_data/rxinfer_simulation_results.json"
+      "output/12_execute_output/simple_mdp/rxinfer/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

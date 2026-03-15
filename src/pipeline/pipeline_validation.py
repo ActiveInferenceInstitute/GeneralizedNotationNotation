@@ -14,7 +14,7 @@ Usage:
     python pipeline_validation.py [--fix-issues]
 """
 
-import sys
+
 import argparse
 from pathlib import Path
 from typing import Dict, List
@@ -426,7 +426,7 @@ def validate_dependency_cycles() -> Dict[str, List[str]]:
             dependencies[step_name] = step_config.dependencies
 
         # Detect cycles using DFS
-        def find_cycles(node, path, visited, rec_stack):
+        def find_cycles(node: str, path: List[str], visited: set, rec_stack: set) -> Optional[List[str]]:
             visited.add(node)
             rec_stack.add(node)
 
@@ -630,7 +630,7 @@ def generate_validation_report(src_dir: Path, output_dir: Path) -> Dict:
     log_step_success(logger, f"Validation complete. Status: {report['summary']['status']}")
     return report
 
-def print_validation_report(report: Dict):
+def print_validation_report(report: Dict) -> None:
     """Print a human-readable validation report."""
     print("\n" + "="*80)
     print("GNN PIPELINE VALIDATION REPORT")
@@ -717,7 +717,7 @@ def print_validation_report(report: Dict):
 
     print("\n" + "="*80)
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description="Validate GNN pipeline consistency")
     parser.add_argument("--src-dir", type=Path, default=Path(__file__).parent,
                        help="Source directory containing pipeline modules")
@@ -750,4 +750,4 @@ def main():
     return exit_code
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

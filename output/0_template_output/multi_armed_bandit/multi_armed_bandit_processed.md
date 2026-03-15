@@ -1,8 +1,8 @@
 
 # Processed by GNN Pipeline Template
-# Original file: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md
-# Processed on: 2026-03-13T11:27:59.214351
-# Options: {'verbose': True, 'recursive': True, 'example_param': 'default_value'}
+# Original file: input/gnn_files/discrete/multi_armed_bandit.md
+# Processed on: 2026-03-15T13:52:34.412970
+# Options: {'verbose': False, 'recursive': True, 'example_param': 'default_value'}
 
 # GNN Example: Multi-Armed Bandit
 

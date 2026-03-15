@@ -272,7 +272,7 @@ def _extract_generic_metadata(content: str) -> dict:
 
 def _analyze_nested_structure(data: dict, max_depth: int = 3) -> dict:
     """Analyze the nested structure of a dictionary."""
-    def _analyze_level(obj, depth=0):
+    def _analyze_level(obj: Any, depth: int = 0) -> Dict[str, Any]:
         if depth >= max_depth:
             return {'type': 'max_depth_reached'}
 

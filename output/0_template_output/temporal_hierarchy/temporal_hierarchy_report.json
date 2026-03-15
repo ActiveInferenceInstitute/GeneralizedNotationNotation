@@ -1,11 +1,11 @@
 {
-  "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/hierarchical/temporal_hierarchy.md",
-  "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/temporal_hierarchy/temporal_hierarchy_processed.md",
-  "timestamp": "2026-03-13T11:27:59.213374",
+  "input_file": "input/gnn_files/hierarchical/temporal_hierarchy.md",
+  "output_file": "output/0_template_output/temporal_hierarchy/temporal_hierarchy_processed.md",
+  "timestamp": "2026-03-15T13:52:34.411948",
   "file_size_bytes": 5938,
   "file_size_lines": 249,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   }

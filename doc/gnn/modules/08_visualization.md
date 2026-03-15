@@ -28,4 +28,4 @@ Uses direct import — no try/except handlers.
 
 ## Source
 
-- **Script**: [src/8_visualization.py](#placeholder)
+- **Script**: [src/8_visualization.py](../../src/8_visualization.py)

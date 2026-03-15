@@ -1,12 +1,13 @@
 import pytest
 import json
+from typing import Any, Dict, List, Optional
 from analysis.processor import process_analysis
 
 class TestAnalysisOverall:
     """Test suite for Analysis module."""
 
     @pytest.fixture
-    def sample_gnn_for_analysis(self, safe_filesystem):
+    def sample_gnn_for_analysis(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN file to analyze."""
         content = """
 # Analysis Target
@@ -22,7 +23,7 @@ Dynamic
 """
         return safe_filesystem.create_file("model_analysis.md", content)
 
-    def test_process_analysis_flow(self, safe_filesystem, sample_gnn_for_analysis):
+    def test_process_analysis_flow(self, safe_filesystem: Any, sample_gnn_for_analysis: Any) -> None:
         """Test the analysis processing workflow."""
         target_dir = sample_gnn_for_analysis.parent
         output_dir = safe_filesystem.create_dir("analysis_output")
@@ -52,7 +53,7 @@ Dynamic
         except Exception as e:
             pytest.fail(f"Analysis processing failed: {e}")
 
-    def test_process_analysis_no_files(self, safe_filesystem):
+    def test_process_analysis_no_files(self, safe_filesystem: Any) -> None:
         """Test behavior with no files."""
         empty_dir = safe_filesystem.create_dir("empty")
         output_dir = safe_filesystem.create_dir("output")
@@ -66,7 +67,7 @@ Dynamic
 class TestPostSimulationVisualization:
     """Test suite for post-simulation visualization functions."""
 
-    def test_generate_belief_heatmaps(self, safe_filesystem):
+    def test_generate_belief_heatmaps(self, safe_filesystem: Any) -> None:
         """Test belief heatmap generation."""
         try:
             from analysis.post_simulation import generate_belief_heatmaps
@@ -97,7 +98,7 @@ class TestPostSimulationVisualization:
         except ImportError:
             pytest.skip("Missing matplotlib for visualization tests")
 
-    def test_generate_action_analysis(self, safe_filesystem):
+    def test_generate_action_analysis(self, safe_filesystem: Any) -> None:
         """Test action analysis visualization."""
         try:
             from analysis.post_simulation import generate_action_analysis
@@ -117,7 +118,7 @@ class TestPostSimulationVisualization:
         except ImportError:
             pytest.skip("Missing matplotlib for visualization tests")
 
-    def test_generate_free_energy_plots(self, safe_filesystem):
+    def test_generate_free_energy_plots(self, safe_filesystem: Any) -> None:
         """Test free energy plot generation."""
         try:
             from analysis.post_simulation import generate_free_energy_plots
@@ -138,7 +139,7 @@ class TestPostSimulationVisualization:
         except ImportError:
             pytest.skip("Missing matplotlib for visualization tests")
 
-    def test_generate_observation_analysis(self, safe_filesystem):
+    def test_generate_observation_analysis(self, safe_filesystem: Any) -> None:
         """Test observation analysis visualization."""
         try:
             from analysis.post_simulation import generate_observation_analysis
@@ -158,7 +159,7 @@ class TestPostSimulationVisualization:
         except ImportError:
             pytest.skip("Missing matplotlib for visualization tests")
 
-    def test_analyze_free_energy(self):
+    def test_analyze_free_energy(self) -> None:
         """Test free energy analysis function."""
         from analysis.post_simulation import analyze_free_energy
 
@@ -174,7 +175,7 @@ class TestPostSimulationVisualization:
         assert "std_free_energy" in result
         assert result["free_energy_decreasing"] == True  # Trend should be negative
 
-    def test_analyze_simulation_traces(self):
+    def test_analyze_simulation_traces(self) -> None:
         """Test simulation trace analysis function."""
         from analysis.post_simulation import analyze_simulation_traces
 
@@ -192,7 +193,7 @@ class TestPostSimulationVisualization:
         assert result["trace_lengths"] == [5, 6, 4]
         assert result["avg_trace_length"] == 5.0
 
-    def test_analyze_policy_convergence(self):
+    def test_analyze_policy_convergence(self) -> None:
         """Test policy convergence analysis."""
         from analysis.post_simulation import analyze_policy_convergence
 
@@ -213,7 +214,7 @@ class TestPostSimulationVisualization:
         # First entropy should be higher than last (convergence)
         assert result["policy_entropy"][0] > result["policy_entropy"][-1]
 
-    def test_compare_framework_results(self):
+    def test_compare_framework_results(self) -> None:
         """Test cross-framework comparison."""
         from analysis.post_simulation import compare_framework_results
 
@@ -242,7 +243,7 @@ class TestPostSimulationVisualization:
 class TestAnalysisModuleImports:
     """Test that all new visualization functions are properly exported."""
 
-    def test_visualization_function_exports(self):
+    def test_visualization_function_exports(self) -> None:
         """Test that new visualization functions are exported from analysis module."""
         from analysis import (
             visualize_all_framework_outputs,

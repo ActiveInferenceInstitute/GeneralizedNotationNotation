@@ -6,6 +6,7 @@ from all modules in the GNN pipeline system.
 """
 
 import pytest
+from typing import Any, Dict, List, Optional
 
 # Test markers
 pytestmark = [pytest.mark.integration, pytest.mark.safe_to_fail]
@@ -130,14 +131,14 @@ class TestGNNModule:
     """Test the GNN module's exposed API."""
 
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.gnn, 'validate_gnn_file') or hasattr(src.gnn, 'process_gnn')
         # Test for any available functions without being too strict
         attrs = dir(src.gnn)
         assert len([attr for attr in attrs if not attr.startswith('_')]) > 0
 
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.gnn.get_module_info()
         assert isinstance(info, dict)
@@ -148,7 +149,7 @@ class TestGNNModule:
         assert 'available_parsers' in info
         assert 'schema_formats' in info
 
-    def test_validate_gnn_function(self):
+    def test_validate_gnn_function(self) -> None:
         """Test the validate_gnn function."""
         # Test with invalid input — validate_gnn returns tuple(bool, list[str])
         result = src.gnn.validate_gnn("invalid content")
@@ -157,7 +158,7 @@ class TestGNNModule:
         assert isinstance(is_valid, bool)
         assert isinstance(messages, list)
 
-    def test_feature_flags(self):
+    def test_feature_flags(self) -> None:
         """Test that feature flags are properly set."""
         assert isinstance(src.gnn.FEATURES, dict)
         assert 'core_validation' in src.gnn.FEATURES
@@ -168,7 +169,7 @@ class TestExportModule:
     """Test the export module's exposed API."""
 
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.export, '_gnn_model_to_dict')
         assert hasattr(src.export, 'export_to_json_gnn')
@@ -183,7 +184,7 @@ class TestExportModule:
         assert hasattr(src.export, '__version__')
 
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.export.get_module_info()
         assert isinstance(info, dict)
@@ -196,7 +197,7 @@ class TestExportModule:
         assert 'data_formats' in info
 
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
-    def test_get_supported_formats(self):
+    def test_get_supported_formats(self) -> None:
         """Test the get_supported_formats function."""
         formats = src.export.get_supported_formats_dict()
         assert isinstance(formats, dict)
@@ -206,7 +207,7 @@ class TestExportModule:
             assert 'graph_formats' in formats
 
     @pytest.mark.skipif(not EXPORT_AVAILABLE, reason="Export module not available")
-    def test_export_gnn_model_invalid_format(self):
+    def test_export_gnn_model_invalid_format(self) -> None:
         """Test export_gnn_model with invalid format."""
         result = src.export.export_gnn_model("nonexistent.gnn", "invalid_format")
         assert result["success"] is False
@@ -217,7 +218,7 @@ class TestRenderModule:
     """Test the render module's exposed API."""
 
     @pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.render, 'render_gnn_spec')
         assert hasattr(src.render, 'main')
@@ -227,7 +228,7 @@ class TestRenderModule:
         assert hasattr(src.render, '__version__')
 
     @pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.render.get_module_info()
         assert isinstance(info, dict)
@@ -238,7 +239,7 @@ class TestRenderModule:
         assert 'supported_formats' in info
 
     @pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
-    def test_get_available_renderers(self):
+    def test_get_available_renderers(self) -> None:
         """Test the get_available_renderers function."""
         renderers = src.render.get_available_renderers()
         assert isinstance(renderers, dict)
@@ -250,7 +251,7 @@ class TestRenderModule:
             assert 'output_format' in renderer_info
 
     @pytest.mark.skipif(not RENDER_AVAILABLE, reason="Render module not available")
-    def test_feature_flags(self):
+    def test_feature_flags(self) -> None:
         """Test that feature flags are properly set."""
         assert isinstance(src.render.FEATURES, dict)
         assert 'pymdp_rendering' in src.render.FEATURES
@@ -265,7 +266,7 @@ class TestWebsiteModule:
     """Test the website module's exposed API."""
 
     @pytest.mark.skipif(not WEBSITE_AVAILABLE, reason="Website module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.website, 'generate_website')
         assert hasattr(src.website, 'generate_html_report')
@@ -280,7 +281,7 @@ class TestWebsiteModule:
         assert hasattr(src.website, '__version__')
 
     @pytest.mark.skipif(not WEBSITE_AVAILABLE, reason="Website module not available")
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.website.get_module_info()
         assert isinstance(info, dict)
@@ -291,7 +292,7 @@ class TestWebsiteModule:
         assert 'embedding_capabilities' in info
 
     @pytest.mark.skipif(not WEBSITE_AVAILABLE, reason="Website module not available")
-    def test_get_supported_file_types(self):
+    def test_get_supported_file_types(self) -> None:
         """Test the get_supported_file_types function."""
         file_types = src.website.SUPPORTED_FILE_TYPES
         assert isinstance(file_types, dict)
@@ -302,7 +303,7 @@ class TestWebsiteModule:
         assert 'html' in file_types
 
     @pytest.mark.skipif(not WEBSITE_AVAILABLE, reason="Website module not available")
-    def test_generate_website_from_pipeline_output_nonexistent(self):
+    def test_generate_website_from_pipeline_output_nonexistent(self) -> None:
         """Test generate_website with nonexistent directory."""
         import logging
         from pathlib import Path
@@ -323,7 +324,7 @@ class TestWebsiteModule:
             assert "nonexistent" in str(e).lower() or "not found" in str(e).lower()
 
     @pytest.mark.skipif(not WEBSITE_AVAILABLE, reason="Website module not available")
-    def test_validate_website_config(self):
+    def test_validate_website_config(self) -> None:
         """Test website config validation."""
         # Test with valid config (using existing directory)
         import tempfile
@@ -343,7 +344,7 @@ class TestSAPFModule:
     """Test the SAPF module's exposed API."""
 
     @pytest.mark.skipif(not AUDIO_AVAILABLE, reason="SAPF module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.audio, 'SAPFGNNProcessor')
         assert hasattr(src.audio, 'convert_gnn_to_sapf')
@@ -360,7 +361,7 @@ class TestSAPFModule:
         assert hasattr(src.audio, '__version__')
 
     @pytest.mark.skipif(not AUDIO_AVAILABLE, reason="SAPF module not available")
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.audio.get_module_info()
         assert isinstance(info, dict)
@@ -371,7 +372,7 @@ class TestSAPFModule:
         assert 'supported_formats' in info
 
     @pytest.mark.skipif(not AUDIO_AVAILABLE, reason="SAPF module not available")
-    def test_get_audio_generation_options(self):
+    def test_get_audio_generation_options(self) -> None:
         """Test the get_audio_generation_options function."""
         options = src.audio.get_audio_generation_options()
         assert isinstance(options, dict)
@@ -381,7 +382,7 @@ class TestSAPFModule:
         assert 'output_formats' in options
 
     @pytest.mark.skipif(not AUDIO_AVAILABLE, reason="SAPF module not available")
-    def test_process_gnn_to_audio_invalid_input(self):
+    def test_process_gnn_to_audio_invalid_input(self) -> None:
         """Test process_gnn_to_audio with invalid input."""
         result = src.audio.process_gnn_to_audio("", "test_model", "/tmp")  # nosec B108 -- temp file path from trusted pipeline context
         # This should fail due to empty GNN content
@@ -392,7 +393,7 @@ class TestOntologyModule:
     """Test the ontology module's exposed API."""
 
     @pytest.mark.skipif(not ONTOLOGY_AVAILABLE, reason="Ontology module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.ontology, 'parse_gnn_ontology_section')
         assert hasattr(src.ontology, 'load_defined_ontology_terms')
@@ -406,7 +407,7 @@ class TestOntologyModule:
         assert hasattr(src.ontology, '__version__')
 
     @pytest.mark.skipif(not ONTOLOGY_AVAILABLE, reason="Ontology module not available")
-    def test_get_module_info(self):
+    def test_get_module_info(self) -> None:
         """Test the get_module_info function."""
         info = src.ontology.get_module_info()
         assert isinstance(info, dict)
@@ -417,7 +418,7 @@ class TestOntologyModule:
         assert 'supported_formats' in info
 
     @pytest.mark.skipif(not ONTOLOGY_AVAILABLE, reason="Ontology module not available")
-    def test_get_ontology_processing_options(self):
+    def test_get_ontology_processing_options(self) -> None:
         """Test the get_ontology_processing_options function."""
         options = src.ontology.get_ontology_processing_options()
         assert isinstance(options, dict)
@@ -427,14 +428,14 @@ class TestOntologyModule:
         assert 'output_options' in options
 
     @pytest.mark.skipif(not ONTOLOGY_AVAILABLE, reason="Ontology module not available")
-    def test_process_gnn_ontology_nonexistent_file(self):
+    def test_process_gnn_ontology_nonexistent_file(self) -> None:
         """Test process_gnn_ontology with nonexistent file."""
         result = src.ontology.process_gnn_ontology("/nonexistent/file.gnn")
         assert result["success"] is False
         assert "error" in result
 
     @pytest.mark.skipif(not ONTOLOGY_AVAILABLE, reason="Ontology module not available")
-    def test_parse_gnn_ontology_section_empty(self):
+    def test_parse_gnn_ontology_section_empty(self) -> None:
         """Test parse_gnn_ontology_section with empty content."""
         result = src.ontology.parse_gnn_ontology_section("")
         assert isinstance(result, dict)
@@ -445,7 +446,7 @@ class TestTypeCheckerModule:
     """Test the type checker module's exposed API."""
 
     @pytest.mark.skipif(not TYPE_CHECKER_AVAILABLE, reason="Type Checker module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         # Import the main checker module
         from src.type_checker import checker
@@ -456,7 +457,7 @@ class TestTypeCheckerModule:
         assert hasattr(checker, 'estimate_resources')
 
     @pytest.mark.skipif(not TYPE_CHECKER_AVAILABLE, reason="Type Checker module not available")
-    def test_type_checker_instantiation(self):
+    def test_type_checker_instantiation(self) -> None:
         """Test that the type checker can be instantiated."""
         from src.type_checker.checker import GNNTypeChecker
         checker = GNNTypeChecker()
@@ -467,7 +468,7 @@ class TestVisualizationModule:
     """Test the visualization module's exposed API."""
 
     @pytest.mark.skipif(not VISUALIZATION_AVAILABLE, reason="Visualization module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         # Import the main visualization module
         from src.visualization import visualizer
@@ -477,7 +478,7 @@ class TestVisualizationModule:
         assert hasattr(visualizer, 'create_visualization_report')
 
     @pytest.mark.skipif(not VISUALIZATION_AVAILABLE, reason="Visualization module not available")
-    def test_visualizer_instantiation(self):
+    def test_visualizer_instantiation(self) -> None:
         """Test that the visualizer can be instantiated."""
         from src.visualization.visualizer import GNNVisualizer
         visualizer = GNNVisualizer()
@@ -488,7 +489,7 @@ class TestExecuteModule:
     """Test the execute module's exposed API."""
 
     @pytest.mark.skipif(not EXECUTE_AVAILABLE, reason="Execute module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         # Import the main execute module
         from src.execute import executor
@@ -498,7 +499,7 @@ class TestExecuteModule:
         assert hasattr(executor, 'generate_execution_report')
 
     @pytest.mark.skipif(not EXECUTE_AVAILABLE, reason="Execute module not available")
-    def test_executor_instantiation(self):
+    def test_executor_instantiation(self) -> None:
         """Test that the executor can be instantiated."""
         from src.execute.executor import GNNExecutor
         executor = GNNExecutor()
@@ -509,7 +510,7 @@ class TestLLMModule:
     """Test the LLM module's exposed API."""
 
     @pytest.mark.skipif(not LLM_AVAILABLE, reason="LLM module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         # Import the main LLM module
         from src.llm import llm_processor
@@ -519,7 +520,7 @@ class TestLLMModule:
         assert hasattr(llm_processor, 'enhance_model')
 
     @pytest.mark.skipif(not LLM_AVAILABLE, reason="LLM module not available")
-    def test_llm_processor_instantiation(self):
+    def test_llm_processor_instantiation(self) -> None:
         """Test that the LLM processor can be instantiated."""
         from src.llm.llm_processor import GNNLLMProcessor
         processor = GNNLLMProcessor()
@@ -530,7 +531,7 @@ class TestMCPModule:
     """Test the MCP module's exposed API."""
 
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.mcp, 'MCP')
         assert hasattr(src.mcp, 'register_module_tools')
@@ -538,7 +539,7 @@ class TestMCPModule:
         assert hasattr(src.mcp, 'get_available_tools')
 
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
-    def test_mcp_server_instantiation(self):
+    def test_mcp_server_instantiation(self) -> None:
         """Test that the MCP server can be instantiated."""
         from src.mcp.server import MCPServer
         server = MCPServer()
@@ -549,7 +550,7 @@ class TestSetupModule:
     """Test the setup module's exposed API."""
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.setup, 'setup_environment')
         assert hasattr(src.setup, 'install_dependencies')
@@ -557,7 +558,7 @@ class TestSetupModule:
         assert hasattr(src.setup, 'get_environment_info')
 
     @pytest.mark.skipif(not SETUP_AVAILABLE, reason="Setup module not available")
-    def test_setup_functions_exist(self):
+    def test_setup_functions_exist(self) -> None:
         """Test that setup functions exist and are callable."""
         assert callable(src.setup.setup_environment)
         assert callable(src.setup.install_dependencies)
@@ -569,7 +570,7 @@ class TestUtilsModule:
     """Test the utils module's exposed API."""
 
     @pytest.mark.skipif(not UTILS_AVAILABLE, reason="Utils module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.utils, 'ArgumentParser')
         assert hasattr(src.utils, 'PipelineLogger')
@@ -578,7 +579,7 @@ class TestUtilsModule:
         assert hasattr(src.utils, 'setup_step_logging')
 
     @pytest.mark.skipif(not UTILS_AVAILABLE, reason="Utils module not available")
-    def test_utils_classes_instantiation(self):
+    def test_utils_classes_instantiation(self) -> None:
         """Test that utility classes can be instantiated."""
         from src.utils.argument_utils import ArgumentParser
         parser = ArgumentParser()
@@ -589,7 +590,7 @@ class TestPipelineModule:
     """Test the pipeline module's exposed API."""
 
     @pytest.mark.skipif(not PIPELINE_AVAILABLE, reason="Pipeline module not available")
-    def test_module_imports(self):
+    def test_module_imports(self) -> None:
         """Test that all expected functions are available."""
         assert hasattr(src.pipeline, 'STEP_METADATA')
         assert hasattr(src.pipeline, 'get_pipeline_config')
@@ -597,7 +598,7 @@ class TestPipelineModule:
         assert hasattr(src.pipeline, 'execute_pipeline_step')
 
     @pytest.mark.skipif(not PIPELINE_AVAILABLE, reason="Pipeline module not available")
-    def test_pipeline_config(self):
+    def test_pipeline_config(self) -> None:
         """Test that pipeline configuration is accessible."""
         assert isinstance(src.pipeline.STEP_METADATA, dict)
         assert len(src.pipeline.STEP_METADATA) > 0
@@ -607,7 +608,7 @@ class TestMCPIntegration:
     """Test MCP integration across all modules."""
 
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
-    def test_mcp_availability_flags(self):
+    def test_mcp_availability_flags(self) -> None:
         """Test that MCP availability flags are properly set."""
         modules_with_mcp = [
             src.gnn, src.export, src.render, src.website,
@@ -621,7 +622,7 @@ class TestMCPIntegration:
                 assert 'mcp_integration' in module.FEATURES
 
     @pytest.mark.skipif(not MCP_AVAILABLE, reason="MCP module not available")
-    def test_register_tools_functions(self):
+    def test_register_tools_functions(self) -> None:
         """Test that register_tools functions exist where expected."""
         modules_with_register_tools = [
             src.export, src.render, src.website, src.audio, src.ontology
@@ -637,7 +638,7 @@ class TestModuleConsistency:
     """Test consistency across all modules."""
 
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
-    def test_version_consistency(self):
+    def test_version_consistency(self) -> None:
         """Test that all modules have version information."""
         modules = [
             src.gnn, src.export, src.render, src.website,
@@ -650,7 +651,7 @@ class TestModuleConsistency:
             assert len(module.__version__) > 0
 
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
-    def test_feature_flags_consistency(self):
+    def test_feature_flags_consistency(self) -> None:
         """Test that all modules have consistent feature flag structure."""
         modules_with_features = [
             src.gnn, src.export, src.render, src.website,
@@ -663,7 +664,7 @@ class TestModuleConsistency:
             assert len(module.FEATURES) > 0
 
     @pytest.mark.skipif(not GNN_AVAILABLE, reason="GNN module not available")
-    def test_module_info_consistency(self):
+    def test_module_info_consistency(self) -> None:
         """Test that all modules have consistent get_module_info structure."""
         modules_with_info = [
             src.gnn, src.export, src.render, src.website,

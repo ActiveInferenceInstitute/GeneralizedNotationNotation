@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-13T11:37:34.330632",
-  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/tmaze_epistemic",
+  "timestamp": "2026-03-15T13:59:25.378186",
+  "execution_results_dir": "output/12_execute_output/tmaze_epistemic",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -79,17 +79,17 @@
         "mean_fe": 0.6908
       },
       "execution_time": {
-        "rxinfer": 21.527049,
-        "numpyro": 1.292083,
-        "activeinference_jl": 18.814814,
-        "pymdp": 2.003143,
-        "pytorch": 0.96676,
-        "jax": 1.097068,
-        "discopy": 0.420935
+        "rxinfer": 15.074379,
+        "numpyro": 1.034739,
+        "activeinference_jl": 12.127241,
+        "pymdp": 1.644701,
+        "pytorch": 0.670332,
+        "jax": 0.975821,
+        "discopy": 0.361332
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.420935
+        "time": 0.361332
       },
       "success_rates": {
         "rxinfer": true,

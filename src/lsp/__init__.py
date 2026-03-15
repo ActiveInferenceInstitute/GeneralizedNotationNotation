@@ -193,7 +193,7 @@ def _get_hover(content: str, position: Any) -> Optional[Any]:
 
 def _word_at_position(line: str, char: int) -> Optional[str]:
     """Extract the word at a given character position in a line."""
-    if char >= len(line):
+    if char >= len(line) or not (line[char].isalnum() or line[char] == "_"):
         return None
     # Find word boundaries
     start = char

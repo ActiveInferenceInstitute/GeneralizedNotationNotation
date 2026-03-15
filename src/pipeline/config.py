@@ -89,7 +89,7 @@ class PipelineConfig:
         step_data = self.config.get(step_name, {})
         return StepConfig(step_name, **step_data)
 
-    def save_config(self):
+    def save_config(self) -> None:
         """Save configuration to file."""
         try:
             with open(self.config_path, 'w') as f:
@@ -124,7 +124,7 @@ def get_pipeline_config_dict() -> Dict[str, Any]:
     cfg = PipelineConfig()
     return cfg.config if isinstance(cfg.config, dict) else {}
 
-def set_pipeline_config(config: PipelineConfig):
+def set_pipeline_config(config: PipelineConfig) -> None:
     """Set the pipeline configuration."""
     config.save_config()
 

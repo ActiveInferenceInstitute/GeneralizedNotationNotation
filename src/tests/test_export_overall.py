@@ -8,6 +8,7 @@ This file contains comprehensive tests for the export module functionality.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -20,7 +21,7 @@ class TestExportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_module_imports(self):
+    def test_export_module_imports(self) -> None:
         """Test that export module can be imported."""
         try:
             import export
@@ -33,7 +34,7 @@ class TestExportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_exporter_instantiation(self):
+    def test_exporter_instantiation(self) -> None:
         """Test Exporter class instantiation."""
         try:
             from export import Exporter
@@ -46,7 +47,7 @@ class TestExportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_multi_format_exporter_instantiation(self):
+    def test_multi_format_exporter_instantiation(self) -> None:
         """Test MultiFormatExporter class instantiation."""
         try:
             from export import MultiFormatExporter
@@ -59,7 +60,7 @@ class TestExportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_module_info(self):
+    def test_export_module_info(self) -> None:
         """Test export module information retrieval."""
         try:
             from export import get_module_info
@@ -73,7 +74,7 @@ class TestExportModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_supported_formats(self):
+    def test_supported_formats(self) -> None:
         """Test supported formats retrieval."""
         try:
             from export import get_supported_formats
@@ -93,7 +94,7 @@ class TestExportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_gnn_model(self, comprehensive_test_data):
+    def test_export_gnn_model(self, comprehensive_test_data: Any) -> None:
         """Test GNN model export functionality."""
         try:
             from export import Exporter
@@ -108,7 +109,7 @@ class TestExportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_format_validation(self):
+    def test_export_format_validation(self) -> None:
         """Test export format validation."""
         try:
             from export import validate_export_format
@@ -124,7 +125,7 @@ class TestExportFunctionality:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_multi_format_export(self, comprehensive_test_data):
+    def test_multi_format_export(self, comprehensive_test_data: Any) -> None:
         """Test multi-format export functionality."""
         try:
             from export import MultiFormatExporter
@@ -144,7 +145,7 @@ class TestExportIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_export_pipeline_integration(self, sample_gnn_files, isolated_temp_dir):
+    def test_export_pipeline_integration(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test export module integration with pipeline."""
         try:
             from export import Exporter
@@ -163,7 +164,7 @@ class TestExportIntegration:
 
     @pytest.mark.integration
     @pytest.mark.safe_to_fail
-    def test_export_mcp_integration(self):
+    def test_export_mcp_integration(self) -> None:
         """Test export MCP integration."""
         try:
             from export.mcp import register_tools
@@ -173,7 +174,7 @@ class TestExportIntegration:
             pytest.skip("Export MCP not available")
 
 
-def test_export_module_completeness():
+def test_export_module_completeness() -> None:
     """Test that export module has all required components."""
     required_components = [
         'Exporter',
@@ -192,7 +193,7 @@ def test_export_module_completeness():
 
 
 @pytest.mark.slow
-def test_export_module_performance():
+def test_export_module_performance() -> None:
     """Test export module performance characteristics."""
     try:
         from export import Exporter

@@ -10,6 +10,7 @@ import pytest
 import sys
 import json
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -23,7 +24,7 @@ from report.processor import (
 
 
 @pytest.fixture
-def sample_gnn_dir(tmp_path):
+def sample_gnn_dir(tmp_path: Any) -> Any:
     """Create a temporary directory with sample GNN files."""
     gnn_dir = tmp_path / "gnn_files"
     gnn_dir.mkdir()
@@ -45,7 +46,7 @@ def sample_gnn_dir(tmp_path):
 
 
 @pytest.fixture
-def empty_gnn_dir(tmp_path):
+def empty_gnn_dir(tmp_path: Any) -> Any:
     """Create an empty directory with no GNN files."""
     d = tmp_path / "empty"
     d.mkdir()
@@ -53,7 +54,7 @@ def empty_gnn_dir(tmp_path):
 
 
 @pytest.fixture
-def output_dir(tmp_path):
+def output_dir(tmp_path: Any) -> Any:
     """Create a temporary output directory."""
     d = tmp_path / "output"
     d.mkdir()
@@ -64,7 +65,7 @@ class TestProcessReport:
     """Test the top-level process_report function."""
 
     @pytest.mark.unit
-    def test_process_report_success(self, sample_gnn_dir, output_dir):
+    def test_process_report_success(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """process_report should succeed and write results JSON."""
         result = process_report(sample_gnn_dir, output_dir)
         assert result is True
@@ -75,7 +76,7 @@ class TestProcessReport:
         assert data["processed_files"] == 1
 
     @pytest.mark.unit
-    def test_process_report_empty_dir(self, empty_gnn_dir, output_dir):
+    def test_process_report_empty_dir(self, empty_gnn_dir: Any, output_dir: Any) -> None:
         """process_report should still succeed even with no GNN files."""
         result = process_report(empty_gnn_dir, output_dir)
         assert result is True
@@ -83,7 +84,7 @@ class TestProcessReport:
         assert data["processed_files"] == 0
 
     @pytest.mark.unit
-    def test_process_report_creates_output_dir(self, sample_gnn_dir, tmp_path):
+    def test_process_report_creates_output_dir(self, sample_gnn_dir: Any, tmp_path: Any) -> None:
         """process_report should create the output directory if missing."""
         out = tmp_path / "new_output"
         result = process_report(sample_gnn_dir, out)
@@ -91,7 +92,7 @@ class TestProcessReport:
         assert out.exists()
 
     @pytest.mark.unit
-    def test_process_report_multiple_files(self, tmp_path, output_dir):
+    def test_process_report_multiple_files(self, tmp_path: Any, output_dir: Any) -> None:
         """process_report should count multiple GNN files."""
         gnn_dir = tmp_path / "multi"
         gnn_dir.mkdir()
@@ -107,7 +108,7 @@ class TestAnalyzeGnnFile:
     """Test file-level GNN analysis for reports."""
 
     @pytest.mark.unit
-    def test_analyze_basic_gnn_file(self, sample_gnn_dir):
+    def test_analyze_basic_gnn_file(self, sample_gnn_dir: Any) -> None:
         """analyze_gnn_file should extract sections and metadata."""
         gnn_file = list(sample_gnn_dir.glob("*.md"))[0]
         result = analyze_gnn_file(gnn_file)
@@ -119,27 +120,27 @@ class TestAnalyzeGnnFile:
         assert isinstance(result["sections"], list)
 
     @pytest.mark.unit
-    def test_analyze_detects_state_space(self, sample_gnn_dir):
+    def test_analyze_detects_state_space(self, sample_gnn_dir: Any) -> None:
         """analyze_gnn_file should detect StateSpaceBlock presence."""
         gnn_file = list(sample_gnn_dir.glob("*.md"))[0]
         result = analyze_gnn_file(gnn_file)
         assert result["has_state_space"] is True
 
     @pytest.mark.unit
-    def test_analyze_detects_model_name(self, sample_gnn_dir):
+    def test_analyze_detects_model_name(self, sample_gnn_dir: Any) -> None:
         """analyze_gnn_file should detect ModelName presence."""
         gnn_file = list(sample_gnn_dir.glob("*.md"))[0]
         result = analyze_gnn_file(gnn_file)
         assert result["has_model_name"] is True
 
     @pytest.mark.unit
-    def test_analyze_nonexistent_file(self, tmp_path):
+    def test_analyze_nonexistent_file(self, tmp_path: Any) -> None:
         """analyze_gnn_file should return error for nonexistent file."""
         result = analyze_gnn_file(tmp_path / "nonexistent.md")
         assert "error" in result
 
     @pytest.mark.unit
-    def test_analyze_empty_file(self, tmp_path):
+    def test_analyze_empty_file(self, tmp_path: Any) -> None:
         """analyze_gnn_file should handle an empty file gracefully."""
         empty = tmp_path / "empty.md"
         empty.write_text("")
@@ -152,7 +153,7 @@ class TestComprehensiveReport:
     """Test generate_comprehensive_report across all formats."""
 
     @pytest.mark.unit
-    def test_json_format(self, sample_gnn_dir, output_dir):
+    def test_json_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate a JSON report file."""
         result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="json")
         assert result["success"] is True
@@ -164,7 +165,7 @@ class TestComprehensiveReport:
         assert data["total_files"] == 1
 
     @pytest.mark.unit
-    def test_html_format(self, sample_gnn_dir, output_dir):
+    def test_html_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate an HTML report file."""
         result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="html")
         assert result["success"] is True
@@ -176,7 +177,7 @@ class TestComprehensiveReport:
         assert "GNN Comprehensive Report" in content
 
     @pytest.mark.unit
-    def test_markdown_format(self, sample_gnn_dir, output_dir):
+    def test_markdown_format(self, sample_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate a Markdown report file."""
         result = generate_comprehensive_report(sample_gnn_dir, output_dir, format="markdown")
         assert result["success"] is True
@@ -187,7 +188,7 @@ class TestComprehensiveReport:
         assert "# GNN Comprehensive Report" in content
 
     @pytest.mark.unit
-    def test_empty_dir_report(self, empty_gnn_dir, output_dir):
+    def test_empty_dir_report(self, empty_gnn_dir: Any, output_dir: Any) -> None:
         """Should generate a report even with no GNN files."""
         result = generate_comprehensive_report(empty_gnn_dir, output_dir, format="json")
         assert result["success"] is True
@@ -198,7 +199,7 @@ class TestHtmlReport:
     """Test HTML report generation helper."""
 
     @pytest.mark.unit
-    def test_generate_html_report_basic(self):
+    def test_generate_html_report_basic(self) -> None:
         """generate_html_report should return valid HTML with summary data."""
         report_data = {
             "timestamp": "2026-01-01",
@@ -216,7 +217,7 @@ class TestHtmlReport:
         assert "model_b.md" in html
 
     @pytest.mark.unit
-    def test_generate_html_empty_data(self):
+    def test_generate_html_empty_data(self) -> None:
         """generate_html_report should handle empty report data."""
         html = generate_html_report({})
         assert "<html>" in html
@@ -227,7 +228,7 @@ class TestMarkdownReport:
     """Test Markdown report generation helper."""
 
     @pytest.mark.unit
-    def test_generate_markdown_report_basic(self):
+    def test_generate_markdown_report_basic(self) -> None:
         """generate_markdown_report should produce Markdown with file list."""
         report_data = {
             "timestamp": "2026-01-01",
@@ -241,7 +242,7 @@ class TestMarkdownReport:
         assert "**Total files analyzed**: 1" in md
 
     @pytest.mark.unit
-    def test_generate_markdown_empty_data(self):
+    def test_generate_markdown_empty_data(self) -> None:
         """generate_markdown_report should handle empty report data."""
         md = generate_markdown_report({})
         assert "# GNN Comprehensive Report" in md

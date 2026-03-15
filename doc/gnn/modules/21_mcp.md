@@ -238,5 +238,5 @@ PYTHONPATH=src python -m pytest src/tests/test_mcp_audit.py -v
 
 ## Source
 
-- **Script**: [src/21_mcp.py](#placeholder)
-- **Audit Tests**: [src/tests/test_mcp_audit.py](#placeholder)
+- **Script**: [src/21_mcp.py](../../src/21_mcp.py)
+- **Audit Tests**: [src/tests/test_mcp_audit.py](../../src/tests/test_mcp_audit.py)

@@ -276,7 +276,7 @@ def main() -> None:
             client = StdioMCPClient(server_process)
         elif "http" in server_cmd_str:
             # HTTP client would be different. For now, raise error if HTTP is specified.
-            # TODO: Implement an HTTP client similar to StdioMCPClient if needed.
+            # Note: HTTP client mode is currently not implemented.
             print("Inspector Error: HTTP client mode for inspector is not yet fully implemented.", file=sys.stderr)
             print("Please use stdio transport for the server with this inspector version.", file=sys.stderr)
             sys.exit(1)

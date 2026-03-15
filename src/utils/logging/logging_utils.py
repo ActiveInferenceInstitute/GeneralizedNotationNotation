@@ -137,7 +137,7 @@ class BasicPipelineLogger:
         return correlation_id
 
     @classmethod
-    def clear_correlation_context(cls):
+    def clear_correlation_context(cls) -> None:
         """Clear correlation context for current thread."""
         if hasattr(_correlation_context, 'correlation_id'):
             delattr(_correlation_context, 'correlation_id')
@@ -145,7 +145,7 @@ class BasicPipelineLogger:
             delattr(_correlation_context, 'step_name')
 
     @classmethod
-    def set_verbosity(cls, verbose: bool):
+    def set_verbosity(cls, verbose: bool) -> None:
         """Update console log level based on verbosity."""
         level = logging.DEBUG if verbose else logging.INFO
         root_logger = logging.getLogger()
@@ -214,7 +214,7 @@ def log_section_header(logger: logging.Logger, title: str, char: str = '=', leng
 logging.STEP = 25  # Custom log level between INFO and WARNING
 logging.addLevelName(logging.STEP, "STEP")
 
-def step(self, message, *args, **kwargs):
+def step(self, message: str, *args: Any, **kwargs: Any) -> None:
     """Log a step-level message."""
     if self.isEnabledFor(logging.STEP):
         self._log(logging.STEP, message, args, **kwargs)

@@ -22,14 +22,14 @@ class ParsedGNN:
         self.parse_errors = []
         self.parse_warnings = []
 
-    def add_section(self, section_name: str, section_content: str = ""):
+    def add_section(self, section_name: str, section_content: str = "") -> None:
         """Add a section to the parsed GNN."""
         self.sections.append({
             "name": section_name,
             "content": section_content
         })
 
-    def add_variable(self, variable_name: str, variable_type: str = "", variable_value: str = ""):
+    def add_variable(self, variable_name: str, variable_type: str = "", variable_value: str = "") -> None:
         """Add a variable to the parsed GNN."""
         self.variables.append({
             "name": variable_name,
@@ -37,7 +37,7 @@ class ParsedGNN:
             "value": variable_value
         })
 
-    def add_connection(self, source: str, target: str, connection_type: str = ""):
+    def add_connection(self, source: str, target: str, connection_type: str = "") -> None:
         """Add a connection to the parsed GNN."""
         self.connections.append({
             "source": source,
@@ -45,11 +45,11 @@ class ParsedGNN:
             "type": connection_type
         })
 
-    def add_error(self, error_message: str):
+    def add_error(self, error_message: str) -> None:
         """Add a parse error."""
         self.parse_errors.append(error_message)
 
-    def add_warning(self, warning_message: str):
+    def add_warning(self, warning_message: str) -> None:
         """Add a parse warning."""
         self.parse_warnings.append(warning_message)
 
@@ -73,11 +73,11 @@ class GNNParsingSystem:
         self.parsers = {}
         self.validators = {}
 
-    def register_parser(self, format_name: str, parser_func):
+    def register_parser(self, format_name: str, parser_func: Any) -> None:
         """Register a parser for a specific format."""
         self.parsers[format_name] = parser_func
 
-    def register_validator(self, format_name: str, validator_func):
+    def register_validator(self, format_name: str, validator_func: Any) -> None:
         """Register a validator for a specific format."""
         self.validators[format_name] = validator_func
 

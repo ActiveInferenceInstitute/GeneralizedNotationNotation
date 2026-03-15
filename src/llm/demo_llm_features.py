@@ -29,7 +29,7 @@ logger = logging.getLogger(__name__)
 
 
 @contextmanager
-def _demo_section(title: str):
+def _demo_section(title: str) -> Any:
     """Context manager for demo sections with consistent error handling."""
     print(f"\n--- {title} ---")
     try:
@@ -132,7 +132,7 @@ DiscreteTime: True
 ModelTimeHorizon: 50
 """
 
-def demo_backward_compatibility():
+def demo_backward_compatibility() -> None:
     """Demonstrate that existing code still works with enhanced system."""
     print("Testing Backward Compatibility...")
 
@@ -148,7 +148,7 @@ def demo_backward_compatibility():
         for i, q in enumerate(questions, 1):
             print(f"   {i}. {q[:80]}...")
 
-def demo_enhanced_capabilities():
+def demo_enhanced_capabilities() -> None:
     """Demonstrate new capabilities enabled by multi-provider system."""
     print("\nTesting Enhanced Capabilities...")
 
@@ -160,7 +160,7 @@ def demo_enhanced_capabilities():
         validation = validate_gnn(SAMPLE_GNN_CONTENT)
         print(f"Validation completed ({len(validation)} chars): {validation[:150]}...")
 
-def demo_processor_modes():
+def demo_processor_modes() -> None:
     """Demonstrate processor configuration.
 
     LLMOperations uses a unified constructor — provider selection happens
@@ -173,7 +173,7 @@ def demo_processor_modes():
         print(f"Processor: {ops.get_processor_info()}")
         print(f"Available providers: {ops.get_available_providers()}")
 
-def demo_real_world_usage():
+def demo_real_world_usage() -> None:
     """Demonstrate real-world usage scenarios."""
     print("\n🌍 Real-World Usage Scenarios...")
 
@@ -217,7 +217,7 @@ def demo_real_world_usage():
         print("Comprehensive analysis complete!")
 
 
-def demo_error_handling():
+def demo_error_handling() -> None:
     """Demonstrate error handling and recovery mechanisms."""
     print("\n🛡️ Testing Error Handling and Recoveries...")
 
@@ -235,7 +235,7 @@ def demo_error_handling():
         result = legacy_ops.summarize_gnn(SAMPLE_GNN_CONTENT, max_length=50)
         print(f"Result: {result[:100]}...")
 
-def main():
+def main() -> None:
     """Run all demonstration scenarios."""
     print("🎭 Enhanced LLM System Demonstration")
     print("=" * 50)

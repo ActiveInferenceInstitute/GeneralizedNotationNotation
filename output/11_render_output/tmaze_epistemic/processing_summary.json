@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-13T14:15:10.196876",
-  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
+  "timestamp": "2026-03-15T13:54:01.509822",
+  "source_file": "input/gnn_files/discrete/tmaze_epistemic.md",
   "model_name": "T-Maze Epistemic Foraging Agent",
   "pomdp_dimensions": {
     "num_states": 4,

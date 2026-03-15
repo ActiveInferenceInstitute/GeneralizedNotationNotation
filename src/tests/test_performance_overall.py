@@ -10,6 +10,7 @@ import pytest
 import sys
 import time
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -20,7 +21,7 @@ from tests.conftest import *
 class TestPerformanceBasics:
     """Basic performance characteristic tests."""
 
-    def test_import_timing(self):
+    def test_import_timing(self) -> None:
         """Test that core module imports complete in reasonable time."""
         start = time.perf_counter()
 
@@ -31,7 +32,7 @@ class TestPerformanceBasics:
         # Should complete in under 5 seconds
         assert elapsed < 5.0, f"Module imports took {elapsed:.2f}s, expected < 5s"
 
-    def test_memory_tracking_available(self):
+    def test_memory_tracking_available(self) -> None:
         """Test that memory tracking utilities are functional."""
         try:
             import psutil
@@ -43,7 +44,7 @@ class TestPerformanceBasics:
         except ImportError:
             pytest.skip("psutil not available for memory tracking")
 
-    def test_gnn_parsing_performance(self, safe_filesystem):
+    def test_gnn_parsing_performance(self, safe_filesystem: Any) -> None:
         """Test GNN parsing completes in reasonable time."""
         from gnn import parse_gnn_file
 
@@ -71,7 +72,7 @@ s -> o
         assert elapsed < 1.0, f"GNN parsing took {elapsed:.2f}s, expected < 1s"
         assert result is not None
 
-    def test_export_performance(self, safe_filesystem):
+    def test_export_performance(self, safe_filesystem: Any) -> None:
         """Test export processing completes efficiently."""
         from export import get_supported_formats
 
@@ -87,7 +88,7 @@ s -> o
 class TestResourceMonitoring:
     """Tests for resource monitoring capabilities."""
 
-    def test_cpu_count_detection(self):
+    def test_cpu_count_detection(self) -> None:
         """Test CPU count detection works."""
         import os
         cpu_count = os.cpu_count()
@@ -95,7 +96,7 @@ class TestResourceMonitoring:
         assert cpu_count is not None
         assert cpu_count > 0
 
-    def test_disk_space_check(self, tmp_path):
+    def test_disk_space_check(self, tmp_path: Any) -> None:
         """Test disk space checking works."""
         import shutil
 

@@ -28,7 +28,7 @@ except ImportError as e:
 class TestPathDeduplication:
     """Test path normalization and deduplication."""
 
-    def test_normalize_and_deduplicate_paths_empty(self):
+    def test_normalize_and_deduplicate_paths_empty(self) -> None:
         """Test deduplication with empty list."""
         import logging
         logger = logging.getLogger(__name__)
@@ -36,7 +36,7 @@ class TestPathDeduplication:
         result = _normalize_and_deduplicate_paths([], logger)
         assert result == []
 
-    def test_normalize_and_deduplicate_paths_single(self, tmp_path):
+    def test_normalize_and_deduplicate_paths_single(self, tmp_path: Path) -> None:
         """Test deduplication with single file."""
         import logging
         logger = logging.getLogger(__name__)
@@ -48,7 +48,7 @@ class TestPathDeduplication:
         assert len(result) == 1
         assert result[0] == test_file
 
-    def test_normalize_and_deduplicate_paths_duplicates(self, tmp_path):
+    def test_normalize_and_deduplicate_paths_duplicates(self, tmp_path: Path) -> None:
         """Test deduplication removes duplicate paths."""
         import logging
         logger = logging.getLogger(__name__)
@@ -61,7 +61,7 @@ class TestPathDeduplication:
         assert len(result) == 1
         assert result[0] == test_file
 
-    def test_normalize_and_deduplicate_paths_nested(self, tmp_path):
+    def test_normalize_and_deduplicate_paths_nested(self, tmp_path: Path) -> None:
         """Test deduplication removes nested duplicates."""
         import logging
         logger = logging.getLogger(__name__)
@@ -90,7 +90,7 @@ class TestPathDeduplication:
 class TestPathCollection:
     """Test execution output collection."""
 
-    def test_collect_execution_outputs_empty(self, tmp_path):
+    def test_collect_execution_outputs_empty(self, tmp_path: Path) -> None:
         """Test collection with no files."""
         import logging
         logger = logging.getLogger(__name__)
@@ -109,7 +109,7 @@ class TestPathCollection:
         assert "other" in result
         assert len(result["visualizations"]) == 0
 
-    def test_collect_execution_outputs_structure(self, tmp_path):
+    def test_collect_execution_outputs_structure(self, tmp_path: Path) -> None:
         """Test that collection returns expected structure."""
         import logging
         logger = logging.getLogger(__name__)
@@ -129,7 +129,7 @@ class TestPathCollection:
 class TestActiveInferencePathCollection:
     """Test ActiveInference.jl specific path collection."""
 
-    def test_activeinference_jl_path_collection(self, tmp_path):
+    def test_activeinference_jl_path_collection(self, tmp_path: Path) -> None:
         """Test ActiveInference.jl path collection avoids nested directories."""
         import logging
         logger = logging.getLogger(__name__)
@@ -173,7 +173,7 @@ class TestActiveInferencePathCollection:
 class TestPathCollectionDeduplication:
     """Test that path collection properly deduplicates files."""
 
-    def test_no_duplicate_copies(self, tmp_path):
+    def test_no_duplicate_copies(self, tmp_path: Path) -> None:
         """Test that same file isn't copied multiple times."""
         import logging
         logger = logging.getLogger(__name__)

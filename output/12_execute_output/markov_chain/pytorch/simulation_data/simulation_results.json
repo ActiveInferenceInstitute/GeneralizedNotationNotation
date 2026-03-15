@@ -83,17 +83,17 @@
     ]
   ],
   "actions": [
-    0,
+    1,
+    1,
+    1,
+    1,
+    1,
     1,
     0,
     0,
     0,
-    1,
-    1,
-    0,
     0,
     1,
-    0,
     0,
     1,
     1,
@@ -184,6 +184,6 @@
     "actions_in_range": true,
     "all_valid": true
   },
-  "execution_time_seconds": 0.002,
+  "execution_time_seconds": 0.0017,
   "torch_version": "2.9.1"
 }

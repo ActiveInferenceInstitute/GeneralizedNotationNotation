@@ -8,6 +8,7 @@ This file contains comprehensive tests for audio generation functionality.
 import pytest
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -17,7 +18,7 @@ from tests.conftest import *
 class TestAudioGeneration:
     """Test audio generation functionality."""
 
-    def test_audio_import_available(self):
+    def test_audio_import_available(self) -> None:
         """Test that audio module can be imported."""
         try:
             from audio import AudioGenerator
@@ -27,7 +28,7 @@ class TestAudioGeneration:
         except ImportError:
             pytest.skip("Audio module not available")
 
-    def test_sapf_audio_generation(self):
+    def test_sapf_audio_generation(self) -> None:
         """Test SAPF audio generation."""
         # Test SAPF configuration
         sapf_config = {
@@ -44,7 +45,7 @@ class TestAudioGeneration:
         assert sapf_config["amplitude"] == 0.5
         assert sapf_config["waveform"] == "sine"
 
-    def test_pedalboard_audio_generation(self):
+    def test_pedalboard_audio_generation(self) -> None:
         """Test Pedalboard audio generation."""
         # Test Pedalboard configuration
         pedalboard_config = {
@@ -60,7 +61,7 @@ class TestAudioGeneration:
         assert pedalboard_config["sample_rate"] == 48000
         assert pedalboard_config["buffer_size"] == 1024
 
-    def test_audio_format_conversion(self):
+    def test_audio_format_conversion(self) -> None:
         """Test audio format conversion."""
         # Test supported formats
         supported_formats = ["wav", "mp3", "flac", "ogg", "aiff"]
@@ -69,7 +70,7 @@ class TestAudioGeneration:
             assert format_name in supported_formats
             assert isinstance(format_name, str)
 
-    def test_audio_parameter_validation(self):
+    def test_audio_parameter_validation(self) -> None:
         """Test audio parameter validation."""
         # Test valid parameters
         valid_params = {
@@ -85,7 +86,7 @@ class TestAudioGeneration:
         assert valid_params["duration"] > 0  # Positive duration
         assert valid_params["sample_rate"] > 0  # Positive sample rate
 
-    def test_audio_error_handling(self):
+    def test_audio_error_handling(self) -> None:
         """Test audio error handling."""
         # Test invalid parameters
         invalid_params = {
@@ -101,7 +102,7 @@ class TestAudioGeneration:
         assert invalid_params["duration"] < 0
         assert invalid_params["sample_rate"] <= 0
 
-    def test_audio_performance(self):
+    def test_audio_performance(self) -> None:
         """Test audio generation performance."""
         import time
 
@@ -127,7 +128,7 @@ class TestAudioGeneration:
         generation_time = time.time() - start_time
         assert generation_time < 1.0  # Should complete quickly
 
-    def test_audio_memory_usage(self):
+    def test_audio_memory_usage(self) -> None:
         """Test audio memory usage."""
         import psutil
         import os
@@ -154,7 +155,7 @@ class TestAudioGeneration:
         # Memory increase should be reasonable (< 100MB for 10 seconds of audio)
         assert memory_increase < 100.0
 
-    def test_audio_quality_metrics(self):
+    def test_audio_quality_metrics(self) -> None:
         """Test audio quality metrics."""
         # Test signal-to-noise ratio calculation
         import math
@@ -170,7 +171,7 @@ class TestAudioGeneration:
             snr = 10 * math.log10(signal_power / noise_power)
             assert snr > 0  # SNR should be positive for clean signal
 
-    def test_audio_file_operations(self):
+    def test_audio_file_operations(self) -> None:
         """Test audio file operations."""
         # Test file path handling
         test_file = Path("test_audio.wav")
@@ -184,7 +185,7 @@ class TestAudioGeneration:
         output_dir.mkdir(parents=True, exist_ok=True)
         assert output_dir.exists()
 
-    def test_audio_backend_selection(self):
+    def test_audio_backend_selection(self) -> None:
         """Test audio backend selection."""
         # Test backend options
         backends = ["auto", "sapf", "pedalboard", "numpy", "scipy"]
@@ -199,7 +200,7 @@ class TestAudioGeneration:
 
         assert auto_backend in available_backends
 
-    def test_audio_concurrent_generation(self):
+    def test_audio_concurrent_generation(self) -> None:
         """Test concurrent audio generation."""
         import threading
         import time
@@ -207,7 +208,7 @@ class TestAudioGeneration:
         results = []
         lock = threading.Lock()
 
-        def generate_audio(worker_id):
+        def generate_audio(worker_id: Any) -> None:
             # Simulate audio generation
             time.sleep(0.01)  # Small delay
             with lock:

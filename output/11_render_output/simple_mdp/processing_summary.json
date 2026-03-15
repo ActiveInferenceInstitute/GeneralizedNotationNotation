@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-13T14:15:10.163439",
-  "source_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
+  "timestamp": "2026-03-15T13:54:01.477315",
+  "source_file": "input/gnn_files/discrete/simple_mdp.md",
   "model_name": "Simple MDP Agent",
   "pomdp_dimensions": {
     "num_states": 4,

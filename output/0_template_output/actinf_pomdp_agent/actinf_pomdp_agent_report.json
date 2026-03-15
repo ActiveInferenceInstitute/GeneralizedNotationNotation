@@ -1,11 +1,11 @@
 {
-  "input_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
-  "output_file": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
-  "timestamp": "2026-03-13T11:27:59.214861",
+  "input_file": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+  "output_file": "output/0_template_output/actinf_pomdp_agent/actinf_pomdp_agent_processed.md",
+  "timestamp": "2026-03-15T13:52:34.413459",
   "file_size_bytes": 4298,
   "file_size_lines": 130,
   "processing_options": {
-    "verbose": true,
+    "verbose": false,
     "recursive": true,
     "example_param": "default_value"
   }

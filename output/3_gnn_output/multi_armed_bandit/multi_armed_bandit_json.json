@@ -113,7 +113,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-13T18:17:53.721403",
+  "created_at": "2026-03-15T13:53:23.874877",
   "equations": [],
   "extensions": {
     "footer": "Multi Armed Bandit Agent v1 - GNN Representation.\n3-armed bandit as degenerate POMDP. Tests exploration vs exploitation with sticky context.",
@@ -121,7 +121,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Multi Armed Bandit Agent",
-  "modified_at": "2026-03-13T18:17:53.721404",
+  "modified_at": "2026-03-15T13:53:23.874878",
   "ontology_mappings": [
     {
       "description": null,

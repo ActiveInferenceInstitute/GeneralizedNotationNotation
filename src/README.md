@@ -9,10 +9,10 @@
 ### Key Resources
 
 - **[GNN Overview](../doc/gnn/gnn_overview.md)**: What is GNN?
-- **[Quickstart Tutorial](../doc/gnn/quickstart_tutorial.md)**: Build your first model
+- **[Quickstart Tutorial](../doc/gnn/tutorials/quickstart_tutorial.md)**: Build your first model
 - **[GNN Syntax Reference](../doc/gnn/gnn_syntax.md)**: Syntax guide
-- **[Troubleshooting Guide](../doc/gnn/gnn_troubleshooting.md)**: Fix common issues
-- **[GNN Examples](../doc/gnn/gnn_examples_doc.md)**: Model patterns
+- **[Troubleshooting Guide](../doc/gnn/operations/gnn_troubleshooting.md)**: Fix common issues
+- **[GNN Examples](../doc/gnn/tutorials/gnn_examples_doc.md)**: Model patterns
 
 ---
 

@@ -18,7 +18,7 @@ from tests.conftest import *
 class TestPathUtilities:
     """Unit tests for path handling utilities."""
 
-    def test_project_root_detection(self):
+    def test_project_root_detection(self) -> None:
         """Test that project root can be determined."""
         from pathlib import Path
 
@@ -36,7 +36,7 @@ class TestPathUtilities:
 
         assert found_root, "Should find project root with pyproject.toml"
 
-    def test_src_directory_exists(self):
+    def test_src_directory_exists(self) -> None:
         """Test that src directory exists and contains modules."""
         from pathlib import Path
 
@@ -49,7 +49,7 @@ class TestPathUtilities:
 class TestModuleStructure:
     """Unit tests for module structure validation."""
 
-    def test_gnn_module_exports(self):
+    def test_gnn_module_exports(self) -> None:
         """Test that gnn module exports expected functions."""
         import gnn
 
@@ -57,14 +57,14 @@ class TestModuleStructure:
         assert hasattr(gnn, 'validate_gnn_structure'), "gnn should export validate_gnn_structure"
         assert hasattr(gnn, '__version__'), "gnn should have __version__"
 
-    def test_export_module_exports(self):
+    def test_export_module_exports(self) -> None:
         """Test that export module exports expected functions."""
         import export
 
         assert hasattr(export, 'get_supported_formats'), "export should export get_supported_formats"
         assert hasattr(export, '__version__'), "export should have __version__"
 
-    def test_render_module_exports(self):
+    def test_render_module_exports(self) -> None:
         """Test that render module exports expected functions."""
         import render
 
@@ -75,7 +75,7 @@ class TestModuleStructure:
 class TestFeatureFlags:
     """Unit tests for feature flag consistency."""
 
-    def test_gnn_features_dict(self):
+    def test_gnn_features_dict(self) -> None:
         """Test GNN module has FEATURES dict."""
         import gnn
 
@@ -83,14 +83,14 @@ class TestFeatureFlags:
         assert isinstance(gnn.FEATURES, dict), "FEATURES should be a dict"
         assert len(gnn.FEATURES) > 0, "FEATURES should not be empty"
 
-    def test_render_features_dict(self):
+    def test_render_features_dict(self) -> None:
         """Test render module has FEATURES dict."""
         import render
 
         assert hasattr(render, 'FEATURES'), "render should have FEATURES"
         assert isinstance(render.FEATURES, dict), "FEATURES should be a dict"
 
-    def test_src_package_version(self):
+    def test_src_package_version(self) -> None:
         """Test src package version matches expected format."""
         import src
 

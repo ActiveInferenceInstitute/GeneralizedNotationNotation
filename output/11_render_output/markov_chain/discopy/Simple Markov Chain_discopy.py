@@ -2,7 +2,7 @@
 """
 DisCoPy Categorical Diagram Generation
 Generated from GNN Model: Simple Markov Chain
-Generated: 2026-03-13 14:15:10
+Generated: 2026-03-15 13:54:01
 
 This script creates categorical diagrams representing the Active Inference model
 structure using DisCoPy's compositional framework.
@@ -205,7 +205,7 @@ def export_circuit_data(circuit_dict, analysis_results, output_dir="discopy_diag
     # Export circuit information
     circuit_info = {
         'model_name': 'Simple Markov Chain',
-        'timestamp': '2026-03-13 14:15:10',
+        'timestamp': '2026-03-15 13:54:01',
         'parameters': {
             'num_states': NUM_STATES,
             'num_observations': NUM_OBSERVATIONS, 

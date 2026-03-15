@@ -113,7 +113,7 @@
       "weight": null
     }
   ],
-  "created_at": "2026-03-13T18:17:53.713169",
+  "created_at": "2026-03-15T13:53:23.865732",
   "equations": [],
   "extensions": {
     "footer": "Simple MDP Agent v1 - GNN Representation.\nFully observable (identity A). Tests MDP as degenerate POMDP.",
@@ -121,7 +121,7 @@
     "signature": "Cryptographic signature goes here"
   },
   "model_name": "Simple MDP Agent",
-  "modified_at": "2026-03-13T18:17:53.713169",
+  "modified_at": "2026-03-15T13:53:23.865732",
   "ontology_mappings": [
     {
       "description": null,

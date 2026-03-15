@@ -1,3 +1,4 @@
+from typing import Any
 import pytest
 from security.processor import process_security, perform_security_check, check_vulnerabilities
 
@@ -5,7 +6,7 @@ class TestSecurityOverall:
     """Test suite for Security module."""
 
     @pytest.fixture
-    def sample_gnn_file(self, safe_filesystem):
+    def sample_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a sample GNN file for testing."""
         content = """
 # Test Model
@@ -16,7 +17,7 @@ A = [[0.5, 0.5]]
         return safe_filesystem.create_file("test_model.md", content)
 
     @pytest.fixture
-    def vulnerable_gnn_file(self, safe_filesystem):
+    def vulnerable_gnn_file(self, safe_filesystem: Any) -> Any:
         """Create a GNN file with simulated vulnerabilities."""
         content = """
 # Vulnerable Model
@@ -26,7 +27,7 @@ os.system("rm -rf /")
 """
         return safe_filesystem.create_file("vulnerable.md", content)
 
-    def test_perform_security_check_clean(self, sample_gnn_file):
+    def test_perform_security_check_clean(self, sample_gnn_file: Any) -> None:
         """Test security check on a clean file."""
         result = perform_security_check(sample_gnn_file)
         assert result["file_name"] == sample_gnn_file.name
@@ -34,7 +35,7 @@ os.system("rm -rf /")
         assert result["security_score"] == 100.0
         assert len(result["sensitive_patterns"]) == 0
 
-    def test_check_vulnerabilities_malicious(self, vulnerable_gnn_file):
+    def test_check_vulnerabilities_malicious(self, vulnerable_gnn_file: Any) -> None:
         """Test detection of vulnerabilities."""
         vulns = check_vulnerabilities(vulnerable_gnn_file)
 
@@ -49,7 +50,7 @@ os.system("rm -rf /")
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_process_security_integration(self, safe_filesystem, sample_gnn_file):
+    def test_process_security_integration(self, safe_filesystem: Any, sample_gnn_file: Any) -> None:
         """Test the full process_security flow."""
         target_dir = sample_gnn_file.parent
         output_dir = safe_filesystem.create_dir("security_output")

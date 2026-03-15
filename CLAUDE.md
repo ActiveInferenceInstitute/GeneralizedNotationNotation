@@ -92,6 +92,9 @@ Code generation and execution support multiple backends:
 - **ActiveInference.jl** (Julia): `render/activeinference_jl/`, `execute/activeinference_jl/`
 - **JAX** (Python): `render/jax/`, `execute/jax/`
 - **DisCoPy** (Python): `render/discopy/`, `execute/discopy/`
+- **PyTorch** (Python): `render/pytorch/`, `execute/pytorch/`
+- **NumPyro** (Python): `render/numpyro/`, `execute/numpyro/`
+- **Stan** (Stan): `render/stan/`
 
 ```bash
 # Execute specific frameworks
@@ -107,7 +110,7 @@ python src/12_execute.py --frameworks "pymdp,jax" --verbose
 | `src/gnn/` | GNN parsing, discovery, validation |
 | `src/render/` | Code generation for all frameworks |
 | `src/execute/` | Simulation execution |
-| `src/tests/` | Test suite (~1,522+ tests across ~90 files) |
+| `src/tests/` | Test suite (~1,522+ tests across 108 files) |
 | `input/gnn_files/` | Sample GNN model files |
 | `output/` | Generated outputs (25 step-specific folders) |
 | `doc/gnn/gnn_syntax.md` | Complete GNN syntax specification |

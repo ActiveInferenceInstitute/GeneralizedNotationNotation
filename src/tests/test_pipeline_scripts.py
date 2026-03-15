@@ -18,6 +18,7 @@ and assert on real artifacts. No mocking is used.
 """
 
 import pytest
+from typing import Any
 import sys
 import logging
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
@@ -35,7 +36,7 @@ class TestPipelineScriptDiscovery:
     """Test discovery and basic structure of all pipeline scripts."""
 
     @pytest.mark.unit
-    def test_all_pipeline_scripts_exist(self):
+    def test_all_pipeline_scripts_exist(self) -> None:
         """Test that all expected pipeline scripts exist."""
         # Get all numbered scripts in src directory
         script_pattern = r"^(\d+)_.*\.py$"
@@ -104,7 +105,7 @@ class TestPipelineScriptDiscovery:
         "15_audio.py", "16_analysis.py", "17_integration.py", "18_security.py",
         "19_research.py", "20_website.py", "21_mcp.py", "22_gui.py", "23_report.py"
     ])
-    def test_pipeline_script_structure(self, script_name: str):
+    def test_pipeline_script_structure(self, script_name: str) -> None:
         """Test that each pipeline script has proper structure and imports."""
         script_path = SRC_DIR / script_name
         if not script_path.exists():
@@ -148,7 +149,7 @@ class TestPipelineScriptImports:
     @pytest.mark.parametrize("script_name", [
         "1_setup.py", "2_tests.py", "3_gnn.py", "4_model_registry.py", "5_type_checker.py"
     ])
-    def test_script_executes_help(self, script_name: str):
+    def test_script_executes_help(self, script_name: str) -> None:
         """Each script should respond to --help without error."""
         script_path = SRC_DIR / script_name
         if not script_path.exists():
@@ -168,7 +169,7 @@ class TestPipelineScriptExecution:
         ("7_export.py", lambda outdir: (outdir / "7_export_output").exists()),
         ("8_visualization.py", lambda outdir: (outdir / "8_visualization_output").exists()),
     ])
-    def test_script_executes_real(self, script_name: str, artifact_checker):
+    def test_script_executes_real(self, script_name: str, artifact_checker: Any) -> None:
         script_path = SRC_DIR / script_name
         if not script_path.exists():
             pytest.skip(f"Script {script_name} not found")
@@ -193,7 +194,7 @@ class TestPipelineScriptExecution:
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_render_execute_analysis_chain_scripts(self):
+    def test_render_execute_analysis_chain_scripts(self) -> None:
         """test that 11_render, 12_execute, 16_analysis run sequentially via CLI."""
 
         # We need pymdp for execution to work (at least minimally)
@@ -262,7 +263,7 @@ class TestStep2GNNComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step2_gnn_file_discovery(self, sample_gnn_files, isolated_temp_dir):
+    def test_step2_gnn_file_discovery(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test GNN file discovery functionality."""
         try:
             from src.gnn import discover_gnn_files, parse_gnn_file
@@ -285,7 +286,7 @@ class TestStep2GNNComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step2_gnn_validation(self, sample_gnn_files):
+    def test_step2_gnn_validation(self, sample_gnn_files: Any) -> None:
         """Test GNN validation functionality."""
         try:
             from src.gnn import validate_gnn_structure
@@ -305,7 +306,7 @@ class TestStep1SetupComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step1_environment_validation(self):
+    def test_step1_environment_validation(self) -> None:
         """Test environment validation functionality."""
         try:
             from src.setup import validate_environment, check_dependencies
@@ -333,7 +334,7 @@ class TestStep4TypeCheckerComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step4_type_checking(self, sample_gnn_files):
+    def test_step4_type_checking(self, sample_gnn_files: Any) -> None:
         """Test type checking functionality."""
         try:
             from src.type_checker import check_gnn_file, generate_type_report
@@ -359,7 +360,7 @@ class TestStep5ExportComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step5_export_formats(self, sample_gnn_files, isolated_temp_dir):
+    def test_step5_export_formats(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test export to various formats."""
         try:
             from src.export import export_gnn_data
@@ -396,7 +397,7 @@ class TestStep6VisualizationComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step6_visualization_generation(self, sample_gnn_files, isolated_temp_dir):
+    def test_step6_visualization_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test visualization generation."""
         try:
             from src.visualization import create_graph_visualization, create_matrix_visualization
@@ -424,7 +425,7 @@ class TestStep7MCPComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step7_mcp_tools(self):
+    def test_step7_mcp_tools(self) -> None:
         """Test MCP tool registration and functionality."""
         try:
             from src.mcp.mcp import register_tools as _register_tools
@@ -438,7 +439,7 @@ class TestStep8OntologyComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step8_ontology_processing(self):
+    def test_step8_ontology_processing(self) -> None:
         """Test ontology processing functionality."""
         from src.ontology import process_ontology, validate_ontology_terms
 
@@ -460,7 +461,7 @@ class TestStep9RenderComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step9_code_rendering(self, sample_gnn_files, isolated_temp_dir):
+    def test_step9_code_rendering(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test code rendering functionality."""
         from src.render import render_gnn_to_pymdp, render_gnn_to_rxinfer_toml
         # Test PyMDP rendering
@@ -483,7 +484,7 @@ class TestStep10ExecuteComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step10_execution_safety(self):
+    def test_step10_execution_safety(self) -> None:
         """Test execution safety mechanisms."""
         try:
             from src.execute import execute_script_safely, validate_execution_environment
@@ -511,7 +512,7 @@ class TestStep11LLMComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step11_llm_operations(self):
+    def test_step11_llm_operations(self) -> None:
         """Test LLM operations."""
         try:
             from src.llm import analyze_gnn_model, generate_model_description
@@ -557,7 +558,7 @@ class TestStep20WebsiteComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step20_website_generation(self, isolated_temp_dir):
+    def test_step20_website_generation(self, isolated_temp_dir: Any) -> None:
         """Test website generation functionality."""
         from src.website import generate_website, generate_html_report
         # Test website generation
@@ -580,7 +581,7 @@ class TestStep15AudioComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step15_audio_generation(self, sample_gnn_files, isolated_temp_dir):
+    def test_step15_audio_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test SAPF audio generation."""
         try:
             from src.audio.sapf.audio_generators import generate_oscillator_audio, SyntheticAudioGenerator
@@ -607,7 +608,7 @@ class TestStep14ReportComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_step14_report_generation(self, sample_gnn_files, isolated_temp_dir):
+    def test_step14_report_generation(self, sample_gnn_files: Any, isolated_temp_dir: Any) -> None:
         """Test report generation."""
         from src.report import generate_report
 
@@ -637,7 +638,7 @@ class TestPipelineScriptIntegration:
 
     @pytest.mark.integration
     @pytest.mark.slow
-    def test_pipeline_core_sequence(self):
+    def test_pipeline_core_sequence(self) -> None:
         scripts = ["3_gnn.py", "5_type_checker.py", "7_export.py"]
         with tempfile.TemporaryDirectory() as td:
             tmp = Path(td)
@@ -654,7 +655,7 @@ class TestPipelineScriptIntegration:
     @pytest.mark.integration
     @pytest.mark.slow
     @pytest.mark.safe_to_fail
-    def test_pipeline_argument_consistency(self):
+    def test_pipeline_argument_consistency(self) -> None:
         """Test that scripts handle common arguments consistently."""
         logging.info("Testing pipeline argument consistency")
 
@@ -690,7 +691,7 @@ class TestPipelineScriptIntegration:
 
             logging.info(f"Script {script_name} argument consistency validated")
 
-def test_pipeline_script_completeness():
+def test_pipeline_script_completeness() -> None:
     """Test that all pipeline scripts are complete and functional."""
     from pathlib import Path
 
@@ -717,7 +718,7 @@ def test_pipeline_script_completeness():
     logging.info(f"Pipeline script completeness: {len(found_scripts)}/{len(expected_scripts)} scripts found")
 
 @pytest.mark.slow
-def test_pipeline_script_performance():
+def test_pipeline_script_performance() -> None:
     """Test performance characteristics of pipeline scripts."""
     import time
     from pathlib import Path

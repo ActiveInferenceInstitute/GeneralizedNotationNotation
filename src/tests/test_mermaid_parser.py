@@ -10,6 +10,7 @@ Tests Mermaid to GNN conversion functions:
 """
 
 import pytest
+from typing import Any, Dict, List
 from gui.oxdraw.mermaid_parser import (
     mermaid_to_gnn,
     extract_gnn_metadata,
@@ -46,7 +47,7 @@ SAMPLE_MERMAID = """flowchart TD
 class TestMetadataExtraction:
     """Test metadata extraction from Mermaid comments."""
 
-    def test_extract_metadata_multiline(self):
+    def test_extract_metadata_multiline(self) -> None:
         """Test extraction of multi-line metadata format."""
         metadata = extract_gnn_metadata(SAMPLE_MERMAID)
 
@@ -58,7 +59,7 @@ class TestMetadataExtraction:
 
 
 
-    def test_extract_metadata_not_found(self):
+    def test_extract_metadata_not_found(self) -> None:
         """Test handling when no metadata present."""
         no_metadata = """flowchart TD
         A[A]
@@ -75,7 +76,7 @@ class TestMetadataExtraction:
 class TestNodeExtraction:
     """Test node extraction from Mermaid diagrams."""
 
-    def test_extract_rectangle_nodes(self):
+    def test_extract_rectangle_nodes(self) -> None:
         """Test extraction of rectangle nodes."""
         mermaid = "A[Label]"
         nodes = _extract_nodes(mermaid)
@@ -84,7 +85,7 @@ class TestNodeExtraction:
         assert nodes["A"]["shape"] == "rectangle"
         assert nodes["A"]["label"] == "Label"
 
-    def test_extract_rounded_nodes(self):
+    def test_extract_rounded_nodes(self) -> None:
         """Test extraction of rounded nodes."""
         mermaid = "C(Label)"
         nodes = _extract_nodes(mermaid)
@@ -92,7 +93,7 @@ class TestNodeExtraction:
         assert "C" in nodes
         assert nodes["C"]["shape"] == "rounded"
 
-    def test_extract_stadium_nodes(self):
+    def test_extract_stadium_nodes(self) -> None:
         """Test extraction of stadium nodes."""
         mermaid = "s([Label])"
         nodes = _extract_nodes(mermaid)
@@ -100,7 +101,7 @@ class TestNodeExtraction:
         assert "s" in nodes
         assert nodes["s"]["shape"] == "stadium"
 
-    def test_extract_circle_nodes(self):
+    def test_extract_circle_nodes(self) -> None:
         """Test extraction of circle nodes."""
         mermaid = "o((Label))"
         nodes = _extract_nodes(mermaid)
@@ -108,7 +109,7 @@ class TestNodeExtraction:
         assert "o" in nodes
         assert nodes["o"]["shape"] == "circle"
 
-    def test_extract_hexagon_nodes(self):
+    def test_extract_hexagon_nodes(self) -> None:
         """Test extraction of hexagon nodes."""
         mermaid = "u{{Label}}"
         nodes = _extract_nodes(mermaid)
@@ -116,7 +117,7 @@ class TestNodeExtraction:
         assert "u" in nodes
         assert nodes["u"]["shape"] == "hexagon"
 
-    def test_extract_diamond_nodes(self):
+    def test_extract_diamond_nodes(self) -> None:
         """Test extraction of diamond nodes."""
         mermaid = "π{Label}"
         nodes = _extract_nodes(mermaid)
@@ -126,7 +127,7 @@ class TestNodeExtraction:
 
 
 
-    def test_extract_nodes_with_multipart_labels(self):
+    def test_extract_nodes_with_multipart_labels(self) -> None:
         """Test nodes with complex labels."""
         mermaid = "A[A<br/>3x3<br/>float]"
         nodes = _extract_nodes(mermaid)
@@ -139,7 +140,7 @@ class TestNodeExtraction:
 class TestEdgeExtraction:
     """Test edge extraction from Mermaid diagrams."""
 
-    def test_extract_thick_arrow(self):
+    def test_extract_thick_arrow(self) -> None:
         """Test extraction of thick arrows (generative)."""
         mermaid = "D ==> s"
         edges = _extract_edges(mermaid)
@@ -149,7 +150,7 @@ class TestEdgeExtraction:
         assert edges[0]["target"] == "s"
         assert edges[0]["symbol"] == ">"
 
-    def test_extract_dashed_arrow(self):
+    def test_extract_dashed_arrow(self) -> None:
         """Test extraction of dashed arrows (inference)."""
         mermaid = "s -.-> A"
         edges = _extract_edges(mermaid)
@@ -157,7 +158,7 @@ class TestEdgeExtraction:
         assert len(edges) == 1
         assert edges[0]["symbol"] == "-"
 
-    def test_extract_dotted_arrow(self):
+    def test_extract_dotted_arrow(self) -> None:
         """Test extraction of dotted arrows (modulation)."""
         mermaid = "γ -..-> F"
         edges = _extract_edges(mermaid)
@@ -165,7 +166,7 @@ class TestEdgeExtraction:
         assert len(edges) == 1
         assert edges[0]["symbol"] == "*"
 
-    def test_extract_normal_arrow(self):
+    def test_extract_normal_arrow(self) -> None:
         """Test extraction of normal arrows (coupling)."""
         mermaid = "x --> y"
         edges = _extract_edges(mermaid)
@@ -173,7 +174,7 @@ class TestEdgeExtraction:
         assert len(edges) == 1
         assert edges[0]["symbol"] == "~"
 
-    def test_extract_edge_with_label(self):
+    def test_extract_edge_with_label(self) -> None:
         """Test extraction of labeled edges."""
         mermaid = "A ==>|inference| B"
         edges = _extract_edges(mermaid)
@@ -185,42 +186,42 @@ class TestEdgeExtraction:
 class TestLabelInference:
     """Test inference of dimensions and types from labels."""
 
-    def test_infer_dimensions_2d(self):
+    def test_infer_dimensions_2d(self) -> None:
         """Test 2D dimension inference."""
         label_parts = ["A", "3x3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3, 3]
 
-    def test_infer_dimensions_3d(self):
+    def test_infer_dimensions_3d(self) -> None:
         """Test 3D dimension inference."""
         label_parts = ["B", "3x3x3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3, 3, 3]
 
-    def test_infer_dimensions_1d(self):
+    def test_infer_dimensions_1d(self) -> None:
         """Test 1D dimension inference."""
         label_parts = ["C", "3", "float"]
         dims = _infer_dimensions_from_label(label_parts)
 
         assert dims == [3]
 
-    def test_infer_type_float(self):
+    def test_infer_type_float(self) -> None:
         """Test float type inference."""
         label_parts = ["A", "3x3", "float"]
         dtype = _infer_type_from_label(label_parts)
 
         assert dtype == "float"
 
-    def test_infer_type_int(self):
+    def test_infer_type_int(self) -> None:
         """Test int type inference."""
         label_parts = ["o", "3x1", "int"]
         dtype = _infer_type_from_label(label_parts)
 
         assert dtype == "int"
 
-    def test_infer_type_default(self):
+    def test_infer_type_default(self) -> None:
         """Test default type inference."""
         label_parts = ["x", "3"]
         dtype = _infer_type_from_label(label_parts)
@@ -231,7 +232,7 @@ class TestLabelInference:
 class TestVariableMerging:
     """Test variable merging logic."""
 
-    def test_merge_preserves_metadata(self):
+    def test_merge_preserves_metadata(self) -> None:
         """Test merging preserves metadata."""
         metadata_vars = {
             "A": {
@@ -257,7 +258,7 @@ class TestVariableMerging:
         assert merged["A"]["ontology_mapping"] == "LikelihoodMatrix"
         assert merged["A"]["dimensions"] == [3, 3]
 
-    def test_merge_adds_new_variables(self):
+    def test_merge_adds_new_variables(self) -> None:
         """Test merging adds new variables from visual structure."""
         metadata_vars = {
             "A": {"dimensions": [3, 3]}
@@ -277,7 +278,7 @@ class TestVariableMerging:
 class TestConnectionMerging:
     """Test connection merging logic."""
 
-    def test_merge_connections_visual_precedence(self):
+    def test_merge_connections_visual_precedence(self) -> None:
         """Test visual structure takes precedence."""
         metadata_conns = [
             {"source": "A", "target": "B", "symbol": ">", "connection_type": "generative"}
@@ -295,7 +296,7 @@ class TestConnectionMerging:
         # But metadata connection_type preserved
         assert merged[0]["connection_type"] == "generative"
 
-    def test_merge_adds_new_connections(self):
+    def test_merge_adds_new_connections(self) -> None:
         """Test new visual connections are added."""
         metadata_conns = [
             {"source": "A", "target": "B", "symbol": ">"}
@@ -314,7 +315,7 @@ class TestConnectionMerging:
 class TestOntologyReconstruction:
     """Test ontology mapping reconstruction."""
 
-    def test_reconstruct_ontology_mappings(self):
+    def test_reconstruct_ontology_mappings(self) -> None:
         """Test ontology mapping reconstruction."""
         variables = {
             "A": {"ontology_mapping": "LikelihoodMatrix"},
@@ -336,7 +337,7 @@ class TestOntologyReconstruction:
 class TestGNNMarkdownGeneration:
     """Test GNN markdown generation from model."""
 
-    def test_markdown_generation(self):
+    def test_markdown_generation(self) -> None:
         """Test basic markdown generation."""
         gnn_model = {
             "model_name": "Test Model",
@@ -369,7 +370,7 @@ class TestGNNMarkdownGeneration:
 class TestFullParsing:
     """Test complete Mermaid to GNN parsing."""
 
-    def test_full_parsing(self):
+    def test_full_parsing(self) -> None:
         """Test complete parsing pipeline."""
         gnn_model = mermaid_to_gnn(SAMPLE_MERMAID, validate_ontology=False)
 

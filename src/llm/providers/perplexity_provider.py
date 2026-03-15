@@ -387,12 +387,12 @@ class PerplexityProvider(BaseLLMProvider):
 
         prompt = f"Analyze this GNN model for {task}: {content}"
 
-        async def _run():
+        async def _run() -> LLMResponse:
             return await self.generate_response(
                 [{"role": "user", "content": prompt}]
             )
 
-        def _extract(result):
+        def _extract(result: Any) -> str:
             return result.content if hasattr(result, 'content') else str(result)
 
         try:
@@ -400,7 +400,7 @@ class PerplexityProvider(BaseLLMProvider):
             return _extract(result)
         except RuntimeError:
             # Already inside a running event loop – delegate to a worker thread
-            def _thread_run():
+            def _thread_run() -> LLMResponse:
                 return asyncio.run(_run())
 
             with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
@@ -410,7 +410,7 @@ class PerplexityProvider(BaseLLMProvider):
             logger.error(f"Perplexity analysis failed: {e}")
             return f"Analysis failed: {e}"
 
-    async def close(self):
+    async def close(self) -> None:
         """Close the Perplexity client session."""
         if self.session and not self.session.closed:
             await self.session.close()

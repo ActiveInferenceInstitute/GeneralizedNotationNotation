@@ -1,6 +1,6 @@
 {
-  "timestamp": "2026-03-13T11:37:34.319043",
-  "execution_results_dir": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent",
+  "timestamp": "2026-03-15T13:59:25.367162",
+  "execution_results_dir": "output/12_execute_output/actinf_pomdp_agent",
   "framework_results": {
     "rxinfer": {
       "framework": "rxinfer",
@@ -76,17 +76,17 @@
         "mean_fe": 0.0458
       },
       "execution_time": {
-        "rxinfer": 22.51146,
-        "numpyro": 1.318717,
-        "activeinference_jl": 23.178072,
-        "pymdp": 1.922883,
-        "pytorch": 0.848514,
-        "jax": 1.060309,
-        "discopy": 0.401148
+        "rxinfer": 17.581488,
+        "numpyro": 1.005054,
+        "activeinference_jl": 18.895206,
+        "pymdp": 1.558685,
+        "pytorch": 0.634592,
+        "jax": 0.885229,
+        "discopy": 0.342224
       },
       "fastest_execution": {
         "framework": "discopy",
-        "time": 0.401148
+        "time": 0.342224
       },
       "success_rates": {
         "rxinfer": true,

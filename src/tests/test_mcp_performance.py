@@ -23,7 +23,7 @@ except ImportError:
     MCPSDKNotFoundError = Exception  # Recovery
 
 
-def _safe_initialize():
+def _safe_initialize() -> None:
     """Initialize MCP, skipping test if SDK not available."""
     from mcp import initialize
     try:
@@ -36,7 +36,7 @@ class TestMCPToolRegistrationPerformance:
     """Performance tests for MCP tool registration."""
 
     @pytest.mark.slow
-    def test_tool_registration_speed(self):
+    def test_tool_registration_speed(self) -> None:
         """Test that tool registration completes in reasonable time."""
         from mcp import list_available_tools, initialize
 
@@ -55,7 +55,7 @@ class TestMCPToolRegistrationPerformance:
         assert tools is not None
 
     @pytest.mark.slow
-    def test_repeated_initialization_performance(self):
+    def test_repeated_initialization_performance(self) -> None:
         """Test that repeated initialization is efficient."""
         from mcp import initialize
 
@@ -82,7 +82,7 @@ class TestMCPToolExecutionPerformance:
     """Performance tests for MCP tool execution."""
 
     @pytest.mark.slow
-    def test_tool_lookup_speed(self):
+    def test_tool_lookup_speed(self) -> None:
         """Test tool lookup is fast."""
         from mcp import list_available_tools
 
@@ -97,7 +97,7 @@ class TestMCPToolExecutionPerformance:
         assert elapsed < 1.0, f"100 lookups took {elapsed:.2f}s"
 
     @pytest.mark.slow
-    def test_module_discovery_performance(self):
+    def test_module_discovery_performance(self) -> None:
         """Test module discovery performance."""
         from mcp import get_mcp_instance
 
@@ -118,7 +118,7 @@ class TestMCPThroughput:
     """Throughput tests for MCP operations."""
 
     @pytest.mark.slow
-    def test_concurrent_tool_access(self):
+    def test_concurrent_tool_access(self) -> None:
         """Test concurrent access to MCP tools."""
         from mcp import list_available_tools
         import threading
@@ -127,7 +127,7 @@ class TestMCPThroughput:
         results = []
         errors = []
 
-        def access_tools():
+        def access_tools() -> None:
             try:
                 tools = list_available_tools()
                 results.append(len(tools) if tools else 0)
@@ -147,7 +147,7 @@ class TestMCPThroughput:
         assert elapsed < 5.0, f"Concurrent access took {elapsed:.2f}s"
 
     @pytest.mark.slow
-    def test_tool_count_consistency(self):
+    def test_tool_count_consistency(self) -> None:
         """Test that tool count remains consistent."""
         from mcp import list_available_tools
 
@@ -167,7 +167,7 @@ class TestMCPMemoryPerformance:
     """Memory performance tests for MCP operations."""
 
     @pytest.mark.slow
-    def test_memory_usage_stable(self):
+    def test_memory_usage_stable(self) -> None:
         """Test that MCP operations don't leak memory."""
         from mcp import list_available_tools
 
@@ -187,7 +187,7 @@ class TestMCPServerPerformance:
     """Performance tests for MCP server operations."""
 
     @pytest.mark.slow
-    def test_server_creation_speed(self):
+    def test_server_creation_speed(self) -> None:
         """Test MCP server can be created quickly."""
         try:
             from mcp import create_mcp_server
@@ -201,7 +201,7 @@ class TestMCPServerPerformance:
             pytest.skip("MCP server not available")
 
     @pytest.mark.slow
-    def test_resource_listing_performance(self):
+    def test_resource_listing_performance(self) -> None:
         """Test resource listing performance."""
         try:
             from mcp import list_available_resources
@@ -221,7 +221,7 @@ class TestMCPBenchmarks:
     """Benchmark tests for MCP operations."""
 
     @pytest.mark.slow
-    def test_initialization_benchmark(self):
+    def test_initialization_benchmark(self) -> None:
         """Benchmark MCP initialization."""
         from mcp import initialize
 
@@ -250,7 +250,7 @@ class TestMCPBenchmarks:
         assert avg < 3.0
 
     @pytest.mark.slow
-    def test_tool_execution_benchmark(self):
+    def test_tool_execution_benchmark(self) -> None:
         """Benchmark tool execution overhead."""
         from mcp import list_available_tools
 

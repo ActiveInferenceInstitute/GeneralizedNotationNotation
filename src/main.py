@@ -141,27 +141,27 @@ except ImportError:
             self._correlation_id = None
             self.logger = logging.getLogger(name)
 
-        def set_correlation_id(self, correlation_id):
+        def set_correlation_id(self, correlation_id: str) -> None:
             self._correlation_id = correlation_id
 
-        def print_progress(self, current, total, message): self.logger.info(f"[{current}/{total}] {message}")
-        def print_step_header(self, step_num, description, total): self.logger.info(f"\n=== Step {step_num}/{total}: {description} ===")
+        def print_progress(self, current: int, total: int, message: str) -> None: self.logger.info(f"[{current}/{total}] {message}")
+        def print_step_header(self, step_num: int, description: str, total: int) -> None: self.logger.info(f"\n=== Step {step_num}/{total}: {description} ===")
 
-    def create_visual_logger(name, config):
+    def create_visual_logger(name: str, config: Any) -> VisualLogger:
         vl = VisualLogger(name, config)
         return vl
 
-    def print_pipeline_banner(title, subtitle):
+    def print_pipeline_banner(title: str, subtitle: str) -> None:
         logging.getLogger("pipeline").info(f"\n{'='*60}\n{title}\n{subtitle}\n{'='*60}")
 
-    def print_step_summary(step, desc, status, duration, stats):
+    def print_step_summary(step: int, desc: str, status: str, duration: float, stats: Any) -> None:
         logging.getLogger("pipeline").info(f"Step {step}: {desc} - {status} ({duration:.2f}s)")
 
-    def print_completion_summary(success, duration, stats):
+    def print_completion_summary(success: bool, duration: float, stats: Any) -> None:
         status_msg = 'COMPLETED' if success else 'FAILED'
         logging.getLogger("pipeline").info(f"\n{'='*60}\nPipeline {status_msg} in {duration:.2f}s\n{stats}\n{'='*60}")
 
-def main(override_args=None, override_config: Optional[Dict[str, Any]] = None):
+def main(override_args: Optional[PipelineArguments] = None, override_config: Optional[Dict[str, Any]] = None) -> int:
     """Main pipeline orchestration function."""
     if override_args is not None:
         args = override_args

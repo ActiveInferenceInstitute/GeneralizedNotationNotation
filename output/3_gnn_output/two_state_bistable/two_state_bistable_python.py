@@ -7,7 +7,7 @@ This model describes a minimal 2-state bistable POMDP:
 - 2 actions: push-left or push-right.
 - The agent prefers observation 1 ("right") over observation 0 ("left").
 - Tests the absolute smallest POMDP with full active inference structure.
-Generated: 2026-03-13T18:17:53.757172
+Generated: 2026-03-15T13:53:23.908829
 """
 
 import numpy as np

@@ -5,26 +5,26 @@
   "script_path": "output/11_render_output/actinf_pomdp_agent/pymdp/Active Inference POMDP Agent_pymdp.py",
   "success": true,
   "return_code": 0,
-  "execution_time": 1.492428,
-  "timestamp": "2026-03-13T14:15:30.455461",
+  "execution_time": 1.558685,
+  "timestamp": "2026-03-15T13:54:23.184187",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
     "observations": [
+      2,
+      2,
+      2,
+      2,
+      2,
       1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      1,
-      0,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
+      2,
       2,
       2
     ],
@@ -40,88 +40,88 @@
       0,
       0,
       0,
-      1,
-      2,
+      0,
+      0,
       0,
       0
     ],
     "policy": [],
     "raw_output": "\u26a0\ufe0f  Detected namespace conflict with script directory '/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/actinf_pomdp_agent/pymdp', removing from sys.path\n\u2705 PyMDP (inferactively-pymdp) is available\n",
-    "raw_error": "2026-03-13 14:15:31,772 - __main__ - INFO - A matrix shape: (3, 3)\n2026-03-13 14:15:31,772 - __main__ - INFO - B matrix shape: (3, 3, 3)\n2026-03-13 14:15:31,772 - __main__ - INFO - C vector shape: (3,)\n2026-03-13 14:15:31,772 - __main__ - INFO - D vector shape: (3,)\n2026-03-13 14:15:31,772 - __main__ - INFO - E vector shape: (3,)\n2026-03-13 14:15:31,772 - __main__ - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-03-13 14:15:31,772 - __main__ - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-03-13 14:15:31,773 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-03-13 14:15:31,773 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-13 14:15:31,773 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=1, obs=1, belief=[0.05 0.9  0.05], action=0.0\n2026-03-13 14:15:31,774 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=1, obs=1, belief=[0.   0.99 0.  ], action=0.0\n2026-03-13 14:15:31,774 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,774 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,774 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,775 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,775 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,775 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,775 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,775 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,776 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=1, obs=1, belief=[0. 1. 0.], action=0.0\n2026-03-13 14:15:31,776 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=1, obs=1, belief=[0. 1. 0.], action=1.0\n2026-03-13 14:15:31,776 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=0, obs=0, belief=[1. 0. 0.], action=2.0\n2026-03-13 14:15:31,776 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-13 14:15:31,776 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-13 14:15:31,777 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-13 14:15:31,777 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-03-13 14:15:31,777 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-13 14:15:31,777 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-13 14:15:31,777 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-13 14:15:31,777 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-13 14:15:31,777 - __main__ - INFO - Results summary:\n2026-03-13 14:15:31,777 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-13 14:15:31,777 - __main__ - INFO -   Success: True\n2026-03-13 14:15:31,777 - __main__ - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
+    "raw_error": "2026-03-15 13:54:24,533 - __main__ - INFO - A matrix shape: (3, 3)\n2026-03-15 13:54:24,533 - __main__ - INFO - B matrix shape: (3, 3, 3)\n2026-03-15 13:54:24,533 - __main__ - INFO - C vector shape: (3,)\n2026-03-15 13:54:24,533 - __main__ - INFO - D vector shape: (3,)\n2026-03-15 13:54:24,533 - __main__ - INFO - E vector shape: (3,)\n2026-03-15 13:54:24,534 - __main__ - INFO - Starting PyMDP simulation for Active Inference POMDP Agent\n2026-03-15 13:54:24,534 - __main__ - INFO - Output directory: output/pymdp_simulations/Active Inference POMDP Agent\n2026-03-15 13:54:24,534 - __main__ - INFO - State space matrices: A=True, B=True, C=True, D=True, E=True\n2026-03-15 13:54:24,534 - src.execute.pymdp.executor - INFO - Executing PyMDP simulation (correlation_id: render_generated_script)\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Using PyMDP (inferactively-pymdp) API\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Starting simple PyMDP simulation\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Transposed B from (3, 3, 3) to (3, 3, 3)\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - B matrix normalized (columns sum to 1.0)\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Created matrices: A=(3, 3), B=(3, 3, 3), C=(3,), D=(3,)\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Wrapped arrays in obj_array format (except E)\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Successfully created PyMDP agent\n2026-03-15 13:54:24,534 - src.execute.pymdp.simple_simulation - INFO - Simulation timesteps: 15 (from GNN spec)\n2026-03-15 13:54:24,535 - src.execute.pymdp.simple_simulation - INFO - Step 0: true_s=2, obs=2, belief=[0.05 0.05 0.9 ], action=0.0\n2026-03-15 13:54:24,535 - src.execute.pymdp.simple_simulation - INFO - Step 1: true_s=2, obs=2, belief=[0.   0.   0.99], action=0.0\n2026-03-15 13:54:24,535 - src.execute.pymdp.simple_simulation - INFO - Step 2: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,535 - src.execute.pymdp.simple_simulation - INFO - Step 3: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,536 - src.execute.pymdp.simple_simulation - INFO - Step 4: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,536 - src.execute.pymdp.simple_simulation - INFO - Step 5: true_s=2, obs=1, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,536 - src.execute.pymdp.simple_simulation - INFO - Step 6: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,536 - src.execute.pymdp.simple_simulation - INFO - Step 7: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,536 - src.execute.pymdp.simple_simulation - INFO - Step 8: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,537 - src.execute.pymdp.simple_simulation - INFO - Step 9: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,537 - src.execute.pymdp.simple_simulation - INFO - Step 10: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,537 - src.execute.pymdp.simple_simulation - INFO - Step 11: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,537 - src.execute.pymdp.simple_simulation - INFO - Step 12: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,537 - src.execute.pymdp.simple_simulation - INFO - Step 13: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,538 - src.execute.pymdp.simple_simulation - INFO - Step 14: true_s=2, obs=2, belief=[0. 0. 1.], action=0.0\n2026-03-15 13:54:24,538 - src.execute.pymdp.simple_simulation - INFO - Saving raw simulation data for analysis step...\n2026-03-15 13:54:24,538 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcbe Saved raw simulation data to output/pymdp_simulations/Active Inference POMDP Agent/simulation_results.json\n2026-03-15 13:54:24,538 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcca Validation: beliefs_valid=True, sum_to_one=True\n2026-03-15 13:54:24,538 - src.execute.pymdp.simple_simulation - INFO - \ud83d\udcc8 Trace data saved: 15 timesteps, ready for analysis step visualization\n2026-03-15 13:54:24,538 - src.execute.pymdp.executor - INFO - PyMDP simulation completed successfully\n2026-03-15 13:54:24,538 - __main__ - INFO - \u2713 Simulation completed successfully!\n2026-03-15 13:54:24,538 - __main__ - INFO - Results summary:\n2026-03-15 13:54:24,538 - __main__ - INFO -   Correlation ID: render_generated_script\n2026-03-15 13:54:24,538 - __main__ - INFO -   Success: True\n2026-03-15 13:54:24,538 - __main__ - INFO -   Output: output/pymdp_simulations/Active Inference POMDP Agent\n",
     "beliefs": [
       [
-        0.05000000000000008,
-        0.8999999999999999,
-        0.05000000000000008
+        0.050000000000000065,
+        0.050000000000000065,
+        0.8999999999999998
       ],
       [
-        0.0030674846625767045,
-        0.9938650306748466,
-        0.0030674846625767045
+        0.0030674846625767015,
+        0.0030674846625767015,
+        0.9938650306748466
       ],
       [
-        0.0001714089818306549,
-        0.9996571820363388,
-        0.0001714089818306549
+        0.00017140898183065452,
+        0.00017140898183065452,
+        0.9996571820363386
       ],
       [
-        9.525805406853113e-06,
-        0.9999809483891864,
-        9.525805406853113e-06
+        9.525805406853094e-06,
+        9.525805406853094e-06,
+        0.9999809483891862
       ],
       [
-        5.292209338691478e-07,
-        0.9999989415581324,
-        5.292209338691478e-07
+        5.292209338691467e-07,
+        5.292209338691467e-07,
+        0.9999989415581322
       ],
       [
-        2.940119238888053e-08,
-        0.9999999411976151,
-        2.940119238888053e-08
+        5.292161727404337e-07,
+        9.525891109327795e-06,
+        0.9999899448927179
       ],
       [
-        1.633399673427397e-09,
-        0.9999999967332007,
-        1.633399673427397e-09
+        2.940117769913143e-08,
+        5.292211984899203e-07,
+        0.9999994413776238
       ],
       [
-        9.074443213705247e-11,
-        0.999999999818511,
-        9.074443213705247e-11
+        1.6333996283801303e-09,
+        2.9401193211150926e-08,
+        0.9999999689654072
       ],
       [
-        5.041362897367038e-12,
-        0.9999999999899174,
-        5.041362897367038e-12
+        9.074443201421169e-11,
+        1.6333996762729558e-09,
+        0.9999999982758558
       ],
       [
-        2.8008127207861374e-13,
-        0.99999999999944,
-        2.8008127207861374e-13
+        5.0413628978875846e-12,
+        9.07444321629288e-11,
+        0.9999999999042142
       ],
       [
-        1.5565626226597905e-14,
-        0.9999999999999689,
-        1.5565626226597905e-14
+        2.800812721302038e-13,
+        5.041362898396556e-12,
+        0.9999999999946785
       ],
       [
-        8.70312568144356e-16,
-        0.9999999999999982,
-        8.70312568144356e-16
+        1.556562622953399e-14,
+        2.8008127213454986e-13,
+        0.9999999999997045
       ],
       [
-        1.0,
-        5.390625378579759e-17,
-        5.390625378579759e-17
+        8.70312568307686e-16,
+        1.5565626229701524e-14,
+        0.9999999999999836
       ],
       [
-        8.550347432544347e-18,
-        8.550347432544347e-18,
-        1.0
+        5.3906253794872214e-17,
+        8.703125683167652e-16,
+        0.9999999999999991
       ],
       [
-        6.030574857363599e-18,
-        6.030574857363599e-18,
+        8.550347433048482e-18,
+        5.3906253795375945e-17,
         1.0
       ]
     ],
@@ -131,12 +131,12 @@
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
     "stdout_length": 227,
     "stderr_length": 4652,
-    "output_directory": "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp"
+    "output_directory": "output/12_execute_output/actinf_pomdp_agent/pymdp"
   },
   "collected_outputs": {
     "visualizations": [],
     "simulation_data": [
-      "/Users/4d/Documents/GitHub/generalizednotationnotation/output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/Active Inference POMDP Agent_simulation_results.json"
+      "output/12_execute_output/actinf_pomdp_agent/pymdp/simulation_data/simulation_results.json"
     ],
     "traces": [],
     "other": []

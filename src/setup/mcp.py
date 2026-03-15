@@ -279,7 +279,7 @@ def sync_uv_dependencies_mcp(project_directory: str) -> Dict[str, Any]:
         }
 
 # MCP Registration Function
-def register_tools(mcp_instance):
+def register_tools(mcp_instance: Any) -> None:
     """Register UV-based setup utility tools with the MCP."""
 
     # Generic namespaced tools

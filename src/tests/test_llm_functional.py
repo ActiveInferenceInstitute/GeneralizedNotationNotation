@@ -11,6 +11,7 @@ import sys
 import os
 import logging
 from pathlib import Path
+from typing import Any, Dict, List
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -39,7 +40,7 @@ class TestLLMProcessorInitialization:
     """Test LLMProcessor construction and configuration."""
 
     @pytest.mark.unit
-    def test_default_initialization(self):
+    def test_default_initialization(self) -> None:
         """LLMProcessor should initialize with default provider order."""
         proc = LLMProcessor()
         assert proc.preferred_providers[0] == ProviderType.OLLAMA
@@ -47,40 +48,40 @@ class TestLLMProcessorInitialization:
         assert proc.providers == {}
 
     @pytest.mark.unit
-    def test_custom_provider_order(self):
+    def test_custom_provider_order(self) -> None:
         """LLMProcessor should accept a custom provider ordering."""
         order = [ProviderType.OPENAI, ProviderType.PERPLEXITY]
         proc = LLMProcessor(preferred_providers=order)
         assert proc.preferred_providers == order
 
     @pytest.mark.unit
-    def test_custom_api_keys(self):
+    def test_custom_api_keys(self) -> None:
         """LLMProcessor should store provided API keys."""
         keys = {"openai": "sk-test-123", "ollama": "local"}
         proc = LLMProcessor(api_keys=keys)
         assert proc.api_keys == keys
 
     @pytest.mark.unit
-    def test_get_available_providers_empty_before_init(self):
+    def test_get_available_providers_empty_before_init(self) -> None:
         """Before initialization, no providers should be available."""
         proc = LLMProcessor()
         assert proc.get_available_providers() == []
 
     @pytest.mark.unit
-    def test_get_provider_returns_none_for_missing(self):
+    def test_get_provider_returns_none_for_missing(self) -> None:
         """get_provider should return None for an unregistered provider."""
         proc = LLMProcessor()
         assert proc.get_provider(ProviderType.OPENAI) is None
 
     @pytest.mark.unit
-    def test_get_best_provider_returns_none_when_empty(self):
+    def test_get_best_provider_returns_none_when_empty(self) -> None:
         """get_best_provider_for_task returns None when no providers registered."""
         proc = LLMProcessor()
         result = proc.get_best_provider_for_task(AnalysisType.SUMMARY)
         assert result is None
 
     @pytest.mark.unit
-    def test_get_provider_info_empty(self):
+    def test_get_provider_info_empty(self) -> None:
         """get_provider_info should return empty dict before init."""
         proc = LLMProcessor()
         assert proc.get_provider_info() == {}
@@ -90,7 +91,7 @@ class TestLLMPrompts:
     """Test prompt generation and template system."""
 
     @pytest.mark.unit
-    def test_get_all_prompt_types(self):
+    def test_get_all_prompt_types(self) -> None:
         """get_all_prompt_types should return all PromptType enum values."""
         types = get_all_prompt_types()
         assert isinstance(types, list)
@@ -99,7 +100,7 @@ class TestLLMPrompts:
             assert isinstance(pt, PromptType)
 
     @pytest.mark.unit
-    def test_get_prompt_returns_required_keys(self):
+    def test_get_prompt_returns_required_keys(self) -> None:
         """get_prompt should produce a dict with system_message and user_prompt."""
         sample_gnn = "## GNNSection\nActInfPOMDP\n## ModelName\nTestModel"
         result = get_prompt(PromptType.EXPLAIN_MODEL, sample_gnn)
@@ -109,21 +110,21 @@ class TestLLMPrompts:
         assert len(result["system_message"]) > 0
 
     @pytest.mark.unit
-    def test_get_prompt_inserts_gnn_content(self):
+    def test_get_prompt_inserts_gnn_content(self) -> None:
         """The user_prompt should contain the GNN content passed in."""
         gnn_content = "## StateSpaceBlock\nA[3,3]"
         result = get_prompt(PromptType.SUMMARIZE_CONTENT, gnn_content)
         assert gnn_content in result["user_prompt"]
 
     @pytest.mark.unit
-    def test_get_prompt_title(self):
+    def test_get_prompt_title(self) -> None:
         """get_prompt_title should return a non-empty title string."""
         title = get_prompt_title(PromptType.EXPLAIN_MODEL)
         assert isinstance(title, str)
         assert len(title) > 0
 
     @pytest.mark.unit
-    def test_default_prompt_sequence(self):
+    def test_default_prompt_sequence(self) -> None:
         """get_default_prompt_sequence should return a list of PromptTypes."""
         seq = get_default_prompt_sequence()
         assert isinstance(seq, list)
@@ -132,7 +133,7 @@ class TestLLMPrompts:
             assert isinstance(item, PromptType)
 
     @pytest.mark.unit
-    def test_all_prompt_types_generate_valid_prompt(self):
+    def test_all_prompt_types_generate_valid_prompt(self) -> None:
         """Every implemented PromptType should produce a valid prompt dict."""
         gnn = "## ModelName\nMyModel\n## StateSpaceBlock\ns[3,1]"
         for pt in GNN_ANALYSIS_PROMPTS:
@@ -145,7 +146,7 @@ class TestModelSelection:
     """Test Ollama model selection logic."""
 
     @pytest.mark.unit
-    def test_select_preferred_model(self, monkeypatch):
+    def test_select_preferred_model(self, monkeypatch: Any) -> None:
         """Should pick the first matching preferred model."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
@@ -154,7 +155,7 @@ class TestModelSelection:
         assert selected == "gemma3:4b"
 
     @pytest.mark.unit
-    def test_select_fallback_to_first(self, monkeypatch):
+    def test_select_fallback_to_first(self, monkeypatch: Any) -> None:
         """Should fall back to first model if none match preferences."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
@@ -163,14 +164,14 @@ class TestModelSelection:
         assert selected == "custom-model:latest"
 
     @pytest.mark.unit
-    def test_select_default_when_empty(self, monkeypatch):
+    def test_select_default_when_empty(self, monkeypatch: Any) -> None:
         """Should return default model when no models available."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
         selected = _select_best_ollama_model([], logger)
         assert selected == "gemma3:4b"
 
-    def test_select_from_env_variable(self, monkeypatch):
+    def test_select_from_env_variable(self, monkeypatch: Any) -> None:
         """Should honor OLLAMA_MODEL environment variable."""
         monkeypatch.setattr("llm.processor._get_llm_config", lambda: {})
         logger = logging.getLogger("test")
@@ -189,7 +190,7 @@ class TestModelSelection:
 class TestEnvironmentLoading:
     """Test environment-based configuration helpers."""
 
-    def test_load_api_keys_includes_ollama(self):
+    def test_load_api_keys_includes_ollama(self) -> None:
         """Ollama should be included by default when not disabled."""
         original_env = os.environ.copy()
         os.environ["OPENAI_API_KEY"] = ""
@@ -203,7 +204,7 @@ class TestEnvironmentLoading:
             os.environ.clear()
             os.environ.update(original_env)
 
-    def test_load_api_keys_ollama_disabled(self):
+    def test_load_api_keys_ollama_disabled(self) -> None:
         """When OLLAMA_DISABLED=1, ollama key should not be present."""
         original_env = os.environ.copy()
         os.environ["OLLAMA_DISABLED"] = "1"
@@ -215,7 +216,7 @@ class TestEnvironmentLoading:
             os.environ.update(original_env)
 
     @pytest.mark.unit
-    def test_get_default_provider_configs_structure(self):
+    def test_get_default_provider_configs_structure(self) -> None:
         """Provider configs should contain expected provider keys."""
         configs = get_default_provider_configs()
         assert "ollama" in configs
@@ -224,7 +225,7 @@ class TestEnvironmentLoading:
         assert "perplexity" in configs
 
     @pytest.mark.unit
-    def test_get_preferred_providers_from_env_default(self):
+    def test_get_preferred_providers_from_env_default(self) -> None:
         """Default preferred providers should start with OLLAMA."""
         providers = get_preferred_providers_from_env()
         assert isinstance(providers, list)
@@ -235,14 +236,14 @@ class TestGNNLLMProcessor:
     """Test the specialized GNN LLM processor wrapper."""
 
     @pytest.mark.unit
-    def test_create_gnn_llm_processor(self):
+    def test_create_gnn_llm_processor(self) -> None:
         """create_gnn_llm_processor should return a GNNLLMProcessor."""
         proc = create_gnn_llm_processor()
         assert isinstance(proc, GNNLLMProcessor)
         assert proc.initialized is False
 
     @pytest.mark.unit
-    def test_gnn_processor_not_initialized_returns_error(self):
+    def test_gnn_processor_not_initialized_returns_error(self) -> None:
         """analyze_gnn_model should return error dict when not initialized."""
         import asyncio
         proc = GNNLLMProcessor()

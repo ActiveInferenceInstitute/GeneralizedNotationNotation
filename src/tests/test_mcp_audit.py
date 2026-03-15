@@ -30,7 +30,7 @@ pytestmark = pytest.mark.mcp
 
 
 @pytest.fixture(scope="module")
-def mcp_initialized():
+def mcp_initialized() -> Any:
     """Return a fully initialized MCP instance with all recovery registrations done.
 
     After ``initialize()`` returns, MCP continues registering timed-out modules
@@ -82,7 +82,7 @@ class TestMCPModuleDiscovery:
     )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
-    def test_expected_module_loaded(self, mod_name, all_modules, all_tools):
+    def test_expected_module_loaded(self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]) -> None:
         """Each expected pipeline module must be discovered OR contribute tools.
 
         The fixture now waits for recovery registration to stabilise, so both
@@ -100,7 +100,7 @@ class TestMCPModuleDiscovery:
         )
 
     @pytest.mark.parametrize("mod_name", EXPECTED_MODULES)
-    def test_expected_module_has_tools(self, mod_name, all_modules, all_tools):
+    def test_expected_module_has_tools(self, mod_name: str, all_modules: Dict[str, Any], all_tools: Dict[str, Any]) -> None:
         """Each expected module must contribute at least 1 registered tool."""
         info       = all_modules.get(mod_name)
         from_info  = (info.tools_count >= 1) if info else False
@@ -122,13 +122,13 @@ class TestMCPModuleDiscovery:
 class TestMCPToolRealness:
     """Verify every registered tool has a real, named, callable function."""
 
-    def test_at_least_50_tools_registered(self, all_tools):
+    def test_at_least_50_tools_registered(self, all_tools: Dict[str, Any]) -> None:
         """MCP should register at least 50 tools across all modules."""
         assert len(all_tools) >= 50, (
             f"Only {len(all_tools)} tools registered. Expected ≥50."
         )
 
-    def test_all_tools_have_callable_funcs(self, all_tools):
+    def test_all_tools_have_callable_funcs(self, all_tools: Dict[str, Any]) -> None:
         """Every tool must have a callable backing function (not None)."""
         not_callable = []
         for name, tool in all_tools.items():
@@ -139,7 +139,7 @@ class TestMCPToolRealness:
             f"{len(not_callable)} tools have non-callable func: {not_callable}"
         )
 
-    def test_no_lambda_tools(self, all_tools):
+    def test_no_lambda_tools(self, all_tools: Dict[str, Any]) -> None:
         """No tool may be backed by an anonymous lambda (indicates placeholder)."""
         lambdas = []
         for name, tool in all_tools.items():
@@ -149,7 +149,7 @@ class TestMCPToolRealness:
                 lambdas.append(name)
         assert lambdas == [], f"Tools backed by lambdas (placeholders): {lambdas}"
 
-    def test_all_tools_have_named_functions(self, all_tools):
+    def test_all_tools_have_named_functions(self, all_tools: Dict[str, Any]) -> None:
         """Every tool's backing function must have a proper __name__ attribute."""
         unnamed = []
         for name, tool in all_tools.items():
@@ -159,7 +159,7 @@ class TestMCPToolRealness:
                 unnamed.append(name)
         assert unnamed == [], f"Tools with unnamed functions: {unnamed}"
 
-    def test_all_tools_have_descriptions(self, all_tools):
+    def test_all_tools_have_descriptions(self, all_tools: Dict[str, Any]) -> None:
         """Every tool must have a non-empty description string."""
         undocumented = []
         for name, tool in all_tools.items():
@@ -276,7 +276,7 @@ class TestMCPDomainTools:
     )
 
     @pytest.mark.parametrize("tool_name", DOMAIN_TOOLS)
-    def test_domain_tool_registered(self, tool_name, all_tools):
+    def test_domain_tool_registered(self, tool_name: str, all_tools: Dict[str, Any]) -> None:
         """Each expected domain-specific tool must be registered.
 
         The fixture now waits for all recovery registrations to stabilise.
@@ -289,7 +289,7 @@ class TestMCPDomainTools:
         )
 
     @pytest.mark.parametrize("tool_name", DOMAIN_TOOLS)
-    def test_domain_tool_is_callable(self, tool_name, all_tools):
+    def test_domain_tool_is_callable(self, tool_name: str, all_tools: Dict[str, Any]) -> None:
         """Each domain tool's backing function must be a named callable (not a lambda)."""
         if tool_name not in all_tools:
             pytest.skip(f"Tool '{tool_name}' not registered — see test_domain_tool_registered")
@@ -328,7 +328,7 @@ class TestMCPToolExecution:
     )
 
     @pytest.mark.parametrize("tool_name", ZERO_ARG_TOOLS)
-    def test_zero_arg_tool_executes(self, tool_name, mcp_initialized):
+    def test_zero_arg_tool_executes(self, tool_name: str, mcp_initialized: Any) -> None:
         """Each zero-arg tool must execute without exception and return a dict."""
         if tool_name not in mcp_initialized.tools:
             pytest.skip(f"Tool '{tool_name}' not registered")
@@ -359,7 +359,7 @@ class TestMCPLoggingCoverage:
                and f.parent.parent.name == src.name  # only direct children of src/
         ]
 
-    def test_all_mcp_files_have_register_tools(self):
+    def test_all_mcp_files_have_register_tools(self) -> None:
         """Every submodule mcp.py must define register_tools()."""
         files = self._get_mcp_files()
         assert len(files) >= 20, f"Expected ≥20 mcp.py files, found {len(files)}"
@@ -368,7 +368,7 @@ class TestMCPLoggingCoverage:
             f"mcp.py files missing register_tools: {[f.name for f in missing]}"
         )
 
-    def test_all_register_tools_have_logger_info(self):
+    def test_all_register_tools_have_logger_info(self) -> None:
         """Every register_tools() implementation must call logger.info."""
         files = self._get_mcp_files()
         no_log = []
@@ -389,7 +389,7 @@ class TestMCPLoggingCoverage:
             f"register_tools() missing logger.info in: {no_log}"
         )
 
-    def test_all_mcp_files_have_module_logging(self):
+    def test_all_mcp_files_have_module_logging(self) -> None:
         """Every mcp.py must define a module-level logger."""
         files = self._get_mcp_files()
         no_logger = []
@@ -410,7 +410,7 @@ class TestMCPLoggingCoverage:
 class TestMCPAuditReport:
     """Generate and validate the MCP audit report artifact."""
 
-    def test_generate_audit_report(self, all_tools, all_modules, tmp_path):
+    def test_generate_audit_report(self, all_tools: Dict[str, Any], all_modules: Dict[str, Any], tmp_path: Any) -> None:
         """Generate a full audit JSON report and verify its structure."""
         loaded  = [n for n, i in all_modules.items() if i.status == "loaded"]
         errored = [n for n, i in all_modules.items() if i.status == "error"]

@@ -11,6 +11,7 @@ Tests the GUI module's core functionality including:
 """
 
 import pytest
+from typing import Any, Dict, List
 
 from gui import (
     add_component_to_markdown,
@@ -31,7 +32,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_gui_markdown_helpers_imports(self):
+    def test_gui_markdown_helpers_imports(self) -> None:
         """Test that all GUI markdown helpers are callable."""
         assert callable(add_component_to_markdown)
         assert callable(update_component_states)
@@ -40,7 +41,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_add_component_and_parse(self):
+    def test_add_component_and_parse(self) -> None:
         """Test adding a component and parsing it back."""
         base = "# GNN Model\n\n"
         md = add_component_to_markdown(base, "comp1", "observation", ["s1", "s2"])
@@ -49,7 +50,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_add_multiple_components(self):
+    def test_add_multiple_components(self) -> None:
         """Test adding multiple components to markdown."""
         md = "# GNN Model\n\n"
         md = add_component_to_markdown(md, "obs1", "observation", ["o1", "o2"])
@@ -64,7 +65,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_update_states_append_and_replace(self):
+    def test_update_states_append_and_replace(self) -> None:
         """Test updating component states with append and replace modes."""
         md = (
             "# Title\n\ncomponents:\n"
@@ -78,7 +79,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_remove_component(self):
+    def test_remove_component(self) -> None:
         """Test removing a component from markdown."""
         md = (
             "components:\n"
@@ -91,7 +92,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_remove_nonexistent_component(self):
+    def test_remove_nonexistent_component(self) -> None:
         """Test removing a component that doesn't exist."""
         md = "components:\n  - name: c1\n    type: observation\n"
         md2 = remove_component_from_markdown(md, "nonexistent")
@@ -100,7 +101,7 @@ class TestGUIModuleComprehensive:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_empty_components(self):
+    def test_parse_empty_components(self) -> None:
         """Test parsing markdown with no components."""
         md = "# Just a title\n\nSome text without components"
         comps = parse_components_from_markdown(md)
@@ -112,7 +113,7 @@ class TestStateSpaceManagement:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_state_space_helpers_callable(self):
+    def test_state_space_helpers_callable(self) -> None:
         """Test that state space helpers are callable."""
         assert callable(parse_state_space_from_markdown)
         assert callable(add_state_space_entry)
@@ -121,7 +122,7 @@ class TestStateSpaceManagement:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_add_state_space_entry(self):
+    def test_add_state_space_entry(self) -> None:
         """Test adding a state space entry."""
         md = "# Model\n\n## StateSpaceBlock\n"
         md2 = add_state_space_entry(md, "A", [3, 3], "float")
@@ -129,7 +130,7 @@ class TestStateSpaceManagement:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_update_state_space_entry(self):
+    def test_update_state_space_entry(self) -> None:
         """Test updating a state space entry."""
         md = "## StateSpaceBlock\nA[3,3,type=float]\n"
         md2 = update_state_space_entry(md, "A", [5, 5], "int")
@@ -138,7 +139,7 @@ class TestStateSpaceManagement:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_remove_state_space_entry(self):
+    def test_remove_state_space_entry(self) -> None:
         """Test removing a state space entry."""
         md = "## StateSpaceBlock\nA[3,3,type=float]\nB[2,2,type=int]\n"
         md2 = remove_state_space_entry(md, "A")
@@ -150,14 +151,14 @@ class TestGUIDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_get_available_guis_returns_dict(self):
+    def test_get_available_guis_returns_dict(self) -> None:
         """Test that get_available_guis returns a dictionary."""
         guis = get_available_guis()
         assert isinstance(guis, dict)
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_get_available_guis_has_expected_keys(self):
+    def test_get_available_guis_has_expected_keys(self) -> None:
         """Test that available GUIs include expected types."""
         guis = get_available_guis()
         expected_keys = ["gui_1", "gui_2", "gui_3", "oxdraw"]
@@ -166,7 +167,7 @@ class TestGUIDiscovery:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_gui_info_has_name_and_description(self):
+    def test_gui_info_has_name_and_description(self) -> None:
         """Test that each GUI info dict has name and description."""
         guis = get_available_guis()
         for gui_type, info in guis.items():
@@ -180,13 +181,13 @@ class TestGUIFeatures:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_features_is_dict(self):
+    def test_features_is_dict(self) -> None:
         """Test that FEATURES is a dictionary."""
         assert isinstance(FEATURES, dict)
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_features_has_expected_keys(self):
+    def test_features_has_expected_keys(self) -> None:
         """Test that FEATURES has expected capability flags."""
         expected_features = [
             "form_based_constructor",
@@ -200,7 +201,7 @@ class TestGUIFeatures:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_features_are_booleans(self):
+    def test_features_are_booleans(self) -> None:
         """Test that all feature flags are boolean."""
         for key, value in FEATURES.items():
             assert isinstance(value, bool), f"Feature '{key}' should be boolean"
@@ -211,7 +212,7 @@ class TestGUIErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_add_component_with_empty_states(self):
+    def test_add_component_with_empty_states(self) -> None:
         """Test adding a component with empty states list."""
         md = "# Model\n"
         md2 = add_component_to_markdown(md, "empty_comp", "observation", [])
@@ -219,7 +220,7 @@ class TestGUIErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_parse_malformed_markdown(self):
+    def test_parse_malformed_markdown(self) -> None:
         """Test parsing malformed markdown doesn't raise."""
         malformed = "not: valid: yaml: [[[broken"
         # Should not raise
@@ -232,7 +233,7 @@ class TestGUIErrorHandling:
 
     @pytest.mark.unit
     @pytest.mark.fast
-    def test_update_states_missing_component(self):
+    def test_update_states_missing_component(self) -> None:
         """Test updating states for missing component."""
         md = "components:\n  - name: c1\n"
         result = update_component_states(md, "missing", ["state1"])

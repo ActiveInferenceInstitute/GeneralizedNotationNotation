@@ -32,7 +32,7 @@ except ImportError as e:
 class PipelineValidator:
     """Comprehensive pipeline validator and improvement tester."""
 
-    def __init__(self, verbose: bool = True):
+    def __init__(self, verbose: bool = True) -> None:
         self.verbose = verbose
         self.logger = self._setup_logging()
         self.dependency_manager = get_pipeline_dependency_manager()
@@ -416,7 +416,7 @@ class PipelineValidator:
         return output_path
 
 
-def main():
+def main() -> int:
     """Main function to run comprehensive pipeline validation."""
     validator = PipelineValidator(verbose=True)
 
@@ -446,4 +446,4 @@ def main():
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    raise SystemExit(main())

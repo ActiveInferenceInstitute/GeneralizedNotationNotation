@@ -1,5 +1,0 @@
-Category: validation
-Success: False
-Duration: 2.01s
-Peak Memory: 24.22 MB
-CPU Usage: 0.0%

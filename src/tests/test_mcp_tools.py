@@ -10,6 +10,7 @@ import pytest
 pytestmark = pytest.mark.mcp
 import sys
 from pathlib import Path
+from typing import Any, Dict, List, Optional
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -23,7 +24,7 @@ class TestMCPToolExecution:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_gnn_validate_tool_execution(self, test_mcp_tools, comprehensive_test_data):
+    def test_gnn_validate_tool_execution(self, test_mcp_tools: Any, comprehensive_test_data: Any) -> None:
         """Test GNN validation tool registration (lightweight test)."""
         try:
             from gnn.mcp import register_tools
@@ -45,7 +46,7 @@ class TestMCPToolExecution:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_export_tool_execution(self, test_mcp_tools, comprehensive_test_data):
+    def test_export_tool_execution(self, test_mcp_tools: Any, comprehensive_test_data: Any) -> None:
         """Test export tool registration (lightweight test)."""
         try:
             from export.mcp import register_tools
@@ -67,7 +68,7 @@ class TestMCPToolExecution:
 
     @pytest.mark.unit
     @pytest.mark.safe_to_fail
-    def test_utils_system_info_execution(self, test_mcp_tools):
+    def test_utils_system_info_execution(self, test_mcp_tools: Any) -> None:
         """Test utils system info tool registration (lightweight test)."""
         try:
             from utils.mcp import register_tools

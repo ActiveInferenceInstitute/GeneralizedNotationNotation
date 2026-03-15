@@ -2,11 +2,12 @@
 import pytest
 import json
 import csv
+from typing import Any
 from analysis.post_simulation import extract_activeinference_jl_data, extract_discopy_data
 
 
 @pytest.fixture
-def temp_activeinference_output(tmp_path):
+def temp_activeinference_output(tmp_path: Any) -> Any:
     """Create a temporary ActiveInference.jl output structure."""
     impl_dir = tmp_path / "activeinference_jl"
     impl_dir.mkdir()
@@ -31,7 +32,7 @@ def temp_activeinference_output(tmp_path):
     return impl_dir
 
 @pytest.fixture
-def temp_discopy_output(tmp_path):
+def temp_discopy_output(tmp_path: Any) -> Any:
     """Create a temporary DisCoPy output structure."""
     impl_dir = tmp_path / "discopy"
     impl_dir.mkdir()
@@ -65,7 +66,7 @@ def temp_discopy_output(tmp_path):
 
     return impl_dir
 
-def test_extract_activeinference_jl_data(temp_activeinference_output):
+def test_extract_activeinference_jl_data(temp_activeinference_output: Any) -> None:
     """Test extracting data from ActiveInference.jl CSV."""
     execution_result = {
         "implementation_directory": str(temp_activeinference_output),
@@ -82,7 +83,7 @@ def test_extract_activeinference_jl_data(temp_activeinference_output):
     assert extracted["actions"][0] == 2.0
     assert extracted["beliefs"][0] == [0.9, 0.1, 0.0]
 
-def test_extract_discopy_data(temp_discopy_output):
+def test_extract_discopy_data(temp_discopy_output: Any) -> None:
     """Test extracting data from DisCoPy report."""
     execution_result = {
         "implementation_directory": str(temp_discopy_output),

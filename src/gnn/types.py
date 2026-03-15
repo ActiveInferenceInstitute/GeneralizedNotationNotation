@@ -46,7 +46,7 @@ class ValidationResult:
     semantic_checksum: Optional[str] = None
     performance_metrics: Dict[str, float] = field(default_factory=dict)
 
-    def add_round_trip_result(self, result):
+    def add_round_trip_result(self, result: Any) -> None:
         self.round_trip_results.append(result)
         if not result.success:
             self.errors.extend(result.errors)
@@ -134,7 +134,7 @@ class RoundTripResult:
     checksum_original: Optional[str] = None
     checksum_converted: Optional[str] = None
 
-    def add_difference(self, diff: str):
+    def add_difference(self, diff: str) -> None:
         self.differences.append(diff)
         self.success = False
 
@@ -158,7 +158,7 @@ class ComprehensiveTestReport:
     semantic_differences: List[str] = field(default_factory=list)
     critical_errors: List[str] = field(default_factory=list)
 
-    def add_result(self, result: RoundTripResult):
+    def add_result(self, result: RoundTripResult) -> None:
         self.round_trip_results.append(result)
         self.total_tests += 1
         if result.success:

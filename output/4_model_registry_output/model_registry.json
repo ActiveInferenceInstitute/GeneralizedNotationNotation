@@ -1,18 +1,18 @@
 {
   "version": "1.0.0",
-  "updated_at": "2026-03-13T11:37:10.744791",
+  "updated_at": "2026-03-15T13:53:25.191053",
   "models": {
     "simple_mdp": {
       "model_id": "simple_mdp",
       "name": "GNN Example: Simple MDP (Fully Observable)",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928330",
-      "updated_at": "2026-03-13T11:37:10.744332",
+      "created_at": "2026-03-15T13:53:25.190500",
+      "updated_at": "2026-03-15T13:53:25.190607",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md",
-          "created_at": "2026-03-13T11:37:10.744229",
+          "file_path": "input/gnn_files/discrete/simple_mdp.md",
+          "created_at": "2026-03-15T13:53:25.190526",
           "metadata": {},
           "hash": "36ae32ba9404ca2f0ae5fc575cecb7d645c95088f04399d53fc2f947b6b0cb3c"
         }
@@ -25,13 +25,13 @@
       "model_id": "multi_armed_bandit",
       "name": "GNN Example: Multi-Armed Bandit",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928531",
-      "updated_at": "2026-03-13T11:37:10.744442",
+      "created_at": "2026-03-15T13:53:25.190675",
+      "updated_at": "2026-03-15T13:53:25.190698",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md",
-          "created_at": "2026-03-13T11:37:10.744416",
+          "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
+          "created_at": "2026-03-15T13:53:25.190677",
           "metadata": {},
           "hash": "14590a5fb0c59081ee201da2fd8dc0951f6f146b736836633e1ba25deb5b8c1a"
         }
@@ -44,13 +44,13 @@
       "model_id": "deep_planning_horizon",
       "name": "GNN Example: Deep Planning Horizon POMDP",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928592",
-      "updated_at": "2026-03-13T11:37:10.744502",
+      "created_at": "2026-03-15T13:53:25.190731",
+      "updated_at": "2026-03-15T13:53:25.190752",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md",
-          "created_at": "2026-03-13T11:37:10.744480",
+          "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
+          "created_at": "2026-03-15T13:53:25.190733",
           "metadata": {},
           "hash": "e8b373d391621f25c2f26f9a15e0d8d470f01b028ce83d129e1a08bdf8ad3e3b"
         }
@@ -63,13 +63,13 @@
       "model_id": "actinf_pomdp_agent",
       "name": "GNN Example: Active Inference POMDP Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928649",
-      "updated_at": "2026-03-13T11:37:10.744560",
+      "created_at": "2026-03-15T13:53:25.190783",
+      "updated_at": "2026-03-15T13:53:25.190803",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md",
-          "created_at": "2026-03-13T11:37:10.744537",
+          "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
+          "created_at": "2026-03-15T13:53:25.190784",
           "metadata": {},
           "hash": "76291fde1990d152b0b21fff1733fc7cca5eb61eb16972fb0b4e606cf41df804"
         }
@@ -82,13 +82,13 @@
       "model_id": "hmm_baseline",
       "name": "GNN Example: Hidden Markov Model Baseline",
       "description": "HiddenMarkovModel",
-      "created_at": "2026-03-06T14:34:57.928706",
-      "updated_at": "2026-03-13T11:37:10.744618",
+      "created_at": "2026-03-15T13:53:25.190837",
+      "updated_at": "2026-03-15T13:53:25.190855",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md",
-          "created_at": "2026-03-13T11:37:10.744596",
+          "file_path": "input/gnn_files/discrete/hmm_baseline.md",
+          "created_at": "2026-03-15T13:53:25.190838",
           "metadata": {},
           "hash": "a13b695360a4d62cf4104d1404a74aa1ceb8514682469ab3296d166f7fff8265"
         }
@@ -101,13 +101,13 @@
       "model_id": "two_state_bistable",
       "name": "GNN Example: Two-State Bistable POMDP",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928754",
-      "updated_at": "2026-03-13T11:37:10.744665",
+      "created_at": "2026-03-15T13:53:25.190880",
+      "updated_at": "2026-03-15T13:53:25.190898",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md",
-          "created_at": "2026-03-13T11:37:10.744645",
+          "file_path": "input/gnn_files/discrete/two_state_bistable.md",
+          "created_at": "2026-03-15T13:53:25.190882",
           "metadata": {},
           "hash": "9d99b874a8f3a4b57098ee79c0b63613ab3f70f395a8b9320ce9f3d799c95361"
         }
@@ -120,13 +120,13 @@
       "model_id": "markov_chain",
       "name": "GNN Example: Markov Chain (Passive Dynamics)",
       "description": "HiddenMarkovModel",
-      "created_at": "2026-03-06T14:34:57.928803",
-      "updated_at": "2026-03-13T11:37:10.744711",
+      "created_at": "2026-03-15T13:53:25.190924",
+      "updated_at": "2026-03-15T13:53:25.190942",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md",
-          "created_at": "2026-03-13T11:37:10.744693",
+          "file_path": "input/gnn_files/discrete/markov_chain.md",
+          "created_at": "2026-03-15T13:53:25.190926",
           "metadata": {},
           "hash": "0614662a15ff5ceb77b0d3002a10099b6b96e86b22757ea91c07edfb964ebcfb"
         }
@@ -139,53 +139,15 @@
       "model_id": "tmaze_epistemic",
       "name": "GNN Example: T-Maze Epistemic Foraging Agent",
       "description": "ActInfPOMDP",
-      "created_at": "2026-03-06T14:34:57.928850",
-      "updated_at": "2026-03-13T11:37:10.744764",
+      "created_at": "2026-03-15T13:53:25.190967",
+      "updated_at": "2026-03-15T13:53:25.190988",
       "versions": {
         "1.0": {
           "version": "1.0",
-          "file_path": "/Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md",
-          "created_at": "2026-03-13T11:37:10.744742",
+          "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
+          "created_at": "2026-03-15T13:53:25.190969",
           "metadata": {},
           "hash": "6c7270ac428fcb9e92de8b9e798e65869334247e8b4f115ed705bf23d71bcd0c"
-        }
-      },
-      "tags": [],
-      "metadata": {},
-      "current_version": "1.0"
-    },
-    "static_perception": {
-      "model_id": "static_perception",
-      "name": "GNN Example: Static Perception Model",
-      "description": "ActiveInferencePerception",
-      "created_at": "2026-03-13T11:12:25.391205",
-      "updated_at": "2026-03-13T11:12:25.391306",
-      "versions": {
-        "1.0": {
-          "version": "1.0",
-          "file_path": "input/gnn_files/basics/static_perception.md",
-          "created_at": "2026-03-13T11:12:25.391228",
-          "metadata": {},
-          "hash": "5bdf61e8d8c20a935957c41900b40d9edb19e8eac8b237b85e604b158c0c8d70"
-        }
-      },
-      "tags": [],
-      "metadata": {},
-      "current_version": "1.0"
-    },
-    "dynamic_perception": {
-      "model_id": "dynamic_perception",
-      "name": "GNN Example: Dynamic Perception Model",
-      "description": "ActiveInferencePerception",
-      "created_at": "2026-03-13T11:12:25.391378",
-      "updated_at": "2026-03-13T11:12:25.391402",
-      "versions": {
-        "1.0": {
-          "version": "1.0",
-          "file_path": "input/gnn_files/basics/dynamic_perception.md",
-          "created_at": "2026-03-13T11:12:25.391381",
-          "metadata": {},
-          "hash": "b0abd0b673915c98093150d78c1b4b1442287c7bc094f1fe42b07a1730f2258c"
         }
       },
       "tags": [],

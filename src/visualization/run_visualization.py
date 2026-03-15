@@ -18,7 +18,7 @@ if str(parent_dir) not in sys.path:
 from visualization import GNNVisualizer
 
 
-def main():
+def main() -> int:
     """Run the visualization on GNN examples."""
     parser = argparse.ArgumentParser(description='Generate visualizations for GNN examples.')
     parser.add_argument('--input', '-i', type=str, default=str(parent_dir.parent / 'input' / 'gnn_files'),
