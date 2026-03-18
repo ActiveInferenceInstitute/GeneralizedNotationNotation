@@ -156,11 +156,7 @@ graph TD
 
     S23 --> S24[24 AI Analysis]
 
-    style S3 fill:#4CAF50,color:#fff
-    style S11 fill:#2196F3,color:#fff
-    style S12 fill:#2196F3,color:#fff
-    style S16 fill:#FF9800,color:#fff
-    style S23 fill:#9C27B0,color:#fff
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 ---

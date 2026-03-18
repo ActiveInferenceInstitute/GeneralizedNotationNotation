@@ -3,33 +3,24 @@
 Test MCP Performance - Performance tests for MCP (Model Context Protocol) module.
 
 Tests performance characteristics of MCP tool registration, execution, and throughput.
-These tests require the MCP SDK to be available and will be skipped if it's not installed.
+These tests require the MCP SDK (in-repo src/mcp/sdk/) to be available; they fail if missing.
 """
 
 import pytest
-
-pytestmark = pytest.mark.mcp
 import sys
 import time
 from pathlib import Path
 
+pytestmark = pytest.mark.mcp
+
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import MCP exception for skip handling
-try:
-    from mcp import MCPSDKNotFoundError
-except ImportError:
-    MCPSDKNotFoundError = Exception  # Recovery
 
-
-def _safe_initialize() -> None:
-    """Initialize MCP, skipping test if SDK not available."""
+def _require_mcp_sdk() -> None:
+    """Initialize MCP; raise if SDK not available (required, no skip)."""
     from mcp import initialize
-    try:
-        initialize()
-    except MCPSDKNotFoundError:
-        pytest.skip("MCP SDK not available")
+    initialize()
 
 
 class TestMCPToolRegistrationPerformance:
@@ -38,15 +29,10 @@ class TestMCPToolRegistrationPerformance:
     @pytest.mark.slow
     def test_tool_registration_speed(self) -> None:
         """Test that tool registration completes in reasonable time."""
-        from mcp import list_available_tools, initialize
+        from mcp import list_available_tools
 
         start_time = time.time()
-
-        try:
-            initialize()
-        except MCPSDKNotFoundError:
-            pytest.skip("MCP SDK not available")
-
+        _require_mcp_sdk()
         tools = list_available_tools()
         elapsed = time.time() - start_time
 
@@ -59,19 +45,12 @@ class TestMCPToolRegistrationPerformance:
         """Test that repeated initialization is efficient."""
         from mcp import initialize
 
+        _require_mcp_sdk()
         times = []
-        for i in range(3):
+        for _ in range(3):
             start = time.time()
-            try:
-                initialize()
-            except MCPSDKNotFoundError:
-                if i == 0:
-                    pytest.skip("MCP SDK not available")
-                break
+            initialize()
             times.append(time.time() - start)
-
-        if not times:
-            pytest.skip("MCP SDK not available")
 
         # Subsequent calls should be faster (cached)
         avg_time = sum(times) / len(times)
@@ -86,7 +65,7 @@ class TestMCPToolExecutionPerformance:
         """Test tool lookup is fast."""
         from mcp import list_available_tools
 
-        _safe_initialize()
+        _require_mcp_sdk()
 
         start = time.time()
         for _ in range(100):
@@ -101,7 +80,7 @@ class TestMCPToolExecutionPerformance:
         """Test module discovery performance."""
         from mcp import get_mcp_instance
 
-        _safe_initialize()
+        _require_mcp_sdk()
 
         start = time.time()
         mcp = get_mcp_instance()
@@ -123,7 +102,7 @@ class TestMCPThroughput:
         from mcp import list_available_tools
         import threading
 
-        _safe_initialize()
+        _require_mcp_sdk()
         results = []
         errors = []
 
@@ -151,7 +130,7 @@ class TestMCPThroughput:
         """Test that tool count remains consistent."""
         from mcp import list_available_tools
 
-        _safe_initialize()
+        _require_mcp_sdk()
 
         counts = []
         for _ in range(10):
@@ -171,7 +150,7 @@ class TestMCPMemoryPerformance:
         """Test that MCP operations don't leak memory."""
         from mcp import list_available_tools
 
-        _safe_initialize()
+        _require_mcp_sdk()
         initial_tools = list_available_tools()
 
         # Perform many operations
@@ -189,32 +168,26 @@ class TestMCPServerPerformance:
     @pytest.mark.slow
     def test_server_creation_speed(self) -> None:
         """Test MCP server can be created quickly."""
-        try:
-            from mcp import create_mcp_server
+        from mcp import create_mcp_server
 
-            start = time.time()
-            server = create_mcp_server()
-            elapsed = time.time() - start
+        _require_mcp_sdk()
+        start = time.time()
+        server = create_mcp_server()
+        elapsed = time.time() - start
 
-            assert elapsed < 2.0, f"Server creation took {elapsed:.2f}s"
-        except (ImportError, MCPSDKNotFoundError):
-            pytest.skip("MCP server not available")
+        assert elapsed < 2.0, f"Server creation took {elapsed:.2f}s"
 
     @pytest.mark.slow
     def test_resource_listing_performance(self) -> None:
         """Test resource listing performance."""
-        try:
-            from mcp import list_available_resources
+        from mcp import list_available_resources
 
-            _safe_initialize()
+        _require_mcp_sdk()
+        start = time.time()
+        resources = list_available_resources()
+        elapsed = time.time() - start
 
-            start = time.time()
-            resources = list_available_resources()
-            elapsed = time.time() - start
-
-            assert elapsed < 1.0, f"Resource listing took {elapsed:.2f}s"
-        except (ImportError, AttributeError, MCPSDKNotFoundError):
-            pytest.skip("Resource listing not available")
+        assert elapsed < 1.0, f"Resource listing took {elapsed:.2f}s"
 
 
 class TestMCPBenchmarks:
@@ -225,19 +198,12 @@ class TestMCPBenchmarks:
         """Benchmark MCP initialization."""
         from mcp import initialize
 
+        _require_mcp_sdk()
         times = []
-        for i in range(5):
+        for _ in range(5):
             start = time.time()
-            try:
-                initialize()
-            except MCPSDKNotFoundError:
-                if i == 0:
-                    pytest.skip("MCP SDK not available")
-                break
+            initialize()
             times.append(time.time() - start)
-
-        if not times:
-            pytest.skip("MCP SDK not available")
 
         avg = sum(times) / len(times)
         min_time = min(times)
@@ -254,7 +220,7 @@ class TestMCPBenchmarks:
         """Benchmark tool execution overhead."""
         from mcp import list_available_tools
 
-        _safe_initialize()
+        _require_mcp_sdk()
         tools = list_available_tools()
 
         if not tools:

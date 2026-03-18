@@ -11,9 +11,9 @@ Comprehensive analysis of identified areas for improvement, streamlining, and en
 
 For current pipeline implementation and standards:
 
-- **[src/AGENTS.md](../../../README.md)**: Master agent scaffolding and complete 25-step pipeline registry
-- **[src/README.md](../README.md)**: Pipeline architecture and thin orchestrator pattern
-- **[src/main.py](../../src/main.py)**: Pipeline orchestrator implementation
+- **[src/AGENTS.md](../../../src/AGENTS.md)**: Master agent scaffolding and complete 25-step pipeline registry
+- **[src/README.md](../../../src/README.md)**: Pipeline architecture and thin orchestrator pattern
+- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator implementation
 - **[architecture_reference.md](../reference/architecture_reference.md)**: Implementation patterns and cross-module data flow
 
 - 25 steps (0-24): All operational with 100% success rate

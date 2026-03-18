@@ -245,8 +245,7 @@ GNN Files → Syntax Validation → Type Checking → Resource Estimation → Op
 ## Testing
 
 ### Test Files
-- `src/tests/test_type_checker_integration.py` - Integration tests
-- `src/tests/test_type_checker_validation.py` - Validation tests
+- `src/tests/test_type_checker_overall.py` - Module-level tests
 
 ### Test Coverage
 - **Current**: 88%

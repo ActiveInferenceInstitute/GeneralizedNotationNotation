@@ -7,8 +7,8 @@
 - 2 actions: push-left or push-right.
 - The agent prefers observation 1 (&quot;right&quot;) over observation 0 (&quot;left&quot;).
 - Tests the absolute smallest POMDP with full active inference structure.</annotation>
-    <created_at>2026-03-15T13:53:23.907461</created_at>
-    <modified_at>2026-03-15T13:53:23.907461</modified_at>
+    <created_at>2026-03-17T16:46:47.410072</created_at>
+    <modified_at>2026-03-17T16:46:47.410073</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="2,2" name="A" type="likelihood_matrix" description="Noisy observation of state"/>

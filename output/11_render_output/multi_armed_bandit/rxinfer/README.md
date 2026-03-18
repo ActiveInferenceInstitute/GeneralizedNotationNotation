@@ -12,7 +12,7 @@ Generated from GNN POMDP Model: **Multi Armed Bandit Agent**
 - Context switches slowly (sticky transitions), testing exploration vs exploitation.
 - The agent prefers big-reward observations (observation 2).
 - Tests the bandit structure: meaningful actions despite nearly-static state dynamics.
-- **Generation Date**: 2026-03-15 13:54:01
+- **Generation Date**: 2026-03-17 16:47:28
 
 ## POMDP Dimensions
 

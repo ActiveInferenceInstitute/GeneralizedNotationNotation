@@ -231,8 +231,8 @@ Model Content → Structure Validation → Semantic Validation → Performance P
 ## Testing
 
 ### Test Files
-- `src/tests/test_validation_integration.py` - Integration tests
-- `src/tests/test_validation_functionality.py` - Functionality tests
+- `src/tests/test_validation_overall.py` - Module-level validation tests
+- `src/tests/test_gnn_validation.py` - GNN validation-focused tests (shared)
 
 ### Test Coverage
 - **Current**: 82%

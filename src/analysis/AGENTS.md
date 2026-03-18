@@ -257,9 +257,9 @@ GNN Files → Analysis → Statistical Reports → Model Comparisons → Optimiz
 ## Testing
 
 ### Test Files
-- `src/tests/test_analysis_integration.py` - Integration tests
-- `src/tests/test_analysis_unit.py` - Unit tests
-- `src/tests/test_analysis_performance.py` - Performance tests
+- `src/tests/test_analysis_overall.py` - Module-level tests
+- `src/tests/test_analysis_post_simulation.py` - Post-simulation analysis tests
+- `src/tests/test_analysis_extraction.py` - Result extraction tests
 
 ### Test Coverage
 - **Current**: 80%

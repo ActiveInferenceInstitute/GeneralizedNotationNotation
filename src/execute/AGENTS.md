@@ -281,8 +281,9 @@ output/12_execute_output/
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_integration.py`
-- `src/tests/test_execute_pymdp.py`
+- `src/tests/test_execute_overall.py`
+- `src/tests/test_execute_pymdp_integration.py`
+- `src/tests/test_execute_pymdp_package.py`
 
 ### Test Coverage
 - **Current**: 79%

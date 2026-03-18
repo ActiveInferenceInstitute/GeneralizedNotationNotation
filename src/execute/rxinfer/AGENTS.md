@@ -443,9 +443,7 @@ RxInfer.jl Code Generation → Julia Environment Setup → Model Compilation →
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_rxinfer_integration.py` - Integration tests
-- `src/tests/test_execute_rxinfer_inference.py` - Inference tests
-- `src/tests/test_execute_rxinfer_performance.py` - Performance tests
+- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
 - **Current**: 75%

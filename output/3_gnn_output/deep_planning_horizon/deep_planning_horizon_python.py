@@ -6,7 +6,7 @@ An Active Inference POMDP with deep (T=5) planning horizon:
 - 4 hidden states, 4 observations, 4 actions
 - Each action policy is a sequence of T actions: π = [a_1, a_2, ..., a_T]
 - Enables sophisticated multi-step reasoning and delayed reward attribution
-Generated: 2026-03-15T13:53:23.883936
+Generated: 2026-03-17T16:46:47.383552
 """
 
 import numpy as np

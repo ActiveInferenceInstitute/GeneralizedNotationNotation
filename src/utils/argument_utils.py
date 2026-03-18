@@ -103,6 +103,9 @@ class PipelineArguments:
 
     # Execution options
     frameworks: str = "all"
+    render_output_dir: Optional[Path] = None
+    distributed: bool = False
+    backend: str = "ray"
 
     # Audio generation options
     duration: float = 30.0
@@ -141,6 +144,9 @@ class PipelineArguments:
             self.pipeline_summary_file = self.output_dir / "pipeline_execution_summary.json"
         elif isinstance(self.pipeline_summary_file, str):
             self.pipeline_summary_file = Path(self.pipeline_summary_file)
+
+        if self.render_output_dir is not None and isinstance(self.render_output_dir, str):
+            self.render_output_dir = Path(self.render_output_dir)
 
     def validate(self) -> List[str]:
         """Validate argument values and return list of errors."""
@@ -289,6 +295,25 @@ class ArgumentParser:
             default='all',
             help_text='Frameworks to execute (all, lite, or comma-separated list: pymdp,jax,discopy,rxinfer,activeinference_jl)'
         ),
+        'render_output_dir': ArgumentDefinition(
+            flag='--render-output-dir',
+            arg_type=Path,
+            default=None,
+            help_text='Explicit path to 11_render_output directory (avoids filesystem heuristics)'
+        ),
+        'distributed': ArgumentDefinition(
+            flag='--distributed',
+            action='store_true',
+            default=False,
+            help_text='Enable distributed execution for step 12 (if supported)'
+        ),
+        'backend': ArgumentDefinition(
+            flag='--backend',
+            arg_type=str,
+            default='ray',
+            choices=['ray', 'dask'],
+            help_text='Distributed backend for step 12 (ray or dask)'
+        ),
         'recreate_venv': ArgumentDefinition(
             flag='--recreate-uv-env',
             action='store_true',
@@ -374,7 +399,7 @@ class ArgumentParser:
         "9_advanced_viz.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "10_ontology.py": ["target_dir", "output_dir", "recursive", "verbose", "ontology_terms_file"],
         "11_render.py": ["target_dir", "output_dir", "recursive", "verbose", "timesteps", "simulation_params"],
-        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose", "timeout"],
+        "12_execute.py": ["target_dir", "output_dir", "recursive", "verbose", "frameworks", "timeout", "render_output_dir", "distributed", "backend"],
         "13_llm.py": ["target_dir", "output_dir", "recursive", "verbose", "llm_tasks", "llm_timeout"],
         "14_ml_integration.py": ["target_dir", "output_dir", "recursive", "verbose"],
         "15_audio.py": ["target_dir", "output_dir", "recursive", "verbose", "duration", "audio_backend"],

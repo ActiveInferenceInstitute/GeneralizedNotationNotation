@@ -254,8 +254,7 @@ Pipeline Artifacts → Content Extraction → Template Processing → Asset Embe
 ## Testing
 
 ### Test Files
-- `src/tests/test_website_integration.py` - Integration tests
-- `src/tests/test_website_generation.py` - Generation tests
+- `src/tests/test_website_overall.py` - Module-level tests
 
 ### Test Coverage
 - **Current**: 79%

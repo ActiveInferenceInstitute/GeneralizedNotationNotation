@@ -1,0 +1,191 @@
+================================================= test session starts ==================================================
+collecting ... collected 15 items
+
+src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizationModule::test_module_imports PASSED
+src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizationModule::test_visualization_functions PASSED
+src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizer::test_visualizer_instantiation PASSED
+src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizer::test_visualizer_methods PASSED
+src/tests/test_advanced_visualization_overall.py::TestDashboardGenerator::test_dashboard_generator_instantiation PASSED
+src/tests/test_advanced_visualization_overall.py::TestDashboardGenerator::test_generate_dashboard_function 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:54 [   ERROR] gnn.parsers.system: Parsing failed for format GNNFormat.MARKDOWN: 'GNNParserValidationResult' object has no attribute 'is_valid'
+PASSED
+src/tests/test_advanced_visualization_overall.py::TestVisualizationDataExtractor::test_extractor_instantiation PASSED
+src/tests/test_advanced_visualization_overall.py::TestVisualizationDataExtractor::test_extract_visualization_data PASSED
+src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_d2_availability_flag PASSED
+src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_d2_visualizer_import PASSED
+src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_process_gnn_file_with_d2 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:54 [   ERROR] advanced_visualization.d2_visualizer: Failed to parse GNN file: cannot import name 'parse_gnn_file' from 'gnn.parser' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/gnn/parser.py)
+PASSED
+src/tests/test_advanced_visualization_overall.py::TestProcessAdvancedViz::test_process_advanced_viz 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:54 [    INFO] test_adv_viz: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_adv_viz: ADVANCED VISUALIZATION PROCESSING
+2026-03-17 16:46:54 [    INFO] test_adv_viz: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_adv_viz: plotly not available - interactive visualizations will be limited
+2026-03-17 16:46:54 [    INFO] test_adv_viz: Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
+2026-03-17 16:46:54 [    INFO] test_adv_viz: Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [    INFO] test_adv_viz: Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [ WARNING] test_adv_viz: GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json
+2026-03-17 16:46:54 [    INFO] test_adv_viz: Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
+2026-03-17 16:46:54 [ WARNING] test_adv_viz: No GNN models found for advanced visualization
+2026-03-17 16:46:54 [    INFO] test_adv_viz: Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/adv_viz_output/advanced_viz_summary.json
+PASSED
+src/tests/test_advanced_visualization_overall.py::TestProcessAdvancedViz::test_process_with_viz_types 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: ADVANCED VISUALIZATION PROCESSING
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: plotly not available - interactive visualizations will be limited
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [ WARNING] test_viz_types: GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [ WARNING] test_viz_types: No GNN models found for advanced visualization
+2026-03-17 16:46:54 [    INFO] test_viz_types: Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: ADVANCED VISUALIZATION PROCESSING
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: plotly not available - interactive visualizations will be limited
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [ WARNING] test_viz_types: GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [ WARNING] test_viz_types: No GNN models found for advanced visualization
+2026-03-17 16:46:54 [    INFO] test_viz_types: Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: ADVANCED VISUALIZATION PROCESSING
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: plotly not available - interactive visualizations will be limited
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [ WARNING] test_viz_types: GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [ WARNING] test_viz_types: No GNN models found for advanced visualization
+2026-03-17 16:46:54 [    INFO] test_viz_types: Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: ADVANCED VISUALIZATION PROCESSING
+2026-03-17 16:46:54 [    INFO] test_viz_types: ================================================================================
+2026-03-17 16:46:54 [    INFO] test_viz_types: plotly not available - interactive visualizations will be limited
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [    INFO] test_viz_types: Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+2026-03-17 16:46:54 [ WARNING] test_viz_types: GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+2026-03-17 16:46:54 [    INFO] test_viz_types: Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+2026-03-17 16:46:54 [ WARNING] test_viz_types: No GNN models found for advanced visualization
+2026-03-17 16:46:54 [    INFO] test_viz_types: Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+PASSED
+src/tests/test_advanced_visualization_overall.py::TestVisualizationCreation::test_create_default_visualization PASSED
+src/tests/test_advanced_visualization_overall.py::TestVisualizationCreation::test_create_network_visualization PASSED
+
+======================================================== PASSES ========================================================
+_______________________________ TestDashboardGenerator.test_generate_dashboard_function ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:230 Parsed variable 'hidden_states' with dimensions [10], type=None
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:196 Parsed variable: hidden_states with dimensions [10]
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:230 Parsed variable 'observations' with dimensions [5], type=None
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:196 Parsed variable: observations with dimensions [5]
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:273 Parsed connection: ['hidden_states'] -> ['observations']
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:273 Parsed connection: ['observations'] -> ['hidden_states']
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:153 Unknown section 'Parameters' stored as extension
+ERROR    gnn.parsers.system:system.py:219 Parsing failed for format GNNFormat.MARKDOWN: 'GNNParserValidationResult' object has no attribute 'is_valid'
+____________________________ TestVisualizationDataExtractor.test_extract_visualization_data ____________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:230 Parsed variable 'hidden_states' with dimensions [10], type=None
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:196 Parsed variable: hidden_states with dimensions [10]
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:230 Parsed variable 'observations' with dimensions [5], type=None
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:196 Parsed variable: observations with dimensions [5]
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:273 Parsed connection: ['hidden_states'] -> ['observations']
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:273 Parsed connection: ['observations'] -> ['hidden_states']
+DEBUG    gnn.parsers.markdown_parser:markdown_parser.py:153 Unknown section 'Parameters' stored as extension
+__________________________________ TestD2Visualization.test_process_gnn_file_with_d2 ___________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+ERROR    advanced_visualization.d2_visualizer:d2_visualizer.py:845 Failed to parse GNN file: cannot import name 'parse_gnn_file' from 'gnn.parser' (/Users/4d/Documents/GitHub/generalizednotationnotation/src/gnn/parser.py)
+___________________________________ TestProcessAdvancedViz.test_process_advanced_viz ___________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     test_adv_viz:processor.py:344 ================================================================================
+INFO     test_adv_viz:processor.py:345 ADVANCED VISUALIZATION PROCESSING
+INFO     test_adv_viz:processor.py:346 ================================================================================
+INFO     test_adv_viz:processor.py:131 plotly not available - interactive visualizations will be limited
+DEBUG    test_adv_viz:processor.py:141 bokeh not available - will use plotly recovery
+INFO     test_adv_viz:processor.py:161 Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
+INFO     test_adv_viz:processor.py:165 Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json (exists: False)
+INFO     test_adv_viz:processor.py:170 Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+WARNING  test_adv_viz:processor.py:176 GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output/gnn_processing_results.json
+INFO     test_adv_viz:processor.py:179 Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/3_gnn_output
+WARNING  test_adv_viz:processor.py:366 No GNN models found for advanced visualization
+INFO     test_adv_viz:processor.py:305 Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejhqmi7t/adv_viz_output/advanced_viz_summary.json
+__________________________________ TestProcessAdvancedViz.test_process_with_viz_types __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     test_viz_types:processor.py:344 ================================================================================
+INFO     test_viz_types:processor.py:345 ADVANCED VISUALIZATION PROCESSING
+INFO     test_viz_types:processor.py:346 ================================================================================
+INFO     test_viz_types:processor.py:131 plotly not available - interactive visualizations will be limited
+DEBUG    test_viz_types:processor.py:141 bokeh not available - will use plotly recovery
+INFO     test_viz_types:processor.py:161 Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+INFO     test_viz_types:processor.py:165 Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+INFO     test_viz_types:processor.py:170 Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+WARNING  test_viz_types:processor.py:176 GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+INFO     test_viz_types:processor.py:179 Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+WARNING  test_viz_types:processor.py:366 No GNN models found for advanced visualization
+INFO     test_viz_types:processor.py:305 Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+INFO     test_viz_types:processor.py:344 ================================================================================
+INFO     test_viz_types:processor.py:345 ADVANCED VISUALIZATION PROCESSING
+INFO     test_viz_types:processor.py:346 ================================================================================
+INFO     test_viz_types:processor.py:131 plotly not available - interactive visualizations will be limited
+DEBUG    test_viz_types:processor.py:141 bokeh not available - will use plotly recovery
+INFO     test_viz_types:processor.py:161 Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+INFO     test_viz_types:processor.py:165 Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+INFO     test_viz_types:processor.py:170 Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+WARNING  test_viz_types:processor.py:176 GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+INFO     test_viz_types:processor.py:179 Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+WARNING  test_viz_types:processor.py:366 No GNN models found for advanced visualization
+INFO     test_viz_types:processor.py:305 Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+INFO     test_viz_types:processor.py:344 ================================================================================
+INFO     test_viz_types:processor.py:345 ADVANCED VISUALIZATION PROCESSING
+INFO     test_viz_types:processor.py:346 ================================================================================
+INFO     test_viz_types:processor.py:131 plotly not available - interactive visualizations will be limited
+DEBUG    test_viz_types:processor.py:141 bokeh not available - will use plotly recovery
+INFO     test_viz_types:processor.py:161 Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+INFO     test_viz_types:processor.py:165 Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+INFO     test_viz_types:processor.py:170 Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+WARNING  test_viz_types:processor.py:176 GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+INFO     test_viz_types:processor.py:179 Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+WARNING  test_viz_types:processor.py:366 No GNN models found for advanced visualization
+INFO     test_viz_types:processor.py:305 Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+INFO     test_viz_types:processor.py:344 ================================================================================
+INFO     test_viz_types:processor.py:345 ADVANCED VISUALIZATION PROCESSING
+INFO     test_viz_types:processor.py:346 ================================================================================
+INFO     test_viz_types:processor.py:131 plotly not available - interactive visualizations will be limited
+DEBUG    test_viz_types:processor.py:141 bokeh not available - will use plotly recovery
+INFO     test_viz_types:processor.py:161 Looking for GNN output in: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+INFO     test_viz_types:processor.py:165 Looking for results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json (exists: False)
+INFO     test_viz_types:processor.py:170 Looking for nested results file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/3_gnn_output/gnn_processing_results.json (exists: False)
+WARNING  test_viz_types:processor.py:176 GNN processing results not found at /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output/gnn_processing_results.json
+INFO     test_viz_types:processor.py:179 Found 0 parsed files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/3_gnn_output
+WARNING  test_viz_types:processor.py:366 No GNN models found for advanced visualization
+INFO     test_viz_types:processor.py:305 Saved advanced visualization summary: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpj9gc6q6t/types_output/advanced_viz_summary.json
+================================================= slowest 10 durations =================================================
+
+(10 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizationModule::test_module_imports
+PASSED src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizationModule::test_visualization_functions
+PASSED src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizer::test_visualizer_instantiation
+PASSED src/tests/test_advanced_visualization_overall.py::TestAdvancedVisualizer::test_visualizer_methods
+PASSED src/tests/test_advanced_visualization_overall.py::TestDashboardGenerator::test_dashboard_generator_instantiation
+PASSED src/tests/test_advanced_visualization_overall.py::TestDashboardGenerator::test_generate_dashboard_function
+PASSED src/tests/test_advanced_visualization_overall.py::TestVisualizationDataExtractor::test_extractor_instantiation
+PASSED src/tests/test_advanced_visualization_overall.py::TestVisualizationDataExtractor::test_extract_visualization_data
+PASSED src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_d2_availability_flag
+PASSED src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_d2_visualizer_import
+PASSED src/tests/test_advanced_visualization_overall.py::TestD2Visualization::test_process_gnn_file_with_d2
+PASSED src/tests/test_advanced_visualization_overall.py::TestProcessAdvancedViz::test_process_advanced_viz
+PASSED src/tests/test_advanced_visualization_overall.py::TestProcessAdvancedViz::test_process_with_viz_types
+PASSED src/tests/test_advanced_visualization_overall.py::TestVisualizationCreation::test_create_default_visualization
+PASSED src/tests/test_advanced_visualization_overall.py::TestVisualizationCreation::test_create_network_visualization
+================================================== 15 passed in 0.07s ==================================================

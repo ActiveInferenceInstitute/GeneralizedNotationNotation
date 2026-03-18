@@ -70,6 +70,13 @@ wheels/
 /src/execute/activeinference_jl/.julia
 
 # ============================================================================
+# GENERATED TREES INSIDE src/ (NOT SOURCE)
+# ============================================================================
+# These are pipeline artifacts and should not be treated as source modules.
+src/output/
+src/tests/output/
+
+# ============================================================================
 # TESTING AND COVERAGE
 # ============================================================================
 # Coverage reports (allow output/coverage.json)

@@ -1,0 +1,365 @@
+2026-03-17 16:46:59,180 - execute.discopy_translator_module.translator - DEBUG - DisCoPy not available: No module named 'discopy'
+2026-03-17 16:46:59,180 - execute.discopy_translator_module.translator - DEBUG - JAX not available: No module named 'jax.numpy'; 'jax' is not a package
+2026-03-17 16:46:59,180 - execute.discopy_translator_module.translator - DEBUG - Matplotlib library available
+2026-03-17 16:46:59,181 - execute.discopy_translator_module.visualize_jax_output - DEBUG - Matplotlib available for JAX output visualization
+2026-03-17 16:46:59,182 - execute.discopy_translator_module.visualize_jax_output - DEBUG - JAX not available: No module named 'jax.numpy'; 'jax' is not a package
+2026-03-17 16:46:59,317 - src.type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: False
+2026-03-17 16:46:59,318 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-17 16:46:59,320 - root - INFO - GNN module imports validated
+2026-03-17 16:46:59,321 - root - INFO - GNN file discovery validated: 1 files found
+2026-03-17 16:46:59,321 - root - WARNING - Failed to parse simple.gnn: Parsed data should contain ModelName
+assert 'ModelName' in {'success': True, 'file_path': '/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpq8jmeatn/simple.gnn', 'file_name': 'simple.gnn', 'file_size': 152, 'sections': ['Test GNN Model', 'ModelName', 'StateSpaceBlock', 'Connections', 'InitialParameterization'], 'variables': ['type', 'A', 's'], 'structure_info': {'has_variables': True, 'has_sections': True, 'variable_count': 3, 'section_count': 5, 'line_count': 14, 'char_count': 152}, 'parse_timestamp': '2026-03-17T16:46:59.321939'}
+2026-03-17 16:46:59,322 - root - INFO - Validation result for simple.gnn: True
+2026-03-17 16:46:59,322 - root - INFO - Render module imports validated
+2026-03-17 16:46:59,323 - src.render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-17 16:46:59,323 - src.render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-17 16:46:59,323 - src.render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-17 16:46:59,323 - src.render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-17 16:46:59,323 - root - INFO - PyMDP rendering validated
+2026-03-17 16:46:59,324 - src.render.rxinfer.rxinfer_renderer - INFO - Successfully generated RxInfer.jl script for GNN_Model
+2026-03-17 16:46:59,324 - root - INFO - RxInfer POMDP validated: 3 actions
+2026-03-17 16:46:59,324 - root - INFO - RxInfer POMDP rendering validated
+2026-03-17 16:47:00,373 - root - INFO - Execution environment validation completed
+2026-03-17 16:47:00,375 - asyncio - DEBUG - Using selector: KqueueSelector
+2026-03-17 16:47:00,376 - src.llm.llm_processor - DEBUG - python-dotenv not available, skipping .env file loading
+2026-03-17 16:47:00,376 - src.llm.llm_processor - INFO - Initialized 1 provider(s)
+2026-03-17 16:47:00,376 - src.llm.llm_operations - INFO - Created new LLM processor
+2026-03-17 16:47:00,376 - asyncio - DEBUG - Using selector: KqueueSelector
+2026-03-17 16:47:00,381 - src.llm.providers.ollama_provider - INFO - Ollama provider initialized (CLI recovery)
+2026-03-17 16:47:00,381 - src.llm.llm_processor - INFO - Initialized ollama provider
+2026-03-17 16:47:00,381 - src.llm.providers.openai_provider - DEBUG - OpenAI library not installed - OpenAI provider will not be available
+2026-03-17 16:47:00,381 - src.llm.llm_processor - DEBUG - Could not initialize openai provider (may not be configured)
+2026-03-17 16:47:00,382 - src.llm.providers.openrouter_provider - ERROR - Cannot initialize OpenRouter provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-17 16:47:00,382 - src.llm.providers.openrouter_provider - ERROR - Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-17 16:47:00,383 - src.llm.llm_processor - DEBUG - Could not initialize openrouter provider (may not be configured)
+2026-03-17 16:47:00,383 - src.llm.providers.perplexity_provider - ERROR - Cannot initialize Perplexity provider: aiohttp is not available (No module named 'aiohttp')
+2026-03-17 16:47:00,383 - src.llm.providers.perplexity_provider - ERROR - Install aiohttp with: uv pip install aiohttp>=3.9.0
+2026-03-17 16:47:00,383 - src.llm.llm_processor - DEBUG - Could not initialize perplexity provider (may not be configured)
+2026-03-17 16:47:00,383 - src.llm.llm_processor - INFO - LLM Processor initialized with 1/4 providers
+2026-03-17 16:47:00,383 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat: model=gemma3:4b, timeout=60.0s
+2026-03-17 16:47:00,665 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat completed: rc=1, elapsed=0.3s
+2026-03-17 16:47:00,665 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+2026-03-17 16:47:00,665 - src.llm.providers.ollama_provider - DEBUG - Falling back to CLI 'ollama run' with timeout 60.0s
+2026-03-17 16:48:00,674 - src.llm.providers.ollama_provider - ERROR - Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
+2026-03-17 16:48:00,675 - src.llm.llm_processor - ERROR - Analysis failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
+2026-03-17 16:48:00,678 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat: model=gemma3:4b, timeout=60.0s
+2026-03-17 16:48:00,735 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat completed: rc=1, elapsed=0.1s
+2026-03-17 16:48:00,735 - src.llm.providers.ollama_provider - DEBUG - Ollama CLI chat stderr: Error: unknown command "chat" for "ollama"
+
+2026-03-17 16:48:00,735 - src.llm.providers.ollama_provider - DEBUG - Falling back to CLI 'ollama run' with timeout 60.0s
+2026-03-17 16:49:00,742 - src.llm.providers.ollama_provider - ERROR - Ollama chat failed: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
+2026-03-17 16:49:00,742 - src.llm.llm_processor - WARNING - Recovery failed with ollama: Command '['ollama', 'run', 'gemma3:4b', 'You are an expert in Active Inference and GNN (Generalized Notation Notation) specifications. You provide accurate, comprehensive, and scientifically rigorous responses about Active Inference concepts, model structure, and practical implications.\n\nAdditional Context: Focus on GNN model specifications, Active Inference frameworks, and scientific accuracy in your analysis.\n\nProvide a concise summary of this GNN model, highlighting:\n- Model purpose and domain\n- Key components and structure\n- Notable features or complexity\nKeep the summary under 500 words.\n\nGNN Model Content:\n\n# Test GNN Model\n\n## ModelName\ntest_model\n\n## StateSpaceBlock\ns[3,1,type=int]\n\n## Connections\ns -> o\n\n## InitialParameterization\nA = [[0.5, 0.3, 0.2]]\n']' timed out after 60.0 seconds
+2026-03-17 16:49:00,744 - src.llm.llm_operations - ERROR - Async summarization failed: All providers failed for analysis
+2026-03-17 16:49:00,747 - root - INFO - MCP module imports validated
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: template.process_file
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: template.process_directory
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: template.get_info
+2026-03-17 16:49:00,750 - src.template.mcp - INFO - Successfully registered template MCP tools
+2026-03-17 16:49:00,750 - src.mcp.processor - DEBUG - Auto-registered tools for module: template
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: ensure_directory_exists
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: find_project_gnn_files
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: get_standard_output_paths
+2026-03-17 16:49:00,750 - mcp - DEBUG - Registered tool: check_uv_project_status
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: get_uv_environment_info
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: setup_uv_project_structure
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: install_uv_dependency
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: sync_uv_dependencies
+2026-03-17 16:49:00,751 - src.setup.mcp - INFO - UV-based setup module MCP tools registered.
+2026-03-17 16:49:00,751 - src.mcp.processor - DEBUG - Auto-registered tools for module: setup
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: run_all_tests
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: run_unit_tests
+2026-03-17 16:49:00,751 - mcp - DEBUG - Registered tool: run_integration_tests
+2026-03-17 16:49:00,751 - src.tests.mcp - INFO - Tests module MCP tools registered.
+2026-03-17 16:49:00,751 - src.mcp.processor - DEBUG - Auto-registered tools for module: tests
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: get_gnn_documentation
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: validate_gnn_content
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: parse_gnn_content
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: validate_cross_format_consistency_content
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: validate_schema_definitions_consistency
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: process_gnn_directory
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: run_round_trip_tests
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: validate_directory_cross_format_consistency
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: get_gnn_schema_info
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered tool: get_gnn_module_info
+2026-03-17 16:49:00,755 - mcp - DEBUG - Registered resource: gnn://documentation/{doc_name}
+2026-03-17 16:49:00,755 - src.gnn.mcp - INFO - Enhanced GNN MCP tools and resources registered successfully.
+2026-03-17 16:49:00,755 - src.gnn.mcp - INFO - Enhanced capabilities available: True
+2026-03-17 16:49:00,755 - src.mcp.processor - DEBUG - Auto-registered tools for module: gnn
+2026-03-17 16:49:00,756 - mcp - DEBUG - Registered tool: model_registry.register_model
+2026-03-17 16:49:00,756 - mcp - DEBUG - Registered tool: model_registry.get_model
+2026-03-17 16:49:00,756 - mcp - DEBUG - Registered tool: model_registry.search_models
+2026-03-17 16:49:00,756 - mcp - DEBUG - Registered tool: model_registry.list_models
+2026-03-17 16:49:00,756 - src.model_registry.mcp - INFO - Successfully registered model registry MCP tools
+2026-03-17 16:49:00,756 - src.mcp.processor - DEBUG - Auto-registered tools for module: model_registry
+2026-03-17 16:49:00,757 - mcp - DEBUG - Registered tool: validate_gnn_files
+2026-03-17 16:49:00,757 - mcp - DEBUG - Registered tool: validate_single_gnn_file
+2026-03-17 16:49:00,757 - src.type_checker.mcp - INFO - Type checker module MCP tools registered.
+2026-03-17 16:49:00,757 - src.mcp.processor - DEBUG - Auto-registered tools for module: type_checker
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: process_validation
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: validate_gnn_file
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: get_validation_report
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: check_schema_compliance
+2026-03-17 16:49:00,759 - src.validation.mcp - INFO - validation module MCP tools registered (4 tools).
+2026-03-17 16:49:00,759 - src.mcp.processor - DEBUG - Auto-registered tools for module: validation
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: process_export
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: list_export_formats
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: validate_export_format
+2026-03-17 16:49:00,759 - mcp - DEBUG - Registered tool: export_single_gnn_file
+2026-03-17 16:49:00,759 - src.export.mcp - INFO - export module MCP tools registered (5 domain tools).
+2026-03-17 16:49:00,760 - src.mcp.processor - DEBUG - Auto-registered tools for module: export
+2026-03-17 16:49:00,760 - mcp - DEBUG - Registered tool: process_visualization
+2026-03-17 16:49:00,760 - mcp - DEBUG - Registered tool: get_visualization_options
+2026-03-17 16:49:00,760 - mcp - DEBUG - Registered tool: list_visualization_artifacts
+2026-03-17 16:49:00,760 - mcp - DEBUG - Registered tool: get_visualization_module_info
+2026-03-17 16:49:00,760 - src.visualization.mcp - INFO - visualization module MCP tools registered (4 domain tools).
+2026-03-17 16:49:00,760 - src.mcp.processor - DEBUG - Auto-registered tools for module: visualization
+2026-03-17 16:49:00,789 - mcp - DEBUG - Registered tool: process_advanced_visualization
+2026-03-17 16:49:00,789 - mcp - DEBUG - Registered tool: check_visualization_capabilities
+2026-03-17 16:49:00,789 - mcp - DEBUG - Registered tool: list_d2_visualization_types
+2026-03-17 16:49:00,789 - mcp - DEBUG - Registered tool: get_advanced_visualization_module_info
+2026-03-17 16:49:00,789 - src.advanced_visualization.mcp - INFO - advanced_visualization module MCP tools registered (4 domain tools).
+2026-03-17 16:49:00,789 - src.mcp.processor - DEBUG - Auto-registered tools for module: advanced_visualization
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: process_ontology
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: validate_ontology_terms
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: extract_ontology_annotations
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: list_standard_ontology_terms
+2026-03-17 16:49:00,790 - src.ontology.mcp - INFO - ontology module MCP tools registered (5 tools).
+2026-03-17 16:49:00,790 - src.mcp.processor - DEBUG - Auto-registered tools for module: ontology
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: process_render
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: list_render_frameworks
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: render_gnn_to_format
+2026-03-17 16:49:00,790 - mcp - DEBUG - Registered tool: get_render_module_info
+2026-03-17 16:49:00,790 - src.render.mcp - INFO - render module MCP tools registered (5 tools).
+2026-03-17 16:49:00,790 - src.mcp.processor - DEBUG - Auto-registered tools for module: render
+2026-03-17 16:49:00,791 - mcp - DEBUG - Registered tool: process_execute
+2026-03-17 16:49:00,791 - mcp - DEBUG - Registered tool: execute_gnn_model
+2026-03-17 16:49:00,791 - mcp - DEBUG - Registered tool: execute_pymdp_simulation
+2026-03-17 16:49:00,791 - mcp - DEBUG - Registered tool: check_execute_dependencies
+2026-03-17 16:49:00,791 - mcp - DEBUG - Registered tool: get_execute_module_info
+2026-03-17 16:49:00,791 - src.execute.mcp - INFO - execute module MCP tools registered (5 real domain tools).
+2026-03-17 16:49:00,791 - src.mcp.processor - DEBUG - Auto-registered tools for module: execute
+2026-03-17 16:49:00,792 - mcp - DEBUG - Registered tool: process_llm
+2026-03-17 16:49:00,792 - mcp - DEBUG - Registered tool: analyze_gnn_with_llm
+2026-03-17 16:49:00,792 - mcp - DEBUG - Registered tool: generate_llm_documentation
+2026-03-17 16:49:00,792 - mcp - DEBUG - Registered tool: get_llm_providers
+2026-03-17 16:49:00,792 - mcp - DEBUG - Registered tool: get_llm_module_info
+2026-03-17 16:49:00,792 - src.llm.mcp - INFO - llm module MCP tools registered (5 real domain tools).
+2026-03-17 16:49:00,792 - src.mcp.processor - DEBUG - Auto-registered tools for module: llm
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: process_ml_integration
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: check_ml_frameworks
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: list_ml_integration_targets
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: get_ml_module_info
+2026-03-17 16:49:00,793 - src.ml_integration.mcp - INFO - ml_integration module MCP tools registered (4 domain tools).
+2026-03-17 16:49:00,793 - src.mcp.processor - DEBUG - Auto-registered tools for module: ml_integration
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: process_audio
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: check_audio_backends
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: get_audio_generation_options
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: analyze_audio_characteristics
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: validate_audio_content
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: get_audio_module_info
+2026-03-17 16:49:00,793 - src.audio.mcp - INFO - audio module MCP tools registered (6 tools).
+2026-03-17 16:49:00,793 - src.mcp.processor - DEBUG - Auto-registered tools for module: audio
+2026-03-17 16:49:00,793 - mcp - DEBUG - Registered tool: process_analysis
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: get_analysis_results
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: compute_complexity_metrics
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: list_analysis_tools
+2026-03-17 16:49:00,794 - src.analysis.mcp - INFO - analysis module MCP tools registered (4 tools).
+2026-03-17 16:49:00,794 - src.mcp.processor - DEBUG - Auto-registered tools for module: analysis
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: process_integration
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: list_supported_integrations
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: get_integration_status
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: check_integration_dependencies
+2026-03-17 16:49:00,794 - src.integration.mcp - INFO - integration module MCP tools registered (4 tools).
+2026-03-17 16:49:00,794 - src.mcp.processor - DEBUG - Auto-registered tools for module: integration
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: process_security
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: scan_gnn_file
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: get_security_report
+2026-03-17 16:49:00,794 - mcp - DEBUG - Registered tool: list_security_checks
+2026-03-17 16:49:00,794 - src.security.mcp - INFO - security module MCP tools registered (4 tools).
+2026-03-17 16:49:00,794 - src.mcp.processor - DEBUG - Auto-registered tools for module: security
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: process_research
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: list_research_topics
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: read_research_results
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: get_research_module_info
+2026-03-17 16:49:00,795 - src.research.mcp - INFO - research module MCP tools registered (4 tools).
+2026-03-17 16:49:00,795 - src.mcp.processor - DEBUG - Auto-registered tools for module: research
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: process_website
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: build_website_from_pipeline_output
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: get_website_status
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: list_generated_website_pages
+2026-03-17 16:49:00,795 - mcp - DEBUG - Registered tool: get_website_module_info
+2026-03-17 16:49:00,795 - src.website.mcp - INFO - website module MCP tools registered (6 tools).
+2026-03-17 16:49:00,795 - src.mcp.processor - DEBUG - Auto-registered tools for module: website
+2026-03-17 16:49:00,795 - src.mcp.processor - DEBUG - Auto-registered tools for module: mcp
+2026-03-17 16:49:00,799 - mcp - DEBUG - Registered tool: process_gui
+2026-03-17 16:49:00,799 - mcp - DEBUG - Registered tool: list_available_guis
+2026-03-17 16:49:00,799 - mcp - DEBUG - Registered tool: get_gui_module_info
+2026-03-17 16:49:00,799 - src.gui.mcp - INFO - gui module MCP tools registered (3 domain tools).
+2026-03-17 16:49:00,799 - src.mcp.processor - DEBUG - Auto-registered tools for module: gui
+2026-03-17 16:49:00,800 - mcp - DEBUG - Registered tool: generate_report
+2026-03-17 16:49:00,800 - mcp - DEBUG - Registered tool: process_report
+2026-03-17 16:49:00,800 - mcp - DEBUG - Registered tool: list_report_formats
+2026-03-17 16:49:00,800 - mcp - DEBUG - Registered tool: read_report
+2026-03-17 16:49:00,800 - mcp - DEBUG - Registered tool: get_report_module_info
+2026-03-17 16:49:00,800 - src.report.mcp - INFO - report module MCP tools registered (5 domain tools).
+2026-03-17 16:49:00,800 - src.mcp.processor - DEBUG - Auto-registered tools for module: report
+2026-03-17 16:49:00,802 - mcp - DEBUG - Registered tool: process_intelligent_analysis
+2026-03-17 16:49:00,802 - mcp - DEBUG - Registered tool: get_analysis_capabilities
+2026-03-17 16:49:00,802 - mcp - DEBUG - Registered tool: get_intelligent_analysis_module_info
+2026-03-17 16:49:00,802 - src.intelligent_analysis.mcp - INFO - intelligent_analysis module MCP tools registered (3 domain tools).
+2026-03-17 16:49:00,802 - src.mcp.processor - DEBUG - Auto-registered tools for module: intelligent_analysis
+2026-03-17 16:49:00,803 - src.mcp.processor - INFO - Auto-discovered registration complete: 106 tool(s) available
+2026-03-17 16:49:00,803 - root - INFO - MCP tool registration validated
+2026-03-17 16:49:00,803 - src.mcp.processor - INFO - Handling MCP request: tools/list
+2026-03-17 16:49:00,803 - root - INFO - MCP request handling validated
+2026-03-17 16:49:00,806 - ontology - INFO - 🚀 Starting step: Processing ontology
+2026-03-17 16:49:00,806 - ontology - INFO - Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:49:00,806 - ontology - INFO - Validated 0 annotations: 0 valid, 0 invalid
+2026-03-17 16:49:00,807 - ontology - INFO - ✅ Ontology processing completed successfully
+2026-03-17 16:49:00,808 - mcp - INFO - Enhanced MCP server initialized (caching=True, rate_limiting=True, strict_validation=False)
+2026-03-17 16:49:00,810 - website - INFO - Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpbpy_pnnl/output
+2026-03-17 16:49:00,810 - website - INFO - Website generated successfully with 7 pages
+2026-03-17 16:49:00,814 - website - INFO - Website generated: 7 pages → /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp93d3vwjy/output
+2026-03-17 16:49:00,814 - website - INFO - Website generated successfully with 7 pages
+2026-03-17 16:49:00,815 - root - INFO - SAPF module imports validated successfully
+2026-03-17 16:49:00,816 - root - INFO - GNN to SAPF conversion validated
+2026-03-17 16:49:00,817 - root - INFO - SAPF validation functionality confirmed
+2026-03-17 16:49:00,817 - root - INFO - SAPF audio generation functionality confirmed
+2026-03-17 16:49:00,818 - src.render.pymdp.pymdp_renderer - WARNING - A matrix (likelihood) not found in initial parameterization
+2026-03-17 16:49:00,818 - src.render.pymdp.pymdp_renderer - WARNING - B matrix (transition) not found in initial parameterization
+2026-03-17 16:49:00,818 - src.render.pymdp.pymdp_renderer - WARNING - C vector (preferences) not found in initial parameterization
+2026-03-17 16:49:00,818 - src.render.pymdp.pymdp_renderer - WARNING - D vector (prior) not found in initial parameterization
+2026-03-17 16:49:00,859 - root - INFO - Core module coordination validated
+2026-03-17 16:49:00,862 - root - INFO - Module data flow validated
+2026-03-17 16:49:00,870 - root - INFO - Core module completeness: 5/5 modules available
+2026-03-17 16:49:00,871 - root - INFO - Core module performance test completed
+2026-03-17 16:49:00,908 - root - INFO - Fast test suite completeness: 185 fast tests in 112 files
+2026-03-17 16:49:00,909 - root - INFO - Main orchestrator file structure validated
+2026-03-17 16:49:01,329 - root - INFO - All 3 main orchestrator components available
+2026-03-17 16:49:02,226 - root - INFO - Pipeline script discovery logic validated
+2026-03-17 16:49:02,226 - root - INFO - Pipeline script sorting logic validated
+2026-03-17 16:49:27,578 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:27,580 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:27,580 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:27,581 - 3_gnn.py - INFO - Found 2 potential GNN files
+2026-03-17 16:49:27,581 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/basics/static_perception.md
+2026-03-17 16:49:27,589 - 3_gnn.py - INFO - Generated 22 formats for static_perception.md
+2026-03-17 16:49:27,589 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/basics/dynamic_perception.md
+2026-03-17 16:49:27,596 - 3_gnn.py - INFO - Generated 22 formats for dynamic_perception.md
+2026-03-17 16:49:27,596 - 3_gnn.py - INFO - ✅ Processed 2 files, generated 44 format instances across 22 formats
+2026-03-17 16:49:27,985 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:27,987 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:27,987 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:27,989 - 3_gnn.py - INFO - Found 2 potential GNN files
+2026-03-17 16:49:27,989 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/hierarchical/temporal_hierarchy.md
+2026-03-17 16:49:28,005 - 3_gnn.py - INFO - Generated 22 formats for temporal_hierarchy.md
+2026-03-17 16:49:28,005 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/hierarchical/hierarchical_pomdp.md
+2026-03-17 16:49:28,016 - 3_gnn.py - INFO - Generated 22 formats for hierarchical_pomdp.md
+2026-03-17 16:49:28,016 - 3_gnn.py - INFO - ✅ Processed 2 files, generated 44 format instances across 22 formats
+2026-03-17 16:49:28,519 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:28,522 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:28,523 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:28,524 - 3_gnn.py - INFO - Found 2 potential GNN files
+2026-03-17 16:49:28,524 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/multiagent/stigmergic_swarm.md
+2026-03-17 16:49:28,541 - 3_gnn.py - INFO - Generated 22 formats for stigmergic_swarm.md
+2026-03-17 16:49:28,541 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/multiagent/multi_agent_coordination.md
+2026-03-17 16:49:28,554 - 3_gnn.py - INFO - Generated 22 formats for multi_agent_coordination.md
+2026-03-17 16:49:28,554 - 3_gnn.py - INFO - ✅ Processed 2 files, generated 44 format instances across 22 formats
+2026-03-17 16:49:28,966 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:28,968 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:28,968 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:28,970 - 3_gnn.py - INFO - Found 8 potential GNN files
+2026-03-17 16:49:28,970 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/simple_mdp.md
+2026-03-17 16:49:28,980 - 3_gnn.py - INFO - Generated 22 formats for simple_mdp.md
+2026-03-17 16:49:28,980 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/multi_armed_bandit.md
+2026-03-17 16:49:28,987 - 3_gnn.py - INFO - Generated 22 formats for multi_armed_bandit.md
+2026-03-17 16:49:28,988 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/deep_planning_horizon.md
+2026-03-17 16:49:28,999 - 3_gnn.py - INFO - Generated 22 formats for deep_planning_horizon.md
+2026-03-17 16:49:28,999 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/actinf_pomdp_agent.md
+2026-03-17 16:49:29,007 - 3_gnn.py - INFO - Generated 22 formats for actinf_pomdp_agent.md
+2026-03-17 16:49:29,007 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/hmm_baseline.md
+2026-03-17 16:49:29,015 - 3_gnn.py - INFO - Generated 22 formats for hmm_baseline.md
+2026-03-17 16:49:29,015 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/two_state_bistable.md
+2026-03-17 16:49:29,024 - 3_gnn.py - INFO - Generated 22 formats for two_state_bistable.md
+2026-03-17 16:49:29,024 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/markov_chain.md
+2026-03-17 16:49:29,029 - 3_gnn.py - INFO - Generated 22 formats for markov_chain.md
+2026-03-17 16:49:29,029 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/discrete/tmaze_epistemic.md
+2026-03-17 16:49:29,040 - 3_gnn.py - INFO - Generated 22 formats for tmaze_epistemic.md
+2026-03-17 16:49:29,041 - 3_gnn.py - INFO - ✅ Processed 8 files, generated 176 format instances across 22 formats
+2026-03-17 16:49:29,465 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:29,470 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:29,470 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:29,471 - 3_gnn.py - INFO - Found 1 potential GNN files
+2026-03-17 16:49:29,471 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/structured/factor_graph_model.md
+2026-03-17 16:49:29,493 - 3_gnn.py - INFO - Generated 22 formats for factor_graph_model.md
+2026-03-17 16:49:29,493 - 3_gnn.py - INFO - ✅ Processed 1 files, generated 22 format instances across 22 formats
+2026-03-17 16:49:29,919 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:29,921 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:29,921 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:29,923 - 3_gnn.py - INFO - Found 2 potential GNN files
+2026-03-17 16:49:29,923 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/precision/precision_weighted.md
+2026-03-17 16:49:29,934 - 3_gnn.py - INFO - Generated 22 formats for precision_weighted.md
+2026-03-17 16:49:29,934 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/precision/curiosity_driven_agent.md
+2026-03-17 16:49:29,945 - 3_gnn.py - INFO - Generated 22 formats for curiosity_driven_agent.md
+2026-03-17 16:49:29,945 - 3_gnn.py - INFO - ✅ Processed 2 files, generated 44 format instances across 22 formats
+2026-03-17 16:49:30,340 - 3_gnn.py - INFO - 🚀 Starting step: Processing GNN files with full multi-format generation
+2026-03-17 16:49:30,342 - 3_gnn.py - INFO - Initialized GNN parsing system with 22 supported formats
+2026-03-17 16:49:30,342 - 3_gnn.py - INFO - Available serializers: [<GNNFormat.MARKDOWN: 'markdown'>, <GNNFormat.JSON: 'json'>, <GNNFormat.XML: 'xml'>, <GNNFormat.YAML: 'yaml'>, <GNNFormat.SCALA: 'scala'>, <GNNFormat.PROTOBUF: 'protobuf'>, <GNNFormat.PKL: 'pkl'>, <GNNFormat.XSD: 'xsd'>, <GNNFormat.ASN1: 'asn1'>, <GNNFormat.LEAN: 'lean'>, <GNNFormat.COQ: 'coq'>, <GNNFormat.PYTHON: 'python'>, <GNNFormat.BNF: 'bnf'>, <GNNFormat.EBNF: 'ebnf'>, <GNNFormat.ISABELLE: 'isabelle'>, <GNNFormat.MAXIMA: 'maxima'>, <GNNFormat.ALLOY: 'alloy'>, <GNNFormat.Z_NOTATION: 'z_notation'>, <GNNFormat.TLA_PLUS: 'tla_plus'>, <GNNFormat.AGDA: 'agda'>, <GNNFormat.HASKELL: 'haskell'>, <GNNFormat.PICKLE: 'pickle'>]
+2026-03-17 16:49:30,343 - 3_gnn.py - INFO - Found 2 potential GNN files
+2026-03-17 16:49:30,343 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/predictive_coding_agent.md
+2026-03-17 16:49:30,356 - 3_gnn.py - INFO - Generated 22 formats for predictive_coding_agent.md
+2026-03-17 16:49:30,356 - 3_gnn.py - INFO - Processing: /Users/4d/Documents/GitHub/generalizednotationnotation/input/gnn_files/continuous/continuous_navigation.md
+2026-03-17 16:49:30,367 - 3_gnn.py - INFO - Generated 22 formats for continuous_navigation.md
+2026-03-17 16:49:30,367 - 3_gnn.py - INFO - ✅ Processed 2 files, generated 44 format instances across 22 formats
+2026-03-17 16:49:30,750 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:30,753 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:31,118 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:31,124 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:31,515 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:31,521 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:31,916 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:31,931 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:32,337 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:32,340 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:32,787 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:32,792 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:33,197 - type_checker - INFO - 🚀 Starting step: Processing type checker
+2026-03-17 16:49:33,202 - type_checker - INFO - ✅ Type checking completed successfully
+2026-03-17 16:49:33,639 - export - INFO - Loaded 2 parsed GNN files
+2026-03-17 16:49:33,639 - export - INFO - Exporting: predictive_coding_agent.md
+2026-03-17 16:49:33,640 - export - INFO - Loaded parsed GNN specification from /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo9hgjo4v/output/3_gnn_output/predictive_coding_agent/predictive_coding_agent_parsed.json
+2026-03-17 16:49:33,641 - export - INFO - Generated json export for predictive_coding_agent.md
+2026-03-17 16:49:33,642 - export - INFO - Generated xml export for predictive_coding_agent.md
+2026-03-17 16:49:33,642 - export - INFO - Generated graphml export for predictive_coding_agent.md
+2026-03-17 16:49:33,643 - export - INFO - Generated gexf export for predictive_coding_agent.md
+2026-03-17 16:49:33,643 - export - INFO - Generated pickle export for predictive_coding_agent.md
+2026-03-17 16:49:33,643 - export - INFO - Exporting: continuous_navigation.md
+2026-03-17 16:49:33,643 - export - INFO - Loaded parsed GNN specification from /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpo9hgjo4v/output/3_gnn_output/continuous_navigation/continuous_navigation_parsed.json
+2026-03-17 16:49:33,644 - export - INFO - Generated json export for continuous_navigation.md
+2026-03-17 16:49:33,644 - export - INFO - Generated xml export for continuous_navigation.md
+2026-03-17 16:49:33,645 - export - INFO - Generated graphml export for continuous_navigation.md
+2026-03-17 16:49:33,645 - export - INFO - Generated gexf export for continuous_navigation.md
+2026-03-17 16:49:33,645 - export - INFO - Generated pickle export for continuous_navigation.md
+2026-03-17 16:49:33,645 - export - INFO - Export processing completed:
+2026-03-17 16:49:33,646 - export - INFO -   Total files: 2
+2026-03-17 16:49:33,646 - export - INFO -   Successful exports: 2
+2026-03-17 16:49:33,646 - export - INFO -   Failed exports: 0
+2026-03-17 16:49:33,646 - export - INFO -   Formats generated: {'json': 2, 'xml': 2, 'graphml': 2, 'gexf': 2, 'pickle': 2}
+2026-03-17 16:49:35,058 - visualization - INFO - Processing visualizations
+2026-03-17 16:49:55,335 - visualization - INFO - ✅ Generated 99 visualizations
+2026-03-17 16:49:55,576 - test_logger - WARNING - Pipeline summary field 'start_time' is None
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: arguments
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: end_time
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: overall_status
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: total_duration_seconds
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: environment_info
+2026-03-17 16:49:55,577 - test_logger - WARNING - Pipeline summary missing required field: performance_summary
+2026-03-17 16:49:55,577 - test_logger - ERROR - Pipeline summary 'steps' should be a list
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary field 'start_time' is None
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary missing required field: arguments
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary missing required field: end_time
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary missing required field: total_duration_seconds
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary missing required field: environment_info
+2026-03-17 16:49:55,579 - test_logger - WARNING - Pipeline summary missing required field: performance_summary
+2026-03-17 16:49:55,579 - test_logger - ERROR - Pipeline summary 'steps' should be a list

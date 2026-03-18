@@ -38,7 +38,7 @@ Restart Claude Desktop. You will see **GNN** in the tools palette (🔧 icon). Y
 
 > *"Parse the file at input/gnn_files/actinf_pomdp_agent.md using parse_gnn_content"*
 > *"Run process_validation on my GNN directory"*
-> *"List all 76 GNN tools"*
+> *"List all 131 GNN tools"*
 
 ## VS Code (via MCP extension)
 

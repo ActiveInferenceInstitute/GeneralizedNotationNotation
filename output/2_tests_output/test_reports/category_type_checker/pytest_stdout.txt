@@ -1,0 +1,98 @@
+================================================= test session starts ==================================================
+collecting ... collected 4 items
+
+src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_valid 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:45:55 [    INFO] type_checker.checker: GNNTypeChecker initialized. Strict mode: False
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md. Valid: True
+PASSED
+src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_strict_mode 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:45:55 [    INFO] type_checker.checker: GNNTypeChecker initialized. Strict mode: True
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md. Valid: True
+PASSED
+src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_with_errors 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:45:55 [    INFO] type_checker.checker: GNNTypeChecker initialized. Strict mode: True
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md. Valid: False
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Errors found: ['Missing required section: GNNSection', 'Connection references undefined variable: x-', 'Connection references undefined variable: s  # x is undefined']
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Warnings found: ['Time section not specified']
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Critical warnings: ['Connection references potentially undefined variable: x-', 'Connection references potentially undefined variable: s  # x is undefined']
+PASSED
+src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_directory 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:45:55 [    INFO] type_checker.checker: GNNTypeChecker initialized. Strict mode: False
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Starting GNN check for directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo, Recursive: False
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md. Valid: True
+2026-03-17 16:45:55 [    INFO] type_checker.checker: Finished checking directory /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo. Processed 1 files.
+PASSED
+
+======================================================== PASSES ========================================================
+_____________________________________ TestTypeCheckerOverall.test_check_file_valid _____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     type_checker.checker:checker.py:216 GNNTypeChecker initialized. Strict mode: False
+INFO     type_checker.checker:checker.py:223 Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md
+DEBUG    type_checker.checker:checker.py:230 Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md
+DEBUG    type_checker.checker:checker.py:231 Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+DEBUG    type_checker.checker:checker.py:394 Checking 1 variables
+DEBUG    type_checker.checker:checker.py:434 Checking 1 connections against 1 variables
+DEBUG    type_checker.checker:checker.py:689 Time specification content: 'Static'
+DEBUG    type_checker.checker:checker.py:698 Detected Static model
+INFO     type_checker.checker:checker.py:298 Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md. Valid: True
+DEBUG    type_checker.checker:checker.py:299 Validation details - Errors: 0, Critical warnings: 0, Strict mode: False, Should fail on warnings: False
+__________________________________ TestTypeCheckerOverall.test_check_file_strict_mode __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     type_checker.checker:checker.py:216 GNNTypeChecker initialized. Strict mode: True
+INFO     type_checker.checker:checker.py:223 Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md
+DEBUG    type_checker.checker:checker.py:230 Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md
+DEBUG    type_checker.checker:checker.py:231 Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+DEBUG    type_checker.checker:checker.py:394 Checking 1 variables
+DEBUG    type_checker.checker:checker.py:434 Checking 1 connections against 1 variables
+DEBUG    type_checker.checker:checker.py:689 Time specification content: 'Static'
+DEBUG    type_checker.checker:checker.py:698 Detected Static model
+INFO     type_checker.checker:checker.py:298 Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md. Valid: True
+DEBUG    type_checker.checker:checker.py:299 Validation details - Errors: 0, Critical warnings: 0, Strict mode: True, Should fail on warnings: False
+__________________________________ TestTypeCheckerOverall.test_check_file_with_errors __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     type_checker.checker:checker.py:216 GNNTypeChecker initialized. Strict mode: True
+INFO     type_checker.checker:checker.py:223 Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md
+DEBUG    type_checker.checker:checker.py:230 Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md
+DEBUG    type_checker.checker:checker.py:231 Parsed sections: ['_HeaderComments', 'ModelName', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Variables', 'Edges']
+DEBUG    type_checker.checker:checker.py:366 Validation Error: Missing required section: GNNSection
+DEBUG    type_checker.checker:checker.py:394 Checking 1 variables
+DEBUG    type_checker.checker:checker.py:434 Checking 1 connections against 1 variables
+DEBUG    type_checker.checker:checker.py:450 Validation Warning: Connection references potentially undefined variable: x-
+DEBUG    type_checker.checker:checker.py:456 Validation Warning: Connection references potentially undefined variable: s  # x is undefined
+INFO     type_checker.checker:checker.py:298 Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md. Valid: False
+DEBUG    type_checker.checker:checker.py:299 Validation details - Errors: 3, Critical warnings: 2, Strict mode: True, Should fail on warnings: True
+INFO     type_checker.checker:checker.py:305 Errors found: ['Missing required section: GNNSection', 'Connection references undefined variable: x-', 'Connection references undefined variable: s  # x is undefined']
+INFO     type_checker.checker:checker.py:307 Warnings found: ['Time section not specified']
+INFO     type_checker.checker:checker.py:309 Critical warnings: ['Connection references potentially undefined variable: x-', 'Connection references potentially undefined variable: s  # x is undefined']
+_____________________________________ TestTypeCheckerOverall.test_check_directory ______________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     type_checker.checker:checker.py:216 GNNTypeChecker initialized. Strict mode: False
+INFO     type_checker.checker:checker.py:331 Starting GNN check for directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo, Recursive: False
+DEBUG    type_checker.checker:checker.py:342 Processing file in directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+INFO     type_checker.checker:checker.py:223 Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+DEBUG    type_checker.checker:checker.py:230 Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+DEBUG    type_checker.checker:checker.py:231 Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+DEBUG    type_checker.checker:checker.py:394 Checking 1 variables
+DEBUG    type_checker.checker:checker.py:434 Checking 1 connections against 1 variables
+DEBUG    type_checker.checker:checker.py:689 Time specification content: 'Static'
+DEBUG    type_checker.checker:checker.py:698 Detected Static model
+INFO     type_checker.checker:checker.py:298 Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md. Valid: True
+DEBUG    type_checker.checker:checker.py:299 Validation details - Errors: 0, Critical warnings: 0, Strict mode: False, Should fail on warnings: False
+INFO     type_checker.checker:checker.py:350 Finished checking directory /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo. Processed 1 files.
+================================================= slowest 10 durations =================================================
+
+(10 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_valid
+PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_strict_mode
+PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_file_with_errors
+PASSED src/tests/test_type_checker_overall.py::TestTypeCheckerOverall::test_check_directory
+================================================== 4 passed in 0.11s ===================================================

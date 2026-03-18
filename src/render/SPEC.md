@@ -15,12 +15,14 @@ Multi-framework rendering and code generation from GNN models.
 - `generators.py` - Code generator utilities (1365 lines)
 
 ## Supported Frameworks
-- JAX, PyMDP, DisCoPy, RxInfer, NumPy
+- `pymdp`, `rxinfer`, `activeinference_jl`, `jax`, `discopy`, plus optional backends when available: `pytorch`, `numpyro`, `stan`.
 
 ## Key Exports
 ```python
-from render import process_render, JaxRenderer, PyMDPConverter
+from render import process_render, JAXRenderer
 ```
+
+The authoritative export surface is `src/render/__init__.py`.
 
 
 ---

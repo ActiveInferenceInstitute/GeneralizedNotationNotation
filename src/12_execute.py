@@ -44,6 +44,12 @@ run_script = create_standardized_pipeline_script(
     process_execute,
     "Execute processing for GNN simulations",
     additional_arguments={
+        "render_output_dir": {
+            "flag": "--render-output-dir",
+            "type": Path,
+            "default": None,
+            "help": "Explicit path to the 11_render_output directory to execute (avoids filesystem heuristics)"
+        },
         "frameworks": {
             "flag": "--frameworks",
             "type": str,

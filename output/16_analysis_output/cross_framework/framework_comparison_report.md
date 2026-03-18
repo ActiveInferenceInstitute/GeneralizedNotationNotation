@@ -1,29 +1,25 @@
 # Framework Execution Comparison Report
 
-Generated: 2026-03-15T13:59:55.036966
+Generated: 2026-03-17T16:54:41.663505
 
 ## Summary
 
 - Total Frameworks: 7
 - Total Executions: 56
-- Successful Executions: 56
-- Overall Success Rate: 100.00%
+- Successful Executions: 24
+- Overall Success Rate: 42.86%
 
 ## Framework Details
 
 ### NUMPYRO
 
-- Success Rate: 100.0% (8/8)
-- Execution Time: 1.14s
-- Timesteps: 15
-- Data: beliefs=15, actions=15, observations=15, free_energy=15
-- Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
-- Data Source: `output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json`
+- Success Rate: 0.0% (0/8)
+- Execution Time: 0.09s
 
 ### PYMDP
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 1.57s
+- Execution Time: 6.23s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
@@ -31,32 +27,23 @@ Generated: 2026-03-15T13:59:55.036966
 
 ### PYTORCH
 
-- Success Rate: 100.0% (8/8)
-- Execution Time: 1.00s
-- Timesteps: 15
-- Data: beliefs=15, actions=15, observations=15, free_energy=15
-- Validation: ✅ ALL PASSED (beliefs_in_range=✅, beliefs_sum_to_one=✅, actions_in_range=✅, all_valid=✅)
-- Data Source: `output/12_execute_output/markov_chain/pytorch/simulation_data/simulation_results.json`
+- Success Rate: 0.0% (0/8)
+- Execution Time: 0.26s
 
 ### JAX
 
-- Success Rate: 100.0% (8/8)
-- Execution Time: 0.96s
-- Timesteps: 15
-- Data: beliefs=15, actions=15, observations=15, free_energy=15
-- Validation: ✅ ALL PASSED (all_beliefs_valid=✅, beliefs_sum_to_one=✅, actions_in_range=✅)
-- Data Source: `output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json`
+- Success Rate: 0.0% (0/8)
+- Execution Time: 0.05s
 
 ### DISCOPY
 
-- Success Rate: 100.0% (8/8)
-- Execution Time: 0.34s
-- Data Source: `output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json`
+- Success Rate: 0.0% (0/8)
+- Execution Time: 0.14s
 
 ### RXINFER
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 19.21s
+- Execution Time: 22.15s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (all_beliefs_valid=✅, actions_in_range=✅, beliefs_sum_to_one=✅)
@@ -65,7 +52,7 @@ Generated: 2026-03-15T13:59:55.036966
 ### ACTIVEINFERENCE_JL
 
 - Success Rate: 100.0% (8/8)
-- Execution Time: 16.72s
+- Execution Time: 19.23s
 - Timesteps: 15
 - Data: beliefs=15, actions=15, observations=15, free_energy=15
 - Validation: ✅ ALL PASSED (beliefs_in_range=✅, actions_in_range=✅, all_valid=✅, beliefs_sum_to_one=✅)
@@ -75,10 +62,7 @@ Generated: 2026-03-15T13:59:55.036966
 
 | Framework | Timesteps | Mean Confidence | EFE Mean | EFE Std |
 |-----------|-----------|-----------------|----------|---------|
-| numpyro | 15 | 1.0000 | 1.0986 | 0.0000 |
-| pymdp | 15 | 1.0000 | -0.2073 | 0.1075 |
-| pytorch | 15 | 1.0000 | 1.0986 | 0.0000 |
-| jax | 15 | 1.0000 | 0.0693 | 0.0000 |
+| pymdp | 15 | 1.0000 | -0.1627 | 0.1298 |
 | rxinfer | 15 | 1.0000 | 0.1309 | 0.1329 |
 | activeinference_jl | 15 | 0.5663 | -1.3731 | 0.3075 |
 
@@ -86,40 +70,28 @@ Generated: 2026-03-15T13:59:55.036966
 
 | Framework | Beliefs | Actions | Observations | Free Energy | Validation |
 |-----------|---------|---------|--------------|-------------|------------|
-| numpyro | ✅ | ✅ | ✅ | ✅ | ✅ |
+| numpyro | ❌ | ❌ | ❌ | ❌ | — |
 | pymdp | ✅ | ✅ | ✅ | ✅ | ✅ |
-| pytorch | ✅ | ✅ | ✅ | ✅ | ✅ |
-| jax | ✅ | ✅ | ✅ | ✅ | ✅ |
+| pytorch | ❌ | ❌ | ❌ | ❌ | — |
+| jax | ❌ | ❌ | ❌ | ❌ | — |
 | discopy | ❌ | ❌ | ❌ | ❌ | — |
 | rxinfer | ✅ | ✅ | ✅ | ✅ | ✅ |
 | activeinference_jl | ✅ | ✅ | ✅ | ✅ | ✅ |
 
 ## Cross-Framework Metric Agreement
 
-- **numpyro_vs_pymdp**: confidence correlation = 0.0000
-- **numpyro_vs_pytorch**: confidence correlation = 0.0000
-- **numpyro_vs_jax**: confidence correlation = 0.0000
-- **numpyro_vs_rxinfer**: confidence correlation = 0.0000
-- **numpyro_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
-- **pymdp_vs_pytorch**: confidence correlation = -0.1796
-- **pymdp_vs_jax**: confidence correlation = 0.0000
-- **pymdp_vs_rxinfer**: confidence correlation = -0.2688
+- **pymdp_vs_rxinfer**: confidence correlation = -0.0034
 - **pymdp_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
-- **pytorch_vs_jax**: confidence correlation = 0.0000
-- **pytorch_vs_rxinfer**: confidence correlation = 0.1148
-- **pytorch_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
-- **jax_vs_rxinfer**: confidence correlation = 0.0000
-- **jax_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
 - **rxinfer_vs_activeinference_jl**: different dimensions ([15, 3] vs [15, 4])
 
 ## Performance Comparison
 
 | Framework | Mean Time (s) | Std Dev | Min | Max |
 |-----------|---------------|---------|-----|-----|
-| numpyro | 1.025 | 0.081 | 0.853 | 1.144 |
-| pymdp | 1.607 | 0.051 | 1.559 | 1.724 |
-| pytorch | 0.701 | 0.117 | 0.626 | 1.004 |
-| jax | 0.933 | 0.051 | 0.885 | 1.033 |
-| discopy | 0.342 | 0.009 | 0.332 | 0.361 |
-| rxinfer | 17.887 | 2.306 | 15.074 | 21.773 |
-| activeinference_jl | 16.378 | 2.884 | 12.127 | 22.311 |
+| numpyro | 0.048 | 0.028 | 0.027 | 0.100 |
+| pymdp | 2.767 | 2.306 | 1.147 | 7.022 |
+| pytorch | 0.066 | 0.075 | 0.027 | 0.259 |
+| jax | 0.031 | 0.015 | 0.020 | 0.063 |
+| discopy | 0.082 | 0.047 | 0.048 | 0.181 |
+| rxinfer | 18.810 | 5.518 | 15.375 | 32.350 |
+| activeinference_jl | 16.749 | 3.702 | 11.430 | 24.447 |

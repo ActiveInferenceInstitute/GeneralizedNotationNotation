@@ -441,9 +441,8 @@ GNN Model → ActiveInference.jl Conversion → Template Application → Julia C
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_activeinference_integration.py` - Integration tests
-- `src/tests/test_render_activeinference_generation.py` - Code generation tests
-- `src/tests/test_render_activeinference_validation.py` - Validation tests
+- `src/tests/test_render_overall.py` - Render module tests (includes backend availability)
+- `src/tests/test_render_integration.py` - Integration tests
 
 ### Test Coverage
 - **Current**: 74%

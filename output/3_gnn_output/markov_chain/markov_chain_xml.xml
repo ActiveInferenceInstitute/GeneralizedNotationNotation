@@ -7,8 +7,8 @@
 - Observations = states directly (identity mapping for monitoring).
 - Stationary transition matrix with realistic weather dynamics.
 - Tests the simplest model structure: passive state evolution with no control.</annotation>
-    <created_at>2026-03-15T13:53:23.915214</created_at>
-    <modified_at>2026-03-15T13:53:23.915215</modified_at>
+    <created_at>2026-03-17T16:46:47.418215</created_at>
+    <modified_at>2026-03-17T16:46:47.418216</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="3,3" name="A" type="likelihood_matrix" description="Observation model (identity for direct monitoring)"/>

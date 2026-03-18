@@ -10,8 +10,8 @@ This document describes the ontology system used in conjunction with GNN files, 
 For implementation details and usage, see:
 
 - **[src/ontology/AGENTS.md](../../../src/ontology/AGENTS.md)**: Ontology processing module documentation
-- **[src/AGENTS.md](../../../README.md)**: Complete pipeline module registry
-- **[src/main.py](../../src/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
+- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete pipeline module registry
+- **[src/main.py](../../../src/main.py)**: Pipeline orchestrator (Step 10 handles ontology processing)
 
 ## 1. Ontology Terms Definition File
 

@@ -425,9 +425,7 @@ ActiveInference.jl Code Generation → Julia Environment Setup → Model Compila
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_activeinference_integration.py` - Integration tests
-- `src/tests/test_execute_activeinference_analysis.py` - Analysis tests
-- `src/tests/test_execute_activeinference_performance.py` - Performance tests
+- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
 - **Current**: 78%

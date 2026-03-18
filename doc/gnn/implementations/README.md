@@ -17,6 +17,7 @@ This directory contains documentation and references for the Implementations dom
 - **[ActiveInference.jl](activeinference_jl.md)**: Dedicated discrete-state Active Inference simulation in Julia (`ActiveInference.jl`).
 - **[DisCoPy](discopy.md)**: Categorical string diagrams and compositional verification semantics (`discopy`).
 - **[CatColab](catcolab.md)**: Topos Institute framework mapping structural logic into Schema and Ologs, acting as a categorical twin.
+- **[Stan](stan.md)**: Stan model code generation from GNN variables and connections (structural heuristics; no full Active Inference semantics).
 
 ## Navigation
 

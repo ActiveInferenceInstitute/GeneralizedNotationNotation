@@ -5,8 +5,8 @@
   "script_path": "output/11_render_output/markov_chain/rxinfer/Simple Markov Chain_rxinfer.jl",
   "success": true,
   "return_code": 0,
-  "execution_time": 20.182529,
-  "timestamp": "2026-03-15T13:58:39.234920",
+  "execution_time": 16.057449,
+  "timestamp": "2026-03-17T16:53:48.805773",
   "simulation_data": {
     "traces": [],
     "free_energy": [],

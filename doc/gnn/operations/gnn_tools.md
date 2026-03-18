@@ -411,8 +411,8 @@ The GNN project includes a comprehensive 25-step pipeline orchestrated by `src/m
 
 For detailed architecture information, see:
 
-- **[src/AGENTS.md](../../../README.md)**: Complete module registry and architectural patterns
-- **[src/README.md](../README.md)**: Pipeline safety and reliability documentation
+- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete module registry and architectural patterns
+- **[src/README.md](../../../src/README.md)**: Pipeline safety and reliability documentation
 - **[Quickstart Tutorial](../tutorials/quickstart_tutorial.md)**: Step-by-step tutorial for using the pipeline
 
 ### Overview
@@ -640,6 +640,6 @@ python src/main.py --only-steps "11,12"
 python src/12_execute.py --frameworks "lite" --verbose  # PyMDP, JAX, DisCoPy only
 ```
 
-For more detailed information on each module, see **[src/AGENTS.md](../../../README.md)**.
+For more detailed information on each module, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---

@@ -7,8 +7,8 @@
 - 4 hidden states, 4 observations, 4 actions
 - Each action policy is a sequence of T actions: π = [a_1, a_2, ..., a_T]
 - Enables sophisticated multi-step reasoning and delayed reward attribution</annotation>
-    <created_at>2026-03-15T13:53:23.882186</created_at>
-    <modified_at>2026-03-15T13:53:23.882187</modified_at>
+    <created_at>2026-03-17T16:46:47.381543</created_at>
+    <modified_at>2026-03-17T16:46:47.381544</modified_at>
   </metadata>
   <variables>
     <variable data_type="float" dimensions="4,4" name="A" type="likelihood_matrix" description="Likelihood matrix"/>

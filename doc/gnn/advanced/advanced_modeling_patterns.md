@@ -33,7 +33,7 @@ Advanced GNN models benefit from the full pipeline processing capabilities:
 python src/main.py --target-dir input/advanced_models/ --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
 

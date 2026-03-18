@@ -9,7 +9,7 @@ The classic T-maze task from Active Inference literature (Friston et al.):
 - Agent must decide: go directly to an arm (exploit) or visit cue location first (explore)
 - Demonstrates epistemic foraging: Active Inference naturally balances exploration vs exploitation
 - The Expected Free Energy decomposes into epistemic (information gain) + instrumental (reward) value
-Generated: 2026-03-15T13:53:23.922215
+Generated: 2026-03-17T16:46:47.425946
 """
 
 import numpy as np

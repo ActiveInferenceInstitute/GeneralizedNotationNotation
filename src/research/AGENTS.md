@@ -234,8 +234,8 @@ Research Data → Analysis → Visualization → Report Generation → Publicati
 ## Testing
 
 ### Test Files
-- `src/tests/test_research_integration.py` - Integration tests
-- `src/tests/test_research_analysis.py` - Analysis tests
+- `src/tests/test_research_overall.py` - Module-level tests
+- `src/tests/test_research_functional.py` - Functional tests
 
 ### Test Coverage
 - **Current**: 70%

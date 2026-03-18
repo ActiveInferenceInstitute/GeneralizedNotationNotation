@@ -13,6 +13,7 @@ import json
 import tempfile
 import shutil
 import subprocess  # nosec B404 -- subprocess calls with controlled/trusted input
+import os
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -254,6 +255,9 @@ Minimize free energy while maintaining preferred states.
     @pytest.mark.timeout(180)  # 3 minute timeout for LLM operations
     def test_llm_processing_with_ollama(self, test_gnn_dir, test_output_dir, caplog):
         """Test LLM processing when Ollama is available (slow test - runs actual LLM prompts)."""
+        if os.getenv("GNN_RUN_LLM_TESTS") not in {"1", "true", "TRUE"}:
+            pytest.skip("Set GNN_RUN_LLM_TESTS=1 to run real Ollama prompt tests")
+
         import logging
         caplog.set_level(logging.INFO)
 

@@ -173,13 +173,21 @@ D = [0.33, 0.33, 0.34]
 
         # Run execute and check output structure
         try:
-            process_execute(dirs["input_dir"], dirs["base_output"], verbose=True)
+            # Constrain execution to avoid running every framework in repo-level outputs.
+            process_execute(
+                dirs["input_dir"],
+                dirs["base_output"],
+                verbose=True,
+                frameworks="pymdp",
+                timeout=10,
+                render_output_dir=dirs["base_output"] / "11_render_output",
+            )
 
             # Verify execute output structure
             execute_dir = dirs["base_output"] / "12_execute_output"
             if execute_dir.exists():
                 # Should have execution summary
-                summary_file = execute_dir / "execution_summary.json"
+                summary_file = execute_dir / "summaries" / "execution_summary.json"
                 # Summary might be at root level instead
 
         except Exception:

@@ -468,9 +468,9 @@ PyMDP Code Generation → Model Validation → Simulation Setup → Inference Ex
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_pymdp_integration.py` - Integration tests
-- `src/tests/test_execute_pymdp_simulation.py` - Simulation tests
-- `src/tests/test_execute_pymdp_analysis.py` - Analysis tests
+- `src/tests/test_execute_overall.py` - Execute module tests
+- `src/tests/test_execute_pymdp_integration.py` - PyMDP execution integration tests
+- `src/tests/test_execute_pymdp_simulation.py` - PyMDP simulation tests
 
 ### Test Coverage
 - **Current**: 80%

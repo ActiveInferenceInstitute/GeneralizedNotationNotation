@@ -41,9 +41,11 @@ from utils.pipeline_template import create_standardized_pipeline_script
 try:
     from integration import process_integration
 except ImportError:
+    from typing import Any, Optional
+    import logging
+
     def process_integration(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs: Any) -> bool:
         """Recovery integration processing when module unavailable."""
-        import logging
         if logger is None:
             logger = logging.getLogger(__name__)
         logger.warning("Integration module not available - using recovery")

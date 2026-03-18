@@ -160,6 +160,7 @@ class TestRunner:
             sys.executable, "-m", "pytest",
             "--verbose",
             "--tb=short",
+            "--log-cli-level=WARNING",
             f"--maxfail={self.config.max_failures}",
             "--durations=10",
             "--disable-warnings"

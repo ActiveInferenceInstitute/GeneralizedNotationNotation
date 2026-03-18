@@ -2,7 +2,7 @@
 
 ## Module Overview
 
-**Purpose**: Code generation for simulation frameworks (PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX)
+**Purpose**: Code generation for simulation frameworks from parsed GNN/POMDP specifications.
 
 **Pipeline Step**: Step 11: Code rendering (11_render.py)
 
@@ -10,9 +10,9 @@
 
 **Status**: ✅ Production Ready
 
-**Version**: 2.0.0
+**Version**: 1.1.3
 
-**Last Updated**: 2026-01-21
+**Last Updated**: 2026-03-17
 
 ---
 
@@ -26,12 +26,10 @@
 5. Generate documentation and usage examples
 
 ### Key Capabilities
-- Multi-framework code generation (PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX)
-- Framework-specific optimization and configuration
-- Template-based code generation with customization
-- Cross-framework compatibility validation
-- Automated documentation generation
-- Performance optimization suggestions
+- Multi-framework code generation (see Supported Frameworks)
+- POMDP-aware rendering via `POMDPRenderProcessor` (per-model/per-framework output folders)
+- Framework compatibility checks and matrix normalization before rendering
+- Structured summaries written to `render_processing_summary.json`
 
 ### Supported Frameworks
 
@@ -65,24 +63,34 @@
 - **Output**: JAX-optimized simulation code
 - **Optimization**: GPU acceleration, vectorization
 
+#### PyTorch (Python)
+- **Purpose**: Neural integration backend
+- **Output**: Python scripts under `pytorch/` when the renderer is available
+
+#### NumPyro (Python)
+- **Purpose**: Probabilistic programming backend
+- **Output**: Python scripts under `numpyro/` when the renderer is available
+
+#### Stan (Stan)
+- **Purpose**: Probabilistic programming backend
+- **Output**: Stan models under `stan/` when the renderer is available
+
 ---
 
 ## API Reference
 
 ### Public Functions
 
-#### `process_render(target_dir: Path, output_dir: Path, verbose: bool = False, **kwargs) -> bool`
+#### `process_render(target_dir: Path, output_dir: Path, verbose: bool = False, frameworks=None, strict_validation: bool = True, **kwargs) -> bool`
 **Description**: Main rendering processing function called by orchestrator (11_render.py). Processes GNN files and generates code for multiple simulation frameworks.
 
 **Parameters**:
 - `target_dir` (Path): Directory containing GNN files to process
 - `output_dir` (Path): Output directory for rendered files
 - `verbose` (bool): Enable verbose logging (default: False)
-- `**kwargs`: Additional processing options including:
-  - `frameworks` (List[str]): List of frameworks to render for (default: ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy"])
-  - `strict_validation` (bool): Enable strict POMDP validation (default: False)
-  - `include_documentation` (bool): Generate framework documentation (default: True)
-  - `pomdp_aware` (bool): Enable POMDP-aware processing (default: True)
+- `frameworks` (Optional[List[str]]): Restrict to a subset of frameworks (default: all available)
+- `strict_validation` (bool): Passed to POMDP extraction (`True` by default)
+- `**kwargs`: Additional options forwarded to framework renderers (e.g. `timesteps`, `simulation_params`)
 
 **Returns**: `bool` - True if processing succeeded, False otherwise
 
@@ -116,78 +124,19 @@ success = process_render(
 
 **Location**: `src/render/processor.py`
 
-#### `generate_pymdp_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Generate PyMDP simulation code from GNN content.
+### Generator helpers (`generators.py`)
 
-**Parameters**:
-- `gnn_content` (str): GNN specification content
-- `output_dir` (Path): Output directory for PyMDP code
-- `**kwargs`: Additional PyMDP-specific options
+`src/render/generators.py` also exports convenience generators used by parts of the module:
 
-**Returns**: `Dict[str, Any]` - Generation results with:
-- `success` (bool): Whether generation succeeded
-- `main_script` (str): Path to main PyMDP script
-- `files` (List[str]): List of generated files
-- `config` (Dict[str, Any]): PyMDP configuration
+- `generate_pymdp_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
+- `generate_rxinfer_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
+- `generate_activeinference_jl_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
+- `generate_discopy_code(model_data: Dict, output_path: Optional[Union[str, Path]] = None) -> str`
 
-#### `generate_rxinfer_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Generate RxInfer.jl simulation code from GNN content.
-
-**Parameters**:
-- `gnn_content` (str): GNN specification content
-- `output_dir` (Path): Output directory for RxInfer.jl code
-- `**kwargs`: Additional RxInfer.jl-specific options
-
-**Returns**: `Dict[str, Any]` - Generation results with:
-- `success` (bool): Whether generation succeeded
-- `main_script` (str): Path to main Julia script
-- `toml_config` (str): Path to TOML configuration file
-- `files` (List[str]): List of generated files
-
-#### `generate_activeinference_jl_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Generate ActiveInference.jl simulation code from GNN content.
-
-**Parameters**:
-- `gnn_content` (str): GNN specification content
-- `output_dir` (Path): Output directory for ActiveInference.jl code
-- `**kwargs`: Additional ActiveInference.jl-specific options
-
-**Returns**: `Dict[str, Any]` - Generation results with:
-- `success` (bool): Whether generation succeeded
-- `main_script` (str): Path to main Julia script
-- `files` (List[str]): List of generated files
-
-#### `generate_discopy_code(gnn_content: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-**Description**: Generate DisCoPy diagram code from GNN content.
-
-**Parameters**:
-- `gnn_content` (str): GNN specification content
-- `output_dir` (Path): Output directory for DisCoPy code
-- `**kwargs`: Additional DisCoPy-specific options
-
-**Returns**: `Dict[str, Any]` - Generation results with:
-- `success` (bool): Whether generation succeeded
-- `diagram_script` (str): Path to diagram script
-- `files` (List[str]): List of generated files
-
-#### `render_gnn_spec(gnn_spec: Dict[str, Any], target: str, output_directory: Union[str, Path], options: Optional[Dict[str, Any]] = None) -> Tuple[bool, str, List[str]]`
-**Description**: Render a GNN specification dictionary to a target framework.
-
-**Parameters**:
-- `gnn_spec` (Dict[str, Any]): Parsed GNN specification dictionary
-- `target` (str): Target framework ("pymdp", "rxinfer", "activeinference_jl", "discopy", "jax")
-- `output_directory` (Union[str, Path]): Output directory for generated code
-- `options` (Optional[Dict[str, Any]]): Framework-specific options (default: None)
-
-**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
-- `success` (bool): Whether rendering succeeded
-- `message` (str): Status message
-- `generated_files` (List[str]): List of generated file paths
-
-**Location**: `src/render/processor.py`
+These functions take a loosely-structured `model_data` dictionary and return code as a string (and optionally write it to `output_path`). The authoritative, pipeline-facing interface remains `process_render(...)`.
 
 #### `get_module_info() -> Dict[str, Any]`
-**Description**: Get information about the enhanced render module.
+**Description**: Get information about the render module capabilities.
 
 **Returns**: `Dict[str, Any]` - Dictionary with module information containing:
 - `name` (str): Module name
@@ -286,15 +235,7 @@ RXINFER_CONFIG = {
 }
 ```
 
-### Template Configuration
-```python
-TEMPLATE_CONFIG = {
-    'include_documentation': True,
-    'include_examples': True,
-    'optimize_for_performance': True,
-    'include_visualization': False
-}
-```
+Configuration is primarily controlled by the Step 11 orchestrator (`src/11_render.py`) and forwarded parameters to `process_render(...)`. Avoid documenting configuration keys that are not implemented in code.
 
 ---
 
@@ -342,50 +283,35 @@ options = {
 ## Output Specification
 
 ### Output Products
-- `*_pymdp_simulation.py` - PyMDP simulation scripts
-- `*_rxinfer_simulation.jl` - RxInfer.jl simulation scripts
-- `*_activeinference_simulation.jl` - ActiveInference.jl simulation scripts
-- `*_discopy_diagram.py` - DisCoPy diagram scripts
-- `*_jax_simulation.py` - JAX simulation scripts
+- Framework artifacts are written under per-model/per-framework subfolders (POMDP-aware mode), typically one primary script per framework:
+  - `pymdp/<model_name>_pymdp.py`
+  - `rxinfer/<model_name>_rxinfer.jl`
+  - `activeinference_jl/<model_name>_activeinference.jl`
+  - `jax/<model_name>_jax.py`
+  - `discopy/<model_name>_discopy.py`
+  - optional backends (when available): `pytorch/`, `numpyro/`, `stan/`
 - `render_processing_summary.json` - Processing summary
 
 ### Output Directory Structure
 ```
 output/11_render_output/
-├── model_name_pymdp_simulation.py
-├── model_name_rxinfer_simulation.jl
-├── model_name_activeinference_simulation.jl
-├── model_name_discopy_diagram.py
-├── model_name_jax_simulation.py
 ├── render_processing_summary.json
-└── framework_specific_outputs/
+└── [model_stem]/
     ├── pymdp/
     ├── rxinfer/
-    └── ...
+    ├── activeinference_jl/
+    ├── jax/
+    ├── discopy/
+    ├── pytorch/        # if available
+    ├── numpyro/        # if available
+    └── stan/           # if available
 ```
 
 ---
 
 ## Performance Characteristics
 
-### Latest Execution
-- **Duration**: ~2-5 seconds per framework
-- **Memory**: ~50-200MB depending on model complexity
-- **Status**: ✅ Production Ready
-
-### Expected Performance
-- **PyMDP Generation**: ~1-2s
-- **RxInfer Generation**: ~2-4s
-- **ActiveInference.jl Generation**: ~2-3s
-- **DisCoPy Generation**: ~1-2s
-- **JAX Generation**: ~2-4s
-
-### Framework-Specific Performance
-- **PyMDP**: Fastest, optimized Python code
-- **JAX**: Fastest execution, GPU acceleration
-- **RxInfer.jl**: Balanced performance and expressiveness
-- **ActiveInference.jl**: Comprehensive but slower
-- **DisCoPy**: Fast generation, slower execution
+Performance is tracked by the pipeline execution summaries and render summary JSON output. Avoid hard-coding numeric claims in docs unless they are generated from current benchmark outputs.
 
 ---
 
@@ -502,26 +428,6 @@ def generate_pymdp_tool(model_data, options=None):
 
 ---
 
-## Version History
-
-### Current Version: 2.0.0
-
-**Features**:
-- Multi-framework code generation (PyMDP, RxInfer.jl, ActiveInference.jl, DisCoPy, JAX)
-- POMDP-aware processing
-- Framework-specific optimization
-- Template-based generation
-- Cross-framework compatibility validation
-
-**Known Issues**:
-- None currently
-
-### Roadmap
-- **Next Version**: Additional framework support
-- **Future**: Real-time code generation API
-
----
-
 ## References
 
 ### Related Documentation
@@ -541,11 +447,7 @@ def generate_pymdp_tool(model_data, options=None):
 
 ---
 
-**Last Updated**: 2026-01-21
 **Maintainer**: GNN Pipeline Team
-**Status**: ✅ Production Ready
-**Version**: 2.0.0
-**Architecture Compliance**: ✅ 100% Thin Orchestrator Pattern
 
 ---
 ## Documentation

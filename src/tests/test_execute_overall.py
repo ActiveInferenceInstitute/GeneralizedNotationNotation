@@ -199,11 +199,31 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
         output_dir = safe_filesystem.create_dir("output")
 
         try:
-            success = process_execute(input_dir, output_dir, verbose=True)
+            # IMPORTANT: process_execute uses filesystem heuristics to locate render outputs
+            # and may accidentally pick up the repo's real output/11_render_output.
+            # For a deterministic test, create an isolated render output and pass it explicitly.
+            render_out = safe_filesystem.create_dir("render/11_render_output")
+            safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
+            safe_filesystem.create_file(
+                "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+                """#!/usr/bin/env python3
+import json
+print(json.dumps({"status": "ok"}))
+""",
+            )
+
+            success = process_execute(
+                input_dir,
+                output_dir,
+                verbose=True,
+                frameworks="pymdp",
+                timeout=5,
+                render_output_dir=render_out,
+            )
             assert isinstance(success, bool)
 
             # Check that the execution summary was created
-            summary_file = output_dir / "execution_summary.json"
+            summary_file = output_dir / "summaries" / "execution_summary.json"
             if summary_file.exists():
                 with open(summary_file) as f:
                     summary = json.load(f)
@@ -227,12 +247,14 @@ println("{\\\"status\\\": \\\"success\\\", \\\"framework\\\": \\\"rxinfer\\\"}")
                 input_dir,
                 output_dir,
                 verbose=True,
-                frameworks="pymdp"  # Only test pymdp to keep it fast
+                frameworks="pymdp",  # Only test pymdp to keep it fast
+                timeout=5,
+                render_output_dir=sample_render_output["base"],
             )
             assert isinstance(success, bool)
 
             # Check summary was created
-            summary_file = output_dir / "execution_summary.json"
+            summary_file = output_dir / "summaries" / "execution_summary.json"
             if summary_file.exists():
                 with open(summary_file) as f:
                     summary = json.load(f)
@@ -345,11 +367,22 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
         input_dir = safe_filesystem.create_dir("input")
 
         try:
+            render_out = safe_filesystem.create_dir("render/11_render_output")
+            safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
+            safe_filesystem.create_file(
+                "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+                """#!/usr/bin/env python3
+import json
+print(json.dumps({"status": "ok"}))
+""",
+            )
             success = process_execute(
                 input_dir,
                 safe_filesystem.temp_dir / "output",
                 verbose=True,
-                frameworks="pymdp"
+                frameworks="pymdp",
+                timeout=5,
+                render_output_dir=render_out,
             )
             assert isinstance(success, bool)
         except Exception as e:
@@ -363,9 +396,26 @@ print(json.dumps({"status": "executed", "model": "actinf_model"}))
         input_dir = safe_filesystem.create_dir("input")
         output_dir = safe_filesystem.create_dir("output")
 
-        process_execute(input_dir, output_dir, verbose=True)
+        # Use an isolated render output to avoid picking up repo outputs via heuristics.
+        render_out = safe_filesystem.create_dir("render/11_render_output")
+        safe_filesystem.create_dir("render/11_render_output/test_model/pymdp")
+        safe_filesystem.create_file(
+            "render/11_render_output/test_model/pymdp/test_model_pymdp.py",
+            """#!/usr/bin/env python3
+import json
+print(json.dumps({"status": "ok"}))
+""",
+        )
+        process_execute(
+            input_dir,
+            output_dir,
+            verbose=True,
+            frameworks="pymdp",
+            timeout=5,
+            render_output_dir=render_out,
+        )
 
-        summary_file = output_dir / "execution_summary.json"
+        summary_file = output_dir / "summaries" / "execution_summary.json"
         if summary_file.exists():
             with open(summary_file) as f:
                 summary = json.load(f)

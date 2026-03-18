@@ -8,7 +8,7 @@
 - Context switches slowly (sticky transitions), testing exploration vs exploitation.
 - The agent prefers big-reward observations (observation 2).
 - Tests the bandit structure: meaningful actions despite nearly-static state dynamics.
-/// Generated: 2026-03-15T13:53:23.880889
+/// Generated: 2026-03-17T16:46:47.380107
 /// Enhanced by GNN PKL Serializer
 ///
 

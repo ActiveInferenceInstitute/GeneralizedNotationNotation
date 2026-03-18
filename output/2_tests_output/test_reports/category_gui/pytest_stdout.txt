@@ -1,0 +1,508 @@
+================================================= test session starts ==================================================
+collecting ... collected 34 items
+
+src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_returns_success 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_creates_summary 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_summary_has_correct_mode 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_empty_directory 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/empty_input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIConfiguration::test_gui_types_string_parsing 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIConfiguration::test_gui_types_list 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIConfiguration::test_unknown_gui_type_handled 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['nonexistent_gui']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [ WARNING] gui.processor: Unknown GUI type: nonexistent_gui
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_generate_html_navigation_creates_file 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] test_gui_logger: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] test_gui_logger: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmptb429sqf/output/22_gui_output/navigation.html
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_html_navigation_contains_structure 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] test_gui_logger: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] test_gui_logger: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxda5nhvr/output/22_gui_output/navigation.html
+PASSED
+src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_html_navigation_empty_output 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] test_gui_logger: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] test_gui_logger: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_66mv9rc/empty_output/22_gui_output/navigation.html
+PASSED
+src/tests/test_gui_functionality.py::TestGUIOutputArtifacts::test_process_gui_creates_output_directory 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIOutputArtifacts::test_summary_contains_results 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIErrorHandling::test_nonexistent_target_directory 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/nonexistent
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_functionality.py::TestGUIErrorHandling::test_verbose_mode_logs_more 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57 [    INFO] gui.processor: Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+2026-03-17 16:46:57 [    INFO] gui.processor: Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57 [    INFO] gui.processor: Mode: HEADLESS
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 1 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57 [    INFO] gui.processor: 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ GUI 2 completed successfully
+2026-03-17 16:46:57 [    INFO] gui.processor: 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/gui_processing_summary.json
+2026-03-17 16:46:57 [    INFO] gui.processor: Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/navigation.html
+2026-03-17 16:46:57 [    INFO] gui.processor: ✅ HTML navigation page generated
+PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_gui_markdown_helpers_imports PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_component_and_parse PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_multiple_components PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_update_states_append_and_replace PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_component PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_nonexistent_component PASSED
+src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_parse_empty_components PASSED
+src/tests/test_gui_overall.py::TestStateSpaceManagement::test_state_space_helpers_callable PASSED
+src/tests/test_gui_overall.py::TestStateSpaceManagement::test_add_state_space_entry PASSED
+src/tests/test_gui_overall.py::TestStateSpaceManagement::test_update_state_space_entry PASSED
+src/tests/test_gui_overall.py::TestStateSpaceManagement::test_remove_state_space_entry PASSED
+src/tests/test_gui_overall.py::TestGUIDiscovery::test_get_available_guis_returns_dict PASSED
+src/tests/test_gui_overall.py::TestGUIDiscovery::test_get_available_guis_has_expected_keys PASSED
+src/tests/test_gui_overall.py::TestGUIDiscovery::test_gui_info_has_name_and_description PASSED
+src/tests/test_gui_overall.py::TestGUIFeatures::test_features_is_dict PASSED
+src/tests/test_gui_overall.py::TestGUIFeatures::test_features_has_expected_keys PASSED
+src/tests/test_gui_overall.py::TestGUIFeatures::test_features_are_booleans PASSED
+src/tests/test_gui_overall.py::TestGUIErrorHandling::test_add_component_with_empty_states PASSED
+src/tests/test_gui_overall.py::TestGUIErrorHandling::test_parse_malformed_markdown PASSED
+src/tests/test_gui_overall.py::TestGUIErrorHandling::test_update_states_missing_component PASSED
+
+======================================================== PASSES ========================================================
+________________________________ TestGUIHeadlessMode.test_headless_mode_returns_success ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+________________________________ TestGUIHeadlessMode.test_headless_mode_creates_summary ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+______________________________ TestGUIHeadlessMode.test_headless_summary_has_correct_mode ______________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+________________________________ TestGUIHeadlessMode.test_headless_mode_empty_directory ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/empty_input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+__________________________________ TestGUIConfiguration.test_gui_types_string_parsing __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+_______________________________________ TestGUIConfiguration.test_gui_types_list _______________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+__________________________________ TestGUIConfiguration.test_unknown_gui_type_handled __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['nonexistent_gui']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+WARNING  gui.processor:processor.py:97 Unknown GUI type: nonexistent_gui
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+___________________________ TestGUIHTMLNavigation.test_generate_html_navigation_creates_file ___________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     test_gui_logger:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     test_gui_logger:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmptb429sqf/output/22_gui_output/navigation.html
+____________________________ TestGUIHTMLNavigation.test_html_navigation_contains_structure _____________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     test_gui_logger:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     test_gui_logger:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxda5nhvr/output/22_gui_output/navigation.html
+_______________________________ TestGUIHTMLNavigation.test_html_navigation_empty_output ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     test_gui_logger:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     test_gui_logger:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_66mv9rc/empty_output/22_gui_output/navigation.html
+___________________________ TestGUIOutputArtifacts.test_process_gui_creates_output_directory ___________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+_________________________________ TestGUIOutputArtifacts.test_summary_contains_results _________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+________________________________ TestGUIErrorHandling.test_nonexistent_target_directory ________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/nonexistent
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+___________________________________ TestGUIErrorHandling.test_verbose_mode_logs_more ___________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+INFO     gui.processor:processor.py:58 📦 Running in HEADLESS mode - generating artifacts only (fast)
+INFO     gui.processor:processor.py:73 Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+INFO     gui.processor:processor.py:74 Running GUI types: ['gui_1', 'gui_2']
+INFO     gui.processor:processor.py:75 Mode: HEADLESS
+INFO     gui.processor:__init__.py:47 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+INFO     gui.processor:processor.py:69 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/constructed_model_gui1.md
+INFO     gui.processor:__init__.py:74 ✅ GUI 1 completed successfully
+INFO     gui.processor:__init__.py:43 🎯 Starting GUI 2: Visual Matrix Editor
+INFO     gui.processor:processor.py:78 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+INFO     gui.processor:structured_logging.py:438 ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/visual_model_gui2.md
+INFO     gui.processor:__init__.py:72 ✅ GUI 2 completed successfully
+INFO     gui.processor:processor.py:150 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/gui_processing_summary.json
+INFO     gui.processor:processor.py:183 Generating HTML navigation page for pipeline outputs
+INFO     gui.processor:processor.py:263 ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/navigation.html
+INFO     gui.processor:processor.py:161 ✅ HTML navigation page generated
+================================================= slowest 10 durations =================================================
+
+(10 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_returns_success
+PASSED src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_creates_summary
+PASSED src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_summary_has_correct_mode
+PASSED src/tests/test_gui_functionality.py::TestGUIHeadlessMode::test_headless_mode_empty_directory
+PASSED src/tests/test_gui_functionality.py::TestGUIConfiguration::test_gui_types_string_parsing
+PASSED src/tests/test_gui_functionality.py::TestGUIConfiguration::test_gui_types_list
+PASSED src/tests/test_gui_functionality.py::TestGUIConfiguration::test_unknown_gui_type_handled
+PASSED src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_generate_html_navigation_creates_file
+PASSED src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_html_navigation_contains_structure
+PASSED src/tests/test_gui_functionality.py::TestGUIHTMLNavigation::test_html_navigation_empty_output
+PASSED src/tests/test_gui_functionality.py::TestGUIOutputArtifacts::test_process_gui_creates_output_directory
+PASSED src/tests/test_gui_functionality.py::TestGUIOutputArtifacts::test_summary_contains_results
+PASSED src/tests/test_gui_functionality.py::TestGUIErrorHandling::test_nonexistent_target_directory
+PASSED src/tests/test_gui_functionality.py::TestGUIErrorHandling::test_verbose_mode_logs_more
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_gui_markdown_helpers_imports
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_component_and_parse
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_add_multiple_components
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_update_states_append_and_replace
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_component
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_remove_nonexistent_component
+PASSED src/tests/test_gui_overall.py::TestGUIModuleComprehensive::test_parse_empty_components
+PASSED src/tests/test_gui_overall.py::TestStateSpaceManagement::test_state_space_helpers_callable
+PASSED src/tests/test_gui_overall.py::TestStateSpaceManagement::test_add_state_space_entry
+PASSED src/tests/test_gui_overall.py::TestStateSpaceManagement::test_update_state_space_entry
+PASSED src/tests/test_gui_overall.py::TestStateSpaceManagement::test_remove_state_space_entry
+PASSED src/tests/test_gui_overall.py::TestGUIDiscovery::test_get_available_guis_returns_dict
+PASSED src/tests/test_gui_overall.py::TestGUIDiscovery::test_get_available_guis_has_expected_keys
+PASSED src/tests/test_gui_overall.py::TestGUIDiscovery::test_gui_info_has_name_and_description
+PASSED src/tests/test_gui_overall.py::TestGUIFeatures::test_features_is_dict
+PASSED src/tests/test_gui_overall.py::TestGUIFeatures::test_features_has_expected_keys
+PASSED src/tests/test_gui_overall.py::TestGUIFeatures::test_features_are_booleans
+PASSED src/tests/test_gui_overall.py::TestGUIErrorHandling::test_add_component_with_empty_states
+PASSED src/tests/test_gui_overall.py::TestGUIErrorHandling::test_parse_malformed_markdown
+PASSED src/tests/test_gui_overall.py::TestGUIErrorHandling::test_update_states_missing_component
+================================================== 34 passed in 0.12s ==================================================

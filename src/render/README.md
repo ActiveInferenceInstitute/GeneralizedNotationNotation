@@ -1,18 +1,13 @@
 # POMDP-Aware Render Module
 
-This module provides comprehensive **POMDP-aware code generation** capabilities for GNN models, with specialized support for Active Inference specifications. It translates GNN models into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, and DisCoPy.
+This module provides **POMDP-aware code generation** for GNN models. It translates parsed GNN/POMDP specifications into executable simulation code for multiple frameworks including PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, and (when available) PyTorch, NumPyro, and Stan.
 
 ## Key Features
 
-🧠 **POMDP State Space Extraction** - Automatically extracts Active Inference matrices (A, B, C, D, E) and state space structures from GNN specifications
-
-🔧 **Modular Injection System** - Injects POMDP state spaces into framework-specific renderers with validation and compatibility checking
-
-📁 **Implementation-Specific Output Structure** - Creates organized output directories with framework-specific subfolders
-
-📚 **Structured Documentation Generation** - Automatically generates comprehensive documentation for each framework rendering
-
-✅ **Enhanced Validation** - Validates POMDP structural consistency and framework compatibility
+- **POMDP state space extraction**: extracts Active Inference matrices (A, B, C, D, E) and dimensions from GNN specs.
+- **Modular injection**: injects extracted state spaces into framework-specific renderers with compatibility checks.
+- **Implementation-specific outputs**: organizes code under per-model/per-framework subfolders.
+- **Structured summaries**: writes `render_processing_summary.json` and overview README content under the output directory.
 
 ## POMDP Processing Pipeline
 
@@ -161,9 +156,7 @@ src/render/
 │   └── toml_generator.py         # TOML configuration generator
 ├── activeinference_jl/            # ActiveInference.jl code generation
 │   ├── __init__.py               # ActiveInference.jl module initialization
-│   ├── activeinference_renderer.py # ActiveInference.jl renderer
-│   ├── activeinference_renderer_fixed.py # Fixed renderer
-│   └── activeinference_renderer_simple.py # Simple renderer
+│   └── activeinference_renderer.py # ActiveInference.jl renderer
 ├── jax/                           # JAX code generation
 │   ├── __init__.py               # JAX module initialization
 │   ├── jax_renderer.py           # JAX renderer
@@ -176,343 +169,92 @@ src/render/
     ├── __init__.py               # DisCoPy module initialization
     ├── discopy_renderer.py       # DisCoPy renderer
     ├── translator.py              # GNN to DisCoPy translator
-    └── visualize_jax_output.py   # JAX output visualization
 ```
 
 ## Core Components
 
-### Main Renderer (`render.py`)
+### Step 11 entrypoint (`processor.py`)
 
-#### `render_gnn_model(gnn_content: str, target_framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
+The pipeline calls:
 
-Main function for rendering GNN models to executable code.
+- `render.process_render(target_dir, output_dir, verbose=False, frameworks=None, strict_validation=True, **kwargs) -> bool`
 
-**Supported Frameworks:**
+In POMDP-aware mode, `process_render` delegates per-model/per-framework rendering to `POMDPRenderProcessor` in `pomdp_processor.py`.
 
-- **pymdp**: PyMDP Python framework
-- **rxinfer**: RxInfer.jl Julia framework
-- **activeinference_jl**: ActiveInference.jl Julia framework
-- **jax**: JAX Python framework
-- **discopy**: DisCoPy Python framework
+### Framework backends
 
-**Returns:**
+Backend-specific renderers live under:
 
-- Dictionary containing rendering results and generated files
+- `src/render/pymdp/`
+- `src/render/rxinfer/`
+- `src/render/activeinference_jl/`
+- `src/render/jax/`
+- `src/render/discopy/`
+- optional: `src/render/pytorch/`, `src/render/numpyro/`, `src/render/stan/`
 
-#### `generate_simulation_code(gnn_content: str, framework: str, output_dir: Path, **kwargs) -> Dict[str, Any]`
-
-Generates simulation code for specified framework.
-
-**Features:**
-
-- Framework-specific code generation
-- Template-based rendering
-- Configuration generation
-- Documentation generation
-- Validation and testing
-
-### PyMDP Rendering (`pymdp/`)
-
-#### PyMDPRenderer (`pymdp_renderer.py`)
-
-Generates PyMDP simulation code from GNN models.
-
-**Key Methods:**
-
-- `render_pymdp_model(gnn_content: str, output_dir: Path) -> Dict[str, Any]`
-  - Renders GNN model to PyMDP code
-  - Generates complete simulation script
-  - Creates configuration files
-  - Produces documentation
-
-- `convert_gnn_to_pymdp(gnn_content: str) -> Dict[str, Any]`
-  - Converts GNN structure to PyMDP format
-  - Maps variables and parameters
-  - Generates matrix definitions
-  - Creates simulation logic
-
-#### PyMDPConverter (`pymdp_converter.py`)
-
-Converts GNN models to PyMDP-compatible format.
-
-**Features:**
-
-- Variable mapping and conversion
-- Matrix generation and validation
-- Parameter extraction and formatting
-- Simulation setup generation
-
-#### PyMDPTemplates (`pymdp_templates.py`)
-
-Provides code templates for PyMDP generation.
-
-**Templates:**
-
-- Basic simulation template
-- Advanced simulation template
-- Custom simulation template
-- Testing template
-
-### RxInfer.jl Rendering (`rxinfer/`)
-
-#### RxInferRenderer (`rxinfer_renderer.py`)
-
-Generates RxInfer.jl simulation code from GNN models.
-
-**Key Methods:**
-
-- `render_rxinfer_model(gnn_content: str, output_dir: Path) -> Dict[str, Any]`
-  - Renders GNN model to RxInfer.jl code
-  - Generates Julia simulation script
-  - Creates TOML configuration
-  - Produces documentation
-
-- `convert_gnn_to_rxinfer(gnn_content: str) -> Dict[str, Any]`
-  - Converts GNN structure to RxInfer.jl format
-  - Maps variables and parameters
-  - Generates factor graph definitions
-  - Creates inference algorithms
-
-#### GNNParser (`gnn_parser.py`)
-
-Parses GNN content for RxInfer.jl conversion.
-
-**Features:**
-
-- GNN structure parsing
-- Variable extraction
-- Parameter mapping
-- Relationship analysis
-
-#### TOMLGenerator (`toml_generator.py`)
-
-Generates TOML configuration files for RxInfer.jl.
-
-**Features:**
-
-- Project configuration
-- Dependency management
-- Build configuration
-- Runtime settings
-
-### ActiveInference.jl Rendering (`activeinference_jl/`)
-
-#### ActiveInferenceRenderer (`activeinference_renderer.py`)
-
-Generates ActiveInference.jl simulation code from GNN models.
-
-**Key Methods:**
-
-- `render_activeinference_model(gnn_content: str, output_dir: Path) -> Dict[str, Any]`
-  - Renders GNN model to ActiveInference.jl code
-  - Generates Julia simulation script
-  - Creates project configuration
-  - Produces documentation
-
-- `convert_gnn_to_activeinference(gnn_content: str) -> Dict[str, Any]`
-  - Converts GNN structure to ActiveInference.jl format
-  - Maps variables and parameters
-  - Generates model definitions
-  - Creates simulation logic
-
-### JAX Rendering (`jax/`)
-
-#### JAXRenderer (`jax_renderer.py`)
-
-Generates JAX simulation code from GNN models.
-
-**Key Methods:**
-
-- `render_jax_model(gnn_content: str, output_dir: Path) -> Dict[str, Any]`
-  - Renders GNN model to JAX code
-  - Generates Python simulation script
-  - Creates configuration files
-  - Produces documentation
-
-- `convert_gnn_to_jax(gnn_content: str) -> Dict[str, Any]`
-  - Converts GNN structure to JAX format
-  - Maps variables and parameters
-  - Generates function definitions
-  - Creates simulation logic
-
-#### JAX Templates (`templates/`)
-
-Provides code templates for JAX generation.
-
-**Templates:**
-
-- Combined template for comprehensive simulations
-- General template for basic simulations
-- POMDP template for POMDP-specific simulations
-
-### DisCoPy Rendering (`discopy/`)
-
-#### DisCoPyRenderer (`discopy_renderer.py`)
-
-Generates DisCoPy diagram code from GNN models.
-
-**Key Methods:**
-
-- `render_discopy_model(gnn_content: str, output_dir: Path) -> Dict[str, Any]`
-  - Renders GNN model to DisCoPy code
-  - Generates Python diagram script
-  - Creates visualization code
-  - Produces documentation
-
-- `convert_gnn_to_discopy(gnn_content: str) -> Dict[str, Any]`
-  - Converts GNN structure to DisCoPy format
-  - Maps variables and relationships
-  - Generates diagram definitions
-  - Creates visualization logic
-
-#### Translator (`translator.py`)
-
-Translates GNN models to DisCoPy diagrams.
-
-**Features:**
-
-- GNN to diagram conversion
-- Relationship mapping
-- Visual representation
-- Diagram optimization
+The supported framework inventory for the module is reflected by `src/render/health.py` and the export surface in `src/render/__init__.py`.
 
 ## Usage Examples
 
 ### Basic Code Generation
 
 ```python
-from render import render_gnn_model
+from pathlib import Path
+from render import process_render
 
-# Render GNN model to PyMDP code
-results = render_gnn_model(
-    gnn_content=gnn_content,
-    target_framework="pymdp",
-    output_dir=Path("output/pymdp/")
+success = process_render(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/11_render_output"),
+    verbose=True,
 )
-
-print(f"Generated files: {len(results['generated_files'])}")
-print(f"Main script: {results['main_script']}")
-print(f"Configuration: {results['config_file']}")
+print("ok" if success else "render completed with issues")
 ```
 
 ### Framework-Specific Rendering
 
 ```python
-from render.pymdp import PyMDPRenderer
-from render.rxinfer import RxInferRenderer
+from pathlib import Path
+from render import render_gnn_spec
 
-# PyMDP rendering
-pymdp_renderer = PyMDPRenderer()
-pymdp_results = pymdp_renderer.render_pymdp_model(gnn_content, output_dir)
-
-# RxInfer.jl rendering
-rxinfer_renderer = RxInferRenderer()
-rxinfer_results = rxinfer_renderer.render_rxinfer_model(gnn_content, output_dir)
-
-print(f"PyMDP files: {len(pymdp_results['files'])}")
-print(f"RxInfer files: {len(rxinfer_results['files'])}")
+success, msg, artifacts = render_gnn_spec(
+    gnn_spec=parsed_spec,
+    target="pymdp",
+    output_directory=Path("output/11_render_output/single/pymdp"),
+)
+print(success, msg, artifacts)
 ```
 
 ### Multi-Framework Generation
 
 ```python
-from render import generate_simulation_code
+from pathlib import Path
+from render import process_render
 
-# Generate code for multiple frameworks
-frameworks = ["pymdp", "rxinfer", "jax", "discopy"]
-
-for framework in frameworks:
-    results = generate_simulation_code(
-        gnn_content=gnn_content,
-        framework=framework,
-        output_dir=Path(f"output/{framework}/")
-    )
-    
-    print(f"{framework}: {len(results['files'])} files generated")
-```
-
-### Custom Template Rendering
-
-```python
-from render.pymdp import PyMDPTemplates
-
-# Use custom template
-templates = PyMDPTemplates()
-custom_template = templates.get_custom_template("advanced_simulation")
-
-results = render_with_template(
-    gnn_content=gnn_content,
-    template=custom_template,
-    output_dir=Path("output/custom/")
+process_render(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/11_render_output"),
+    frameworks=["pymdp", "jax", "discopy"],
+    strict_validation=True,
 )
 ```
 
 ## Rendering Pipeline
 
-### 1. Content Parsing
+Rendering is driven by:
 
-```python
-# Parse GNN content for rendering
-parsed_content = parse_gnn_content(gnn_content)
-variables = extract_variables(parsed_content)
-parameters = extract_parameters(parsed_content)
-```
-
-### 2. Framework Selection
-
-```python
-# Select appropriate renderer
-renderer = select_renderer(target_framework)
-renderer_config = get_renderer_config(target_framework)
-```
-
-### 3. Code Generation
-
-```python
-# Generate framework-specific code
-generated_code = renderer.generate_code(parsed_content, renderer_config)
-main_script = renderer.generate_main_script(generated_code)
-config_files = renderer.generate_config_files(generated_code)
-```
-
-### 4. File Generation
-
-```python
-# Generate output files
-output_files = renderer.generate_files(generated_code, output_dir)
-documentation = renderer.generate_documentation(generated_code)
-```
-
-### 5. Validation
-
-```python
-# Validate generated code
-validation_results = validate_generated_code(output_files)
-test_files = generate_test_files(generated_code)
-```
+- extraction + normalization (`gnn.pomdp_extractor`, `render.processor.normalize_matrices`)
+- per-framework rendering (`render.pomdp_processor.POMDPRenderProcessor`)
+- structured summaries (`render_processing_summary.json` and per-framework README files)
 
 ## Integration with Pipeline
 
 ### Pipeline Step 11: Code Rendering
 
-```python
-# Called from 11_render.py
-def process_render(target_dir, output_dir, verbose=False, **kwargs):
-    # Render GNN models to executable code
-    rendering_results = render_gnn_models(target_dir, output_dir, verbose)
-    
-    # Generate framework-specific code
-    framework_results = generate_framework_code(rendering_results)
-    
-    # Create rendering documentation
-    rendering_docs = create_rendering_documentation(rendering_results)
-    
-    return True
-```
+`src/11_render.py` is a thin orchestrator that calls `render.process_render(...)`.
 
-### Enhanced Output Structure
+### Output Structure
 
-The new POMDP-aware render system creates **implementation-specific output subfolders** for organized code generation:
+The POMDP-aware render system creates **implementation-specific output subfolders** for organized code generation:
 
 ```
 output/11_render_output/
@@ -541,14 +283,6 @@ output/11_render_output/
 ├── README.md                             # Overall processing documentation
 └── render_processing_summary.json        # Complete processing results
 ```
-
-**Benefits of This Structure:**
-
-- ✅ Clear separation of implementation-specific code
-- ✅ Framework-specific documentation and configurations
-- ✅ Easy navigation to specific implementations
-- ✅ Comprehensive processing tracking and validation results
-- ✅ Scalable to multiple GNN models
 
 ## POMDP Processing Features
 
@@ -801,10 +535,9 @@ def test_framework_rendering():
 
 ### Required Dependencies
 
-- **jinja2**: Template engine for code generation
-- **pathlib**: Path handling
-- **json**: JSON data handling
-- **yaml**: YAML configuration handling
+- Standard library + `numpy` (used in render processors and matrix normalization)
+
+This module uses Python string templates and code-generation helpers; it does not rely on Jinja2.
 
 ### Optional Dependencies
 
@@ -813,26 +546,9 @@ def test_framework_rendering():
 - **jax**: JAX framework support
 - **discopy**: DisCoPy framework support
 
-## Performance Metrics
+## Performance
 
-### Generation Times
-
-- **Small Models** (< 100 variables): < 5 seconds
-- **Medium Models** (100-1000 variables): 5-30 seconds
-- **Large Models** (> 1000 variables): 30-300 seconds
-
-### Memory Usage
-
-- **Base Memory**: ~50MB
-- **Per Framework**: ~10-50MB depending on complexity
-- **Peak Memory**: 2-3x base usage during generation
-
-### Code Quality
-
-- **Syntactic Correctness**: 95-99% correctness
-- **Framework Compatibility**: 90-95% compatibility
-- **Documentation Coverage**: 80-90% coverage
-- **Test Coverage**: 70-80% coverage
+Performance and success metrics are tracked by the pipeline summaries and per-step logs. Avoid hard-coded numeric claims in docs unless sourced from current benchmark outputs.
 
 ## Troubleshooting
 
@@ -869,8 +585,10 @@ Solution: Optimize model complexity or use faster framework
 ### Debug Mode
 
 ```python
-# Enable debug mode for detailed rendering information
-results = render_gnn_model(content, framework, output_dir, debug=True, verbose=True)
+from pathlib import Path
+from render import process_render
+
+process_render(Path("input/gnn_files"), Path("output/11_render_output"), verbose=True)
 ```
 
 ## Future Enhancements
@@ -891,7 +609,7 @@ results = render_gnn_model(content, framework, output_dir, debug=True, verbose=T
 
 ## Summary
 
-The Render module provides comprehensive code generation capabilities for GNN models, translating them into executable simulation code for multiple frameworks. The module supports various frameworks, provides extensive customization options, and ensures high-quality code generation to support Active Inference research and development.
+The Render module provides POMDP-aware code generation for multiple frameworks and writes structured outputs intended for execution (Step 12) and downstream analysis/reporting steps.
 
 ## License and Citation
 

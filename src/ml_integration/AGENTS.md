@@ -266,8 +266,7 @@ GNN Models → ML Framework Selection → Dataset Preparation → Model Training
 ## Testing
 
 ### Test Files
-- `src/tests/test_ml_integration_unit.py` - Unit tests
-- `src/tests/test_ml_integration_frameworks.py` - Framework tests
+- `src/tests/test_ml_integration_overall.py` - Module-level tests
 
 ### Test Coverage
 - **Current**: 72%

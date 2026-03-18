@@ -14,15 +14,22 @@
 ## Common Operations
 
 ```python
-# Render to all frameworks
-from render.processor import RenderProcessor
-processor = RenderProcessor(input_dir, output_dir)
-results = processor.process(verbose=True)
+from pathlib import Path
+from render import process_render, render_gnn_spec
 
-# Render to specific framework
-from render.pymdp.pymdp_renderer import PyMDPRenderer
-renderer = PyMDPRenderer()
-code = renderer.render(pomdp_state_space)
+# Render all models in a directory (Step 11 entrypoint)
+ok = process_render(
+    target_dir=Path("input/gnn_files"),
+    output_dir=Path("output/11_render_output"),
+    verbose=True,
+)
+
+# Render a single parsed spec to one target
+success, msg, artifacts = render_gnn_spec(
+    gnn_spec=parsed_spec,
+    target="pymdp",
+    output_directory=Path("output/11_render_output/single/pymdp"),
+)
 ```
 
 ## Integration Points
@@ -51,7 +58,7 @@ code = renderer.render(pomdp_state_space)
 ## Tips for AI Assistants
 
 1. **Step 11:** Render is the bridge between parsing and execution
-2. **Templates:** Each renderer uses Jinja2 templates for code generation
+2. **Templates:** Code generation uses Python string templates / f-strings (not Jinja2)
 3. **Output Location:** `output/11_render_output/{model}/{framework}/`
 4. **Matrix Handling:** A, B, C, D matrices are converted to framework-native formats
 

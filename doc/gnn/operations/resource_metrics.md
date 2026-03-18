@@ -37,7 +37,7 @@ python src/main.py --only-steps "3,5" --estimate-resources --target-dir input/gn
 - **Step 23** (`src/23_report.py`) → Comprehensive reporting including resource metrics
   - See: **[src/report/AGENTS.md](../../../src/report/AGENTS.md)**
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
 

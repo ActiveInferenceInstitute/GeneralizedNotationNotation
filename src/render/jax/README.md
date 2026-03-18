@@ -1,6 +1,10 @@
 # JAX Renderer for GNN Specifications
 
-This module provides comprehensive JAX implementations for POMDPs and other Active Inference models, including optimized belief updates, value iteration, and policy optimization using JAX's advanced features.
+This module generates **JAX-based Python scripts** from parsed GNN specifications, with support for:
+
+- a general Active Inference–style model (pure JAX script),
+- a JAX POMDP solver,
+- a combined hierarchical / multi-agent / continuous variant.
 
 ## JAX Rendering Pipeline
 
@@ -34,18 +38,19 @@ graph TD
 - **JAX POMDP Solver**: Complete POMDP implementation with JIT compilation, vmap, and pmap
 - **Belief Updates**: Bayesian belief updates with numerical stability
 - **Value Iteration**: Alpha vector backup with vectorization
-- **Performance Optimization**: JIT compilation, mixed precision, distributed computing
-- **GNN Integration**: Automatic extraction of A, B, C, D matrices from GNN specifications
+- **GNN Integration**: Automatic extraction of \(A, B, C, D\) matrices from supported GNN internal formats
 
 ## Requirements
 
 ### Core Dependencies
-- **JAX**: ≥0.4.20 (latest stable recommended)
-- **jaxlib**: Matching JAX version
-- **Optax**: ≥0.1.7 for gradient-based optimization
-- **Flax**: ≥0.7.0 for neural network components
-- **NumPy**: ≥1.24.0 for numerical operations
-- **SciPy**: ≥1.10.0 for sparse matrix operations
+- **JAX** and **jaxlib**: required for all generated scripts.
+- **NumPy**: used by the generator and imported by the generated scripts.
+
+Additional dependencies depend on the generator:
+
+- **`render_gnn_to_jax` (general model)**: emits a script that uses **only** `jax`, `jax.numpy`, and `numpy`.
+- **`render_gnn_to_jax_pomdp` (POMDP solver)**: emits a script that uses `jax` and attempts to import **Optax** (with a “continue without” fallback).
+- **`render_gnn_to_jax_combined` (combined model)**: emits a script that uses **Flax** and **Optax**.
 
 ### Hardware Support
 - **CPU**: `uv pip install --upgrade jax[cpu]`
@@ -57,7 +62,8 @@ graph TD
 ### Basic POMDP Rendering
 
 ```python
-from src.render.jax import render_gnn_to_jax_pomdp
+from render.jax import render_gnn_to_jax_pomdp
+from pathlib import Path
 
 # Render GNN specification to JAX POMDP solver
 success, message, files = render_gnn_to_jax_pomdp(
@@ -70,7 +76,8 @@ success, message, files = render_gnn_to_jax_pomdp(
 ### General JAX Model Rendering
 
 ```python
-from src.render.jax import render_gnn_to_jax
+from render.jax import render_gnn_to_jax
+from pathlib import Path
 
 # Render GNN specification to general JAX model
 success, message, files = render_gnn_to_jax(
@@ -82,7 +89,8 @@ success, message, files = render_gnn_to_jax(
 ### Combined Model Rendering
 
 ```python
-from src.render.jax import render_gnn_to_jax_combined
+from render.jax import render_gnn_to_jax_combined
+from pathlib import Path
 
 # Render GNN specification to combined JAX model
 success, message, files = render_gnn_to_jax_combined(
@@ -90,6 +98,12 @@ success, message, files = render_gnn_to_jax_combined(
     output_path=Path("output/combined_model.py")
 )
 ```
+
+## Templates
+
+`src/render/jax/templates/` contains string templates for alternative JAX code layouts.
+
+**Current status**: the active renderer implementation in `src/render/jax/jax_renderer.py` does **not** import or use these templates; it generates code directly in Python. The templates remain documented and available for future refactors.
 
 ## Generated Code Features
 
@@ -168,11 +182,11 @@ print(result.stdout)
 
 ## Integration with Pipeline
 
-The JAX renderer is fully integrated with the GNN Processing Pipeline:
+The JAX renderer is integrated into the pipeline as a Step 11 backend:
 
 1. **Step 11 (Render)**: Generates JAX code from GNN specifications
 2. **Step 12 (Execute)**: Runs generated JAX scripts with performance monitoring
-3. **Setup**: Automatically installs and validates JAX dependencies
+3. **Setup**: Installs dependencies; some generated scripts also include minimal self-install logic as a recovery path.
 
 ## Resources
 
@@ -204,7 +218,7 @@ jax.config.update('jax_debug_infs', True)
 When extending the JAX renderer:
 
 1. Follow JAX best practices for performance
-2. Include comprehensive docstrings with @Web links
+2. Keep public API limited to re-exported functions from `src/render/jax/__init__.py`
 3. Add type hints and error handling
 4. Test with various GNN specifications
 5. Document new features in this README

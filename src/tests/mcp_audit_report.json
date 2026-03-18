@@ -660,7 +660,7 @@
       "fn": "list_render_frameworks_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Return all supported rendering frameworks (Python, Julia, JAX, PyTorch, RxInfer) and their availability."
+      "description": "Return supported render framework names and availability (best effort)."
     },
     {
       "name": "list_report_formats",
@@ -966,7 +966,7 @@
       "fn": "render_gnn_to_format_mcp",
       "is_real": true,
       "documented": true,
-      "description": "Render a single GNN file to a specific target framework (Python, Julia, etc.)."
+      "description": "Render a single GNN file (runs Step 11 render; does not currently filter to one framework)."
     },
     {
       "name": "run_all_tests",

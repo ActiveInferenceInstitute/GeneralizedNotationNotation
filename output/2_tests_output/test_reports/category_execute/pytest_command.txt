@@ -1,0 +1,5 @@
+Category: execute
+Success: True
+Duration: 12.03s
+Peak Memory: 86.14 MB
+CPU Usage: 0.0%

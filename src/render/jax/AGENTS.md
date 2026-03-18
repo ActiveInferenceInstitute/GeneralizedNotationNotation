@@ -2,592 +2,172 @@
 
 ## Module Overview
 
-**Purpose**: Code generation for JAX framework simulations with high-performance computing from GNN specifications
+**Purpose**: Generate JAX-based simulation scripts from parsed GNN specifications.
 
 **Parent Module**: Render Module (Step 11: Code rendering)
 
 **Category**: Framework Code Generation / JAX
 
----
+The JAX submodule focuses on two concrete use cases:
 
-## Core Functionality
+- a **general Active Inference–style model** (standalone JAX script with belief updates and expected free energy);
+- a **POMDP solver and a combined hierarchical / multi-agent variant** for richer models.
 
-### Primary Responsibilities
-1. Convert GNN specifications to JAX-optimized simulation code
-2. Generate JIT-compiled, differentiable simulations
-3. Create vectorized implementations with automatic differentiation
-4. Handle JAX-specific optimizations and GPU acceleration
-5. Support high-performance probabilistic programming
-
-### Key Capabilities
-- JIT-compiled simulation code generation
-- Automatic differentiation implementation
-- GPU acceleration support
-- Vectorized operations for performance
-- JAX-specific template management
-- Memory-efficient implementations
+All public entrypoints live in `jax_renderer.py` and are re-exported by `src/render/jax/__init__.py`.
 
 ---
 
-## API Reference
+## Public API (from `__init__.py`)
 
-### Exported Functions from `__init__.py`
+The submodule exports exactly three functions:
 
-#### `render_gnn_to_jax(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
-**Description**: Main function exported from the module. Renders GNN specification to JAX simulation code with JIT compilation and optimization.
-
-**Parameters**:
-- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification (file path, content string, or parsed dictionary)
-- `output_path` (Path): Output file path for generated JAX code
-- `**kwargs`: Additional JAX generation options:
-  - `optimize` (bool): Enable JAX optimizations (default: True)
-  - `jit_compile` (bool): Enable JIT compilation (default: True)
-  - `device` (str): Target device ("cpu", "gpu", "tpu", "auto") (default: "auto")
-
-**Returns**: `Tuple[bool, str, List[str]]` - Tuple containing:
-- `success` (bool): Whether rendering succeeded
-- `message` (str): Status message
-- `generated_files` (List[str]): List of generated file paths
-
-**Location**: `src/render/jax/jax_renderer.py`
-
-**Example**:
 ```python
-from render.jax import render_gnn_to_jax
-from pathlib import Path
-
-# Render GNN file to JAX code
-success, message, files = render_gnn_to_jax(
-    gnn_spec=Path("input/model.md"),
-    output_path=Path("output/jax_simulation.py"),
-    optimize=True,
-    jit_compile=True,
-    device="gpu"
+from render.jax import (
+    render_gnn_to_jax,
+    render_gnn_to_jax_pomdp,
+    render_gnn_to_jax_combined,
 )
 ```
 
-#### `render_gnn_to_jax_pomdp(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
-**Description**: Render GNN specification to JAX code specifically for POMDP models.
+Internally these are thin wrappers around code generators in `jax_renderer.py`. They all share the same signature shape:
+
+```python
+def render_gnn_to_jax(
+    gnn_spec: Dict[str, Any],
+    output_path: Path,
+    options: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, str, List[str]]:
+    ...
+```
+
+The POMDP and combined variants differ only in which generator they call.
+
+### `render_gnn_to_jax(gnn_spec, output_path, options=None) -> (bool, str, List[str])`
+
+**Description**: Render a parsed GNN specification to a **general JAX Active Inference–style model**. The generated script is a standalone Python file that depends only on `jax`, `jax.numpy`, and `numpy`.
 
 **Parameters**:
-- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
-- `output_path` (Path): Output file path
-- `**kwargs`: Additional POMDP-specific options
+- `gnn_spec` (`Dict[str, Any]`): Parsed GNN model as produced by earlier pipeline steps (e.g. includes `ModelName`, optional `model_parameters`, and either `initialparameterization`, `statespaceblock`, or `variables` sections).
+- `output_path` (`Path`): Exact path to the `.py` file that will be written.
+- `options` (`Optional[Dict[str, Any]]`): Optional configuration passed through to the generator. Current options are interpreted inside `_generate_jax_model_code` and are intentionally kept minimal; callers may treat this as an opaque bag for future extensions.
 
-**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+**Returns**: `(success, message, generated_files)` where:
+- `success` (`bool`): `True` if code was generated and written successfully.
+- `message` (`str`): Short status message suitable for logs.
+- `generated_files` (`List[str]`): List of file paths written (currently a single-element list containing `output_path`).
 
-**Location**: `src/render/jax/jax_renderer.py`
+**Location**: `src/render/jax/jax_renderer.py` (`render_gnn_to_jax`).
 
-#### `render_gnn_to_jax_combined(gnn_spec: Union[str, Path, Dict[str, Any]], output_path: Path, **kwargs) -> Tuple[bool, str, List[str]]`
-**Description**: Render GNN specification to JAX code with combined features and optimizations.
+**Notes**:
+- The generator derives matrix dimensions from the GNN spec and emits a JAX script that exposes functions such as `create_params`, `simulate_step`, and `run_simulation`.
 
-**Parameters**:
-- `gnn_spec` (Union[str, Path, Dict[str, Any]]): GNN specification
-- `output_path` (Path): Output file path
-- `**kwargs`: Additional options
+### `render_gnn_to_jax_pomdp(gnn_spec, output_path, options=None) -> (bool, str, List[str])`
 
-**Returns**: `Tuple[bool, str, List[str]]` - Rendering result tuple
+**Description**: Render a GNN specification to a **JAX POMDP solver**. The generated script includes a `JAXPOMDPSolver` class with belief updates and alpha-vector–style value iteration.
 
-**Location**: `src/render/jax/jax_renderer.py`
+**Parameters / Returns**:
+- Same as `render_gnn_to_jax`; the output file usually has a `_pomdp`-oriented filename chosen by the caller.
 
-#### `convert_gnn_to_jax(model_data: Dict[str, Any], **kwargs) -> Dict[str, Any]`
-**Description**: Convert GNN model data to JAX-compatible format with automatic differentiation support.
+**Location**: `src/render/jax/jax_renderer.py` (`render_gnn_to_jax_pomdp`).
 
-**Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data with variables, connections, matrices
-- `enable_gradients` (bool, optional): Enable automatic differentiation (default: True)
-- `validate` (bool, optional): Validate JAX compatibility (default: True)
-- `**kwargs`: Additional conversion options
+**Notes**:
+- Matrices \(A, B, C, D\) are extracted from the GNN spec via `_extract_gnn_matrices`, with sensible defaults and normalization if values are missing or partially specified.
 
-**Returns**: `Dict[str, Any]` - JAX-compatible model structure with:
-- `parameters` (Dict): JAX arrays for model parameters
-- `functions` (Dict): JAX functions for forward/inference
-- `gradients` (Dict): Gradient functions if enabled
-- `jit_functions` (Dict): JIT-compiled functions
+### `render_gnn_to_jax_combined(gnn_spec, output_path, options=None) -> (bool, str, List[str])`
 
-#### `create_jax_simulation(model_structure: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
-**Description**: Create JAX simulation implementation with performance optimizations.
+**Description**: Render a GNN specification to a **combined JAX model** suitable for hierarchical, multi-agent, or continuous extensions. The generated script uses Flax and Optax to define a `Combined` module and training-ready structure.
 
-**Parameters**:
-- `model_structure` (Dict[str, Any]): JAX-compatible model structure
-- `config` (Dict[str, Any], optional): JAX configuration options (default: {})
-- `simulation_type` (str, optional): Simulation type ("standard", "optimized", "vectorized") (default: "optimized")
-- `**kwargs`: Additional simulation generation options
+**Parameters / Returns**:
+- Same as `render_gnn_to_jax`; `options` can be used to tune configuration in `_generate_jax_combined_code` as that function evolves.
 
-**Returns**: `str` - JAX simulation code as string
+**Location**: `src/render/jax/jax_renderer.py` (`render_gnn_to_jax_combined`).
 
-#### `generate_jax_optimized_code(model_data: Dict[str, Any], config: Dict[str, Any] = None, **kwargs) -> str`
-**Description**: Generate optimized JAX code with performance enhancements and GPU support.
+---
 
-**Parameters**:
-- `model_data` (Dict[str, Any]): GNN model data
-- `config` (Dict[str, Any], optional): Optimization configuration (default: {})
-- `vectorize` (bool, optional): Enable vectorization (default: True)
-- `parallelize` (bool, optional): Enable parallel execution (default: True)
-- `memory_efficient` (bool, optional): Use memory-efficient operations (default: True)
-- `**kwargs`: Additional optimization options
+## Input Expectations
 
-**Returns**: `str` - Optimized JAX code as string
+The JAX renderer is designed to consume the **internal GNN representation** already produced by earlier pipeline steps. It supports several shapes:
+
+- **POMDP extractor format**: dictionaries with a `model_parameters` section and an `initialparameterization` section containing numeric values for \(A, B, C, D\).
+- **JSON export format**: specs with `statespaceblock` and `raw_sections["InitialParameterization"]`.
+- **Older parsed format**: specs with `variables`, `parameters`, and `InitialParameterization`.
+
+In all cases, `_extract_gnn_matrices` will:
+
+- infer dimensionality for \(A, B, C, D\);
+- normalize probability matrices where appropriate;
+- apply recovery defaults when values are missing or malformed.
+
+Callers should treat `gnn_spec` as an opaque dict that has already passed type checking and validation at earlier pipeline steps.
+
+---
+
+## Generated Outputs
+
+All three entrypoints ultimately write a **single Python script** to `output_path`:
+
+- general JAX: `..._jax.py` (naming is handled by the caller);
+- POMDP solver: JAX-based POMDP solver with `create_pomdp_solver` / `solve_pomdp`;
+- combined model: Flax-based module for hierarchical / multi-agent / continuous setups.
+
+From the perspective of Step 11:
+
+- per-model JAX outputs are typically organized under  
+  `output/11_render_output/<model_name>/jax/` by the higher-level POMDP render processor;
+- these scripts are then consumed by Step 12 (execute) and later analysis steps.
 
 ---
 
 ## Dependencies
 
-### Required Dependencies
-- `jax` - JAX library for high-performance computing
-- `jaxlib` - JAX compilation backend
-- `numpy` - Array operations (JAX-compatible)
-- `jax.numpy` - JAX numpy operations
+**At generation time (this module):**
+- `numpy` for intermediate matrix handling.
 
-### Optional Dependencies
-- `optax` - Gradient-based optimization (recovery: basic SGD)
-- `flax` - Neural network library (recovery: basic operations)
-- `distrax` - Probability distributions (recovery: basic distributions)
+**In the generated scripts:**
+- general JAX and POMDP scripts: `jax`, `jax.numpy`, `numpy`;
+- combined scripts: `jax`, `jax.numpy`, `flax.linen`, `optax`.
 
-### Internal Dependencies
-- `render.renderer` - Base rendering functionality
-- `utils.pipeline_template` - Pipeline utilities
-
----
-
-## Configuration
-
-### JAX Configuration
-```python
-JAX_CONFIG = {
-    'jit_compile': True,              # Enable JIT compilation
-    'enable_x64': True,               # Enable 64-bit precision
-    'gpu_acceleration': True,         # Enable GPU acceleration
-    'vectorize_operations': True,     # Vectorize operations
-    'gradient_computation': True,     # Enable automatic differentiation
-    'parallel_execution': False,      # Enable parallel execution
-    'memory_optimization': True,      # Optimize memory usage
-    'debug_mode': False               # Enable debug features
-}
-```
-
-### Model Conversion Configuration
-```python
-CONVERSION_CONFIG = {
-    'state_representation': 'array',  # State representation type
-    'parameter_format': 'pytree',     # Parameter organization
-    'computation_graph': 'functional', # Computation structure
-    'differentiation_mode': 'reverse', # AD mode (forward/reverse)
-    'vectorization_level': 'batch',   # Vectorization strategy
-    'memory_layout': 'contiguous',    # Memory layout optimization
-    'precision': 'float32'            # Numerical precision
-}
-```
-
-### Simulation Configuration
-```python
-SIMULATION_CONFIG = {
-    'batch_size': 32,                 # Batch size for vectorization
-    'num_steps': 1000,                # Simulation steps
-    'learning_rate': 0.01,            # Learning rate for optimization
-    'optimizer': 'adam',              # Optimization algorithm
-    'loss_function': 'mse',           # Loss function
-    'convergence_threshold': 1e-6,    # Convergence criterion
-    'checkpoint_frequency': 100,      # Checkpoint saving frequency
-    'performance_monitoring': True    # Enable performance tracking
-}
-```
-
----
-
-## Usage Examples
-
-### Basic JAX Code Generation
-```python
-from render.jax import generate_jax_code
-
-# Example GNN model data for JAX optimization
-model_data = {
-    "variables": {
-        "states": {"domain": "continuous", "dimensions": 4, "dtype": "float32"},
-        "observations": {"domain": "continuous", "dimensions": 2, "dtype": "float32"},
-        "actions": {"domain": "continuous", "dimensions": 1, "dtype": "float32"},
-        "parameters": {"domain": "continuous", "dimensions": 10, "dtype": "float32"}
-    },
-    "connections": [
-        {"from": "states", "to": "observations", "type": "linear"},
-        {"from": "actions", "to": "states", "type": "transition"},
-        {"from": "parameters", "to": "states", "type": "modulation"}
-    ],
-    "optimization": {
-        "loss": "prediction_error",
-        "method": "gradient_descent",
-        "batch_size": 64
-    }
-}
-
-# Generate JAX code
-jax_code = generate_jax_code(model_data)
-print(jax_code[:500])  # Print first 500 characters
-```
-
-### Optimized Simulation Generation
-```python
-from render.jax import generate_jax_optimized_code
-
-# Configuration for optimized JAX simulation
-config = {
-    'jit_compile': True,
-    'gpu_acceleration': True,
-    'batch_size': 128,
-    'gradient_computation': True,
-    'performance_monitoring': True
-}
-
-# Generate optimized code
-optimized_code = generate_jax_optimized_code(model_data, config)
-
-# Save to file
-with open("optimized_jax_simulation.py", "w") as f:
-    f.write(optimized_code)
-```
-
-### Model Conversion
-```python
-from render.jax import convert_gnn_to_jax
-
-# Convert GNN model to JAX format
-jax_model = convert_gnn_to_jax(model_data)
-
-print("JAX Model Structure:")
-print(f"States: {jax_model['states']['shape']}")
-print(f"Parameters: {jax_model['parameters']['shape']}")
-print(f"Batch size: {jax_model['batch_size']}")
-print(f"JIT compiled: {jax_model['jit_compiled']}")
-```
-
-### Gradient-based Learning
-```python
-from render.jax import create_jax_simulation
-
-# Create simulation with gradient-based learning
-sim_config = {
-    'learning_enabled': True,
-    'optimizer': 'adam',
-    'loss_function': 'mse',
-    'gradient_clipping': 1.0
-}
-
-simulation_code = create_jax_simulation(model_data, sim_config)
-
-# This generates code for differentiable simulation
-print(simulation_code)
-```
-
----
-
-## JAX Performance Features Mapping
-
-### GNN to JAX Mapping
-- **Variables → Arrays**: GNN variables become JAX arrays with shapes
-- **Connections → Functions**: Relationships become differentiable functions
-- **Parameters → Trainable**: Model parameters become trainable variables
-- **Optimization → Gradients**: Learning becomes gradient-based optimization
-- **Computation → JIT**: Operations become JIT-compiled for performance
-
-### JAX Components Generated
-- **JIT Functions**: @jax.jit decorated functions for performance
-- **Grad Functions**: jax.grad for automatic differentiation
-- **VMap Functions**: jax.vmap for vectorized operations
-- **PyTree Structures**: Nested parameter structures
-- **Random Keys**: JAX random number generation
-
----
-
-## Output Specification
-
-### Output Products
-- `*_jax_simulation.py` - Complete JAX simulation scripts
-- `*_jax_model.py` - JAX model definition files
-- `*_jax_training.py` - Training and optimization code
-- `jax_config.json` - JAX configuration file
-
-### Output Directory Structure
-```
-output/11_render_output/
-├── model_name_jax_simulation.py
-├── model_name_jax_model.py
-├── model_name_jax_training.py
-└── jax_config.json
-```
-
-### Generated Script Structure
-```python
-# Generated JAX simulation script structure
-import jax
-import jax.numpy as jnp
-from jax import grad, jit, vmap, random
-
-# Enable 64-bit precision if needed
-jax.config.update("jax_enable_x64", True)
-
-# Model parameters (as PyTree)
-params = {
-    'transition_matrix': jnp.zeros((4, 4)),
-    'observation_matrix': jnp.zeros((2, 4)),
-    'bias_terms': jnp.zeros(4),
-    'noise_parameters': jnp.ones(2) * 0.1
-}
-
-# JIT-compiled simulation step
-@jit
-def simulation_step(state, action, params, key):
-    # Transition model
-    new_state = jnp.dot(params['transition_matrix'], state) + action * params['bias_terms']
-
-    # Add noise
-    noise = random.normal(key, shape=(4,)) * params['noise_parameters'][0]
-    new_state = new_state + noise
-
-    # Observation model
-    observation = jnp.dot(params['observation_matrix'], new_state)
-    obs_noise = random.normal(key, shape=(2,)) * params['noise_parameters'][1]
-    observation = observation + obs_noise
-
-    return new_state, observation
-
-# Loss function
-def loss_fn(params, states, actions, observations):
-    # Simulate trajectory
-    # Compute prediction error
-    return prediction_error
-
-# Gradient-based optimization
-grad_fn = grad(loss_fn)
-optimizer = optax.adam(learning_rate=0.01)
-
-# Training loop
-for step in range(num_steps):
-    grads = grad_fn(params, batch_states, batch_actions, batch_observations)
-    updates, opt_state = optimizer.update(grads, opt_state)
-    params = optax.apply_updates(params, updates)
-
-# Vectorized evaluation
-batch_simulate = vmap(simulation_step, in_axes=(0, 0, None, 0))
-```
-
----
-
-## Performance Characteristics
-
-### Latest Execution
-- **Duration**: 2-4 seconds per model
-- **Memory**: 200-500MB depending on model complexity
-- **Status**: ✅ Production Ready
-
-### Performance Breakdown
-- **Code Generation**: < 1s
-- **JIT Compilation**: 1-3s (first run)
-- **Template Processing**: < 1s
-- **Validation**: < 500ms
-
-### Optimization Notes
-- JAX generation includes automatic differentiation setup
-- Memory usage depends on batch size and model dimensions
-- Generated code is optimized for GPU acceleration
-
----
-
-## Error Handling
-
-### JAX Generation Errors
-1. **Shape Mismatch**: Incompatible array dimensions
-2. **Dtype Issues**: Unsupported data types for operations
-3. **JIT Compilation Errors**: Code that cannot be JIT-compiled
-
-### Recovery Strategies
-- **Shape Validation**: Comprehensive dimension checking before generation
-- **Type Conversion**: Automatic dtype conversion when possible
-- **Recovery Implementation**: Non-JIT version when compilation fails
-
-### Error Examples
-```python
-try:
-    jax_code = generate_jax_code(model_data)
-except JAXGenerationError as e:
-    logger.error(f"JAX generation failed: {e}")
-    # Recovery to basic template
-    jax_code = generate_basic_jax_template(model_data)
-```
+The generators attempt to make the produced files self-contained; installation of JAX/Flax/Optax happens in later steps or inside the generated scripts themselves where necessary.
 
 ---
 
 ## Integration Points
 
-### Orchestrated By
-- **Parent Module**: `src/render/` (Step 11)
-- **Main Script**: `11_render.py`
+- **Orchestrated by**:
+  - `src/render/processor.py` via the `"jax"` target in `AVAILABLE_RENDERERS`.
+  - `src/11_render.py` (Step 11) through `render.process_render`.
 
-### Imports From
-- `render.renderer` - Base rendering functionality
-- `gnn.parsers` - GNN parsing and validation
+- **Imported from**:
+  - `render.jax` (this package) by tests and by the POMDP render processor.
 
-### Imported By
-- `render.processor` - Main render processing integration
-- `execute.jax` - JAX execution module
-- `tests.test_render_jax*` - JAX-specific tests
-
-### Data Flow
-```
-GNN Model → JAX Conversion → JIT Compilation Setup → Gradient Function Creation → Optimization Setup → Validation → Output
-```
+- **Downstream**:
+  - Step 12 (`src/12_execute.py`) executes the generated JAX scripts and collects results for analysis.
 
 ---
 
 ## Testing
 
-### Test Files
-- `src/tests/test_render_jax_integration.py` - Integration tests
-- `src/tests/test_render_jax_generation.py` - Code generation tests
-- `src/tests/test_render_jax_performance.py` - Performance tests
+JAX-specific behaviour is covered indirectly by the render integration tests:
 
-### Test Coverage
-- **Current**: 76%
-- **Target**: 85%+
+- `src/tests/test_render_overall.py`
+- `src/tests/test_render_integration.py`
 
-### Key Test Scenarios
-1. JAX code generation from various GNN models
-2. Generated Python code syntax and import validation
-3. JIT compilation success and performance
-4. Gradient computation correctness
-5. GPU acceleration functionality
-6. Error handling for invalid JAX operations
+These tests assert that:
 
-### Test Commands
-```bash
-# Run JAX-specific tests
-pytest src/tests/test_render_jax*.py -v
+- the `"jax"` backend is registered and reported by `get_available_renderers`;
+- rendering runs to completion on representative GNN fixtures and produces syntactically valid Python files.
 
-# Run with coverage
-pytest src/tests/test_render_jax*.py --cov=src/render/jax --cov-report=term-missing
-```
+When adding new features to `jax_renderer.py`, prefer:
+
+- small, focused tests that exercise matrix extraction and code generation;
+- end-to-end tests that run Step 11 and confirm that JAX files are written to the expected locations.
 
 ---
 
-## MCP Integration
+## Versioning
 
-### Tools Registered
-- `render.generate_jax` - Generate JAX simulation code
-- `render.convert_to_jax` - Convert GNN to JAX format
-- `render.optimize_jax` - Generate optimized JAX code
-- `render.validate_jax` - Validate JAX model structure
-
-### Tool Endpoints
-```python
-@mcp_tool("render.generate_jax")
-def generate_jax_tool(model_data: Dict[str, Any], config: Dict[str, Any]) -> str:
-    """Generate JAX simulation code from GNN model"""
-    return generate_jax_code(model_data, **config)
-```
-
----
-
-## JAX-Specific Features
-
-### High-Performance Computing Implementation
-- **JIT Compilation**: Just-in-time compilation for speed
-- **Automatic Differentiation**: Reverse-mode AD for gradients
-- **Vectorization**: Single-program multiple-data operations
-- **GPU Acceleration**: CUDA/TPU support for acceleration
-- **Memory Efficiency**: Optimized memory layouts and operations
-
-### Optimization Strategies
-- **Function Transformation**: jit, grad, vmap transformations
-- **PyTree Flattening**: Efficient parameter handling
-- **Random Number Generation**: Reproducible PRNG sequences
-- **Memory Management**: Efficient memory allocation and reuse
-
----
-
-## Development Guidelines
-
-### Adding New JAX Features
-1. Update conversion logic in `jax_renderer.py`
-2. Add new JAX transformations and optimizations
-3. Update template files in `templates/` directory
-4. Add comprehensive performance tests
-
-### Template Management
-- Templates are stored in `templates/` directory as separate files
-- Use JAX best practices for performance and memory efficiency
-- Include proper JAX imports and transformations
-- Maintain compatibility with different JAX versions
-
----
-
-## Troubleshooting
-
-### Common Issues
-
-#### Issue 1: "JIT compilation failed"
-**Symptom**: JAX code generation succeeds but JIT compilation fails
-**Cause**: Code contains operations that cannot be JIT-compiled
-**Solution**: Check for dynamic shapes or unsupported operations, use static shapes
-
-#### Issue 2: "Gradient computation error"
-**Symptom**: Automatic differentiation fails
-**Cause**: Non-differentiable operations or dynamic control flow
-**Solution**: Replace problematic operations with differentiable alternatives
-
-#### Issue 3: "GPU memory error"
-**Symptom**: Out of memory during GPU execution
-**Cause**: Model too large for GPU memory
-**Solution**: Reduce batch size, use CPU, or optimize memory usage
-
-### Debug Mode
-```python
-# Enable debug output for JAX generation
-result = generate_jax_code(model_data, debug=True, verbose=True)
-```
-
----
-
-## Version History
-
-### Current Version: 1.0.0
-
-**Features**:
-- Complete JAX code generation pipeline
-- JIT compilation and automatic differentiation
-- GPU acceleration support
-- Vectorized operations and batch processing
-- Comprehensive error handling and validation
-- MCP tool integration
-
-**Known Limitations**:
-- Complex control flow may impact JIT compilation
-- Very large models may exceed GPU memory limits
-- Some advanced JAX features require manual implementation
-
-### Roadmap
-- **Next Version**: Enhanced automatic differentiation support
-- **Future**: Integration with JAX ecosystem (Flax, Optax, etc.)
-- **Advanced**: Support for distributed JAX (jax.pmap)
-
----
-
-## References
-
-### Related Documentation
-- [Render Module](../../render/AGENTS.md) - Parent render module
-- [JAX Documentation](https://jax.readthedocs.io/) - Official JAX docs
-- [Automatic Differentiation](https://en.wikipedia.org/wiki/Automatic_differentiation) - AD theory
-
-### External Resources
-- [JIT Compilation](https://en.wikipedia.org/wiki/Just-in-time_compilation)
-- [Vector Processing](https://en.wikipedia.org/wiki/SIMD)
-- [GPU Computing](https://en.wikipedia.org/wiki/GPGPU)
-
----
-
-**Last Updated**: 2026-01-21
-**Maintainer**: Render Module Team
-**Status**: ✅ Production Ready
+- **Implementation version**: follows the parent `render` module (`__version__` in `src/render/__init__.py`).
+- This document describes the current three-function API surface and should be kept in sync whenever new public entrypoints are added or signatures change.
 
 
 

@@ -395,9 +395,8 @@ GNN Model → DisCoPy Conversion → Type Assignment → Diagram Composition →
 ## Testing
 
 ### Test Files
-- `src/tests/test_render_discopy_integration.py` - Integration tests
-- `src/tests/test_render_discopy_generation.py` - Code generation tests
-- `src/tests/test_render_discopy_validation.py` - Validation tests
+- `src/tests/test_render_overall.py` - Render module tests (includes backend availability)
+- `src/tests/test_render_integration.py` - Integration tests
 
 ### Test Coverage
 - **Current**: 78%

@@ -236,9 +236,9 @@ GNN Files → Graph Extraction → Layout Calculation → Visualization Generati
 ## Testing
 
 ### Test Files
-- `src/tests/test_visualization_integration.py` - Integration tests
 - `src/tests/test_visualization_matrices.py` - Matrix visualization tests
-- `src/tests/test_visualization_comprehensive.py` - Comprehensive real-data tests ✨ NEW
+- `src/tests/test_visualization_comprehensive.py` - Comprehensive real-data tests
+- `src/tests/test_visualization_overall.py` - Module-level tests
 
 ### Test Coverage
 - **Current**: 84%

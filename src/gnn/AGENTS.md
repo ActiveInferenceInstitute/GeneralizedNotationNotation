@@ -477,8 +477,12 @@ input/gnn_files/*.md → GNN Parser → Multi-Format Serializer → output/3_gnn
 ### Test Files
 
 - `src/tests/test_gnn_overall.py` - Integration tests
-- `src/tests/test_gnn_parser.py` - Parser unit tests
-- `src/tests/test_gnn_serialization.py` - Serialization tests
+- `src/tests/test_gnn_overall.py` - Module-level coverage and smoke tests
+- `src/tests/test_gnn_parsing.py` - Parsing-focused tests
+- `src/tests/test_gnn_processing.py` - Directory processing tests
+- `src/tests/test_gnn_parsers_common.py` - Parser utilities tests
+- `src/tests/test_gnn_parsers_json.py` - JSON parser tests
+- `src/tests/test_gnn_parsers_base_serializer.py` - Serializer base tests
 - `src/tests/test_gnn_validation.py` - Validation tests
 
 ### Test Coverage
@@ -504,7 +508,7 @@ pytest src/tests/test_gnn*.py -v
 pytest src/tests/test_gnn*.py --cov=src/gnn --cov-report=term-missing
 
 # Run only parser tests
-pytest src/tests/test_gnn_parser.py -v
+pytest src/tests/test_gnn_parsing.py -v
 ```
 
 ---

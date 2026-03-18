@@ -53,10 +53,7 @@ graph TB
   D --> H["AI Services<br/>(OpenAI, Anthropic, Ollama)"]
   D --> I["Scientific Frameworks<br/>(JAX, DisCoPy, NetworkX)"]
 
-  style B fill:#e1f5fe,stroke:#0277bd,stroke-width:2px
-  style C fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-  style D fill:#e8f5e8,stroke:#4caf50,stroke-width:2px
-  style E fill:#fff3e0,stroke:#ff9800,stroke-width:2px
+  %% styling intentionally omitted (theme-controlled)
 ```
 
 ## Execution Flow (High-Level)
@@ -133,10 +130,7 @@ graph TD
   GNN --> WEB[website]
   GNN --> MCP[mcp]
 
-  style GNN fill:#e1f5fe,stroke:#0277bd
-  style RENDER fill:#fff3e0,stroke:#f57c00
-  style EXEC fill:#ffebee,stroke:#d32f2f
-  style REP fill:#e8f5e8,stroke:#4caf50
+  %% styling intentionally omitted (theme-controlled)
 ```
 
 ## Current Implementation Status

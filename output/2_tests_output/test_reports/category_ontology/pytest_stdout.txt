@@ -1,0 +1,74 @@
+================================================= test session starts ==================================================
+collecting ... collected 12 items
+
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info PASSED
+src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+PASSED
+src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:43:20 [    INFO] ontology: Validated 1 annotations: 0 valid, 1 invalid
+PASSED
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+PASSED
+src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration PASSED
+src/tests/test_ontology_overall.py::test_ontology_module_completeness PASSED
+src/tests/test_ontology_overall.py::test_ontology_module_performance 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:43:20 [    INFO] ontology: Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+2026-03-17 16:43:20 [    INFO] ontology: Validated 0 annotations: 0 valid, 0 invalid
+PASSED
+
+======================================================== PASSES ========================================================
+__________________________________ TestOntologyFunctionality.test_ontology_processing __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:processor.py:225 Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+INFO     ontology:processor.py:341 Validated 0 annotations: 0 valid, 0 invalid
+__________________________________ TestOntologyFunctionality.test_ontology_validation __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:processor.py:225 Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+INFO     ontology:processor.py:341 Validated 0 annotations: 0 valid, 0 invalid
+____________________________________ TestOntologyFunctionality.test_term_validation ____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:processor.py:225 Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+INFO     ontology:processor.py:341 Validated 1 annotations: 0 valid, 1 invalid
+______________________________ TestOntologyIntegration.test_ontology_pipeline_integration ______________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:processor.py:225 Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+INFO     ontology:processor.py:341 Validated 0 annotations: 0 valid, 0 invalid
+___________________________________________ test_ontology_module_performance ___________________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     ontology:processor.py:225 Loaded 64 Active Inference ontology terms from /Users/4d/Documents/GitHub/generalizednotationnotation/src/ontology/act_inf_ontology_terms.json
+INFO     ontology:processor.py:341 Validated 0 annotations: 0 valid, 0 invalid
+================================================= slowest 10 durations =================================================
+
+(10 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_imports
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processor_instantiation
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_validator_instantiation
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_module_info
+PASSED src/tests/test_ontology_overall.py::TestOntologyModuleComprehensive::test_ontology_processing_options
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_processing
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_ontology_validation
+PASSED src/tests/test_ontology_overall.py::TestOntologyFunctionality::test_term_validation
+PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_pipeline_integration
+PASSED src/tests/test_ontology_overall.py::TestOntologyIntegration::test_ontology_mcp_integration
+PASSED src/tests/test_ontology_overall.py::test_ontology_module_completeness
+PASSED src/tests/test_ontology_overall.py::test_ontology_module_performance
+================================================== 12 passed in 0.14s ==================================================

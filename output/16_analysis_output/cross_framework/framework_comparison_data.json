@@ -1,18 +1,18 @@
 {
-  "timestamp": "2026-03-15T13:59:55.036966",
+  "timestamp": "2026-03-17T16:54:41.663505",
   "frameworks": {
     "numpyro": {
-      "success_count": 8,
+      "success_count": 0,
       "total_count": 8,
       "execution_times": [
-        1.144242,
-        0.852921,
-        1.034739,
-        1.067051,
-        1.005054,
-        1.098889,
-        0.993669,
-        1.004925
+        0.092524,
+        0.029043,
+        0.099699,
+        0.032807,
+        0.026757,
+        0.038072,
+        0.039719,
+        0.027361
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/numpyro/execution_logs/Simple MDP Agent_numpyro.py_execution.log",
@@ -34,201 +34,27 @@
         "output/12_execute_output/deep_planning_horizon/numpyro",
         "output/12_execute_output/markov_chain/numpyro"
       ],
-      "beliefs": [
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ],
-        [
-          0.0,
-          1.0,
-          0.0
-        ]
-      ],
-      "actions": [
-        0,
-        1,
-        1,
-        1,
-        1,
-        0,
-        0,
-        0,
-        1,
-        1,
-        1,
-        1,
-        0,
-        1,
-        0
-      ],
-      "observations": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-      ],
-      "free_energy": [
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ],
-        [
-          1.0986123085021973,
-          1.0986123085021973
-        ]
-      ],
-      "num_timesteps": 15,
-      "validation": {
-        "beliefs_in_range": true,
-        "beliefs_sum_to_one": true,
-        "actions_in_range": true,
-        "all_valid": true
-      },
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
       "model_parameters": {},
-      "data_source": "output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json"
+      "data_source": null
     },
     "pymdp": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        1.572123,
-        1.581972,
-        1.644701,
-        1.724163,
-        1.558685,
-        1.586944,
-        1.612237,
-        1.572193
+        6.234595,
+        7.022286,
+        2.914666,
+        1.148874,
+        1.1468,
+        1.243759,
+        1.237712,
+        1.188247
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/pymdp/execution_logs/Simple MDP Agent_pymdp.py_execution.log",
@@ -252,9 +78,39 @@
       ],
       "beliefs": [
         [
+          1.6666666666666572e-16,
+          0.9999999999999998,
+          6.666666666666623e-17
+        ],
+        [
+          7.499999999999981e-17,
           1.0,
-          5.999999999999991e-17,
-          3.9999999999999824e-17
+          7.499999999999981e-17
+        ],
+        [
+          9.999999999999963e-17,
+          1.333333333333327e-16,
+          0.9999999999999998
+        ],
+        [
+          1.6666666666666618e-17,
+          4.9999999999999734e-17,
+          1.0
+        ],
+        [
+          1.6666666666666618e-17,
+          4.9999999999999734e-17,
+          1.0
+        ],
+        [
+          0.9999999999999991,
+          2.99999999999998e-16,
+          5.999999999999971e-16
+        ],
+        [
+          1.0,
+          2.857142857142867e-17,
+          1.428571428571431e-17
         ],
         [
           1.0,
@@ -282,49 +138,19 @@
           1.428571428571431e-17
         ],
         [
-          1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
-        ],
-        [
-          1.0,
-          2.857142857142847e-17,
-          1.428571428571431e-17
-        ],
-        [
           3.4999999999999864e-16,
           0.9999999999999996,
           5.0000000000000067e-17
         ],
         [
-          9.999999999999963e-17,
-          1.333333333333327e-16,
-          0.9999999999999998
+          7.499999999999981e-17,
+          1.0,
+          7.499999999999981e-17
         ],
         [
-          1.6666666666666618e-17,
-          4.9999999999999734e-17,
-          1.0
-        ],
-        [
-          3.333333333333329e-17,
-          0.9999999999999998,
-          1.9999999999999963e-16
-        ],
-        [
-          9.999999999999963e-17,
-          1.333333333333327e-16,
-          0.9999999999999998
-        ],
-        [
-          1.6666666666666618e-17,
-          4.9999999999999734e-17,
-          1.0
-        ],
-        [
-          1.6666666666666618e-17,
-          4.9999999999999734e-17,
-          1.0
+          7.499999999999981e-17,
+          1.0,
+          7.499999999999981e-17
         ]
       ],
       "actions": [
@@ -345,25 +171,43 @@
         0
       ],
       "observations": [
+        1,
+        1,
+        2,
+        2,
+        2,
+        0,
         0,
         0,
         1,
         0,
         0,
         0,
-        0,
-        0,
         1,
-        2,
-        2,
         1,
-        2,
-        2,
-        2
+        1
       ],
       "free_energy": [
         [
-          -0.29679362358960415
+          -0.009712200787717729
+        ],
+        [
+          -0.00971220078771795
+        ],
+        [
+          -0.20066645127616123
+        ],
+        [
+          -0.20066645127616145
+        ],
+        [
+          -0.20066645127616145
+        ],
+        [
+          -0.29679362358960304
+        ],
+        [
+          -0.2967936235896039
         ],
         [
           -0.2967936235896039
@@ -381,31 +225,13 @@
           -0.2967936235896039
         ],
         [
-          -0.2967936235896039
-        ],
-        [
-          -0.2967936235896039
-        ],
-        [
           -0.009712200787717729
         ],
         [
-          -0.20066645127616123
+          -0.00971220078771795
         ],
         [
-          -0.20066645127616145
-        ],
-        [
-          -0.009712200787717729
-        ],
-        [
-          -0.20066645127616123
-        ],
-        [
-          -0.20066645127616145
-        ],
-        [
-          -0.20066645127616145
+          -0.00971220078771795
         ]
       ],
       "num_timesteps": 15,
@@ -436,35 +262,35 @@
       },
       "data_source": "output/12_execute_output/markov_chain/pymdp/simulation_data/simulation_results.json",
       "belief_confidence": [
+        0.9999999999999998,
+        1.0,
+        0.9999999999999998,
+        1.0,
+        1.0,
+        0.9999999999999991,
         1.0,
         1.0,
         0.9999999999999996,
         0.9999999999999998,
         1.0,
         1.0,
-        1.0,
-        1.0,
         0.9999999999999996,
-        0.9999999999999998,
-        1.0,
-        0.9999999999999998,
-        0.9999999999999998,
         1.0,
         1.0
       ]
     },
     "pytorch": {
-      "success_count": 8,
+      "success_count": 0,
       "total_count": 8,
       "execution_times": [
-        1.003813,
-        0.637912,
-        0.670332,
-        0.685892,
-        0.634592,
-        0.646018,
-        0.626228,
-        0.701197
+        0.258521,
+        0.080955,
+        0.039289,
+        0.032294,
+        0.033864,
+        0.027166,
+        0.02651,
+        0.027055
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/pytorch/execution_logs/Simple MDP Agent_pytorch.py_execution.log",
@@ -486,201 +312,27 @@
         "output/12_execute_output/deep_planning_horizon/pytorch",
         "output/12_execute_output/markov_chain/pytorch"
       ],
-      "beliefs": [
-        [
-          0.0,
-          0.9999999999999997,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ]
-      ],
-      "actions": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        0,
-        0,
-        0,
-        0,
-        1,
-        0,
-        1,
-        1,
-        0
-      ],
-      "observations": [
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1,
-        1
-      ],
-      "free_energy": [
-        [
-          1.0986122886681087,
-          1.0986122886681087
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ],
-        [
-          1.0986122886681091,
-          1.0986122886681091
-        ]
-      ],
-      "num_timesteps": 15,
-      "validation": {
-        "beliefs_in_range": true,
-        "beliefs_sum_to_one": true,
-        "actions_in_range": true,
-        "all_valid": true
-      },
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
       "model_parameters": {},
-      "data_source": "output/12_execute_output/markov_chain/pytorch/simulation_data/simulation_results.json"
+      "data_source": null
     },
     "jax": {
-      "success_count": 8,
+      "success_count": 0,
       "total_count": 8,
       "execution_times": [
-        0.961523,
-        0.88813,
-        0.975821,
-        0.941619,
-        0.885229,
-        1.032737,
-        0.896524,
-        0.884861
+        0.045649,
+        0.063374,
+        0.032029,
+        0.025551,
+        0.020318,
+        0.020445,
+        0.021627,
+        0.020227
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/jax/execution_logs/Simple MDP Agent_jax.py_execution.log",
@@ -702,221 +354,27 @@
         "output/12_execute_output/deep_planning_horizon/jax",
         "output/12_execute_output/markov_chain/jax"
       ],
-      "beliefs": [
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ],
-        [
-          1.0,
-          0.0,
-          0.0
-        ]
-      ],
-      "actions": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "observations": [
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0,
-        0
-      ],
-      "free_energy": [
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ],
-        [
-          0.06931471824645996
-        ]
-      ],
-      "num_timesteps": 15,
-      "validation": {
-        "all_beliefs_valid": true,
-        "beliefs_sum_to_one": true,
-        "actions_in_range": true
-      },
-      "model_parameters": {
-        "A_shape": [
-          3,
-          3
-        ],
-        "B_shape": [
-          3,
-          3,
-          1
-        ],
-        "C_shape": [
-          3
-        ],
-        "D_shape": [
-          3
-        ],
-        "num_states": 3,
-        "num_observations": 3,
-        "num_actions": 1
-      },
-      "data_source": "output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json",
-      "belief_confidence": [
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0,
-        1.0
-      ]
+      "beliefs": [],
+      "actions": [],
+      "observations": [],
+      "free_energy": [],
+      "num_timesteps": null,
+      "validation": {},
+      "model_parameters": {},
+      "data_source": null
     },
     "discopy": {
-      "success_count": 8,
+      "success_count": 0,
       "total_count": 8,
       "execution_times": [
-        0.344386,
-        0.351406,
-        0.361332,
-        0.335755,
-        0.342224,
-        0.333697,
-        0.336961,
-        0.331615
+        0.137938,
+        0.181229,
+        0.056201,
+        0.052679,
+        0.048444,
+        0.049152,
+        0.06491,
+        0.064115
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/discopy/execution_logs/Simple MDP Agent_discopy.py_execution.log",
@@ -944,44 +402,21 @@
       "free_energy": [],
       "num_timesteps": null,
       "validation": {},
-      "model_parameters": {
-        "num_states": 4,
-        "num_observations": 4,
-        "num_actions": 4
-      },
-      "data_source": "output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json",
-      "circuit_info": {
-        "model_name": "Simple MDP Agent",
-        "components": [
-          "A_matrix",
-          "B_matrix",
-          "C_vector",
-          "D_vector",
-          "E_vector",
-          "state_inference",
-          "policy_inference",
-          "action_selection"
-        ],
-        "num_components": 8,
-        "parameters": {
-          "num_states": 4,
-          "num_observations": 4,
-          "num_actions": 4
-        }
-      }
+      "model_parameters": {},
+      "data_source": null
     },
     "rxinfer": {
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        19.20774,
-        15.600965,
-        15.074379,
-        15.257683,
-        17.581488,
-        18.416741,
-        21.773361,
-        20.182529
+        22.153463,
+        16.948919,
+        16.070903,
+        15.504716,
+        15.374593,
+        32.349944,
+        16.016812,
+        16.057449
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/rxinfer/execution_logs/Simple MDP Agent_rxinfer.jl_execution.log",
@@ -1144,14 +579,14 @@
       "success_count": 8,
       "total_count": 8,
       "execution_times": [
-        16.723456,
-        15.501786,
-        12.127241,
-        16.078204,
-        18.895206,
-        14.338091,
-        22.311274,
-        15.046687
+        19.225177,
+        17.145614,
+        12.904077,
+        16.641829,
+        15.811286,
+        24.44706,
+        16.388199,
+        11.429983
       ],
       "output_files": [
         "output/12_execute_output/simple_mdp/activeinference_jl/execution_logs/Simple MDP Agent_activeinference.jl_execution.log",
@@ -1408,133 +843,64 @@
   },
   "comparisons": {
     "success_rates": {
-      "numpyro": 1.0,
+      "numpyro": 0.0,
       "pymdp": 1.0,
-      "pytorch": 1.0,
-      "jax": 1.0,
-      "discopy": 1.0,
+      "pytorch": 0.0,
+      "jax": 0.0,
+      "discopy": 0.0,
       "rxinfer": 1.0,
       "activeinference_jl": 1.0
     },
     "performance_comparison": {
       "numpyro": {
-        "mean": 1.02518625,
-        "std": 0.08134399058742753,
-        "min": 0.852921,
-        "max": 1.144242
+        "mean": 0.04824775,
+        "std": 0.028038479696436823,
+        "min": 0.026757,
+        "max": 0.099699
       },
       "pymdp": {
-        "mean": 1.60662725,
-        "std": 0.05119297329895478,
-        "min": 1.558685,
-        "max": 1.724163
+        "mean": 2.7671173749999998,
+        "std": 2.3061955934252376,
+        "min": 1.1468,
+        "max": 7.022286
       },
       "pytorch": {
-        "mean": 0.700748,
-        "std": 0.11719002311950452,
-        "min": 0.626228,
-        "max": 1.003813
+        "mean": 0.06570675000000001,
+        "std": 0.07479459091028909,
+        "min": 0.02651,
+        "max": 0.258521
       },
       "jax": {
-        "mean": 0.9333055,
-        "std": 0.050758566390314855,
-        "min": 0.884861,
-        "max": 1.032737
+        "mean": 0.0311525,
+        "std": 0.014674200472257422,
+        "min": 0.020227,
+        "max": 0.063374
       },
       "discopy": {
-        "mean": 0.34217200000000003,
-        "std": 0.009413322606816354,
-        "min": 0.331615,
-        "max": 0.361332
+        "mean": 0.0818335,
+        "std": 0.04652617477560347,
+        "min": 0.048444,
+        "max": 0.181229
       },
       "rxinfer": {
-        "mean": 17.88686075,
-        "std": 2.306015858337099,
-        "min": 15.074379,
-        "max": 21.773361
+        "mean": 18.809599875,
+        "std": 5.517930564599433,
+        "min": 15.374593,
+        "max": 32.349944
       },
       "activeinference_jl": {
-        "mean": 16.377743125000002,
-        "std": 2.883565706059793,
-        "min": 12.127241,
-        "max": 22.311274
+        "mean": 16.749153125,
+        "std": 3.7021147339933105,
+        "min": 11.429983,
+        "max": 24.44706
       }
     },
     "metric_agreement": {
-      "numpyro_vs_pymdp": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "numpyro_vs_pytorch": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "numpyro_vs_jax": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "numpyro_vs_rxinfer": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "numpyro_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
-      },
-      "pymdp_vs_pytorch": {
-        "confidence_correlation": -0.17960530202677488,
-        "same_dimensions": true
-      },
-      "pymdp_vs_jax": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
       "pymdp_vs_rxinfer": {
-        "confidence_correlation": -0.26877416302511326,
+        "confidence_correlation": -0.003357879261702665,
         "same_dimensions": true
       },
       "pymdp_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
-      },
-      "pytorch_vs_jax": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "pytorch_vs_rxinfer": {
-        "confidence_correlation": 0.1147963006160072,
-        "same_dimensions": true
-      },
-      "pytorch_vs_activeinference_jl": {
-        "same_dimensions": false,
-        "dims_a": [
-          15,
-          3
-        ],
-        "dims_b": [
-          15,
-          4
-        ]
-      },
-      "jax_vs_rxinfer": {
-        "confidence_correlation": 0.0,
-        "same_dimensions": true
-      },
-      "jax_vs_activeinference_jl": {
         "same_dimensions": false,
         "dims_a": [
           15,
@@ -1559,14 +925,14 @@
     },
     "data_coverage": {
       "numpyro": {
-        "has_beliefs": true,
-        "has_actions": true,
-        "has_observations": true,
-        "has_free_energy": true,
+        "has_beliefs": false,
+        "has_actions": false,
+        "has_observations": false,
+        "has_free_energy": false,
         "has_circuit_info": false,
-        "num_timesteps": 15,
-        "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/numpyro/simulation_data/simulation_results.json"
+        "num_timesteps": null,
+        "validation_passed": null,
+        "data_source": null
       },
       "pymdp": {
         "has_beliefs": true,
@@ -1579,34 +945,34 @@
         "data_source": "output/12_execute_output/markov_chain/pymdp/simulation_data/simulation_results.json"
       },
       "pytorch": {
-        "has_beliefs": true,
-        "has_actions": true,
-        "has_observations": true,
-        "has_free_energy": true,
+        "has_beliefs": false,
+        "has_actions": false,
+        "has_observations": false,
+        "has_free_energy": false,
         "has_circuit_info": false,
-        "num_timesteps": 15,
-        "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/pytorch/simulation_data/simulation_results.json"
+        "num_timesteps": null,
+        "validation_passed": null,
+        "data_source": null
       },
       "jax": {
-        "has_beliefs": true,
-        "has_actions": true,
-        "has_observations": true,
-        "has_free_energy": true,
+        "has_beliefs": false,
+        "has_actions": false,
+        "has_observations": false,
+        "has_free_energy": false,
         "has_circuit_info": false,
-        "num_timesteps": 15,
-        "validation_passed": true,
-        "data_source": "output/12_execute_output/markov_chain/jax/simulation_data/simulation_results.json"
+        "num_timesteps": null,
+        "validation_passed": null,
+        "data_source": null
       },
       "discopy": {
         "has_beliefs": false,
         "has_actions": false,
         "has_observations": false,
         "has_free_energy": false,
-        "has_circuit_info": true,
+        "has_circuit_info": false,
         "num_timesteps": null,
         "validation_passed": null,
-        "data_source": "output/12_execute_output/simple_mdp/discopy/simulation_data/circuit_info.json"
+        "data_source": null
       },
       "rxinfer": {
         "has_beliefs": true,
@@ -1630,22 +996,6 @@
       }
     },
     "simulation_statistics": {
-      "numpyro": {
-        "belief_dims": [
-          15,
-          3
-        ],
-        "mean_confidence": 1.0,
-        "final_belief": [
-          0.0,
-          1.0,
-          0.0
-        ],
-        "efe_mean": 1.0986123085021973,
-        "efe_std": 0.0,
-        "efe_min": 1.0986123085021973,
-        "efe_max": 1.0986123085021973
-      },
       "pymdp": {
         "belief_dims": [
           15,
@@ -1653,46 +1003,14 @@
         ],
         "mean_confidence": 0.9999999999999999,
         "final_belief": [
-          1.6666666666666618e-17,
-          4.9999999999999734e-17,
-          1.0
-        ],
-        "efe_mean": -0.20733494825807916,
-        "efe_std": 0.1075194795863181,
-        "efe_min": -0.29679362358960415,
-        "efe_max": -0.009712200787717729
-      },
-      "pytorch": {
-        "belief_dims": [
-          15,
-          3
-        ],
-        "mean_confidence": 0.9999999999999999,
-        "final_belief": [
-          0.0,
-          0.9999999999999999,
-          0.0
-        ],
-        "efe_mean": 1.0986122886681087,
-        "efe_std": 4.290309365903226e-16,
-        "efe_min": 1.0986122886681087,
-        "efe_max": 1.0986122886681091
-      },
-      "jax": {
-        "belief_dims": [
-          15,
-          3
-        ],
-        "mean_confidence": 1.0,
-        "final_belief": [
+          7.499999999999981e-17,
           1.0,
-          0.0,
-          0.0
+          7.499999999999981e-17
         ],
-        "efe_mean": 0.06931471824645996,
-        "efe_std": 0.0,
-        "efe_min": 0.06931471824645996,
-        "efe_max": 0.06931471824645996
+        "efe_mean": -0.16273562000616096,
+        "efe_std": 0.12977995089303795,
+        "efe_min": -0.2967936235896039,
+        "efe_max": -0.009712200787717729
       },
       "rxinfer": {
         "belief_dims": [
@@ -1731,8 +1049,8 @@
   },
   "metrics": {
     "total_frameworks": 7,
-    "total_successful": 56,
+    "total_successful": 24,
     "total_executions": 56,
-    "overall_success_rate": 1.0
+    "overall_success_rate": 0.42857142857142855
   }
 }

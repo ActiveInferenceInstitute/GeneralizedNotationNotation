@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "tools": true,
+  "resources": true,
+  "stdio_transport": true,
+  "http_transport": true
+}

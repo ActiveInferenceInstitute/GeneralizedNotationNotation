@@ -1,5 +1,5 @@
 {
-  "report_generation_time": "2026-03-15T14:00:09.287464",
+  "report_generation_time": "2026-03-17T16:54:52.449594",
   "pipeline_output_directory": "output",
   "steps": {
     "0_template_output": {
@@ -17,7 +17,7 @@
           "total_size_mb": 0.07261466979980469
         }
       },
-      "last_modified": "2026-03-15T13:52:34.415789",
+      "last_modified": "2026-03-17T16:41:05.758530",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -40,7 +40,7 @@
           "total_size_mb": 0.017737388610839844
         }
       },
-      "last_modified": "2026-03-15T13:52:37.235526",
+      "last_modified": "2026-03-17T16:41:30.537666",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -49,19 +49,23 @@
     "2_tests_output": {
       "directory": "output/2_tests_output",
       "exists": true,
-      "file_count": 2,
-      "total_size_mb": 0.05,
+      "file_count": 73,
+      "total_size_mb": 31.35,
       "file_types": {
         ".log": {
           "count": 1,
-          "total_size_mb": 0.030340194702148438
+          "total_size_mb": 0.02534961700439453
         },
         ".txt": {
-          "count": 1,
-          "total_size_mb": 0.02037334442138672
+          "count": 70,
+          "total_size_mb": 15.611645698547363
+        },
+        ".json": {
+          "count": 2,
+          "total_size_mb": 15.716139793395996
         }
       },
-      "last_modified": "2026-03-15T13:53:22.458710",
+      "last_modified": "2026-03-17T16:49:56.386323",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [
@@ -74,6 +78,351 @@
         {
           "name": "pytest_reliable_output.txt",
           "size_mb": 0.02,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.02,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 5.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 5.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.05,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.02,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.17,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.1,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.38,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.38,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.44,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.4,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.18,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.15,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.08,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.04,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 1.29,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 1.28,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.17,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.14,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.01,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.05,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.03,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stdout.txt",
+          "size_mb": 0.08,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_command.txt",
+          "size_mb": 0.0,
+          "type": ".txt"
+        },
+        {
+          "name": "pytest_stderr.txt",
+          "size_mb": 0.04,
           "type": ".txt"
         }
       ]
@@ -169,7 +518,7 @@
           "total_size_mb": 0.192596435546875
         }
       },
-      "last_modified": "2026-03-15T13:53:24.861217",
+      "last_modified": "2026-03-17T16:46:48.665976",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -192,7 +541,7 @@
           "total_size_mb": 0.00508880615234375
         }
       },
-      "last_modified": "2026-03-15T13:53:25.191247",
+      "last_modified": "2026-03-17T16:46:49.176728",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -219,7 +568,7 @@
           "total_size_mb": 0.00032711029052734375
         }
       },
-      "last_modified": "2026-03-15T13:53:27.209651",
+      "last_modified": "2026-03-17T16:46:51.622606",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -236,7 +585,7 @@
           "total_size_mb": 0.004118919372558594
         }
       },
-      "last_modified": "2026-03-15T13:53:29.248495",
+      "last_modified": "2026-03-17T16:46:54.214847",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -275,7 +624,7 @@
           "total_size_mb": 0.025316238403320312
         }
       },
-      "last_modified": "2026-03-15T13:53:29.551546",
+      "last_modified": "2026-03-17T16:46:54.566233",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -351,7 +700,7 @@
           "total_size_mb": 0.0030422210693359375
         }
       },
-      "last_modified": "2026-03-15T13:53:49.453049",
+      "last_modified": "2026-03-17T16:47:15.934136",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -817,19 +1166,19 @@
       "directory": "output/9_advanced_viz_output",
       "exists": true,
       "file_count": 28,
-      "total_size_mb": 2.85,
+      "total_size_mb": 2.84,
       "file_types": {
         ".png": {
           "count": 15,
           "total_size_mb": 2.649397850036621
         },
-        ".html": {
-          "count": 2,
-          "total_size_mb": 0.062203407287597656
-        },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.009810447692871094
+          "total_size_mb": 0.009942054748535156
+        },
+        ".html": {
+          "count": 2,
+          "total_size_mb": 0.05085277557373047
         },
         ".d2": {
           "count": 5,
@@ -840,7 +1189,7 @@
           "total_size_mb": 0.12569522857666016
         }
       },
-      "last_modified": "2026-03-15T13:54:00.244138",
+      "last_modified": "2026-03-17T16:47:27.002821",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -849,11 +1198,6 @@
           "name": "continuous_navigation_network_metrics.png",
           "size_mb": 0.28,
           "type": ".png"
-        },
-        {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "size_mb": 0.03,
-          "type": ".html"
         },
         {
           "name": "predictive_coding_agent_policy_visualization.png",
@@ -896,6 +1240,11 @@
           "type": ".json"
         },
         {
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "size_mb": 0.02,
+          "type": ".html"
+        },
+        {
           "name": "continuous_navigation_3d_visualization.png",
           "size_mb": 0.18,
           "type": ".png"
@@ -906,7 +1255,7 @@
           "type": ".png"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
           "size_mb": 0.03,
           "type": ".html"
         },
@@ -973,7 +1322,7 @@
           "total_size_mb": 0.04358959197998047
         }
       },
-      "last_modified": "2026-03-15T13:54:01.171910",
+      "last_modified": "2026-03-17T16:47:27.896014",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -982,16 +1331,16 @@
     "11_render_output": {
       "directory": "output/11_render_output",
       "exists": true,
-      "file_count": 198,
-      "total_size_mb": 0.95,
+      "file_count": 158,
+      "total_size_mb": 0.85,
       "file_types": {
         ".md": {
           "count": 57,
           "total_size_mb": 0.08877944946289062
         },
         ".json": {
-          "count": 75,
-          "total_size_mb": 0.2765350341796875
+          "count": 35,
+          "total_size_mb": 0.1758432388305664
         },
         ".jl": {
           "count": 16,
@@ -1010,7 +1359,7 @@
           "total_size_mb": 0.004063606262207031
         }
       },
-      "last_modified": "2026-03-15T13:58:59.010415",
+      "last_modified": "2026-03-17T16:54:04.561321",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1305,27 +1654,27 @@
     "12_execute_output": {
       "directory": "output/12_execute_output",
       "exists": true,
-      "file_count": 185,
-      "total_size_mb": 0.89,
+      "file_count": 145,
+      "total_size_mb": 0.65,
       "file_types": {
         ".json": {
-          "count": 123,
-          "total_size_mb": 0.7512111663818359
+          "count": 83,
+          "total_size_mb": 0.5301723480224609
         },
         ".md": {
           "count": 1,
-          "total_size_mb": 0.02425670623779297
+          "total_size_mb": 0.02573394775390625
         },
         ".log": {
           "count": 56,
-          "total_size_mb": 0.10844707489013672
+          "total_size_mb": 0.08768749237060547
         },
         ".csv": {
           "count": 5,
           "total_size_mb": 0.0027589797973632812
         }
       },
-      "last_modified": "2026-03-15T13:59:14.479031",
+      "last_modified": "2026-03-17T16:54:16.298991",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1343,19 +1692,15 @@
     "14_ml_integration_output": {
       "directory": "output/14_ml_integration_output",
       "exists": true,
-      "file_count": 3,
-      "total_size_mb": 0.02,
+      "file_count": 1,
+      "total_size_mb": 0.01,
       "file_types": {
-        ".pkl": {
-          "count": 2,
-          "total_size_mb": 0.008207321166992188
-        },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.008128166198730469
+          "total_size_mb": 0.006478309631347656
         }
       },
-      "last_modified": "2026-03-15T13:59:16.982868",
+      "last_modified": "2026-03-17T16:54:17.024133",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1365,7 +1710,7 @@
       "directory": "output/15_audio_output",
       "exists": true,
       "file_count": 34,
-      "total_size_mb": 18.86,
+      "total_size_mb": 18.85,
       "file_types": {
         ".wav": {
           "count": 32,
@@ -1373,14 +1718,14 @@
         },
         ".json": {
           "count": 1,
-          "total_size_mb": 0.015877723693847656
+          "total_size_mb": 0.009435653686523438
         },
         ".md": {
           "count": 1,
           "total_size_mb": 0.0017566680908203125
         }
       },
-      "last_modified": "2026-03-15T13:59:19.480144",
+      "last_modified": "2026-03-17T16:54:19.433242",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1550,30 +1895,30 @@
     "16_analysis_output": {
       "directory": "output/16_analysis_output",
       "exists": true,
-      "file_count": 412,
-      "total_size_mb": 37.35,
+      "file_count": 188,
+      "total_size_mb": 20.42,
       "file_types": {
         ".json": {
-          "count": 26,
-          "total_size_mb": 0.31916141510009766
+          "count": 10,
+          "total_size_mb": 0.2667522430419922
         },
         ".md": {
           "count": 3,
-          "total_size_mb": 0.013811111450195312
+          "total_size_mb": 0.011552810668945312
         },
         ".png": {
-          "count": 383,
-          "total_size_mb": 37.01901721954346
+          "count": 175,
+          "total_size_mb": 20.146039962768555
         }
       },
-      "last_modified": "2026-03-15T14:00:02.455131",
+      "last_modified": "2026-03-17T16:54:47.903218",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
       "key_files": [
         {
           "name": "analysis_results.json",
-          "size_mb": 0.23,
+          "size_mb": 0.2,
           "type": ".json"
         },
         {
@@ -1598,7 +1943,7 @@
           "total_size_mb": 0.000202178955078125
         }
       },
-      "last_modified": "2026-03-15T14:00:03.134711",
+      "last_modified": "2026-03-17T16:54:48.448546",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1619,7 +1964,7 @@
           "total_size_mb": 0.0004978179931640625
         }
       },
-      "last_modified": "2026-03-15T14:00:03.442368",
+      "last_modified": "2026-03-17T16:54:48.786213",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1640,7 +1985,7 @@
           "total_size_mb": 0.009815216064453125
         }
       },
-      "last_modified": "2026-03-15T14:00:03.743220",
+      "last_modified": "2026-03-17T16:54:49.109325",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1650,11 +1995,11 @@
       "directory": "output/20_website_output",
       "exists": true,
       "file_count": 25,
-      "total_size_mb": 3.01,
+      "total_size_mb": 2.98,
       "file_types": {
         ".html": {
           "count": 9,
-          "total_size_mb": 0.36420249938964844
+          "total_size_mb": 0.33495521545410156
         },
         ".json": {
           "count": 1,
@@ -1665,7 +2010,7 @@
           "total_size_mb": 2.649397850036621
         }
       },
-      "last_modified": "2026-03-15T14:00:04.075779",
+      "last_modified": "2026-03-17T16:54:49.470183",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1687,7 +2032,7 @@
         },
         {
           "name": "analysis.html",
-          "size_mb": 0.16,
+          "size_mb": 0.14,
           "type": ".html"
         },
         {
@@ -1702,16 +2047,16 @@
         },
         {
           "name": "reports.html",
-          "size_mb": 0.07,
+          "size_mb": 0.08,
           "type": ".html"
         },
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "size_mb": 0.03,
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "size_mb": 0.02,
           "type": ".html"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
           "size_mb": 0.03,
           "type": ".html"
         }
@@ -1725,10 +2070,10 @@
       "file_types": {
         ".json": {
           "count": 3,
-          "total_size_mb": 0.05838775634765625
+          "total_size_mb": 0.058349609375
         }
       },
-      "last_modified": "2026-03-15T14:00:07.280548",
+      "last_modified": "2026-03-17T16:54:50.704263",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1761,10 +2106,10 @@
         },
         ".html": {
           "count": 1,
-          "total_size_mb": 0.06499576568603516
+          "total_size_mb": 0.0675048828125
         }
       },
-      "last_modified": "2026-03-15T14:00:08.884310",
+      "last_modified": "2026-03-17T16:54:51.611560",
       "status": "success",
       "performance_metrics": {},
       "error_logs": [],
@@ -1776,7 +2121,7 @@
         },
         {
           "name": "navigation.html",
-          "size_mb": 0.06,
+          "size_mb": 0.07,
           "type": ".html"
         }
       ]
@@ -1797,11 +2142,11 @@
     }
   },
   "summary": {
-    "total_files_processed": 1539,
+    "total_files_processed": 1304,
     "total_errors": 0,
     "total_warnings": 0,
     "processing_time": 0.0,
-    "total_size_mb": 87.35000000000001,
+    "total_size_mb": 101.32000000000001,
     "success_rate": 95.83333333333334
   },
   "performance_metrics": {},
@@ -1809,8 +2154,8 @@
   "file_type_analysis": {
     "total_by_type": {
       ".json": {
-        "count": 328,
-        "total_size_mb": 2.31
+        "count": 234,
+        "total_size_mb": 17.64
       },
       ".md": {
         "count": 106,
@@ -1818,11 +2163,11 @@
       },
       ".log": {
         "count": 57,
-        "total_size_mb": 0.14
+        "total_size_mb": 0.11
       },
       ".txt": {
-        "count": 6,
-        "total_size_mb": 0.02
+        "count": 75,
+        "total_size_mb": 15.62
       },
       ".bnf": {
         "count": 19,
@@ -1837,8 +2182,8 @@
         "total_size_mb": 0.11
       },
       ".pkl": {
-        "count": 42,
-        "total_size_mb": 0.38
+        "count": 40,
+        "total_size_mb": 0.37
       },
       ".z": {
         "count": 19,
@@ -1909,8 +2254,8 @@
         "total_size_mb": 0.0
       },
       ".png": {
-        "count": 504,
-        "total_size_mb": 61.76
+        "count": 296,
+        "total_size_mb": 44.89
       },
       ".csv": {
         "count": 38,
@@ -1918,7 +2263,7 @@
       },
       ".html": {
         "count": 12,
-        "total_size_mb": 0.49
+        "total_size_mb": 0.45
       },
       ".d2": {
         "count": 5,
@@ -1948,6 +2293,10 @@
           "count": 2,
           "size_mb": 0.017737388610839844
         },
+        "2_tests_output": {
+          "count": 2,
+          "size_mb": 15.716139793395996
+        },
         "3_gnn_output": {
           "count": 41,
           "size_mb": 0.6466140747070312
@@ -1974,31 +2323,31 @@
         },
         "9_advanced_viz_output": {
           "count": 1,
-          "size_mb": 0.009810447692871094
+          "size_mb": 0.009942054748535156
         },
         "10_ontology_output": {
           "count": 11,
           "size_mb": 0.04358959197998047
         },
         "11_render_output": {
-          "count": 75,
-          "size_mb": 0.2765350341796875
+          "count": 35,
+          "size_mb": 0.1758432388305664
         },
         "12_execute_output": {
-          "count": 123,
-          "size_mb": 0.7512111663818359
+          "count": 83,
+          "size_mb": 0.5301723480224609
         },
         "14_ml_integration_output": {
           "count": 1,
-          "size_mb": 0.008128166198730469
+          "size_mb": 0.006478309631347656
         },
         "15_audio_output": {
           "count": 1,
-          "size_mb": 0.015877723693847656
+          "size_mb": 0.009435653686523438
         },
         "16_analysis_output": {
-          "count": 26,
-          "size_mb": 0.31916141510009766
+          "count": 10,
+          "size_mb": 0.2667522430419922
         },
         "17_integration_output": {
           "count": 1,
@@ -2018,7 +2367,7 @@
         },
         "21_mcp_output": {
           "count": 3,
-          "size_mb": 0.05838775634765625
+          "size_mb": 0.058349609375
         },
         "22_gui_output": {
           "count": 3,
@@ -2044,7 +2393,7 @@
         },
         "12_execute_output": {
           "count": 1,
-          "size_mb": 0.02425670623779297
+          "size_mb": 0.02573394775390625
         },
         "15_audio_output": {
           "count": 1,
@@ -2052,7 +2401,7 @@
         },
         "16_analysis_output": {
           "count": 3,
-          "size_mb": 0.013811111450195312
+          "size_mb": 0.011552810668945312
         },
         "17_integration_output": {
           "count": 1,
@@ -2074,17 +2423,17 @@
       ".log": {
         "2_tests_output": {
           "count": 1,
-          "size_mb": 0.030340194702148438
+          "size_mb": 0.02534961700439453
         },
         "12_execute_output": {
           "count": 56,
-          "size_mb": 0.10844707489013672
+          "size_mb": 0.08768749237060547
         }
       },
       ".txt": {
         "2_tests_output": {
-          "count": 1,
-          "size_mb": 0.02037334442138672
+          "count": 70,
+          "size_mb": 15.611645698547363
         },
         "11_render_output": {
           "count": 5,
@@ -2117,10 +2466,6 @@
         "7_export_output": {
           "count": 2,
           "size_mb": 0.025316238403320312
-        },
-        "14_ml_integration_output": {
-          "count": 2,
-          "size_mb": 0.008207321166992188
         }
       },
       ".z": {
@@ -2243,8 +2588,8 @@
           "size_mb": 2.649397850036621
         },
         "16_analysis_output": {
-          "count": 383,
-          "size_mb": 37.01901721954346
+          "count": 175,
+          "size_mb": 20.146039962768555
         },
         "20_website_output": {
           "count": 15,
@@ -2268,15 +2613,15 @@
       ".html": {
         "9_advanced_viz_output": {
           "count": 2,
-          "size_mb": 0.062203407287597656
+          "size_mb": 0.05085277557373047
         },
         "20_website_output": {
           "count": 9,
-          "size_mb": 0.36420249938964844
+          "size_mb": 0.33495521545410156
         },
         "22_gui_output": {
           "count": 1,
-          "size_mb": 0.06499576568603516
+          "size_mb": 0.0675048828125
         }
       },
       ".d2": {
@@ -3617,22 +3962,22 @@
             "step": "9_advanced_viz_output"
           },
           {
-            "name": "predictive_coding_agent_interactive_dashboard.html",
-            "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-            "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+            "name": "predictive_coding_agent_dashboard_fallback.html",
+            "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+            "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 31694,
-            "size_mb": 0.03,
+            "size_bytes": 25726,
+            "size_mb": 0.02,
             "step": "9_advanced_viz_output"
           },
           {
-            "name": "continuous_navigation_interactive_dashboard.html",
-            "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-            "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+            "name": "continuous_navigation_dashboard_fallback.html",
+            "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+            "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33531,
+            "size_bytes": 27597,
             "size_mb": 0.03,
             "step": "9_advanced_viz_output"
           }
@@ -3678,8 +4023,8 @@
             "relative_path": "20_website_output/analysis.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 169527,
-            "size_mb": 0.16,
+            "size_bytes": 147668,
+            "size_mb": 0.14,
             "step": "20_website_output"
           },
           {
@@ -3698,7 +4043,7 @@
             "relative_path": "20_website_output/visualization.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 15501,
+            "size_bytes": 15483,
             "size_mb": 0.01,
             "step": "20_website_output"
           },
@@ -3708,27 +4053,27 @@
             "relative_path": "20_website_output/reports.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 78547,
-            "size_mb": 0.07,
+            "size_bytes": 81658,
+            "size_mb": 0.08,
             "step": "20_website_output"
           },
           {
-            "name": "predictive_coding_agent_interactive_dashboard.html",
-            "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-            "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+            "name": "predictive_coding_agent_dashboard_fallback.html",
+            "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+            "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 31694,
-            "size_mb": 0.03,
+            "size_bytes": 25726,
+            "size_mb": 0.02,
             "step": "20_website_output"
           },
           {
-            "name": "continuous_navigation_interactive_dashboard.html",
-            "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-            "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+            "name": "continuous_navigation_dashboard_fallback.html",
+            "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+            "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
             "type": "html",
             "extension": ".html",
-            "size_bytes": 33531,
+            "size_bytes": 27597,
             "size_mb": 0.03,
             "step": "20_website_output"
           }
@@ -4850,22 +5195,22 @@
       ],
       "html": [
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-          "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+          "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 31694,
-          "size_mb": 0.03,
+          "size_bytes": 25726,
+          "size_mb": 0.02,
           "step": "9_advanced_viz_output"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
-          "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-          "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
+          "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+          "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33531,
+          "size_bytes": 27597,
           "size_mb": 0.03,
           "step": "9_advanced_viz_output"
         },
@@ -4905,8 +5250,8 @@
           "relative_path": "20_website_output/analysis.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 169527,
-          "size_mb": 0.16,
+          "size_bytes": 147668,
+          "size_mb": 0.14,
           "step": "20_website_output"
         },
         {
@@ -4925,7 +5270,7 @@
           "relative_path": "20_website_output/visualization.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 15501,
+          "size_bytes": 15483,
           "size_mb": 0.01,
           "step": "20_website_output"
         },
@@ -4935,27 +5280,27 @@
           "relative_path": "20_website_output/reports.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 78547,
-          "size_mb": 0.07,
+          "size_bytes": 81658,
+          "size_mb": 0.08,
           "step": "20_website_output"
         },
         {
-          "name": "predictive_coding_agent_interactive_dashboard.html",
-          "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-          "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+          "name": "predictive_coding_agent_dashboard_fallback.html",
+          "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+          "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 31694,
-          "size_mb": 0.03,
+          "size_bytes": 25726,
+          "size_mb": 0.02,
           "step": "20_website_output"
         },
         {
-          "name": "continuous_navigation_interactive_dashboard.html",
-          "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-          "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+          "name": "continuous_navigation_dashboard_fallback.html",
+          "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+          "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
           "type": "html",
           "extension": ".html",
-          "size_bytes": 33531,
+          "size_bytes": 27597,
           "size_mb": 0.03,
           "step": "20_website_output"
         }
@@ -6073,22 +6418,22 @@
         "step": "9_advanced_viz_output"
       },
       {
-        "name": "predictive_coding_agent_interactive_dashboard.html",
-        "path": "output/9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
-        "relative_path": "9_advanced_viz_output/predictive_coding_agent_interactive_dashboard.html",
+        "name": "predictive_coding_agent_dashboard_fallback.html",
+        "path": "output/9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
+        "relative_path": "9_advanced_viz_output/predictive_coding_agent_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 31694,
-        "size_mb": 0.03,
+        "size_bytes": 25726,
+        "size_mb": 0.02,
         "step": "9_advanced_viz_output"
       },
       {
-        "name": "continuous_navigation_interactive_dashboard.html",
-        "path": "output/9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
-        "relative_path": "9_advanced_viz_output/continuous_navigation_interactive_dashboard.html",
+        "name": "continuous_navigation_dashboard_fallback.html",
+        "path": "output/9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
+        "relative_path": "9_advanced_viz_output/continuous_navigation_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33531,
+        "size_bytes": 27597,
         "size_mb": 0.03,
         "step": "9_advanced_viz_output"
       },
@@ -6128,8 +6473,8 @@
         "relative_path": "20_website_output/analysis.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 169527,
-        "size_mb": 0.16,
+        "size_bytes": 147668,
+        "size_mb": 0.14,
         "step": "20_website_output"
       },
       {
@@ -6148,7 +6493,7 @@
         "relative_path": "20_website_output/visualization.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 15501,
+        "size_bytes": 15483,
         "size_mb": 0.01,
         "step": "20_website_output"
       },
@@ -6158,27 +6503,27 @@
         "relative_path": "20_website_output/reports.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 78547,
-        "size_mb": 0.07,
+        "size_bytes": 81658,
+        "size_mb": 0.08,
         "step": "20_website_output"
       },
       {
-        "name": "predictive_coding_agent_interactive_dashboard.html",
-        "path": "output/20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
-        "relative_path": "20_website_output/assets/predictive_coding_agent_interactive_dashboard.html",
+        "name": "predictive_coding_agent_dashboard_fallback.html",
+        "path": "output/20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
+        "relative_path": "20_website_output/assets/predictive_coding_agent_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 31694,
-        "size_mb": 0.03,
+        "size_bytes": 25726,
+        "size_mb": 0.02,
         "step": "20_website_output"
       },
       {
-        "name": "continuous_navigation_interactive_dashboard.html",
-        "path": "output/20_website_output/assets/continuous_navigation_interactive_dashboard.html",
-        "relative_path": "20_website_output/assets/continuous_navigation_interactive_dashboard.html",
+        "name": "continuous_navigation_dashboard_fallback.html",
+        "path": "output/20_website_output/assets/continuous_navigation_dashboard_fallback.html",
+        "relative_path": "20_website_output/assets/continuous_navigation_dashboard_fallback.html",
         "type": "html",
         "extension": ".html",
-        "size_bytes": 33531,
+        "size_bytes": 27597,
         "size_mb": 0.03,
         "step": "20_website_output"
       }
@@ -6186,7 +6531,7 @@
   },
   "health_score": 92.1,
   "report_metadata": {
-    "generation_time": "2026-03-15T14:00:09.355720",
+    "generation_time": "2026-03-17T16:54:52.513977",
     "formats_generated": [
       "html",
       "markdown",

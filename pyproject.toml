@@ -177,6 +177,18 @@ graphs = [
     "discopy>=1.1.0",
 ]
 
+# All execution frameworks (step 12): run JAX, NumPyro, PyTorch, DisCoPy in addition to PyMDP/Julia.
+# Without this extra, those scripts are skipped (dependency not installed) rather than failed.
+execution-frameworks = [
+    "jax[cpu]>=0.4.0",
+    "jaxlib>=0.4.0",
+    "flax>=0.7.0",
+    "optax>=0.1.0",
+    "numpyro>=0.14",
+    "torch>=2.0.0",
+    "discopy>=1.1.0",
+]
+
 # Aspirational/user-facing groups: no core pipeline callers; installed by users
 # who extend GNN for their own workflows (notebooks, distributed compute, persistence).
 research = [

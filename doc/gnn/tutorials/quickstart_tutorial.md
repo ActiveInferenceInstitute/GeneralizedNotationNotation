@@ -289,8 +289,8 @@ Your agent:
 2. **Try examples**: Explore [more complex models](gnn_examples_doc.md)
 3. **Different domains**: Navigation → Perception → Decision making
 4. **Advanced features**: Multi-agent, learning, hierarchical models
-5. **Pipeline architecture**: See **[src/AGENTS.md](../../../README.md)** for complete module documentation
-6. **Pipeline safety**: Read **[src/README.md](../README.md)** for architecture patterns
+5. **Pipeline architecture**: See **[src/AGENTS.md](../../../src/AGENTS.md)** for complete module documentation
+6. **Pipeline safety**: Read **[src/README.md](../../../src/README.md)** for architecture patterns
 
 ### Build Your Own Model
 
@@ -337,14 +337,14 @@ Your agent:
 ## 📚 Resources
 
 - **Pipeline Documentation**:
-  - [src/AGENTS.md](../../../README.md): Complete module registry
-  - [src/README.md](../README.md): Pipeline architecture and safety
+  - [src/AGENTS.md](../../../src/AGENTS.md): Complete module registry
+  - [src/README.md](../../../src/README.md): Pipeline architecture and safety
 - **Documentation**: [Full GNN guide](../about_gnn.md) and [GNN Overview](../gnn_overview.md)
 - **Examples**: [Model gallery](gnn_examples_doc.md)
 - **Help**:
   - [FAQ](../README.md)
-  - [Error guide](../troubleshooting/api_error_reference.md)
-  - [Support](../SUPPORT.md)
+  - [Error guide](../../troubleshooting/api_error_reference.md)
+  - [Support](../../SUPPORT.md)
 - **Community**: [GitHub Discussions](https://github.com/ActiveInferenceInstitute/GeneralizedNotationNotation/discussions)
 
 ---

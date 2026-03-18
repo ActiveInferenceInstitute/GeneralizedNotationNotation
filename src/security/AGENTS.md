@@ -310,9 +310,8 @@ File Input → Security Validation → Threat Detection → Access Control → S
 ## Testing
 
 ### Test Files
-- `src/tests/test_security_integration.py` - Integration tests
-- `src/tests/test_security_validation.py` - Validation tests
-- `src/tests/test_security_access.py` - Access control tests
+- `src/tests/test_security_overall.py` - Module-level tests
+- `src/tests/test_security_functional.py` - Functional tests
 
 ### Test Coverage
 - **Current**: 87%

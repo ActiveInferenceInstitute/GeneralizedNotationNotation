@@ -304,7 +304,7 @@ output/21_mcp_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests.test_mcp_integration.py` - MCP integration tests
+- `src/tests/test_mcp_overall.py` - MCP module tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -317,8 +317,9 @@ Module Tools → MCP Registration → Tool Discovery → Execution Requests → 
 ## Testing
 
 ### Test Files
-- `src/tests/test_mcp_integration.py` - Integration tests
-- `src/tests/test_mcp_protocol.py` - Protocol tests
+- `src/tests/test_mcp_tools.py` - Tool registration tests
+- `src/tests/test_mcp_functional.py` - Functional tests
+- `src/tests/test_mcp_audit.py` - Audit tests
 - `src/tests/test_mcp_tools.py` - Tool registration tests
 
 ### Test Coverage

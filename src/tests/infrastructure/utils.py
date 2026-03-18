@@ -126,6 +126,7 @@ def build_pytest_command(
         sys.executable, "-m", "pytest",
         "--verbose" if verbose else "--quiet",
         "--tb=short",
+        "--log-cli-level=WARNING",
         f"--maxfail={max_failures}",
         "--durations=10",
         "--disable-warnings"
@@ -310,8 +311,12 @@ def parse_test_statistics(pytest_output: str) -> Dict[str, int]:
     return stats
 
 
-def parse_coverage_statistics(coverage_json_path: Path, logger: logging.Logger) -> Dict[str, Any]:
+def parse_coverage_statistics(
+    coverage_json_path: Path,
+    logger: logging.Logger | None = None,
+) -> Dict[str, Any]:
     """Parse coverage JSON file to extract coverage statistics."""
+    logger = logger or logging.getLogger(__name__)
     try:
         if not coverage_json_path.exists():
             return {"error": "Coverage file not found"}

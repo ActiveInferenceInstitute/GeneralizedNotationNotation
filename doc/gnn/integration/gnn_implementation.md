@@ -32,7 +32,7 @@ python src/main.py --only-steps "3,11,12" --target-dir input/gnn_files --verbose
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
 

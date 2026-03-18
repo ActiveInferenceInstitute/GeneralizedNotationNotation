@@ -234,16 +234,11 @@ class TestMCPUtilities:
         assert isinstance(tools, (list, dict))
 
     def test_initialize_function(self) -> None:
-        """Test MCP initialization function."""
-        from mcp import initialize, MCPSDKNotFoundError
+        """Test MCP initialization function (SDK required in-repo)."""
+        from mcp import initialize
 
-        # Initialize may raise MCPSDKNotFoundError if SDK not available
-        try:
-            result = initialize()
-            assert result is not None
-        except MCPSDKNotFoundError:
-            # SDK not found is acceptable in test environment
-            pass
+        result = initialize()
+        assert result is not None
 
 
 class TestMCPCaching:

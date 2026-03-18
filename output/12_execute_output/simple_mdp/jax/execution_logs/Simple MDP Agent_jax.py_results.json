@@ -3,157 +3,24 @@
   "model_name": "simple_mdp",
   "script_name": "Simple MDP Agent_jax.py",
   "script_path": "output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 0.961523,
-  "timestamp": "2026-03-15T13:54:07.079438",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 0.045649,
+  "timestamp": "2026-03-17T16:49:14.342822",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
     "states": [],
-    "observations": [
-      1,
-      3,
-      3,
-      2,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3,
-      3
-    ],
-    "actions": [
-      2,
-      0,
-      0,
-      1,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0,
-      0
-    ],
+    "observations": [],
+    "actions": [],
     "policy": [],
-    "raw_output": "============================================================\nJAX Active Inference Model: GNNModel\n============================================================\n\n\u2705 Model parameters created\n   A matrix shape: (4, 4)\n   B matrix shape: (4, 4, 4)\n   C vector shape: (4,)\n   D vector shape: (4,)\n\nGNNModel Model Summary (Pure JAX Implementation):\n- Number of states: 4\n- Number of observations: 4\n- Number of actions: 4\n- Parameters: A matrix, B matrix, C vector, D vector\n\nKey Functions:\n- create_params(): Create model parameters\n- belief_update(): Bayesian belief update\n- compute_expected_free_energy(): Compute EFE for action\n- select_action(): Select action with minimum EFE\n- simulate_step(): One step of Active Inference\n- run_simulation(): Full simulation over observations\n\n\n\ud83e\uddea Running test simulation...\n\n\ud83d\udcca Simulation Results:\n   Initial belief: [0.25 0.25 0.25 0.25]\n   Updated belief: [1. 0. 0. 0.]\n   Selected action: 3\n   Expected free energy: -2.2688\n   EFE for all actions: [ 0.43120414  0.43120414  0.13120413 -2.2687957 ]\n\n\ud83d\udd04 Running 15-step simulation...\n   Actions taken: [2 0 0 1 0 0 0 0 0 0 0 0 0 0 0]\n   Final belief: [0.  0.  0.1 0.9]\n   Average EFE: -0.3188\n\n\ud83d\udcbe Saved simulation results to: jax_outputs/simulation_results.json\n\n\u2705 JAX Active Inference model test successful!\n",
-    "raw_error": "",
-    "beliefs": [
-      [
-        0.0,
-        1.0,
-        0.0,
-        0.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.9999999403953552,
-        0.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ]
-    ],
-    "num_timesteps": 15
+    "raw_output": "",
+    "raw_error": "Traceback (most recent call last):\n  File \"/Users/4d/Documents/GitHub/generalizednotationnotation/output/11_render_output/simple_mdp/jax/Simple MDP Agent_jax.py\", line 13, in <module>\n    import jax\nModuleNotFoundError: No module named 'jax'\n"
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 1291,
-    "stderr_length": 0,
+    "stdout_length": 0,
+    "stderr_length": 242,
     "output_directory": "output/12_execute_output/simple_mdp/jax"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "output/12_execute_output/simple_mdp/jax/simulation_data/simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
   }
 }

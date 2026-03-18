@@ -1,0 +1,47 @@
+2026-03-17 16:45:55,557 - type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: False
+2026-03-17 16:45:55,557 - type_checker.checker - INFO - Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md
+2026-03-17 16:45:55,557 - type_checker.checker - DEBUG - Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md
+2026-03-17 16:45:55,557 - type_checker.checker - DEBUG - Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+2026-03-17 16:45:55,559 - type_checker.checker - DEBUG - Checking 1 variables
+2026-03-17 16:45:55,560 - type_checker.checker - DEBUG - Checking 1 connections against 1 variables
+2026-03-17 16:45:55,560 - type_checker.checker - DEBUG - Time specification content: 'Static'
+2026-03-17 16:45:55,560 - type_checker.checker - DEBUG - Detected Static model
+2026-03-17 16:45:55,560 - type_checker.checker - INFO - Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpni5i6xvi/valid_model.md. Valid: True
+2026-03-17 16:45:55,560 - type_checker.checker - DEBUG - Validation details - Errors: 0, Critical warnings: 0, Strict mode: False, Should fail on warnings: False
+2026-03-17 16:45:55,562 - type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: True
+2026-03-17 16:45:55,562 - type_checker.checker - INFO - Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Checking 1 variables
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Checking 1 connections against 1 variables
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Time specification content: 'Static'
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Detected Static model
+2026-03-17 16:45:55,563 - type_checker.checker - INFO - Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpejjius_y/valid_model.md. Valid: True
+2026-03-17 16:45:55,563 - type_checker.checker - DEBUG - Validation details - Errors: 0, Critical warnings: 0, Strict mode: True, Should fail on warnings: False
+2026-03-17 16:45:55,579 - type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: True
+2026-03-17 16:45:55,595 - type_checker.checker - INFO - Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md
+2026-03-17 16:45:55,595 - type_checker.checker - DEBUG - Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Parsed sections: ['_HeaderComments', 'ModelName', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Variables', 'Edges']
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Validation Error: Missing required section: GNNSection
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Checking 1 variables
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Checking 1 connections against 1 variables
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Validation Warning: Connection references potentially undefined variable: x-
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Validation Warning: Connection references potentially undefined variable: s  # x is undefined
+2026-03-17 16:45:55,596 - type_checker.checker - INFO - Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5j_mleo/error_model.md. Valid: False
+2026-03-17 16:45:55,596 - type_checker.checker - DEBUG - Validation details - Errors: 3, Critical warnings: 2, Strict mode: True, Should fail on warnings: True
+2026-03-17 16:45:55,596 - type_checker.checker - INFO - Errors found: ['Missing required section: GNNSection', 'Connection references undefined variable: x-', 'Connection references undefined variable: s  # x is undefined']
+2026-03-17 16:45:55,596 - type_checker.checker - INFO - Warnings found: ['Time section not specified']
+2026-03-17 16:45:55,596 - type_checker.checker - INFO - Critical warnings: ['Connection references potentially undefined variable: x-', 'Connection references potentially undefined variable: s  # x is undefined']
+2026-03-17 16:45:55,600 - type_checker.checker - INFO - GNNTypeChecker initialized. Strict mode: False
+2026-03-17 16:45:55,600 - type_checker.checker - INFO - Starting GNN check for directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo, Recursive: False
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Processing file in directory: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+2026-03-17 16:45:55,600 - type_checker.checker - INFO - Starting GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Successfully parsed file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Parsed sections: ['_HeaderComments', 'ModelName', 'GNNSection', 'GNNVersionAndFlags', 'StateSpaceBlock', 'Connections', 'Time', 'Variables', 'Edges']
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Checking 1 variables
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Checking 1 connections against 1 variables
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Time specification content: 'Static'
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Detected Static model
+2026-03-17 16:45:55,600 - type_checker.checker - INFO - Finished GNN check for file: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo/valid_model.md. Valid: True
+2026-03-17 16:45:55,600 - type_checker.checker - DEBUG - Validation details - Errors: 0, Critical warnings: 0, Strict mode: False, Should fail on warnings: False
+2026-03-17 16:45:55,600 - type_checker.checker - INFO - Finished checking directory /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpcfsxjooo. Processed 1 files.

@@ -1,0 +1,18 @@
+================================================= test session starts ==================================================
+collecting ... collected 4 items
+
+src/tests/test_validation_overall.py::TestValidationOverall::test_semantic_validator_valid_model PASSED
+src/tests/test_validation_overall.py::TestValidationOverall::test_semantic_validator_invalid_model PASSED
+src/tests/test_validation_overall.py::TestValidationOverall::test_process_semantic_validation_wrapper PASSED
+src/tests/test_validation_overall.py::TestValidationOverall::test_validation_levels PASSED
+
+======================================================== PASSES ========================================================
+================================================= slowest 10 durations =================================================
+
+(10 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_validation_overall.py::TestValidationOverall::test_semantic_validator_valid_model
+PASSED src/tests/test_validation_overall.py::TestValidationOverall::test_semantic_validator_invalid_model
+PASSED src/tests/test_validation_overall.py::TestValidationOverall::test_process_semantic_validation_wrapper
+PASSED src/tests/test_validation_overall.py::TestValidationOverall::test_validation_levels
+================================================== 4 passed in 0.14s ===================================================

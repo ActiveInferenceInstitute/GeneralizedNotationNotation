@@ -26,7 +26,7 @@ GNN files are processed and validated through the GNN processing pipeline:
 python src/main.py --only-steps "3,5,6" --target-dir input/gnn_files --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
 

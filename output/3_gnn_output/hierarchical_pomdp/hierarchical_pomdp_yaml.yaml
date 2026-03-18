@@ -120,10 +120,10 @@ connections:
   target_variables:
   - u1
   weight: null
-created_at: '2026-03-15T13:53:23.211745'
+created_at: '2026-03-17T16:46:46.534642'
 equations: []
 model_name: Hierarchical Active Inference POMDP
-modified_at: '2026-03-15T13:53:23.211746'
+modified_at: '2026-03-17T16:46:46.534644'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

@@ -16,7 +16,7 @@ GNN DSL files are processed and validated through the pipeline:
 - **`src/5_type_checker.py`** → DSL syntax and type validation
   - See: **[src/type_checker/AGENTS.md](../../../src/type_checker/AGENTS.md)** for validation details
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 **Quick Start:**
 

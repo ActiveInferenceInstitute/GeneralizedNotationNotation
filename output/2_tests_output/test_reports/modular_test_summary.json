@@ -1,0 +1,135 @@
+{
+  "total_categories": 23,
+  "successful_categories": 18,
+  "failed_categories": 5,
+  "total_tests_run": 944,
+  "total_tests_passed": 904,
+  "total_tests_failed": 19,
+  "total_tests_skipped": 21,
+  "success_rate": 95.76271186440678,
+  "total_duration": 1401.1621351242065,
+  "category_times": {},
+  "resource_usage": {
+    "gnn": {
+      "memory_mb": 69.078125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "render": {
+      "memory_mb": 69.671875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "mcp": {
+      "memory_mb": 35.6875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "audio": {
+      "memory_mb": 40.125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "visualization": {
+      "memory_mb": 37.484375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "pipeline": {
+      "memory_mb": 47.90625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "export": {
+      "memory_mb": 84.984375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "execute": {
+      "memory_mb": 86.140625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "llm": {
+      "memory_mb": 32.609375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "ontology": {
+      "memory_mb": 31.265625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "website": {
+      "memory_mb": 34.875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "report": {
+      "memory_mb": 34.21875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "environment": {
+      "memory_mb": 33.171875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "type_checker": {
+      "memory_mb": 35.5,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "validation": {
+      "memory_mb": 30.109375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "model_registry": {
+      "memory_mb": 30.375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "analysis": {
+      "memory_mb": 36.546875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "security": {
+      "memory_mb": 39.359375,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "research": {
+      "memory_mb": 39.71875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "ml_integration": {
+      "memory_mb": 38.28125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "advanced_visualization": {
+      "memory_mb": 38.546875,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "gui": {
+      "memory_mb": 38.828125,
+      "cpu_percent": 0.0,
+      "threads": 1
+    },
+    "comprehensive": {
+      "memory_mb": 30.515625,
+      "cpu_percent": 0.0,
+      "threads": 1
+    }
+  },
+  "error_categories": {
+    "pathlib_errors": [],
+    "sapf_errors": [],
+    "import_errors": [],
+    "runtime_errors": []
+  }
+}

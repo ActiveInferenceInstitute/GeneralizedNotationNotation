@@ -23,7 +23,7 @@ For module-specific documentation:
 
 - **[src/gnn/AGENTS.md](../../../src/gnn/AGENTS.md)**: GNN parsing module
 - **[src/render/AGENTS.md](../../../src/render/AGENTS.md)**: Code generation module
-- **[src/AGENTS.md](../../../README.md)**: Complete pipeline registry
+- **[src/AGENTS.md](../../../src/AGENTS.md)**: Complete pipeline registry
 
 ---
 

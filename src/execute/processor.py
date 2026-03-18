@@ -95,6 +95,56 @@ def determine_script_framework(script_path: Path, render_output_dir: Path, frame
         return "unknown"
 
 
+# Optional Python modules required per framework (for pre-flight skip when missing)
+_FRAMEWORK_IMPORT_CHECK = {
+    "jax": ("jax", "uv sync --extra active-inference"),
+    "numpyro": ("numpyro", "uv sync --extra probabilistic-programming"),
+    "pytorch": ("torch", "uv sync --extra ml-ai"),
+    "discopy": ("discopy", "uv sync --extra graphs"),
+}
+
+
+def _is_python_framework_dependency_available(framework: str, executor: str, logger) -> bool:
+    """Return True if the framework's required Python module is importable (skip run if False)."""
+    if framework not in _FRAMEWORK_IMPORT_CHECK:
+        return True
+    module_name, _ = _FRAMEWORK_IMPORT_CHECK[framework]
+    try:
+        r = subprocess.run(
+            [executor, "-c", f"import {module_name}"],
+            capture_output=True,
+            text=True,
+            timeout=10,
+        )
+        return r.returncode == 0
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False
+
+
+def _make_skipped_result(script_info: Dict[str, Any], framework: str, model_name: str, executor: str, logger) -> Dict[str, Any]:
+    """Build an execution result dict for a script skipped due to missing dependency."""
+    module_name, install_hint = _FRAMEWORK_IMPORT_CHECK.get(framework, ("", ""))
+    reason = f"Dependency not installed: {module_name}" if module_name else "Dependency not installed"
+    if install_hint and not logger.isEnabledFor(logging.DEBUG):
+        logger.info(f"Skipping {script_info['name']} ({framework}): {module_name} not installed. Install with: {install_hint}")
+    return {
+        "script_path": str(script_info["path"]),
+        "script_name": script_info["name"],
+        "framework": framework,
+        "model_name": model_name,
+        "executor": executor,
+        "success": False,
+        "skipped": True,
+        "return_code": None,
+        "stdout": "",
+        "stderr": "",
+        "execution_time": 0,
+        "timestamp": datetime.now().isoformat(),
+        "error": reason,
+        "error_type": "DependencyNotInstalled",
+    }
+
+
 def parse_frameworks_parameter(frameworks: str, logger) -> List[str]:
     """
     Parse the frameworks parameter into a list of framework names.
@@ -257,11 +307,12 @@ def process_execute(
                         timeout=timeout
                     )
                 else:
-                    # Execute each script sequentially
+                    # Execute each script sequentially (execute_single_script skips when optional dep missing)
                     for script_info in executable_scripts:
                         exec_result = execute_single_script(script_info, results_dir, verbose, logger, timeout)
+                        exec_result.setdefault("skipped", False)
                         details.append(exec_result)
-                
+
                 # Update aggregated results
                 for exec_result in details:
                     execution_results["execution_details"].append(exec_result)
@@ -273,7 +324,12 @@ def process_execute(
 
                     execution_results["framework_status"][framework]["executions"] += 1
 
-                    if exec_result["success"]:
+                    if exec_result.get("skipped"):
+                        execution_results["skipped_executions"] = execution_results.get("skipped_executions", 0) + 1
+                        execution_results["framework_status"][framework]["status"] = "skipped"
+                        if "error" in exec_result:
+                            execution_results["framework_status"][framework]["error"] = exec_result["error"]
+                    elif exec_result["success"]:
                         execution_results["successful_executions"] += 1
                         execution_results["framework_status"][framework]["status"] = "success"
                     else:
@@ -292,19 +348,24 @@ def process_execute(
         # Generate execution report
         generate_execution_report(execution_results, results_dir, logger)
 
-        # Determine overall success with improved logic
+        # Determine overall success: only count real failures (not skipped) toward critical threshold
         total_scripts = execution_results["total_scripts_found"]
         failed_scripts = execution_results["failed_executions"]
+        skipped_scripts = execution_results.get("skipped_executions", 0)
+        attempted_scripts = total_scripts - skipped_scripts
 
         if total_scripts == 0:
             log_step_warning(logger, "No executable scripts found to run")
             return True
         elif failed_scripts == 0:
-            log_step_success(logger, "Execute processing completed successfully")
-        elif failed_scripts < total_scripts * 0.5:  # Less than 50% failures
-            log_step_warning(logger, f"Execute processing completed with {failed_scripts}/{total_scripts} failures (partial success)")
-        else:  # 50% or more failures
-            log_step_error(logger, f"Execute processing completed with {failed_scripts}/{total_scripts} failures (critical failures)")
+            if skipped_scripts:
+                log_step_success(logger, f"Execute completed: {execution_results['successful_executions']} succeeded, {skipped_scripts} skipped (dependency not installed)")
+            else:
+                log_step_success(logger, "Execute processing completed successfully")
+        elif attempted_scripts > 0 and failed_scripts < attempted_scripts * 0.5:
+            log_step_warning(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (partial success)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
+        elif attempted_scripts > 0:
+            log_step_error(logger, f"Execute completed with {failed_scripts}/{attempted_scripts} failures (critical)" + (f", {skipped_scripts} skipped" if skipped_scripts else ""))
 
         # Return True if we found and attempted to run scripts (even if some failed)
         # Return False only if there was a critical error preventing execution
@@ -420,6 +481,10 @@ def execute_single_script(script_info: Dict[str, Any], results_dir: Path, verbos
     else:
         model_name = 'unknown_model'
         framework = script_info['framework']
+
+    # Pre-flight skip: do not run Python frameworks when optional dependency is missing
+    if executor == sys.executable and not _is_python_framework_dependency_available(framework, executor, logger):
+        return _make_skipped_result(script_info, framework, model_name, executor, logger)
 
     # Prepare execution result
     exec_result = {
@@ -717,25 +782,37 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
             f.write("## Summary\n\n")
             f.write(f"- **Total Scripts Found:** {execution_results['total_scripts_found']}\n")
             f.write(f"- **Successful Executions:** {execution_results['successful_executions']}\n")
-            f.write(f"- **Failed Executions:** {execution_results['failed_executions']}\n\n")
+            f.write(f"- **Failed Executions:** {execution_results['failed_executions']}\n")
+            skipped = execution_results.get('skipped_executions', 0)
+            if skipped:
+                f.write(f"- **Skipped (dependency not installed):** {skipped}\n")
+            f.write("\n")
 
             if execution_results['execution_details']:
                 f.write("## Execution Details\n\n")
 
                 for detail in execution_results['execution_details']:
-                    status = "✅ SUCCESS" if detail['success'] else "❌ FAILED"
+                    if detail.get('skipped'):
+                        status = "⏭️ SKIPPED"
+                    elif detail['success']:
+                        status = "✅ SUCCESS"
+                    else:
+                        status = "❌ FAILED"
                     f.write(f"### {detail['script_name']} - {status}\n\n")
                     f.write(f"- **Framework:** {detail['framework']}\n")
                     f.write(f"- **Executor:** {detail['executor']}\n")
                     f.write(f"- **Path:** `{detail['script_path']}`\n")
-                    f.write(f"- **Return Code:** {detail.get('return_code', 'N/A')}\n")
-                    f.write(f"- **Execution Time:** {detail.get('execution_time', 0):.2f} seconds\n")
+                    if detail.get('skipped'):
+                        f.write(f"- **Reason:** {detail.get('error', 'Dependency not installed')}\n")
+                    else:
+                        f.write(f"- **Return Code:** {detail.get('return_code', 'N/A')}\n")
+                        f.write(f"- **Execution Time:** {detail.get('execution_time', 0):.2f} seconds\n")
 
-                    if not detail['success'] and 'error' in detail:
-                        f.write(f"- **Error:** {detail['error']}\n")
+                        if not detail['success'] and 'error' in detail:
+                            f.write(f"- **Error:** {detail['error']}\n")
 
-                    if 'output_file' in detail:
-                        f.write(f"- **Detailed Output:** {detail['output_file']}\n")
+                        if 'output_file' in detail:
+                            f.write(f"- **Detailed Output:** {detail['output_file']}\n")
 
                     f.write("\n")
 
@@ -745,6 +822,8 @@ def generate_execution_report(execution_results: Dict[str, Any], results_dir: Pa
                 f.write("2. Check individual output files for detailed error information\n")
                 f.write("3. Ensure required dependencies are installed\n")
                 f.write("4. Verify script syntax and functionality\n\n")
+            elif skipped:
+                f.write("Skipped scripts are due to missing optional dependencies. To run all frameworks: `uv sync --extra execution-frameworks` (or install active-inference, probabilistic-programming, ml-ai, graphs).\n\n")
             else:
                 f.write("All scripts executed successfully! Check individual output files for results.\n\n")
 

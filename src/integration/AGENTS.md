@@ -189,7 +189,7 @@ output/17_integration_output/
 - `pipeline.config` - Configuration management
 
 ### Imported By
-- `tests.test_integration_unit.py` - Integration unit tests
+- `src/tests/test_integration_overall.py` - Module-level integration tests
 - `main.py` - Pipeline orchestration
 
 ### Data Flow
@@ -202,8 +202,8 @@ Pipeline Steps → Integration Coordination → System State → Cross-Module Co
 ## Testing
 
 ### Test Files
-- `src/tests/test_integration_unit.py` - Unit tests
-- `src/tests/test_integration_coordination.py` - Coordination tests
+- `src/tests/test_integration_functional.py` - Functional integration tests
+- `src/tests/test_integration_processor.py` - Processor-level integration tests
 
 ### Test Coverage
 - **Current**: 83%

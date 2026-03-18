@@ -463,9 +463,7 @@ JAX Code Generation → Device Selection → Hardware Validation → JIT Compila
 ## Testing
 
 ### Test Files
-- `src/tests/test_execute_jax_integration.py` - Integration tests
-- `src/tests/test_execute_jax_performance.py` - Performance tests
-- `src/tests/test_execute_jax_devices.py` - Device management tests
+- `src/tests/test_execute_overall.py` - Execute module tests (includes framework selection)
 
 ### Test Coverage
 - **Current**: 82%

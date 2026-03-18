@@ -60,22 +60,26 @@ def list_render_frameworks_mcp() -> Dict[str, Any]:
         frameworks = get_supported_frameworks()
         return {"success": True, "frameworks": frameworks}
     except Exception as e:
-        # Return a static list when the dynamic query fails
+        # Return a static list when the dynamic query fails.
+        # NOTE: Keys here follow *render framework names* (not language buckets).
         return {
             "success": True,
             "frameworks": {
-                "python":       {"available": True,  "description": "Pure Python simulation code"},
-                "julia":        {"available": True,  "description": "Julia high-performance simulation"},
-                "jax":          {"available": False, "description": "JAX/XLA accelerated computation"},
-                "pytorch":      {"available": False, "description": "PyTorch neural integration"},
-                "rxinfer":      {"available": False, "description": "RxInfer.jl probabilistic programming"},
+                "pymdp":              {"available": False, "description": "PyMDP Active Inference simulation (Python)"},
+                "rxinfer":            {"available": False, "description": "RxInfer.jl probabilistic programming (Julia)"},
+                "activeinference_jl": {"available": False, "description": "ActiveInference.jl simulation (Julia)"},
+                "jax":                {"available": False, "description": "JAX/XLA accelerated computation (Python)"},
+                "discopy":            {"available": False, "description": "DisCoPy string diagrams (Python)"},
+                "pytorch":            {"available": False, "description": "PyTorch neural integration (Python)"},
+                "numpyro":            {"available": False, "description": "NumPyro probabilistic programming (Python)"},
+                "stan":               {"available": False, "description": "Stan probabilistic programming (Stan)"},
             },
             "note": str(e) if e else "",
         }
 
 
 def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
-                              framework: str = "python",
+                              framework: str = "pymdp",
                               verbose: bool = False) -> Dict[str, Any]:
     """
     Render a single GNN file to a specific target framework.
@@ -83,7 +87,7 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
     Args:
         gnn_file_path:    Path to the GNN source file (.md)
         output_directory: Directory to write the rendered output
-        framework:        Target framework ('python', 'julia', 'jax', 'pytorch', 'rxinfer')
+        framework:        Target framework name (best-effort hint; see note below)
         verbose:          Enable verbose logging
 
     Returns:
@@ -96,7 +100,12 @@ def render_gnn_to_format_mcp(gnn_file_path: str, output_directory: str,
         if not gnn_path.exists():
             return {"success": False, "error": f"GNN file not found: {gnn_file_path}"}
 
-        # Use process_render on single-file temp dir
+        # Use process_render on a single-file temp dir.
+        #
+        # NOTE: At present, this MCP tool does not filter to a single framework.
+        # It runs Step 11 rendering and returns any artifacts written under the
+        # requested output directory. The `framework` parameter is returned for
+        # caller context and may be used for filtering in a future revision.
         import tempfile
         import shutil
         with tempfile.TemporaryDirectory() as tmp:
@@ -165,7 +174,7 @@ def register_tools(mcp_instance) -> None:
         "list_render_frameworks",
         list_render_frameworks_mcp,
         {},
-        "Return all supported rendering frameworks (Python, Julia, JAX, PyTorch, RxInfer) and their availability.",
+        "Return supported render framework names and availability (best effort).",
         module=__package__, category="render",
     )
 
@@ -178,12 +187,13 @@ def register_tools(mcp_instance) -> None:
                 "gnn_file_path":    {"type": "string", "description": "Path to the GNN source file (.md)"},
                 "output_directory": {"type": "string", "description": "Directory for rendered output"},
                 "framework":        {"type": "string", "description": "Target framework",
-                                     "enum": ["python", "julia", "jax", "pytorch", "rxinfer"], "default": "python"},
+                                     "enum": ["pymdp", "rxinfer", "activeinference_jl", "jax", "discopy", "pytorch", "numpyro", "stan"],
+                                     "default": "pymdp"},
                 "verbose":          {"type": "boolean", "description": "Enable verbose logging", "default": False},
             },
             "required": ["gnn_file_path", "output_directory"],
         },
-        "Render a single GNN file to a specific target framework (Python, Julia, etc.).",
+        "Render a single GNN file (runs Step 11 render; does not currently filter to one framework).",
         module=__package__, category="render",
     )
 

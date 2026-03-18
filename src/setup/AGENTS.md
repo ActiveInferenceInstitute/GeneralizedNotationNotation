@@ -314,8 +314,9 @@ System Check → UV Environment Creation → UV Sync (pyproject.toml → uv.lock
 ## Testing
 
 ### Test Files
-- `src/tests/test_setup_integration.py` - Integration tests
-- `src/tests/test_setup_validation.py` - Validation tests
+- `src/tests/test_setup_overall.py` - Module-level setup tests
+- `src/tests/test_uv_environment.py` - UV environment behavior tests
+- `src/tests/test_environment_overall.py` - Environment-related integration checks
 
 ### Test Coverage
 - **Current**: 90%

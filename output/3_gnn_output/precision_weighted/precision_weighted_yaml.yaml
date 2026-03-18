@@ -122,10 +122,10 @@ connections:
   target_variables:
   - F
   weight: null
-created_at: '2026-03-15T13:53:24.540086'
+created_at: '2026-03-17T16:46:48.205901'
 equations: []
 model_name: Precision-Weighted Active Inference Agent
-modified_at: '2026-03-15T13:53:24.540087'
+modified_at: '2026-03-17T16:46:48.205903'
 ontology_mappings:
 - description: null
   ontology_term: LikelihoodMatrix

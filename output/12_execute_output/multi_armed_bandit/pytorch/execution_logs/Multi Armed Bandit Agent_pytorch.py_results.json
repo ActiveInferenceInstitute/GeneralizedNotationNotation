@@ -3,10 +3,10 @@
   "model_name": "multi_armed_bandit",
   "script_name": "Multi Armed Bandit Agent_pytorch.py",
   "script_path": "output/11_render_output/multi_armed_bandit/pytorch/Multi Armed Bandit Agent_pytorch.py",
-  "success": true,
-  "return_code": 0,
-  "execution_time": 0.685892,
-  "timestamp": "2026-03-15T13:54:20.208209",
+  "success": false,
+  "return_code": 1,
+  "execution_time": 0.032294,
+  "timestamp": "2026-03-17T16:49:26.268653",
   "simulation_data": {
     "traces": [],
     "free_energy": [],
@@ -14,21 +14,13 @@
     "observations": [],
     "actions": [],
     "policy": [],
-    "raw_output": "PyTorch POMDP simulation complete: 15 timesteps in 0.002s\nResults saved to: simulation_results.json\nValidation: {'beliefs_in_range': True, 'beliefs_sum_to_one': True, 'actions_in_range': True, 'all_valid': True}\n",
+    "raw_output": "ERROR: PyTorch not installed. Install with: uv sync --extra ml-ai\n",
     "raw_error": ""
   },
   "execution_metadata": {
     "executor": "/Users/4d/Documents/GitHub/generalizednotationnotation/.venv/bin/python",
-    "stdout_length": 212,
+    "stdout_length": 66,
     "stderr_length": 0,
     "output_directory": "output/12_execute_output/multi_armed_bandit/pytorch"
-  },
-  "collected_outputs": {
-    "visualizations": [],
-    "simulation_data": [
-      "output/12_execute_output/multi_armed_bandit/pytorch/simulation_data/simulation_results.json"
-    ],
-    "traces": [],
-    "other": []
   }
 }

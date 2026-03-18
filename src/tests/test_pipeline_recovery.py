@@ -98,7 +98,7 @@ class TestRecursionErrorRecovery:
 class TestAsyncAwaitRecovery:
     """Test suite for async/await error recovery."""
 
-    @pytest.mark.asyncio
+    @pytest.mark.anyio
     @pytest.mark.slow
     async def test_llm_analysis_recovery(self, test_environment, sample_gnn_file):
         """Test LLM analysis with proper async/await handling."""

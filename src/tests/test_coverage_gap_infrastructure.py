@@ -52,7 +52,7 @@ class TestTimeoutManager:
             assert result.success is True
             assert result.result == 10
 
-    @pytest.mark.asyncio
+    @pytest.mark.anyio
     async def test_async_timeout_success(self):
         manager = TimeoutManager()
         config = TimeoutConfig(base_timeout=1.0, max_retries=0)

@@ -95,12 +95,12 @@ GNN addresses the challenge of communicating Active Inference models, which are 
 ```text
 GeneralizedNotationNotation/
 ├── 📄 README.md, AGENTS.md, DOCS.md, ARCHITECTURE.md  # Core documentation
-├── 📁 src/                    # 25-step pipeline + 27 modules
+├── 📁 src/                    # 25-step pipeline + 31 modules
 │   ├── main.py               # 🎯 Main orchestrator - run this!
 │   ├── 0_template.py → 24_intelligent_analysis.py  # Numbered pipeline scripts
 │   ├── gnn/, render/, execute/, llm/, ...  # Agent modules
 │   └── tests/                # Comprehensive test suite
-├── 📁 doc/                    # 580+ documentation files
+├── 📁 doc/                    # 440+ documentation files
 │   ├── gnn/                  # GNN language specification
 │   ├── pymdp/, rxinfer/      # Framework integration guides
 │   └── cognitive_phenomena/  # Example cognitive models
@@ -129,7 +129,7 @@ The GNN pipeline is composed of **25 specialized modules**, each acting as an ag
 | **8** | **[Viz](src/visualization/)** | Static visualization of matrices and network logic. | [🤖 Agent](src/visualization/AGENTS.md) • [📝 Code](src/8_visualization.py) |
 | **9** | **[Adv. Viz](src/advanced_visualization/)** | Interactive diagrams and complex visual analysis. | [🤖 Agent](src/advanced_visualization/AGENTS.md) • [📝 Code](src/9_advanced_viz.py) |
 | **10** | **[Ontology](src/ontology/)** | Semantic mapping to Active Inference definitions. | [🤖 Agent](src/ontology/AGENTS.md) • [📝 Code](src/10_ontology.py) |
-| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, JAX, PyTorch, NumPyro, etc. | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
+| **11** | **[Render](src/render/)** | Code generation for PyMDP, RxInfer, ActiveInference.jl, DisCoPy, JAX, Stan, PyTorch, NumPyro | [🤖 Agent](src/render/AGENTS.md) • [📝 Code](src/11_render.py) |
 | **12** | **[Execute](src/execute/)** | Simulation runner and runtime management. | [🤖 Agent](src/execute/AGENTS.md) • [📝 Code](src/12_execute.py) |
 | **13** | **[LLM](src/llm/)** | Neurosymbolic analysis and text generation. | [🤖 Agent](src/llm/AGENTS.md) • [📝 Code](src/13_llm.py) |
 | **14** | **[ML](src/ml_integration/)** | Integration with external ML frameworks. | [🤖 Agent](src/ml_integration/AGENTS.md) • [📝 Code](src/14_ml_integration.py) |
@@ -192,9 +192,7 @@ graph LR
     B -->|Visual Feedback| A
     C -->|Results Analysis| B
     
-    style A fill:#e8f5e8,stroke:#4caf50
-    style B fill:#e3f2fd,stroke:#2196f3
-    style C fill:#fff3e0,stroke:#ff9800
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 1. **📝 Text-Based Models**: GNN files are plain text and can be rendered into mathematical notation, pseudocode, or natural language descriptions. This forms the core representation.
@@ -228,6 +226,9 @@ Here's a glimpse of what a GNN model file looks like (from [`input/gnn_files/dis
 
 ## GNNSection
 ActInfPOMDP
+
+## GNNVersionAndFlags
+GNN v1
 
 ## ModelName
 Active Inference POMDP Agent
@@ -309,10 +310,7 @@ graph TB
     F --> B
     G --> B
     
-    style A fill:#e3f2fd
-    style B fill:#f3e5f5
-    style E fill:#e8f5e8
-    style H fill:#fff3e0
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 ### Module Dependency Graph
@@ -379,6 +377,7 @@ graph TB
         ActInf[ActiveInference.jl Generator]
         JAX[JAX Generator]
         DisCoPy[DisCoPy Generator]
+        Stan[Stan Generator]
         PyTorch[PyTorch Generator]
         NumPyro[NumPyro Generator]
     end
@@ -407,6 +406,7 @@ graph TB
     Renderer --> ActInf
     Renderer --> JAX
     Renderer --> DisCoPy
+    Renderer --> Stan
     Renderer --> PyTorch
     Renderer --> NumPyro
     
@@ -519,9 +519,7 @@ flowchart TD
     Y --> Y2["2️⃣4️⃣ Intelligent Analysis<br/>src/intelligent_analysis/"]
     Y2 --> Z["✅ Complete"]
 
-    style A fill:#e1f5fe
-    style G fill:#fff3e0,stroke:#ff9800,stroke-width:2px
-    style Y2 fill:#e8f5e8,stroke:#4caf50
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 ### 🎯 GNN Processing Workflow
@@ -551,9 +549,7 @@ flowchart TD
         M --> N["✨ Complete Analysis<br/>Multi-modal outputs"]
     end
     
-    style A fill:#e1f5fe,stroke:#0277bd
-    style C fill:#fff3e0,stroke:#f57c00
-    style L fill:#e8f5e8,stroke:#388e3c
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 ### Data Flow Between Pipeline Steps
@@ -633,6 +629,7 @@ The GNN framework is built around a modular architecture, where each pipeline st
 | `mcp` | 21 | Implements the Model Context Protocol for inter-model communication. | Protocol Handlers, Message Brokers |
 | `gui` | 22 | Provides interactive graphical user interfaces for model creation and editing. | `gradio`, `streamlit`, `dash` |
 | `report` | 23 | Generates comprehensive reports summarizing the pipeline execution. | Report Generators (PDF, HTML) |
+| `intelligent_analysis` | 24 | AI-powered pipeline analysis and executive reports. | LLM analysis, remediation, pipeline summaries |
 
 ### 🏗️ Pipeline Architecture: Three-Tier Pattern
 
@@ -659,9 +656,7 @@ graph TB
     Processor -->|Uses| Framework
     Processor -->|Registers| MCP
     
-    style Script fill:#e3f2fd,stroke:#1565c0
-    style Init fill:#f3e5f5,stroke:#7b1fa2
-    style Processor fill:#fff3e0,stroke:#e65100
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 #### 🏛️ Architectural Components
@@ -743,7 +738,7 @@ python src/main.py --help
 
 ## 🛠️ Tools and Utilities
 
-The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script.
+The GNN ecosystem includes several sophisticated tools to aid in model development, validation, and understanding. These tools are primarily invoked through the `src/main.py` pipeline script. The project also provides a **CLI** (`gnn` command), **LSP** (Language Server Protocol) for editor support, and a **REST API** (FastAPI Pipeline-as-a-Service); **131 MCP tools** are registered for model context integration. See [AGENTS.md](./AGENTS.md) and [doc/gnn/](doc/gnn/) for details.
 
 ### ✅ Type Checker and Resource Estimator
 
@@ -1172,7 +1167,7 @@ The GNN project maintains high standards for code quality, testing, and document
 - **Syntax Status**: ✅ 100% valid Python (all syntax errors fixed)
 - **Thin Orchestrator Pattern**: ✅ 100% compliant (all steps use proper delegation)
 - **Module Availability**: ✅ 100% (all modules have real implementations, no fallbacks needed)
-- **AGENTS.md Coverage**: ✅ 100% (30/30 modules + all subdirectories documented)
+- **AGENTS.md Coverage**: ✅ 100% (31/31 modules + all subdirectories documented)
 - **README Coverage**: ✅ 100% (all modules have comprehensive documentation)
 - **SPEC.md Coverage**: ✅ 100% (all modules have specifications)
 - **Architecture Status**: ✅ Production Ready

@@ -223,8 +223,8 @@ GNN Content → SAPF Conversion → Audio Generation → Audio Analysis → Outp
 ## Testing
 
 ### Test Files
-- `src/tests/test_sapf_integration.py` - Integration tests
-- `src/tests/test_sapf_audio.py` - Audio tests
+- `src/tests/test_sapf_processor.py` - SAPF processor tests
+- `src/tests/test_audio_sapf.py` - SAPF audio backend tests
 
 ### Test Coverage
 - **Current**: 75%

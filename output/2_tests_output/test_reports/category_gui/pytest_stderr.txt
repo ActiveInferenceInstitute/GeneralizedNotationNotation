@@ -1,0 +1,187 @@
+2026-03-17 16:46:57,051 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,051 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/input
+2026-03-17 16:46:57,051 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,052 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,052 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,052 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,052 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,053 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,053 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,053 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,054 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,054 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,054 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/gui_processing_summary.json
+2026-03-17 16:46:57,054 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,055 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpv954nz8l/output/navigation.html
+2026-03-17 16:46:57,055 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,056 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,056 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/input
+2026-03-17 16:46:57,056 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,056 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,056 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,056 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,057 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,057 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,057 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,057 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,057 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,057 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,058 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/gui_processing_summary.json
+2026-03-17 16:46:57,058 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,058 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp7qi5uysy/output/navigation.html
+2026-03-17 16:46:57,058 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,059 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,059 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/input
+2026-03-17 16:46:57,059 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,059 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,059 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,060 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,060 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,060 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,060 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,060 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,061 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,061 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,061 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/gui_processing_summary.json
+2026-03-17 16:46:57,061 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,061 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpt33w4wf3/output/navigation.html
+2026-03-17 16:46:57,062 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,063 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,063 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/empty_input
+2026-03-17 16:46:57,063 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,063 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,063 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,063 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,064 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,064 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,064 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,064 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,065 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,065 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,065 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/gui_processing_summary.json
+2026-03-17 16:46:57,065 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,065 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp1toyfceo/output/navigation.html
+2026-03-17 16:46:57,065 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,066 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,066 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/input
+2026-03-17 16:46:57,066 - gui.processor - INFO - Running GUI types: ['gui_1']
+2026-03-17 16:46:57,066 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,066 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,067 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,067 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,067 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,067 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/gui_processing_summary.json
+2026-03-17 16:46:57,067 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,068 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpyn60gx88/output/navigation.html
+2026-03-17 16:46:57,068 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,069 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,069 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/input
+2026-03-17 16:46:57,069 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,069 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,069 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,069 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,069 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,070 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,070 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,070 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,070 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,070 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,071 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/gui_processing_summary.json
+2026-03-17 16:46:57,071 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,071 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp8bad22mm/output/navigation.html
+2026-03-17 16:46:57,071 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,072 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,072 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/input
+2026-03-17 16:46:57,072 - gui.processor - INFO - Running GUI types: ['nonexistent_gui']
+2026-03-17 16:46:57,072 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,072 - gui.processor - WARNING - Unknown GUI type: nonexistent_gui
+2026-03-17 16:46:57,072 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/gui_processing_summary.json
+2026-03-17 16:46:57,072 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,073 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpmy647z59/output/navigation.html
+2026-03-17 16:46:57,073 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,073 - test_gui_logger - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,074 - test_gui_logger - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmptb429sqf/output/22_gui_output/navigation.html
+2026-03-17 16:46:57,075 - test_gui_logger - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,076 - test_gui_logger - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpxda5nhvr/output/22_gui_output/navigation.html
+2026-03-17 16:46:57,076 - test_gui_logger - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,077 - test_gui_logger - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmp_66mv9rc/empty_output/22_gui_output/navigation.html
+2026-03-17 16:46:57,077 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,077 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/input
+2026-03-17 16:46:57,077 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,077 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,077 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,078 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,078 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,078 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,078 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,078 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,079 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,079 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,079 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/gui_processing_summary.json
+2026-03-17 16:46:57,079 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,079 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpndh6x516/nonexistent/output/navigation.html
+2026-03-17 16:46:57,079 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,080 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,080 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/input
+2026-03-17 16:46:57,080 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,080 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,080 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,081 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,081 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,081 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,081 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,081 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,082 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,082 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,082 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/gui_processing_summary.json
+2026-03-17 16:46:57,082 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,082 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpwuis8xal/output/navigation.html
+2026-03-17 16:46:57,082 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,083 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,083 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/nonexistent
+2026-03-17 16:46:57,083 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,083 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,083 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,084 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,084 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,084 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,084 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,084 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,085 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,085 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,085 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/gui_processing_summary.json
+2026-03-17 16:46:57,085 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,085 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpps0fgjns/output/navigation.html
+2026-03-17 16:46:57,085 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,086 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,086 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+2026-03-17 16:46:57,086 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,086 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,086 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,087 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,087 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,087 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,087 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,087 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,088 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,088 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,088 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/gui_processing_summary.json
+2026-03-17 16:46:57,088 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,088 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_quiet/navigation.html
+2026-03-17 16:46:57,088 - gui.processor - INFO - ✅ HTML navigation page generated
+2026-03-17 16:46:57,088 - gui.processor - INFO - 📦 Running in HEADLESS mode - generating artifacts only (fast)
+2026-03-17 16:46:57,088 - gui.processor - INFO - Processing GUI module for files in /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/input
+2026-03-17 16:46:57,089 - gui.processor - INFO - Running GUI types: ['gui_1', 'gui_2']
+2026-03-17 16:46:57,089 - gui.processor - INFO - Mode: HEADLESS
+2026-03-17 16:46:57,089 - gui.processor - INFO - 🎮 Starting GUI 1: Form-based Interactive GNN Constructor
+2026-03-17 16:46:57,089 - gui.processor - INFO - 📦 Running GUI 1 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,089 - gui.processor - INFO - ✅ GUI 1 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/constructed_model_gui1.md
+2026-03-17 16:46:57,089 - gui.processor - INFO - ✅ GUI 1 completed successfully
+2026-03-17 16:46:57,089 - gui.processor - INFO - 🎯 Starting GUI 2: Visual Matrix Editor
+2026-03-17 16:46:57,089 - gui.processor - INFO - 📦 Running GUI 2 in HEADLESS mode - generating artifacts only
+2026-03-17 16:46:57,090 - gui.processor - INFO - ✅ GUI 2 artifacts generated (headless). Export: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/22_gui_output/visual_model_gui2.md
+2026-03-17 16:46:57,090 - gui.processor - INFO - ✅ GUI 2 completed successfully
+2026-03-17 16:46:57,090 - gui.processor - INFO - 📊 GUI processing summary saved to: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/gui_processing_summary.json
+2026-03-17 16:46:57,090 - gui.processor - INFO - Generating HTML navigation page for pipeline outputs
+2026-03-17 16:46:57,090 - gui.processor - INFO - ✅ HTML navigation page generated: /var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/tmpl5491fxz/output_verbose/navigation.html
+2026-03-17 16:46:57,090 - gui.processor - INFO - ✅ HTML navigation page generated

@@ -477,7 +477,7 @@
   },
   {
     "name": "list_render_frameworks",
-    "description": "Return all supported rendering frameworks (Python, Julia, JAX, PyTorch, RxInfer) and their availability.",
+    "description": "Return supported render framework names and availability (best effort).",
     "module": "src.render",
     "category": "render",
     "version": "1.0.0"
@@ -715,7 +715,7 @@
   },
   {
     "name": "render_gnn_to_format",
-    "description": "Render a single GNN file to a specific target framework (Python, Julia, etc.).",
+    "description": "Render a single GNN file (runs Step 11 render; does not currently filter to one framework).",
     "module": "src.render",
     "category": "render",
     "version": "1.0.0"

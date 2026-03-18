@@ -40,9 +40,7 @@ graph TB
     Processor -->|Uses| Framework
     Processor -->|Registers| MCP
     
-    style Script fill:#e3f2fd
-    style Init fill:#f3e5f5
-    style Processor fill:#fff3e0
+    %% styling intentionally omitted (theme-controlled)
 ```
 
 - **Numbered Scripts** (e.g., `11_render.py`, `10_ontology.py`): Thin orchestrators that handle pipeline orchestration, argument parsing, logging, and result aggregation

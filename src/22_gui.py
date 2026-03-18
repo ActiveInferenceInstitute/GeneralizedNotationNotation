@@ -50,6 +50,8 @@ If you encounter errors:
 
 import sys
 from pathlib import Path
+from typing import Any, Optional
+import logging
 
 # Add src to path for imports
 sys.path.insert(0, str(Path(__file__).parent))
@@ -62,7 +64,6 @@ try:
 except ImportError:
     def process_gui(target_dir: Path, output_dir: Path, logger: Optional[logging.Logger] = None, **kwargs: Any) -> bool:
         """Recovery GUI processing when module unavailable."""
-        import logging
         if logger is None:
             logger = logging.getLogger(__name__)
         logger.warning("GUI module not available - using recovery")

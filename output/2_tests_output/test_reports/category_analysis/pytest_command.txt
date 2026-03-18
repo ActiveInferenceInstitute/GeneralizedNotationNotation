@@ -1,0 +1,5 @@
+Category: analysis
+Success: False
+Duration: 6.08s
+Peak Memory: 36.55 MB
+CPU Usage: 0.0%

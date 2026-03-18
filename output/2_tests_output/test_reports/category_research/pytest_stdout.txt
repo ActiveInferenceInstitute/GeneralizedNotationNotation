@@ -1,0 +1,30 @@
+================================================= test session starts ==================================================
+collecting ... collected 2 items
+
+src/tests/test_research_overall.py::TestResearchOverall::test_process_research_flow 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:50 [    INFO] research: 🚀 Starting step: Processing research
+2026-03-17 16:46:50 [    INFO] research: ✅ Research processing completed successfully
+PASSED
+src/tests/test_research_overall.py::TestResearchOverall::test_process_research_no_files 
+---------------------------------------------------- live log call -----------------------------------------------------
+2026-03-17 16:46:50 [    INFO] research: 🚀 Starting step: Processing research
+2026-03-17 16:46:50 [    INFO] research: ✅ Research processing completed successfully
+PASSED
+
+======================================================== PASSES ========================================================
+____________________________________ TestResearchOverall.test_process_research_flow ____________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     research:structured_logging.py:428 🚀 Starting step: Processing research
+INFO     research:structured_logging.py:438 ✅ Research processing completed successfully
+__________________________________ TestResearchOverall.test_process_research_no_files __________________________________
+-------------------------------------------------- Captured log call ---------------------------------------------------
+INFO     research:structured_logging.py:428 🚀 Starting step: Processing research
+INFO     research:structured_logging.py:438 ✅ Research processing completed successfully
+================================================= slowest 10 durations =================================================
+
+(6 durations < 1s hidden.)
+=============================================== short test summary info ================================================
+PASSED src/tests/test_research_overall.py::TestResearchOverall::test_process_research_flow
+PASSED src/tests/test_research_overall.py::TestResearchOverall::test_process_research_no_files
+================================================== 2 passed in 0.03s ===================================================

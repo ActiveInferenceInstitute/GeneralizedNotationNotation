@@ -19,7 +19,7 @@
 | Directory | Purpose | Content Files |
 |-----------|---------|---------------|
 | `advanced/` | Advanced modeling, ontology, multi-agent, LLM/neurosymbolic | 5 |
-| `implementations/` | Framework-specific docs (8 renderers) | 8 |
+| `implementations/` | Framework-specific docs (9 renderers) | 9 |
 | `integration/` | Cross-framework integration guides | 4 |
 | `language/` | GNN syntax cheatsheet and language-level specifications | 3 |
 | `mcp/` | MCP tool reference, client setup, development guide | 3 |

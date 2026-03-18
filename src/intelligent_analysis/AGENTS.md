@@ -524,7 +524,7 @@ The module implements a layered recovery approach:
 
 ### Test Files
 
-- `src/tests/test_intelligent_analysis.py` - Unit and integration tests (if present)
+- `src/tests/test_intelligent_analysis_overall.py` - Module-level tests
 - Test via full pipeline: `python src/main.py --only-steps 24 --verbose`
 
 ### Required Test Fixtures

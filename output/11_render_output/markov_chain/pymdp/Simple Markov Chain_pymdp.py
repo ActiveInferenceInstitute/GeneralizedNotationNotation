@@ -7,7 +7,7 @@ It uses the GNN pipeline's PyMDP execution module to run an Active Inference sim
 
 Model: Simple Markov Chain
 Description: 
-Generated: 2026-03-15 13:54:01
+Generated: 2026-03-17 16:47:28
 
 State Space:
 - Hidden States: 3

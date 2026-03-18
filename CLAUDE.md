@@ -101,6 +101,16 @@ Code generation and execution support multiple backends:
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
+### Running all execution frameworks
+
+Step 12 (Execute) runs scripts for every framework (PyMDP, RxInfer.jl, ActiveInference.jl, JAX, DisCoPy, PyTorch, NumPyro). JAX, NumPyro, PyTorch, and DisCoPy are **optional**: if not installed, their scripts are **skipped** (not failed). To run all implementations:
+
+```bash
+uv sync --extra execution-frameworks
+```
+
+Then run the pipeline (or step 12). Without this extra, only PyMDP and Julia-based frameworks execute; the rest are skipped with a dependency-not-installed reason.
+
 ## Key Locations
 
 | Path | Purpose |
@@ -155,11 +165,12 @@ s=HiddenState
 
 ```bash
 # Install specific optional groups using UV
-uv sync --extra dev             # Development tools
-uv sync --extra api             # REST API server (FastAPI + uvicorn)
-uv sync --extra llm             # LLM integration (openai, anthropic, ollama)
-uv sync --extra visualization   # Enhanced visualization
-uv sync --extra audio           # Audio processing
-uv sync --extra gui             # GUI interfaces
-uv sync --all-extras            # Everything
+uv sync --extra dev                  # Development tools
+uv sync --extra api                  # REST API server (FastAPI + uvicorn)
+uv sync --extra llm                  # LLM integration (openai, anthropic, ollama)
+uv sync --extra visualization        # Enhanced visualization
+uv sync --extra audio                # Audio processing
+uv sync --extra gui                  # GUI interfaces
+uv sync --extra execution-frameworks # All step-12 frameworks (JAX, NumPyro, PyTorch, DisCoPy)
+uv sync --all-extras                 # Everything
 ```

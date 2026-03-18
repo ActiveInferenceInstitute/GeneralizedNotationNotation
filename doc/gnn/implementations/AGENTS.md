@@ -23,6 +23,7 @@
 | `pymdp.md` | PyMDP Framework Implementation |
 | `pytorch.md` | PyTorch Framework Implementation |
 | `rxinfer.md` | RxInfer.jl Framework Implementation |
+| `stan.md` | Stan Framework Implementation |
 
 ## Integration
 

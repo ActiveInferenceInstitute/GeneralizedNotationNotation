@@ -417,7 +417,7 @@ MODULAR_TEST_CATEGORIES["new_module"] = {
     "name": "New Module Tests",
     "description": "Tests for the new module",
     "files": [
-        "test_new_module_overall.py",
+        "test_template_overall.py",
         "test_new_module_integration.py"
     ],
     "markers": ["new_module"],  # Optional pytest markers
@@ -436,7 +436,7 @@ Follow the naming convention:
 
 Example:
 ```python
-# src/tests/test_new_module_overall.py
+# src/tests/test_template_overall.py
 import pytest
 from pathlib import Path
 

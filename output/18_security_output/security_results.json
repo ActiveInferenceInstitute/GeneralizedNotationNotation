@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-03-15T14:00:03.437817",
+  "timestamp": "2026-03-17T16:54:48.781705",
   "processed_files": 8,
   "success": true,
   "errors": [],
@@ -12,7 +12,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.438154"
+      "check_timestamp": "2026-03-17T16:54:48.782042"
     },
     {
       "file_path": "input/gnn_files/discrete/multi_armed_bandit.md",
@@ -22,7 +22,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.438851"
+      "check_timestamp": "2026-03-17T16:54:48.782747"
     },
     {
       "file_path": "input/gnn_files/discrete/deep_planning_horizon.md",
@@ -32,7 +32,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.439302"
+      "check_timestamp": "2026-03-17T16:54:48.783202"
     },
     {
       "file_path": "input/gnn_files/discrete/actinf_pomdp_agent.md",
@@ -42,7 +42,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.439790"
+      "check_timestamp": "2026-03-17T16:54:48.783699"
     },
     {
       "file_path": "input/gnn_files/discrete/hmm_baseline.md",
@@ -52,7 +52,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.440272"
+      "check_timestamp": "2026-03-17T16:54:48.784188"
     },
     {
       "file_path": "input/gnn_files/discrete/two_state_bistable.md",
@@ -62,7 +62,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.440615"
+      "check_timestamp": "2026-03-17T16:54:48.784537"
     },
     {
       "file_path": "input/gnn_files/discrete/markov_chain.md",
@@ -72,7 +72,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.440970"
+      "check_timestamp": "2026-03-17T16:54:48.784898"
     },
     {
       "file_path": "input/gnn_files/discrete/tmaze_epistemic.md",
@@ -82,7 +82,7 @@
       "sensitive_patterns": [],
       "file_permissions": "readable",
       "security_score": 100.0,
-      "check_timestamp": "2026-03-15T14:00:03.441371"
+      "check_timestamp": "2026-03-17T16:54:48.785310"
     }
   ],
   "vulnerabilities": [],

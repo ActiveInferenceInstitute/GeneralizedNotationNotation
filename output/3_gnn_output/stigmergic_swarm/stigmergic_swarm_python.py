@@ -10,7 +10,7 @@ Three Active Inference agents coordinating via stigmergy (environmental traces):
 - Signal decay: environmental signals decay over time (volatility)
 - Demonstrates emergent collective behavior from individual free energy minimization
 - Models ant colony foraging, distributed robotics, and decentralized coordination
-Generated: 2026-03-15T13:53:23.533390
+Generated: 2026-03-17T16:46:46.900027
 """
 
 import numpy as np

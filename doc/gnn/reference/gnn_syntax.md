@@ -22,7 +22,7 @@ GNN syntax is validated through the pipeline type checker:
 python src/5_type_checker.py --target-dir input/gnn_files --strict --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ---
 

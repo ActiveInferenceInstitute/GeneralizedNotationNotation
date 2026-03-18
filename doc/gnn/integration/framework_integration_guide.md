@@ -3,7 +3,7 @@
 **Version**: v2.0.0  
 **Last Updated**: March 6, 2026  
 **Status**: ✅ Production Ready  
-**Modules**: 38+ · **Renderers**: 9/9 · **Tests**: 1,522+  
+**Modules**: 38+ · **Renderers**: 8/8 · **Tests**: 1,522+  
 
 ## Pipeline Integration
 
@@ -24,7 +24,7 @@ python src/main.py --only-steps "11,12" --target-dir input/gnn_files --verbose
 python src/12_execute.py --frameworks "pymdp,jax" --verbose
 ```
 
-For complete pipeline documentation, see **[src/AGENTS.md](../../../README.md)**.
+For complete pipeline documentation, see **[src/AGENTS.md](../../../src/AGENTS.md)**.
 
 ## Overview
 
@@ -792,7 +792,7 @@ class IntegrationTestSuite:
 - **[RxInfer Integration Guide](../rxinfer/gnn_rxinfer.md)**: Complete RxInfer.jl integration
 - **[DisCoPy Integration Guide](../discopy/gnn_discopy.md)**: Categorical diagram processing
 - **[Performance Guide](../README.md)**: Performance optimization strategies
-- **[Error Handling Guide](../troubleshooting/error_taxonomy.md)**: Comprehensive error management
+- **[Error Handling Guide](../../troubleshooting/error_taxonomy.md)**: Comprehensive error management
 
 ---
 
